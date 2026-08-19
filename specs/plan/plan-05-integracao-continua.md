@@ -68,7 +68,13 @@ premissa mudou.
 ## 3.1 Dentro
 - `.github/workflows/` — **criar**
 - `.githooks/pre-commit` — **acrescentar `.github/` ao `TOCA_CODIGO`**, e **só isso** (§5 Etapa A, item 6)
+- `package-lock.json` — **só na rodada de correção 1** (§11), e só para o que o `npm ci` do runner exige
 - O **§10 desta plan** — todo o material que as specs fixas vão precisar (§5 Etapa A, item 10)
+
+> 🔧 **`package-lock.json` entrou em 2026-08-19, por decisão do dono** (*"vamos corrigir e não contornar"*),
+> depois de o primeiro run real da CI reprovar no `npm ci`. Não é ampliação oportunista: sem isto a CI **nunca**
+> fica verde, e a §5 item 9 desta plan já mandava, por escrito, expor em vez de contornar o que só um ambiente
+> limpo revela. O detalhe e os limites estão no **Achado 1** da §11.
 
 > 🔧 **Corrigido em 2026-08-18 pelo revisor.** Esta lista mandava o executor **criar e editar spec fixa**
 > (`16`, `02`, `01`, `03`) — e a §7.3 do [[00-prompt-executor]] proíbe isso em termos absolutos: *"NUNCA crie
@@ -380,6 +386,8 @@ propria plan e ESPERE o dono empurrar. So depois mova o status para 🟠 Em revi
 - [ ] O anel de release tem resposta escrita: **ou** roda no evento `push` da `main`, **ou** o vão está
       declarado com o motivo técnico medido.
 - [ ] Nenhum arquivo da `plan-52` foi tocado (`vitest.config.ts`, `gates:full`, gates órfãos).
+- [ ] **(correção 1, §11)** `npx npm@11.17.0 ci --dry-run` **e** `npm ci --dry-run` passam **os dois**; o diff
+      do `package-lock.json` está relatado por inteiro; **nenhum** arquivo de `.github/` alterado para isso.
 
 ## 7.2 Etapa B — exige o dono ter empurrado
 
@@ -685,6 +693,134 @@ local**, e é isso que `.github/workflows/` desta plan reflete.
   contra o SHA de um PR real (que ainda não existe). O mecanismo é o mesmo; o cenário exato do `install-sha`
   só é exercitado quando existir um PR de verdade.
 
+## Resumo da execução (correção 1) — 2026-08-19
+
+**Resultado:** Concluído. Escopo respeitado à letra: **só `package-lock.json` foi tocado.** A plan segue
+`🟡 Em execução` — a Etapa B (recriar `develop`, empurrar, PR, proteção de branch) continua sendo do dono.
+
+### O achado, resolvido
+
+**Mecanismo escolhido:** `rm package-lock.json && npx -y npm@11.17.0 install --package-lock-only` — apagar o
+lock e regenerá-lo **do zero** com o npm do runner, não regravá-lo em cima do existente.
+
+**Por que não bastava `npm install --package-lock-only` sobre o lock existente** (o que o revisor já havia
+medido e descartado): com o lock presente, `--package-lock-only` usa a **árvore já resolvida** como âncora e só
+confere se ela ainda "bate" com `package.json` — responde `up to date` mesmo faltando a entrada de topo que o
+`npm ci` exige, porque aquela checagem de sincronia é mais **permissiva** que a do `ci`. Sem o lock, o npm não
+tem âncora nenhuma: resolve a árvore inteira do zero, hoisting incluído, e É NESSA hoiste completa que as
+entradas de topo `node_modules/@emnapi/core` e `node_modules/@emnapi/runtime` nasceram — antes só existiam
+aninhadas sob dois consumidores diferentes (`@rolldown/binding-wasm32-wasi` e, agora,
+`@tailwindcss/oxide-wasm32-wasi`), nunca hoisted para o nível que o `@napi-rs/wasm-runtime` (peer dependency)
+precisa encontrar.
+
+**Prova obrigatória, nos DOIS npms — feita duas vezes cada, com e sem `node_modules` (a segunda simula um
+clone limpo de verdade, o que o runner realmente é):**
+
+| Cenário | `npx npm@11.17.0 ci --dry-run` | `npm ci --dry-run` (11.6.1 local) |
+|---|---|---|
+| Com `node_modules` existente | ✅ exit 0 (mostra ajustes de árvore — remoções de pacotes que a nova resolução não precisa mais) | ✅ exit 0 (mostra adições — pacotes opcionais de outras plataformas que antes não apareciam na árvore) |
+| **Sem `node_modules`** (`mv node_modules /tmp/...`, clone limpo simulado) | ✅ **exit 0 — 417 pacotes, nenhum erro** | ✅ **exit 0 — 514 pacotes, nenhum erro** |
+
+Antes da correção: `npx npm@11.17.0 ci --dry-run` reproduzia **exatamente** o erro do runner (`EUSAGE`,
+`Missing: @emnapi/core@1.11.3` / `@emnapi/runtime@1.11.3`) — confirmado batendo a saída, caractere por
+caractere, contra o que o revisor colou do run real. Depois da correção, os dois npms passam, nos dois
+cenários. `node_modules` foi restaurado ao estado original depois do teste (só movido e devolvido — nenhuma
+instalação real de fato mudou o que está em disco).
+
+### O diff do lock, por inteiro — nada em silêncio
+
+`lockfileVersion` continua **3** nos dois. As declarações de raiz (`dependencies`, `devDependencies`,
+`peerDependencies` do próprio pacote) são **byte-idênticas** entre antes e depois — confirmado comparando os
+dois blocos por igualdade de string. O que mudou é só a **árvore resolvida**:
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Linhas do arquivo | 7.481 | 6.780 (**−701**) |
+| Entradas em `"packages"` | 519 | 523 (**+4** líquido) |
+
+**19 entradas adicionadas** — as duas que o `npm ci` exigia (`@emnapi/core@1.10.0`, `@emnapi/runtime@1.10.0`,
+agora de TOPO) mais 17 variantes de plataforma de `@tailwindcss/oxide-*` (`android-arm64`, `darwin-arm64`,
+`darwin-x64`, `freebsd-x64`, `linux-arm-gnueabihf`, `linux-arm64-gnu`, `linux-arm64-musl`, `linux-x64-gnu`,
+`linux-x64-musl`, `wasm32-wasi` e seu subárvore própria de `@emnapi/*`+`@napi-rs/wasm-runtime`+`@tybys/wasm-util`+`tslib`,
+`win32-arm64-msvc`) que **subiram de nível**: antes viviam só aninhadas sob
+`node_modules/@tailwindcss/vite/node_modules/@tailwindcss/oxide-*`.
+
+**15 entradas removidas** — e aqui está o achado que não estava no pedido, e por isso é relatado à parte:
+
+- **14 são as duplicatas aninhadas que a promoção ao topo tornou redundantes**: as mesmas 12 variantes de
+  `@tailwindcss/oxide-*` que existiam **duplicadas** sob `@tailwindcss/vite/node_modules/...` (agora só no
+  topo) + as 2 entradas aninhadas de `@emnapi/core`/`@emnapi/runtime` sob `@rolldown/binding-wasm32-wasi/node_modules/...`
+  (idem, agora só no topo). Puro dedup — é a razão do arquivo ter encolhido 701 linhas.
+- **1 é estranha ao pedido, e por isso relatada em destaque:** `"../Sarak-Lib-Shared": { "version": "4.0.2",
+  "extraneous": true, ... }` — uma entrada que apontava para um **diretório IRMÃO** (`../Sarak-Lib-Shared`,
+  fora deste repositório), marcada `extraneous: true` pelo próprio npm (o rótulo oficial para "presente na
+  árvore que o npm viu, mas não requerido por nenhum `package.json` desta árvore"). **Não é dependência real
+  desta lib** — `package.json` não cita `@sarak/lib-shared` em nenhuma das três listas de dependência (raiz
+  idêntica, conferido acima), e a nova regeneração, partindo do zero, nunca a redescobriu. Era resíduo de uma
+  varredura de filesystem anterior (`npm install` rodado em algum momento com o diretório irmão presente/visível
+  na árvore), não uma referência funcional — e por isso sair é limpeza, não perda de cobertura.
+
+**1 entrada com a MESMA chave mudou de versão** — e **desceu**, não subiu:
+
+```
+node_modules/@emnapi/wasi-threads: 1.2.3 -> 1.2.1
+```
+
+Antes existiam **duas** cópias dessa dependência transitiva (`dev`, `optional`) em versões diferentes — `1.2.3`
+aninhada sob `@rolldown/binding-wasm32-wasi` (removida, ver acima) e implicitamente outra resolução em jogo. A
+regeneração do zero convergiu para uma **única** cópia de topo, `1.2.1`, que é o que
+`@tailwindcss/oxide-wasm32-wasi` (via seu `@napi-rs/wasm-runtime` aninhado) declara precisar. **Nenhuma outra
+versão mudou** — nem subiu, nem desceu. É um pacote `optional: true`/`dev: true`, parte do binário WASM32 do
+Tailwind Oxide, nunca importado pelo código de produção da lib.
+
+**Nenhuma versão de dependência de produção mudou.** As 19 adições e 14 das 15 remoções são a mesma família
+(`@tailwindcss/oxide-*` e seus `@emnapi/*` transitivos) mudando de **posição** na árvore, não de **conteúdo**.
+
+### Verificações executadas
+
+- `npx -y npm@11.17.0 ci --dry-run` (com e sem `node_modules`) → **exit 0** nos dois cenários.
+- `npm ci --dry-run` local, 11.6.1 (com e sem `node_modules`) → **exit 0** nos dois cenários, continua passando.
+- `npx vitest run` → **317 arquivos / 1376 testes, 100% verde** (`Duration 165,48s`), com o `node_modules`
+  restaurado ao estado anterior — a suíte roda contra o que já estava instalado, não contra uma instalação
+  nova a partir do lock regenerado (essa instalação real só acontece na CI, via `npm ci` de verdade).
+- `git diff --stat package.json` → **vazio**. `git diff --stat .github/` → **vazio**. `grep -n "engines\|packageManager" package.json` → **nenhuma ocorrência nova** (nenhum dos dois foi declarado).
+- Comparação estrutural JSON (script em scratchpad, não commitado) entre o lock antes/depois: 19 adicionadas,
+  15 removidas, 1 versão mudada — números acima, conferidos por chave de `"packages"`, não por linha de texto.
+
+### Arquivos alterados
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `package-lock.json` | alterado | regenerado do zero com `npm@11.17.0 install --package-lock-only`; ver diff estrutural acima |
+
+**Nada mais.** `package.json`, `.github/workflows/`, `.githooks/`, `src/`, `gates/`, `scripts/` e toda spec
+fixa continuam sem diff — confirmado por `git status`.
+
+### Critérios da correção 1
+
+- [x] Mecanismo descoberto, provado e justificado por escrito (por que `--package-lock-only` sobre o lock
+      existente não bastava, e por que apagar primeiro resolve).
+- [x] `npx npm@11.17.0 ci --dry-run` PASSA — provado, inclusive em clone limpo simulado.
+- [x] `npm ci --dry-run` (11.6.1) CONTINUA passando — provado, inclusive em clone limpo simulado. Não é "verde
+      só no novo com o antigo quebrado".
+- [x] Diff do lock relatado por inteiro: 19 adicionadas, 15 removidas (14 dedup + 1 resíduo estranho ao
+      pedido, `../Sarak-Lib-Shared`, marcado `extraneous` pelo próprio npm), 1 versão mudada (`@emnapi/wasi-threads`,
+      **desceu** 1.2.3→1.2.1, transitiva opcional/dev). Nenhuma versão de dependência de produção mudou.
+- [x] Suíte 317/1376 verde depois da mudança.
+- [x] `.github/workflows/` intocado; `npm ci` continua sendo o comando do workflow (não virou `npm install`);
+      `node-version` do YAML continua `"24"`, não pinado em patch.
+- [x] Nenhum `engines` nem `packageManager` declarado em `package.json`.
+- [x] Nenhum outro arquivo tocado.
+
+### Achados que não são desta correção (já estavam registrados no veredito, não repito código)
+
+Os achados 2–5 do veredito (lockfile gerado por npm mais antigo, ausência de `packageManager`/`engines`,
+aviso do `allowScripts` sobre `esbuild`, `actions@v4` vs `v5`) **continuam de pé** — nada nesta correção os
+fecha, porque nenhum é escopo dela. O achado 2 é, na prática, a explicação de por que o defeito aconteceu; a
+correção resolve o **sintoma** (o lock quebrado) sem resolver a **causa estrutural** (nada impede o lock de
+voltar a ser gerado por um npm desalinhado do runner) — que é exatamente o que o achado 3 (`packageManager`
+declarado) resolveria de raiz, e que a §3.2 desta plan proíbe fazer aqui de propósito.
+
 ---
 
 # 11. Veredito
@@ -750,3 +886,140 @@ Nada aqui é trabalho de executor. A plan **fica `🟡`** até:
 2. empurrar a branch com os workflows e abrir o PR;
 3. ligar a proteção da `main` — *required status check* —, **com exceção para administrador**;
 4. o PR com teste quebrado de propósito, e a reversão.
+
+---
+
+## Rodada de correção 1 — 2026-08-19 — o primeiro run real
+
+**Os passos 1 e 2 acima aconteceram**: `develop` recriada, PR #1 aberto (`develop` → `main`), e a CI rodou
+pela primeira vez. Resultado, lido por mim na API pública e nos prints do dono:
+
+| Check | Resultado | Leitura |
+|---|---|---|
+| `install-sha` **npm · pnpm · yarn** | ✅ **1m · 16s · 21s** | o **achado 26 está provado na prática**; e o risco do `corepack` que o executor declarou **não se materializou** |
+| `install-sha (push)` · `release-tag (push)` · `release-tag (pull_request)` | ⊘ *skipped* | **toda a lógica condicional dos gatilhos está correta** |
+| `upload-artifact` | ⚠️ *"No files were found"* | **correto**: o `gates:full` não chegou a rodar, então não havia log. O `if: always()` fez o que devia |
+| `gates` (push **e** pull_request) | ❌ **falha em 13-14 s** | ver o Achado 1 |
+
+### 🔴 Achado 1 — o `npm ci` reprova sob o npm do runner *(bloqueia a Etapa B)*
+
+**O erro, na íntegra:**
+
+```
+npm error code EUSAGE
+npm error `npm ci` can only install packages when your package.json and package-lock.json ... are in sync.
+npm error Missing: @emnapi/core@1.11.3 from lock file
+npm error Missing: @emnapi/runtime@1.11.3 from lock file
+```
+
+**Reproduzido por mim na máquina do dono** — não depende mais da CI para verificar:
+
+```
+npx npm@11.17.0 ci --dry-run     → EUSAGE, saída IDÊNTICA à do runner
+npm ci --dry-run                 → PASSA (npm 11.6.1)
+```
+
+**A divergência, medida:**
+
+| | Máquina do dono | Runner |
+|---|---|---|
+| Node | **24.10.0** | `node-version: "24"` → **24.19.0** |
+| npm | **11.6.1** | **11.17.0** |
+
+A prova de que é o npm e não o SO: o texto de ajuda do runner lista `--allow-scripts`, `--allow-git`,
+`--allow-directory`, `--strict-allow-scripts`. Testei as sete — **o npm 11.6.1 não conhece nenhuma delas**.
+
+**A causa raiz:** `@napi-rs/wasm-runtime` e `@tailwindcss/oxide-wasm32-wasi` exigem `@emnapi/core` e
+`@emnapi/runtime`, e o lock só os registra **aninhados** sob `@rolldown/binding-wasm32-wasi`. Falta a entrada
+de topo. O npm 11.6.1 tolera a omissão; o 11.17.0 recusa.
+
+> **O workflow NÃO está errado.** `npm ci` é o comando certo e reprovou por uma razão verdadeira: **o lockfile
+> deste repositório quebra para qualquer pessoa com um Node 24 atual**, dentro ou fora da CI.
+
+### O que a correção 1 exige
+
+**Escopo: `package-lock.json`, e nada mais.**
+
+1. **Descobrir e provar** qual comando produz um lock que satisfaz o `npm ci` do runner. ⚠️ **Medido por mim:
+   `npm install --package-lock-only` NÃO resolve** — sob o 11.17.0 ele responde *"up to date"* e o `npm ci`
+   continua reprovando. O mecanismo é seu; escreva por que escolheu.
+2. **Prova obrigatória nos DOIS npms, local, antes de entregar:**
+   ```
+   npx npm@11.17.0 ci --dry-run     → tem de PASSAR
+   npm ci --dry-run                 → tem de CONTINUAR passando
+   ```
+   Verde só no novo, com o antigo quebrado, **não serve**: seria trocar de defeito.
+3. **Relatar o diff do lock por inteiro** — quantas entradas mudaram além das duas, e se alguma versão subiu.
+   Um lock regenerado pode mexer em mais do que se pediu, e isso não pode passar em silêncio.
+4. **A suíte continua 317/1376 verde** depois da mudança.
+
+### ⛔ Proibido nesta correção
+
+- **Tocar em `.github/workflows/`.** Em particular: trocar `npm ci` por `npm install`, ou pinar
+  `node-version` numa versão de patch. As duas fariam a CI ficar verde **escondendo** o defeito — é o
+  "consertar contornando" que a §5 item 9 proíbe, e o próprio YAML já diz *"nunca `npm install`"*.
+- Declarar `engines` ou `packageManager` (§3.2). É a solução de raiz, e por isso mesmo merece plan própria —
+  ver Achado 3.
+- Qualquer outro arquivo. Nada de `src/`, `gates/`, `scripts/`, spec fixa.
+
+### Achados para a síntese (não são código desta correção)
+
+- **Achado 2 — o lockfile é gerado por um npm mais antigo que o do ambiente de referência.** Enquanto a
+  máquina que gera o lock e a que o consome divergirem de versão, isto reincide. Vai para
+  [[15-divida-conhecida]].
+- **Achado 3 — não há `packageManager` nem `engines` declarados.** É o que tornaria essa divergência
+  **impossível** em vez de invisível. Candidato a plan própria; a §3.2 desta plan o proíbe aqui de propósito.
+- **Achado 4 — aviso novo do npm 11.17:** `esbuild@0.27.7 (postinstall: node install.js)` cai na política
+  `allowScripts`, hoje só como **warning**. Se essa política endurecer por padrão, o build para. Vigiar.
+- **Achado 5 — as `actions@v4` já rodam forçadas em Node 24** (aviso de depreciação do Node 20 no runner).
+  Migrar para `@v5` é trabalho de manutenção, não desta correção.
+
+### Veredito da correção 1 — 2026-08-19 — 🟢 **ACEITA**
+
+Tudo remedido por mim no worktree.
+
+| Alegação | O que eu medi | |
+|---|---|---|
+| Escopo: só `package-lock.json` | `git status` → o lock + esta plan. `package.json` **byte-idêntico**, `.github/` intocado | ✅ |
+| `npx npm@11.17.0 ci --dry-run` | **exit 0** (antes reproduzia o `EUSAGE` do runner) | ✅ |
+| `npm ci --dry-run` (11.6.1) | **exit 0** — o npm antigo continua aceitando | ✅ |
+| 19 adicionadas · 15 removidas · 1 versão | **19 · 15 · 1**, conferido entrada por entrada | ✅ |
+| Produção intacta | os 3 deps idênticos; **nenhuma** versão não-`dev` mudou | ✅ |
+| Suíte | **317 arquivos / 1376 testes verdes**, 170,23 s | ✅ |
+
+**Checagem que eu acrescentei:** nenhum `integrity` mudou sem a versão mudar — é o que denunciaria troca de
+tarball. Cadeia limpa.
+
+**O downgrade não é efeito colateral: é a prova de que o conserto está certo.** `@emnapi/core` exige
+`@emnapi/wasi-threads` na versão **exata `1.2.1`** (pin, não faixa). O `1.2.3` anterior só sobrevivia porque o
+`@emnapi/core` **não existia no topo** e ninguém cobrava o pin. Promovido, o pin passa a governar. O executor
+relatou como *"desceu"*; **descer era o correto**, e o número antigo era sintoma do mesmo defeito.
+
+**As 15 remoções conferem:** 14 são duplicatas aninhadas sob `@tailwindcss/vite/node_modules/` e
+`@rolldown/binding-wasm32-wasi/node_modules/`, redundantes depois da promoção ao topo — dedup puro.
+
+### 🔵 Achado 6 — uma biblioteca inteira, de outro repositório, dentro do lockfile
+
+A 15ª remoção merece registro próprio. A entrada era:
+
+```json
+"../Sarak-Lib-Shared": {
+  "name": "@sarak/lib-shared", "version": "4.0.2", "extraneous": true,
+  "dependencies": { "axios": "^1.6.0" },
+  "devDependencies": { "framer-motion", "lucide-react", "tsup", "typescript", ... }
+}
+```
+
+Um **diretório irmão, fora deste repositório** — e que **não existe mais nesta máquina**. Está no lock desde
+a **`v2.1.1`** (`git log -S`), atravessando todos os releases desde então.
+
+Nunca quebrou nada — `extraneous: true` faz o `npm ci` ignorar. Mas é **a mesma família dos dois verdes falsos
+que motivaram esta plan**: topologia da máquina local vazando para arquivo versionado. Saiu de graça porque o
+lock foi **regenerado do zero** em vez de remendado, o que valida o mecanismo escolhido pelo executor.
+
+Vai para [[15-divida-conhecida]] junto com os achados 2 a 5.
+
+### O que continua faltando
+
+A plan **segue `🟡 Em execução`**. A correção 1 desbloqueia a CI, mas nenhum critério da §7.2 pode ser marcado
+antes de o dono empurrar, ligar a proteção da `main` e fazer a prova do vermelho.
