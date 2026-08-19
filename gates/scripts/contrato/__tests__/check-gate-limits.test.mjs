@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, R18): nenhum verificador cobrava que todo
 // gate declara o que NÃO vê. Um caso que ele PEGA (script sem marcador) e
 // um que ele DEIXA PASSAR (com o marcador canônico ou a convenção antiga).

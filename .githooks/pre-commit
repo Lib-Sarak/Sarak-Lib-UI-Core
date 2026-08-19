@@ -59,7 +59,12 @@ fi
 # seção, §N.N) NASCE com dívida conhecida (vão nº 7) — por isso ele NÃO é
 # Anel 1 "verde ou nada": entrou no `run_audit.mjs` e é cobrado pelo Anel 2,
 # contra baseline, como os outros auditores com dívida tolerada.
-TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/|gates/)' | head -n 1)
+# `.github/` entrou em 2026-08-18 (plan-05): `.github/workflows/*.yml` é
+# CONFIGURAÇÃO EXECUTÁVEL — parente direto de `.githooks/`, que já estava na
+# lista. Sem esta linha, um commit que só mexesse no workflow da CI pularia os
+# Anéis 1 e 2 inteiros: a peça que valida todo o resto do pipeline seria a
+# única sem validação nenhuma.
+TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/|gates/|\.github/)' | head -n 1)
 # specs/ (exceto plan/, já coberto acima — POSIX ERE não tem negative
 # lookahead, por isso a lista explícita), .agents/skills/, sarak-dev/ são o
 # domínio do detector de ponteiro de seção e não tocam código — precisam
@@ -69,7 +74,7 @@ TOCA_DOC_COM_SECAO=$(echo "$STAGED" | grep -E '^(specs/specs/|specs/adr/|specs/a
 TOCA_TS=$(echo "$STAGED" | grep -E '\.tsx?$' | head -n 1)
 
 if [ -z "$TOCA_CODIGO" ] && [ -z "$TOCA_DOC_COM_SECAO" ]; then
-  echo "[Sarak] Anéis 1 e 2 PULADOS — o commit não toca src/, scripts/, docs/, sarak-ui/, bin/, package.json, .githooks/, gates/ nem specs/skills com ponteiro de seção."
+  echo "[Sarak] Anéis 1 e 2 PULADOS — o commit não toca src/, scripts/, docs/, sarak-ui/, bin/, package.json, .githooks/, gates/, .github/ nem specs/skills com ponteiro de seção."
   echo "[Sarak] Commit liberado."
   exit 0
 fi
@@ -77,6 +82,35 @@ fi
 if [ -z "$TOCA_CODIGO" ]; then
   echo "[Sarak] Anel 1 PULADO — o commit só toca doc/spec (nenhum gate de contrato de código a rodar)."
 fi
+
+# =============================================================================
+# ANEL 1 (kit do mantenedor) — dev-kit:check. plan-52, decisão do dono
+# (2026-08-18): passa a BLOQUEAR o commit. O gatilho é a UNIÃO de TOCA_CODIGO
+# e TOCA_DOC_COM_SECAO, não só TOCA_CODIGO — colocá-lo dentro do `if [ -n
+# "$TOCA_CODIGO" ]` do Anel 1 de contrato NÃO resolveria: sarak-dev/state.json
+# carrega a LISTA DE ARQUIVOS de specs/specs|adr|arquitetura
+# (specs/specs/14-artefatos-do-mantenedor.md §3), então criar ou remover uma
+# spec defasa o kit mesmo sem tocar código — e esse é justamente o gatilho que
+# hoje só dispara o Anel 2. Por isso este bloco fica FORA do `if TOCA_CODIGO`:
+# chegar até aqui (passado o `exit 0` de cima) já prova que pelo menos um dos
+# dois gatilhos disparou. Precedente de forma: check-plan-index-sync, acima,
+# também tem gatilho próprio, fora da estrutura de anéis.
+#
+# Bloqueia por DUAS causas independentes (spec 14 §4): defasagem de número E
+# ponteiro morto na prosa do guia — um caminho, gate ou comando `node` citado
+# em crase que não existe mais. É mudança de comportamento deliberada: hoje um
+# ponteiro morto no guia não impede commit nenhum; a partir daqui, impede.
+# =============================================================================
+echo "[Sarak] Anel 1 (kit do mantenedor) — sarak-dev/ em dia..."
+if ! node scripts/generate-dev-kit.mjs --check; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: kit do mantenedor"
+  echo "   Regra violada : R17 · R23 · R29 (specs/specs/00-regras-e-invariantes.md)"
+  echo "   Veja o detalhe: npm run dev-kit:check"
+  echo "   Conserto      : npm run dev-kit && git add sarak-dev/"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (kit do mantenedor) OK — sem defasagem nem ponteiro morto."
 
 # =============================================================================
 # ANEL 1 — Gates de contrato. Verde é a única saída aceitável.
@@ -102,6 +136,12 @@ anel1 "zero-marca"                 "R12 — A lib nunca estampa a própria marca
 anel1 "kit do consumidor"          "R17 — Não transcrever fonte viva" "npm run guide:check" scripts/generate-consumer-kit.mjs --check
 anel1 "zero deep import"           "R27 — O consumidor nunca precisa de deep import" "npm run deep-import:check" gates/scripts/contrato/check-no-deep-import.mjs
 anel1 "limites declarados dos gates" "R18 — Todo gate declara o que NÃO vê" "npm run gate-limits:check" gates/scripts/contrato/check-gate-limits.mjs
+# plan-52: os três abaixo já existiam em package.json, verdes, e não rodavam em
+# lugar nenhum (nem hook, nem gates:full, nem run_audit). Custam o mesmo que os
+# gates acima (~0,7-0,9s) — entram pelo mesmo molde `anel1()`.
+anel1 "container query sem interpolação"   "— (plan-39 · endurecido pela plan-44)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
+anel1 "container query com boundary"       "— (plan-41)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
+anel1 "paridade doc × código de persistência" "R17 — Não transcrever fonte viva" "npm run persistence-doc:check" gates/scripts/contrato/check-persistence-doc-identifiers.mjs
 # `build-info:check` NÃO entra aqui, mesmo motivo do `package:check` (spec 02
 # §4.1): exige `dist/` buildado. Mora só no `gates:full`.
 

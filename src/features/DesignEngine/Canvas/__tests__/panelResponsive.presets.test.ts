@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { CATALOG_GRID_2COL, CATALOG_GRID_3COL, PREVIEW_DUAL_VIEW_ROW } from '../panelResponsive.presets';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../../core/Design/breakpoints';

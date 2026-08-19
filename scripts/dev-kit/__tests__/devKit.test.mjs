@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Testes do kit do MANTENEDOR (Spec 14).
  *

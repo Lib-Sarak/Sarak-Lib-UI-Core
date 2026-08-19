@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, vão 7): nenhum gate validava ponteiro de
 // SEÇÃO (`§N.N`) — achado 29 (`sarak-dev/GUIA-MANUTENCAO.md:308`, "regenere
 // com o script do §5.1 do guia", seção 5 sem subseção nenhuma). As DUAS

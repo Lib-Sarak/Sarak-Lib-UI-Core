@@ -49,7 +49,7 @@
         "themes:diversity": "npx tsx gates/scripts/audit/verify_diversity.ts",
         "audit:baseline": "node gates/scripts/release/check-audit-baseline.mjs",
         "hooks:install": "node scripts/install-hooks.mjs",
-        "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check",
+        "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity",
         "release:check": "node gates/scripts/release/check-release-tag.mjs",
         "preversion": "npm run gates:full",
         "version": "npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",

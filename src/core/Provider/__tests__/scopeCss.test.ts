@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Gate do transformador de CSS escopado (Spec 24 §2.1).
  *

@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, vão 8): `generate-build-info.mjs --check`
 // não existia — o artefato gerado `dist/BUILD_INFO.json` nunca era conferido.
 // Um caso que ele PEGA (libVersion desatualizado) e um que ele DEIXA PASSAR.

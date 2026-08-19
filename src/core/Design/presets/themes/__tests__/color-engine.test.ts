@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { syncThemeWithMode, resolveThemeForMode } from '../color-engine';
 import { parseToRgba, rgbToHsl } from '../../../../Provider/utils/color-engine';

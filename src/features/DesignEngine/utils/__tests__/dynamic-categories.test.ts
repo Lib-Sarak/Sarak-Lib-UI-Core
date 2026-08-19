@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, vi } from 'vitest';
 import { sanitizeCategory, buildDynamicGroups } from '../dynamic-categories';
 import type { ComponentSchema } from '../../../../core/Design/types';
