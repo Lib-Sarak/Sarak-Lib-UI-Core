@@ -136,15 +136,6 @@ justamente porque são mutativas ou sensíveis.
 | `git-verificacao-commit` | Gate rápido por commit: varre só o **staged** e bloqueia (pre-commit, exit 1). |
 | `git-revisao-diff` | Qualidade do diff staged contra o padrão + debug/TODO/conflito esquecidos. |
 | `git-especialista-repositorio` | Auditoria do **histórico inteiro** e remediação (reescrita + rotação). HITL severo. |
-| `git-ci-cd` ⚠️ | Instrui (nunca executa) o ciclo de Git/release: diagnóstico, commit, sincronizar `develop`↔`main`, PR, CI, merge, nível do bump, `npm version`, pós-release, limpeza. Agente entrega os comandos; quem digita é sempre o dono. |
-
-> ⚠️ **`git-ci-cd` é LOCAL a `Sarak-Lib-UI-Core`** (`.agents/skills/git-ci-cd/`), não universal —
-> exceção ao contrato de manutenção desta spec (§10). Entrou aqui por instrução explícita da
-> `plan-54` (2026-08-19): é a primeira skill não-`ui-*` do repositório, e o roteamento de skills
-> locais por `00-contexto.md` §4 ainda cobre só as `ui-*`. Um repositório que clonar este arquivo
-> como universal herda um ponteiro que não resolve — o dono decide, na síntese, se promove a skill
-> a universal (sai daqui, sem ressalva) ou se remove esta linha (o roteamento correto vira só
-> `00-contexto.md` §4, como as demais skills locais).
 
 ## 4.7 Demais áreas
 

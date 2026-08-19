@@ -23,8 +23,7 @@ description: Instrui a operação de Git e release deste repositório — diagn�
 > commit dentro de uma sequência de release; quem digita é sempre o dono.
 >
 > Contrato completo (modelo de autoridade, proibições absolutas, alcance da co-autoria, roteamento):
-> `specs/specs/17-contrato-de-operacao-git.md`. *(Nasce da síntese desta mesma plan — se ainda não
-> existir quando você ler isto, o texto abaixo já é o suficiente para operar; não pare por isso.)*
+> `specs/specs/17-contrato-de-operacao-git.md` — é ela que governa esta skill, não o contrário.
 
 ## O shell não é detalhe
 
@@ -198,8 +197,7 @@ A URL de comparação já abre o formulário de PR `develop → main` pronto par
 merge. `install-sha` (mesmo workflow) e `release-tag`/`install-semver` (`install-tag.yml`) são
 **condicionais por desenho**: `install-sha` só roda em PR; `release-tag` só em push:`main`;
 `install-semver` só em push de tag. Ver `install-tag`/`gates` job a job em
-`specs/specs/16-integracao-continua.md` §2/§3 — **se ainda não existir**, o mesmo material está em
-`specs/plan/plan-05-integracao-continua.md` §10 (tabela de gatilhos) e §11 (os 7 runs medidos).
+`specs/specs/16-integracao-continua.md` §3 (os cinco gatilhos) e §4 (os jobs, com o custo real medido).
 
 **O que NÃO fazer:** não trate `install-sha`/`release-tag` vermelhos como bloqueio de merge — eles não
 são *required*. Não ignore `gates` vermelho achando que "vai passar na próxima" sem investigar o log
@@ -313,7 +311,7 @@ O que acontece, na ordem — **não redescreva o ritual inteiro aqui, cite `03-v
 5. **`postversion`** roda `git push --follow-tags`.
 
 **O push do passo 5 usa a exceção de administrador.** A `main` exige o status check `gates` para
-qualquer push comum (`enforcement_level = "non_admins"` — `specs/plan/plan-05-integracao-continua.md` §11);
+qualquer push comum (`enforcement_level = "non_admins"` — `specs/specs/16-integracao-continua.md` §2.1);
 o release empurra **direto**, sem PR, e só funciona porque a conta do dono está isenta dessa
 exigência como administrador do repositório. Se o push for recusado, a causa mais provável é essa
 exceção não estar configurada — não um problema do `npm version` em si.
@@ -423,7 +421,7 @@ não a reescreve, só declara que ela **também vale aqui**:
 |---|---|
 | O ritual de release, os ganchos do `npm version`, formato da tag | `specs/specs/03-versionamento-e-release.md` |
 | Os anéis locais (`pre-commit`/`pre-push`), o que cada um cobra e custa | `specs/specs/02-enforcement-por-commit.md` |
-| Branches, gatilhos, os jobs da CI | `specs/specs/16-integracao-continua.md` — **se ainda não existir**, `specs/plan/plan-05-integracao-continua.md` §10/§11 |
-| Modelo de autoridade completo, proibições absolutas, alcance da co-autoria | `specs/specs/17-contrato-de-operacao-git.md` — nasce da síntese da `plan-54` |
+| Branches, gatilhos, os jobs da CI | `specs/specs/16-integracao-continua.md` |
+| Modelo de autoridade completo, proibições absolutas, alcance da co-autoria | `specs/specs/17-contrato-de-operacao-git.md` |
 | Catálogo de gates, baseline versionado | `specs/specs/01-gates-e-baseline.md` |
 | Os dois gates novos (âncora de migração, remoção fora de major) | `gates/scripts/contrato/check-migration-anchor.mjs`, `gates/scripts/contrato/check-minor-no-removal.mjs` — cada um declara, no próprio arquivo, o que não vê (R18) |

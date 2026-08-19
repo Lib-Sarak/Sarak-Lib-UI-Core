@@ -359,7 +359,9 @@
       "12-kit-do-consumidor.md",
       "13-instalacao-e-atualizacao.md",
       "14-artefatos-do-mantenedor.md",
-      "15-divida-conhecida.md"
+      "15-divida-conhecida.md",
+      "16-integracao-continua.md",
+      "17-contrato-de-operacao-git.md"
     ]
   },
   "docs": [

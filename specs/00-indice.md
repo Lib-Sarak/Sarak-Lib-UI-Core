@@ -41,11 +41,6 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-52-correcao-pre-ci-cd](plan/plan-52-correcao-pre-ci-cd.md) | Pôr cada verificação no lugar certo e tirar da suíte a sobrecarga que a CI herdaria, para o pipeline nascer sobre uma base correta | — | 🟢 Aprovada | specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/11-testes-e-cobertura.md · specs/specs/14-artefatos-do-mantenedor.md · specs/specs/15-divida-conhecida.md |
-| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline remoto e documentar o fluxo inteiro: que evento dispara o quê, em que branch, e o que continua sendo decisão humana | plan-52 | 🟢 Aprovada | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/03-versionamento-e-release.md · specs/specs/15-divida-conhecida.md |
-| 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🟢 Aprovada | specs/specs/13-instalacao-e-atualizacao.md |
-| 4 | [plan-53-migracoes-e-nivel-de-release](plan/plan-53-migracoes-e-nivel-de-release.md) | Dar conteúdo às notas de migração ausentes e construir os dois gates que impedem a omissão de voltar | — | 🟢 Aprovada | specs/specs/03-versionamento-e-release.md · specs/specs/01-gates-e-baseline.md · specs/specs/15-divida-conhecida.md |
-| 5 | [plan-54-agente-git-ci-cd](plan/plan-54-agente-git-ci-cd.md) | Escrever a skill que instrui a operação de Git e release, e a spec que define quem executa o quê | plan-53 | 🟢 Aprovada | specs/specs/17-contrato-de-operacao-git.md · specs/00-knowledge.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
@@ -77,12 +72,27 @@ as duas, sempre, na mesma ação.**
 > | **46** | [[11-testes-e-cobertura]] §3.5 — o que *"suíte verde"* significa, com os tetos **por base** · [[15-divida-conhecida]] achado **44** |
 > | **11** | [[11-testes-e-cobertura]] §7 — a ausência declarada · [[15-divida-conhecida]] achado **45** · **R24 → ⚠️** em [[00-regras-e-invariantes]] |
 >
-> **A fila de execução é `05 → 10`, e é tudo que resta.** A `plan-05` monta o pipeline (CI **e** o
-> `dev-kit:check` no `pre-commit`, decisão do dono de 2026-08-18); a `plan-10` depende dela.
+> ⚪ **As plans 52, 05, 10, 53 e 54 foram SINTETIZADAS e REMOVIDAS em 2026-08-19** — o ciclo do pipeline,
+> inteiro. **Destino demonstrado**, como a [[00-contexto]] §5 exige de toda remoção:
 >
-> **A `plan-05` deixou de ser "só CI".** Ela carrega agora a única defesa contra o `sarak-dev/` ser commitado
-> defasado — o `dev-kit:check` é o **único** artefato gerado sem hook, e a §5 passo 0 daquela plan registra a
-> armadilha medida: pô-lo no Anel 1 o faria pular justamente nos commits de spec, que são um dos defasadores.
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **52** | [[02-enforcement-por-commit]] §2.2.1 (o kit com gatilho próprio) e §3.1 (custo remedido) · [[01-gates-e-baseline]] §2.2.1 · [[11-testes-e-cobertura]] §5.1 (ambiente por arquivo, **−40,2%**) · [[14-artefatos-do-mantenedor]] §5 · achados **46** e **47** |
+> | **05** | 🆕 [[16-integracao-continua]] — **a spec nasceu desta plan** · [[02-enforcement-por-commit]] §4.3.1 e §9 · [[03-versionamento-e-release]] §6.0 · [[15-divida-conhecida]] §3.4 (**categoria nova**) e achados **48**, **50**–**54**, **56** |
+> | **10** | [[13-instalacao-e-atualizacao]] §5.3 e §9.4 — o `sarak-ui update` e o `^` que sumia duas vezes no Windows · achados **49** e **55** |
+> | **53** | [[03-versionamento-e-release]] §3.1 (12 tags, 6 majors), §5.1 e §5.2 — os dois gates e **a assimetria** · [[01-gates-e-baseline]] §2.2 |
+> | **54** | 🆕 [[17-contrato-de-operacao-git]] — **a spec nasceu desta plan** · [[00-contexto]] §4 e §7 |
+>
+> ⚠️ **Uma coisa mudou de significado ao ser transportada, e fica registrada aqui porque a plan sumiu.** A
+> `plan-53` afirmava que a obrigação de `docs/migracoes.md` fora *"pulada 3×"*. **Não foi.** As notas dos três
+> majors **estavam escritas**; faltava o **número da versão no título**, porque o leitor que exige esse
+> formato nasceu dias depois delas. Sintetizar a alegação teria posto uma acusação falsa numa spec fixa — a
+> [[03-versionamento-e-release]] §5.1 registra o fato correto.
+>
+> 🔎 **A fila está VAZIA — pela primeira vez.** E isso expôs um defeito que nenhum estado anterior alcançava:
+> `scripts/generate-plan-index.mjs` **estourava** com `ENOENT` quando `specs/plan/` deixava de existir (o git
+> remove diretório que esvazia). O diretório foi preservado com um `.gitkeep`; **tornar o gerador tolerante à
+> ausência é conserto de código, e não é do revisor** — fica como decisão do dono.
 
 # 2. Legenda de status
 

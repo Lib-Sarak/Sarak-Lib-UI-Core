@@ -159,7 +159,31 @@ morto — não uma coisa ou outra.
 | `npm run gates:full` (→ `preversion`) | **Sim**, primeiro | É barato e é o análogo do `guide:check` para dentro. Publicar uma versão com documentação de mantenedor apodrecida é o defeito que esta spec existe para impedir. |
 | `npm version` (gancho `version`) | **Sim** — `npm run dev-kit`, e `sarak-dev/` entra no `git add` | O `state.json` carimba a `version` do `package.json`, como o kit do consumidor e o `dist/`. Os três são regenerados no **mesmo commit** que a tag aponta ([[03-versionamento-e-release]] §6); um artefato fora dessa lista produz tag cujo conteúdo diz uma versão diferente da que ela nomeia. |
 | `npm run build` | **Não** | O `build` produz o **artefato publicado**, e `sarak-dev/` não é publicado. Acoplar um gate de documentação interna ao pipeline do tarball juntaria duas coisas sem relação — e faria a publicação depender de algo que o consumidor nunca recebe. |
-| `.githooks/pre-commit` | **Não** *(decisão em aberto)* | Não foi acrescentado nesta entrega para não mover o custo do commit sem medição. Fica registrado como opção. |
+| `.githooks/pre-commit` | **Sim** *(desde 2026-08-18, decisão do dono — `plan-52`)* | Era "decisão em aberto"; a medição existe e o vão que ela cobria era real. Detalhe do gatilho abaixo. |
+| CI — job `gates` | **Sim**, via `gates:full` | Ambiente limpo, sem depender de o hook ter rodado ([[16-integracao-continua]]) |
+
+## 5.1 ⚠️ O gatilho do `pre-commit` NÃO é o dos outros gates de contrato
+
+O `dev-kit:check` roda na **união** dos dois gatilhos do hook — o de código (`src/`, `scripts/`, `gates/`,
+`docs/`, `sarak-ui/`, `bin/`, `package.json`, `.githooks/`, `.github/`) **e** o de documento com seção
+(`specs/specs/`, `specs/adr/`, `specs/arquitetura/`, `specs/00-`, `.agents/skills/`, `sarak-dev/`).
+
+**A armadilha, medida antes de escolher:** pô-lo no Anel 1 comum o faria **pular exatamente nos commits de
+spec** — que são um dos principais defasadores do `state.json`, porque ele rastreia o conteúdo de `specs/`
+além dos `scripts` do `package.json`. Um gate de defasagem que pula quando a defasagem acontece não é gate.
+
+**Consequência aceita, escrita porque piorou:** o commit "só de spec" passou a pagar **~14,8 s**, quando antes
+não pagava nada ([[02-enforcement-por-commit]] §3.1).
+
+> **A trava já pegou uma omissão real.** Dois dias depois de existir, ela barrou o commit de outra plan cujos
+> dois scripts novos no `package.json` não tinham sido refletidos no kit — exatamente o caso para o qual foi
+> construída.
+
+## 5.2 O que isso muda para o ponteiro morto (§4.2)
+
+**A consequência mais séria não é a defasagem — é o ponteiro morto.** Até 2026-08-18, um `npm run <script>`
+inexistente citado na prosa do kit só era cobrado no `gates:full`/`preversion`; **agora barra o commit**,
+tanto de quem toca código quanto de quem toca spec.
 
 # 6. Empacotamento — `sarak-dev/` é INTERNO
 

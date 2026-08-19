@@ -158,8 +158,27 @@ agente descobre do jeito difícil se não estiverem escritos:
   > bloqueada por ela. Detalhe em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6.
 - **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
   commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
+- **Todo MAJOR precisa da nota de migração ANCORADA — e isso virou gate** *(2026-08-19)*. O gancho `version`
+  abre com `migration-anchor:check`: sem uma entrada em `docs/migracoes.md` cujo título cite `X.0.0` por
+  extenso, o `npm version major` **para antes de criar a tag**. Um segundo gate, `minor-no-removal:check`,
+  barra minor/patch que remova nome do barril público.
 
-Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md).
+## 3.2 O trabalho não acontece mais na `main` *(desde 2026-08-18)*
+
+`main` = **produção**; `develop` = **desenvolvimento**. Três consequências que um agente descobre do jeito
+difícil:
+
+- **O `pre-push` quase não dispara mais** — ele só age para `refs/heads/main`. A suíte completa e o anel de
+  release passaram para a **CI**, que os roda em `push:develop`, `push:main` e no **PR, antes do merge**.
+- **A `main` é protegida, com exceção de administrador — e a exceção é deliberada.** Sem ela o `postversion`
+  seria recusado pela própria regra que a CI impõe, e o `npm version` morreria no último passo.
+- **`--no-verify` deixou de ser invisível.** O job de CI roda a união dos anéis sem consultar o que foi pulado
+  localmente.
+
+Fluxo completo, gatilhos, custo medido e o que a CI **não** cobre:
+[`specs/16-integracao-continua.md`](specs/16-integracao-continua.md).
+
+Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md).
 
 ---
 
@@ -187,8 +206,14 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 > é a **regra**. As duas se leem juntas.
 >
 > **A verificação é do gate, não da skill.** Nenhuma skill invoca validador direto; quem executa é o
-> `package.json` e, adiante, o pipeline de CI/CD. O inventário de quem executa o quê está em
-> [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) §4.1.
+> `package.json`, os hooks e — **desde 2026-08-18** — o pipeline de CI. O inventário de quem executa o quê
+> está em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) §4.1; **onde** cada gate roda
+> está em [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) §2.2.1.
+>
+> ⚠️ **`git-ci-cd` é a primeira skill local não-`ui-*`, e ela é de uma classe diferente.** As demais
+> executam; esta **só instrui** — o dono digita todo comando. O contrato que a governa é
+> [`specs/17-contrato-de-operacao-git.md`](specs/17-contrato-de-operacao-git.md), e ele vale para **qualquer**
+> agente, não só para ela.
 
 | Tipo de tarefa | Leia antes (specs fixas) | Capacidade |
 |---|---|---|
@@ -203,8 +228,8 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 | Mexer no Shell, rotas ou módulos-plugin | `specs/04-shell-e-discovery` | [[00-knowledge]] |
 | Mexer no cromo ou nos slots | `specs/05-cromo-e-slots` | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
-| Emitir release / mudar versionamento | `specs/03-versionamento-e-release` + `adr/007` + `adr/008` | [[00-knowledge]] |
-| Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` | [[00-knowledge]] |
+| **Operar Git**: commit, PR, merge na `main`, emitir release | `specs/17-contrato-de-operacao-git` (quem faz o quê) + `specs/03` + `specs/16` + `adr/008` | skill local **`git-ci-cd`** — ela **instrui, nunca executa** |
+| Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` + `specs/16-integracao-continua` | [[00-knowledge]] |
 | Escrever teste | `specs/11-testes-e-cobertura` | [[00-knowledge]] (`test-*`) |
 | Mudar decisão estrutural | todos os `adr/` + `arquitetura/` | [[00-knowledge]] |
 
@@ -300,7 +325,11 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **Não apague `.agents/skills/ui-integra-consumidor/`** — é a **fonte** do kit do consumidor
   (`scripts/consumer-kit/kitFiles.mjs:22`). Removê-la derruba `guide:check`, que roda dentro do `npm run build`.
 - **Não commite, e não empurre.** Quem commita é o usuário — vale para todo agente, sem exceção e sem
-  co-autoria.
+  co-autoria. ⚠️ **E o alcance da co-autoria inclui o commit que um agente apenas INSTRUI**, inclusive dentro
+  de uma sequência de release ([`specs/17-contrato-de-operacao-git.md`](specs/17-contrato-de-operacao-git.md) §4).
+- **Nenhum agente executa operação de Git.** Nem `push`, nem `merge`, nem `tag`, nem `npm version` — ele
+  **instrui**, e quem digita é o dono. Não é cautela: é desenho, e é o que impede qualquer agente de alcançar
+  a credencial que fura a proteção da `main` (§2 daquela spec). As seis proibições absolutas estão na §3 dela.
 - **Não rode `npm version` por conta própria.** Ele cria tag e faz `push` no `postversion`: é publicação, e
   publicação é decisão do usuário. O que fazer quando o push é bloqueado está na §3.1.
 - **Não contorne gate, hook ou teste.** Bloqueio é informação; corrija a causa. Contornar reprova a execução
