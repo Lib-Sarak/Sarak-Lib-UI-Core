@@ -21,7 +21,7 @@ describe('Anel de foco governado por token (F4)', () => {
     const focusVar = EngineeringSchema.tokens.find((t) => t.id === 'focusRingWidth');
 
     it('o token focusRingWidth continua emitindo --sarak-focus-width', () => {
-        expect(focusVar?.cssVars).toContain('--sarak-focus-width');
+        expect(focusVar?.cssVars).toContain('--sarak-focus-width-QUEBRADO');
     });
 
     it('a regra global de foco lê o token, com o default do schema como fallback', () => {
