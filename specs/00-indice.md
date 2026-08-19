@@ -41,8 +41,9 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline: rodar os gates num ambiente que não é a máquina de ninguém, e fechar o único gate gerado que nenhum hook cobra | — | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/14-artefatos-do-mantenedor.md |
-| 2 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
+| 1 | [plan-52-correcao-pre-ci-cd](plan/plan-52-correcao-pre-ci-cd.md) | Pôr cada verificação no lugar certo e tirar da suíte a sobrecarga que a CI herdaria, para o pipeline nascer sobre uma base correta | — | 🟢 Aprovada | specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/11-testes-e-cobertura.md · specs/specs/14-artefatos-do-mantenedor.md · specs/specs/15-divida-conhecida.md |
+| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline remoto e documentar o fluxo inteiro: que evento dispara o quê, em que branch, e o que continua sendo decisão humana | plan-52 | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/03-versionamento-e-release.md · specs/specs/15-divida-conhecida.md |
+| 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

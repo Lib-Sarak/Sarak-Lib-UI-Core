@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, vão 12): sincronia entre `status` do
 // frontmatter de cada plan e a coluna Status de `specs/00-indice.md` §1.
 // Falhou 2x nesta campanha (plan-02, plan-13) sem nenhum gate para pegar.

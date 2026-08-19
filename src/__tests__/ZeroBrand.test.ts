@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * GATE ZERO-MARCA (Spec 49 — L2).
  *

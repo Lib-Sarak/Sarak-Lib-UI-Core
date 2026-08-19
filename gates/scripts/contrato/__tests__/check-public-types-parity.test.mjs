@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-45): `barrel:check` cobra componente, nunca cobriu
 // tipo — um tipo podia ficar declarado em dist/index.d.ts e nunca chegar ao bloco
 // `export { … }` final, sem gate nenhum acusando (foi o achado de um consumidor

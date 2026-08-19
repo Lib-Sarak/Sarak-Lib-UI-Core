@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, R4/R29/vão 1): `generate-token-types.ts
 // --check` não existia — `design-token-ids.ts` ficou defasado em 105 tokens
 // (304 × 409) por mais de um mês sem nenhum gate acusar (achado 22).

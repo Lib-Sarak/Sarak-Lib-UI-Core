@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import * as basic from '../basicCharts';
 import * as advanced from '../advancedCharts';

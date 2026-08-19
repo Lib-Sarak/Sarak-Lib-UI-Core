@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-39): nenhum gate existia para "classe de container
 // query montada por interpolação nunca chega ao CSS" — só o defeito real
 // (TopbarNav.tsx:114 e outros), sem verificação. Um caso PLANTADO que ele PEGA

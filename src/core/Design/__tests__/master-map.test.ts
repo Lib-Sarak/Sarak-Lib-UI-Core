@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { getDefaultDesignState, getAllDesignTokens, MASTER_DESIGN_MAP } from '../master-map';
 

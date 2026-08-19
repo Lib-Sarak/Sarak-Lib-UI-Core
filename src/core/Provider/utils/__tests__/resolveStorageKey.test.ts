@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { resolveStorageKey } from '../resolveStorageKey';
 import { DEFAULT_STORAGE_KEY } from '../../constants';

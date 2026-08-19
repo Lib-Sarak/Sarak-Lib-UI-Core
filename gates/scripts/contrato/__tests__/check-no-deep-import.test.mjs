@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, R27): nenhum gate existia para o campo
 // "exports" — só o contrato escrito e o próprio campo, sem verificação. Um
 // caso que ele PEGA (subcaminho de deep import declarado) e um que ele

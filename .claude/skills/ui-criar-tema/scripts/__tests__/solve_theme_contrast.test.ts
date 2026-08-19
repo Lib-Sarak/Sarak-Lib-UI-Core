@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { solveThemeContrast } from '../solve_theme_contrast.ts';
 import { getDefaultDesignState } from '../../../../../src/core/Design/master-map.ts';

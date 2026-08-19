@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-43): sem ele, um identificador citado em
 // docs/persistencia-de-tema.md podia ser renomeado na fonte sem que nada
 // acusasse — o documento mentiria em silêncio. Casos PLANTADOS (uma fonte

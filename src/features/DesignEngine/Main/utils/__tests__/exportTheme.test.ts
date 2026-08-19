@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { slugifyThemeId, buildThemeExportPayload } from '../exportTheme';
 import type { SarakDesignState } from '../../../../../core/Provider/types';

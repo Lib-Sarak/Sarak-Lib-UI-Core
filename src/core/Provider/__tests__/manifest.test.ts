@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { DESIGN_MANIFEST } from '../manifest';
 import * as colorEngine from '../utils/color-engine';

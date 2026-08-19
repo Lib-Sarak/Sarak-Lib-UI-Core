@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, R8.1): cobertura em % com PISO MÓVEL —
 // mesma mecânica de R20 (`audit:baseline`). Um caso que PEGA (cobertura caiu
 // abaixo do piso) e um que LIBERA (igual ou acima).

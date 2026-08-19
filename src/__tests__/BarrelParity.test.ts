@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * GATE DE PARIDADE DO BARRIL PÚBLICO (Spec 40.1 — L1; re-apontado na Spec 46 §3.1).
  *

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, vi } from 'vitest';
 import { THEME_AXES, findMissingThemeAxes, warnOnIncompleteTheme } from '../themeAxes';
 import { SARAK_REFERENCE_THEMES } from '../../presets/themes/reference';

@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Teste do PRÓPRIO GATE (plan-12, R30 promovida): a contagem de `tsc` passou
 // a classificar produção × teste — produção é hard-block SEMPRE, teste
 // continua tolerado via baseline. Um caso que PEGA (erro em produção) e um
