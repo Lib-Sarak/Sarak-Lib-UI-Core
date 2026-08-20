@@ -227,6 +227,15 @@ que o `pre-push` produziria.
 > A diferença importa na Situação 6: `dist/` intacto significa **superfície React idêntica**, e é metade
 > da evidência do nível do bump. *(Impreciso em 2026-08-19 — "o artefato (`dist/`+`sarak-ui/`) mudou",
 > quando só `sarak-ui/` havia mudado.)*
+>
+> 🔴 **E declare o escopo do gate junto do resultado: ele vê 2 dos 4 diretórios publicados.**
+> `release:check` compara **só `dist/` + `sarak-ui/`** — **`bin/` e `docs/` estão fora do campo de visão
+> dele**, e `bin/` é a CLI que o consumidor roda. Uma leva pode mover 33 linhas de um guia **e** 1.173
+> linhas de comando novo, e o gate reportar só as 33.
+>
+> Escreva sempre a ressalva: *"este é o escopo do gate; a medição completa dos quatro diretórios é da
+> Situação 6."* Sem ela, um "**só** +33 linhas" no diagnóstico ancora a decisão do bump em `patch` antes
+> de a Situação 6 chegar — e a âncora chega primeiro que a evidência.
 
 **Últimos runs da CI:** este repositório **não tem `gh` CLI instalada** (confirmado —
 `Get-Command gh` falha). Não invente instalação da CLI para isto; abra a Actions do repositório:
