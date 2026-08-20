@@ -240,11 +240,20 @@ roda no momento errado — quem acabou de instalar está, por definição, em di
    (`resolveRemoteUrl.mjs:29-31`, `runCheckUpdate.mjs:137-143`).
 4. **`file:`/`link:`**: §6.
 
-⚠️ **Limite declarado do filtro de faixa** (`tagComparison.mjs:42-59`): `majorDaFaixa` lê **só o
-MAJOR**. `~1.2.0` é tratado como `^1.2.0`, e o consumidor recebe aviso de um `v1.9.0` que o
-`npm update` dele nunca vai entregar — exatamente o ruído permanente que o §5.1 combate. Faixa
-que não fixa major (`>=1.0.0`, `*`) devolve `null` e nada é filtrado. **Registrado, não
-corrigido:** está roteado para a Fase D da Campanha 2.
+**O filtro de faixa distingue `^` de `~`** (`faixaDoConsumidor`, `bin/scaffold/checkUpdate/tagComparison.mjs`).
+
+| O consumidor escreveu | O filtro lê | Rótulo na mensagem | Efeito |
+| --- | --- | --- | --- |
+| `^1.2.0` | só o **MAJOR** | `(^1)` | qualquer minor/patch do major serve — é o que a faixa promete |
+| `~1.2.0` | **MAJOR e MINOR** | `(~1.2)` | só patch novo serve |
+| `>=1.0.0`, `*` | — | *(sem filtro)* | devolve `null`; nada é filtrado |
+
+⚠️ **A distinção existe porque a ausência dela produzia ruído permanente**, que é exatamente o que o §5.1
+combate: tratado como `^`, um consumidor em `~1.2.0` recebia aviso de um `v1.9.0` que o `npm update` dele
+**nunca ia entregar** — e o aviso não sumia nunca, porque a condição não mudava.
+
+**Limite mantido de propósito:** faixa que não fixa major continua sem filtro. Ali não há promessa a
+respeitar, e inventar uma seria decidir pelo consumidor.
 
 # 6. Os DOIS modos de dependência
 
@@ -449,6 +458,81 @@ partir dos tipos:
 São referência, não obrigação: nenhum deles é importado pela lib em runtime, e o consumidor que não
 persiste ignora a seção inteira. O contrato das portas está em [[09-temas-e-presets]] §4.4 e §4.6.
 
+# 9.4 `sarak-ui update [--latest] [--yes]` — o comando que AGE
+
+⚠️ **Não confundir com o §9.** O `sarak:update` é um **script gerado no `package.json` do consumidor**; o
+`sarak-ui update` é **subcomando da CLI**. Os dois terminam no mesmo lugar (re-sincronizar `sarak-ui/`), mas
+só este decide **para qual versão ir** e mostra o que quebra antes.
+
+O `check` (§5) **só avisa**. O `update` **age**: roda o comando real do gerenciador detectado e, ao final,
+re-sincroniza o kit `sarak-ui/` — **sempre**, mesmo quando o comando de atualização degradou (a mesma regra do
+§9).
+
+## 9.4.1 Duas metades, e a fronteira entre elas é `--latest`
+
+| | Sem `--latest` | Com `--latest` |
+| --- | --- | --- |
+| Alvo | a maior tag **dentro da faixa declarada** — ou, sem faixa (`github:` puro, `>=1.0.0`), dentro do **major já instalado** | a maior tag publicada, **de qualquer major** |
+| Atravessa MAJOR sozinho? | **nunca** | só depois de confirmado |
+| Reescreve o `package.json`? | nunca | só depois de confirmado, e **só o MAJOR da faixa** |
+
+> **O piso "sem faixa declarada, nunca passa do major instalado" é decisão de desenho, não consequência.**
+> `github:` puro não tem faixa que proteja o consumidor de um `npm install` que resolveria até a tag mais nova
+> sozinho. Sem esse piso, o `update` atravessaria major **por trás dele** — o oposto do que o comando existe
+> para fazer.
+
+## 9.4.2 O que `--latest` mostra ANTES de perguntar
+
+Quantos majors serão pulados, e as entradas de `docs/migracoes.md` publicadas **depois** da versão instalada.
+A âncora é o título que cita `X.0.0` por extenso ([[03-versionamento-e-release]] §5.1).
+
+⚠️ **Onde a âncora falta, o comando não finge o corte que não mediu:** avisa que não a encontrou e mostra
+**todas** as entradas registradas. É deliberado — o consumidor não deve decidir sobre um intervalo incompleto
+**sem saber que está incompleto**.
+
+Só depois disso — e só com confirmação (`s`/`sim`, ou `--yes`) — a faixa é reescrita e a reinstalação roda.
+
+*(`docs/migracoes.md` está em CRLF neste checkout; o leitor normaliza antes de separar as entradas. Sem isso o
+arquivo inteiro viraria uma entrada só.)*
+
+## 9.4.3 A REGRA DURA herdada, e onde ela pega o `update`
+
+O comando **reusa, sem reinventar**, `gitUpdateCommand`/`localRefreshCommand` (`bin/scaffold/packageManager.mjs`)
+— mesmo comando, mesma flag `validated`. **Gerenciador sem comando validado não roda:** degrada para instrução
+genérica e ainda assim tenta o `refresh` (§8.2).
+
+## 9.4.4 ⚠️ O achado do Windows — o `^` que sumia DUAS vezes
+
+Um comando composto passado a `execSync` perde o `^` de `#semver:^N.0.0` no Windows, **e dobrá-lo não
+resolve**:
+
+1. o shell default do Node lá é o `cmd.exe`, que trata `^` como caractere de escape **fora de aspas** e o
+   consome em silêncio — `…#semver:^6.0.0` chegava ao `package.json` como `…#semver:6.0.0`;
+2. dobrar (`^^`) não basta porque o `npm` no Windows roda atrás de `npm.cmd`, um script batch que
+   **reencaminha os argumentos** (`%*`) para o `node` real — e esse **segundo salto** consome o que sobrou da
+   primeira dobra.
+
+**A correção que sobrevive aos dois saltos** é envolver em aspas duplas só o token que contém `^`
+(`escapeCaretForWindowsShell`, `bin/scaffold/checkUpdate/shellEscape.mjs`): as aspas suspendem a interpretação
+do `cmd.exe` **e** acompanham o argumento no reencaminhamento do batch. Aplicada só no Windows — em POSIX `^`
+não é metacaractere.
+
+## 9.4.5 Prova real, não deduzida
+
+Contra um `git daemon` servindo um espelho deste repositório com as tags reais (`v1.0.0` … `v6.1.0`), um
+consumidor por gerenciador:
+
+| Gerenciador | Dentro da faixa | `--latest`, atravessando major |
+| --- | --- | --- |
+| npm | `v1.0.0 → v1.2.1`, comando executado, `package.json` **intocado** | `v1.2.1 → v6.1.0` (5 majors), faixa reescrita para `^6.0.0` |
+| pnpm | `v1.0.0 → v1.2.1` | `v1.2.1 → v6.1.0` |
+| yarn | `v1.0.0 → v1.2.1` | `v1.2.1 → v6.1.0` |
+| `file:`/`link:` (npm) | link vivo detectado, **nada executado** — correto: reflete o disco na hora | não se aplica |
+| `file:`/`link:` (pnpm) | `pnpm install --force --filter` executado de verdade | não se aplica |
+
+⚠️ **Essa prova foi manual, e não está automatizada.** O `install-sha` da CI exercita `check --notify` a cada
+PR, mas **nenhum job exercita `update`** ([[16-integracao-continua]]).
+
 # 10. ⚠️ A armadilha do `BUILD_INFO`
 
 `dist/BUILD_INFO.json` traz `baseCommit`, `builtAt` e `libVersion`. E o `baseCommit` é **sempre
@@ -495,9 +579,10 @@ opcional".
 comentário. O motor de manifesto foi removido inteiro (ADR-002). O comentário descreve um recurso
 opcional que não existe.
 
-## 11.3 O filtro de faixa lê só o MAJOR
+## 11.3 ✅ FECHADO — o filtro de faixa lia só o MAJOR
 
-Ver §5.3. Roteado para a **Fase D** da Campanha 2, junto do `sarak-ui update`.
+Corrigido em 2026-08-19: `^` e `~` passaram a ser lidos como faixas diferentes, com rótulo próprio na
+mensagem. Ver §5.3.
 
 # 12. Fronteiras desta spec
 
@@ -506,8 +591,8 @@ Ver §5.3. Roteado para a **Fase D** da Campanha 2, junto do `sarak-ui update`.
 - A **política de versão** (o que é major/minor/patch, o ritual de release) é
   [[03-versionamento-e-release]].
 - O **porquê** da distribuição por Git é o ADR-007; o da publicação por tag, o ADR-008.
-- O comando `sarak-ui update` **não existe hoje** — é escopo da Fase D da Campanha 2. Esta spec
-  descreve o que existe.
+- O comando `sarak-ui update [--latest] [--yes]` **existe desde 2026-08-19** — ver §9.4.
+- **A CI** que exercita instalação real a cada PR e a cada tag é [[16-integracao-continua]].
 
 # 13. Critérios de Aceite
 

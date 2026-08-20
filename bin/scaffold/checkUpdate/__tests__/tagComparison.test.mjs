@@ -6,6 +6,7 @@ import path from 'node:path';
 import { greatestTag, parseTag, parseTagRefs, parseVersion } from '../semverTags.mjs';
 import { runCheckUpdate } from '../runCheckUpdate.mjs';
 import { formatNotice } from '../formatNotice.mjs';
+import { faixaDoConsumidor, filterTagsByFaixa, rotuloFaixa } from '../tagComparison.mjs';
 
 let tmpDir;
 
@@ -64,6 +65,60 @@ describe('semverTags — leitura das refs (ADR-008)', () => {
     it('a maior tag sai por VERSÃO, não por ordem alfabética (v1.10.0 > v1.9.0)', () => {
         expect(greatestTag(['v1.9.0', 'v1.10.0', 'v1.2.0']).tag).toBe('v1.10.0');
         expect(greatestTag(['nada', 'main'])).toBeNull();
+    });
+});
+
+describe('faixaDoConsumidor / filterTagsByFaixa — o filtro de faixa (plan-10, achado 3.1)', () => {
+    it('`~1.2.0` captura operador, major E minor — `^1.2.0` captura só o operador e o major', () => {
+        expect(faixaDoConsumidor('github:x/y#semver:~1.2.0')).toEqual({ operador: '~', major: 1, minor: 2 });
+        expect(faixaDoConsumidor('github:x/y#semver:^1.2.0')).toEqual({ operador: '^', major: 1, minor: 2 });
+        expect(faixaDoConsumidor('github:x/y#semver:1.2.0')).toEqual({ operador: '^', major: 1, minor: 2 });
+        expect(faixaDoConsumidor('github:x/y')).toBeNull();
+        expect(faixaDoConsumidor('github:x/y#semver:>=1.0.0')).toBeNull();
+    });
+
+    it('`~1.2.x` filtra por MAJOR e MINOR — `v1.9.0` some da lista, `v1.2.5` fica', () => {
+        const faixa = faixaDoConsumidor('github:x/y#semver:~1.2.0');
+        expect(filterTagsByFaixa(['v1.2.5', 'v1.9.0', 'v2.0.0'], faixa)).toEqual(['v1.2.5']);
+    });
+
+    it('`^1.2.x` continua filtrando só por MAJOR — `v1.9.0` fica, `v2.0.0` sai', () => {
+        const faixa = faixaDoConsumidor('github:x/y#semver:^1.2.0');
+        expect(filterTagsByFaixa(['v1.2.5', 'v1.9.0', 'v2.0.0'], faixa)).toEqual(['v1.2.5', 'v1.9.0']);
+    });
+
+    it('rótulo imprime `(~N.M)` para quem escreveu `~`, `(^N)` para quem escreveu `^`', () => {
+        expect(rotuloFaixa(faixaDoConsumidor('github:x/y#semver:~1.2.0'))).toBe('~1.2');
+        expect(rotuloFaixa(faixaDoConsumidor('github:x/y#semver:^1.2.0'))).toBe('^1');
+    });
+});
+
+describe('runCheckUpdate — `~` não vira ruído permanente (plan-10, achado 3.1 do estado anterior)', () => {
+    it('`~1.2.0` NÃO recebe aviso de `v1.9.0` — o `npm update` dele nunca entregaria isso', () => {
+        writeConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core#semver:~1.2.0', installedVersion: '1.2.0' });
+
+        const result = runCheckUpdate({
+            rootDir: tmpDir,
+            execGitLsRemote: () => { throw new Error('não devia comparar commit'); },
+            execGitLsRemoteTags: () => lsRemoteTags(['v1.2.0', 'v1.9.0']),
+        });
+
+        expect(result.upToDate).toBe(true);
+        expect(result.message).toContain('faixa do seu package.json (~1.2)');
+        expect(formatNotice(result)).toBeNull();
+    });
+
+    it('`~1.2.0` RECEBE aviso de `v1.2.5` — está dentro da própria faixa', () => {
+        writeConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core#semver:~1.2.0', installedVersion: '1.2.0' });
+
+        const result = runCheckUpdate({
+            rootDir: tmpDir,
+            execGitLsRemote: () => { throw new Error('não devia comparar commit'); },
+            execGitLsRemoteTags: () => lsRemoteTags(['v1.2.0', 'v1.2.5', 'v1.9.0']),
+        });
+
+        expect(result.upToDate).toBe(false);
+        expect(result.remoteLabel).toBe('v1.2.5');
     });
 });
 

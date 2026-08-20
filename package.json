@@ -51,8 +51,10 @@
         "hooks:install": "node scripts/install-hooks.mjs",
         "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity",
         "release:check": "node gates/scripts/release/check-release-tag.mjs",
+        "migration-anchor:check": "node gates/scripts/contrato/check-migration-anchor.mjs",
+        "minor-no-removal:check": "node gates/scripts/contrato/check-minor-no-removal.mjs",
         "preversion": "npm run gates:full",
-        "version": "npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
+        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
         "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check"
     },

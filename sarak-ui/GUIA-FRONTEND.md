@@ -275,6 +275,39 @@ não veio do `init`** (ou já tinha um `predev`), encadeie à mão no pacote que
 
 Para um veredito sob demanda, sem o modo silencioso: `npx sarak-ui check`.
 
+## 2.8 Atualizar de verdade — `sarak-ui update`
+
+O `check` só avisa. Quem age é o `update` — ele roda o comando REAL do seu gerenciador (não imprime
+uma sugestão para você copiar) e, ao final, re-sincroniza o kit `sarak-ui/` sozinho:
+
+```bash
+npx sarak-ui update
+```
+
+**Sem `--latest`, ele NUNCA atravessa um major.** Se a versão mais nova publicada estiver fora da
+faixa que você escreveu no `package.json` (ou, sem faixa nenhuma, fora do major que você já tem
+instalado), o comando simplesmente diz que você já está atualizado — do jeito seguro.
+
+**Atravessar um major é decisão sua, e o comando mostra o preço antes de cobrar:**
+
+```bash
+npx sarak-ui update --latest
+```
+
+Ele imprime quantos majors você vai pular e as entradas de `docs/migracoes.md` publicadas depois da
+sua versão instalada — **antes** de perguntar "confirmar?". Só depois da sua resposta (`s`/`sim`) é
+que a faixa do `package.json` é reescrita para o novo major e o comando de reinstalação roda de
+verdade. `--yes` pula a pergunta (para automação que já leu as notas fora daqui); sem ele e sem
+terminal interativo, o comando falha em voz alta em vez de atravessar um major sem confirmação.
+
+> ⚠️ **Sem `docs/migracoes.md` ancorando a SUA versão instalada, o corte "entre a instalada e a mais
+> nova" não pode ser medido** — o comando avisa disso e mostra TODAS as notas registradas, em vez de
+> fingir um intervalo que não conferiu.
+
+O `update` funciona nos dois modos de dependência: git (`github:…#semver:`) e `file:`/`link:`
+(desenvolvimento lado a lado) — no segundo, `--latest` não se aplica (não há major para pular), e o
+comando só refaz o link/cópia do gerenciador de verdade.
+
 ---
 
 # §3 — Casos de autoria

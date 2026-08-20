@@ -5,12 +5,12 @@ dominio: "Sarak-Lib-UI-Core / Automação / Git"
 status: "🟢 Implementado"
 prioridade: "Máxima"
 tags: ["spec", "enforcement", "git-hook", "pre-commit", "pre-push", "gates", "baseline", "release"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[03-versionamento-e-release]]", "[[008-releases-com-tag-e-semver-em-git]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[03-versionamento-e-release]]", "[[16-integracao-continua]]", "[[008-releases-com-tag-e-semver-em-git]]", "[[05-build-e-distribuicao]]"]
 ---
 
 # 1. Visão geral
 
-Existiam **12+ verificações que só rodavam se alguém lembrasse.** O `pre-commit` instalado fazia duas coisas — varrer segredos e regenerar o índice de agentes — e **não havia CI** (`.github/` não existe). Um commit podia quebrar o barril, introduzir hardcode e desalinhar o catálogo sem nenhuma luz vermelha até alguém rodar a auditoria à mão, dias depois.
+Existiam **12+ verificações que só rodavam se alguém lembrasse.** O `pre-commit` instalado fazia duas coisas — varrer segredos e regenerar o índice de agentes — e **não havia CI** (`.github/` não existia — passou a existir em 2026-08-18, §9). Um commit podia quebrar o barril, introduzir hardcode e desalinhar o catálogo sem nenhuma luz vermelha até alguém rodar a auditoria à mão, dias depois.
 
 Decisão do dono: **todo commit passa por um pipeline de validação.**
 
@@ -60,8 +60,36 @@ Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `check-no-deep-import.mjs` | R27 — Zero deep import *(entrou em 2026-08-05, `plan-12`)* |
 | `check-gate-limits.mjs` | R18 — Todo gate declara o que não vê *(entrou em 2026-08-05, `plan-12`)* |
 | `generate-token-types.ts --check` | R4 · R29 — tipo gerado bate com o schema *(entrou em 2026-08-05, `plan-12`; roda logo no início, porque `guide`/`dev-kit` leem esse arquivo)* |
+| `check-container-query.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
+| `check-container-query-boundary.mjs` | — *(`plan-41`)* — todo `@min-[…]` tem ancestral `container-type` *(entrou em 2026-08-18, `plan-52`)* |
+| `check-persistence-doc.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
+
+### 2.2.1 O kit do mantenedor — um bloco de Anel 1 com gatilho PRÓPRIO
+
+`node scripts/generate-dev-kit.mjs --check` bloqueia o commit desde 2026-08-18 (`plan-52`, decisão do dono).
+Ele **não** vive dentro do bloco condicional dos gates acima, e a razão é medida:
+
+> **O `sarak-dev/` é defasado justamente pelos commits que o Anel 1 pula.** Ele rastreia os `scripts` do
+> `package.json` **e** o conteúdo de `specs/`; um commit que só mexe em spec o desatualiza e, sob o gatilho de
+> código, sairia sem nenhuma cobrança.
+
+Por isso ele dispara na **união** dos dois gatilhos da §3 — e a prova é a linha dupla que o hook imprime num
+commit que só cria arquivo em `specs/specs/`:
+
+```
+[Sarak] Anel 1 PULADO — o commit só toca doc/spec (nenhum gate de contrato de código a rodar).
+[Sarak] Anel 1 (kit do mantenedor) — sarak-dev/ em dia...
+⛔ COMMIT BLOQUEADO — Anel 1: kit do mantenedor
+```
+
+**As duas linhas juntas são o desenho:** o Anel 1 de contrato pula, e o kit barra assim mesmo. O bloco fica
+**fora** do `if` de código, depois do `exit 0` que encerra o commit sem gatilho nenhum — chegar até ali já
+prova que a união disparou, sem duplicar a checagem.
+
+*(Consequência aceita, escrita porque piorou: o commit "só de spec" passou a pagar ~14,8 s, quando antes
+pagava zero. Ver §3.)*
 
 > **Duas seções condicionais entraram no `pre-commit` fora do bloco de código (`plan-12`, 2026-08-05):**
 > `check-plan-index-sync.mjs` dispara quando o staged toca `specs/plan/` ou `specs/00-indice.md` — e roda **mesmo
@@ -122,10 +150,14 @@ Resultado prático: commit em TypeScript custa ~20 s, não pode introduzir **nen
 
 O hook lê `git diff --cached --name-only --diff-filter=ACMR` e decide:
 
+São **dois** gatilhos independentes, e a diferença entre eles é a parte que mais confunde:
+
 | Condição | Efeito |
 | --- | --- |
-| Staged toca `src/`, `scripts/`, `gates/`, `docs/`, `sarak-ui/`, `bin/`, `package.json` ou `.githooks/` | Anéis 1 e 2 **rodam** |
-| Staged não toca nada disso (spec, README, `.claude/`, `.agents/`…) | Anéis 1 e 2 **PULADOS**, com a linha explicando |
+| **`TOCA_CODIGO`** — staged toca `src/`, `scripts/`, `gates/`, `docs/`, `sarak-ui/`, `bin/`, `package.json`, `.githooks/` ou `.github/` | Anéis 1 e 2 **rodam** |
+| **`TOCA_DOC_COM_SECAO`** — staged toca `specs/specs/`, `specs/adr/`, `specs/arquitetura/`, `specs/00-`, `.agents/skills/` ou `sarak-dev/` | Anel 1 de contrato **PULADO**; Anel 2 **roda** |
+| Nenhum dos dois (README solto, `.claude/`…) | Anéis 1 e 2 **PULADOS**, com a linha explicando |
+| **A união dos dois** | `dev-kit:check` **roda sempre** (§2.2.1) |
 | Staged contém pelo menos um `.ts`/`.tsx` | `tsc` **entra** no Anel 2 |
 | Staged toca `specs/plan/` ou `specs/00-indice.md` | `check-plan-index-sync.mjs` **entra**, mesmo sem tocar código |
 
@@ -133,9 +165,30 @@ O hook lê `git diff --cached --name-only --diff-filter=ACMR` e decide:
 > `.githooks/` e `scripts/`, ambos já na lista. Sem esta linha, alterar um gate deixaria de acionar os Anéis 1
 > e 2 — seria estreitamento silencioso de escopo, o que R18 existe para impedir.
 
+> **`.github/` entrou em 2026-08-18 (`plan-05`), pela mesma razão e com mais urgência.** Um commit que só
+> mexesse no workflow pularia os Anéis 1 e 2 inteiros — **a peça que valida todo o resto seria a única sem
+> validação nenhuma**. `.github/workflows/*.yml` é configuração executável, parente direto de `.githooks/`.
+
 **Por que `docs/` e `sarak-ui/` entram na lista mesmo sendo "documentação":** os dois são **artefatos gerados**. `catalog:check` e `guide:check` comparam o commitado com o que o gerador produz agora — editar um deles à mão é exatamente o defeito que R17 existe para pegar.
 
-**Medido:** commit só de markdown = **609 ms**; o mesmo commit tocando código = **10.042 ms**.
+## 3.1 O custo, remedido em 2026-08-18
+
+O número publicado antes (*"markdown 609 ms, código 10.042 ms"*) envelheceu — e a remedição está aqui
+**inclusive tendo piorado**, que é a condição para o número continuar valendo alguma coisa.
+
+| Classe de commit | Antes *(2026-07-28)* | **Agora** *(2026-08-18)* |
+| --- | --- | --- |
+| Fora de qualquer gatilho (README solto) | 609 ms | **688 ms** |
+| Só spec com seção (`specs/specs/`, kit em dia) | *(não existia como classe — caía em "com código")* | **14.817 ms** |
+| Com código, sem `.ts` staged | 10.042 ms | **20.395 ms** |
+| Com código, **com** `.ts` staged (`tsc` entra) | — | **33.492 ms** |
+
+**Por que subiu, item a item:** os três gates novos da §2.2 somam ~2,4 s; o `dev-kit:check` soma ~2 s **e
+alcança uma classe que antes não pagava nada**; e o Anel 2 sozinho, remedido, custa 11.860 ms — 22.605 ms com
+`tsc`.
+
+> **É a consequência aceita de fechar o vão.** A alternativa era manter três gates rodados por ninguém e um
+> kit de mantenedor que apodrecia em silêncio.
 
 # 4. Anel 3 — a SUÍTE no push; `build` e `package:check` fora de hook, por decisão
 
@@ -209,6 +262,22 @@ Os dois cenários, exercitados contra um remoto de verdade (2026-07-28):
 ```
 
 **Quando o repositório não tem tag nenhuma, ele não bloqueia** — avisa que não há o que comparar e libera. Cobrar uma tag num repositório que nunca teve nenhuma é punir um estado que o ritual ainda não alcançou; a partir da primeira, ele cobra as seguintes.
+
+### 4.3.1 ⚠️ O `pre-push` deixou de rodar no dia a dia — e os dois anéis mudaram de lugar
+
+**Mudança de comportamento de 2026-08-18 (`plan-05`), que sumiria sem aviso se ninguém a escrevesse.**
+
+O hook só age quando o destino é `refs/heads/main`. Com o modelo de branches ([[16-integracao-continua]] §2),
+o trabalho diário passou para a `develop` — então **o `pre-push` raramente dispara**, e quando o merge acontece
+pelo botão do GitHub **nenhum hook local roda**.
+
+| Anel | Continua coberto? |
+| --- | --- |
+| **Anel 3** — a suíte completa | ✅ **sim, e melhor** — o job `gates` a roda em `push:develop`, `push:main` **e no PR, antes do merge** |
+| **Anel de release** — *"o artefato mudou e não há tag"* | ✅ **sim** — o job `release-tag` roda o **mesmo** `check-release-tag.mjs` no evento `push` da `main` |
+
+**Não é perda: é a rede mudando de lugar, para um lugar melhor.** Sem o segundo, um PR que altere o artefato
+publicado entraria na `main` pelo botão **sem tag e sem ninguém reclamar** — o incidente do ADR-007 de novo.
 
 # 5. Requisitos de mensagem
 
@@ -292,20 +361,27 @@ Não é uma porta dos fundos — é uma saída de incêndio. Quem a usa e não v
 
 O hook é **POSIX `sh`** e roda em Git Bash no Windows. Nada de PowerShell dentro dele. As únicas dependências externas são `python` (já exigido pelo Anel 0) e `node` (já exigido pelo projeto).
 
-# 9. Opção em aberto — CI (decisão do dono, NÃO tomada)
+# 9. A CI — decisão tomada, e o que ela mudou aqui
 
-**`.github/` não existe e nenhum CI foi criado nesta entrega.**
+**A opção deixou de estar em aberto em 2026-08-18** (`plan-05`). `.github/workflows/` existe, com dois
+workflows e quatro jobs. **O fluxo inteiro é [[16-integracao-continua]]** — esta seção registra apenas o que a
+CI mudou **para os anéis locais**, que é o assunto desta spec.
 
-O que um CI acrescentaria, se o dono quiser:
-
-| Ganho | Detalhe |
+| O que a CI acrescentou | Como |
 | --- | --- |
-| Rodar **build e `package:check`** em ambiente limpo | São as duas peças que **nunca** vão para hook (§4.1), justamente porque mutam a árvore — na CI a árvore é descartável, então lá a objeção não existe. A suíte já é cobrada no push desde P27 |
-| Ambiente **determinístico** | ~~A falha da §3.1~~ — resolvida no P11-D; o ganho que resta é pegar o que depende de estado local não versionado (ver [[01-gates-e-baseline]] §3.1) |
-| Cobrar quem usou `--no-verify` | O escape da §7 deixa de ser invisível |
-| Rodar o **Playwright** | Hoje `test-ct` e os `__e2e__` estão fora de toda automação ([[01-gates-e-baseline]] §2.6) |
+| `build` e `package:check` em **ambiente limpo** | São as duas peças que nunca vão para hook (§4.1) porque mutam a árvore. No runner a árvore é descartável, e a objeção deixa de existir |
+| Ambiente **determinístico** | Achou, no primeiro dia, um `package-lock.json` incompleto que **nenhum hook local podia ver** — o defeito que dependia de estado da máquina |
+| Cobrar quem usou `--no-verify` | O escape da §7 deixa de ser invisível: o job roda a união dos anéis, sem consultar o que foi ou não pulado localmente |
+| Os 5 `*:check` que ficavam de fora | `plan-index` (a metade que o hook não roda), `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc` |
 
-**Custo:** um workflow a manter, e minutos de runner. **Não implementado** — a decisão é do dono.
+**Custo real: ~5 min por run.**
+
+> ⛔ **O que a CI NÃO absorveu, e é desta spec: o Anel 0.** `verificar_commit.py` lê só `git diff --cached`, e
+> no runner não há staging — ele reportaria "nenhum segredo" **sempre, em silêncio**. Um passo verde que não
+> olha nada é pior que passo ausente. **O Anel 0 continua exclusivamente local**, e essa é a única parte deste
+> pipeline sem rede remota nenhuma.
+
+*(O Playwright não entrou na conta: foi removido da base em 2026-08-18 — [[01-gates-e-baseline]] §2.6.)*
 
 # 10. Critérios de aceite
 

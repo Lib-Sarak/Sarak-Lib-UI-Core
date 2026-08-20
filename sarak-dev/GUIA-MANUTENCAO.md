@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 77** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (21)
+### B.3 Gates registrados (23)
 
 | Comando | O que roda |
 | --- | --- |
@@ -332,6 +332,8 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
+| `npm run migration-anchor:check` | `node gates/scripts/contrato/check-migration-anchor.mjs` |
+| `npm run minor-no-removal:check` | `node gates/scripts/contrato/check-minor-no-removal.mjs` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
 | `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |
 | `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
@@ -376,6 +378,6 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 
-**Specs (16)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `04-shell-e-discovery.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md` · `15-divida-conhecida.md`
+**Specs (18)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `04-shell-e-discovery.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md` · `15-divida-conhecida.md` · `16-integracao-continua.md` · `17-contrato-de-operacao-git.md`
 
 <!-- SARAK-DEV:APENDICE-GERADO:FIM -->

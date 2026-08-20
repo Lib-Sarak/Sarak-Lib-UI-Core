@@ -117,6 +117,24 @@ investigava rodou de novo para capturar e a execução passou, apagando o rastro
 Vale para qualquer laço de investigação, não só para este: **quem canaliza a saída fotografa depois do
 acidente.**
 
+### 3.5.1 Dois nomes, e a prova de que a intermitência é PRÉ-EXISTENTE
+
+Em 2026-08-18 a caça deu dois resultados, ambos capturados pelo procedimento acima e **nenhum perseguido além
+da rodada seguinte**:
+
+| Teste | Onde apareceu |
+| --- | --- |
+| `runCheckUpdate > instalado == HEAD remoto -> upToDate true` | timeout de 5000 ms. **Este arquivo já rodava em `node` antes de qualquer mudança** — a falha não é efeito de migração de ambiente |
+| `PresetsCatalog > troca para o catálogo de Typography ao clicar na própria aba` | timeout de 5000 ms, na medição **"antes"**, em `HEAD` puro via `git stash` — **sem nenhuma alteração aplicada** |
+
+> **O segundo é a primeira evidência direta de que a intermitência é característica pré-existente da suíte
+> nesta máquina**, independente de qualquer mudança que se estivesse medindo. Nenhum dos dois reproduziu na
+> rodada seguinte.
+
+**E a captura deixou de depender de alguém lembrar.** Desde 2026-08-18 o job `gates` da CI grava a saída
+completa da suíte como artifact com `if: always()` — **inclusive quando passa**. Cada run vira uma amostra
+grátis nesta caça, em vez de custar 5 minutos da máquina do dono ([[16-integracao-continua]] §4.1).
+
 # 4. Os gates-teste — teste que é gate de ARQUITETURA
 
 Categoria própria: não verificam comportamento de componente, verificam **invariante estrutural**. Todos
@@ -184,6 +202,56 @@ verificou cada arquivo antes de nomeá-lo.
 > ajuste de config "não teve efeito", a primeira hipótese é que ele não foi lido.
 >
 > As duas lições sobrevivem ao caso concreto, e é por isso que estão aqui e não só no log.
+
+## 5.1 O ambiente por arquivo — `jsdom` é o default, não o destino de todos
+
+**`jsdom` continua sendo o `environment` global**, e por bom motivo: é biblioteca de UI. Mas **a maioria dos
+arquivos de teste desta base não monta DOM nenhum** — testam gerador, gate, CLI, parser, comparador de tag.
+Montar um DOM inteiro para cada um deles é sobrecarga pura, paga em todo commit e, desde 2026-08-18, em todo
+PR.
+
+**Cada arquivo que não precisa de DOM declara o próprio ambiente**, com um docblock na primeira linha:
+
+```
+// @vitest-environment node
+```
+
+| | Arquivos |
+| --- | --- |
+| Em `node` | **90** |
+| Em `jsdom` | **36** |
+
+### O ganho, medido nos dois lados pelo revisor
+
+| Métrica | Antes | Depois |
+| --- | --- | --- |
+| **Duração total** | 315,44 s | **188,59 s** — **−40,2%** |
+| `import` agregado | 2.253,59 s | 1.113,54 s — **−50,6%** |
+| `environment` agregado | 1.560,72 s | 1.142,56 s — −26,8% |
+| Arquivos / testes | 317 / 1376 | **317 / 1376** — idênticos |
+| Cobertura | `lines 76,04% · statements 74,27% · functions 66,81%` | **idêntica**, com +3 branches |
+
+**Nenhuma linha de lógica de teste foi alterada** — 77 arquivos, 77 inserções, **zero remoções**, e a única
+linha é sempre a mesma. `pool`, `execArgv`, `setupFiles` e `exclude` ficaram intocados: `vitest.config.ts` não
+tem diff nenhum.
+
+### Por que docblock, e não `environmentMatchGlobs` nem `test.projects`
+
+| Alternativa | Por que não |
+| --- | --- |
+| `environmentMatchGlobs` | **removida no Vitest 4** — zero ocorrências em `node_modules/vitest*`. Seria a Lição 2 do quadro acima acontecendo de novo |
+| `test.projects` | exigiria duplicar `pool`/`execArgv`/`setupFiles`/`exclude` por projeto — mexer exatamente no que o OOM ensinou a não mexer |
+| **docblock** | **já era o padrão vivo em 15 arquivos** deste repositório, antes de qualquer decisão. Mecanismo com precedente testado, não técnica nova |
+
+### ⚠️ O limite do classificador — e o falso negativo que ele produziu
+
+A classificação foi estática: varredura por sinais de DOM (`@testing-library/*`, `document.`, `window.`,
+`localStorage`). **Ela não enxerga dependência transitiva**, e um arquivo provou isso: o teste de
+`sanitizeHtml` não cita `document` nem `window` — mas a **função sob teste** checa `typeof window` e degrada
+para um fallback fail-closed sem DOM. Devolvido a `jsdom` pela rodada empírica.
+
+> **A rodada completa da suíte é parte do procedimento, não conferência opcional.** Um scanner textual acerta
+> a maioria e erra em silêncio; só rodar tudo diz qual.
 
 # 6. Escopo — arquivos de teste no disco × arquivos rodados
 
@@ -259,8 +327,13 @@ disso — as classes `@min-[…]` de container query são a família mais prová
 [[07-responsividade-e-multidispositivo]] §6.1 avisa que *"o desenho se prova em navegador real"*.
 
 **Quem precisar medir em browser** reinstala a ferramenta pontualmente (`npm install --no-save
-@playwright/test` mais os browsers) ou espera a CI. **Não é regressão silenciosa** — está escrito aqui para
-ninguém descobrir no meio de um aceite.
+@playwright/test` mais os browsers). **Não é regressão silenciosa** — está escrito aqui para ninguém descobrir
+no meio de um aceite.
+
+> ⚠️ **A CI existe desde 2026-08-18, e isso NÃO fecha esta lacuna.** *"Ou espera a CI"* era a saída prevista
+> quando esta seção foi escrita; o lugar de rodar passou a existir, mas **a suíte da CI roda em `jsdom`, como
+> a local** ([[16-integracao-continua]] §5). Ter onde rodar não é ter o que rodar — a ferramenta continua
+> desinstalada, e reabrir isso é decisão de plan própria, não consequência automática do pipeline.
 
 # 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 

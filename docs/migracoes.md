@@ -5,7 +5,14 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
-## `layoutGridTemplate: 'col-12'` passa a funcionar — filho sem span ganha um default (plan-49)
+## 6.0.0 — `layoutGridTemplate: 'col-12'` passa a funcionar — filho sem span ganha um default (plan-49)
+
+**Esta é a âncora da `6.0.0` — três quebras saíram juntas nesta tag.** Medido (`git log v5.0.0..v6.0.0 --
+docs/migracoes.md`): três entradas desta faixa são, cada uma, **Classificação: MAJOR** por conta própria —
+esta (`plan-49`), "O grid zero-config deixa de ser 12 colunas fixas..." (`plan-47`, logo abaixo) e "Container
+query estrutural agora funciona FORA do `SarakShell`..." (`plan-41`, mais abaixo ainda). As três venceram
+juntas num `npm version major` só; nenhuma delas, sozinha, ganhou uma tag própria. Leia as três se você está
+atravessando a `6.0.0`.
 
 **Classificação: MAJOR** — muda o **comportamento visual** de uma opção que já existia e já era selecionável
 (schema, painel, tema persistido), sem tocar em nenhuma assinatura pública. A `plan-47` trocou o **default**
@@ -298,7 +305,12 @@ origem externa ([[10-seguranca-e-acessibilidade]] §2.1).
 
 ---
 
-## A responsividade da Spec 40.3 estava desligada no pacote publicado — a nav da topbar, entre outros, volta a aparecer (plan-39)
+## 5.0.0 — A responsividade da Spec 40.3 estava desligada no pacote publicado — a nav da topbar, entre outros, volta a aparecer (plan-39)
+
+**Esta é a âncora da `5.0.0`.** Medido (`git log v4.0.1..v5.0.0 -- docs/migracoes.md`): esta é a única
+entrada desta faixa classificada **MAJOR** — a mesma família de quebra da `4.0.0`, comportamento default sem
+tocar em nenhuma assinatura pública. A entrada "Tema salvo pelo usuário final em runtime..." (`ADR-011,
+plan-38`), logo abaixo, saiu na MESMA tag, mas é aditiva (MINOR) — não é ela que teria motivado o major.
 
 **Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
 default e visível**, sem opt-in, exatamente o mesmo critério que classificou a `4.0.0` ([[03-versionamento-e-release]]
@@ -397,7 +409,7 @@ Nenhum export do barril mudou de assinatura.
 
 ---
 
-## O motor de cor parou de reescrever o seu tema sem avisar (Decisão D)
+## 4.0.0 — O motor de cor parou de reescrever o seu tema sem avisar (Decisão D)
 
 **Afeta você se tem tema PRÓPRIO** — seu, não um dos 18 embarcados na lib: escrito à mão, exportado
 do painel, ou herdado de uma versão anterior salvo em `localStorage`/`customThemes`. Ao atualizar, a

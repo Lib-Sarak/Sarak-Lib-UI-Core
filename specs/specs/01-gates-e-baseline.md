@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Qualidade / Automação"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "gates", "baseline", "auditoria", "divida-tecnica", "qualidade"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[02-enforcement-por-commit]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[02-enforcement-por-commit]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]", "[[16-integracao-continua]]"]
 ---
 
 # 1. Propósito
@@ -75,6 +75,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | — *(plan-39 · endurecido pela plan-44)* | ~0,3 s |
 | Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
+| Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -117,6 +118,22 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Segredos | `python gates/scripts/segredo/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
 | `BUILD_INFO.json` | `npm run build-info:check` (dentro de `gates:full`) | `dist/BUILD_INFO.json` commitado bate com o que o gerador produz agora | **R29** |
 | Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **71,47%** *(medido 2026-08-11; a fonte viva é `gates/baselines/coverage-floor.json`)* |
+| Âncora de migração | `npm run migration-anchor:check` (gancho `version`) | Todo **MAJOR** emitido tem entrada em `docs/migracoes.md` com a versão no título | [[03-versionamento-e-release]] §5 *(plan-53)* |
+| Minor sem remoção | `npm run minor-no-removal:check` (gancho `version`) | **Minor/patch nunca remove nome do barril público** (`dist/index.d.ts`) contra a última tag | [[03-versionamento-e-release]] §3 *(plan-53)* |
+
+> ⚠️ **Os dois gates de release da `plan-53` (2026-08-19) — o que eles NÃO veem, declarado no cabeçalho de
+> cada arquivo (R18):**
+>
+> - **`migration-anchor:check`** confere só a **presença** da âncora, nunca o conteúdo — uma nota vazia ou
+>   tecnicamente errada passa igual. E só cobra **MAJOR**, nunca minor/patch.
+> - **`minor-no-removal:check`** é **assimétrico de propósito**: cobra a direção que tem vítima (quem está
+>   preso numa faixa `^N` recebe a quebra sem escolher) e **nunca** cobra major sem remoção. Um gate que
+>   exigisse remoção para "justificar" um major teria **reprovado a `4.0.0`**, que foi 100% legítima com zero
+>   export tocado.
+>
+> **Por que no gancho `version` e não no `pre-push`:** é o único instante em que o `package.json` já tem a
+> versão nova **e a tag ainda não existe**. Barrar depois da tag seria tarde; barrar antes do bump seria
+> perguntar sobre um número que ninguém decidiu.
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
@@ -125,6 +142,37 @@ Os quatro primeiros são **rápidos e verdes**, e são os que rodam encadeados a
 Todos têm a mesma mecânica de leitura: **saída de uma linha quando passa**. Se a linha não apareceu, leia o erro acima dela.
 
 ⚠️ **`dev-kit:check` é o único gate com DUAS causas de reprovação** (Spec 14, criado em 2026-07-31): defasagem *e* **ponteiro morto** — caminho, `npm run <script>` ou comando `node` citado em crase na prosa do kit e que não existe. É o único gate que audita **documentação** por conteúdo, e não por hash. Ele **não** roda no `build` (o `build` produz o artefato publicado, e `sarak-dev/` não é publicado); roda no `gates:full` e, por ele, no `preversion`. Contrato completo em [[14-artefatos-do-mantenedor]].
+
+## 2.2.1 Onde cada gate roda — a coluna que faltava
+
+**Escrita em 2026-08-19 porque a ausência dela escondia órfãos:** quatro gates existiam, estavam verdes, e
+eram rodados por **ninguém** — nem hook, nem `gates:full`, nem `run_audit`. Só se um humano digitasse o
+comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situação volte sem ser notada.
+
+| Gate | `pre-commit` | `gates:full` | `version` | `pre-push` | **CI** |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| `barrel` · `catalog` · `zero-brand` · `guide` · `token-types` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ |
+| `deep-import` · `public-types` | Anel 1 | — | — | — | ✅ |
+| `dev-kit` | **união dos 2 gatilhos** (§2.2.1 da [[02-enforcement-por-commit]]) | ✅ 1º | ✅ | — | ✅ |
+| `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
+| `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
+| `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
+| `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
+| `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
+| `build-info` · `package` · `coverage` | — | ✅ | — | — | ✅ |
+| `release:check` | — | — | — | ✅ (só `main`) | ✅ **job `release-tag`** |
+| `migration-anchor` · `minor-no-removal` | — | — | ✅ *(desde a `plan-53`)* | — | — |
+| Segredos (Anel 0) | ✅ **sempre** | — | — | — | ⛔ **impossível** |
+
+⚠️ **Duas linhas desta tabela merecem leitura, não só consulta:**
+
+- **`plan-index` roda pela metade no hook.** O `pre-commit` chama só `check-plan-index-sync.mjs`; o
+  `npm run plan-index:check` é `check-plan-index-sync.mjs && generate-plan-index.mjs --check`. A segunda
+  metade — comparar o índice **gerado agora** contra o commitado — só acontece na CI.
+- **O Anel 0 nunca vai para a CI.** `verificar_commit.py` lê só `git diff --cached`, e no runner não há
+  staging: um passo verde que não examinou nada é pior que passo ausente ([[16-integracao-continua]] §5).
+
+**Onde a CI roda cada coisa** é [[16-integracao-continua]] §3 — esta coluna diz apenas *se* roda.
 
 ## 2.3 `npm run build` — os quatro gates encadeados + a compilação
 
@@ -220,7 +268,7 @@ depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cob
 | `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
 | `dev-kit:check` **(R17·R23·R29)** | `npm run dev-kit:check` | ✅ kit em dia (3 arquivos, **0 ponteiros mortos**) — não valida ponteiro de **seção**, que é o `auditor_sectionpointers` |
 | `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0** — `exports` só expõe a raiz e subcaminhos de CSS |
-| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **30/30** scripts declaram o que não veem *(medido 2026-08-12, após a `plan-39` acrescentar `check-container-query-literal.mjs`)*. Era 29 |
+| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **todos** os scripts de `gates/scripts/` declaram o que não veem — a **relação**, não a cifra. *(A contagem é fonte viva: o próprio gate a imprime. Era 29 em 2026-08-11, 30 em 2026-08-12, **35** em 2026-08-19 com os dois gates da `plan-53`; publicar o número aqui foi o que o deixou errado três vezes — [[15-divida-conhecida]] §3.3.)* |
 | `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **423 tokens**, em dia |
 | `build-info:check` **(R29)** | `npm run build-info:check` | ✅ íntegro |
 | `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **72,43% contra piso de 71,47%** — piso móvel: melhora regrava (só com `--write`), piora bloqueia |

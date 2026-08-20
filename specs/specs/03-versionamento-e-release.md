@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Distribuição / Contrato público"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "versionamento", "semver", "release", "migracoes", "distribuicao", "tag"]
-relacionados: ["[[008-releases-com-tag-e-semver-em-git]]", "[[007-distribuicao-por-git]]", "[[02-enforcement-por-commit]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[00-regras-e-invariantes]]"]
+relacionados: ["[[008-releases-com-tag-e-semver-em-git]]", "[[007-distribuicao-por-git]]", "[[02-enforcement-por-commit]]", "[[16-integracao-continua]]", "[[17-contrato-de-operacao-git]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[00-regras-e-invariantes]]"]
 ---
 
 # 1. Visão geral
@@ -96,14 +96,19 @@ Três casos que valem explicitar, porque já causaram confusão:
 
 ## 3.1 A linha publicada, e o que cada MAJOR carregou
 
-**Oito tags desde a renumeração**, três delas MAJOR. *(Fonte viva: `git tag`. Esta tabela existe para dar o
-**motivo** de cada quebra, que o `git` não guarda.)*
+**Doze tags desde a renumeração**, **seis** delas MAJOR. *(Fonte viva: `git tag`. Esta tabela existe para dar
+o **motivo** de cada quebra, que o `git` não guarda.)*
 
 | MAJOR | O que quebrou |
 |---|---|
 | **`2.0.0`** | A primeira limpeza de superfície: `SarakTabs` duplicado, `SarakSecurityOrchestrator`, o parâmetro morto de `upgradeThemePayload`, o token `mfaQrCodeSize`, os 2 ids legados do Discovery. E o `CustomizationPanel` saiu do caminho crítico — **−75,1% no chunk de boot**, sem quebrar o tipo público |
 | **`3.0.0`** | **Quatro componentes e três tipos saíram do barril** — `ThemeToggle` (nunca foi funcional), `LanguageSelector`, `UserMenu`, `ModuleSelector`, mais `LanguageOption`, `ModuleConfig`, `UserPayload`. Ver [[03-superficie-publica]] §8.0 |
 | **`4.0.0`** | **Mudança de comportamento, não de assinatura** — a decisão **D**: o motor de cor deixou de reescrever o tema a cada render, e no modo nativo o emitido passou a ser o escrito. Nenhum export mudou, e ainda assim **toda cor de todo tema de todo consumidor** podia mudar na tela. Ver [[09-temas-e-presets]] §4.3.1 |
+| **`5.0.0`** | **A mesma família da `4.0.0` — comportamento default, zero export tocado.** O scanner do Tailwind v4 lê arquivo como **texto**; onde a lib montava a classe de container query por **interpolação de template literal**, o Tailwind nunca gerava a regra CSS. Resultado: **11 das 19 classes de container query da lib nunca funcionaram no pacote publicado** — a nav da topbar, `SarakStack`, os layouts `col-12` e `masonry`, o cabeçalho de seção, o `ShellContent` e o layout `center` do Shell. Corrigido trocando interpolação por classe **literal** |
+| **`6.0.0`** | **Três quebras MAJOR saíram juntas nesta tag** — nenhuma ganhou release própria: (1) **container query estrutural** — 10 componentes fora do `SarakShell` (ex.: `SarakAppChrome`) nunca tinham o ancestral `container-type`, então toda classe `@min-[…]` ficava congelada no layout de celular; (2) o **grid zero-config** (`layoutGridTemplate` default) deixou de ser 12 colunas fixas sem mecanismo de `span` — o que produzia 1 filho por trilha — e passou a ser `auto-fit`; (3) **`col-12` escolhido explicitamente** (tema persistido ou painel) continuava com o defeito de (2) mesmo depois de o default ser corrigido, e ganhou `span` default por breakpoint |
+
+> ⚠️ **A `6.0.0` é o caso que a `docs/migracoes.md` mais facilmente contaria pela metade.** Quem atravessa
+> essa tag precisa ler **as três** notas — uma âncora só levaria a um terço do que quebrou.
 
 > 🔴 **A `4.0.0` é o caso que a tabela de níveis acima já previa e que mesmo assim quase passou.** Ela é
 > *"mudar um comportamento default"* — nenhum nome saiu do barril, nenhum `<Nome>Props` mudou, e o
@@ -143,9 +148,45 @@ Todo MAJOR tem entrada em `docs/migracoes.md`, mais recente primeiro, com:
 3. **Como migrar** — o passo concreto, com código quando houver.
 4. **O que NÃO mudou** — quando houver risco de o leitor assumir demais.
 
-> **Breaking change sem entrada em `docs/migracoes.md` é entrega incompleta.** Não há gate cobrando isso — é conduta, na mesma classe das regras R10/R11/R15/R16.
+> **Breaking change sem entrada em `docs/migracoes.md` é entrega incompleta.**
 
 A renumeração desta spec **não é** breaking change, e mesmo assim ganhou entrada: um número que **anda para trás** normalmente significa perda de capacidade, e o consumidor merece ler que aqui não significa.
+
+## 5.1 O título carrega a versão — e essa exigência é nova, não a obrigação
+
+**A entrada de um MAJOR começa por `## X.0.0 — `.** O número no título **é a âncora**: é por ele que o
+`sarak-ui update --latest` recorta o intervalo entre a versão instalada e a nova, e mostra ao consumidor o que
+quebra **antes** de ele confirmar ([[13-instalacao-e-atualizacao]]).
+
+⚠️ **Registro de honestidade, porque a leitura fácil deste parágrafo é errada.** Quando o leitor de âncoras
+nasceu (`plan-10`, 2026-08-19), **três dos seis majors não tinham o número no título** — `4.0.0`, `5.0.0` e
+`6.0.0`.
+
+> **Isso não foi obrigação pulada.** As três notas **estavam escritas**, completas, com antes/depois,
+> classificação e ponteiro de plan. O que faltava era **o formato** — porque as notas foram escritas **antes**
+> de existir um leitor que exigisse formato algum, seguindo a convenção do arquivo, que nunca pediu o número.
+>
+> **Uma funcionalidade voltada ao consumidor foi construída sobre uma convenção que só existia na cabeça de
+> quem lia.** Quem escreveu as notas cumpriu a obrigação; ninguém nunca disse que o título precisava carregar
+> a versão. As três âncoras foram **transportadas** em 2026-08-19 (`plan-53`) — nenhuma nota foi inventada.
+
+## 5.2 Os dois gates que impedem a reincidência — e a assimetria entre eles
+
+**Desde a `plan-53` (2026-08-19), a obrigação deixou de ser só conduta.** Os dois gates rodam no gancho
+`version` — o único instante em que o `package.json` já tem a versão nova **e a tag ainda não existe**:
+
+| Gate | Cobra | Limite declarado (R18) |
+| --- | --- | --- |
+| `migration-anchor:check` | `npm version major` é barrado se `docs/migracoes.md` não tiver entrada cujo título cite a versão emitida por extenso | Confere só a **presença** da âncora, nunca o conteúdo — nota vazia ou errada passa igual. E só cobra **MAJOR** |
+| `minor-no-removal:check` | Minor/patch que **remove um nome do barril público** (`dist/index.d.ts`) contra a última tag é sempre barrado | Não vê quebra de **comportamento**, só de superfície |
+
+> **A assimetria é deliberada e é a parte importante.** O gate cobra a direção que **tem vítima**: quem está
+> preso numa faixa `^N` recebe a quebra sem ter escolhido. **Major sem remoção nunca é cobrado por gate
+> nenhum** — e não deveria ser: a **`4.0.0` é a prova viva** de que um major pode ser 100% legítimo sem remover
+> um export sequer. Um gate que exigisse remoção para "justificar" o major **teria reprovado a `4.0.0`**.
+>
+> ⚠️ **E nenhum gate mede "o pixel mudou".** Quebra de comportamento só existe no registro se alguém a
+> escrever — a §5 continua sendo conduta nessa metade, e é por isso que ela não sai desta spec.
 
 # 6. O ritual de release — `npm version`
 
@@ -159,10 +200,27 @@ npm version <major|minor|patch>
 | Gancho | Quando o npm roda | O que faz aqui |
 | --- | --- | --- |
 | `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
-| `version` | DEPOIS do bump, ANTES do commit | `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` |
+| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
+
+> **Por que os dois gates novos abrem o gancho `version`, e não o `preversion`:** no `preversion` o número
+> ainda não foi decidido — não há "a versão emitida" contra a qual cobrar âncora. No `postversion` a tag já
+> existe, e **apagar tag publicada é proibido** ([[17-contrato-de-operacao-git]] §3). O `version` é a única
+> janela em que o número é conhecido e ainda reversível.
+
+## 6.0 O release acontece sob o modelo de branches — e depende da exceção de administrador
+
+**Desde 2026-08-18**, o dono emite `npm version` **a partir da `main`** ([[16-integracao-continua]] §2).
+
+⚠️ **A `main` é branch protegida, e a proteção recusaria o próprio release.** O `postversion` faz
+`git push --follow-tags` direto para a `main` — que a regra de *required status check* bloquearia. Por isso a
+proteção está configurada com `enforcement_level: "non_admins"`: a **exceção de administrador é deliberada e
+necessária**.
+
+> Sem ela, o `npm version` para no **último** passo, depois de já ter buildado, regenerado os três kits,
+> commitado e criado a tag localmente — o pior lugar possível para descobrir o problema.
 
 > ⚠️ **Os TRÊS kits entram na tag, e o terceiro custou uma correção para entrar.** O gancho regenera o kit
 > do consumidor (`guide`), o `dist/` (`build`) **e** o kit do mantenedor (`dev-kit`) — porque os três
