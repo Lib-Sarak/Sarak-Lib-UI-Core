@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "6.1.0"
+    "version": "6.3.0"
   },
   "design": {
     "schemaFiles": {
