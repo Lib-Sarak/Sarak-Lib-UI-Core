@@ -4,7 +4,7 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 
 ## Skills
 
-- **git-ci-cd**: Instrui a operação de Git e release deste repositório — diagnóstico de estado, commit de rotina, sincronizar develop↔main, abrir PR, ler a CI, merge na main, decidir o nível do bump (minor×major), emitir o release (npm version), o que conferir depois, e limpeza de branch. O agente NUNCA executa nenhuma operação de Git: verifica (leitura), decide o que deve ser feito, mostra a evidência e entrega os comandos exatos para o PowerShell do dono rodar — quem digita é sempre o dono. Use quando o dono pedir ajuda para commitar, sincronizar branches, abrir PR, decidir o nível de uma release ou emitir uma release deste repositório. NÃO acione proativamente.
+- **git-ci-cd**: Instrui a operação de Git e release deste repositório — diagnóstico de estado, commit de rotina, sincronizar develop↔main, abrir PR, ler a CI, merge na main, decidir o nível do bump (minor×major), emitir o release (npm version), o que conferir depois, e limpeza de branch. A fronteira é MUTAÇÃO, não execução: o agente LÊ o estado sozinho (git status/log/diff/fetch e os *:check) e chega com o diagnóstico pronto, mas NUNCA muta o repositório (add, commit, push, merge, tag, checkout, npm version) — esses comandos ele entrega prontos para o PowerShell do dono digitar. Use quando o dono pedir ajuda para commitar, sincronizar branches, abrir PR, decidir o nível de uma release ou emitir uma release deste repositório. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/git-ci-cd/SKILL.md`
 
 - **ui-arquitetura-design**: Define a regra arquitetural do módulo Design Engine do Sarak-Lib-UI-Core. Use ao desenvolver, revisar ou validar o CSS/Design de componentes. NÃO acione proativamente.

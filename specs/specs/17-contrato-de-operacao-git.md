@@ -30,8 +30,34 @@ Decisão do dono, 2026-08-19:
 
 | Papel | Responsabilidade | Não pode |
 |---|---|---|
-| **Agente** | Diagnosticar, decidir **o que** fazer, emitir o comando exato no shell certo, e o motivo | **Executar qualquer operação de Git** |
-| **Dono** | Ler, digitar, e ver o efeito | — |
+| **Agente** | **Ler o estado**, diagnosticar, decidir **o que** fazer, emitir o comando exato no shell certo, e o motivo | **Mutar** o repositório |
+| **Dono** | Digitar todo comando que muda alguma coisa, e ver o efeito | — |
+
+## 2.0 A fronteira é MUTAÇÃO, não execução
+
+⚠️ **Esta seção existe porque a frase da decisão — *"não executa absolutamente nada"* — foi lida ao pé da
+letra e paralisou um agente em 2026-08-19.** Ele recusou-se a rodar `git status` e devolveu ao dono um bloco
+de seis comandos de leitura para copiar, colar e trazer de volta. Duas rodadas, nenhum diagnóstico.
+
+**O que a decisão quer dizer, e o que ela não quer dizer:**
+
+| O agente | Exemplos |
+|---|---|
+| ✅ **Lê à vontade, e deve** | `git status` · `git log` · `git diff` · `git show` · `git describe` · `git branch` · `git tag --list` · `git fetch` · todo `*:check` (`release:check`, `minor-no-removal:check`, `migration-anchor:check`…) |
+| ⛔ **Nunca muta** | `add` · `commit` · `push` · `merge` · `rebase` · `tag` (criar/mover/apagar) · `checkout` · `reset` · `revert` · `stash` · `branch -d` · **`npm version`** · e qualquer coisa que toque o remoto |
+
+**Por que a linha cai aí, e não em outro lugar.** Os dois motivos da §2.1 são sobre **mudança de estado**:
+a autorização de fachada só existe quando algo *acontece* sem inspeção, e a credencial que fura a proteção
+da `main` só é alcançada por quem *empurra*. **Um `git log` não carimba nada e não alcança credencial
+nenhuma.**
+
+E há a razão positiva: **ler é o que torna a instrução boa.** Um agente que não lê instrui no escuro — e
+uma instrução errada, neste modelo, é o dono rodando o comando errado (§2.2). Fazer o dono transcrever
+saída de comando não é segurança: é transferir a ele o trabalho que a §5 desta spec chama de terceirizar o
+que um comando responde.
+
+> 🔴 **Caso de fronteira, nomeado:** `npm run gates:full` e `npm run build` **mutam** (`dist/`, `sarak-ui/`,
+> `sarak-dev/`) e custam minutos. Não são leitura — o agente não os dispara por conta própria.
 
 ## 2.1 Por que isto é mais seguro que "agente executa após aprovação"
 
@@ -123,13 +149,22 @@ um commit que o dono faria sozinho, sem instrução nenhuma:
 `develop`↔`main`, abrir PR e ler a CI, merge na `main`, decidir o nível do bump, emitir o release, pós-release,
 limpeza, e quando parar e perguntar), com tabela de tradução POSIX → PowerShell.
 
+**Ela é autossuficiente, por requisito.** A skill abre com um **ritual de entrada** que nomeia os cinco
+documentos a ler antes do primeiro comando — esta spec, `00-contexto`, `16`, `03` e `02` —, de modo que
+**invocá-la basta**: o dono não lista arquivo nem descreve o estado do repositório. Precisar pedir contexto que
+o ritual já cobre é defeito da skill, não do pedido.
+
 **Ela é conduta** — vale o que valer a disciplina de quem a lê. Por isso, onde existir gate, **ela aponta para
 o gate em vez de repetir a regra**: gate segura, prosa não. É a lição medida da `plan-53`.
 
-> ⚠️ **Declarado, não escondido: a skill nunca foi exercitada num release real.** O primeiro `npm version` sob
-> ela **é o teste dela**, e o que falhar volta como correção. Esse mesmo evento fecha o achado **7** de
-> [[15-divida-conhecida]] (`install-tag.yml` com 0 runs) — os dois fecham juntos, e não por acaso: ambos são
-> capacidade escrita e ainda não exercitada pelo caminho real.
+> ⚠️ **Declarado, não escondido: a skill nunca governou um `npm version` de verdade.** As situações de
+> diagnóstico até a decisão de nível foram exercitadas em **2026-08-19**, contra o estado real do
+> repositório — e a rodada **achou dois defeitos na própria skill**, que viraram correção no mesmo dia. As
+> situações de emitir o release e pós-release **continuam sem nenhuma execução**.
+>
+> O primeiro `npm version` sob ela **é o teste do que falta**, e fecha, no mesmo evento, o achado **48** de
+> [[15-divida-conhecida]] (`install-tag.yml` com 0 runs) — não por acaso: ambos são capacidade escrita e
+> ainda não exercitada pelo caminho real.
 
 # 7. Critérios de aceite
 
