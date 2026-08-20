@@ -76,14 +76,43 @@ inteiro**, com os mesmos anéis.
 - **Espere o retorno antes do próximo passo.** Você instrui, o dono executa, você **lê o que voltou** — e
   só então o passo seguinte. Um roteiro entregue de enfiada supõe que nada vai dar errado no meio.
 
-## A regra que atravessa todas as 10 situações
+## As três regras que atravessam TODAS as 10 situações
 
-> **Não terceirize ao dono o que um comando responde.**
+> ⚠️ **Elas valem onde quer que você esteja — inclusive quando o passo pertence a outra situação.** Um
+> `git commit` que aparece dentro da Situação 7 obedece às mesmas regras de um `git commit` da Situação 2.
+> *(Reincidiu em 2026-08-20: o placeholder de mensagem, proibido na Situação 2, voltou dentro da 7 —
+> porque a regra estava escrita **lá**, e o agente não foi consultá-la de **cá**.)*
+
+### 1. Não terceirize ao dono o que um comando responde
 
 Perguntar é legítimo — e há perguntas que **só** o dono responde (mudou algum comportamento visível?
 este push é release ou não?). Mas cada pergunta tem de vir **depois** da medição, e cobrir **só o que a
 medição não alcança**. Pergunta feita no lugar de um `git diff` transfere para a memória dele um
 trabalho que a evidência faz melhor.
+
+**Corolário:** não escreva *"até eu confirmar com `git fetch`"*. **Confirme.** `fetch`, `log`, `diff`,
+`status` são seus — hedge sobre coisa mensurável é dedução disfarçada de diagnóstico, mesmo quando acerta.
+
+### 2. Todo texto que você entrega vem REDIGIDO — nunca como placeholder
+
+Vale para **mensagem de commit**, **título e descrição de PR**, e qualquer outro texto que o dono teria de
+compor. Você acabou de ler o diff; ele teria de reconstruir do zero.
+
+⛔ `git commit -m "sua mensagem"` · `git commit -m "tipo: mensagem"` — **os dois estão errados**, em
+qualquer situação.
+✅ A mensagem escrita, mais uma linha dizendo que ele pode ajustar antes de rodar.
+
+**A regra é que ele VEJA o texto antes de executar — não que ele o componha.**
+
+### 3. Duas saídas com riscos diferentes não se apresentam empatadas
+
+Quando houver mais de um caminho, **diga qual você recomenda e por quê**. *"Você decide"* só é honesto
+quando as opções são de fato equivalentes.
+
+⚠️ *(2026-08-20: `git commit` e `git stash` foram oferecidos como equivalentes para limpar o worktree
+antes de um release. Não são — os arquivos em questão não eram publicados, então commitar não custava nada
+e não segurava a tag, enquanto o `stash` acrescentava risco de esquecimento: a release sai, o trabalho fica
+guardado, e ninguém lembra de recuperá-lo.)*
 
 ---
 
@@ -350,6 +379,46 @@ Start-Process "https://github.com/Lib-Sarak/Sarak-Lib-UI-Core/compare/main...dev
 
 A URL de comparação já abre o formulário de PR `develop → main` pronto para descrever e criar.
 
+### 🔴 Entregue o TÍTULO e a DESCRIÇÃO prontos, junto do comando
+
+**Sempre.** O dono não deve redigir texto que você acabou de medir — é a mesma regra da mensagem de commit
+(Situação 2). Você leu o diff e os commits; ele teria de reconstruir do zero.
+
+O formulário abre **vazio**. Entregue, num bloco à parte do comando, para ele colar:
+
+```
+Título:   <tipo>(<escopo>): <o que esta leva entrega, em uma linha>
+
+Descrição:
+## O que entra
+<3-6 bullets — o que mudou de fato, agrupado por assunto, não por commit>
+
+## O que chega ao consumidor
+<a medição dos 4 diretórios publicados: dist/ bin/ docs/ sarak-ui/ — ou "nada" se
+ a leva não os toca>
+
+## Nível de release previsto
+<minor|major|patch|nenhum> — <a evidência em uma linha>
+
+## O que conferir
+<o que o revisor deveria olhar com atenção, se houver>
+```
+
+⚠️ **Diga que ele pode ajustar antes de criar** — a regra é que ele **veja** o texto, não que o componha.
+
+### 🔴 ANTECIPE o nível aqui — não espere a Situação 6
+
+**Rode a medição da Situação 6 agora**, e ponha o resultado na descrição do PR.
+
+**Por que dá:** um merge commit **não acrescenta conteúdo**. A medição contra a tag é **idêntica** antes e
+depois do merge — o que precisa esperar a `main` é a **emissão** (Situação 7), nunca a medição.
+
+**Por que importa:** sem isso o dono aprova o merge sem saber que release ele está desencadeando — e cai
+direto no vermelho esperado do parágrafo seguinte, sem aviso.
+
+*(A Situação 6 continua existindo: é onde o nível se **confirma** sobre a `main` pós-merge, e onde a
+pergunta residual é feita. Aqui ele é **previsão com evidência**, e é assim que deve ser rotulado.)*
+
 **Ler a CI:** só o job **`gates`** é *required status check* (`gates.yml`) — é o que bloqueia o botão de
 merge. `install-sha` (mesmo workflow) e `release-tag`/`install-semver` (`install-tag.yml`) são
 **condicionais por desenho**: `install-sha` só roda em PR; `release-tag` só em push:`main`;
@@ -386,9 +455,35 @@ git fetch origin
 git log origin/main -1
 ```
 
+### 🔴 AVISE ANTES DE CLICAR: o `release-tag` vai ficar VERMELHO, e é esperado
+
+**Se a leva toca `dist/` ou `sarak-ui/`, o run de `push:main` vai falhar no job `release-tag`.** Diga isso
+**antes** do merge, com o texto que vai aparecer:
+
+```
+⛔ PUSH BLOQUEADO — o artefato publicado mudou desde a última tag, e não há tag nova.
+```
+
+**Não é defeito — é estrutura.** A tag é emitida **da `main`, depois do merge**, pelo `npm version`. Entre
+uma coisa e outra, a `main` está necessariamente em *"artefato mudou, sem tag"* — e é exatamente aí que o
+job roda. **Todo merge que muda o artefato acende esse vermelho.**
+
+| O vermelho significa | O vermelho NÃO significa |
+|---|---|
+| **"há release devida — emita a tag"** | que o merge falhou |
+| que a Situação 7 é o **próximo passo obrigatório** | que algo precisa ser consertado |
+
+**Ele não bloqueia nada:** só `gates` é *required status check*, e este run é pós-merge — não há botão a
+travar. **Ele apaga sozinho** quando `npm version` cria a tag: o `release:check` seguinte passa a dizer
+*"o artefato publicado é idêntico"*.
+
+⚠️ **Falhou em 2026-08-20:** o dono viu esse vermelho sem aviso e leu como falha do processo. O agente não
+avisou porque esta seção não existia — e porque o nível do bump só seria decidido **depois**, então nem ele
+sabia que release estava desencadeando.
+
 **Como saber que deu certo:** o comando acima mostra o novo merge commit em `origin/main`; o job
-`release-tag` disparou automaticamente (push em `main` — ver
-Situação 1 para conferir o run).
+`release-tag` disparou automaticamente (push em `main`) — **vermelho se há release devida, verde se não
+há**. As duas saídas são resultado normal; leia qual das duas antes de seguir.
 
 ### 6. Decidir o nível (`minor` × `major`) — o procedimento, não o palpite
 
@@ -444,6 +539,26 @@ npm run minor-no-removal:check
 > O nível continuou correto por sorte — aquele arquivo não o decidia. **Numa tabela de fatos medidos, a
 > linha que você não mediu não se distingue das outras**, e é essa a razão da regra: quem lê não tem como
 > saber qual delas foi deduzida.
+
+> 🔴 **COLE a linha de total do `--stat`. Não a redigite.**
+>
+> ⚠️ **Errado três vezes seguidas, em 2026-08-19/20**, sempre no mesmo número: `bin/` foi reportado como
+> *"1.140 inserções, 1 remoção, 16 arquivos"* quando o real é **1.125 inserções, 24 remoções, 15
+> arquivos** — e a diferença é exatamente `docs/migracoes.md` (15 inserções, 1 arquivo), que foi somado
+> dentro de `bin/` **e** listado como linha separada. O erro sobreviveu a duas rodadas e entrou na decisão
+> do nível.
+>
+> **Cifra transcrita à mão erra; cifra colada, não.** É a reincidência nº 1 desta base — `arquitetura/04`
+> errou o mesmo total três vezes ([[15-divida-conhecida]] §3.3). Quando precisar do número por diretório,
+> rode **um comando por diretório** e cole cada saída:
+>
+> ```powershell
+> git diff --stat (git describe --tags --abbrev=0) HEAD -- bin
+> git diff --stat (git describe --tags --abbrev=0) HEAD -- docs
+> ```
+>
+> Um `--stat` de quatro diretórios devolve **um total agregado**; reparti-lo de cabeça é onde a conta se
+> perde.
 
 ### ⚠️ `dist` não é a única coisa publicada — `bin` também
 
