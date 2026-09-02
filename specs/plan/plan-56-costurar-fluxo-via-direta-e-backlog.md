@@ -140,7 +140,10 @@ usuário pedir"*).
 11. **`00-contexto.md` §5 — o diagrama:** redesenhar com a bifurcação da triagem ([[00-prompt-revisor]] §4),
     a via direta e o dreno do backlog. Trocar a última linha (`/spec-atualizar`) pela síntese do revisor.
 12. **`00-contexto.md` §5 — tabela de papéis:** o Revisor passa a escrever também o `00-backlog`; o Usuário
-    **autoriza a síntese** e **promove** item do backlog.
+    **autoriza a síntese** e **promove** item do backlog. E a célula *"Nunca faz"* do **Executor** (`:285`)
+    ainda diz *"criar/alterar outras specs"* — o que **contradiz** a §7.3 do executor desde 2026-09-02, que
+    passou a permitir editar arquivo declarado na §3.1 da plan. Alinhe a célula à §7.3: o que o executor
+    nunca faz é criar ou alterar spec **por iniciativa própria**.
 13. **`00-contexto.md` §5 — REMOVER o primeiro desvio.** Ele diz que *"plan que só toca `specs/` é executada
     pelo próprio revisor"*, e isso **deixou de valer** por decisão do dono, 2026-09-02:
 

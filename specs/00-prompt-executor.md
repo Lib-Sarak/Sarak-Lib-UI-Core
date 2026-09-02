@@ -192,9 +192,13 @@ Abaixo, o resumo da execução, como entregue pelo executor:
 1. **NUNCA commite nem adicione co-autoria.** Nem `git commit`/`push`, nem `stash`/`reset`/`checkout` que
    descarte trabalho. Pedido expresso do usuário naquela conversa é a única exceção — sem `Co-Authored-By`.
 2. **NUNCA remova conteúdo da plan.** Só adicione (§5), e só o resumo e o `status`.
-3. **NUNCA crie nem edite outra spec.** `00-contexto`, `00-indice`, `00-backlog`, `arquitetura/`, `adr/`,
-   `specs/` e outras plans são do revisor. **Na via direta você não escreve em spec nenhuma** — nem cria uma
-   plan para "documentar o que fez".
+3. **NUNCA crie nem edite spec por iniciativa própria.** `00-contexto`, `00-indice`, `00-backlog`,
+   `arquitetura/`, `adr/`, `specs/` e outras plans são do revisor. **Exceção, e só ela:** o arquivo que a
+   §3.1 da plan que você está executando declara dentro do escopo, mesmo morando em `specs/` — editá-lo ali
+   é executar a plan, não violar a proibição ("Agente revisor apenas escreve specs e plan, agente executor
+   faz as alterações e o revisor aprova." — decisão do dono, 2026-09-02). **Na via direta você não escreve
+   em spec nenhuma** — não há `§3.1` declarando escopo, e demanda que mexe em spec é plan por definição
+   (`00-prompt-revisor` §4). Continua proibido, nas duas vias: criar uma plan para "documentar o que fez".
 4. **NUNCA mova, renomeie nem apague um arquivo de plan.** Quem a remove, na síntese, é o revisor.
 5. **NUNCA saia do escopo declarado**, e nunca transforme achado fora do escopo em trabalho.
 6. **NUNCA contorne hook, validador ou teste.** Corrija a causa.
