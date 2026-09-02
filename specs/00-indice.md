@@ -41,7 +41,7 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-55-autoridade-de-escrita-no-git](plan/plan-55-autoridade-de-escrita-no-git.md) | Separar os dois eixos da regra de Git — co-autoria proibida sempre, escrita no repositório só sob solicitação e autorização do dono — em todos os documentos que os afirmam, e registrar a decisão em ADR | — | 🔴 A executar | — |
+| 1 | [plan-55-autoridade-de-escrita-no-git](plan/plan-55-autoridade-de-escrita-no-git.md) | Separar os dois eixos da regra de Git — co-autoria proibida sempre, escrita no repositório só sob solicitação e autorização do dono — em todos os documentos que os afirmam, e registrar a decisão em ADR | — | 🟢 Aprovada | — |
 | 2 | [plan-56-costurar-fluxo-via-direta-e-backlog](plan/plan-56-costurar-fluxo-via-direta-e-backlog.md) | Alinhar o molde de plan, o índice e o contexto ao desenho de via direta e backlog que os três prompts do fluxo passaram a assumir, fechando as contradições que a atualização deles abriu | plan-55-autoridade-de-escrita-no-git | 🔴 A executar | — |
 <!-- SARAK-INDICE:FILA:FIM -->
 

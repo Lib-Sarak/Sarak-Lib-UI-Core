@@ -189,8 +189,9 @@ Abaixo, o resumo da execução, como entregue pelo executor:
 
 # 7. Proibições
 
-1. **NUNCA commite nem adicione co-autoria.** Nem `git commit`/`push`, nem `stash`/`reset`/`checkout` que
-   descarte trabalho. Pedido expresso do usuário naquela conversa é a única exceção — sem `Co-Authored-By`.
+1. **NUNCA adicione co-autoria.** Nenhuma linha `Co-Authored-By` de agente, em hipótese nenhuma — nem em
+   commit que você digite, nem em commit que você apenas instrua. **Este eixo não tem exceção**, e o item 11
+   não o afeta. ⚠️ O harness injeta essa linha por padrão: desligá-la é ato seu, a cada vez.
 2. **NUNCA remova conteúdo da plan.** Só adicione (§5), e só o resumo e o `status`.
 3. **NUNCA crie nem edite spec por iniciativa própria.** `00-contexto`, `00-indice`, `00-backlog`,
    `arquitetura/`, `adr/`, `specs/` e outras plans são do revisor. **Exceção, e só ela:** o arquivo que a
@@ -207,6 +208,12 @@ Abaixo, o resumo da execução, como entregue pelo executor:
 9. **NUNCA execute a próxima tarefa por iniciativa própria.** Uma conversa, uma tarefa.
 10. **NUNCA converta via direta em plan por conta própria**, nem o contrário. A triagem é do revisor. Achou
     que a tarefa devia ter plan? **Diga no resumo** e execute o escopo que recebeu.
+11. **NUNCA escreva no Git por iniciativa própria.** `git commit`/`push`, e `stash`/`reset`/`checkout` que
+    descarte trabalho: a escrita é do usuário, e o seu padrão é deixar as alterações no worktree. A **única**
+    porta é ele **solicitar e autorizar** naquela conversa, e ela vale para aquele ato, não para os seguintes
+    ([[17-contrato-de-operacao-git]] §2.0 · [[012-escrita-git-sob-autorizacao-do-dono]]). **Ler é livre e
+    esperado** — `status`, `log`, `diff`. *(Este item fecha a lista, e não abre a numeração, porque `§7.3` é
+    citado de fora — ver a decisão registrada no resumo desta execução.)*
 
 ---
 

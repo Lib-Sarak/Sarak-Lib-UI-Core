@@ -324,12 +324,15 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   próximo build e o gate acusa.
 - **Não apague `.agents/skills/ui-integra-consumidor/`** — é a **fonte** do kit do consumidor
   (`scripts/consumer-kit/kitFiles.mjs:22`). Removê-la derruba `guide:check`, que roda dentro do `npm run build`.
-- **Não commite, e não empurre.** Quem commita é o usuário — vale para todo agente, sem exceção e sem
-  co-autoria. ⚠️ **E o alcance da co-autoria inclui o commit que um agente apenas INSTRUI**, inclusive dentro
-  de uma sequência de release ([`specs/17-contrato-de-operacao-git.md`](specs/17-contrato-de-operacao-git.md) §4).
-- **Nenhum agente executa operação de Git.** Nem `push`, nem `merge`, nem `tag`, nem `npm version` — ele
-  **instrui**, e quem digita é o dono. Não é cautela: é desenho, e é o que impede qualquer agente de alcançar
-  a credencial que fura a proteção da `main` (§2 daquela spec). As seis proibições absolutas estão na §3 dela.
+- **NUNCA adicione co-autoria — este eixo não tem exceção.** Nenhuma linha `Co-Authored-By` de agente, em
+  hipótese nenhuma. ⚠️ **E o alcance inclui o commit que um agente apenas INSTRUI**, inclusive dentro de uma
+  sequência de release ([`specs/17-contrato-de-operacao-git.md`](specs/17-contrato-de-operacao-git.md) §4).
+- **Não escreva no Git por iniciativa própria.** `commit`, `push`, `merge`, `tag`, `npm version`: a escrita é
+  do dono, e o padrão é o agente **instruir** — ele entrega o comando pronto e quem digita é o dono. A **única**
+  porta é o dono **solicitar e autorizar** naquela conversa, e ela vale para aquele ato, não para os seguintes
+  ([`specs/17`](specs/17-contrato-de-operacao-git.md) §2.0 · [`adr/012`](adr/012-escrita-git-sob-autorizacao-do-dono.md)).
+  **Ler é livre e esperado** — `status`, `log`, `diff`, `fetch`, os `*:check`. As seis proibições absolutas,
+  que autorização nenhuma dissolve, estão na §3 daquela spec.
 - **Não rode `npm version` por conta própria.** Ele cria tag e faz `push` no `postversion`: é publicação, e
   publicação é decisão do usuário. O que fazer quando o push é bloqueado está na §3.1.
 - **Não contorne gate, hook ou teste.** Bloqueio é informação; corrija a causa. Contornar reprova a execução

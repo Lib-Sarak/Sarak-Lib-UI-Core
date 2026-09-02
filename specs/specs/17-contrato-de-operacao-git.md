@@ -30,8 +30,8 @@ Decisão do dono, 2026-08-19:
 
 | Papel | Responsabilidade | Não pode |
 |---|---|---|
-| **Agente** | **Ler o estado**, diagnosticar, decidir **o que** fazer, emitir o comando exato no shell certo, e o motivo | **Mutar** o repositório |
-| **Dono** | Digitar todo comando que muda alguma coisa, e ver o efeito | — |
+| **Agente** | **Ler o estado**, diagnosticar, decidir **o que** fazer, emitir o comando exato no shell certo, e o motivo | **Mutar por iniciativa própria** (§2.0) |
+| **Dono** | Digitar o comando que muda alguma coisa, e ver o efeito — ou **solicitar e autorizar** que o agente o execute naquela conversa | — |
 
 ## 2.0 A fronteira é MUTAÇÃO, não execução
 
@@ -44,12 +44,20 @@ de seis comandos de leitura para copiar, colar e trazer de volta. Duas rodadas, 
 | O agente | Exemplos |
 |---|---|
 | ✅ **Lê à vontade, e deve** | `git status` · `git log` · `git diff` · `git show` · `git describe` · `git branch` · `git tag --list` · `git fetch` · todo `*:check` (`release:check`, `minor-no-removal:check`, `migration-anchor:check`…) |
-| ⛔ **Nunca muta** | `add` · `commit` · `push` · `merge` · `rebase` · `tag` (criar/mover/apagar) · `checkout` · `reset` · `revert` · `stash` · `branch -d` · **`npm version`** · e qualquer coisa que toque o remoto |
+| ⛔ **Não muta por iniciativa própria** | `add` · `commit` · `push` · `merge` · `rebase` · `tag` (criar/mover/apagar) · `checkout` · `reset` · `revert` · `stash` · `branch -d` · **`npm version`** · e qualquer coisa que toque o remoto |
+
+> 🔑 **A porta, e só ela** *(decisão do dono, 2026-09-02 — [[012-escrita-git-sob-autorizacao-do-dono]])*.
+> **Sem pedido, o agente entrega o comando pronto e o dono digita** — é o padrão, e é o caminho normal.
+> **Com solicitação e autorização expressa do dono, naquela conversa, o agente executa.** A autorização
+> vale para aquele ato, não para os seguintes, e **não** dissolve nenhuma das seis proibições da §3.
+>
+> **A lista acima não mudou, e não é a proibição** — é o inventário do que conta como mutação. O que
+> mudou é a fronteira: ela passou a ser a **iniciativa**, não o verbo.
 
 **Por que a linha cai aí, e não em outro lugar.** Os dois motivos da §2.1 são sobre **mudança de estado**:
 a autorização de fachada só existe quando algo *acontece* sem inspeção, e a credencial que fura a proteção
 da `main` só é alcançada por quem *empurra*. **Um `git log` não carimba nada e não alcança credencial
-nenhuma.**
+nenhuma** — por isso a leitura nunca precisou de porta, e continua não precisando.
 
 E há a razão positiva: **ler é o que torna a instrução boa.** Um agente que não lê instrui no escuro — e
 uma instrução errada, neste modelo, é o dono rodando o comando errado (§2.2). Fazer o dono transcrever
@@ -67,9 +75,18 @@ poder inspecioná-lo de fato rodando é carimbo, não controle.
 Aqui esse vão não existe. **O dono só vê o efeito de um comando depois de o ter digitado ele mesmo**, o que
 elimina a possibilidade de aprovação automática ou distraída.
 
-**E resolve o acesso por construção:** nenhum agente **pode** tocar a credencial que fura a proteção da `main`
-— a exceção de administrador ([[16-integracao-continua]] §2.1) — porque nenhum agente executa o `git push` que
-a usaria.
+> 🔴 **Sobre o acesso à credencial, o que esta seção afirmava mudou** *(2026-09-02)*. Até a porta da §2.0
+> existir, aqui se lia que o modelo *"resolve o acesso **por construção**: nenhum agente **pode** tocar a
+> credencial que fura a proteção da `main` — a exceção de administrador ([[16-integracao-continua]] §2.1) —
+> porque nenhum agente executa o `git push` que a usaria."*
+>
+> **Isso deixou de ser verdade, e a frase não fica.** Um agente autorizado a empurrar **alcança** aquela
+> credencial; nada no mecanismo o impede. A garantia passou de **estrutural** a **de política**: o que
+> segura é a decisão de quem autoriza, tomada uma vez por conversa.
+>
+> O custo está registrado como trade-off em [[012-escrita-git-sob-autorizacao-do-dono]] §3. **O argumento
+> da autorização de fachada, acima, não é atingido** — ele é sobre aprovar sem inspecionar, e continua
+> valendo inteiro: a porta da §2.0 é um pedido explícito do dono, não um carimbo automático.
 
 ## 2.2 O custo, sem eufemismo
 
@@ -90,6 +107,25 @@ agente que confirma o shell **antes** de emitir o comando é o que torna esse cu
 
 Não há contradição com a §2: instruir um commit como parte de uma sequência de release **é ainda o dono
 digitando**.
+
+### 2.3.1 A decisão de 2026-09-02, e o que ela supera da de 2026-08-19
+
+> *"Coautoria é expressamente proibido sempre, o usuário commita e faz push, o agente pode realizar apenas
+> consultas diretamente, escritas no git e github são de responsabilidade do usuário a menos que o próprio
+> usuário solicite e autorize."* — decisão do dono, 2026-09-02.
+
+Ela separa **dois eixos que o texto anterior fundia**:
+
+| Eixo | Regra | Tem exceção? |
+|---|---|---|
+| **Co-autoria** | Nenhuma linha `Co-Authored-By` de agente, nem em commit digitado por ele, nem em commit que ele apenas instrua (§4) | **Não. Nunca.** |
+| **Escrita no Git/GitHub** | É do dono. O agente não escreve por iniciativa própria | **Sim, e só uma:** o dono solicitar e autorizar, naquela conversa |
+
+**A decisão de 2026-08-19, citada na §2, continua valendo em tudo — menos nesta parte.** O *"o agente não
+executa absolutamente nada"* dela permanece como o **padrão** e como a descrição do caminho normal; o que
+mudou é que ele deixou de ser **absoluto**. O registro do trade-off, incluindo a garantia de acesso que
+isso retira, está em [[012-escrita-git-sob-autorizacao-do-dono]] — e é lá que se lê **por que** a troca foi
+aceita, antes de alguém propor desfazê-la.
 
 # 3. Proibições absolutas de operação
 
@@ -129,6 +165,11 @@ Um commit instruído por um agente e digitado pelo dono dentro de uma sequência
 um commit que o dono faria sozinho, sem instrução nenhuma:
 
 > ⛔ **Nenhuma linha `Co-Authored-By` de agente, em nenhuma hipótese.**
+
+**E é por isso que a regra aparece em cinco lugares em vez de um:** o harness dos agentes que trabalham
+aqui injeta *"End git commit messages with: `Co-Authored-By: …`"* como instrução padrão — todo agente
+**chega com a co-autoria ligada** e só a desliga lendo estas specs. A repetição não é descuido de
+referência; é o que vence um default que ninguém neste repositório escolheu.
 
 # 5. Roteamento
 
@@ -173,6 +214,10 @@ o gate em vez de repetir a regra**: gate segura, prosa não. É a lição medida
 - [x] O custo do modelo está declarado, com o incidente real que o demonstra.
 - [x] As seis proibições estão listadas com o motivo de cada uma.
 - [x] O alcance da co-autoria cobre commit **instruído**, e referencia os quatro lugares sem reescrevê-los.
+- [x] **A fronteira é a INICIATIVA, não o verbo** (§2.0): a porta da autorização expressa está escrita, a
+      lista de comandos que contam como mutação continua intacta, e a garantia de acesso que a decisão
+      retira está declarada na §2.1 em vez de afirmada — com o trade-off registrado em
+      [[012-escrita-git-sob-autorizacao-do-dono]].
 - [x] O roteamento não redescreve nenhuma das specs donas.
 - [x] A não-exercitação da skill está declarada.
 

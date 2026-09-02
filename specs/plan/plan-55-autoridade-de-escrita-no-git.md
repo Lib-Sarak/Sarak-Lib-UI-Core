@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Separar co-autoria absoluta de escrita autorizada no contrato de operação Git"
 objetivo: "Separar os dois eixos da regra de Git — co-autoria proibida sempre, escrita no repositório só sob solicitação e autorização do dono — em todos os documentos que os afirmam, e registrar a decisão em ADR"
 dominio: "Governança / Operação Git"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Máxima"
 tags: ["plan", "git", "governanca", "co-autoria", "adr"]
 relacionados: ["[[17-contrato-de-operacao-git]]", "[[00-contexto]]", "[[00-prompt-executor]]", "[[00-prompt-revisor]]", "[[16-integracao-continua]]"]
@@ -188,11 +188,198 @@ que [[00-prompt-revisor]] §5.2 chama de preencher campo por reflexo.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-09-02
+
+**Resultado:** Concluído com pendências
+
+**O que foi feito**
+
+- `specs/adr/012-escrita-git-sob-autorizacao-do-dono.md` — criado. Duas alternativas preteridas com custo
+  nomeado; a negativa obrigatória (perda da garantia estrutural de acesso à credencial) é o primeiro item
+  dos trade-offs.
+- `17` §2 (tabela) — a célula do Agente virou *"Mutar por iniciativa própria (§2.0)"*. **A célula do Dono
+  também mudou**: *"Digitar todo comando que muda alguma coisa"* passou a admitir *"ou solicitar e autorizar
+  que o agente o execute"*, porque deixá-la como estava contradiria a linha de cima.
+- `17` §2.0 — rótulo ⛔ virou *"Não muta por iniciativa própria"*; acrescentado o quadro 🔑 com a porta. **A
+  lista de comandos não foi tocada.** O parágrafo *"Por que a linha cai aí"* ganhou a razão de a leitura
+  nunca ter precisado de porta.
+- `17` §2.1 — o parágrafo *"E resolve o acesso por construção"* foi **substituído** por um bloco que cita a
+  frase antiga, declara que ela deixou de ser verdade, e aponta o trade-off ao ADR-012. O argumento da
+  autorização de fachada ficou intacto.
+- `17` §2.3.1 — seção nova com a decisão de 2026-09-02 na íntegra, a tabela dos dois eixos, e a marcação de
+  que a decisão de 2026-08-19 **continua valendo em tudo menos nesta parte**. A antiga não foi apagada.
+- `17` §4 — acrescentado o motivo de a regra ser repetida em cinco lugares: o harness injeta a co-autoria
+  por padrão.
+- `17` §7 — um critério de aceite novo, marcado, para a fronteira revisada.
+- `00-contexto` §7 — os dois bullets de Git viraram dois eixos independentes, apontando para a `17` e o
+  ADR-012 sem reescrevê-los.
+- `00-prompt-executor` §7 — co-autoria virou item próprio e absoluto (item 1); a escrita sob autorização
+  virou o **item 11**, no fim da lista. Ver *Decisões*.
+- `00-prompt-revisor` §3 (célula de commit) e §9 — mesma separação: co-autoria absoluta no item 2, escrita
+  sob autorização no **item 11**.
+- `.agents/skills/git-ci-cd/SKILL.md` (+ o espelho `.claude/`) — `description`, quadro da fronteira e bloco
+  da decisão citada alinhados à §2.0 nova. Os dois *"sem co-autoria, nunca"* não foram tocados.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/adr/012-escrita-git-sob-autorizacao-do-dono.md` | criado | O ADR da decisão, com as duas alternativas e o custo de cada |
+| `specs/specs/17-contrato-de-operacao-git.md` | alterado | §2, §2.0, §2.1, §2.3.1 (nova), §4, §7 — 7 hunks |
+| `specs/00-contexto.md` | alterado | §7, os dois bullets de Git — 1 hunk |
+| `specs/00-prompt-executor.md` | alterado | §7: item 1 reescrito + item 11 novo |
+| `specs/00-prompt-revisor.md` | alterado | §3 (célula) e §9: item 2 reescrito + item 11 novo |
+| `.agents/skills/git-ci-cd/SKILL.md` | alterado | `description`, quadro da fronteira, bloco do contrato |
+| `.claude/skills/git-ci-cd/SKILL.md` | alterado | espelho do acima (mesmo inode; git rastreia os dois) |
+| `sarak-dev/state.json` · `START-HERE.md` · `GUIA-MANUTENCAO.md` | alterado | **gerados** por `npm run dev-kit` — ver *Decisões* |
+| `specs/plan/plan-55-*.md` | alterado | `status` e este resumo |
+
+**Verificações executadas**
+
+- `git diff --stat` → 10 arquivos; os 7 da §3.1 mais os 3 gerados do `sarak-dev/`.
+- `git diff specs/specs/17-*.md` → **7 hunks, nenhum na §3**. Conferido por busca das seis proibições no
+  diff: nenhuma aparece. A §4 tem só o acréscimo do item 6.
+- `git diff | grep "^+.*Co-Authored"` → 5 ocorrências, **todas texto da própria proibição**; nenhuma é um
+  trailer `Co-Authored-By:` de commit.
+- `git diff specs/00-contexto.md` → **1 hunk**, `@@ -327,6 +327,9 @@`, dentro da §7.
+- `npm run section-pointers:check` → **verde** (2 correções necessárias, ver *Decisões*).
+- `npm run dev-kit` → `77 componentes públicos, 423 tokens, 23 gates`; `dev-kit:check` → **verde**.
+- `npm run audit:baseline` → *"igual ao baseline de 2026-08-11 — nenhuma regressão"*.
+- YAML do ADR validado com PyYAML: `alternativas_consideradas` com **2** entradas, ambas com `custo`
+  preenchido; `substitui` vazio.
+- `npm run plan-index:check` → **vermelho, por desenho** — ver *Pendências*.
+
+**Critérios de aceite**
+
+- [x] `adr/012-*.md` existe, com duas entradas e o custo de cada — evidência: frontmatter `:9-13`, validado
+      por PyYAML.
+- [x] `17` §2.0 distingue iniciativa própria de solicitação e autorização — evidência: `:47` e o quadro 🔑.
+- [x] `17` §2.1 não afirma mais garantia por construção; custo nomeado, ponteiro ao ADR-012 — evidência:
+      hunk `@@ -70,3 +78,12 @@`.
+- [x] Decisão de 2026-08-19 citada e marcada como superada nesta parte — evidência: §2.3.1.
+- [x] `17` §3 e §4 sem alteração além do item 6 — evidência: os 7 hunks, nenhum na §3.
+- [x] Co-autoria é item próprio nos três prompts, sem cláusula pendurada — evidência: `00-contexto` §7
+      bullet 1, `00-prompt-executor` §7 item 1, `00-prompt-revisor` §9 item 2.
+- [x] `description` da skill descreve a fronteira nova e preserva as palavras-gatilho — a frase *"Use quando
+      o dono pedir ajuda para commitar…"* não foi tocada.
+- [x] Nenhuma linha `Co-Authored-By` adicionada a nada.
+- [x] Nada commitado.
+
+**Decisões e suposições**
+
+1. 🔴 **A plan se contradiz sobre a renumeração, e segui a leitura conservadora.** A §3.1 me deu
+   *"`00-prompt-executor.md` — §7, item 1"*; o passo 9 mandou *"renumerar os itens seguintes"*. Renumerar
+   move `§7.3`, que é citado **de fora** em 6 lugares que **não estão no meu escopo**: `00-contexto.md:291`
+   (§5, é da `plan-56`), `01-gates-e-baseline.md:675` (fora de escopo), e as próprias `plan-55` (×3) e
+   `plan-56` (×4). O `check-section-pointers` **não pegaria** — ele ignora ponteiro cross-documento por
+   limite declarado. **Escolhi não renumerar:** co-autoria ficou como item 1 (próprio e absoluto, que é o
+   critério de aceite) e a escrita virou o **item 11**, no fim. Itens 2–10 intactos, `§7.3` continua
+   apontando para a proibição de editar spec.
+2. **Mesmo tratamento no `00-prompt-revisor` §9**, pela mesma razão: a `plan-56` cita `§9.6` e `§9.7`.
+   Co-autoria ficou no item 2, escrita no item 11.
+3. **Rodei `npm run dev-kit`**, que altera 3 arquivos fora da §3.1. A §7 da plan autoriza explicitamente
+   (*"se acusar defasagem, `npm run dev-kit` e commitar junto — nunca editar `sarak-dev/` à mão"*). Nenhum
+   arquivo de `sarak-dev/` foi tocado à mão.
+4. **Ajustei a célula do Dono na tabela da §2** da `17`, além da célula do Agente que o passo 2 nomeia. A
+   §3.1 dá *"§2 (tabela)"* inteira, e deixar *"Digitar todo comando que muda alguma coisa"* contradiria a
+   célula de cima na mesma tabela.
+5. **Ajustei a linha `Commits continuam do dono … quem digita é sempre o dono`** da skill (`:170-171`), que
+   faz parte do bloco do contrato que o passo 11 manda alinhar.
+6. **Duas correções no ADR forçadas pelo `check-section-pointers`:** ele lê `§N.M` sem qualificador como
+   autorreferência. O `§2.1` do corpo ganhou o wikilink `[[17-contrato-de-operacao-git]]`; o `§2.1` que
+   estava dentro de um valor do frontmatter foi **removido** (virou prosa: *"o contrato de operação Git"*),
+   porque qualificador dentro de YAML é ruído.
+
+**Achados fora do escopo (não corrigidos)**
+
+- `specs/00-contexto.md:285` — a célula *"Nunca faz"* do Executor ainda diz *"criar/alterar outras specs"*,
+  o que contradiz a §7.3 desde 2026-09-02. **Já está roteado**: é o passo 12 da `plan-56`.
+- **`§7` do executor e `§9` do revisor são frágeis por construção.** Como `§N.M` significa *"item M da lista
+  numerada da seção N"* e o `check-section-pointers` ignora referência cross-documento, **qualquer inserção
+  no meio dessas listas quebra ponteiros externos em silêncio**. Foi o que esta execução quase fez. Sugestão
+  para o revisor: linha de `00-backlog`.
+
+**Pendências / riscos**
+
+- `npm run plan-index:check` está **vermelho**, e é esperado: o índice diz `🔴 A executar` e o frontmatter
+  desta plan diz `🟠 Em revisão`. Espelhar o índice é ato do **revisor** ([[00-indice]] §2), e o executor não
+  o toca. **O commit fica bloqueado até isso ser feito.**
+- A `plan-56`, no passo 12, precisa ser lida à luz da decisão 1 acima: ela manda alinhar `00-contexto:285` à
+  *"§7.3"*, e a §7.3 continua sendo a proibição de editar spec — o ponteiro dela segue válido.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-09-02 — 🟢 Aprovado
+
+**Verificado, não só lido no resumo:**
+
+- `git status` + `git diff --stat` → 11 arquivos (10 modificados + `adr/012` novo, não rastreado): os 7
+  de §3.1 (`adr/012`, `17`, `00-contexto`, `00-prompt-executor`, `00-prompt-revisor`, os dois espelhos de
+  `git-ci-cd/SKILL.md`) + a própria `plan-55` (status/resumo) + os 3 gerados de `sarak-dev/`. Nada fora do
+  escopo, nada faltando.
+- `git diff -U0 specs/specs/17-contrato-de-operacao-git.md` → **7 hunks**. Mapeei os limites de seção no
+  `HEAD` (`§3`: linhas 94–111 · `§4`: 112–132) e confirmei que **nenhum hunk cai dentro da §3** — a inserção
+  mais próxima (`### 2.3.1`) entra logo **antes** da linha 94, e a única mudança na §4 é a adição no final
+  (linha 132), exatamente o "acréscimo do item 6" declarado. As seis proibições absolutas seguem
+  byte-a-byte iguais.
+- `git diff | grep "Co-Authored"` → 8 ocorrências (o resumo contou 5, antes de o próprio resumo — que cita a
+  palavra ao descrever o teste — entrar no diff). Conferi as 8 uma a uma: todas são prosa da proibição ou do
+  próprio resumo descrevendo o teste; **nenhuma é um trailer `Co-Authored-By:` de commit real**. Nenhum
+  commit foi criado nesta execução (`git log` não tem commit novo).
+- `git diff specs/00-contexto.md` → 1 hunk, dentro da §7, só os dois bullets de Git.
+- `git diff specs/00-prompt-executor.md` / `specs/00-prompt-revisor.md` → item 1 / item 2 (co-autoria)
+  reescrito sem cláusula pendurada; item novo **acrescentado ao final** da lista (item 11 nos dois), sem
+  renumerar — validei que isso é a escolha certa: `plan-56` (ainda aberta) cita `§7.3`, `§9.6` e `§9.7` por
+  número, e renumerar teria quebrado esses ponteiros cross-documento em silêncio (o `section-pointers:check`
+  não os enxerga — R18/vão 7).
+- Espelho `.claude/skills/git-ci-cd/SKILL.md` vs `.agents/skills/git-ci-cd/SKILL.md` → **byte-idênticos**,
+  antes e depois (`diff` vazio nos dois lados).
+- `description` da skill `git-ci-cd` → a cláusula-gatilho *"Use quando o dono pedir ajuda para
+  commitar…NÃO acione proativamente."* permanece **verbatim**.
+- YAML de `adr/012-*.md` parseado (script próprio, equivalente ao PyYAML do executor) → `alternativas_consideradas`
+  com **2** entradas, ambas com `opcao` e `custo` preenchidos; `substitui`/`substituido_por` vazios,
+  coerente com "não substitui nenhum ADR". Bytes do arquivo conferidos livres de replacement character —
+  a saída "estranha" no terminal foi só o codepage do console, não corrupção de conteúdo.
+- `npm run section-pointers:check` → verde (318 cross-doc ignorados por limite declarado, 9 citações
+  ignoradas — nenhum ponteiro de autorreferência morto).
+- `npm run dev-kit:check` → verde, "kit em dia (3 arquivos, 0 ponteiros mortos)".
+- `npm run audit:baseline` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- `npm run plan-index:check` → vermelho, **como esperado** (`índice="🔴 A executar" × frontmatter="🟠 Em
+  revisão"`) — é o revisor quem sincroniza o índice, na aprovação (abaixo).
+
+**Critérios de aceite (§6):** os 9 batem com evidência nomeada, incluindo os dois que exigiam checagem
+independente (seção 3 intacta; nenhum trailer de commit) — nenhum "atendido por interpretação".
+
+**Achados fora do escopo — tratados:**
+
+1. `00-contexto.md:285` (célula "Nunca faz" do Executor) — confirmado que **já está roteado**: `plan-56`
+   passo 12 cobre exatamente essa correção, e a cita corretamente porque `§7.3` não foi renumerada. Não
+   entra no backlog — já está numa plan aberta ([[00-backlog]] §4: "item que já está numa plan não fica
+   aqui").
+2. Fragilidade de `§N.M` como ponteiro cross-documento em listas numeradas (`00-prompt-executor` §7 e
+   `00-prompt-revisor` §9) — **transcrito para o [[00-backlog]]**, peso médio.
+3. **Achado adicional, meu:** `specs/adr/README.md` — a tabela "Os ADRs desta base" continua listando só
+   001–011; o `adr/012` novo não foi acrescentado à tabela nem à frase final sobre "sobre o X → Y". Não
+   estava em `§3.1` desta plan (só `adr/012-*.md — criar` foi declarado), então o executor corretamente não
+   tocou o arquivo — é lacuna de escopo desta plan, não falha de execução. **Transcrito para o
+   [[00-backlog]]**, peso baixo (o ADR existe e é válido; só o índice de navegação ficou defasado).
+
+**Regras do sistema (`00-contexto` + `padrao-escrita`):** sem hardcoded, sem segredo, sem `TODO`/debug,
+nenhum comentário citando esta plan (a norma veda citar plan em comentário de **código**; nada aqui é
+código). Nenhum sinal de atalho.
+
+**Pode commitar.** As alterações no worktree (11 arquivos, listados acima) estão prontas: `adr/012` novo +
+7 arquivos de `§3.1` + os 3 gerados do `sarak-dev/` (via `npm run dev-kit`, autorizado pela própria §7 da
+plan) + esta plan com o veredito.
+
+**Proposta de síntese:** nenhuma. `destino_sintese: "—"` está correto — esta plan escreveu diretamente nas
+specs fixas e no ADR; não há verdade adicional para transportar depois. Ela **não** entra na fila de
+síntese: quando o `git log` mostrar o commit desta aprovação, ela pode ser removida (§7.4), o que farei
+numa próxima ação sob autorização.
 
 ---
 

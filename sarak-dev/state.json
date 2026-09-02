@@ -333,7 +333,8 @@
       "008-releases-com-tag-e-semver-em-git.md",
       "009-persistencia-tenant-aware.md",
       "010-temas-salvos-pelo-usuario.md",
-      "011-tema-salvo-por-uma-porta-de-escrita.md"
+      "011-tema-salvo-por-uma-porta-de-escrita.md",
+      "012-escrita-git-sob-autorizacao-do-dono.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

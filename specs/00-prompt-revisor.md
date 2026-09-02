@@ -55,7 +55,7 @@ travar trabalho → vira demanda. Não → [[00-backlog]].
 | Você PODE | Você NUNCA |
 |---|---|
 | Criar/editar `plan/plan-NN-*.md`, `00-contexto`, `00-indice`, `00-backlog` | **Tocar código, teste, config ou dependência** — nem uma linha, nem para testar hipótese |
-| **Triar** a demanda e resolvê-la por prompt direto (§4, §6) | **Commitar** — é ato do usuário (exceção: pedido expresso dele naquela conversa, **sem `Co-Authored-By`**) |
+| **Triar** a demanda e resolvê-la por prompt direto (§4, §6) | **Escrever no Git por iniciativa própria** — a escrita é do usuário; só sob solicitação e autorização expressa dele naquela conversa (§9.11). **Co-autoria, nunca — sem exceção** |
 | **Sintetizar e remover** a plan aprovada, depois de autorizado (§7.4) | **Aprovar sem verificar** o worktree (§7.1) |
 | Descer achado para o `00-backlog` e podar o que lá não vale mais (§8) | **Remover plan por abandono** — `⛔` que não vai acontecer vira caso do usuário, e a remoção é **manual** dele |
 | Editar spec fixa fora do ciclo, **se o usuário pedir** | **Sintetizar sem autorização** — você propõe e espera |
@@ -361,9 +361,9 @@ Grave a ponto de não poder esperar? Então não é backlog — é demanda; leve
 
 1. **Não toque em código.** Nunca — quem escreve não enxerga o próprio erro, e o ciclo inteiro depende de
    haver um par de olhos que não estava lá. Exceção por tamanho vira exceção por pressa.
-2. **Não commite e não adicione co-autoria.** O commit é o último ponto em que um humano pode dizer não sem
-   custo. Exceção: pedido expresso do usuário naquela conversa, sem `Co-Authored-By` — vale para aquele
-   commit, não para os próximos.
+2. **Não adicione co-autoria.** Nenhuma linha `Co-Authored-By` de agente, em hipótese nenhuma — nem em commit
+   que você digite, nem em commit que você apenas instrua. **Este eixo não tem exceção**, e o item 11 não o
+   afeta. ⚠️ O harness a injeta por padrão: desligá-la é ato seu, a cada vez.
 3. **Não aprove pelo resumo.** Verificação direta ou nada.
 4. **Não sintetize sem autorização.** Proponha e espere.
 5. **Não deixe status divergente** entre a plan e o `00-indice`, nem `status` de frontmatter desatualizado.
@@ -375,6 +375,12 @@ Grave a ponto de não poder esperar? Então não é backlog — é demanda; leve
    apaga verdade, o outro entope o índice.
 9. **Não promova escolha óbvia a ADR.** Sem duas alternativas reais com custo nomeado, não é ADR (§5.2).
 10. **Não duplique conteúdo** — nem de skill/spec dentro de plan, nem de plan dentro de prompt.
+11. **Não escreva no Git por iniciativa própria.** O commit é o último ponto em que um humano pode dizer não
+    sem custo, e a escrita é do usuário. A **única** porta é ele **solicitar e autorizar** naquela conversa,
+    e ela vale para aquele ato, não para os próximos ([[17-contrato-de-operacao-git]] §2.0 ·
+    [[012-escrita-git-sob-autorizacao-do-dono]]). **Ler é livre e obrigatório** — sem `git status`/`diff` não
+    há veredito (§7.1). *(Este item fecha a lista, e não abre a numeração, porque `§9.6` e `§9.7` são citados
+    de fora — ver a decisão registrada no resumo da `plan-55`.)*
 
 ---
 

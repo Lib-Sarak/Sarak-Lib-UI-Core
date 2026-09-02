@@ -1,6 +1,6 @@
 ---
 name: git-ci-cd
-description: Instrui a operação de Git e release deste repositório — diagnóstico de estado, commit de rotina, sincronizar develop↔main, abrir PR, ler a CI, merge na main, decidir o nível do bump (minor×major), emitir o release (npm version), o que conferir depois, e limpeza de branch. A fronteira é MUTAÇÃO, não execução: o agente LÊ o estado sozinho (git status/log/diff/fetch e os *:check) e chega com o diagnóstico pronto, mas NUNCA muta o repositório (add, commit, push, merge, tag, checkout, npm version) — esses comandos ele entrega prontos para o PowerShell do dono digitar. Use quando o dono pedir ajuda para commitar, sincronizar branches, abrir PR, decidir o nível de uma release ou emitir uma release deste repositório. NÃO acione proativamente.
+description: Instrui a operação de Git e release deste repositório — diagnóstico de estado, commit de rotina, sincronizar develop↔main, abrir PR, ler a CI, merge na main, decidir o nível do bump (minor×major), emitir o release (npm version), o que conferir depois, e limpeza de branch. A fronteira é a INICIATIVA: o agente LÊ o estado sozinho (git status/log/diff/fetch e os *:check) e chega com o diagnóstico pronto, mas NUNCA muta o repositório por conta própria (add, commit, push, merge, tag, checkout, npm version) — esses comandos ele entrega prontos para o PowerShell do dono digitar, e só os executa se o dono solicitar e autorizar naquela conversa. Use quando o dono pedir ajuda para commitar, sincronizar branches, abrir PR, decidir o nível de uma release ou emitir uma release deste repositório. NÃO acione proativamente.
 ---
 
 # Skill: Agente de Git & Release — instrui, não executa
@@ -116,12 +116,18 @@ guardado, e ninguém lembra de recuperá-lo.)*
 
 ---
 
-> 🔴 **A fronteira é MUTAÇÃO, não execução — leia isto antes do contrato abaixo.**
+> 🔴 **A fronteira é a INICIATIVA — leia isto antes do contrato abaixo.**
 >
 > | Você | O quê |
 > |---|---|
 > | ✅ **lê, e DEVE** | `git status` · `git log` · `git diff` · `git show` · `git describe` · `git branch` · `git tag --list` · `git fetch` · todo `*:check` |
-> | ⛔ **nunca muta** | `add` · `commit` · `push` · `merge` · `rebase` · `tag` (criar/mover/apagar) · `checkout` · `reset` · `revert` · `stash` · `branch -d` · **`npm version`** · `gates:full` / `build` (mutam `dist/`) |
+> | ⛔ **não muta por iniciativa própria** | `add` · `commit` · `push` · `merge` · `rebase` · `tag` (criar/mover/apagar) · `checkout` · `reset` · `revert` · `stash` · `branch -d` · **`npm version`** · `gates:full` / `build` (mutam `dist/`) |
+>
+> 🔑 **A porta, e só ela** *(decisão do dono, 2026-09-02)*: sem pedido, você entrega o comando pronto e o
+> dono digita — o padrão. **Com solicitação e autorização expressa dele, naquela conversa, você executa**,
+> e a autorização vale para aquele ato, não para os seguintes. A lista acima não encolheu: ela é o
+> inventário do que conta como mutação, não a proibição. Contrato em
+> `specs/specs/17-contrato-de-operacao-git.md` §2.0 e `specs/adr/012-escrita-git-sob-autorizacao-do-dono.md`.
 >
 > **Rode você mesmo todo comando de leitura.** Não devolva ao dono um bloco de `git log` para ele colar e
 > trazer de volta — isso não é segurança, é transferir a ele o trabalho que você faz melhor, e é a mesma
@@ -148,16 +154,22 @@ guardado, e ninguém lembra de recuperá-lo.)*
 > ler o estado sempre foi seu, e é o que torna a instrução boa. A fronteira exata está no quadro acima e
 > na §2.0 de `specs/specs/17-contrato-de-operacao-git.md`.
 >
-> Isto é mais seguro que "executar após aprovação": aprovar sem poder inspecionar é carimbo — **a
-> execução É a autorização**, não existe vão entre uma e outra. E resolve o acesso: este agente
-> **nunca** toca a credencial que fura a proteção da `main`.
+> ⚠️ **Aquela decisão foi superada NESTA PARTE em 2026-09-02** — o *"não executa absolutamente nada"*
+> continua sendo o **padrão**, e deixou de ser **absoluto**: o dono pode solicitar e autorizar. Ver o
+> quadro 🔑 acima, a §2.0 do contrato e o ADR-012.
+>
+> Isto continua mais seguro que "executar após aprovação genérica": aprovar sem poder inspecionar é
+> carimbo, e a porta da §2.0 é um pedido explícito do dono, não um carimbo automático. **O que mudou é a
+> garantia de acesso:** ela deixou de ser estrutural. Um agente autorizado a empurrar **alcança** a
+> credencial que fura a proteção da `main` — o trade-off está registrado no ADR-012 §3.
 >
 > **O custo é real, e é seu:** qualidade passa a ser inteiramente da instrução. Comando errado na
 > tela é o dono rodando o comando errado — foi o que aconteceu com um `sed` entregue para um
 > PowerShell (§ seguinte). Confirme o shell, confirme o estado, e só então escreva o bloco.
 >
 > **Commits continuam do dono**, por regra e por conveniência — não há problema em instruir um
-> commit dentro de uma sequência de release; quem digita é sempre o dono.
+> commit dentro de uma sequência de release, e por padrão quem digita é o dono. Só não é ele quando
+> ele mesmo pediu e autorizou o contrário, naquela conversa.
 >
 > Contrato completo (modelo de autoridade, proibições absolutas, alcance da co-autoria, roteamento):
 > `specs/specs/17-contrato-de-operacao-git.md` — é ela que governa esta skill, não o contrário.
