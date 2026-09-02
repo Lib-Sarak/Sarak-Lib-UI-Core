@@ -328,8 +328,10 @@ nenhum status descreve.
 3. Diga ao usuário que o commit agora sai inteiro: código, spec fixa e a remoção da plan na mesma unidade.
 
 **Exceção — plan retida.** Outra plan **aberta** ainda precisa desta como contexto de execução? Então ela
-fica: preencha `retida_por: "plan-NN"` no frontmatter, mantenha a linha no `00-indice` com *Destino* =
-`sintetizada · retida por plan-NN`, e **não** remova. A retenção **expira sozinha** — quando `plan-NN` for
+fica: no frontmatter dela preencha `retida_por: "plan-NN"` **e** `destino_sintese: "sintetizada · retida por
+plan-NN"`, rode **`npm run plan-index`**, e **não** remova. ⚠️ **A coluna *Destino* é GERADA** a partir de
+`destino_sintese` (`generate-plan-index.mjs:76`), e o gerador reescreve o bloco marcado inteiro a cada
+rodada: escrever na tabela à mão não sobrevive, e derruba o `plan-index:check`. A retenção **expira sozinha** — quando `plan-NN` for
 sintetizada, esta sai junto, no mesmo ato. Reter sem `retida_por` preenchido, ou apontando para plan que já
 não existe, é defeito.
 

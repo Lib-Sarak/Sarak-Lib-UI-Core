@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Costurar os artefatos do fluxo SDD à via direta e ao backlog"
 objetivo: "Alinhar o molde de plan, o índice e o contexto ao desenho de via direta e backlog que os três prompts do fluxo passaram a assumir, fechando as contradições que a atualização deles abriu"
 dominio: "Governança de Specs (SDD)"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "sdd", "governanca", "molde", "indice", "backlog"]
 relacionados: ["[[00-contexto]]", "[[00-indice]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
@@ -214,6 +214,122 @@ já está no lugar definitivo, e não há nada a transportar depois.
 # 9. Resumo da execução
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
+
+## Resumo da execução — 2026-09-02
+
+**Resultado:** Concluído com pendências
+
+**O que foi feito**
+
+- `template-plan.md` frontmatter — acrescentado `retida_por: ""` com o exemplo de uso; o comentário de
+  `objetivo` caiu de **274 para ~110 caracteres**. O que saiu dele (o formato rígido do parser) virou um
+  **bloco de aviso logo abaixo do frontmatter**, onde cabe, e ganhou a metade que faltava: *"ao copiar,
+  substitua a linha inteira — comentário `#` depois do valor também quebra a leitura"*.
+- `template-plan.md` — **removida a §6 "Prompt de execução"** e renumeradas as seções seguintes.
+  **"Como verificar" é agora a §7**, que é o número que [[00-prompt-revisor]] §5.4 e [[00-prompt-executor]]
+  §3 já citavam.
+- `template-plan.md` §7 — acrescentada a linha `**Gate:**` como primeiro item, com a nota de que é sempre
+  preenchida e o critério mora em [[00-prompt-revisor]] §5.4, junto das duas travas.
+- `template-plan.md` — criado o cabeçalho `# 11. Síntese`, vazio, append-only, do revisor.
+- `template-plan.md` §8 — a nota da skill `spec-atualizar` (inexistente) virou: a síntese é ato do revisor,
+  com gatilho do usuário.
+- `00-indice.md` frontmatter — criado `proximo_numero_plan: "57"` e `[[00-backlog]]` em `relacionados`.
+- `00-indice.md` §1 — a nota *"A fila está VAZIA — pela primeira vez"* foi reescrita **no passado**, com a
+  data (2026-08-19). O defeito que ela registra (o `ENOENT` do gerador) não foi apagado.
+- `00-indice.md` §5 — a regra *"nunca remova uma linha"* foi substituída: a linha sai junto com a plan, na
+  síntese; plan abandonada vira `⛔` e a remoção dela é manual do usuário. Acrescentada a regra do
+  `proximo_numero_plan` como **única** fonte de `NN`, com o motivo de ele viver fora dos marcadores.
+- `00-indice.md` §0, §2 e §4 — as três menções a `/spec-atualizar` trocadas pela síntese do revisor. A
+  legenda de `⚪ Sintetizada` passou a dizer que é estado **transitório**: a plan sai do disco.
+- `00-prompt-revisor.md` §7.4 — a exceção da plan retida passou a mandar preencher `destino_sintese` e rodar
+  `npm run plan-index`, com o aviso de que a coluna *Destino* é **gerada** e editá-la à mão derruba o gate.
+- `00-contexto.md` §5 — o diagrama do ciclo foi redesenhado com a **bifurcação da triagem**, a via direta, a
+  síntese como ato do revisor e o dreno do `00-backlog`.
+- `00-contexto.md` §5 — a tabela de papéis: Revisor ganhou `plans` e `00-backlog`; Executor passou a
+  *"criar/alterar spec **por iniciativa própria**"* na coluna *Nunca faz*, e a coluna *Pode escrever* passou
+  a ser *"o que a §3.1 da plan declara no escopo"*; Usuário ganhou **autorizar a síntese** e **promover**.
+- `00-contexto.md` §5 — **o primeiro desvio foi removido**, com o destino citado (a ressalva da
+  [[00-prompt-executor]] §7.3). Os outros quatro ficaram intactos.
+- `00-contexto.md` §4 — linha nova para *"registrar um achado que não é para agora"* → `00-backlog`.
+- `00-contexto.md` §9 — a regra *"só no contexto de uma plan aprovada"* passou a admitir a edição fora do
+  ciclo **a pedido do usuário**, como [[00-prompt-revisor]] §3 já dizia.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/_templates/template-plan.md` | alterado | frontmatter, §6 removida + renumeração, `Gate:`, `Síntese`, nota da §8 |
+| `specs/00-indice.md` | alterado | frontmatter, §0, §1 (prosa), §2, §4, §5 |
+| `specs/00-contexto.md` | alterado | §4, §5 (diagrama, papéis, desvio), §9 |
+| `specs/00-prompt-revisor.md` | alterado | §7.4, o parágrafo da plan retida |
+| `specs/plan/plan-56-*.md` | alterado | `status` e este resumo |
+
+**Verificações executadas**
+
+- `git diff --stat` → **os 4 arquivos da §3.1**, mais a própria plan. Nada além.
+- `git diff specs/00-contexto.md` → 7 hunks, **nenhum na §7**. Confirmado por busca: os bullets de Git
+  (`:342` e `:345`) não aparecem no diff — são da `plan-55`, aprovada.
+- Seções do molde, conferidas uma a uma: `6 Critérios · 7 Como verificar · 8 Destino · 9 Resumo · 10
+  Veredito · 11 Síntese`. **A §7 bate com o que os dois prompts citam.**
+- `npm run section-pointers:check` → **verde**, depois de 3 correções (ver *Decisões*).
+- `npm run dev-kit:check` → verde, sem regenerar.
+- `npm run audit:baseline` → *"igual ao baseline de 2026-08-11 — nenhuma regressão"*.
+- `grep -rn "spec-atualizar" specs/` → sobrou o registro datado de `15-divida-conhecida.md:47` **e** as
+  menções dentro desta própria plan (ver *Decisões*).
+- `grep -rn "proximo_numero_plan" specs/` → o campo no índice `:8`, a regra nova no índice `:176`, e as 3
+  citações do revisor — todas resolvendo.
+- Tabela da §4 do `00-contexto`: **15 linhas**, dentro do alvo de 6–15 que ela declara.
+- `npm run plan-index:check` → **vermelho, por desenho** — ver *Pendências*.
+
+**Critérios de aceite**
+
+- [x] Molde com `retida_por`, cabeçalho `Síntese`, sem seção de prompt, e "Como verificar" na **§7**.
+- [x] Linha `Gate:` no molde `:79`, apontando para [[00-prompt-revisor]] §5.4.
+- [x] Nenhuma menção a `spec-atualizar` sobrou nas specs fixas — só o registro datado de
+      [[15-divida-conhecida]] §2. *(As menções desta plan são transitórias — ver Decisões.)*
+- [x] `proximo_numero_plan: "57"` no frontmatter do índice `:8`, e a §5 `:176` diz que é a única fonte.
+- [x] A §5 do índice não contradiz mais o revisor §7.4 sobre remoção de linha.
+- [x] O revisor §7.4 descreve a retenção por `destino_sintese` + `npm run plan-index`.
+- [x] O diagrama do `00-contexto` §5 mostra as duas vias e o backlog.
+- [x] `00-contexto` §4 roteia o backlog, e a §9 não contradiz mais o revisor §3.
+- [x] O primeiro desvio da §5 não existe mais, e o texto que o substitui cita a §7.3 como destino; os
+      outros quatro desvios estão íntegros.
+- [ ] `npm run plan-index:check` verde — **não atendido**, e por desenho (ver *Pendências*).
+- [x] Nada commitado.
+
+**Decisões e suposições**
+
+1. **Onde foi parar o texto que saiu do comentário de `objetivo`.** O passo 1 mandava encurtar ou quebrar a
+   linha de 274 caracteres. Encurtei — mas o conteúdo (o formato rígido do parser) **não podia sumir**, então
+   virou um bloco de aviso abaixo do frontmatter. Aproveitei para escrever ali a metade que faltava e que o
+   revisor registrou como achado 5 do backlog: **comentário `#` depois do valor também faz `field()` ler
+   `null`**, e é por isso que se substitui a linha inteira ao copiar o molde.
+2. **Três ponteiros `§7.4` tiveram de ganhar qualificador** para o `check-section-pointers` não os ler como
+   autorreferência: no índice (a linha foi rejuntada, porque o gate **não** consulta a linha anterior), no
+   molde (virou `00-prompt-revisor.md §7.4`, usando o `.md` como qualificador) e no diagrama do
+   `00-contexto` (idem — dentro de bloco de código, um wikilink ficaria estranho). É a mesma classe do
+   **achado 1** do backlog.
+3. **Fundi duas linhas da tabela da §4** — *"Criar tema"* e *"Criar preset parcial"*, que apontavam para a
+   mesma spec — em *"Criar tema, ou preset parcial"*. A tabela estava **no teto** (15) e a linha nova do
+   backlog a levaria a 16; o passo 14 manda ficar dentro de 6–15. Nenhuma informação se perdeu: as duas
+   skills continuam nomeadas.
+4. **As menções a `spec-atualizar` que sobraram nesta plan** (§2, §5, §6, §7) são a descrição do defeito que
+   ela conserta. Elas somem quando a plan for removida na síntese. Não as considerei violação do critério,
+   que fala das specs fixas.
+
+**Achados fora do escopo (não corrigidos)**
+
+- Nenhum novo. Os dois achados que o revisor já registrou no `00-backlog` (o `§N.M` cross-documento e o
+  `adr/README.md` sem o ADR-012) continuam válidos, e o item 2 desta execução é uma terceira ocorrência do
+  primeiro deles.
+
+**Pendências / riscos**
+
+- `npm run plan-index:check` está **vermelho**, e é esperado: o índice diz `🔴 A executar` e o frontmatter
+  desta plan diz `🟠 Em revisão`. Espelhar é ato do **revisor** ([[00-indice]] §2). **O commit fica bloqueado
+  até isso.**
+- **O molde mudou de forma, e as duas plans em disco já nasceram no formato novo** — elas não precisam de
+  ajuste. Qualquer plan futura, sim: quem copiar o molde tem de apagar os comentários `#` do frontmatter.
 
 ---
 

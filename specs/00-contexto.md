@@ -220,8 +220,7 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Adicionar token ou componente novo | `arquitetura/04` + `specs/00-regras-e-invariantes` | skill local `ui-novo-componente` |
 | Remover/alterar assinatura de token | `arquitetura/04` | skill local `ui-refatorar-componente` |
 | Mexer em CSS/estilo de componente | `arquitetura/02` | skill local `ui-arquitetura-design` |
-| Criar tema | `specs/09-temas-e-presets` | skill local `ui-criar-tema` |
-| Criar preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-preset` |
+| Criar tema, ou preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-tema` · `ui-criar-preset` |
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
 | **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as duas camadas de cache entre o `dist/` e o navegador | skill local `ui-integra-consumidor` |
@@ -232,6 +231,7 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` + `specs/16-integracao-continua` | [[00-knowledge]] |
 | Escrever teste | `specs/11-testes-e-cobertura` | [[00-knowledge]] (`test-*`) |
 | Mudar decisão estrutural | todos os `adr/` + `arquitetura/` | [[00-knowledge]] |
+| **Registrar um achado que não é para agora** | [`00-backlog.md`](00-backlog.md) — uma linha, sem status e sem fila; só o **usuário** promove | quem escreve é o revisor |
 
 ## 4.1 Ambientação — a ordem de leitura de quem chega
 
@@ -264,9 +264,15 @@ edita, cria-se um ADR novo (protocolo em [`adr/README.md`](adr/README.md)).
 **Toda e qualquer alteração passa por uma spec.** Nada é alterado "direto no código".
 
 ```
-revisor escreve  specs/plan/plan-NN-<slug>.md
+demanda chega ao revisor
       ↓
-executor lê  00-prompt-executor  +  plan-NN  e executa
+TRIAGEM (00-prompt-revisor §4): "sobra verdade que um agente futuro precise ler?"
+      ├─ NÃO → VIA DIRETA: a instrução vive só na conversa
+      │        (sem arquivo, sem linha no índice, sem NN queimado)
+      └─ SIM → VIA DA PLAN: revisor escreve specs/plan/plan-NN-<slug>.md
+                            + linha no [[00-indice]]
+      ↓
+executor lê  00-prompt-executor  + a instrução (a plan, ou o bloco direto) e executa
       ↓
 alterações ficam no worktree (nenhum agente commita)
       ↓
@@ -276,20 +282,28 @@ revisor VERIFICA diretamente (não confia no resumo do executor)
       ↓
 usuário commita
       ↓
-periodicamente: /spec-atualizar sintetiza as plans aprovadas nas specs fixas (adr/ · arquitetura/ · specs/)
+revisor SINTETIZA a plan nas specs fixas (adr/ · arquitetura/ · specs/) e a REMOVE,
+na mesma ação — gatilho do usuário, nunca por conta própria (00-prompt-revisor.md §7.4)
+
+          ── em qualquer ponto ──
+achado que não é a tarefa de agora  →  [[00-backlog]]  (uma linha, sem fila, ninguém executa)
+                                        só o usuário promove
 ```
 
 | Papel | Spec de entrada | Pode escrever | Nunca faz |
 |---|---|---|---|
-| **Revisor** | [[00-prompt-revisor]] | specs, prompts, mensagens | tocar código · commitar |
-| **Executor** | [[00-prompt-executor]] | código + resumo na própria plan | criar/alterar outras specs · commitar |
-| **Usuário** | — | qualquer coisa | — (é quem commita e dispara `/spec-atualizar`) |
+| **Revisor** | [[00-prompt-revisor]] | specs, plans, [[00-backlog]], prompts, mensagens | tocar código · escrever no Git |
+| **Executor** | [[00-prompt-executor]] | o que a §3.1 da plan declara no escopo + o resumo na própria plan | criar/alterar spec **por iniciativa própria** · escrever no Git |
+| **Usuário** | — | qualquer coisa | — (é quem commita, **autoriza a síntese** e **promove** item do backlog) |
 
 **Desvios deste repositório:**
 
-- **Plan que só toca `specs/` é executada pelo próprio revisor.** O executor tem proibição explícita de criar
-  ou editar spec ([[00-prompt-executor]] §7.3, que nomeia `00-contexto` e `00-indice`). Plan de documentação
-  entra na fila normalmente, mas o campo *executor* dela é o revisor.
+- **O papel não muda com o tipo de alvo.** Quem executa é sempre o **executor**; quem aprova é sempre o
+  **revisor** — inclusive em plan que só escreve documento *(decisão do dono, 2026-09-02: "agente revisor
+  apenas escreve specs e plan, agente executor faz as alterações e o revisor aprova")*. Isto **substitui** o
+  desvio anterior, que mandava o revisor executar plan de `specs/`; o que restringe o executor agora está na
+  [[00-prompt-executor]] §7.3, e é mais estreito: ele nunca cria nem edita spec **por iniciativa própria**,
+  mas edita o arquivo que a §3.1 da plan declara dentro do escopo.
 - **O usuário nomeia as specs no prompt.** Via de regra, é ele quem diz ao agente quais specs ler. O ritual de
   entrada dos dois prompts continua obrigatório — a menção do usuário reforça, não substitui.
 - **Nada é apagado sem destino demonstrado.** Ao remover um documento, mostre onde o conteúdo dele foi parar.
@@ -405,6 +419,7 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **Alvo de tamanho:** ≤ 200 linhas preenchidas. Estourou? O conteúdo pertence a uma spec fixa — mova e aponte.
 - **Referencie, nunca duplique.** Esta spec é um **mapa**, não território.
 - **Ponteiro órfão é defeito.** Toda spec citada existe; todo comando citado roda.
-- **Só o revisor edita**, e só no contexto de uma plan aprovada.
+- **Só o revisor edita esta spec.** Em regra, no contexto de uma plan — e **também fora do ciclo, quando o
+  usuário pede** ([[00-prompt-revisor]] §3). O que nenhum agente faz é editá-la por iniciativa própria.
 - **Sincronia obrigatória:** se uma plan mudou stack, fronteira ou regra, a mesma plan atualiza esta spec.
   Contexto desatualizado é pior que contexto ausente — o agente confia nele.
