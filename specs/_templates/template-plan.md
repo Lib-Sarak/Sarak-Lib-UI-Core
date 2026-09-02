@@ -1,14 +1,21 @@
 ---
 tipo: "plan"
 titulo: "Título curto no infinitivo (Ex: Extrair validação de CPF para o domínio)"
+objetivo: "" # Uma frase no infinitivo: o resultado observável, não a tarefa. Alimenta a coluna Objetivo do 00-indice.
 dominio: "Nome do Módulo (Ex: Autenticação)"
 status: "🔴 A executar" # 🔴 A executar · 🟡 Em execução · 🟠 Em revisão · 🔵 Em correção · 🟢 Aprovada · ⚪ Sintetizada · ⛔ Bloqueada
 prioridade: "Alta"
 tags: ["plan"]
 relacionados: [] # Ex: [[arquitetura/03-api]], [[specs/02-login]]
 depende_de: "" # Ex: plan-04-extrair-contrato — precisa estar 🟢 antes
+retida_por: "" # Ex: plan-07 — preencher SÓ ao sintetizar uma plan que outra AINDA ABERTA usa como contexto
 destino_sintese: "" # arquitetura/NN-*.md · adr/NNN-*.md · specs/NN-*.md · 00-contexto.md · — (nenhum)
 ---
+
+> ⚠️ **O formato dos valores acima é rígido, e vem do parser** (`scripts/generate-plan-index.mjs`): **aspas
+> duplas, uma linha só, sem aspas duplas no interior do texto**. Um valor fora disso é lido como `null` — e
+> em `objetivo` isso derruba o `plan-index:check` nomeando o arquivo. **Ao copiar este molde, substitua a
+> linha inteira**: comentário `#` depois do valor também quebra a leitura.
 
 > **Molde de plan.** Escrita pelo **agente revisor** ([[00-prompt-revisor]]), executada pelo **agente
 > executor** ([[00-prompt-executor]]). Nome do arquivo: `plan-NN-<slug-kebab>.md`, com `NN` monotônico e
@@ -59,52 +66,53 @@ Passos numerados, verificáveis, sem ambiguidade. Um passo = uma ação com crit
 2. …
 3. Rodar `<comando de teste/validação>` e garantir verde.
 
-# 6. Prompt de execução
-
-Bloco literal que o usuário cola numa conversa nova com o executor:
-
-```
-Leia specs/00-prompt-executor.md e execute specs/plan/plan-NN-<slug>.md.
-
-Contexto obrigatório antes de começar: specs/00-contexto.md, specs/00-knowledge.md,
-<specs fixas relevantes>.
-Skills a aplicar: <lista por nome>.
-Não saia do escopo declarado na plan. Não commite. Ao terminar, escreva o resumo na
-própria plan e devolva o controle para revisão.
-```
-
-# 7. Critérios de aceite
+# 6. Critérios de aceite
 
 - [ ] Critério objetivo e verificável.
 - [ ] …
 - [ ] Suíte de testes verde; validadores de limiares sem violação nova.
 
-# 8. Como verificar (uso do revisor)
+# 7. Como verificar (uso do revisor)
 
-Escrito **antes** da execução. Os comandos e checagens exatos do veredito:
+Escrito **antes** da execução. Os comandos e checagens exatos do veredito.
+
+**Gate:** `<regra que passa a ser cobrada por máquina · ou nenhum>`
+
+> **Sempre preenchida, `nenhum` incluso.** Que forma a verificação toma — teste do módulo, regra de gate ou
+> `--check` do gerador — decide-se **aqui, na criação**, nunca na execução. O critério, mais as duas travas
+> (no máximo uma regra de gate por plan; regra sem caso que falha não é regra), está em
+> [[00-prompt-revisor]] §5.4.
 
 - `git diff --stat` → só os arquivos de §3.1 aparecem.
 - `<comando de teste>` → verde.
 - `<validador>` → sem violação nova.
 - Leitura de `<arquivo:linha>` → confirma \<o que\>.
 
-# 9. Destino da síntese
+# 8. Destino da síntese
 
 **Destino:** `<valor do frontmatter>`
 
 O que deve ser levado para a spec fixa depois (texto pronto para transporte, se aplicável). Se o destino é
 `—`, escreva o motivo: esta execução não altera nenhuma verdade documentada.
 
-> A síntese é feita pela skill `spec-atualizar`, disparada pelo **usuário**. Esta seção apenas a prepara.
+> A síntese é ato do **revisor** ([[00-prompt-revisor]] §7.4), e o gatilho é do **usuário**: o revisor
+> propõe ao aprovar e espera autorização. Esta seção apenas a prepara.
 
 ---
 
-# 10. Resumo da execução
+# 9. Resumo da execução
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
 ---
 
-# 11. Veredito
+# 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+---
+
+# 11. Síntese
+
+<!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
+     Append-only. O que foi transportado, e o que ficou de fora. -->

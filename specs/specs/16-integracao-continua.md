@@ -145,6 +145,32 @@ mesmo gate num lugar novo.**
 existe dentro de um job. A alimentação usada é o **fallback nativo do próprio script**: sem stdin, ele assume
 `HEAD` — comportamento que já estava na fonte, não um protocolo de hook fabricado.
 
+### 4.4.1 ⚠️ O vermelho ESPERADO — `release-tag` acende em todo merge que muda o artefato
+
+**Consequência estrutural do fluxo, não defeito.** A tag é emitida **da `main`, depois do merge**, pelo
+`npm version` ([[03-versionamento-e-release]] §6). Entre o merge e a emissão, a `main` está necessariamente
+em *"artefato mudou, não há tag"* — **e é exatamente essa a janela em que o job roda**.
+
+Portanto: **todo merge que toque `dist/` ou `sarak-ui/` produz um run de `push:main` vermelho**, com o texto
+`⛔ PUSH BLOQUEADO — o artefato publicado mudou desde a última tag`.
+
+| O vermelho significa | O vermelho NÃO significa |
+|---|---|
+| **"há release devida — emita a tag"** | que o merge falhou |
+| que o `npm version` é o próximo passo obrigatório | que algo precisa ser consertado |
+
+**Ele não bloqueia nada** — só `gates` é *required status check* (§2.1), e este run é **pós-merge**: não há
+botão a travar. **E apaga sozinho** quando a tag nasce: o `release:check` seguinte passa a dizer *"o artefato
+publicado é idêntico"*.
+
+> 🔴 **Escrito em 2026-08-20 porque a ausência disto custou uma leitura errada.** O dono viu o vermelho e
+> entendeu que o processo havia furado. Não havia furo no gate — havia furo **aqui**: esta spec descrevia o
+> `release-tag` como a trava que pega o incidente do ADR-007, sem dizer que **no caminho feliz ele é vermelho
+> por construção** até a tag sair.
+>
+> **A leitura correta é temporal:** `release-tag` vermelho num `push:main` é um **indicador de release
+> pendente**. Vermelho que persiste depois do `npm version`, aí sim, é defeito.
+
 # 5. O que a CI **não** cobre
 
 Declarado, não omitido. Passo verde que não olha nada é pior que passo ausente: ninguém desconfia dele.

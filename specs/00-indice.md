@@ -4,7 +4,8 @@ titulo: "Índice de Execução — Mapa das Plans"
 dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
-relacionados: ["[[00-contexto]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
+relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
+proximo_numero_plan: "57"
 ---
 
 # 0. O que é este arquivo
@@ -21,8 +22,8 @@ dependências e o estado de cada uma. Responde a três perguntas, sempre:
 
 **Quem escreve/atualiza:** exclusivamente o **agente revisor** ([[00-prompt-revisor]]).
 **Quando atualizar:** ao criar uma plan (nova linha), ao aprovar/reprovar uma execução (mudança de status) e
-após `/spec-atualizar` (movimentação para o histórico). **Toda mudança de status vive aqui e na própria plan —
-as duas, sempre, na mesma ação.**
+ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquivo ([[00-prompt-revisor]] §7.4).
+**Toda mudança de status vive aqui e na própria plan — as duas, sempre, na mesma ação.**
 
 ---
 
@@ -89,10 +90,13 @@ as duas, sempre, na mesma ação.**
 > formato nasceu dias depois delas. Sintetizar a alegação teria posto uma acusação falsa numa spec fixa — a
 > [[03-versionamento-e-release]] §5.1 registra o fato correto.
 >
-> 🔎 **A fila está VAZIA — pela primeira vez.** E isso expôs um defeito que nenhum estado anterior alcançava:
-> `scripts/generate-plan-index.mjs` **estourava** com `ENOENT` quando `specs/plan/` deixava de existir (o git
-> remove diretório que esvazia). O diretório foi preservado com um `.gitkeep`; **tornar o gerador tolerante à
-> ausência é conserto de código, e não é do revisor** — fica como decisão do dono.
+> 🔎 **A fila esvaziou pela primeira vez em 2026-08-19, e isso expôs um defeito** que nenhum estado anterior
+> alcançava: `scripts/generate-plan-index.mjs` **estourava** com `ENOENT` quando `specs/plan/` deixava de
+> existir (o git remove diretório que esvazia). O diretório foi preservado com um `.gitkeep`; **tornar o
+> gerador tolerante à ausência é conserto de código, e não é do revisor** — segue como decisão do dono.
+>
+> *(Registro datado. Consulte a tabela acima para o estado corrente da fila — prosa que afirma estado
+> envelhece no dia seguinte, e é o padrão que [[15-divida-conhecida]] §3.3 cataloga.)*
 
 # 2. Legenda de status
 
@@ -103,7 +107,7 @@ as duas, sempre, na mesma ação.**
 | 🟠 Em revisão | Execução concluída no worktree, aguardando veredito. | executor (ao entregar) |
 | 🔵 Em correção | Reprovada. Prompt de correção emitido, executor refazendo. | revisor (ao reprovar) |
 | 🟢 Aprovada | Verificada pelo revisor. Pronta para o usuário commitar. | revisor (ao aprovar) |
-| ⚪ Sintetizada | Já absorvida nas specs fixas via `/spec-atualizar`. Sai da fila (§4). | revisor (após síntese) |
+| ⚪ Sintetizada | Já absorvida nas specs fixas pelo **revisor**, autorizado pelo usuário ([[00-prompt-revisor]] §7.4). Estado **transitório**: a plan **sai do disco** e a linha sai daqui, na mesma ação. | revisor (na síntese) |
 | ⛔ Bloqueada | Impedida por dependência externa/decisão pendente. **Exige motivo** na coluna Objetivo. | revisor |
 
 > Um status só avança na ordem `🔴 → 🟡 → 🟠 → (🔵 ⇄ 🟠) → 🟢 → ⚪`. **🔵 não volta para 🔴** — correção não é
@@ -156,7 +160,7 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 > `deadPointers.mjs` cobre o kit gerado, não este índice. Arquivo e linha saem **juntos**, sempre.
 >
 > ⚠️ **A seção fica, vazia e de propósito:** é aqui que voltaria o histórico se a convenção mudar de novo, e
-> a numeração das seções seguintes não se move. **Nada a escrever aqui ao concluir `/spec-atualizar`.**
+> a numeração das seções seguintes não se move. **Nada a escrever aqui ao concluir uma síntese.**
 
 | Plan | Sintetizada em | Spec fixa atualizada |
 |---|---|---|
@@ -167,7 +171,13 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 
 - **Numeração é monotônica e definitiva.** `plan-07` é `plan-07` para sempre. **Nunca renumere** uma plan já
   criada — links, vereditos e histórico apontam para ela. Ordem de execução se muda na coluna **#**, não no nome.
-- **Nunca remova uma linha.** Plan abandonada vira `⛔ Bloqueada` com o motivo; plan concluída vai para a §4.
+- **`proximo_numero_plan`, no frontmatter, é a ÚNICA fonte de `NN`.** Leia dali, use o valor e incremente na
+  mesma ação — **não escaneie `specs/plan/`**, que só tem as plans ativas; as sintetizadas já saíram do disco.
+  O campo **nunca regride**, nem quando uma plan é removida: número queimado é mais barato que link ambíguo.
+  Ele vive **fora** dos marcadores de propósito — o gerador reescreve o bloco marcado inteiro a cada rodada.
+- **A linha sai quando a plan sai.** Síntese e remoção são uma ação só ([[00-prompt-revisor]] §7.4): o
+  arquivo é removido e esta linha some junto, no mesmo commit. Plan **abandonada** é caso diferente — vira
+  `⛔ Bloqueada` com o motivo, e a remoção dela é **manual do usuário**, nunca de um agente.
 - **Status duplicado é status divergente.** O valor aqui e no frontmatter da plan são atualizados na **mesma
   ação**. Divergiu? A **plan** é a fonte da verdade e este índice está errado — corrija aqui.
 - **Dependência é contrato: não MANDE EXECUTAR uma plan cuja dependência não esteja `🟢` ou `⚪`.** O status

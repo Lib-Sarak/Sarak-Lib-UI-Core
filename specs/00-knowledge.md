@@ -31,9 +31,11 @@ aquela cobre *o que respeitar*.
 | **hook** | **Automático e determinístico** no evento do harness | Roda sempre — é a única garantia mecânica |
 | **CLAUDE.md** | Sempre no contexto | Os inegociáveis; nunca precisa ser citado |
 
-**Trava de disparo:** só as `padrao-*` são **proativas** (toda escrita/revisão de código). Todas as demais são
-**sob demanda** — o agente só as aciona se a tarefa (ou a plan) pedir. Elas dizem *NÃO acione proativamente*
-justamente porque são mutativas ou sensíveis.
+**Trava de disparo:** critério, não lista de nomes — skill **mutativa** (edita/gera/apaga arquivo) ou de
+**varredura** (audita/relata sem julgamento novo) termina a `description` com *NÃO acione proativamente*; o
+agente só a aciona se a tarefa (ou a plan) pedir. Disparo **proativo é exceção declarada**, reservada a quem
+precisa agir sem pedido para cumprir o papel — hoje três: as normas sempre-referenciadas (`padrao-*`,
+`spec-write`) e o gatekeeper de fim de tarefa (`code-auditoria-padrao`).
 
 ---
 
@@ -42,12 +44,16 @@ justamente porque são mutativas ou sensíveis.
 | Preciso… | Use |
 |---|---|
 | Escrever/revisar qualquer código | `padrao-escrita` **+** a `padrao-<linguagem>` do alvo |
+| **Criar um módulo, ou estruturar um sistema em módulos** | `code-modulo` — detecta sozinha se é sistema novo ou módulo novo |
+| **Transformar um módulo existente em módulo genérico reutilizável** | `code-generalizacao-modulo` — repositório próprio, sem rastro da origem |
+| Iniciar um repositório do zero (git, specs, projeto, 1º módulo, hooks) | `meta-iniciar-repositorio` |
 | Fechar uma tarefa de escrita/refactor antes de dizer "pronto" | `code-auditoria-padrao` (gate obrigatório) |
 | Saber se um código legado está conforme | `code-diagnostico` (read-only) · em escala: `/code1-auditar` |
 | Adequar legado ao padrão sem mudar comportamento | `code-adequacao` · fluxo completo: `/code2-caracterizar` → `/code3-adequar` |
+| Levar um legado (já em produção) ao **template de módulos** (Nível 1) | `meta-adequacao-modular` — duas conversas: planejar (Fase A) e conferir (Fase B) |
 | Cobrir código novo com testes | `test-unitario` |
 | Testar endpoint com banco real efêmero | `test-integracao-api` |
-| Garantir contrato de API (OpenAPI, provider/consumer) | `test-api-contrato` |
+| Testar contrato de API em runtime (provider/consumer, payload entre versões) | `test-api-contrato` |
 | Testar jornada de usuário ponta a ponta | `test-e2e` |
 | Testar WebSocket/SSE, tempo real, reconexão | `test-ws-realtime` |
 | Medir limite de carga, concorrência, N+1 | `test-carga` |
@@ -63,45 +69,71 @@ justamente porque são mutativas ou sensíveis.
 | Estruturar logging / métricas e alertas | `obs-logs` · `obs-monitoramento` |
 | Publicar na Vercel / containerizar | `/deploy-vercel` · `/deploy-docker` |
 | Escrever ou padronizar uma spec | `spec-write` |
-| Sintetizar as plans executadas nas specs fixas | `spec-atualizar` |
+| Conferir se as specs ainda batem com o código | `spec-revisao` |
+| Registrar um achado que não é para agora | `00-backlog.md` — o revisor escreve; ninguém executa |
 | Definir o alicerce arquitetural de um repo novo | `spec-fundacao` |
 | Criar/revisar uma skill | `meta-create-skill` · `/meta-criar-skill` |
-| Preparar o projeto para entrega (licença, autoria, docs) | `code-entrega` · `code-documentacao` |
+| Preparar o projeto para entrega (assinatura, licença, docs) | `/code-entregar` (orquestra `code-assinatura` → `code-licenca` → `code-documentacao`) |
 | Faxina de projeto (órfãos, código morto, deps não usadas) | `code-limpeza-projeto` |
 
 ---
 
-# 4. Catálogo de skills (49)
+# 4. Catálogo de skills
 
-## 4.1 `padrao-` — normas de escrita (as únicas proativas)
+> **Inventário completo.** Este índice lista **todas** as skills, agents e commands da base — não é
+> subconjunto curado. Ausência aqui é **defeito**, não decisão editorial, e a checagem inversa do
+> `ponteiros.py` (skill `meta-verificacao-base`) a cobra por máquina.
+
+## 4.0 Os três níveis de norma — quem é dono de quê
+
+Cada regra tem **um** dono. Quem não é dono, aponta; ninguém copia.
+
+| Nível | Assunto | Dono | Verificador |
+|---|---|---|---|
+| **0** | escrita: SRP, limiares, zero hardcoded, segredos, erro, log | `padrao-escrita` | validador da `padrao-<linguagem>` + hook `padrao-limiares` |
+| **1** | arquitetura de módulos: anatomia, manifesto, contrato, dados, isolamento | a spec de regras de módulo **do projeto** (no template de módulos, `arquitetura/04-regras.md`) | `node tools/gate/validate.mjs` |
+| **2** | idiomas de cada linguagem | `padrao-<linguagem>` | linter configurado da linguagem |
+
+O Nível 1 só existe em projeto que adota o **template de módulos**. Onde ele não existe, o padrão em vigor é
+o Nível 0 mais o Nível 2 — não improvise meia estrutura modular.
+
+## 4.1 `padrao-` — normas de escrita (proativas; não as únicas — critério e as demais exceções em §2)
 
 | Skill | Quando |
 |---|---|
-| `padrao-escrita` | **Fonte da verdade** universal: clean code, limiares, zero hardcoded, organização microservice-ready. Toda outra skill referencia esta. |
+| `padrao-escrita` | **Porta de entrada e dona do Nível 0**: clean code, limiares, zero hardcoded, segredos. Toda outra skill referencia esta. |
 | `padrao-python` | Código Python — idiomas + validador de limiares (`scripts/validate.py`). |
 | `padrao-typescript` | Código TS/JS — idiomas + validador via API do compilador TS. |
-| `padrao-go` | Código Go — idiomas + `golangci-lint` configurado. |
-| `padrao-java` | Código Java — idiomas + Checkstyle configurado. |
+
+> **Bindings do template de módulos:** `typescript`, `javascript`, `python` — e a camada de **Nível 2**
+> (idioma documentado + validador Sarak) existe só para TS/JS e Python. **Isso não é o mesmo que
+> automação de limiar:** o hook `padrao-limiares` cobra função ≤40, aninhamento ≤3 e ≤4 parâmetros em
+> `.py`, `.ts`/`.js`, `.go` e `.java`, sem depender de skill nenhuma. Linguagem sem nenhum dos dois segue
+> o **Nível 0** do `padrao-escrita`, conferido por leitura — ausência de automação, não de norma.
 
 ## 4.2 `code-` — operações sobre código
 
 | Skill | Quando |
 |---|---|
+| `code-modulo` | **Criar módulo ou sistema modular** conforme o template. Dois fluxos, detecção automática, HITL antes do scaffold, gate verde ao final. |
+| `code-generalizacao-modulo` | **Destilar um módulo existente** num módulo genérico, em repositório próprio — sem negócio e sem origem, com seis degraus de verificação. |
 | `code-auditoria-padrao` | **Gate de fechamento**: invoca os validadores de AST antes de declarar uma tarefa concluída. |
 | `code-diagnostico` | Diagnosticar conformidade de legado (read-only) e gerar backlog priorizado. |
 | `code-adequacao` | Adequar legado item por item, com rede de caracterização, **preservando comportamento**. |
 | `code-limpeza-projeto` | Remover órfãos, código morto, backups, deps não usadas (HITL + Grep antes de deletar). |
-| `code-documentacao` | Padronizar README, `docs/`, autoria, licença, CODEOWNERS, changelog. |
-| `code-entrega` | Gate de pré-entrega: autoria + licença + documentação no padrão. |
+| `code-assinatura` | Detectar, triar e remover assinaturas/créditos não autorizados; acertar metadados de autoria. |
+| `code-licenca` | Apresentar o catálogo de licenças no HITL, aplicar `LICENSE` + SPDX id. |
+| `code-documentacao` | Padronizar a superfície do repo: README (raiz), CONTRIBUTING, CHANGELOG, CODEOWNERS — **não** doc técnica (é do SDD, em `specs/`). |
+| `code-entrega` | Orquestrador fino de pré-entrega: chama as três acima na ordem, consolida o log. Command: `/code-entregar`. |
 
 ## 4.3 `spec-` — governança de especificações
 
 | Skill | Quando |
 |---|---|
 | `spec-write` | Traduzir ideia/requisito em spec padronizada (usa os moldes de `_templates/`). |
-| `spec-atualizar` | **Ponte do ciclo SDD**: lê `specs/plan/` e sintetiza nas specs fixas, por blocos e com HITL. |
 | `spec-fundacao` | Wizard HITL do alicerce arquitetural/tecnológico de um repo novo → gera os ADRs. |
 | `spec-site-fundacao` | Idem, para projeto de site (institucional/marketing). |
+| `spec-revisao` | Contraprova de paridade specs × código (e specs × specs) — read-only, aponta divergência e propõe o canal. |
 
 ## 4.4 `test-` — testes
 
@@ -109,7 +141,7 @@ justamente porque são mutativas ou sensíveis.
 |---|---|
 | `test-unitario` | Código **novo**: caminhos críticos pela borda pública, mock só de I/O externo (~80%). |
 | `test-integracao-api` | Endpoint com infraestrutura real efêmera (Testcontainers/Docker), sem UI. |
-| `test-api-contrato` | Definir/validar o OpenAPI do `api/` e testar provider ⇄ consumidores. |
+| `test-api-contrato` | Contract testing onde o gate estático não alcança: resposta real contra o schema, mock derivado do contrato, compatibilidade de payload entre versões. |
 | `test-e2e` | Jornadas críticas na UI (Playwright/Cypress) ou API ponta a ponta. |
 | `test-ws-realtime` | Conexões com estado: WebSocket/SSE, heartbeat, broadcast, pub/sub, reconexão. |
 | `test-carga` | Estresse, concorrência e gargalos (k6/Artillery). **HITL obrigatório.** |
@@ -154,12 +186,13 @@ justamente porque são mutativas ou sensíveis.
 | `site-seo` | `site-` | SEO técnico + GEO local + AEO/GSO (robots/sitemap, JSON-LD, OG, NAP). |
 | `meta-create-skill` | `meta-` | Criar/revisar skill: 3 camadas, `description`-gatilho, scaffold, checklist. |
 | `meta-iniciar-repositorio` | `meta-` | Preparar um repo-alvo para receber inteligência local (`.agents/`, entrypoints, hook de índice). |
+| `meta-adequacao-modular` | `meta-` | Levar um legado ao template de módulos — diagnóstico, gate instalado antes do refactor, plans `xx-*`, conferência em conversa separada. |
 | `meta-atualizar-base` | `meta-` | Atualizar a Fonte da Verdade Sarak e espelhar para as IDEs (`sync_ide.py`). |
 | `meta-verificacao-base` | `meta-` | Verificar integridade da base: YAML, contratos JSON, ponteiros órfãos. |
 
 ---
 
-# 5. Commands (12) — disparo manual pelo humano
+# 5. Commands (13) — disparo manual pelo humano
 
 | Command | Fase | O que faz |
 |---|---|---|
@@ -175,6 +208,7 @@ justamente porque são mutativas ou sensíveis.
 | `/site-organizar` | — | Estrutura arquitetura e navegação do site. |
 | `/site-seo` | — | Torna o site encontrável e indexável. |
 | `/meta-criar-skill` | — | Cria/revisa uma skill no padrão. |
+| `/code-entregar` | — | Orquestra `code-assinatura` → `code-licenca` → `code-documentacao`. **Mutativo.** |
 
 > **Um agente não digita `/comando`.** Se uma plan depende de um command, ela **instrui o humano** a rodá-lo
 > (ou o executor aplica diretamente a **skill** equivalente, que é onde a lógica vive).
@@ -185,7 +219,7 @@ justamente porque são mutativas ou sensíveis.
 
 | Agent | Papel | Disparado por | Escreve? |
 |---|---|---|---|
-| `code-auditor` | Auditoria de conformidade de **um** módulo (11 dimensões) | `/code1-auditar` | só `.sarak/audit` |
+| `code-auditor` | Auditoria de conformidade de **um** módulo (12 dimensões) | `/code1-auditar` | só `.sarak/audit` |
 | `code-adequador` | Executa **uma** tarefa de adequação de risco baixo/médio | `/code3-adequar` | sim (código) |
 | `code-revisor` | Revisão **independente** de um diff/PR (gate + caça-bugs) | sob demanda / orquestrador | não |
 | `cyber-auditor` | Auditoria de **um** domínio de segurança | `/cyber1-auditar` | só `.sarak/security/` |
