@@ -1,6 +1,7 @@
 ---
 tipo: "plan"
 titulo: "Título curto no infinitivo (Ex: Extrair validação de CPF para o domínio)"
+objetivo: "" # Frase no infinitivo: o resultado observável, não a tarefa. Alimenta a coluna Objetivo do 00-indice. Formato rígido (scripts/generate-plan-index.mjs): aspas duplas, uma linha só, sem aspas duplas no interior do texto — senão o gerador lê null e falha.
 dominio: "Nome do Módulo (Ex: Autenticação)"
 status: "🔴 A executar" # 🔴 A executar · 🟡 Em execução · 🟠 Em revisão · 🔵 Em correção · 🟢 Aprovada · ⚪ Sintetizada · ⛔ Bloqueada
 prioridade: "Alta"
