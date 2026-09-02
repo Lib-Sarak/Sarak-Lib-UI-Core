@@ -43,7 +43,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-55-autoridade-de-escrita-no-git](plan/plan-55-autoridade-de-escrita-no-git.md) | Separar os dois eixos da regra de Git — co-autoria proibida sempre, escrita no repositório só sob solicitação e autorização do dono — em todos os documentos que os afirmam, e registrar a decisão em ADR | — | 🟢 Aprovada | — |
-| 2 | [plan-56-costurar-fluxo-via-direta-e-backlog](plan/plan-56-costurar-fluxo-via-direta-e-backlog.md) | Alinhar o molde de plan, o índice e o contexto ao desenho de via direta e backlog que os três prompts do fluxo passaram a assumir, fechando as contradições que a atualização deles abriu | plan-55-autoridade-de-escrita-no-git | 🔴 A executar | — |
+| 2 | [plan-56-costurar-fluxo-via-direta-e-backlog](plan/plan-56-costurar-fluxo-via-direta-e-backlog.md) | Alinhar o molde de plan, o índice e o contexto ao desenho de via direta e backlog que os três prompts do fluxo passaram a assumir, fechando as contradições que a atualização deles abriu | plan-55-autoridade-de-escrita-no-git | 🟢 Aprovada | — |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

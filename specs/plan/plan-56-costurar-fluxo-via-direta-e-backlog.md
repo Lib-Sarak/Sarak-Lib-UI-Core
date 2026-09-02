@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Costurar os artefatos do fluxo SDD à via direta e ao backlog"
 objetivo: "Alinhar o molde de plan, o índice e o contexto ao desenho de via direta e backlog que os três prompts do fluxo passaram a assumir, fechando as contradições que a atualização deles abriu"
 dominio: "Governança de Specs (SDD)"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "sdd", "governanca", "molde", "indice", "backlog"]
 relacionados: ["[[00-contexto]]", "[[00-indice]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
@@ -336,6 +336,54 @@ já está no lugar definitivo, e não há nada a transportar depois.
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-09-02 — 🟢 Aprovado
+
+**Verificado, não só lido no resumo:**
+
+- `git status` + `git diff --cached --stat` → **5 arquivos**: os 4 de §3.1 (`template-plan.md`,
+  `00-indice.md`, `00-contexto.md`, `00-prompt-revisor.md`) + a própria `plan-56`. Nada fora do escopo,
+  nada faltando. (As mudanças já estavam **staged** — não afeta a verificação, só troca `git diff` por
+  `git diff --cached`.)
+- `git diff --cached template-plan.md` → confirmado linha a linha: `retida_por` no frontmatter, §6 "Prompt
+  de execução" removida, seções renumeradas (**Como verificar é a §7**, que é o número que
+  `00-prompt-revisor` §5.4 e `00-prompt-executor` §3/§7 já citavam antes desta plan — conferi as duas
+  citações e batem), linha `Gate:` acrescentada, cabeçalho `# 11. Síntese` criado.
+- `git diff --cached specs/00-contexto.md` → mapeei os limites de seção no arquivo atual (`§4`: 185–258,
+  `§5`: 259–317, `§7`: 329–358, `§9`: 417+) e confirmei que **nenhum hunk cai na §7** — território da
+  `plan-55`, intocado.
+- `grep -rn "spec-atualizar" specs/ --include=*.md | grep -v specs/plan/` → só a ocorrência histórica de
+  `15-divida-conhecida.md:47`. Nenhuma sobrevive fora do registro datado e da própria `plan-56` (que
+  desaparece na síntese).
+- `grep -rn "template-plan" specs/ | grep -v specs/plan/` → as duas citações externas a `§7 da plan`
+  (`00-prompt-revisor.md:169` e a análoga em `00-prompt-executor.md:82`) **já estavam corretas para a
+  numeração NOVA** — é exatamente a inconsistência que esta plan fecha (antes dela, "§7" apontava para
+  "Critérios de aceite", não "Como verificar").
+- Tabela de roteamento (`00-contexto` §4): contei **15 linhas de dado** — no teto declarado (6–15).
+- `npm run section-pointers:check` → verde (330 cross-doc ignorados, 9 citações). `npm run dev-kit:check` →
+  verde. `npm run audit:baseline` → igual ao baseline de 2026-08-11. `npm run plan-index:check` → vermelho,
+  **como esperado** (a mesma classe de divergência da `plan-55`: índice não sincronizado até a aprovação).
+
+**Critérios de aceite (§6):** os 9 batem com evidência nomeada.
+
+**Uma imprecisão no resumo, sem efeito no deliverable:** a *Decisão 1* diz que o aviso sobre comentário `#`
+quebrar o parser é algo "que o revisor registrou como achado 5 do backlog" — não existe achado 5 em
+`00-backlog.md` (só os achados 1 e 2, ambos da `plan-55`), nem em nenhuma outra spec. É uma atribuição
+equivocada dentro da prosa do resumo; o conteúdo do aviso em si está correto e é valioso (confirmado contra
+`field()` — um comentário `#` depois do valor realmente quebra o regex `^chave:\s*"([^"]*)"\s*$`). Não
+reprova: não afeta nenhum arquivo do diff, só uma frase explicativa do resumo. Registro aqui para constar.
+
+**Regras do sistema:** sem hardcoded, sem segredo, sem `TODO`/debug, nenhum comentário citando esta plan em
+código (não há código nesta execução). Nenhum sinal de atalho.
+
+**Achados fora do escopo:** nenhum novo — os dois já registrados no `00-backlog` (pela `plan-55`) continuam
+válidos; o item 2 desta execução (qualificar `§7.4` em três lugares) é reincidência do achado 1, já coberta
+pela entrada existente.
+
+**Pode commitar.** Os 5 arquivos staged (listados acima) estão prontos.
+
+**Proposta de síntese:** nenhuma. `destino_sintese: "—"` está correto — esta plan escreveu diretamente no
+molde e nas specs fixas; não há verdade adicional para transportar depois.
 
 ---
 
