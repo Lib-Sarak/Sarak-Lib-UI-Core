@@ -64,6 +64,7 @@ via normal.
 |---|---|---|---|---|
 | 1 | `§N.M` como ponteiro cross-documento é frágil por construção: [[00-prompt-executor]] §7 e [[00-prompt-revisor]] §9 são listas numeradas citadas por número de fora, e o `section-pointers:check` ignora referência cross-documento (não enxerga a quebra) | plan-55 | 2026-09-02 | médio |
 | 2 | `specs/adr/README.md` — a tabela "Os ADRs desta base" não lista o `adr/012-escrita-git-sob-autorizacao-do-dono.md` (criado pela plan-55); índice de navegação defasado, o ADR em si é válido | plan-55 | 2026-09-02 | baixo |
+| 3 | [[07-responsividade-e-multidispositivo]] §2.1 e §6 citam linhas defasadas do cromo: `TopbarNav.tsx:111` (real 117), `SarakShell.tsx:86` (real 89), `useShellLayoutStyles.ts:33` (real 32), `ShellContent.tsx:54` (real 55) — os fatos estão certos, os ponteiros não | ritual | 2026-09-08 | baixo |
 
 ---
 
