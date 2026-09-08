@@ -5,6 +5,46 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## `SarakNavItem` — átomo próprio para item de navegação do cromo
+
+**Classificação: MAJOR** — a superfície é aditiva (novo componente, novo tipo), mas o **comportamento
+default muda sem opt-in**: o cromo de todo consumidor troca de métrica de navegação — o mesmo critério que
+já classificou majors anteriores desta lista (*"mudar o que é default é MAJOR, mesmo mantendo a
+capacidade — quem dependia do default vê comportamento diferente sem alterar uma linha"*). Precedente da
+base: a `5.0.0` foi MAJOR sendo correção de bug, com o mesmo motivo — comportamento default, zero export
+tocado.
+
+**O que estava faltando.** Os itens de navegação do cromo (sidebar, topbar, drawer) compunham
+`SarakButton`/`SarakIconButton` — o átomo de **botão de ação**. Sem um átomo próprio para
+**item de lista de navegação**, nenhum chamador disputava a métrica default do botão
+(`py-4 px-6`, `font-black uppercase tracking-widest`), e o item de menu herdava geometria de
+ação: recuo e altura de botão de formulário, em vez de recuo e altura de item de menu.
+
+**O que passa a existir.** `SarakNavItem` — item de navegação com métrica própria, e a métrica **difere por
+orientação** (é a distinção que existe para não devolver a métrica de botão de ação): `vertical` (linha de
+lista — recuo, peso e caixa de menu, largura cheia resolvida na origem, rótulo trunca em vez de transbordar)
+e `horizontal` (aba/pílula compacta — caixa alta, peso forte, `rounded-full`). Cobre os estados que o cromo
+já usa: ativo, inativo, desabilitado/offline, colapsado (só ícone). Compõe `className` por
+`mergeSarakClasses` — a classe do chamador vence o default do átomo (R35).
+
+**Afeta você se** consome o cromo pronto (`SarakShell`, `SarakAppChrome*`) ou compõe `SarakShellNav`
+diretamente — e o efeito **muda de sinal por orientação**:
+
+| Orientação | Antes | Depois |
+| --- | --- | --- |
+| `vertical` (sidebar, drawer) | Item de menu herdava `uppercase`, `tracking-widest`, `font-black` e a métrica de botão de ação (`py-4 px-6`) do `SarakButton` | **Perde** as três: rótulo em caixa normal, peso normal, recuo de lista (`px-3 py-2.5`) |
+| `horizontal` (topbar) | `SidebarNav`/`TopbarNav` já pintavam aba em pílula/caixa alta; `SarakShellNav` neutralizava por `style` inline e renderizava como lista horizontal (caixa normal, peso 400/500) | **Passa a aplicar** `uppercase`, `tracking-widest`, `font-bold` — geometria de aba, igual à do `TopbarNav`. Quem usa `SarakShellNav` com `navigationStyle: 'topbar'` vê o rótulo virar caixa alta sem mudar uma linha |
+
+**Como migrar.** Nada obrigatório para quem já usa `SarakShell`/`SarakAppChrome*` prontos — é o cromo que
+muda de aparência. Quem quer o rótulo do `SarakShellNav` horizontal de volta em caixa normal escreve a
+própria `className` (ela vence o default do átomo, R35). Quem monta a própria navegação por fora pode
+importar `SarakNavItem` diretamente (`icon`, `label`, `active`, `collapsed`, `orientation`).
+
+**O que NÃO mudou.** Nenhum export, prop ou token existente; `SarakButton`/`SarakIconButton` continuam com
+a métrica de botão de ação, inalterada.
+
+---
+
 ## A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
 
 **Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento

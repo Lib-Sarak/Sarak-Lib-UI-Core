@@ -1,7 +1,7 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
+import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { ShellUser } from './types';
@@ -119,25 +119,28 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                 justifyContent: discoveredModules.length > 6 ? 'flex-start' : 'center',
                             }}
                         >
-                            {discoveredModules.filter(m => m.status === 'online').map(mod => (
-                                <SarakButton
-                                    key={mod.id}
-                                    variant="ghost"
-                                    size="xs"
-                                    onClick={() => setActiveModuleId(mod.id)}
-                                    title={mod.label}
-                                    className={`whitespace-nowrap font-tab shrink-0
-                                        ${effectiveIsNavHidden
-                                            ? `w-8 h-8 !p-0 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                            : `rounded-full text-2xs ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                        }
-                                    `}
-                                >
-                                    {effectiveIsNavHidden ? (
-                                        <div className="scale-75"><IconRenderer name={mod.icon} /></div>
-                                    ) : mod.label}
-                                </SarakButton>
-                            ))}
+                            {discoveredModules.filter(m => m.status === 'online').map(mod => {
+                                const isActive = activeModuleId === mod.id;
+                                return (
+                                    <SarakNavItem
+                                        key={mod.id}
+                                        orientation="horizontal"
+                                        collapsed={effectiveIsNavHidden}
+                                        active={isActive}
+                                        onClick={() => setActiveModuleId(mod.id)}
+                                        title={mod.label}
+                                        icon={effectiveIsNavHidden ? <div className="scale-75"><IconRenderer name={mod.icon} /></div> : undefined}
+                                        label={mod.label}
+                                        className={`whitespace-nowrap font-tab ${
+                                            isActive
+                                                ? effectiveIsNavHidden
+                                                    ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]'
+                                                    : 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105'
+                                                : ''
+                                        }`}
+                                    />
+                                );
+                            })}
                         </nav>
                     )}
                     

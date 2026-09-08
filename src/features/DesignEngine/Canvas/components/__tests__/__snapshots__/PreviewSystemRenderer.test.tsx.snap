@@ -852,142 +852,146 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             class="relative"
           >
             <button
-              class="flex items-center gap-2 min-w-fit flex-row font-black transition-all focus:outline-none py-4 px-6 text-sm bg-transparent active:scale-[0.98] group normal-case font-tab tracking-normal w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] justify-start"
+              class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+              title="Language"
+              type="button"
             >
-              <span>
-                <div
-                  class="flex items-center gap-2 w-full"
+              <span
+                class="shrink-0 inline-flex items-center justify-center"
+              >
+                <svg
+                  class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+                  fill="none"
+                  height="18"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-                    fill="none"
-                    height="18"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="10"
-                    />
-                    <line
-                      x1="2"
-                      x2="22"
-                      y1="12"
-                      y2="12"
-                    />
-                    <path
-                      d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-                    />
-                  </svg>
-                  <span
-                    class="text-sm font-tab flex-1 text-left"
-                  >
-                    Language
-                  </span>
-                  <span
-                    class="text-2xs font-bold text-[var(--theme-primary)]"
-                  >
-                    PT
-                  </span>
-                </div>
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <line
+                    x1="2"
+                    x2="22"
+                    y1="12"
+                    y2="12"
+                  />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="flex-1 min-w-0 truncate text-left"
+              >
+                Language
+              </span>
+              <span
+                class="text-2xs font-bold text-[var(--theme-primary)]"
+              >
+                PT
               </span>
             </button>
           </div>
           <button
-            class="flex items-center gap-2 w-full flex-row font-black transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
+            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+            title="Light Mode"
+            type="button"
           >
-            <svg
-              class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-              fill="none"
-              height="18"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="18"
-              xmlns="http://www.w3.org/2000/svg"
+            <span
+              class="shrink-0 inline-flex items-center justify-center"
             >
-              <circle
-                cx="12"
-                cy="12"
-                r="4"
-              />
-              <path
-                d="M12 2v2"
-              />
-              <path
-                d="M12 20v2"
-              />
-              <path
-                d="m4.93 4.93 1.41 1.41"
-              />
-              <path
-                d="m17.66 17.66 1.41 1.41"
-              />
-              <path
-                d="M2 12h2"
-              />
-              <path
-                d="M20 12h2"
-              />
-              <path
-                d="m6.34 17.66-1.41 1.41"
-              />
-              <path
-                d="m19.07 4.93-1.41 1.41"
-              />
-            </svg>
-            <span>
-              <span
-                class="text-sm font-tab flex-1 text-left"
+              <svg
+                class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+                fill="none"
+                height="18"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="18"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                Light Mode
-              </span>
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="4"
+                />
+                <path
+                  d="M12 2v2"
+                />
+                <path
+                  d="M12 20v2"
+                />
+                <path
+                  d="m4.93 4.93 1.41 1.41"
+                />
+                <path
+                  d="m17.66 17.66 1.41 1.41"
+                />
+                <path
+                  d="M2 12h2"
+                />
+                <path
+                  d="M20 12h2"
+                />
+                <path
+                  d="m6.34 17.66-1.41 1.41"
+                />
+                <path
+                  d="m19.07 4.93-1.41 1.41"
+                />
+              </svg>
+            </span>
+            <span
+              class="flex-1 min-w-0 truncate text-left"
+            >
+              Light Mode
             </span>
           </button>
           <button
-            class="flex items-center gap-2 w-full flex-row font-black transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal justify-start"
+            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+            title="Notifications"
+            type="button"
           >
-            <svg
-              class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-              fill="none"
-              height="18"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="18"
-              xmlns="http://www.w3.org/2000/svg"
+            <span
+              class="shrink-0 inline-flex items-center justify-center"
             >
-              <path
-                d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
-              />
-              <path
-                d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
-              />
-            </svg>
-            <span>
-              <div
-                class="flex items-center w-full"
+              <svg
+                class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+                fill="none"
+                height="18"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="18"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <span
-                  class="text-sm font-tab flex-1 text-left"
-                >
-                  Notifications
-                </span>
-                <div
-                  class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
+                <path
+                  d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
                 />
-              </div>
+                <path
+                  d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
+                />
+              </svg>
             </span>
+            <span
+              class="flex-1 min-w-0 truncate text-left"
+            >
+              Notifications
+            </span>
+            <div
+              class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
+            />
           </button>
         </div>
         <div

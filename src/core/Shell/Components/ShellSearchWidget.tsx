@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Command, ArrowRight } from 'lucide-react';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
 
 interface ShellSearchWidgetProps {
     variant?: 'bar' | 'icon';
@@ -38,22 +38,18 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
 
     if (variant === 'icon') {
         return (
-            <SarakButton
-                variant="ghost"
-                fullWidth
+            <SarakNavItem
                 onClick={onClick}
-                className="text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
+                className="group font-tab"
                 title="Search (Ctrl + K)"
-                leftIcon={<Search size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                icon={<Search size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                label="Search..."
             >
-                <div className="flex items-center w-full">
-                    <span className="text-sm font-tab">Search...</span>
-                    <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>CTRL</span>
-                        <span>K</span>
-                    </div>
+                <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span>CTRL</span>
+                    <span>K</span>
                 </div>
-            </SarakButton>
+            </SarakNavItem>
         );
     }
 

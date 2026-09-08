@@ -1972,6 +1972,55 @@
         }
       ]
     },
+    "SarakNavItem": {
+      "propsInterface": "SarakNavItemProps",
+      "source": "src/components/atomic/Navigation/SarakNavItem.tsx",
+      "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>",
+      "props": [
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`)."
+        },
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Rótulo do item; trunca em vez de transbordar (orientação vertical)."
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Item corresponde à rota/seção corrente."
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita)."
+        },
+        {
+          "name": "orientation",
+          "type": "SarakNavItemOrientation",
+          "optional": true,
+          "doc": "`vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "doc": "Tooltip nativo; cai para o texto do rótulo quando `label` é string."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakOverlayProvider": {
       "propsInterface": null,
       "source": null,

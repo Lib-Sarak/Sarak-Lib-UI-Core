@@ -2,7 +2,7 @@ import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
 import { syncThemeWithMode, resolveThemeForMode } from '../../Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakThemePayload, ThemeEntry } from '../../Provider/types';
@@ -62,21 +62,16 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
 
     if (variant === 'vertical') {
         return (
-            <SarakButton
+            <SarakNavItem
                 onClick={toggleTheme}
-                variant="ghost"
-                fullWidth
-                className="text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
-                leftIcon={isDarkMode ? (
+                className="group font-tab"
+                icon={isDarkMode ? (
                     <Sun size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 ) : (
                     <Moon size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 )}
-            >
-                <span className="text-sm font-tab flex-1 text-left">
-                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                </span>
-            </SarakButton>
+                label={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            />
         );
     }
 

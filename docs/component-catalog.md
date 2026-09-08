@@ -87,7 +87,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (77)
+## Componentes públicos (78)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -698,6 +698,22 @@ Props (`SarakMultiSelectProps` — `src/components/atomic/Inputs/SarakMultiSelec
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: string[]) => void` | não | Emite a nova lista de values (Spec 32: `onChange(value)`). |
+
+### SarakNavItem
+
+Props (`SarakNavItemProps` — `src/components/atomic/Navigation/SarakNavItem.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `icon` | `React.ReactNode` | não | Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). |
+| `label` | `React.ReactNode` | sim | Rótulo do item; trunca em vez de transbordar (orientação vertical). |
+| `active` | `boolean` | não | Item corresponde à rota/seção corrente. |
+| `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
+| `orientation` | `SarakNavItemOrientation` | não | `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). |
+| `title` | `string` | não | Tooltip nativo; cai para o texto do rótulo quando `label` é string. |
+| `className` | `string` | não |  |
+
+Estende: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>`
 
 ### SarakOverlayProvider
 
