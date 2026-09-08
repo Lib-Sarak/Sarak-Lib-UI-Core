@@ -181,6 +181,10 @@
       "comando": "node scripts/generate-component-catalog.mjs --check"
     },
     {
+      "nome": "npm run class-merge:check",
+      "comando": "node gates/scripts/contrato/check-class-merge.mjs"
+    },
+    {
       "nome": "npm run composicao-atomica:check",
       "comando": "node gates/scripts/audit/auditor_composicaoatomica.mjs"
     },
