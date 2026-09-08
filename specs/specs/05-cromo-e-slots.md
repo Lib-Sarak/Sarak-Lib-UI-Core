@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -56,6 +56,50 @@ fallback); sem `navItems`, usa `nav` + `activeRoute`.
 **`navigationStyle: 'auto'`** (`:135`) resolve por `useNavigationStyle()`: `'topbar'` no design → topbar;
 qualquer outra coisa → sidebar. **Consequência que vale destacar: trocar o TEMA troca a orientação do
 cromo.** O cromo é parte do design, não configuração de código.
+
+### 2.1.1 O item de navegação tem átomo próprio, e a métrica difere por orientação
+
+> 🔴 **ATENÇÃO — `SarakNavItem` nomeia DUAS coisas diferentes no barril público**, e o consumidor precisa
+> saber qual está usando:
+>
+> | O que | Onde | É |
+> | --- | --- | --- |
+> | `SarakNavItem` **(tipo)** | `src/components/Layout/chrome/navItem.ts:17` | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active? }` |
+> | `SarakNavItem` **(componente)** | `src/components/atomic/Navigation/SarakNavItem.tsx` | o **átomo** que desenha um item de menu |
+>
+> **E o resultado NÃO é uma escolha entre os dois: o componente não chega ao consumidor.** O export
+> explícito de `src/index.ts:56` (`export type { … SarakNavItem }`) **sombreia** o `export *` da categoria
+> (`:94`), como manda o ES/TS. Medido pela API do compilador sobre `src/index.ts`: o nome `SarakNavItem`
+> resolve para **uma única** entrada — a interface de `Layout/chrome/navItem.ts:17` — e ela **não é valor**.
+> Ou seja: `import { SarakNavItem }` devolve o **tipo**, e o átomo é **inalcançável pelo barril público**.
+> `SarakNavItemProps` e `SarakNavItemOrientation`, que não colidem, são exportados normalmente — a base
+> publica as props de um componente que ela não publica.
+>
+> ⚠️ **`barrel:check` passa verde**: ele confere que o nome está registrado no barril, não que o nome
+> **resolve** para o componente. É o mesmo modo de falha que fez o gate nascer (`SarakLink` e os inputs
+> vivendo fora do alcance do consumidor), por um caminho que ele não cobre.
+>
+> Registrado no ritual de síntese de 2026-09-08. **Ainda não foi publicado em tag** — a janela para
+> renomear sem custo de MAJOR é agora.
+
+O átomo que desenha o item de menu do cromo é o **componente** acima — não um `SarakButton`. São átomos de
+papéis diferentes: um é **navegação**, o outro é **ação**, e o item de menu nunca carrega a métrica de
+botão de ação ([[013-item-de-navegacao-como-atomo-proprio]]).
+
+A métrica **difere por orientação**, e a diferença é contrato, não acidente:
+
+| `orientation` | Onde | Métrica |
+| --- | --- | --- |
+| `vertical` | sidebar, drawer | linha de lista — recuo e peso de menu, caixa normal, largura cheia resolvida **na origem** (nunca emite piso de `min-width`), rótulo **trunca** em vez de transbordar |
+| `horizontal` | topbar | aba compacta — pílula, caixa alta, peso forte |
+
+`SarakShellNav` — o renderizador que o `SarakAppChrome` usa para `navItems`/`nav` — compõe o átomo e segue
+a orientação resolvida pelo `navigationStyle`. **Consequência direta da §2.1:** como trocar o tema troca a
+orientação do cromo, ele **também** troca a métrica do item de menu, de lista para aba.
+
+**O consumidor tem a última palavra:** a `className` que ele passa vence o default do átomo
+([[00-regras-e-invariantes]] **R35**) — é assim que se pede um rótulo em caixa normal numa topbar, sem
+prop nova.
 
 ## 2.2 Os 8 slots
 

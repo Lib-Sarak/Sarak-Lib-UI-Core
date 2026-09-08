@@ -410,6 +410,12 @@ de design no JSX continua sem detector.
 use `SarakButton`, `SarakInput`, `SarakSelect`. E proibido `switch`/`case` de design ou `<style>` de roteamento
 dentro do JSX: essa decisão mora no Hook Controlador.
 
+⚠️ **Trocar o elemento cru pelo átomo NÃO basta — tem de ser o átomo do PAPEL certo.** Item de menu não é
+botão de ação: o átomo dele é **`SarakNavItem`**, não `SarakButton`. Cumprir a R10 com o átomo errado
+troca um defeito (vazamento de especificidade) por outro (o item herda a métrica de ação), e nenhum gate
+enxerga o segundo. É o que aconteceu com o cromo inteiro e está registrado em
+[[013-item-de-navegacao-como-atomo-proprio]].
+
 **A fronteira, explícita** *(decisão do dono, 2026-08-05)* — porque "template ou componente pré-montado" não é
 verificável e foi o que impediu o gate de nascer:
 

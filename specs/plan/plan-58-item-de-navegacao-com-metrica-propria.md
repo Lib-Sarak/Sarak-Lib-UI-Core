@@ -541,3 +541,57 @@ compartilhado no `ShellLanguageSelector` é dedup legítima do mesmo arquivo; e 
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
      Append-only. O que foi transportado, e o que ficou de fora. -->
+
+## Síntese — 2026-09-08
+
+**Trava do §7.4 conferida ANTES de escrever:** `git log --oneline -- specs/plan/plan-58-*.md` → `23a49df`
+(criação), `23c6246` (ajuste do revisor) e `0434605` (execução + veredito). A plan está no histórico.
+
+### Transportado
+
+| Destino | O que entrou |
+|---|---|
+| 🆕 `adr/013-item-de-navegacao-como-atomo-proprio.md` | **Criado.** As duas alternativas reais com custo nomeado (variante de cromo no átomo de ação × átomo próprio), a decisão, e as três consequências negativas — superfície pública permanente, uma isenção `@sarak-encapsula` a mais, e mudança de default sem opt-in |
+| [[05-cromo-e-slots]] | **§2.1.1** — o item de menu é átomo próprio; a métrica difere por orientação (lista × aba); trocar o tema troca a métrica junto com a orientação; a `className` do consumidor vence. **Mais o aviso da colisão de nome** (abaixo) |
+| [[04-shell-e-discovery]] | §4.3 — qual átomo as peças do Shell compõem, quais variantes de `ShellThemeToggle`/`ShellLanguageSelector`/`ShellSearchWidget` entram na coluna de navegação e quais seguem sendo controle, e que a decoração do chamador entra por `children` |
+| [[00-regras-e-invariantes]] **R10** | trocar o elemento cru pelo átomo **do papel certo** é parte da regra — cumpri-la com o átomo errado troca vazamento de especificidade por métrica errada, e **nenhum gate vê o segundo** |
+| [[arquitetura/03-superficie-publica]] §6.1 | a mesma verdade no documento que o consumidor lê antes de compor |
+| `adr/README.md` | linha do ADR-013 na tabela de navegação |
+
+`relacionados` das specs de destino atualizados. **Nenhum número de contagem foi transcrito** (barril,
+catálogo, isenções): são fonte viva, e a R17 proíbe.
+
+### 🔴 Achado de primeira ordem, descoberto NA síntese — não corrigido aqui
+
+**`SarakNavItem` passou a nomear DUAS coisas diferentes no barril público:** o **tipo** que descreve a
+forma do dado da prop `navItems` do `SarakAppChrome` (`Layout/chrome/navItem.ts:17`, exportado em
+`src/index.ts:56`) e o **componente** novo (`atomic/Navigation/SarakNavItem.tsx`, exportado pelo barril de
+categoria). TypeScript aceita — um é tipo, o outro é valor — e **nenhum gate acusa**: `barrel:check`,
+`public-types:check` e `tsc` passam verdes. Mas `import { SarakNavItem }` traz o componente e
+`import type { SarakNavItem }` traz o dado, e são conceitos sem relação.
+
+**Não foi corrigido nesta síntese** porque renomear é mudança de código, e o revisor não toca código. Foi
+**documentado** na §2.1.1 de [[05-cromo-e-slots]] em vez de escondido, e levado ao dono como demanda no
+mesmo ato — a janela para renomear sem custo é agora: **a colisão ainda não foi publicada em tag**.
+
+### Deliberadamente NÃO transportado
+
+- **A referência de geometria da v2.2.9** (§2.4) — é insumo de execução, não verdade do sistema; o caminho
+  aponta para o `node_modules` de outro repositório e não sobrevive como ponteiro.
+- **A tabela do passo 1** (veredito por arquivo) — é evidência de que a medição foi feita, e o resultado
+  dela já está na §4.3 de [[04-shell-e-discovery]], no presente.
+- **O defeito e o ato de corrigi-lo.** O "antes/depois" que o consumidor precisa ler vive em
+  `docs/migracoes.md`, classificado **MAJOR**. ⚠️ **A entrada ainda não tem âncora de versão no título** —
+  ela entra quando o `npm version major` for emitido, e sem ela o `migration-anchor:check` barra a release.
+  São **duas** entradas MAJOR acumuladas para a próxima tag.
+- **A diferença de layout da etiqueta "Service Offline"** (agora na mesma linha, antes empilhada) — está
+  no veredito; não é contrato.
+
+### `00-contexto` revisado
+
+**Nada a mudar.** A §3 lista blocos, não componentes; a §4 roteia por tarefa e já manda ler
+[[05-cromo-e-slots]] para "mexer no cromo ou nos slots". A checagem foi feita, não pulada.
+
+### Achados que desceram para o [[00-backlog]] neste ciclo
+
+**#8** — `ShellLanguageSelector` no ramo `horizontal` mantém o `font-black` herdado do átomo de ação.

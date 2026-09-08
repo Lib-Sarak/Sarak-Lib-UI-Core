@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Shell / Discovery"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "shell", "discovery", "registry", "modulos-plugin", "navegacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[001-tres-arquiteturas]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[001-tres-arquiteturas]]", "[[013-item-de-navegacao-como-atomo-proprio]]"]
 ---
 
 # 1. Propósito
@@ -200,6 +200,19 @@ neste modo.
 | `IconRenderer` | resolve o `icon` do manifesto para o ícone real |
 
 Todos em `src/core/Shell/Components/`.
+
+**O item de menu que essas peças renderizam é o átomo `SarakNavItem`**
+(`src/components/atomic/Navigation/SarakNavItem.tsx`), não `SarakButton` — navegação e ação são papéis
+diferentes, e o item de menu não carrega a métrica de botão de ação
+([[013-item-de-navegacao-como-atomo-proprio]]). `SidebarNav` o compõe na orientação `vertical` (linha de
+lista, rótulo que trunca); `TopbarNav`, na `horizontal` (aba em pílula). `ShellThemeToggle`,
+`ShellLanguageSelector` e `ShellSearchWidget` o compõem nas variantes que entram na **coluna de
+navegação** — nas variantes de controle isolado (ícone na topbar, campo de busca) seguem sendo átomo de
+ação ou de entrada, porque ali não são item de lista.
+
+Estados cobertos pelo átomo: ativo, inativo, **desabilitado/offline** (esmaecido, sem ponteiro) e
+**colapsado** (só o ícone). Decoração adicional do chamador — a pílula de item ativo, o ponto de offline,
+a etiqueta de serviço fora do ar — entra por `children`.
 
 **Cromo mobile embutido:** com `sidebar` no celular, o Shell troca a coluna por um **header com
 hambúrguer** (`:124-138`) e um **drawer** com a mesma `SidebarNav` reaproveitada e as flags de auto-hide
