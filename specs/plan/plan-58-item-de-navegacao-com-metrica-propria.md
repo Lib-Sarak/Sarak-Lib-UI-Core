@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "cromo", "sidebar", "topbar", "navegacao", "atomos"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[00-regras-e-invariantes]]", "[[arquitetura/03-superficie-publica]]", "[[07-responsividade-e-multidispositivo]]"]
-depende_de: "plan-57-classe-do-chamador-vence-no-atomo"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/04-shell-e-discovery.md · specs/05-cromo-e-slots.md · adr/013-item-de-navegacao-como-atomo-proprio.md"
 ---
@@ -31,12 +31,34 @@ e, ao fazer isso, **trocou geometria de navegação por geometria de botão de a
 Numa sidebar de 240px com `p-4` de container, `px-6` consome 48px dos ~208px úteis, e o item fica cerca de
 duas vezes mais alto.
 
-Três dos overrides que o cromo tenta hoje **perdem** — medido no `dist/sarak.css` e registrado na `plan-57`
-§2.1. A `plan-57` conserta o mecanismo (o `className` do chamador passa a vencer); ela **não** decide qual
-deve ser a métrica. Esta plan decide.
-
 > **O erro não foi ter a R10.** Foi aplicá-la sem ninguém enxergar o custo — e o custo só apareceu por
 > comparação com um sistema que roda a v2.2.9. Essa cegueira é o assunto da `plan-59`, não desta.
+
+## 2.1.1 O mecanismo já foi consertado — o que falta é a MÉTRICA
+
+**A dependência desta plan já está entregue e sintetizada** ([[00-regras-e-invariantes]] **R35**): o
+`className` do chamador **vence** o default do átomo, porque `SarakButton`/`SarakIconButton` compõem por
+`mergeSarakClasses` em vez de concatenar. Isso já se vê no worktree — os itens de navegação do
+`SarakShellNav` perderam `uppercase`, `tracking-widest`, `w-max`, `rounded-btn`, `justify-center` e a cor
+primária do átomo. **Não repita essa investigação.**
+
+O que R35 **não** resolveu, e é o objeto desta plan: os itens continuam com a **métrica de botão de ação**
+(`py-4 px-6`, `font-black`), porque nenhum chamador a sobrescreve — ela nunca foi disputada.
+
+⚠️ **Três armadilhas herdadas, medidas, que vão morder esta execução:**
+
+1. **`min-w-fit` não conflita com `w-full`.** São grupos diferentes (`min-width` × `width`): o merge **não**
+   os resolve, e o piso de largura sobrevive — o item não trunca, transborda. `useButtonLayoutStyles` só
+   larga o piso quando a largura cheia vem pela **prop** `fullWidth` ou pelo tema; pedir por
+   `className="w-full"` **não** basta. O `SarakNavItem` tem de resolver a largura **na origem**, não por
+   classe. É o item **4** do [[00-backlog]].
+2. **`mergeSarakClasses` é a porta única.** O átomo novo compõe por ela, com a `className` recebida por
+   último, e **não** chama `twMerge`/`extendTailwindMerge` por conta própria — R35, cobrada por
+   `npm run class-merge:check`. Classe própria nova (se você criar alguma) precisa ser **registrada** no
+   helper, ou ela coexiste com a concorrente em vez de substituí-la.
+3. **Não cite plan em comentário nem em título de teste.** `padrao-escrita`,
+   `references/comentarios.md:84` — foi o achado 2 da rodada de revisão anterior. Escreva o porquê ali
+   mesmo; a plan desaparece na síntese e o ponteiro morre.
 
 ## 2.2 A decisão, e por que ela é um ADR
 
@@ -97,7 +119,8 @@ reprovação.** O que se extrai é a *proporção* — recuo, altura de linha, p
 
 - **A R10 e a fronteira dela.** Esta plan não amplia allowlist, não isenta pasta, não devolve `<button>`
   cru ao cromo. O marcador `@sarak-encapsula` no átomo novo é a **única** isenção que nasce aqui.
-- `src/components/atomic/Buttons/**` — é a `plan-57`. Se algo lá parecer errado, **relate no resumo**;
+- `src/components/atomic/Buttons/**` — o átomo de **ação** não é o de navegação, e a métrica dele
+  (`sizeClasses`) não muda aqui. Se algo lá parecer errado, **relate no resumo**;
   não conserte.
 - **A paleta e os valores de tema.** Nenhum arquivo de `src/core/Design/presets/` entra aqui. Cor de item
   ativo/inativo continua vindo do token que já vem.
@@ -121,7 +144,8 @@ reprovação.** O que se extrai é a *proporção* — recuo, altura de linha, p
 | Spec fixa | `specs/07-responsividade-e-multidispositivo.md` | §5 (contrato do cromo por dispositivo) e §6.1 (por que não mexer na camada 3) |
 | Spec fixa | `specs/01-gates-e-baseline.md` | **antes de rodar qualquer gate** — baseline não é zero |
 | Spec fixa | `specs/11-testes-e-cobertura.md` | cobertura 1:1 do componente novo e o que "suíte verde" significa |
-| Plan | `specs/plan/plan-57-classe-do-chamador-vence-no-atomo.md` | dependência: §2.1 tem a medição que **não** se repete aqui |
+| Spec fixa | `specs/00-regras-e-invariantes.md` **R35** | a porta única `mergeSarakClasses` e o que o merge **não** resolve (grupos diferentes) — o átomo novo obedece |
+| Código | `src/components/atomic/hooks/mergeSarakClasses.ts` | como compor classe nesta base; ler antes de escrever o átomo |
 | Skill | `padrao-escrita` + `padrao-typescript` | sempre |
 | Skill | `ui-novo-componente` | o átomo novo e a paridade das três fontes |
 | Skill | `ui-arquitetura-design` | regra do Design Engine ao escrever CSS/estilo de componente |
@@ -159,7 +183,7 @@ reprovação.** O que se extrai é a *proporção* — recuo, altura de linha, p
 9. **Rodar a suíte completa** — `npx vitest run`, inteira. Teste que quebrar por codificar a métrica
    errada se corrige, e **cada um se relata** no resumo.
 10. **Rodar** `npm run composicao-atomica:check`, `npm run barrel:check`, `npm run catalog:check`,
-    `npm run guide:check`, `npm run dev-kit:check`, `npm run class-merge:check` (da `plan-57`) e
+    `npm run guide:check`, `npm run dev-kit:check`, `npm run class-merge:check` (**R35**) e
     `npm run audit` — este último **comparado ao baseline**, nunca a zero.
 
 # 6. Critérios de aceite
