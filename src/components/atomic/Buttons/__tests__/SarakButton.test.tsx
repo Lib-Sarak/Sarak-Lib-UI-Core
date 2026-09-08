@@ -29,4 +29,33 @@ describe('SarakButton', () => {
         expect(button.className).not.toContain('shadow-xl');
         expect(button.style.border).toContain('1px solid');
     });
+
+    it('a className do chamador VENCE os defaults do átomo — merge, não concatenação', () => {
+        render(
+            <SarakButton className="normal-case tracking-normal text-lg">Salvar</SarakButton>,
+        );
+        const button = screen.getByRole('button', { name: 'Salvar' });
+        const classes = button.className.split(' ');
+
+        expect(classes).toContain('normal-case');
+        expect(classes).not.toContain('uppercase');
+
+        expect(classes).toContain('tracking-normal');
+        expect(classes).not.toContain('tracking-widest');
+
+        expect(classes).toContain('text-lg');
+        expect(classes).not.toContain('text-sm'); // default do size="md" (SarakButton.tsx sizeClasses)
+    });
+
+    it('fullWidth produz w-full DE FATO — sem min-w-fit sobrando para travar o encolhimento', () => {
+        render(
+            <SarakButton fullWidth>Um rótulo bem comprido, maior que qualquer container estreito de teste</SarakButton>,
+        );
+        const button = screen.getByRole('button', { name: /Um rótulo bem comprido/ });
+        const classes = button.className.split(' ');
+
+        expect(classes).toContain('w-full');
+        expect(classes).not.toContain('w-max');
+        expect(classes).not.toContain('min-w-fit');
+    });
 });

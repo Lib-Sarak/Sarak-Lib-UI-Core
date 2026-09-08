@@ -142,6 +142,7 @@ anel1 "limites declarados dos gates" "R18 — Todo gate declara o que NÃO vê" 
 anel1 "container query sem interpolação"   "— (plan-39 · endurecido pela plan-44)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
 anel1 "container query com boundary"       "— (plan-41)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
 anel1 "paridade doc × código de persistência" "R17 — Não transcrever fonte viva" "npm run persistence-doc:check" gates/scripts/contrato/check-persistence-doc-identifiers.mjs
+anel1 "merge de classe no átomo"           "— (plan-57)" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
 # `build-info:check` NÃO entra aqui, mesmo motivo do `package:check` (spec 02
 # §4.1): exige `dist/` buildado. Mora só no `gates:full`.
 

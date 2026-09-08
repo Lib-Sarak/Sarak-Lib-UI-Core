@@ -766,7 +766,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </span>
           </div>
           <button
-            class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]  "
+            class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]"
           >
             <svg
               class=""
@@ -852,7 +852,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             class="relative"
           >
             <button
-              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]   group normal-case font-tab tracking-normal w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] justify-start"
+              class="flex items-center gap-2 min-w-fit flex-row font-black transition-all focus:outline-none py-4 px-6 text-sm bg-transparent active:scale-[0.98] group normal-case font-tab tracking-normal w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] justify-start"
             >
               <span>
                 <div
@@ -900,7 +900,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </button>
           </div>
           <button
-            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98] w-full  text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
+            class="flex items-center gap-2 w-full flex-row font-black transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
           >
             <svg
               class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
@@ -953,7 +953,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </span>
           </button>
           <button
-            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98] w-full  text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal justify-start"
+            class="flex items-center gap-2 w-full flex-row font-black transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal justify-start"
           >
             <svg
               class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
@@ -1063,7 +1063,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
               </div>
             </div>
             <button
-              class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]  text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] "
+              class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)]"
               title="Logout"
             >
               <svg

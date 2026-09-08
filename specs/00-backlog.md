@@ -65,6 +65,9 @@ via normal.
 | 1 | `§N.M` como ponteiro cross-documento é frágil por construção: [[00-prompt-executor]] §7 e [[00-prompt-revisor]] §9 são listas numeradas citadas por número de fora, e o `section-pointers:check` ignora referência cross-documento (não enxerga a quebra) | plan-55 | 2026-09-02 | médio |
 | 2 | `specs/adr/README.md` — a tabela "Os ADRs desta base" não lista o `adr/012-escrita-git-sob-autorizacao-do-dono.md` (criado pela plan-55); índice de navegação defasado, o ADR em si é válido | plan-55 | 2026-09-02 | baixo |
 | 3 | [[07-responsividade-e-multidispositivo]] §2.1 e §6 citam linhas defasadas do cromo: `TopbarNav.tsx:111` (real 117), `SarakShell.tsx:86` (real 89), `useShellLayoutStyles.ts:33` (real 32), `ShellContent.tsx:54` (real 55) — os fatos estão certos, os ponteiros não | ritual | 2026-09-08 | baixo |
+| 4 | `useButtonLayoutStyles.ts:20` só larga o `min-w-fit` quando a largura cheia vem pela prop `fullWidth` ou pelo tema; quem pede por `className="w-full"` mantém o piso de largura no conteúdo (visível em `PreviewSystemRenderer.test.tsx.snap:855`) — largura cheia pedida por classe não larga o piso de `min-width` | plan-57 | 2026-09-08 | médio |
+| 5 | Comentários citando `plan-NN` são dívida pré-existente e disseminada no código (ex.: `check-container-query-boundary.mjs:1` cita `plan-41`; `grep -rlE "plan-[0-9]+" src gates` cobre dezenas) — `padrao-escrita`, `references/comentarios.md:84` proíbe, e cada plan sintetizada transforma a citação em ponteiro morto | plan-57 | 2026-09-08 | médio |
+| 6 | A intermitência da suíte escalou muito além do que [[11-testes-e-cobertura]] §3.5 registra: as amostras de lá são 26 e 20 execuções com zero falhas; em 2026-09-08 foram 4 execuções vermelhas em 5, sempre por timeout e sempre verdes isoladas (`SarakPDFViewerImpl`, `generate-token-types.check`) | plan-57 | 2026-09-08 | médio |
 
 ---
 

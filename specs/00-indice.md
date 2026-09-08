@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-57-classe-do-chamador-vence-no-atomo](plan/plan-57-classe-do-chamador-vence-no-atomo.md) | Fazer a classe passada pelo chamador vencer a classe default do átomo, em vez de o vencedor ser decidido pela ordem do stylesheet | — | 🔴 A executar | specs/00-regras-e-invariantes.md · arquitetura/03-superficie-publica.md |
+| 1 | [plan-57-classe-do-chamador-vence-no-atomo](plan/plan-57-classe-do-chamador-vence-no-atomo.md) | Fazer a classe passada pelo chamador vencer a classe default do átomo, em vez de o vencedor ser decidido pela ordem do stylesheet | — | 🟢 Aprovada | specs/00-regras-e-invariantes.md · arquitetura/03-superficie-publica.md |
 | 2 | [plan-58-item-de-navegacao-com-metrica-propria](plan/plan-58-item-de-navegacao-com-metrica-propria.md) | Devolver ao cromo a métrica de navegação — recuo, peso, caixa e truncamento de item de menu — sem violar a R10 | plan-57-classe-do-chamador-vence-no-atomo | 🔴 A executar | specs/04-shell-e-discovery.md · specs/05-cromo-e-slots.md · adr/013-item-de-navegacao-como-atomo-proprio.md |
 | 3 | [plan-59-medicao-de-css-renderizado-do-cromo](plan/plan-59-medicao-de-css-renderizado-do-cromo.md) | Fechar o vão declarado do CSS renderizado em navegador real, medindo a métrica do cromo num job de CI que roda pelo caminho real | plan-58-item-de-navegacao-com-metrica-propria | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/16-integracao-continua.md |
 <!-- SARAK-INDICE:FILA:FIM -->

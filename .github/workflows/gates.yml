@@ -70,7 +70,7 @@ jobs:
                   path: gates-full-output.log
                   retention-days: 30
 
-            # Os CINCO *:check que o gates:full NÃO alcança — enumerados e provados um a
+            # Os SEIS *:check que o gates:full NÃO alcança — enumerados e provados um a
             # um pelo executor (plan-05 §5 item 5), não presumidos do levantamento
             # anterior à plan-52:
             #   - plan-index:check   : nunca esteve na cadeia de build/gates:full: só o
@@ -85,13 +85,16 @@ jobs:
             #                          pre-commit — não entraram no gates:full (a
             #                          plan-52 só listava check-audit-baseline
             #                          --with-tsc e themes:diversity para lá).
-            - name: Os 5 *:check que o gates:full não alcança
+            #   - class-merge:check  : mesmo padrão dos três acima — vive só no Anel 1
+            #                          do pre-commit, não na cadeia de build/gates:full.
+            - name: Os 6 *:check que o gates:full não alcança
               run: |
                   npm run plan-index:check
                   npm run gate-limits:check
                   npm run container-query:check
                   npm run container-query-boundary:check
                   npm run persistence-doc:check
+                  npm run class-merge:check
 
     # ---------------------------------------------------------------------
     # RELEASE-TAG — só existe no dia a dia porque o pre-push local SÓ age

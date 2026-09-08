@@ -82,7 +82,7 @@ exports[`SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embutid
         class="mock-footer"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20   flex-1 text-3xs font-black uppercase tracking-widest"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row transition-all focus:outline-none rounded-btn py-4 px-6 bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20 flex-1 text-3xs font-black uppercase tracking-widest"
         >
           <span>
             Executar

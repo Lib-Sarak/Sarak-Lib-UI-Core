@@ -5,6 +5,64 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
+
+**Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
+default e visível**, sem opt-in — o mesmo critério que já classificou majors anteriores desta lista
+(*"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia do default vê
+comportamento diferente sem alterar uma linha"*).
+
+**O que estava quebrado.** `SarakButton` e `SarakIconButton` **concatenavam** a `className` recebida com as
+classes Tailwind do próprio átomo (`` `${base} ${className}` ``). Em Tailwind, duas utilitárias que escrevem
+a mesma propriedade CSS têm a mesma especificidade — quem vence é a que aparece **depois no stylesheet
+publicado**, não a que aparece depois no atributo `class`. Concatenar não sobrescrevia nada: só empilhava, e
+o resultado ficava a cargo da ordem em que o Tailwind emitiu as duas regras — acidental, não decidido.
+
+Medido no `dist/sarak.css` publicado (offset de byte da primeira ocorrência de cada seletor):
+
+| Par em conflito | Vencia (antes) |
+| --- | --- |
+| `.normal-case` × `.uppercase` | o átomo (`.uppercase`) |
+| `.tracking-normal` × `.tracking-widest` | o átomo (`.tracking-widest`) |
+| `.w-full` × `.w-max` | o átomo (`.w-max`) |
+| `.justify-center` × `.justify-start` | o chamador |
+| `.text-xs` × `.text-2xs` | o chamador |
+| `.rounded-btn` × `.rounded-full` | o chamador |
+
+Três dos seis já resolviam a favor do chamador, por acaso — e o acaso muda a cada versão do Tailwind que
+reordene a emissão do stylesheet.
+
+**O que passa a acontecer.** Os dois átomos compõem a classe por **merge** (`tailwind-merge`, configurado
+para reconhecer as utilitárias próprias desta base — `text-2xs`, `text-3xs`, `rounded-btn`, `font-tab`), com
+a `className` do chamador sempre entrando por último. Agora ela **sempre** vence o default do átomo para a
+mesma propriedade — não importa a ordem de emissão do Tailwind.
+
+**Afeta você se** já passa `className` para um `SarakButton`/`SarakIconButton` esperando sobrescrever
+`text-transform`, `letter-spacing`, `border-radius`, tamanho de fonte ou largura do átomo, e hoje o resultado
+"perde" para o default (ex.: pediu `normal-case` e a tela continuou em maiúsculas). A partir desta versão,
+sua classe **vence** — a tela muda para o que você sempre pediu.
+
+**Um segundo defeito relacionado, corrigido junto:** `fullWidth` em `SarakButton` não produzia largura cheia
+de fato. A estratégia default de largura emite `w-max min-w-fit` — `min-w-fit` é uma propriedade diferente de
+`width` e não conflitava com o `w-full` do `fullWidth`, então sobrevivia aos dois: o botão ficava com um piso
+de largura igual ao conteúdo e podia transbordar do container com um rótulo longo. Agora, com `fullWidth` (ou
+`buttonWidthStrategy: 'full'` no tema), a estratégia deixa de emitir `min-w-fit` — o botão encolhe até a
+largura do container normalmente.
+
+**Como migrar.** Se você compensava algum destes defeitos por fora (estilo inline, `!important`, ou
+simplesmente aceitou o resultado), **remova a compensação** — a partir desta versão a classe que você já
+escreve funciona sozinha, e a compensação duplicada pode brigar com o novo resultado.
+
+**O que NÃO mudou.** Nenhum export, prop ou token; o `style` inline devolvido pelo motor de design não foi
+tocado (merge é de classe, não de estilo); `sizeClasses` (`py-*`/`px-*`/`text-*` por `size`) não mudou.
+
+**Gate anti-regressão:** `npm run class-merge:check`
+(`gates/scripts/contrato/check-class-merge.mjs`) — cobra que nenhum átomo componha `className` por
+concatenação de template literal; a allowlist declara, com motivo, os átomos que ainda concatenam e serão
+convertidos em plans futuras.
+
+---
+
 ## 6.0.0 — `layoutGridTemplate: 'col-12'` passa a funcionar — filho sem span ganha um default (plan-49)
 
 **Esta é a âncora da `6.0.0` — três quebras saíram juntas nesta tag.** Medido (`git log v5.0.0..v6.0.0 --

@@ -42,6 +42,7 @@
         "container-query-boundary:check": "node gates/scripts/contrato/check-container-query-boundary.mjs",
         "section-pointers:check": "node gates/scripts/contrato/check-section-pointers.mjs",
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
+        "class-merge:check": "node gates/scripts/contrato/check-class-merge.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",
         "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",
         "package:check": "node gates/scripts/contrato/check-package-contents.mjs",

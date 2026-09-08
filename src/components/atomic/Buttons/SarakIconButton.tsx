@@ -1,5 +1,6 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -124,7 +125,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
 
     return (
         <button
-            className={`${baseClasses} ${tailwindClasses} ${disabledClass} ${className}`}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}
