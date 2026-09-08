@@ -48,14 +48,17 @@ nomes** (componentes descobertos × nomes exportados) e não pergunta **para o q
 **A régua da §5.4 se aplica limpa:** o invariante vale para **todo** componente público e é sobre a
 **relação** entre o nome e o símbolo — nenhum teste de módulo enxerga isso. É regra de gate, e é **uma** só.
 
-## 2.3 Precondição — a colisão viva é consertada ANTES, por outra via
+## 2.3 Precondição — JÁ CUMPRIDA: a colisão viva não existe mais
 
-O rename do componente colidente é **prompt direto** (rename sem mudança de regra) e corre fora desta plan.
-**Não conte com a colisão viva como caso de teste**: quando esta plan executar, ela pode já não existir. O
-caso que falha se planta em **fixture**, no molde de `check-class-merge.test.mjs`.
+O componente foi renomeado para `SarakMenuItem` em **2026-09-08**, por tarefa direta, e o `src/` está
+limpo: `SarakMenuItem` resolve para **valor**, `SarakNavItem` segue sendo só o **tipo** da prop `navItems`.
 
-Se, ao executar, a colisão ainda existir no `src/`, o gate novo vai reprovar de verdade — **isso é
-resultado correto, não obstáculo**. Relate no resumo e **não** conserte o `src/`: está fora do escopo (§3.2).
+**Consequência para esta plan:** o repositório real **não tem mais o caso que falha**. O caso plantado em
+**fixture** não é conveniência — é a única forma de provar que a regra morde. Molde:
+`check-class-merge.test.mjs`.
+
+O defeito histórico está descrito em `docs/migracoes.md` (entrada da correção de nomenclatura) e a
+medição original está na §2.1 acima — **não** vá procurá-lo no `src/`, ele não está lá.
 
 # 3. Escopo
 
@@ -111,8 +114,9 @@ resultado correto, não obstáculo**. Relate no resumo e **não** conserte o `sr
 5. **Escrever o teste do gate**, no molde de `check-class-merge.test.mjs`: pelo menos um caso **plantado**
    em que um export explícito sombreia o `export *` e o gate **reprova**, e um caso conforme em que ele
    libera. Regra sem caso que falha não é regra ([[00-prompt-revisor]] §5.4).
-6. **Rodar** `npm run barrel:check` sobre o repositório real e **relatar a saída no resumo**, verde ou
-   vermelha. Vermelha porque a colisão da §2.1 ainda existe é resultado legítimo — não conserte o `src/`.
+6. **Rodar** `npm run barrel:check` sobre o repositório real e **relatar a saída no resumo**. O esperado
+   é **verde** — a colisão foi consertada antes (§2.3). Se vier vermelha, é achado novo: relate e **não**
+   conserte o `src/`, que está fora do escopo (§3.2).
 7. **Rodar a suíte completa** (`npx vitest run`, inteira) e `npm run audit` — comparado ao baseline,
    **nunca** a zero.
 

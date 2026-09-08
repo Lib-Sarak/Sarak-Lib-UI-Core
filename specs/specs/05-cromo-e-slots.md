@@ -59,30 +59,17 @@ cromo.** O cromo é parte do design, não configuração de código.
 
 ### 2.1.1 O item de navegação tem átomo próprio, e a métrica difere por orientação
 
-> 🔴 **ATENÇÃO — `SarakNavItem` nomeia DUAS coisas diferentes no barril público**, e o consumidor precisa
-> saber qual está usando:
+> ⚠️ **Dois nomes parecidos, e eles NÃO são a mesma coisa:**
 >
-> | O que | Onde | É |
-> | --- | --- | --- |
-> | `SarakNavItem` **(tipo)** | `src/components/Layout/chrome/navItem.ts:17` | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active? }` |
-> | `SarakNavItem` **(componente)** | `src/components/atomic/Navigation/SarakNavItem.tsx` | o **átomo** que desenha um item de menu |
+> | Nome | O que é |
+> | --- | --- |
+> | `SarakNavItem` **(tipo)** | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active? }`, de `Layout/chrome/navItem.ts` |
+> | `SarakMenuItem` **(componente)** | o **átomo** que desenha um item de menu, de `atomic/Navigation/SarakMenuItem.tsx` |
 >
-> **E o resultado NÃO é uma escolha entre os dois: o componente não chega ao consumidor.** O export
-> explícito de `src/index.ts:56` (`export type { … SarakNavItem }`) **sombreia** o `export *` da categoria
-> (`:94`), como manda o ES/TS. Medido pela API do compilador sobre `src/index.ts`: o nome `SarakNavItem`
-> resolve para **uma única** entrada — a interface de `Layout/chrome/navItem.ts:17` — e ela **não é valor**.
-> Ou seja: `import { SarakNavItem }` devolve o **tipo**, e o átomo é **inalcançável pelo barril público**.
-> `SarakNavItemProps` e `SarakNavItemOrientation`, que não colidem, são exportados normalmente — a base
-> publica as props de um componente que ela não publica.
->
-> ⚠️ **`barrel:check` passa verde**: ele confere que o nome está registrado no barril, não que o nome
-> **resolve** para o componente. É o mesmo modo de falha que fez o gate nascer (`SarakLink` e os inputs
-> vivendo fora do alcance do consumidor), por um caminho que ele não cobre.
->
-> Registrado no ritual de síntese de 2026-09-08. **Ainda não foi publicado em tag** — a janela para
-> renomear sem custo de MAJOR é agora.
+> O consumidor **declara** `SarakNavItem[]` e a lib **desenha** com `SarakMenuItem`. Os dois são
+> exportados pelo barril, cada um no seu espaço — tipo e valor.
 
-O átomo que desenha o item de menu do cromo é o **componente** acima — não um `SarakButton`. São átomos de
+O átomo que desenha o item de menu do cromo é o `SarakMenuItem` — não um `SarakButton`. São átomos de
 papéis diferentes: um é **navegação**, o outro é **ação**, e o item de menu nunca carrega a métrica de
 botão de ação ([[013-item-de-navegacao-como-atomo-proprio]]).
 

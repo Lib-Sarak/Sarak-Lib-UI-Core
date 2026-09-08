@@ -9,7 +9,7 @@ substituido_por: ""
 alternativas_consideradas:
   - opcao: "Um size/variante de cromo dentro do SarakButton"
     custo: "Nenhuma superfície pública nova — mas o átomo de AÇÃO passaria a carregar um conceito de NAVEGAÇÃO, e toda correção futura de menu viraria uma variante de botão. O acoplamento é permanente e cresce a cada ajuste."
-  - opcao: "Um átomo próprio, SarakNavItem (ESCOLHIDA)"
+  - opcao: "Um átomo próprio, SarakMenuItem (ESCOLHIDA)"
     custo: "Superfície pública permanente (barril, catálogo, tipo Props, cobertura 1:1, paridade) e uma isenção @sarak-encapsula a mais. Reverter é MAJOR: minor-no-removal:check barra remoção de nome do barril em minor."
 ---
 
@@ -30,8 +30,8 @@ componente, cada ajuste de menu é um ajuste no botão de ação, e vice-versa.
 
 # 2. Decisão
 
-**Item de navegação passa a ter átomo próprio: `SarakNavItem`**
-(`src/components/atomic/Navigation/SarakNavItem.tsx`), com métrica de navegação e não de ação. Os
+**Item de navegação passa a ter átomo próprio: `SarakMenuItem`**
+(`src/components/atomic/Navigation/SarakMenuItem.tsx`), com métrica de navegação e não de ação. Os
 renderizadores de navegação do cromo o compõem, em vez de compor `SarakButton`.
 
 A métrica **difere por orientação**, e essa distinção é a decisão em si — não um detalhe:
@@ -47,6 +47,12 @@ ampliada.
 **O critério que sustenta a escolha:** a fronteira da R10 é por **papel**, não por pasta. Item de navegação
 não é botão de ação — é exatamente a distinção que a fronteira por papel existe para expressar. Resolver
 isso com uma variante dentro do átomo de ação contradiz a própria régua que tornou a R10 verificável.
+
+> **Nota de nomenclatura (2026-09-08).** O átomo nasceu chamado `SarakNavItem` e foi renomeado para
+> `SarakMenuItem` **antes de existir em qualquer tag**: o nome antigo colidia com o **tipo** `SarakNavItem`
+> (a forma do dado de `navItems`), e em ES/TS o export explícito do tipo sombreava o `export *` do
+> componente — o átomo era inalcançável pelo barril. A **decisão** deste ADR não mudou; mudou o símbolo
+> escolhido para encarná-la, e o registro fica aqui para o ADR não parecer reescrito.
 
 # 3. Consequências
 

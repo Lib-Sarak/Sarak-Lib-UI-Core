@@ -201,8 +201,8 @@ neste modo.
 
 Todos em `src/core/Shell/Components/`.
 
-**O item de menu que essas peças renderizam é o átomo `SarakNavItem`**
-(`src/components/atomic/Navigation/SarakNavItem.tsx`), não `SarakButton` — navegação e ação são papéis
+**O item de menu que essas peças renderizam é o átomo `SarakMenuItem`**
+(`src/components/atomic/Navigation/SarakMenuItem.tsx`), não `SarakButton` — navegação e ação são papéis
 diferentes, e o item de menu não carrega a métrica de botão de ação
 ([[013-item-de-navegacao-como-atomo-proprio]]). `SidebarNav` o compõe na orientação `vertical` (linha de
 lista, rótulo que trunca); `TopbarNav`, na `horizontal` (aba em pílula). `ShellThemeToggle`,

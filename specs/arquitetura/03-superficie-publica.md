@@ -160,7 +160,7 @@ A lista componente-por-componente **não está aqui de propósito** — está no
 O motivo não é estético: HTML nativo cru causa **vazamento de especificidade**. O elemento fica preso na variável global do preflight e ignora a paridade atômica — deixa de responder ao token do componente que deveria governá-lo. O próprio painel do Design Engine obedece a esta regra (*dogfooding*).
 
 **Substituir o elemento cru é metade da regra; a outra metade é escolher o átomo do PAPEL certo.** Item de
-navegação tem átomo próprio, `SarakNavItem` — usar `SarakButton` para um item de menu cumpre a letra da
+navegação tem átomo próprio, `SarakMenuItem` — usar `SarakButton` para um item de menu cumpre a letra da
 composição atômica e entrega a métrica de botão de ação onde deveria haver métrica de lista
 ([[013-item-de-navegacao-como-atomo-proprio]]).
 
