@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**34 regras: 31 verificáveis (§2) e 3 de conduta (§3).**
+**35 regras: 32 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
-| ⚠️ escopo menor que a regra | **9** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** |
+| ⚠️ escopo menor que a regra | **10** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -90,8 +90,8 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > (escopo do gate, e o gate de R8.1). Medido o vão inteiro — não há **componente ou hook** fora do alcance
 > de `auditor_coverage.mjs` — e a linha `**Estado:**` de R8 foi alinhada a ✅. Os dois voltam a concordar.
 >
-> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **35**, não 34: a 35ª é a sub-regra **R8.1**, que não entra na
-> contagem das regras numeradas (§1.3 conta 34).
+> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **36**, não 35: a extra é a sub-regra **R8.1**, que não entra
+> na contagem das regras numeradas (§1.3 conta 35).
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
@@ -1123,6 +1123,64 @@ ERRADO   exportar useSarakUIOptional — vira contrato público sem querer
 
 ---
 
+## R35 — A classe do chamador vence a do átomo
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate distingue *"concatena"* de *"usa merge"*, e **não
+confere a ordem** dentro da chamada de merge; varre só `src/components/atomic/**`.
+
+**Enunciado.** Átomo que aceita `className` compõe a classe **por merge**, pela porta única
+`mergeSarakClasses` (`src/components/atomic/hooks/mergeSarakClasses.ts`), com a `className` recebida como
+**último** argumento. Para a mesma propriedade CSS, a classe do chamador **substitui** a do átomo.
+
+**Por quê.** Duas utilitárias Tailwind que escrevem a mesma propriedade têm a **mesma especificidade**:
+quem vence é a que aparece depois **no stylesheet emitido**, não a que aparece depois no atributo `class`.
+Concatenar não sobrescreve — empilha, e entrega o resultado à ordem de emissão do Tailwind, que é acidental
+e muda quando a ferramenta muda. Um override que funciona hoje por sorte deixa de funcionar amanhã sem que
+uma linha de código mude.
+
+**A configuração das utilitárias próprias é obrigatória, não opcional.** `tailwind-merge` só resolve o
+conflito de classe que ele **reconhece no grupo certo**; classe que ele não conhece passa a **coexistir**
+com a concorrente em vez de substituí-la — o mesmo defeito, agora silencioso. As desta base:
+
+| Classe | Onde nasce | Grupo |
+| --- | --- | --- |
+| `text-2xs` · `text-3xs` | `src/styles/_theme.css` (tokens `@theme`) | `font-size` |
+| `rounded-btn` | `src/styles/_theme.css` (classe CSS avulsa) | `rounded` |
+| `font-tab` | `src/styles/_typography.css` (classe CSS avulsa) | `font-family` |
+
+**Classe própria que nascer depois precisa ser registrada ali, ou não conflita com nada.**
+
+⚠️ **Merge é de classe, nunca de estilo.** O `style` inline que o Design Engine devolve não passa por aqui
+e não é tocado.
+
+⚠️ **Conflito entre grupos diferentes não existe, e é onde a regra engana.** `min-w-fit` está em
+`min-width`, não em `width`: ele **sobrevive** a um `w-full` e mantém o piso de largura no conteúdo. Largura
+cheia se resolve **na origem** — `useButtonLayoutStyles` deixa de emitir o piso quando a largura cheia é
+pedida —, não pelo merge.
+
+**Certo × Errado.**
+
+```
+CERTO    mergeSarakClasses(base, variante, className)   // className por último
+ERRADO   `${base} ${variante} ${className}`             // empilha; a ordem de emissão decide
+ERRADO   mergeSarakClasses(className, base)             // merge feito, ordem errada: o átomo vence
+ERRADO   extendTailwindMerge(...) dentro do átomo       // a configuração tem uma porta só
+```
+
+**Cobrada por:** `check-class-merge.mjs` (`npm run class-merge:check`), no Anel 1 do `.githooks/pre-commit`
+**e** no passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`. **Os dois lugares são
+obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O
+comportamento resultante tem teste próprio (`mergeSarakClasses.test.ts`, uma asserção por utilitária
+própria; `SarakButton.test.tsx`, `SarakIconButton.test.tsx`).
+
+**O vão, e a dívida declarada.** O gate não vê: átomo que renomeie a prop na desestruturação; a **ordem**
+dos argumentos do merge; nada fora de `src/components/atomic/**` (`Layout/`, `core/`, `features/`). E a
+allowlist `gates/allowlists/classMergeExclusions.mjs` declara, com motivo por entrada, os átomos que ainda
+concatenam — convertê-los é trabalho futuro. **Contagem corrente: na saída do próprio comando**, nunca
+nesta prosa.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1260,6 +1318,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
+| **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1291,6 +1350,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `check-no-deep-import.mjs` | **R27** | `gates/scripts/contrato/` | ✅ `npm run deep-import:check` (Anel 1) |
 | `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
+| **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 

@@ -509,3 +509,50 @@ mão é proibido.
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
      Append-only. O que foi transportado, e o que ficou de fora. -->
+
+## Síntese — 2026-09-08
+
+**Trava do §7.4 conferida ANTES de escrever:** `git log --oneline -- specs/plan/plan-57-*.md` →
+`23a49df` (criação) e `3f53394` (execução). A plan está no histórico; removê-la não perde nada.
+
+### Transportado
+
+| Destino | O que entrou |
+|---|---|
+| [[00-regras-e-invariantes]] | **R35 — A classe do chamador vence a do átomo**, no formato da casa. Contagem 34→35 (verificáveis 31→32), a nota do `grep -cE "Estado:"` 35→36, linha no mapa regra→gate (§4) e no inventário de validadores (§4.1) |
+| [[arquitetura/03-superficie-publica]] | **§6.1.1** — o contrato visto pelo consumidor: `className` substitui em vez de somar; as utilitárias próprias são reconhecidas pelo merge e classe nova precisa ser registrada; merge é de classe e não de estilo; grupos diferentes não conflitam. `relacionados` atualizado |
+| [[01-gates-e-baseline]] | linha na tabela de gates da §2.2 (custo **~0,2 s**, medido em 3 execuções) e linha própria na matriz de cobertura por gatilho |
+| [[02-enforcement-por-commit]] | linha na tabela dos scripts do Anel 1; *"Os 5 `*:check` que ficavam de fora"* → **6** |
+| [[16-integracao-continua]] | a lista da §4.2 passa a ter **6** nomes |
+
+**A decisão de fundo da síntese foi o MARCADOR.** R35 entrou **⚠️, não ✅**: o gate distingue *"concatena"*
+de *"usa merge"*, mas **não confere a ordem** dos argumentos e varre só `src/components/atomic/**` — escopo
+menor que o da regra é ⚠️ por definição da §1.2, e um ✅ falso é o que aquela seção proíbe em voz alta.
+
+**Os três últimos destinos não estavam declarados no §8 desta plan** — a declaração era minha e estava
+incompleta. Foram acrescentados **sob autorização expressa do dono**, em 2026-09-08, depois de eu parar e
+levar a incoerência a ele, como o §7.4 manda. Sem isso, três inventários de gate ficariam descrevendo um
+sistema que já não existe.
+
+### Deliberadamente NÃO transportado
+
+- **A tabela de offsets do `dist/sarak.css`** (§2.1) — é evidência de investigação, não verdade permanente:
+  os números mudam quando o Tailwind reordena a emissão, que é justamente o que a regra torna irrelevante.
+- **O defeito e o ato de corrigi-lo.** Spec fixa descreve como o sistema **é**. O "antes/depois" que o
+  consumidor precisa ler vive em `docs/migracoes.md`, classificado **MAJOR** ([[03-versionamento-e-release]]
+  §3, *"mudar o que é default é MAJOR"*). ⚠️ **A entrada dele ainda não tem âncora de versão no título** —
+  ela entra quando o `npm version major` for emitido, e sem ela o `migration-anchor:check` barra a release.
+- **Os 28 átomos que ainda concatenam** — vivem na allowlist do gate, com motivo por entrada, que é a forma
+  correta de dívida declarada. Nenhuma spec fixa fixa esse número; a contagem sai do próprio comando.
+
+### `00-contexto` revisado
+
+**Nada a mudar.** A §2 dele manda contar as regras com `grep -c "^## R"` em vez de fixar o número, e os
+comandos vitais da §3 não enumeram gates de contrato. A checagem foi feita, não pulada.
+
+### Achados que desceram para o [[00-backlog]] neste ciclo
+
+**#4** (o `min-w-fit` que sobrevive quando a largura cheia vem por `className`) · **#5** (comentários citando
+`plan-NN`, dívida pré-existente e disseminada) · **#6** (a intermitência da suíte escalou muito além do que
+[[11-testes-e-cobertura]] §3.5 registra) · **#7** (a §7 da [[01-gates-e-baseline]] cita o Playwright como
+gate vivo, e ele foi removido em 2026-08-18).

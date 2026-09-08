@@ -4,7 +4,7 @@ titulo: "Superfície pública — o barril, os gates e as fronteiras de bundle"
 dominio: "Arquitetura / Contrato público / Empacotamento"
 status: "🟢 Vigente"
 tags: ["arquitetura", "barril", "contrato-publico", "catalogo", "bundle", "lazy", "taxonomia"]
-relacionados: ["[[00-mapa-do-modulo]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
 ---
 
 # 1. Propósito
@@ -158,6 +158,30 @@ A lista componente-por-componente **não está aqui de propósito** — está no
 **É proibido `<button>`, `<input>` ou `<select>` cru dentro de template ou componente pré-montado.** Use `SarakButton`, `SarakInput`, `SarakSelect`.
 
 O motivo não é estético: HTML nativo cru causa **vazamento de especificidade**. O elemento fica preso na variável global do preflight e ignora a paridade atômica — deixa de responder ao token do componente que deveria governá-lo. O próprio painel do Design Engine obedece a esta regra (*dogfooding*).
+
+### 6.1.1 O `className` do chamador vence o default do átomo
+
+Quem passa `className` a um átomo Sarak está **sobrescrevendo**, não somando: para a mesma propriedade CSS,
+a classe do chamador **substitui** a do átomo. Vale hoje para `SarakButton` e `SarakIconButton`; os demais
+átomos estão declarados, com motivo, em `gates/allowlists/classMergeExclusions.mjs`.
+
+O mecanismo é `mergeSarakClasses` (`src/components/atomic/hooks/mergeSarakClasses.ts`) — **porta única** de
+configuração do `tailwind-merge` nesta base, e a `className` recebida entra sempre como último argumento.
+Nenhum átomo configura o merge por conta própria. A regra, o gate e o vão dele estão em
+[[00-regras-e-invariantes]] **R35**.
+
+**As utilitárias próprias desta base são reconhecidas pelo merge** — `text-2xs`, `text-3xs` (`font-size`),
+`rounded-btn` (`rounded`) e `font-tab` (`font-family`). Elas não vêm do Tailwind puro e precisam estar
+registradas ali: classe própria que nascer depois e **não** for registrada não conflita com nada — ela
+**coexiste** com a concorrente em vez de substituí-la.
+
+**Dois limites que o consumidor sente:**
+
+- **Merge é de classe, não de estilo.** O `style` inline que o Design Engine devolve não passa pelo merge e
+  não é sobrescrito por `className`.
+- **Propriedades de grupos diferentes não conflitam.** `min-w-fit` (grupo `min-width`) sobrevive a um
+  `w-full` (grupo `width`) e mantém o piso de largura no conteúdo. Por isso `fullWidth` em `SarakButton`
+  resolve a largura **na origem** — `useButtonLayoutStyles` deixa de emitir o piso —, e não pelo merge.
 
 ## 6.2 Contrato de nomes de ícone
 

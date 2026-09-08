@@ -68,6 +68,7 @@ via normal.
 | 4 | `useButtonLayoutStyles.ts:20` só larga o `min-w-fit` quando a largura cheia vem pela prop `fullWidth` ou pelo tema; quem pede por `className="w-full"` mantém o piso de largura no conteúdo (visível em `PreviewSystemRenderer.test.tsx.snap:855`) — largura cheia pedida por classe não larga o piso de `min-width` | plan-57 | 2026-09-08 | médio |
 | 5 | Comentários citando `plan-NN` são dívida pré-existente e disseminada no código (ex.: `check-container-query-boundary.mjs:1` cita `plan-41`; `grep -rlE "plan-[0-9]+" src gates` cobre dezenas) — `padrao-escrita`, `references/comentarios.md:84` proíbe, e cada plan sintetizada transforma a citação em ponteiro morto | plan-57 | 2026-09-08 | médio |
 | 6 | A intermitência da suíte escalou muito além do que [[11-testes-e-cobertura]] §3.5 registra: as amostras de lá são 26 e 20 execuções com zero falhas; em 2026-09-08 foram 4 execuções vermelhas em 5, sempre por timeout e sempre verdes isoladas (`SarakPDFViewerImpl`, `generate-token-types.check`) | plan-57 | 2026-09-08 | médio |
+| 7 | [[01-gates-e-baseline]] §7 (critérios de aceite) cita "o Playwright, que declara **não** cobrar regra nenhuma" como gate vivo — o aparato foi removido em 2026-08-18 ([[11-testes-e-cobertura]] §7); a mesma linha fixa "os 5 scripts de check", número que envelheceu | síntese plan-57 | 2026-09-08 | baixo |
 
 ---
 

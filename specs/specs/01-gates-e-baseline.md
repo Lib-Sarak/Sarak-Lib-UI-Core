@@ -76,6 +76,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
+| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -156,6 +157,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `dev-kit` | **união dos 2 gatilhos** (§2.2.1 da [[02-enforcement-por-commit]]) | ✅ 1º | ✅ | — | ✅ |
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
+| `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |

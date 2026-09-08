@@ -110,8 +110,8 @@ envelhecer ([[15-divida-conhecida]] §3.3).
 
 Somam-se explicitamente os `*:check` que o `gates:full` **não** alcança, provados um a um:
 `plan-index:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`,
-`persistence-doc:check`. O `plan-index:check` é o caso que mais importa: o `pre-commit` roda só **metade**
-dele, e a CI é quem cobre a outra.
+`persistence-doc:check`, `class-merge:check`. O `plan-index:check` é o caso que mais importa: o `pre-commit`
+roda só **metade** dele, e a CI é quem cobre a outra.
 
 ## 4.3 O custo REAL — medido, não estimado
 
