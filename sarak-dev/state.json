@@ -339,7 +339,8 @@
       "009-persistencia-tenant-aware.md",
       "010-temas-salvos-pelo-usuario.md",
       "011-tema-salvo-por-uma-porta-de-escrita.md",
-      "012-escrita-git-sob-autorizacao-do-dono.md"
+      "012-escrita-git-sob-autorizacao-do-dono.md",
+      "013-item-de-navegacao-como-atomo-proprio.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",
