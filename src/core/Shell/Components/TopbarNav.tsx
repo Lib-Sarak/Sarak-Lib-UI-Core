@@ -1,7 +1,7 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { ShellUser } from './types';
@@ -122,7 +122,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             {discoveredModules.filter(m => m.status === 'online').map(mod => {
                                 const isActive = activeModuleId === mod.id;
                                 return (
-                                    <SarakNavItem
+                                    <SarakMenuItem
                                         key={mod.id}
                                         orientation="horizontal"
                                         collapsed={effectiveIsNavHidden}

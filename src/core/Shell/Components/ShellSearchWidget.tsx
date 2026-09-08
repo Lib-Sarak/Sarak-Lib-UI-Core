@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Command, ArrowRight } from 'lucide-react';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
-import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 
 interface ShellSearchWidgetProps {
     variant?: 'bar' | 'icon';
@@ -38,7 +38,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
 
     if (variant === 'icon') {
         return (
-            <SarakNavItem
+            <SarakMenuItem
                 onClick={onClick}
                 className="group font-tab"
                 title="Search (Ctrl + K)"
@@ -49,7 +49,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                     <span>CTRL</span>
                     <span>K</span>
                 </div>
-            </SarakNavItem>
+            </SarakMenuItem>
         );
     }
 

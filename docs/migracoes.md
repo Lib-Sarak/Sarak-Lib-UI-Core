@@ -5,6 +5,43 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
+
+**Classificação: correção, não quebra.** O átomo descrito na entrada logo abaixo ("`SarakNavItem` — átomo
+próprio para item de navegação do cromo") **nunca esteve alcançável pelo barril público**, então renomeá-lo
+não retira capacidade de ninguém — não há tag publicada em que `import { SarakNavItem }` alguma vez tenha
+devolvido o componente.
+
+**O defeito.** `src/index.ts` já exportava `SarakNavItem` como **tipo** (`export type { …, SarakNavItem }
+from './components/Layout/SarakAppChrome'` — a forma do dado da prop `navItems`). Quando o átomo de
+navegação entrou em `components/atomic/Navigation/` com o mesmo nome, o barril de categoria o expôs por
+`export *`, mas em ES/TS um **export explícito sombreia `export *`** — então o nome `SarakNavItem` no barril
+público continuou resolvendo só para o tipo. `import { SarakNavItem } from '@sarak/lib-ui-core'` sempre
+devolveu a interface `{ id, label, icon?, href, active? }`, nunca o componente, mesmo com `SarakNavItemProps`
+publicado ao lado. Medido pela API do compilador TypeScript sobre `src/index.ts`
+(`getExportsOfModule`/`getAliasedSymbol`), 2026-09-08.
+
+**A correção.** O componente e os tipos dele foram renomeados — sem sinônimo, sem alias:
+
+| Antes (nunca alcançável) | Depois |
+| --- | --- |
+| `SarakNavItem` (componente) | `SarakMenuItem` |
+| `SarakNavItemProps` | `SarakMenuItemProps` |
+| `SarakNavItemOrientation` | `SarakMenuItemOrientation` |
+
+**O que NÃO mudou.** `SarakNavItem` (o **tipo**, `{ id, label, icon?, href, active? }`, a forma da prop
+`navItems` de `SarakAppChrome`) continua exportado exatamente como antes — ele não faz parte desta correção
+e não pode ser renomeado sem quebrar quem já usa `navItems`. A métrica, os estados (ativo/inativo/
+desabilitado/colapsado) e a orientação (`vertical`/`horizontal`) do átomo também não mudaram — só o nome.
+
+**Como migrar.** Se você compunha a própria navegação importando o átomo diretamente pelo nome antigo —
+o que só era possível por deep import, proibido por contrato, já que o barril público nunca resolveu o nome
+para o valor — troque para `SarakMenuItem`/`SarakMenuItemProps`/`SarakMenuItemOrientation`. Quem consome o
+cromo pronto (`SarakShell`, `SarakAppChrome*`, `SarakShellNav`) não muda nada: a troca é interna aos
+renderizadores de navegação do cromo.
+
+---
+
 ## `SarakNavItem` — átomo próprio para item de navegação do cromo
 
 **Classificação: MAJOR** — a superfície é aditiva (novo componente, novo tipo), mas o **comportamento

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
@@ -138,7 +138,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                 const isOffline = mod.status === 'offline';
                                 const isActive = activeModuleId === mod.id;
                                 return (
-                                    <SarakNavItem
+                                    <SarakMenuItem
                                         key={mod.id}
                                         onClick={() => !isOffline && setActiveModuleId(mod.id)}
                                         disabled={isOffline}
@@ -159,7 +159,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         )}
                                         {isActive && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
                                         {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
-                                    </SarakNavItem>
+                                    </SarakMenuItem>
                                 );
                             })}
                         </div>
@@ -178,14 +178,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
                 {/* 3. Notifications */}
-                <SarakNavItem
+                <SarakMenuItem
                     collapsed={effectiveIsNavHidden}
                     icon={<SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
                     label="Notifications"
                     className="group font-tab"
                 >
                     <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
-                </SarakNavItem>
+                </SarakMenuItem>
             </div>
 
             {/* 4. User Profile & Logout */}

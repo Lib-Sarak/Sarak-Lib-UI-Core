@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { getLocalComponent } from '../../Discovery/registry';
 import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
-import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 
 interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
@@ -54,7 +54,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                     }`}
                 >
                     {LANGUAGES.map((lang) => (
-                        <SarakNavItem
+                        <SarakMenuItem
                             key={lang.code}
                             active={currentLang.code === lang.code}
                             onClick={() => {
@@ -70,7 +70,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                             }`}
                         >
                             {currentLang.code === lang.code && <Check size={10} />}
-                        </SarakNavItem>
+                        </SarakMenuItem>
                     ))}
                 </motion.div>
             )}
@@ -100,14 +100,14 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
 
     return (
         <div className="relative">
-            <SarakNavItem
+            <SarakMenuItem
                 onClick={() => setIsOpen(!isOpen)}
                 className="group font-tab"
                 icon={<Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
                 label="Language"
             >
                 <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
-            </SarakNavItem>
+            </SarakMenuItem>
             {dropdown}
         </div>
     );

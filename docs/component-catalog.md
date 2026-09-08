@@ -665,6 +665,22 @@ Props (`SarakMarkdownRendererProps` — `src/components/atomic/Media/SarakMarkdo
 | `content` | `string` | sim | String de Markdown cru a renderizar. |
 | `className` | `string` | não |  |
 
+### SarakMenuItem
+
+Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `icon` | `React.ReactNode` | não | Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). |
+| `label` | `React.ReactNode` | sim | Rótulo do item; trunca em vez de transbordar (orientação vertical). |
+| `active` | `boolean` | não | Item corresponde à rota/seção corrente. |
+| `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
+| `orientation` | `SarakMenuItemOrientation` | não | `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). |
+| `title` | `string` | não | Tooltip nativo; cai para o texto do rótulo quando `label` é string. |
+| `className` | `string` | não |  |
+
+Estende: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>`
+
 ### SarakModal
 
 Props (`SarakModalProps` — `src/components/atomic/Modals/SarakModal.tsx`):
@@ -698,22 +714,6 @@ Props (`SarakMultiSelectProps` — `src/components/atomic/Inputs/SarakMultiSelec
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: string[]) => void` | não | Emite a nova lista de values (Spec 32: `onChange(value)`). |
-
-### SarakNavItem
-
-Props (`SarakNavItemProps` — `src/components/atomic/Navigation/SarakNavItem.tsx`):
-
-| Prop | Tipo | Obrigatória | Descrição |
-| --- | --- | --- | --- |
-| `icon` | `React.ReactNode` | não | Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). |
-| `label` | `React.ReactNode` | sim | Rótulo do item; trunca em vez de transbordar (orientação vertical). |
-| `active` | `boolean` | não | Item corresponde à rota/seção corrente. |
-| `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
-| `orientation` | `SarakNavItemOrientation` | não | `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). |
-| `title` | `string` | não | Tooltip nativo; cai para o texto do rótulo quando `label` é string. |
-| `className` | `string` | não |  |
-
-Estende: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>`
 
 ### SarakOverlayProvider
 

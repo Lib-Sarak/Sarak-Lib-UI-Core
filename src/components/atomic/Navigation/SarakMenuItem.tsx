@@ -1,9 +1,9 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
-export type SarakNavItemOrientation = 'vertical' | 'horizontal';
+export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
 
-export interface SarakNavItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'> {
+export interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'> {
     /** Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). */
     icon?: React.ReactNode;
     /** Rótulo do item; trunca em vez de transbordar (orientação vertical). */
@@ -13,14 +13,14 @@ export interface SarakNavItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
     /** Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). */
     collapsed?: boolean;
     /** `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). */
-    orientation?: SarakNavItemOrientation;
+    orientation?: SarakMenuItemOrientation;
     /** Tooltip nativo; cai para o texto do rótulo quando `label` é string. */
     title?: string;
     className?: string;
 }
 
 /**
- * Componente Atômico: SarakNavItem
+ * Componente Atômico: SarakMenuItem
  *
  * Item de navegação do cromo (sidebar/topbar/drawer) com métrica própria de LISTA —
  * recuo, peso, caixa e truncamento — em vez da métrica de botão de ação que
@@ -31,7 +31,7 @@ export interface SarakNavItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
  * @sarak-encapsula button — a razão de existir deste componente é encapsular o
  *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
-export const SarakNavItem: React.FC<SarakNavItemProps> = ({
+export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     icon,
     label,
     active = false,
@@ -73,4 +73,4 @@ export const SarakNavItem: React.FC<SarakNavItemProps> = ({
     );
 };
 
-export default SarakNavItem;
+export default SarakMenuItem;

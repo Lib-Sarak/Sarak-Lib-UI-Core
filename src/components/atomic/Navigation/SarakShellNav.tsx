@@ -1,6 +1,6 @@
 import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
-import { SarakNavItem } from './SarakNavItem';
+import { SarakMenuItem } from './SarakMenuItem';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 
 /**
@@ -64,9 +64,9 @@ const NavEntry: React.FC<{
     horizontal: boolean;
     onSelect: (route: string) => void;
 }> = ({ item, isActive, horizontal, onSelect }) => (
-    // Composição atômica (R10 — Spec 18/lote 10): `SarakNavItem` já nasce com métrica
+    // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
     // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
-    <SarakNavItem
+    <SarakMenuItem
         onClick={() => onSelect(item.route)}
         active={isActive}
         orientation={horizontal ? 'horizontal' : 'vertical'}

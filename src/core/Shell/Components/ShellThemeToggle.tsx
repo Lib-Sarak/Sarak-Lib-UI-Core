@@ -2,7 +2,7 @@ import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { SarakNavItem } from '../../../components/atomic/Navigation/SarakNavItem';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 import { syncThemeWithMode, resolveThemeForMode } from '../../Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakThemePayload, ThemeEntry } from '../../Provider/types';
@@ -62,7 +62,7 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
 
     if (variant === 'vertical') {
         return (
-            <SarakNavItem
+            <SarakMenuItem
                 onClick={toggleTheme}
                 className="group font-tab"
                 icon={isDarkMode ? (
