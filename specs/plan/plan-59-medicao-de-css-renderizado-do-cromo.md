@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "testes", "ci", "browser", "cromo", "css-renderizado"]
 relacionados: ["[[11-testes-e-cobertura]]", "[[16-integracao-continua]]", "[[01-gates-e-baseline]]", "[[07-responsividade-e-multidispositivo]]", "[[05-cromo-e-slots]]"]
-depende_de: "plan-58-item-de-navegacao-com-metrica-propria"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/11-testes-e-cobertura.md · specs/16-integracao-continua.md"
 ---
@@ -34,7 +34,8 @@ Duas specs fixas já nomeiam este vão, e esta plan não descobre nada:
 
 ## 2.2 Por que isto importa agora, concretamente
 
-A regressão que a `plan-58` conserta atravessou a base inteira **verde**. Todo gate passou: paridade de
+A regressão de métrica do cromo — itens de menu herdando geometria de botão de ação — atravessou a base
+inteira **verde**. Todo gate passou: paridade de
 token, classe emitida, DOM, R10, contraste, diversidade. Nenhum deles olha resultado. O defeito só apareceu
 por **comparação manual com um sistema rodando uma versão de junho**.
 
@@ -62,7 +63,7 @@ Isto **não** reabre a decisão de 2026-08-18: aquela removeu um aparato **desco
 
 **Medir:** valores **computados** (o que o motor de CSS resolveu) de um conjunto **pequeno e nomeado** de
 elementos do cromo, nas três faixas de [[07-responsividade-e-multidispositivo]] §2 (< 768 · 768–1023 ·
-≥ 1024). É o que `jsdom` não faz e o que teria pego a regressão da `plan-58`.
+≥ 1024). É o que `jsdom` não faz e o que teria pego a regressão de métrica descrita na §2.2.
 
 **Não medir:** regressão visual por pixel. Foi o que produziu os 12 PNGs, dos quais 4 órfãos. Comparação de
 imagem é frágil, cara de manter e falha por antialiasing — e não é o que falta aqui. **Valor computado é
@@ -102,7 +103,7 @@ assertivo e legível no diff; imagem não é.**
 | Spec fixa | `specs/05-cromo-e-slots.md` | quais elementos do cromo existem, e as âncoras `data-sarak-slot` — **medir por âncora de contrato, não por estrutura interna** |
 | Spec fixa | `specs/01-gates-e-baseline.md` | como se lê a saída de cada gate; o baseline não é zero |
 | Spec fixa | `specs/00-regras-e-invariantes.md` | **R18** — todo instrumento de verificação declara, no próprio código, o que **não** vê |
-| Plan | `specs/plan/plan-58-item-de-navegacao-com-metrica-propria.md` | dependência: a métrica correta que esta plan afirma nasce lá |
+| Spec fixa | `specs/05-cromo-e-slots.md` §2.1.1 · `specs/04-shell-e-discovery.md` §4.3 | a métrica de navegação que esta plan afirma — por orientação, e qual peça compõe qual átomo |
 | Skill | `padrao-escrita` + `padrao-typescript` | sempre |
 | Skill | `test-e2e` | é a skill dona de teste em navegador contra ambiente próprio |
 | Skill | `ui-auditoria-modulo` | auditoria estrutural ao final |
