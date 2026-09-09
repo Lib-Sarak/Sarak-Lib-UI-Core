@@ -297,3 +297,49 @@ poluir o backlog com um falso positivo.
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
      Append-only. O que foi transportado, e o que ficou de fora. -->
+
+## Síntese — 2026-09-08
+
+**Trava do §7.4 conferida ANTES de escrever:** `git log --oneline -- specs/plan/plan-60-*.md` → `afa5226`
+(criação), `8d42c9d` (ajuste do revisor) e `aba4715` (execução + veredito). A plan está no histórico.
+
+### Transportado
+
+| Destino | O que entrou |
+|---|---|
+| [[00-regras-e-invariantes]] **R14** | *"Cobrada por"* passou a dizer **o que o gate prova**: resolução pelo *type checker* sobre `src/index.ts`, seguindo cada export até o símbolo final e exigindo **valor** declarado nas raízes de componente. Registro sintático não basta — export explícito sombreia `export *` **em silêncio** |
+| [[00-regras-e-invariantes]] **R14** (vãos) | os **dois vãos novos**, declarados junto com a prova que os criou: o cruzamento é por **prefixo de caminho**, não por identidade de declaração (homônimos em categorias diferentes ainda se cruzam); e só a metade do **valor** subiu ao type checker — `<Nome>Props` segue sintática |
+| [[01-gates-e-baseline]] §2.2 | a linha do gate descreve a prova mais funda, e o **custo foi de ~1,3 s para ~5,6 s** — medido três vezes, máquina ociosa |
+| [[01-gates-e-baseline]] §3 | a linha de confirmação passou a afirmar **0 faltas + toda resolução verde**, e **deixou de publicar a contagem** de componentes: ela é fonte viva que o próprio comando imprime, e fixá-la em prosa é o padrão que o achado **32** cataloga (ela já estava errada — dizia 77, o real é 78) |
+
+### O marcador da R14 NÃO mudou, e isso foi decidido medindo
+
+**R14 continua ⚠️.** O vão que a mantém ali — *categoria sem barril de categoria só tem os `.tsx` de raiz
+varridos* — **não foi tocado** por esta plan: um componente esquecido numa subpasta continua escapando do
+gate e do catálogo. A prova de resolução é mais funda, mas é ortogonal a esse vão.
+
+Subir para ✅ aqui teria repetido exatamente o erro que a §1.3 daquela spec documenta ter cometido **seis
+vezes** — descrever o sistema diferente do que ele é, por não medir o escopo restante antes de mexer no
+marcador. E a plan **previa** essa armadilha na §8, de propósito.
+
+### Deliberadamente NÃO transportado
+
+- **A medição de custo contaminada.** Minha primeira leitura deu 52 s, com a suíte rodando em paralelo. O
+  número que entrou na spec é o da máquina ociosa (~5,6 s), e a lição de método ficou no veredito, não na
+  spec fixa — *medição sob carga mede a máquina, não o instrumento*.
+- **O defeito histórico** (o átomo inalcançável). Ele vive em `docs/migracoes.md` e no cabeçalho do próprio
+  gate, que é onde um leitor de código precisa dele. Spec fixa descreve como o sistema **é**.
+- **A contagem de scripts do `gate-limits`** que o executor apontou como defasada: fui ler, e aquela linha
+  é **registro datado** que já se declara envelhecível. Falso positivo — não registrei nem transportei.
+
+### `00-contexto` revisado
+
+**Nada a mudar.** A §3 lista `barrel:check` na tabela de comandos vitais, sem custo e sem descrição de
+profundidade; a §4 roteia por tarefa e já manda ler a `01-gates-e-baseline` para mexer em gate. A checagem
+foi feita, não pulada.
+
+### Achados que desceram para o [[00-backlog]] neste ciclo
+
+**#10** — a [[00-prompt-executor]] proíbe `git stash`, que é o único mecanismo capaz de produzir um controle
+em HEAD limpo; usado duas vezes, sempre com o worktree restaurado. É o processo que precisa de uma porta.
+**#11** — o `status: 🟡` foi pulado em duas execuções seguidas, com autodenúncia nas duas.

@@ -588,11 +588,13 @@ export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 ```
 
-**Cobrada por:** `npm run barrel:check`. A contagem corrente de componentes e a confirmação de zero falta vivem em [[01-gates-e-baseline]] §3 *(a contagem já caiu uma vez, quando a `plan-09` removeu o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
+**Cobrada por:** `npm run barrel:check`, que prova **resolução**, não registro: ele monta um `ts.Program` sobre `src/index.ts` e segue cada export pelo *type checker* até o símbolo final, exigindo que o nome resolva para um **valor** declarado dentro das raízes de componente. Registro sintático não basta — em ES/TS um `export` explícito **sombreia** o `export *` em silêncio, e um nome pode estar no barril resolvendo para outra coisa. A contagem corrente de componentes e a confirmação de zero falta vivem em [[01-gates-e-baseline]] §3 *(a contagem já caiu uma vez, quando a `plan-09` removeu o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
 
 > ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
 >
-> ⚠️ **O vão que CONTINUA de pé, declarado.** Categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos (`scripts/publicComponents.mjs:167-172`) — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio.
+> ⚠️ **O vão que CONTINUA de pé, declarado.** Categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos (`scripts/publicComponents.mjs:167-172`) — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio. **É este vão que mantém a regra em ⚠️** — a prova de resolução não o alcança.
+>
+> ⚠️ **Dois vãos NOVOS, declarados junto com a prova mais funda que os criou.** (1) "O valor **é** o componente" é conferido por **prefixo de caminho** contra `src/components/{atomic,engines,Layout}/`, não por identidade de declaração: dois componentes homônimos em categorias diferentes ainda passariam um pelo outro. (2) Só a resolução do **valor** subiu para o *type checker*; a metade do `<Nome>Props` continua por AST sintática, porque Props não tem o mesmo histórico de colisão medido. Os quatro limites estão no cabeçalho do próprio gate.
 
 ---
 

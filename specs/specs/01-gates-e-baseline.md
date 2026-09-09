@@ -62,7 +62,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 | Gate | Comando | Garante | Cobra | Custo |
 | --- | --- | --- | --- | --- |
-| Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril, com o `<Nome>Props` | R14 | ~1,3 s |
+| Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril **e o nome RESOLVE para o componente** (type checker, não presença sintática), com o `<Nome>Props` | R14 | ~5,6 s |
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
 | Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib como texto em componente consumidor-facing | R12 | ~1,3 s |
 | Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
@@ -264,7 +264,7 @@ depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cob
 | ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
 | ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto**, 23 temas · **18 isentos** de contraparte (os legados) · **25 pares-tema pulados**, que não são aprovação. Nasceu em 188 |
-| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **77 componentes, 0 faltas** |
+| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **0 faltas**, e todo nome **resolve** para o valor do componente. *(A contagem de componentes é fonte viva: o próprio comando a imprime — publicá-la aqui é o padrão que o achado **32** cataloga.)* |
 | `catalog:check` **(R17·R29)** | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **363 arquivos varridos, 0 violações** — o número que importa é o de violações |
 | `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
