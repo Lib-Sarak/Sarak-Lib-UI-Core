@@ -5,7 +5,10 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         setupFiles: ['./vitest.setup.ts'],
-        exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx'],
+        // browser-tests/**: medição de CSS renderizado em navegador real (Playwright,
+        // specs/specs/11-testes-e-cobertura.md §7) — jsdom não resolve cascata de
+        // stylesheet, então não pode nem deve coletar esses arquivos.
+        exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**'],
         // Workers reutilizados acumulam heap do jsdom entre arquivos e estouravam o
         // teto default do Node (~4GB) em lotes grandes ("vitest run" completo caía
         // por OOM). Teto explícito de 8GB por worker (Vitest 4: opção top-level;

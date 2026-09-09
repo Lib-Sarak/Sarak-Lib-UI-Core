@@ -73,6 +73,7 @@ via normal.
 | 9 | [[arquitetura/03-superficie-publica]] afirma cifras defasadas: `80 componentes registrados` no bloco de saída da §4 (real: 78) e `253 nomes` no §2 — o próprio arquivo avisa, na seção da divergência gate × kit, que "cifra em prosa envelhece" e o achado 32 já catalogou o padrão | ritual | 2026-09-08 | baixo |
 | 10 | [[00-prompt-executor]] §7 item 11 proíbe `git stash` ao executor, mas ele é o único mecanismo que produz um CONTROLE em HEAD limpo — a evidência mais forte para separar regressão de intermitência; usado duas vezes (plan-58, plan-60), sempre com worktree restaurado. O processo precisa oferecer uma porta sancionada | plan-60 | 2026-09-08 | médio |
 | 11 | O executor pulou o `status: "🟡 Em execução"` antes da primeira edição em duas execuções seguidas (plan-58 e plan-60), autodenunciando nas duas — a transição existe para o `plan-index:check` e para evitar execução concorrente; se ela é sempre esquecida, ou o ritual precisa de gatilho ou a regra precisa mudar | plan-60 | 2026-09-08 | baixo |
+| 12 | `border-radius` computado do item de navegação horizontal (`rounded-full`) mediu `12px` em vez do valor de pílula, no harness de navegador — não isolado: pode ser artefato do harness (reset/preflight não replicado) ou comportamento real de `dist/sarak.css`; a propriedade foi retirada da medição em vez de afirmar o que não se entendeu | plan-59 | 2026-09-09 | baixo |
 
 ---
 

@@ -97,6 +97,44 @@ jobs:
                   npm run class-merge:check
 
     # ---------------------------------------------------------------------
+    # CROMO-CSS-REAL — a única medição de CSS RENDERIZADO (valor computado, não
+    # pixel) sobre a métrica do cromo, em navegador real (Chromium/Playwright).
+    # jsdom não resolve cascata de stylesheet nem avalia container query
+    # (specs/specs/11-testes-e-cobertura.md §7.2, specs/specs/07-responsividade-e-
+    # multidispositivo.md §6.1) — este job fecha esse vão, medindo o mesmo cromo
+    # nas três faixas de dispositivo. Roda em job SEPARADO de `gates` de propósito:
+    # instalar o binário do Chromium é o item mais caro (medido: baixa ~310 MB), e
+    # não deve inflar o custo do check OBRIGATÓRIO que trava o merge (`gates`, único
+    # nome em required_status_checks — specs/specs/16-integracao-continua.md §2.1).
+    # Herda o MESMO `on:` do topo deste arquivo — nenhum gatilho novo a manter.
+    # ---------------------------------------------------------------------
+    cromo-css-real:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Node 24 (o do dono, sem matriz)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "npm"
+
+            - name: npm ci (nunca npm install — respeita o lockfile e falha se ele divergir)
+              run: npm ci
+
+            # Só o BINÁRIO do Chromium é instalado sob demanda, e só neste job — o
+            # pacote `@playwright/test` já veio pelo `npm ci` acima (é devDependency
+            # declarada, como qualquer outra ferramenta de teste desta base).
+            - name: Instalar o Chromium do Playwright (só este job paga o custo do binário)
+              run: npx playwright install --with-deps chromium
+
+            # npm run build (o dist/ real que o consumidor instala) + os 3 testes
+            # Playwright, um por faixa de dispositivo — ver browser-tests/cromo-css-real.spec.ts.
+            - name: Medir o CSS renderizado do cromo (build + Playwright, em navegador real)
+              run: npm run cromo-css-real:check
+
+    # ---------------------------------------------------------------------
     # RELEASE-TAG — só existe no dia a dia porque o pre-push local SÓ age
     # para refs/heads/main, e merge pelo botão do GitHub não roda hook
     # nenhum (plan-05 §5 Etapa A item 3). Roda a MESMA verificação
