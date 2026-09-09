@@ -81,7 +81,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 78,
+      "count": 82,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -160,6 +160,10 @@
         "SarakTreeView",
         "SarakTypography",
         "SarakUploader",
+        "ShellLanguageSelector",
+        "ShellSearchWidget",
+        "ShellThemeToggle",
+        "ShellUserWidget",
         "SocialButton"
       ]
     }
