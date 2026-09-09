@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 78** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (24)
+### B.3 Gates registrados (25)
 
 | Comando | O que roda |
 | --- | --- |
@@ -328,6 +328,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run container-query-boundary:check` | `node gates/scripts/contrato/check-container-query-boundary.mjs` |
 | `npm run container-query:check` | `node gates/scripts/contrato/check-container-query-literal.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
+| `npm run cromo-css-real:check` | `npm run build && playwright test --config=browser-tests/playwright.config.ts` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |

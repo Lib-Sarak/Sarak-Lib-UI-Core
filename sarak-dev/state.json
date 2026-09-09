@@ -202,6 +202,10 @@
       "comando": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs"
     },
     {
+      "nome": "npm run cromo-css-real:check",
+      "comando": "npm run build && playwright test --config=browser-tests/playwright.config.ts"
+    },
+    {
       "nome": "npm run deep-import:check",
       "comando": "node gates/scripts/contrato/check-no-deep-import.mjs"
     },
