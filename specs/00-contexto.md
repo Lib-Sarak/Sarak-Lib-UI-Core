@@ -399,9 +399,12 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 
 - **Os 5 `dangerouslySetInnerHTML` de `src/` são a forma como a engine injeta CSS, e são legítimos.**
   Auditados um a um em 2026-08-01: `DesignScope.tsx:54`, `DesignInjector.tsx:173` e
-  `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`, o
-  qual bloqueia breakout `[<>{};]` (R6). `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais
-  estáticos**, sem interpolação. **Nenhum recebe HTML de origem não confiável.**
+  `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`
+  (R6). A trava geral bloqueia breakout `[<>{};]`; os tokens de **mídia** (`image`/`file`) têm predicado
+  próprio, que aceita só `https://` e mídia embutida bem-formada — cujo payload, por ser base64, **não pode
+  conter** nenhum dos cinco caracteres. Detalhe em [`specs/10-seguranca-e-acessibilidade.md`](specs/10-seguranca-e-acessibilidade.md) §2.1.
+  `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais estáticos**, sem interpolação.
+  **Nenhum recebe HTML de origem não confiável.**
 - **`chromeSlots` publica 9 entradas para 8 regiões, e está certo assim.** `topbarActions` é alias legado de
   `topbarEnd`; o coletor deriva por **tipo** (`ReactNode` opcional), não por semântica, e o `doc` do próprio
   slot avisa o consumidor de que é alias. Consertar o coletor custa mais que declarar a imprecisão.

@@ -29,7 +29,8 @@ isso nunca foi uma decisão: [[05-cromo-e-slots]] §1 registra que o `SarakAppCh
 sintoma pontual (*"topbar e sidebar não aparecem"*), como o mínimo para o cromo existir. Ele virou o cromo
 padrão do único consumidor vivo sem nunca ter sido comparado com o que substituía.
 
-As plans 65 e 66 tornam o conteúdo alcançável e os tokens efetivos. Elas não respondem à pergunta que
+Os widgets já são públicos ([[arquitetura/03-superficie-publica]] §3.1) e a plan 66 torna os tokens de
+cromo efetivos. Elas não respondem à pergunta que
 sobra: **o que aparece por omissão?** Hoje, nada.
 
 **A decisão do dono (2026-09-09) é: default com opt-out.** O argumento é de coerência com a própria base,
@@ -78,7 +79,7 @@ item a item, não presumido: se sobrar divergência, ela é relatada.
 - `SarakShell` — não muda.
 - A precedência dos slots: um slot preenchido pelo consumidor continua vencendo o default.
 - Seletor de idioma, resize por arraste e auto-hide no default.
-- Criar widget novo — os quatro já existem e foram publicados pela plan 65.
+- Criar widget novo — os quatro já existem e já são públicos ([[arquitetura/03-superficie-publica]] §3.1).
 - `PreviewSystemRenderer` — aqui ele é **verificado**, não alterado.
 - Emitir a release. `npm version` é do dono ([[00-contexto]] §7).
 - Qualquer refactor não listado em §5.

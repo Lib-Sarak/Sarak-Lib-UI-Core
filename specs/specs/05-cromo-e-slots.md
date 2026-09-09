@@ -109,6 +109,13 @@ não só implementado.
 
 > **A lib dá a REGIÃO; o consumidor dá o CONTEÚDO.**
 
+**E o conteúdo pode vir da própria biblioteca.** Busca, alternância de tema, widget de usuário e seletor de
+idioma são **componentes públicos** — montam sob o `SarakUIProvider`, dentro de qualquer slot, sem
+`SarakShell`, sem Discovery e sem registro. O princípio não muda: quem decide o que vai em cada região
+continua sendo o consumidor. O que deixou de existir é a situação em que ele precisava reescrever do zero o
+que a lib já tinha pronto, porque os quatro moravam fora das raízes que a superfície pública varre
+([[arquitetura/03-superficie-publica]]).
+
 Todo slot é `ReactNode` puro e o invólucro é mínimo — a lib **não presume** o que vai dentro (imagem,
 vídeo, animação, faixa promocional, widget). `ChromeSlots.tsx:1-12` declara isso, e cada bloco
 **devolve `null` sem `children`** (`:52-56`, `:70-76`, `:85-96`, `:104-114`): **slot ausente não cria espaço
@@ -168,6 +175,23 @@ global por tema (`SarakBackgroundRenderer`), que **continua sendo o caminho de f
 
 Regra prática: **atmosfera é do tema; ornamento localizado é do slot.** Quem quer um fundo que muda com o
 tema usa (a). Quem quer um banner de campanha na topbar usa (b).
+
+## 3.1 O fundo global alcança os DOIS cromos
+
+`SarakShell` e `SarakAppChrome` **deixam de pintar fundo próprio quando há mídia global** — a raiz de cada
+um emite fundo transparente em vez do token de fundo, para que o `SarakBackgroundRenderer` do Provider
+(montado com `position: fixed`, atrás de tudo) apareça sob o cromo inteiro. Sem mídia, cada um pinta o
+próprio token, como sempre.
+
+No cromo apresentacional a regra vale igual nos **três modos de geometria** — sidebar, topbar e celular —,
+porque o estilo de raiz é montado uma vez e repassado aos três ramos: nenhum ganha caso especial. O `style`
+do consumidor continua sobrescrevendo nos dois estados.
+
+> **Por que isto merece uma seção.** A assimetria entre os dois cromos foi invisível por construção: o
+> token aplicava, o renderizador montava, a mídia carregava — e a raiz opaca do cromo a cobria inteira. O
+> sintoma que chega é *"escolher imagem de fundo não faz nada"*, e nada no caminho do tema está errado.
+> Diferença de fundo de raiz não se prova em `jsdom`, que não resolve cascata: prova-se lendo o valor
+> **computado** em navegador (§9).
 
 # 4. Acessibilidade do colapso mobile
 
@@ -262,6 +286,8 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | Drawer mobile: `aria-expanded`, ESC, foco, fechar ao selecionar | `src/components/Layout/__tests__/SarakAppChromeMobile.test.tsx` | ✅ suíte |
 | Moldura comum (ordem banner/corpo/footer, isolamento com `decoration`) | `src/components/Layout/chrome/__tests__/` | ✅ suíte |
 | Contrato publicado (os 8 slots no catálogo) | `npm run catalog:check` | ✅ gate |
+| **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 
 ⚠️ **Ressalva metodológica herdada** ([[07-responsividade-e-multidispositivo]] §7): teste que usa
 `overrideDevice` **não exercita a detecção real** de viewport. A cobertura de colapso acima prova o

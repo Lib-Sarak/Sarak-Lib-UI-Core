@@ -19,7 +19,7 @@ o realce de item ativo que o distinguem de uma lista.
 
 # 2. Contexto
 
-O dono reportou que a topbar está pobre *"em funcionalidade e aparência"*. As plans 65 a 67 tratam da
+O dono reportou que a topbar está pobre *"em funcionalidade e aparência"*. As plans 66 e 67, mais a publicação dos widgets, tratam da
 funcionalidade. Esta trata da aparência, e ela tem número medido.
 
 Medição em Chromium real, sobre o `dist/` publicado, no item de navegação do `SarakAppChrome`:

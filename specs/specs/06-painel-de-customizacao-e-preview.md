@@ -116,14 +116,20 @@ Duas decisões de projeto do rascunho, ambas com o motivo no código:
   sujo por diferença de identidade de objeto em valor estruturalmente igual (o caso dos valores
   responsivos `{desk,tab,mob}`).
 
-**A gravação é explícita.** Mas há uma exceção deliberada e documentada: aplicar um **tema completo** pelo
-catálogo (`handleApplyFullTheme`, `Main/ThemeCustomizationTab.tsx:91-108`) **comita e persiste na hora** —
-via `applyFullConfigRaw` + `persistDesign`. O comentário (`:99-105`) explica por quê: o `/design` roda sob
-modo rascunho, então o `applyFullConfig` "smart" só atualizaria o draft; era essa a divergência de wiring
-que produzia *"0 chaves no localStorage e sem repintar ao vivo"* ao escolher um tema no catálogo.
+**A gravação é explícita, e não tem exceção.** Um token ou um tema inteiro: **toda escolha no painel é
+rascunho**. `handleApplyFullTheme` (`Main/ThemeCustomizationTab.tsx:92-106`) alimenta **só** o rascunho; o
+design da aplicação e o armazenamento mudam por uma porta única — a confirmação explícita do usuário, em
+`handleApplyToSystem` (`hooks/useDesignDraft.ts:196-204`), que é o mesmo caminho de qualquer outro token e
+só age com o rascunho sujo (`isDirty`, `:95-99`).
 
-Ou seja: **mexer num token é rascunho; escolher um tema inteiro é aplicação.** A assimetria é intencional —
-o usuário que clica num tema do catálogo espera que ele valha, não que fique pendente.
+> **Por que a simetria importa mais do que parece.** A conversão claro↔escuro pelo fallback sintetizado
+> **não é reversível** ([[09-temas-e-presets]] §2.1). Se escolher um tema escrevesse no sistema na hora,
+> experimentar temas degradaria a paleta de forma acumulativa, sem volta. É o rascunho que mantém a
+> experimentação reversível.
+
+**A restrição que qualquer alteração neste caminho tem de respeitar:** o preview repinta porque lê o
+**rascunho**, nunca o sistema. Quem mexer no handler mantém o rascunho alimentado — sem isso, o painel
+mostra o tema anterior e a escolha parece não ter efeito.
 
 O mecanismo de drafting no motor está em [[02-design-engine]].
 

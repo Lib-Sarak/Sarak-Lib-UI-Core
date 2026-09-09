@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "cromo", "tokens", "gate", "modo-ui-kit"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[specs/07-responsividade-e-multidispositivo]]", "[[specs/01-gates-e-baseline]]"]
-depende_de: "plan-65-publicar-os-widgets-do-cromo"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md"
 ---
@@ -55,6 +55,10 @@ Achado adjacente que cabe aqui: `SarakNavItem` (`src/components/Layout/chrome/na
 `category`, e `SarakAppChrome.tsx:147-149` descarta o campo ao mapear para `ShellNavItem` — embora o
 `SarakShellNav` saiba agrupar (`SarakShellNav.tsx:47-59`). O modo ui-kit não consegue pedir um agrupamento
 que o renderizador já implementa.
+
+> ✅ **Pré-requisito cumprido (2026-09-09).** Os quatro widgets do cromo já são públicos e vivem em
+> `src/components/atomic/Navigation/`, alcançáveis pelo barril — ver [[arquitetura/03-superficie-publica]]
+> §3.1. Esta plan já pode consumir o que precisar deles.
 
 # 3. Escopo
 

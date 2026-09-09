@@ -22,7 +22,7 @@ Aqui está a regra de **exposição**. As regras de estilo e de hardcode moram n
 
 **Deep imports são proibidos por contrato.** Um consumidor que escreva `import X from '@sarak/lib-ui-core/dist/components/...'` está fora do contrato, e nada garante que o caminho exista na próxima versão. A única porta é a raiz do pacote.
 
-Hoje o barril exporta **253 nomes** (valores e tipos). A organização é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino.
+O barril é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino. **Quantos nomes ele exporta, e quantos componentes o gate registra, não se afirma aqui** — são cifras derivadas, e o lugar delas é a fonte que as produz: `npm run barrel:check` para os componentes, `dist/index.d.ts` e `docs/component-catalog.json` para os nomes. Cifra em prosa acerta por um dia e mente pelo resto ([[15-divida-conhecida]], achado 32).
 
 ## 2.1 Duas particularidades do barril que você precisa conhecer
 
@@ -46,11 +46,32 @@ O escopo são **duas raízes organizadas por categoria** — `src/components/ato
 
 > ⚠️ **Limitação conhecida, escrita no próprio código (`:167-172`): categoria SEM barril só tem a RAIZ varrida.** Um componente colocado em subpasta **escapa do gate** e do catálogo. Isso é usado deliberadamente em alguns casos — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril — mas é uma faca de dois lados: um componente público esquecido numa subpasta passa em silêncio.
 
+## 3.1 Onde o componente MORA decide o que os gates enxergam
+
+A consequência de a superfície ser derivada por varredura de raízes é forte e vale explicitar: **um
+componente fora dessas raízes é invisível para os gates, mesmo que seja exportado.** Não aparece no
+`barrel:check`, não entra no catálogo gerado, não é medido pelo detector **estrutural** de
+`auditor_hardcoded` — cujo escopo é `src/components/atomic/**`.
+
+Isso corta nos dois sentidos, e os dois já aconteceram:
+
+- **Componente que devia ser público e não era.** Os quatro widgets do cromo — busca, alternância de tema,
+  widget de usuário e seletor de idioma — moravam em `src/core/Shell/Components/`. Eram alcançáveis só de
+  dentro do `SarakShell`, e o consumidor do modo ui-kit não tinha como montá-los nos slots do cromo.
+  Hoje vivem em `src/components/atomic/Navigation/`, com as interfaces de props exportadas, e chegam ao
+  barril pelo `export *` da categoria — nenhuma linha nomeada foi preciso acrescentar em `src/index.ts`.
+- **Regra violada sem ninguém ver.** Ao entrarem na raiz varrida, os mesmos quatro expuseram hardcode
+  estrutural que ninguém media enquanto estavam fora dela. É o padrão que [[01-gates-e-baseline]] cataloga:
+  **escopo do gate menor que o alcance da regra** — verde no gate, regra violada no código.
+
+**A regra prática, para quem for publicar um componente:** mover para a raiz varrida **é** o ato de
+publicar. Exportar de onde ele está hoje cria um nome público que nenhum gate cobre.
+
 # 4. O gate `barrel:check`
 
 ```
 $ npm run barrel:check
-[barrel:check] 80 componentes registrados; barril em dia (0 faltas).
+[barrel:check] <N> componentes registrados; barril em dia (0 faltas).
 ```
 
 `gates/scripts/contrato/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
@@ -141,7 +162,7 @@ Os 6, com onde moram:
 | `Layouts` | Primitivas estruturais — flex, grid, split pane, acordeão, grupo de formulário |
 | `Media` | Renderização de mídia — markdown, lightbox, PDF |
 | `Modals` | Diálogos e modais |
-| `Navigation` | Navegação — breadcrumbs, stepper, paginação, spotlight, nav de casca |
+| `Navigation` | Navegação — breadcrumbs, stepper, paginação, spotlight, nav de casca, item de menu e os **widgets do cromo** (busca, alternância de tema, usuário, idioma) |
 | `Tables` | Tabela clássica e seu colapso mobile |
 | `Templates` | Moldes de composição de tela, sem lógica de negócio |
 | `UX` | Componentes de experiência — inclui o `SarakTabs` público |

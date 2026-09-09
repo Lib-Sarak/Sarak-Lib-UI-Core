@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "atmosfera", "presets", "plug-and-play"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[specs/05-cromo-e-slots]]", "[[adr/006-zero-marca-soberania-host]]"]
-depende_de: "plan-61-fundo-de-midia-no-cromo-do-modo-ui-kit"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md"
 ---
@@ -49,8 +49,8 @@ blueprint, favo de mel, seda líquida, circuitos. Peso zero, licença nenhuma, f
 **derivado** de `TEXTURE_OPTIONS` por `.map()`, em vez de duplicado — o padrão que [[09-temas-e-presets]]
 §5.1 registra como o correto.
 
-Foto e vídeo de verdade continuam existindo — como **ativo do consumidor**, pela porta que a plan 62
-conserta (upload no painel) ou por URL própria. É o mesmo desenho de `customThemes`: a lib dá o mecanismo,
+Foto e vídeo de verdade continuam existindo — como **ativo do consumidor**, pela porta do upload no painel
+(o predicado de mídia de [[10-seguranca-e-acessibilidade]] §2.1 c-bis aceita mídia embutida) ou por URL própria. É o mesmo desenho de `customThemes`: a lib dá o mecanismo,
 o dado é do importador.
 
 [[09-temas-e-presets]] §8 já registra isto como backlog nunca executado: *"Expansão/hospedagem de mídias de
@@ -60,6 +60,10 @@ hospedadas"*. Esta plan é a decisão.
 **Remover os quatro ids é quebra de contrato público** — um consumidor pode ter salvo um deles no tema
 persistido. E, como [[09-temas-e-presets]] §4.4.3 lembra, valor persistido vence default: tirar do catálogo
 não tira do tema de quem já salvou. A degradação para esse caso tem de ser desenhada, não descoberta.
+
+> ✅ **Pré-requisito cumprido (2026-09-09).** O cromo dos dois modos já honra `globalBackgroundImageUrl` —
+> escolher uma mídia muda a tela, então a substituição desta plan é verificável de verdade. Contrato em
+> [[05-cromo-e-slots]] §3.1.
 
 # 3. Escopo
 
@@ -79,7 +83,7 @@ não tira do tema de quem já salvou. A degradação para esse caso tem de ser d
 - O token `globalBackgroundImageUrl` — continua existindo, com a mesma assinatura; é a porta do consumidor.
 - `SarakBackgroundRenderer` — continua servindo imagem e vídeo por URL.
 - `TEXTURE_PRESETS` e as 33 texturas existentes — não mudam.
-- `MediaUploaderControl` e a fronteira de validação — são da plan 62.
+- `MediaUploaderControl` e a fronteira de validação — já resolvidos; ver [[10-seguranca-e-acessibilidade]] §2.1 c-bis.
 - Empacotar arquivo binário no `dist/` — descartado nesta plan pelas razões da §2.
 - Qualquer refactor não listado em §5.
 

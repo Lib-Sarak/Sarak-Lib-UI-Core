@@ -59,13 +59,38 @@ cor passa pelo `COLOR_PATTERN`. Fora do contrato → `undefined` → o chamador 
 const CSS_BREAKOUT_PATTERN = /[<>{};]/;
 ```
 
-`validation.ts:37-41`. Nenhum valor de tema pode conter `<`, `>`, `{`, `}` ou `;`. Esses cinco caracteres
-são exatamente os que permitiriam **sair de uma declaração `--x: VALOR;`** (via `;`) ou **fechar a tag
+`src/core/Provider/utils/cssSafety.ts`. Nenhum valor de tema pode conter `<`, `>`, `{`, `}` ou `;` —
+**exceto os tipos `image`/`file`, que têm predicado próprio (c-bis)**. Esses cinco caracteres são
+exatamente os que permitiriam **sair de uma declaração `--x: VALOR;`** (via `;`) ou **fechar a tag
 `<style>`** que carrega as variáveis (via `<`/`>`). Sem eles, um valor de tema é inerte: o pior que pode
 fazer é ser um valor CSS feio.
 
-A checagem é **recursiva** para os campos fora do catálogo tipado (`isSafeExtraValue`, `:76-84`) — array,
-objeto aninhado, qualquer profundidade. Não há nível de aninhamento por onde passar HTML cru.
+A checagem é **recursiva** para os campos fora do catálogo tipado (`isSafeExtraValue`) — array, objeto
+aninhado, qualquer profundidade. Não há nível de aninhamento por onde passar HTML cru.
+
+### c-bis) `isSafeMediaString` — o predicado dos tokens de mídia
+
+Os tipos `image` e `file` não passam pela trava geral: toda mídia embutida carrega `;base64,`, e o `;` a
+reprovaria inteira. `isSafeMediaString` (`cssSafety.ts`) aceita **exatamente duas formas**:
+
+- **URL `https://`** — com as duas barras, e ainda sob a trava geral de breakout;
+- **mídia embutida bem-formada** — esquema `data:`, tipo MIME de **imagem ou vídeo**, codificação
+  `base64` **declarada**, e payload restrito ao alfabeto base64.
+
+Recusa todo o resto: `data:` com MIME que não é mídia, `javascript:`, qualquer outro esquema, e qualquer
+cauda anexada — o padrão é ancorado nas duas pontas.
+
+> **Por que não afrouxa a garantia.** Os cinco caracteres de breakout **não pertencem ao alfabeto base64**.
+> Um payload que casa com o padrão é inerte por construção, e não por confiança no autor do tema. O único
+> `;` aceito está no prefixo fixo do formato, em posição que não fecha declaração nenhuma.
+>
+> Um valor legado envolto em `url(...)` é desembrulhado antes do julgamento, e a âncora impede o caso
+> perigoso: qualquer coisa depois do `)` faz o desembrulho falhar, o valor volta inteiro e é recusado.
+
+**O predicado tem fonte única, e isso é o que fecha a segunda barreira.** `useDesignVariables` — a trava
+que existe para o caso de alguém chamar `applyConfig`/`setDesign` sem passar por `validateDesign` —
+**importa** o mesmo predicado em vez de reimplementá-lo. As duas barreiras aceitam e recusam o mesmo
+conjunto por construção, não por teste espelhado.
 
 ### d) `COLOR_PATTERN` rejeita `url()`
 
