@@ -288,10 +288,16 @@ lib não injeta `Authorization`", [[10-seguranca-e-acessibilidade]] §3.1).
 **Estado hoje:** `auditor_coverage` cobre as seis raízes e reporta **0 órfãos**, de verdade — não mais
 "0 órfãos dentro de um recorte que deixava três arquivos de fora".
 
-# 7. E2E e regressão visual — NÃO EXISTEM nesta base
+# 7. E2E e regressão visual — o que existe, e o que segue ausente
 
-> **Não há teste de ponta a ponta nem de regressão visual neste repositório.** Não é lacuna a descobrir: é
+> **Não há teste de ponta a ponta de jornada, nem regressão visual por pixel.** Não é lacuna a descobrir: é
 > estado declarado.
+>
+> ✅ **O que passou a existir:** **uma** medição de **CSS renderizado** em navegador real — `browser-tests/`,
+> Chromium via Playwright, ligada ao job `cromo-css-real` da CI. Ela mede **valor computado**
+> (`getComputedStyle`) de um conjunto **nomeado** de elementos do cromo, nas três faixas de dispositivo,
+> contra o artefato **`dist/` buildado** — não o `src/`. Não é E2E de jornada e **não é comparação de
+> pixel**: as duas coisas continuam fora, por decisão. Contrato e limites em §7.3.
 
 O aparato Playwright CT foi **removido em 2026-08-18** (decisão do dono, tomada duas vezes — 2026-08-10 e
 2026-08-11) por produzir **verde falso**: cobertura que existia no repositório e **não rodava em pipeline
@@ -334,6 +340,33 @@ no meio de um aceite.
 > quando esta seção foi escrita; o lugar de rodar passou a existir, mas **a suíte da CI roda em `jsdom`, como
 > a local** ([[16-integracao-continua]] §5). Ter onde rodar não é ter o que rodar — a ferramenta continua
 > desinstalada, e reabrir isso é decisão de plan própria, não consequência automática do pipeline.
+
+## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
+
+`browser-tests/cromo-css-real.spec.ts`, três testes (um por faixa de
+[[07-responsividade-e-multidispositivo]] §2), rodando por `npm run cromo-css-real:check` — que **builda
+antes**, sempre, porque o harness lê `dist/`.
+
+**Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
+de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
+ficar sistematicamente abaixo do botão em recuo e peso. Isso sobrevive a mudança legítima de escala (medido:
+a raiz do harness computa 0,875, não 16px) e mede exatamente a classe de regressão do
+[[013-item-de-navegacao-como-atomo-proprio]]: *item de menu herdando a métrica do botão de ação*. Os
+elementos são alcançados por **âncora de contrato** (`getByRole` + nome acessível), nunca por estrutura
+interna.
+
+**O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18, seis itens): pixel · fonte carregada ·
+tema que não seja o default · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) · `src/`
+quando o `dist/` está velho · qualquer navegador que não seja Chromium headless.
+
+⚠️ **O quinto limite é o que morde na prática:** o harness carrega o artefato **publicado**. `dist/`
+desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que
+`cromo-css-real:check` embute o build como primeiro passo — e é a mesma armadilha que §7.1 registra para
+qualquer medição sobre artefato publicado.
+
+**Por que ela não repete o erro de 2026-08-18:** ela **nasceu ligada ao gatilho**. O job existe no mesmo
+commit em que o arquivo existe; não houve etapa em que a cobertura estivesse no disco esperando alguém
+plugá-la. Detalhe do job e do custo em [[16-integracao-continua]] §4.
 
 # 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 

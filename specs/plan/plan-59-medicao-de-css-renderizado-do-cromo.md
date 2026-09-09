@@ -499,3 +499,50 @@ esperar não é backlog.
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
      Append-only. O que foi transportado, e o que ficou de fora. -->
+
+## Síntese — 2026-09-09
+
+**Trava do §7.4 conferida ANTES de escrever:** `git log --oneline -- specs/plan/plan-59-*.md` → `23a49df`
+(criação), `afa5226` (ajuste do revisor) e `a168fee` (execução + correção + veredito).
+
+### Transportado
+
+| Destino | O que entrou |
+|---|---|
+| [[11-testes-e-cobertura]] §7 | o **título e a premissa** mudaram: *"E2E e regressão visual — NÃO EXISTEM"* virou *"o que existe, e o que segue ausente"*. Continua fora: E2E de **jornada** e regressão por **pixel**. Passou a existir: **uma** medição de CSS renderizado, ligada ao job da CI |
+| [[11-testes-e-cobertura]] **§7.3** (nova) | o contrato da medição: asserções **relacionais** contra um `SarakButton` vivo na mesma página (não tabela de pixel), âncora por `getByRole`, três faixas de dispositivo, e os **seis limites R18** resumidos — com destaque para o quinto, que é o que morde: `dist/` velho faz a medição medir o passado |
+| [[16-integracao-continua]] §5 | a linha *"CSS renderizado em browser real"* saiu da tabela do que a CI **não** cobre, marcada como **fechada**, com o que continua fora nomeado ao lado |
+| [[16-integracao-continua]] **§4.2.1** (nova) | por que o job é **separado** do `gates`: o binário do Chromium é o item caro e o `gates` é o único nome em `required_status_checks` — inflar o check que trava merge faria todo push pagar por uma medição de cromo |
+| [[16-integracao-continua]] §4.3 | linha do job na tabela de custo, **declarando que o número de runner limpo ainda não existe** |
+| [[00-contexto]] §3 | a prosa dizia *"não há E2E nem regressão visual"* — passou a mentir pela metade e foi corrigida. **É o ponteiro que um revisor esquece**, e estava previsto na §8 desta plan |
+
+### A tabela §7.1 do que se perdeu NÃO foi apagada
+
+Ela lista quatro coberturas que sumiram com o aparato de 2026-08-18. **Nenhuma delas foi recuperada por
+esta plan** — a medição nova cobre o cromo, não o não-vazamento do modo embarcado (R24), nem o boot do
+painel, nem `var()` resolvendo, nem regressão visual dos 8 componentes. Apagar a tabela porque "agora tem
+browser" teria trocado uma verdade específica por uma vaga.
+
+### Deliberadamente NÃO transportado
+
+- **O custo em runner limpo.** Ninguém mediu — só a ordem de grandeza (~310 MiB + ~34 s local, com cache).
+  A spec **declara que não foi medido** em vez de publicar um número inventado.
+- **O `border-radius` anômalo** (12px onde se esperava pílula). Não foi isolado; virou [[00-backlog]] **12**.
+  Spec fixa não carrega hipótese não confirmada.
+- **O incidente do lockfile.** É defeito corrigido — vive no veredito e no Git, não em spec fixa.
+
+### `00-contexto` revisado — e desta vez ELE MUDOU
+
+Diferente das sínteses anteriores, a checagem do `00-contexto` **produziu edição**: a §3 afirmava, em prosa,
+que não há E2E nem regressão visual. Metade disso deixou de valer. Vale como lembrete de que *"nada a
+mudar"* é resultado legítimo da checagem, mas só depois de fazê-la.
+
+### O que esta plan fecha, e o que ela não fecha
+
+Ela entrega o instrumento que **faltava desde sempre**: a base tinha ~36 gates que provam estrutura — token,
+classe emitida, DOM, contraste, paridade — e **nenhum** que olhasse resultado renderizado. Foi por isso que
+a regressão de métrica do cromo atravessou tudo verde e só apareceu por comparação manual com um build de
+junho.
+
+**O que ela não fecha:** a medição cobre o **cromo**, no tema **default**, em **Chromium**. Não é uma rede
+geral de regressão visual, e a §7.3 diz isso com todas as letras.

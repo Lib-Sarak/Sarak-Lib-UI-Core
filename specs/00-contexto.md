@@ -99,7 +99,7 @@ viola sem perceber:
 > Cada item aponta para a spec fixa em `arquitetura/` que o detalha. Esta seção é o índice, não o tratado.
 
 **Stack:** TypeScript + React `>=18` (peer) · Tailwind CSS `>=4` · build `tsup` (ESM + CJS + DTS) ·
-testes `vitest` — **não há E2E nem regressão visual** ([[specs/11-testes-e-cobertura]] §7) · gerenciador
+testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, mas **com** uma medição de CSS renderizado em navegador real (`browser-tests/`, job `cromo-css-real`) ([[specs/11-testes-e-cobertura]] §7) · gerenciador
 **npm** · distribuída por **git com tag**, sem registry
 ([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). A versão vive em
 `package.json`; a linha publicada é `git tag`; e o **motivo de cada MAJOR** está em
