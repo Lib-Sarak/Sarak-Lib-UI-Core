@@ -92,21 +92,16 @@ export const ThemeCustomizationTab: React.FC = () => {
     const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
         setCurrentThemeName(design.systemName || 'Novo Tema');
 
-        // Joga o design inteiro pro draft (Sandbox) para refletir no Preview.
+        // Escolher um tema no catálogo alimenta só o rascunho, como qualquer outro
+        // token: o preview repinta na hora porque lê o rascunho, não o sistema. O
+        // design da aplicação e o armazenamento só mudam pela confirmação explícita
+        // do usuário (`handleApplyToSystemWrapper`), o mesmo caminho que qualquer
+        // outro token já usa — sem essa simetria, experimentar um tema seria
+        // irreversível sempre que a conversão de modo claro/escuro não for exata.
         if (handleThemePreview) {
             handleThemePreview(design);
         }
-
-        // L4 (Spec 40.1): aplicar um TEMA COMPLETO pelo catálogo (PresetsCatalog) deve
-        // refletir no sistema IMEDIATAMENTE e PERSISTIR — igual ao TemplatesTab — não
-        // ficar só no preview (era essa a divergência de wiring do v5: o catálogo previa,
-        // mas nunca comitava, então "0 chaves no localStorage" e sem repintar ao vivo).
-        // Usa o commit RAW porque o `/design` roda sob modo rascunho: o `applyFullConfig`
-        // "smart" apenas atualizaria o draft. O RAW escreve no design do sistema →
-        // DesignInjector repinta na hora; `persistDesign` grava no localStorage/onSave.
-        sarak.applyFullConfigRaw?.(design);
-        sarak.persistDesign?.(design);
-    }, [handleThemePreview, setCurrentThemeName, sarak]);
+    }, [handleThemePreview, setCurrentThemeName]);
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({

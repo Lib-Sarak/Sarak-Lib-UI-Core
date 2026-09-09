@@ -1,13 +1,13 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { useSarakUI } from '../../Provider/SarakUIProvider';
-import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
-import { syncThemeWithMode, resolveThemeForMode } from '../../Design/presets/themes/color-engine';
-import type { SarakTokenValue } from '../../Design/types';
-import type { SarakThemePayload, ThemeEntry } from '../../Provider/types';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { SarakMenuItem } from './SarakMenuItem';
+import { syncThemeWithMode, resolveThemeForMode } from '../../../core/Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../../core/Design/types';
+import type { SarakThemePayload, ThemeEntry } from '../../../core/Provider/types';
 
-interface ShellThemeToggleProps {
+export interface ShellThemeToggleProps {
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 

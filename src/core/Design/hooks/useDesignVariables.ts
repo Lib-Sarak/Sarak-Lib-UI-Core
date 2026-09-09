@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { getAllDesignTokens } from '../master-map';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
+import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
 
 /**
@@ -19,6 +20,13 @@ const toKebabCase = (str: string) =>
  * que uma chamada direta de `applyConfig`/`setDesign` pule `validateDesign`.
  */
 const isCssSafeValue = (value: string): boolean => !/[<>{};]/.test(value);
+
+/** Mesma exceção que `coerceTokenValue`: tokens `image`/`file` carregam
+ * mídia embutida (`data:...;base64,...`), que `isCssSafeValue` rejeitaria só por
+ * causa do `;` de `;base64,`. Delega ao mesmo predicado da primeira barreira —
+ * fonte única, para que as duas nunca reconheçam formas diferentes. */
+const isSafeTokenValue = (tokenType: string | undefined, value: string): boolean =>
+    tokenType === 'image' || tokenType === 'file' ? isSafeMediaString(value) : isCssSafeValue(value);
 
 /**
  * Hook Universal de Tradução de Design (v12.9 - Reactive Sync)
@@ -73,7 +81,7 @@ export const useDesignVariables = (
                 // FALLBACK: Gerador Responsivo Inteligente
                 const parseUnit = (v: unknown) => {
                     const raw = token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
-                    if (isCssSafeValue(raw)) return raw;
+                    if (isSafeTokenValue(token.type, raw)) return raw;
                     console.warn(`[Sarak:Design] Valor responsivo inseguro para "${token.id}" — descartado.`, v);
                     return typeof token.defaultValue === 'number' ? String(token.defaultValue) : '0';
                 };
@@ -104,7 +112,7 @@ export const useDesignVariables = (
                 if (token.unit && typeof value === 'number') {
                     finalValue = `${value}${token.unit}`;
                 }
-                if (!isCssSafeValue(finalValue)) {
+                if (!isSafeTokenValue(token.type, finalValue)) {
                     console.warn(`[Sarak:Design] Valor inseguro para "${token.id}" — descartado.`, value);
                     finalValue = String(token.defaultValue ?? '');
                 }

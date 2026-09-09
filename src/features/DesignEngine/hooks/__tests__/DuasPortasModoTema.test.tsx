@@ -14,7 +14,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { ShellThemeToggle } from '../../../../core/Shell/Components/ShellThemeToggle';
+import { ShellThemeToggle } from '../../../../components/atomic/Navigation/ShellThemeToggle';
 import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import { useDesignDraft } from '../useDesignDraft';
 

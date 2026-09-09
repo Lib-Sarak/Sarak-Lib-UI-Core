@@ -70,6 +70,10 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakTable` | `importance` | `hero` · `base` · `subtle` |
 | `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
+| `ShellLanguageSelector` | `variant` | `horizontal` · `vertical` |
+| `ShellSearchWidget` | `variant` | `bar` · `icon` |
+| `ShellThemeToggle` | `variant` | `horizontal` · `vertical` · `mini` |
+| `ShellUserWidget` | `variant` | `horizontal` · `vertical` · `mini` |
 | `SocialButton` | `provider` | `google` · `github` |
 | `SocialButton` | `variant` | `glass` · `sovereign` |
 
@@ -87,7 +91,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (78)
+## Componentes públicos (82)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -1079,6 +1083,41 @@ Props (`SarakUploaderProps` — `src/components/atomic/Inputs/SarakUploader.tsx`
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(files: File[]) => void` | não | Recebe os arquivos aceitos (Spec 32: `onChange(value)`). |
 | `onReject` | `(rejections: FileRejection[]) => void` | não | Recebe as rejeições (ex.: arquivo maior que `maxSize`). |
+
+### ShellLanguageSelector
+
+Props (`ShellLanguageSelectorProps` — `src/components/atomic/Navigation/ShellLanguageSelector.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `variant` | `'horizontal' \| 'vertical'` | não |  |
+
+### ShellSearchWidget
+
+Props (`ShellSearchWidgetProps` — `src/components/atomic/Navigation/ShellSearchWidget.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `variant` | `'bar' \| 'icon'` | não |  |
+| `onClick` | `() => void` | sim |  |
+
+### ShellThemeToggle
+
+Props (`ShellThemeToggleProps` — `src/components/atomic/Navigation/ShellThemeToggle.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não |  |
+
+### ShellUserWidget
+
+Props (`ShellUserWidgetProps` — `src/components/atomic/Navigation/ShellUserWidget.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `user` | `ShellUser` | não |  |
+| `logout` | `() => void` | não |  |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não |  |
 
 ### SocialButton
 

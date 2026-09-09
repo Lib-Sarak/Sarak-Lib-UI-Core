@@ -7,10 +7,10 @@ import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { ShellUser } from './types';
-import { ShellUserWidget } from './ShellUserWidget';
-import { ShellSearchWidget } from './ShellSearchWidget';
-import { ShellLanguageSelector } from './ShellLanguageSelector';
-import { ShellThemeToggle } from './ShellThemeToggle';
+import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUserWidget';
+import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSearchWidget';
+import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
+import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface SidebarNavProps {

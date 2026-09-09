@@ -2,6 +2,7 @@ import { SarakDesignState } from '../types';
 import { PAYLOAD_EXTRA_KEYS } from '../payloadExtraKeys';
 import { getAllDesignTokens } from '../../Design/master-map';
 import { DESIGN_MANIFEST } from '../manifest';
+import { isSafeCssString, isSafeMediaString } from './cssSafety';
 import type { DesignToken } from '../../Design/types';
 
 /**
@@ -33,12 +34,6 @@ const ALLOWED_EXTRA_KEYS = new Set<string>([
     ...(PAYLOAD_EXTRA_KEYS as readonly string[]),
     ...Object.keys(DESIGN_MANIFEST)
 ]);
-
-/** Caracteres que permitem escapar de uma declaração CSS (`--x:VALOR;`) ou de
- * uma tag `<style>` (breakout de HTML). Nenhum valor de tema pode contê-los. */
-const CSS_BREAKOUT_PATTERN = /[<>{};]/;
-
-const isSafeCssString = (value: string): boolean => !CSS_BREAKOUT_PATTERN.test(value);
 
 /** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)` e as
  * palavras-chave seguras. Rejeita qualquer outra coisa (inclui `url()`, que não
@@ -121,11 +116,12 @@ const coerceTokenValue = (token: DesignToken, value: unknown): unknown => {
         }
         case 'color':
             return isValidColor(value) ? value : undefined;
+        case 'image':
+        case 'file':
+            return typeof value === 'string' && isSafeMediaString(value) ? value : undefined;
         case 'string':
         case 'text':
         case 'font':
-        case 'image':
-        case 'file':
         default:
             return typeof value === 'string' && isSafeCssString(value) ? value : undefined;
     }
@@ -155,6 +151,9 @@ const describeDriftReason = (token: DesignToken, value: unknown): string => {
             return getEnumOptions(token) ? 'enum ausente (valor fora de constraints.options)' : 'tipo (esperado string segura)';
         case 'color':
             return 'formato de cor inválido (fora de COLOR_PATTERN)';
+        case 'image':
+        case 'file':
+            return 'mídia inválida (nem https:, nem data: de imagem/vídeo bem-formado)';
         default:
             return 'string insegura (fora de isSafeCssString)';
     }

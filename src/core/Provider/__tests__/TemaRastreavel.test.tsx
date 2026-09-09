@@ -17,7 +17,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
 import { useSarakUI } from '../SarakUIProvider';
-import { ShellThemeToggle } from '../../Shell/Components/ShellThemeToggle';
+import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
 
 // O invariante das duas portas (§3.3) mora em
 // `src/features/DesignEngine/__tests__/DuasPortasModoTema.test.tsx` — ele

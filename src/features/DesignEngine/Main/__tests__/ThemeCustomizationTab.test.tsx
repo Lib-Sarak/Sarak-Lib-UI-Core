@@ -183,7 +183,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it('L4: aplicar um tema completo pelo catálogo comita ao sistema E persiste (não só preview)', () => {
+    it('aplicar um tema completo pelo catálogo só atualiza o rascunho — não comita nem persiste', () => {
         const mockPreview = vi.fn();
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
@@ -202,11 +202,12 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         fireEvent.click(screen.getByTestId('apply-full-theme'));
 
         const expected = { mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' };
-        // Reflete no preview...
+        // Reflete no rascunho/preview...
         expect(mockPreview).toHaveBeenCalledWith(expected);
-        // ...E comita ao sistema + persiste (o que faltava no v5).
-        expect(mockApplyFullConfigRaw).toHaveBeenCalledWith(expected);
-        expect(mockPersistDesign).toHaveBeenCalledWith(expected);
+        // ...e NÃO toca o design do sistema nem o armazenamento — a escolha de um tema
+        // no catálogo é rascunho, como qualquer outro token.
+        expect(mockApplyFullConfigRaw).not.toHaveBeenCalled();
+        expect(mockPersistDesign).not.toHaveBeenCalled();
     });
 
     it('aplica as alterações globais diretamente ao sistema, sem abrir modal de exportação (sem conceito de "tema no banco")', () => {

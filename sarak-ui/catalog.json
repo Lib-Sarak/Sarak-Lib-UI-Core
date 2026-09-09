@@ -236,8 +236,16 @@
     "SarakUIProviderProps",
     "SarakUploader",
     "SarakUploaderProps",
+    "ShellLanguageSelector",
+    "ShellLanguageSelectorProps",
     "ShellNavItem",
+    "ShellSearchWidget",
+    "ShellSearchWidgetProps",
+    "ShellThemeToggle",
+    "ShellThemeToggleProps",
     "ShellUser",
+    "ShellUserWidget",
+    "ShellUserWidgetProps",
     "SkeletonShape",
     "SocialButton",
     "SocialButtonProps",
@@ -3628,6 +3636,72 @@
         }
       ]
     },
+    "ShellLanguageSelector": {
+      "propsInterface": "ShellLanguageSelectorProps",
+      "source": "src/components/atomic/Navigation/ShellLanguageSelector.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical'",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "ShellSearchWidget": {
+      "propsInterface": "ShellSearchWidgetProps",
+      "source": "src/components/atomic/Navigation/ShellSearchWidget.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'bar' | 'icon'",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": false,
+          "doc": ""
+        }
+      ]
+    },
+    "ShellThemeToggle": {
+      "propsInterface": "ShellThemeToggleProps",
+      "source": "src/components/atomic/Navigation/ShellThemeToggle.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical' | 'mini'",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "ShellUserWidget": {
+      "propsInterface": "ShellUserWidgetProps",
+      "source": "src/components/atomic/Navigation/ShellUserWidget.tsx",
+      "props": [
+        {
+          "name": "user",
+          "type": "ShellUser",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical' | 'mini'",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SocialButton": {
       "propsInterface": "SocialButtonProps",
       "source": "src/components/atomic/Buttons/SocialButton.tsx",
@@ -4131,6 +4205,40 @@
           "none",
           "uppercase",
           "capitalize"
+        ]
+      },
+      {
+        "component": "ShellLanguageSelector",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      {
+        "component": "ShellSearchWidget",
+        "prop": "variant",
+        "values": [
+          "bar",
+          "icon"
+        ]
+      },
+      {
+        "component": "ShellThemeToggle",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical",
+          "mini"
+        ]
+      },
+      {
+        "component": "ShellUserWidget",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical",
+          "mini"
         ]
       },
       {

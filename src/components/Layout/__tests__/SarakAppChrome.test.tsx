@@ -141,6 +141,53 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
         expect((container.firstChild as HTMLElement).style.minHeight).toBe('0px');
     });
 
+    // Sob `SarakUIProvider`, a raiz do cromo NÃO é `container.firstChild` — o Provider
+    // (Modo App) intercala `NoiseOverlay`/`SovereignThemeInjector`/`SarakBackgroundRenderer`
+    // como irmãos ANTES de `children` (`SarakUIProvider.tsx:218-229`), sem nó de wrapper
+    // (`SarakScopeRoot` só materializa `<div>` no Modo Embarcado). Por isso a raiz é
+    // localizada pelo `className` que o próprio `SarakAppChrome` publica como prop pública.
+    const CHROME_ROOT_CLASS = 'chrome-bg-test';
+    const chromeRootOf = (container: HTMLElement) => container.querySelector(`.${CHROME_ROOT_CLASS}`) as HTMLElement;
+
+    it('SEM mídia global, o fundo da raiz é idêntico ao de hoje (token com fallback)', () => {
+        const { container } = render(<SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        expect(chromeRootOf(container).style.background).toBe('var(--bg-body, var(--theme-body, transparent))');
+    });
+
+    it('COM mídia global (globalBackgroundImageUrl), a raiz do cromo NÃO pinta fundo opaco', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ globalBackgroundImageUrl: 'https://exemplo.com/bg.png' }}>
+                <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>
+            </SarakUIProvider>,
+        );
+        expect(chromeRootOf(container).style.background).toBe('transparent');
+    });
+
+    it('o `style` do consumidor sobrescreve o fundo mesmo COM mídia global', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ globalBackgroundImageUrl: 'https://exemplo.com/bg.png' }}>
+                <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS} style={{ background: 'red' }}><div>x</div></SarakAppChrome>
+            </SarakUIProvider>,
+        );
+        expect(chromeRootOf(container).style.background).toBe('red');
+    });
+
+    it('os três modos de geometria herdam a regra de fundo COM mídia (nenhum ganha caso especial)', () => {
+        const config = { globalBackgroundImageUrl: 'https://exemplo.com/bg.png' };
+        const renderWithMedia = (device: DeviceType, ui: React.ReactElement) =>
+            render(
+                <SarakUIProvider config={config}>
+                    <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+                </SarakUIProvider>,
+            );
+        const { container: side } = renderWithMedia('desktop', <SarakAppChrome navigationStyle="sidebar" nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        const { container: top } = renderWithMedia('desktop', <SarakAppChrome navigationStyle="topbar" nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        const { container: mobile } = renderWithMedia('smartphone', <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        expect(chromeRootOf(side).style.background).toBe('transparent');
+        expect(chromeRootOf(top).style.background).toBe('transparent');
+        expect(chromeRootOf(mobile).style.background).toBe('transparent');
+    });
+
     it('a matriz completa de tokens de cromo está referenciada (cobertura explícita)', () => {
         const { container: side } = render(<SarakAppChrome brand={{ name: 'ERP' }}><div>x</div></SarakAppChrome>);
         const { container: top } = render(<SarakAppChrome navigationStyle="topbar" brand={{ name: 'ERP' }}><div>x</div></SarakAppChrome>);

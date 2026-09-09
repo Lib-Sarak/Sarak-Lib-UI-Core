@@ -103,3 +103,88 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(result).not.toHaveProperty('scaleRatio');
     });
 });
+
+// Os tokens `image`/`file` (só `globalBackgroundImageUrl` existe hoje no
+// schema) têm predicado próprio: aceitam `https:` e mídia embutida (`data:`)
+// bem-formada, sem afrouxar `CSS_BREAKOUT_PATTERN` para nenhum outro tipo.
+describe('validateDesign — predicado de mídia embutida em tokens `image`/`file`', () => {
+    let warnSpy: ReturnType<typeof vi.spyOn>;
+    const PNG_1PX = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+    beforeEach(() => {
+        warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warnSpy.mockRestore();
+    });
+
+    it('aceita uma URL `https:` sem warn', () => {
+        const result = validateDesign({ globalBackgroundImageUrl: 'https://cdn.example.com/bg.png' });
+        expect(result.globalBackgroundImageUrl).toBe('https://cdn.example.com/bg.png');
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('aceita mídia embutida `data:` bem-formada (imagem) sem warn — o defeito reproduzido na plan', () => {
+        const dataUri = `data:image/png;base64,${PNG_1PX}`;
+        const result = validateDesign({ globalBackgroundImageUrl: dataUri });
+        expect(result.globalBackgroundImageUrl).toBe(dataUri);
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('aceita mídia embutida `data:` bem-formada (vídeo) sem warn', () => {
+        const dataUri = 'data:video/mp4;base64,AAAAAA==';
+        const result = validateDesign({ globalBackgroundImageUrl: dataUri });
+        expect(result.globalBackgroundImageUrl).toBe(dataUri);
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('recusa `data:` com payload fora do alfabeto base64 (mal-formada), com warn', () => {
+        const result = validateDesign({ globalBackgroundImageUrl: 'data:image/png;base64,not_base64!!!' });
+        expect(result.globalBackgroundImageUrl).toBeUndefined();
+        expect(warnSpy).toHaveBeenCalled();
+    });
+
+    it('recusa `data:` com MIME que não é imagem/vídeo — só este predicado pega isto (o `CSS_BREAKOUT_PATTERN` já rejeitava TODA `data:` antes, inclusive as bem-formadas)', () => {
+        const nonMedia = 'data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==';
+        const result = validateDesign({ globalBackgroundImageUrl: nonMedia });
+        expect(result.globalBackgroundImageUrl).toBeUndefined();
+    });
+
+    it('recusa `javascript:`', () => {
+        const result = validateDesign({ globalBackgroundImageUrl: 'javascript:alert(1)' });
+        expect(result.globalBackgroundImageUrl).toBeUndefined();
+    });
+
+    it('recusa tentativa de breakout anexada a uma `data:` bem-formada', () => {
+        const result = validateDesign({
+            globalBackgroundImageUrl: `data:image/png;base64,${PNG_1PX}<script>alert(1)</script>`
+        });
+        expect(result.globalBackgroundImageUrl).toBeUndefined();
+    });
+
+    it('recusa breakout dentro de uma URL `https:`', () => {
+        const result = validateDesign({
+            globalBackgroundImageUrl: 'https://evil.com/x?a=1;background:url(javascript:alert(1))'
+        });
+        expect(result.globalBackgroundImageUrl).toBeUndefined();
+    });
+
+    it('mantém aceito, sem warn, o formato legado `url("https://...")` do tema shippado `nebula-space`', () => {
+        const legacy = 'url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop")';
+        const result = validateDesign({ globalBackgroundImageUrl: legacy });
+        expect(result.globalBackgroundImageUrl).toBe(legacy);
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('não afrouxa nenhum outro tipo de token — cor, texto e select continuam sob o predicado geral de breakout', () => {
+        const asColor = validateDesign({ primaryColor: `data:image/png;base64,${PNG_1PX}` });
+        expect(asColor.primaryColor).toBeUndefined();
+
+        const asText = validateDesign({ systemName: `data:image/png;base64,${PNG_1PX}` });
+        expect(asText.systemName).toBeUndefined();
+
+        const asSelect = validateDesign({ mode: 'light' });
+        expect(asSelect.mode).toBe('light');
+    });
+});

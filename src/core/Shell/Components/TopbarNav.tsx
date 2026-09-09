@@ -5,10 +5,10 @@ import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuIt
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { ShellUser } from './types';
-import { ShellSearchWidget } from './ShellSearchWidget';
-import { ShellUserWidget } from './ShellUserWidget';
-import { ShellLanguageSelector } from './ShellLanguageSelector';
-import { ShellThemeToggle } from './ShellThemeToggle';
+import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSearchWidget';
+import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUserWidget';
+import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
+import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
 import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 

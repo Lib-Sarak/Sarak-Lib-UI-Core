@@ -2347,13 +2347,15 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                     </button>
                   </div>
                   <div
-                    class="p-4 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 "
+                    class="border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 "
+                    style="padding: var(--sarak-layout-gap-md, 16px);"
                   >
                     <div
                       class="flex items-center group justify-between w-full"
                     >
                       <div
-                        class="flex items-center gap-3 "
+                        class="flex items-center"
+                        style="gap: calc(var(--sarak-layout-gap-sm, 8px) * 1.5); flex-direction: row;"
                       >
                         <div
                           class="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden"
@@ -2384,7 +2386,8 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </svg>
                         </div>
                         <div
-                          class="flex flex-col overflow-hidden"
+                          class="flex overflow-hidden"
+                          style="flex-direction: column;"
                         >
                           <span
                             class="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate"
@@ -2392,7 +2395,8 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                             User
                           </span>
                           <div
-                            class="flex items-center gap-1.5"
+                            class="flex items-center"
+                            style="gap: calc(var(--sarak-layout-gap-sm, 8px) * 0.75);"
                           >
                             <svg
                               class="text-[var(--theme-primary)]"

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ShellUserWidget } from '../ShellUserWidget';
-import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const renderWithProvider = (ui: React.ReactElement) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
 
@@ -19,7 +19,7 @@ describe('ShellUserWidget', () => {
         renderWithProvider(<ShellUserWidget user={user} logout={logoutMock} variant="vertical" />);
         expect(screen.getByText('testuser')).toBeInTheDocument();
         expect(screen.getByText('Master')).toBeInTheDocument();
-        
+
         const logoutBtn = screen.getByTitle('Logout');
         fireEvent.click(logoutBtn);
         expect(logoutMock).toHaveBeenCalled();

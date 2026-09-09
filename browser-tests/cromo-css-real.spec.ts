@@ -47,6 +47,13 @@
  * 6. Roda só em Chromium (headless). Não cobre Firefox/WebKit nem viewport mobile REAL
  *    (toque, densidade de pixel) — mede layout CSS, não a stack de renderização de um
  *    aparelho físico.
+ * 7. A medição do `background-color` da raiz do cromo (`.sarak-chrome-root`, com/sem
+ *    `globalBackgroundImageUrl`) cobre só o viewport DESKTOP — `rootStyle` é o mesmo
+ *    objeto nos três modos de geometria (sidebar/topbar/mobile), então um viewport basta
+ *    para provar o valor computado; os três modos já são cobertos por
+ *    `SarakAppChrome.test.tsx` (jsdom). Também não mede se a IMAGEM em si carrega — só o
+ *    `background-color` que a raiz emite (a mídia é resolvida pelo `SarakBackgroundRenderer`
+ *    do Provider, atrás da raiz, não pela raiz do cromo).
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
@@ -62,6 +69,7 @@ const BREAKPOINTS = {
 const NAV_ITEM_NAME = 'Início';
 const REFERENCE_BUTTON_NAME = 'Referência';
 const DRAWER_TOGGLE_NAME = 'Abrir menu de navegação';
+const CHROME_ROOT_SELECTOR = '.sarak-chrome-root';
 
 interface ComputedMetric {
     textTransform: string;
@@ -81,6 +89,11 @@ async function readComputedMetric(page: Page, accessibleName: string): Promise<C
             paddingLeft: computed.paddingLeft,
         };
     });
+}
+
+/** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
+async function readRootBackgroundColor(page: Page): Promise<string> {
+    return page.locator(CHROME_ROOT_SELECTOR).first().evaluate((el) => getComputedStyle(el).backgroundColor);
 }
 
 let harnessOutDir: string;
@@ -130,6 +143,25 @@ test('tablet (768-1023): item de navegação usa métrica de PÍLULA, mas nunca 
 
     expect(item.textTransform, 'aba compacta da topbar É caixa alta por desenho (ADR-013)').toBe('uppercase');
     expect(Number(item.fontWeight), 'aba é font-bold (700), nunca o font-black (900) do botão de ação').toBeLessThan(Number(reference.fontWeight));
+
+    await page.close();
+});
+
+test('SEM mídia global: a raiz do cromo continua emitindo o fundo de token de hoje', async () => {
+    const page = await openHarness(BREAKPOINTS.desktop);
+    const backgroundColor = await readRootBackgroundColor(page);
+
+    expect(backgroundColor, 'sem globalBackgroundImageUrl, a raiz continua pintando o token de fundo — não pode virar transparente').not.toBe('rgba(0, 0, 0, 0)');
+
+    await page.close();
+});
+
+test('COM mídia global: a raiz do cromo deixa de pintar fundo opaco (SarakBackgroundRenderer aparece atrás)', async () => {
+    const page = await browser.newPage({ viewport: BREAKPOINTS.desktop });
+    await page.goto(`${harnessUrl}?bg=1`);
+    const backgroundColor = await readRootBackgroundColor(page);
+
+    expect(backgroundColor, 'com globalBackgroundImageUrl preenchido, a raiz não pode pintar fundo próprio').toBe('rgba(0, 0, 0, 0)');
 
     await page.close();
 });

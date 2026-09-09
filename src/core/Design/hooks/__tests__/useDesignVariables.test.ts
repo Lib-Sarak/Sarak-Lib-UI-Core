@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import * as HookModule from '../useDesignVariables';
 import { useDesignVariables } from '../useDesignVariables';
@@ -59,5 +59,50 @@ describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito',
 
         expect(variables['--sarak-text-main']).toBe(String(merged.textColorMaster));
         expect(variables['--sarak-color-bg-body']).toBe(String(merged.colorBgBody));
+    });
+});
+
+/**
+ * A segunda barreira (`isSafeTokenValue`) reconhece a MESMA forma de mídia
+ * embutida que `validateDesign` (a primeira), via o predicado importado de
+ * `validation.ts`. `globalBackgroundImageUrl` é o único token `image` do
+ * schema; `bodyFont` (`type: 'font'`) prova que nenhum outro tipo herdou a
+ * leniência.
+ */
+describe('useDesignVariables — segunda barreira reconhece mídia embutida', () => {
+    const PNG_1PX = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+    it('emite mídia embutida `data:` bem-formada sem warn, no token `image`', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const dataUri = `data:image/png;base64,${PNG_1PX}`;
+
+        const { result } = renderHook(() => useDesignVariables({ mode: 'dark', globalBackgroundImageUrl: dataUri }));
+
+        expect(result.current.variables['--sarak-global-bg-image']).toBe(dataUri);
+        expect(warnSpy).not.toHaveBeenCalled();
+        warnSpy.mockRestore();
+    });
+
+    it('descarta `javascript:` no token `image`, cai no default e avisa', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        const { result } = renderHook(() => useDesignVariables({ mode: 'dark', globalBackgroundImageUrl: 'javascript:alert(1)' }));
+
+        expect(result.current.variables['--sarak-global-bg-image']).toBe('');
+        expect(warnSpy).toHaveBeenCalled();
+        warnSpy.mockRestore();
+    });
+
+    it('não estende a leniência de mídia a outro tipo de token (`bodyFont`, `type: font`)', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const dataUri = `data:image/png;base64,${PNG_1PX}`;
+
+        const withoutOverride = renderHook(() => useDesignVariables({ mode: 'dark' })).result.current.variables['--sarak-body-font'];
+        const { result } = renderHook(() => useDesignVariables({ mode: 'dark', bodyFont: dataUri }));
+
+        expect(result.current.variables['--sarak-body-font']).toBe(withoutOverride);
+        expect(result.current.variables['--sarak-body-font']).not.toBe(dataUri);
+        expect(warnSpy).toHaveBeenCalled();
+        warnSpy.mockRestore();
     });
 });

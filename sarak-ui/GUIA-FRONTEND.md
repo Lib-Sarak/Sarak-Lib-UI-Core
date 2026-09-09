@@ -606,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **276** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **284** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (84)
+### A.1 Componentes públicos (88)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -675,6 +675,10 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `className` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
+| Navigation | **ShellLanguageSelector** | `variant` |
+| Navigation | **ShellSearchWidget** | `variant` · `onClick` |
+| Navigation | **ShellThemeToggle** | `variant` |
+| Navigation | **ShellUserWidget** | `user` · `logout` · `variant` |
 | Outros | **DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **HelpButton** | _ver arquivo do componente_ |
 | Outros | **MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |

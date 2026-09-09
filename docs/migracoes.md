@@ -5,6 +5,58 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
+
+**Classificação: MINOR** — capacidade nova, aditiva: nenhum export existente mudou de forma, e o
+comportamento dentro do `SarakShell` é idêntico ao de antes (os três renderizadores do Shell —
+`SidebarNav`/`TopbarNav`/`DockNav` — passaram a importar do novo caminho, sem mudar o que
+compõem). Só ficou possível o que antes não era: montar cada widget por conta própria, fora do
+Shell.
+
+**O que estava faltando.** `ShellSearchWidget`, `ShellThemeToggle`, `ShellUserWidget` e
+`ShellLanguageSelector` moravam em `src/core/Shell/Components/` — fora das raízes que
+`scripts/publicComponents.mjs` varre (`components/atomic/`, `components/engines/`,
+`components/Layout/`). Não estavam no barril público, não apareciam no catálogo, e nenhum dos 8
+slots do `SarakAppChrome` tinha com o que ser preenchido por eles: quem usa o modo ui-kit (sem
+`SarakShell`) simplesmente não podia importar busca, alternância de tema, widget de usuário nem
+seletor de idioma — tinha de escrevê-los do zero.
+
+**O que passa a existir.** Os quatro foram realocados para `src/components/atomic/Navigation/` —
+a categoria que já hospeda os átomos de cromo (`SarakMenuItem`, `SarakShellNav`) — com os tipos de
+props (`ShellSearchWidgetProps`, `ShellThemeToggleProps`, `ShellUserWidgetProps`,
+`ShellLanguageSelectorProps`) exportados junto. Cada um já funcionava sem pressupor o `SarakShell`
+— lê só props, o `SarakUIProvider` e, opcionalmente, o registro do Discovery (que, sem nenhum
+módulo registrado, devolve lista vazia em vez de quebrar).
+
+```tsx
+import { SarakUIProvider, SarakAppChrome, ShellThemeToggle, ShellUserWidget } from '@sarak/lib-ui-core';
+
+<SarakUIProvider>
+  <SarakAppChrome
+    topbarEnd={<ShellThemeToggle variant="horizontal" />}
+    sidebarFooter={<ShellUserWidget user={user} logout={logout} variant="vertical" />}
+  >
+    {children}
+  </SarakAppChrome>
+</SarakUIProvider>
+```
+
+**Correção incluída, sem efeito visual hoje:** o ramo `horizontal` do `ShellLanguageSelector`
+mantinha um `font-black` herdado do default do `SarakButton` que a `className` passada nunca
+neutralizava (só `normal-case`/`tracking-normal`, nunca o peso) — resíduo do mesmo padrão que a
+ADR-013 já havia corrigido nos itens de lista. Ganhou `font-normal` ao lado. Sem efeito visual
+porque o texto interno (`text-3xs font-black`) já define o próprio peso.
+
+**Afeta você se** montava um destes quatro por deep import interno (fora do contrato — nunca
+suportado) apontando para `core/Shell/Components/*`: o caminho não existe mais, importe pelo nome
+público (`import { ShellUserWidget } from '@sarak/lib-ui-core'`).
+
+**O que NÃO mudou.** `SarakAppChrome` continua sem montar nenhum widget por padrão — publicá-los
+é o que esta entrada faz; decidir o que ocupa cada slot por padrão é decisão de produto separada.
+`SarakShell` renderiza os mesmos quatro, com o mesmo comportamento.
+
+---
+
 ## Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
 
 **Classificação: correção, não quebra.** O átomo descrito na entrada logo abaixo ("`SarakNavItem` — átomo

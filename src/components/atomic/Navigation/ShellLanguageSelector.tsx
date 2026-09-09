@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { getLocalComponent } from '../../Discovery/registry';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
-import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
+import { getLocalComponent } from '../../../core/Discovery/registry';
+import { SarakButton } from '../Buttons/SarakButton';
+import { SarakMenuItem } from './SarakMenuItem';
 
-interface ShellLanguageSelectorProps {
+export interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
 }
 
@@ -19,8 +19,8 @@ const LANGUAGES = [
  * ShellLanguageSelector — Global Language Switcher (v8.5)
  * Standardizes language selection in the Sarak Shell.
  */
-export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({ 
-    variant = 'horizontal' 
+export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
+    variant = 'horizontal'
 }) => {
     // Discovery Logic (v11.0): Procura no Registro e no Backup Global
     const fromRegistry = getLocalComponent('shell-language-selector');
@@ -28,10 +28,10 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
         ? (window as Window & { __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>> }).__SARAK_OVERRIDES__?.['shell-language-selector']
         : null);
     const OverrideSelector = fromRegistry || fromGlobal;
-    
+
     const [isOpen, setIsOpen] = useState(false);
     const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
-    
+
     if (OverrideSelector) {
         return (
             <div className={`relative isolate !overflow-visible sarak-language-override-wrapper ${variant === 'horizontal' ? 'horizontal-variant' : ''}`}>
@@ -49,9 +49,13 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                     initial={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
-                    className={`absolute z-[1000] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-2xl backdrop-blur-xl p-1 ${
-                        isHorizontal ? 'top-full mt-2 right-0' : 'bottom-full mb-2 left-0'
+                    className={`absolute z-[1000] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-2xl backdrop-blur-xl ${
+                        isHorizontal ? 'top-full right-0' : 'bottom-full left-0'
                     }`}
+                    style={{
+                        padding: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
+                        [isHorizontal ? 'marginTop' : 'marginBottom']: 'var(--sarak-layout-gap-sm, 8px)',
+                    }}
                 >
                     {LANGUAGES.map((lang) => (
                         <SarakMenuItem
@@ -83,9 +87,9 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                 <SarakButton
                     variant="ghost"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="group normal-case font-tab tracking-normal h-9 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15"
+                    className="group normal-case font-normal font-tab tracking-normal h-9 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15"
                 >
-                    <div className="flex items-center gap-2 w-full">
+                    <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         <span className="text-2xs">{currentLang.flag}</span>
                         <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
                             {currentLang.code.split('-')[0]}

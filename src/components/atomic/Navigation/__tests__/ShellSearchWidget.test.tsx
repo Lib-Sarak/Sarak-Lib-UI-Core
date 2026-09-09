@@ -34,7 +34,7 @@ describe('ShellSearchWidget', () => {
         customRender(<ShellSearchWidget variant="bar" onClick={vi.fn()} />);
         const input = screen.getByPlaceholderText('Smart Search...');
         expect(input).toBeInTheDocument();
-        
+
         fireEvent.change(input, { target: { value: 'Dash' } });
         expect(screen.getByText('Results')).toBeInTheDocument();
         expect(screen.getByText('Dashboard App')).toBeInTheDocument();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
+import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeFrame } from './chrome/ChromeFrame';
@@ -162,7 +163,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // altura de viewport própria; o `style` do consumidor sobrescreve (uso embarcado).
     const rootStyle: React.CSSProperties = {
         minHeight: '100dvh',
-        background: 'var(--bg-body, var(--theme-body, transparent))',
+        background: useHasGlobalBackgroundMedia() ? 'transparent' : 'var(--bg-body, var(--theme-body, transparent))',
         ...style,
     };
 

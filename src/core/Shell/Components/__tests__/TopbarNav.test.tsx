@@ -16,19 +16,19 @@ vi.mock('../IconRenderer', () => ({
     IconRenderer: () => <div data-testid="icon-renderer" />
 }));
 
-vi.mock('../ShellSearchWidget', () => ({
+vi.mock('../../../../components/atomic/Navigation/ShellSearchWidget', () => ({
     ShellSearchWidget: ({ onClick }: any) => <button data-testid="shell-search" onClick={onClick}>Search</button>
 }));
 
-vi.mock('../ShellThemeToggle', () => ({
+vi.mock('../../../../components/atomic/Navigation/ShellThemeToggle', () => ({
     ShellThemeToggle: () => <div data-testid="shell-theme">Theme</div>
 }));
 
-vi.mock('../ShellLanguageSelector', () => ({
+vi.mock('../../../../components/atomic/Navigation/ShellLanguageSelector', () => ({
     ShellLanguageSelector: () => <div data-testid="shell-lang">Lang</div>
 }));
 
-vi.mock('../ShellUserWidget', () => ({
+vi.mock('../../../../components/atomic/Navigation/ShellUserWidget', () => ({
     ShellUserWidget: () => <div data-testid="shell-user" />
 }));
 
