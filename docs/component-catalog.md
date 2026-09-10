@@ -205,6 +205,9 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | `banner` | `React.ReactNode` | não | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
 | `footer` | `React.ReactNode` | não | Slot `footer`: faixa full-width na base do cromo (rodapé da página). |
 | `decoration` | `React.ReactNode` | não | Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui. |
+| `user` | `ShellUser` | não | Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). |
+| `logout` | `() => void` | não | Encerra a sessão a partir do widget de usuário default. |
+| `widgets` | `SarakChromeWidgets` | não | O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente. |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 
@@ -228,6 +231,9 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | `banner` | `React.ReactNode` | não | Slot `banner` — faixa full-width no topo. |
 | `footer` | `React.ReactNode` | não | Slot `footer` — faixa full-width na base. |
 | `decoration` | `React.ReactNode` | não | Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). |
+| `user` | `ShellUser` | não | Identidade exibida no widget de usuário default, no rodapé do drawer. |
+| `logout` | `() => void` | não |  |
+| `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. |
 | `className` | `string` | não |  |
 | `rootStyle` | `React.CSSProperties` | sim |  |
 

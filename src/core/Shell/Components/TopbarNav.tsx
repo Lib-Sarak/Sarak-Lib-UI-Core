@@ -134,8 +134,11 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                         className={`whitespace-nowrap font-tab ${
                                             isActive
                                                 ? effectiveIsNavHidden
-                                                    ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]'
-                                                    : 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105'
+                                                    // Recolhida: mesma cor de texto que o SarakAppChrome usa para o
+                                                    // item ativo (`navItemActiveColor`) — os dois cromos coerentes
+                                                    // no mesmo token, em vez da cor de marca genérica.
+                                                    ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--sarak-nav-active-color,var(--theme-primary))]'
+                                                    : 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--sarak-nav-active-color,var(--theme-primary))] shadow-lg shadow-[var(--theme-primary)]/30 scale-105'
                                                 : ''
                                         }`}
                                     />

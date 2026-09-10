@@ -53,7 +53,7 @@ export * from './components/Layout/SarakHidden';
 // Cromo apresentacional temável topbar/sidebar (Spec 40.1 — L2), sem host/registro.
 // Navegação estruturada com ícone first-class via `SarakNavItem` (Spec 40.2 — L1).
 export { SarakAppChrome } from './components/Layout/SarakAppChrome';
-export type { SarakAppChromeProps, SarakNavItem } from './components/Layout/SarakAppChrome';
+export type { SarakAppChromeProps, SarakNavItem, SarakChromeWidgets } from './components/Layout/SarakAppChrome';
 export * from './components/atomic/Icon/SarakIcon';
 export * from './components/atomic/Icon/IconMap';
 export { useDesignDraft } from './features/DesignEngine/hooks/useDesignDraft';

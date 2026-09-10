@@ -51,17 +51,27 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
 
     const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0 rounded-lg') : '';
 
-    // Cor de ativo/hover do CROMO: `sidebarActiveColor`/`sidebarHoverColor` na
-    // orientação vertical (sidebar/drawer), `topbarActiveColor` na horizontal (topbar) —
-    // o mesmo item atômico desenha os dois cromos (Shell e SarakAppChrome), então a cor
-    // chega aos DOIS por aqui. Fallback idêntico ao tom anterior (zero mudança sem tema).
+    // Cor de ativo/hover do CROMO — cada ramo lê o token do seu PRÓPRIO papel: o fundo
+    // do ativo vem de `sidebarActiveColor`/`topbarActiveColor` (fundo, cada orientação
+    // o seu — default `transparent`, deliberado), o texto/ícone do ativo vem de
+    // `navItemActiveColor` (`--sarak-nav-active-color`) nas DUAS orientações — é o
+    // token que carrega o sinal visível, por ter default de cor real — e o hover vem
+    // de `sidebarHoverColor`/`topbarHoverColor`, cada orientação o seu. O mesmo item
+    // atômico desenha os dois cromos (Shell e SarakAppChrome), então a cor chega aos
+    // DOIS por aqui.
+    //
+    // O literal depois da vírgula em `var(--x, literal)` só vale ANTES de o Design
+    // Engine hidratar ou fora de um `SarakUIProvider` (SSR, Storybook, teste isolado):
+    // com o Provider montado, o Design Engine sempre declara cada token — quem garante
+    // o sinal visível na tela real é o DEFAULT DO SCHEMA de `navItemActiveColor`
+    // (`#00f2ff`, sempre emitido), não o literal do JSX.
     const tone = active
         ? isVertical
-            ? 'font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-primary-color,#3b82f6)]'
-            : 'font-bold bg-[var(--sarak-topbar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-primary-color,#3b82f6)]'
+            ? 'font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
+            : 'font-bold bg-[var(--sarak-topbar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
         : isVertical
             ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))]'
-            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]';
+            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,rgba(255,255,255,0.04))]';
 
     const disabledClass = disabled ? 'opacity-30 grayscale cursor-not-allowed pointer-events-none' : 'cursor-pointer';
 

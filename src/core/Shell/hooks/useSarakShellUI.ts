@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
+import { useSearchShortcut } from '../../../shared/hooks/useSearchShortcut';
 
 export const useSarakShellUI = () => {
     const { design, applyConfig } = useSarakUI();
@@ -39,14 +40,12 @@ export const useSarakShellUI = () => {
                 e.preventDefault();
                 toggleNav();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                updateState({ isSearchOpen: true });
-            }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [toggleNav, updateState]);
+    }, [toggleNav]);
+
+    useSearchShortcut(useCallback(() => updateState({ isSearchOpen: true }), [updateState]));
 
     // --- Unified Resize Engine (v10.3) ---
     const startResizingSidebar = useCallback(() => updateState({ resizeType: 'sidebar' }), [updateState]);

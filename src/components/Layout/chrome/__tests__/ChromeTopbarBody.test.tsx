@@ -79,3 +79,19 @@ describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
         expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
     });
 });
+
+describe('ChromeTopbarBody — widgets default (busca/tema/usuário/colapso)', () => {
+    it('sem `widgets`, os quatro defaults montam', () => {
+        const { container } = renderBody({});
+        expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
+    });
+
+    it('`widgets` desliga cada default isoladamente', () => {
+        const { container } = renderBody({}, { widgets: { search: false, collapse: false, themeToggle: false, user: false } });
+        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).toBeNull();
+    });
+});

@@ -126,16 +126,17 @@ describe('checkChromeTokenParity', () => {
 });
 
 describe('check-chrome-token-parity — repositório real', () => {
-    it('os 12 tokens de cromo da plan-66 têm consumidor no SarakShell E no SarakAppChrome', () => {
+    it('os 14 tokens de cromo cobertos têm consumidor no SarakShell E no SarakAppChrome', () => {
         expect(checkChromeTokenParity()).toEqual([]);
     });
 
-    it('a lista fechada tem exatamente os 12 tokens declarados na plan-66', () => {
+    it('a lista fechada tem exatamente os 14 tokens com consumidor provado', () => {
         expect(CHROME_TOKENS.map((t) => t.id).sort()).toEqual(
             [
                 'contentAlignment', 'isAutoHideEnabled', 'isNavHidden', 'navbarLayout',
-                'searchPositionSidebar', 'searchPositionTopbar', 'sidebarActiveColor',
-                'sidebarHoverColor', 'sidebarPosition', 'tabGap', 'tabSectionMargin', 'topbarActiveColor',
+                'navItemActiveColor', 'searchPositionSidebar', 'searchPositionTopbar',
+                'sidebarActiveColor', 'sidebarHoverColor', 'sidebarPosition', 'tabGap',
+                'tabSectionMargin', 'topbarActiveColor', 'topbarHoverColor',
             ].sort(),
         );
     });

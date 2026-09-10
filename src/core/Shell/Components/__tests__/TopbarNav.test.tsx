@@ -91,4 +91,16 @@ describe('TopbarNav', () => {
         expect(nav).not.toBeNull();
         expect(nav?.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:flex`);
     });
+
+    it('item ativo recolhido: texto usa --sarak-nav-active-color, coerente com o SarakAppChrome', () => {
+        renderWithProvider(<TopbarNav {...mockProps} design={{ ...mockProps.design, isNavHidden: true }} />);
+        const activeItem = screen.getByRole('button', { name: 'Mod 1' });
+        expect(activeItem.className).toContain('var(--sarak-nav-active-color');
+    });
+
+    it('item ativo expandido (estado padrão): texto também usa --sarak-nav-active-color', () => {
+        renderWithProvider(<TopbarNav {...mockProps} />);
+        const activeItem = screen.getByRole('button', { name: 'Mod 1' });
+        expect(activeItem.className).toContain('var(--sarak-nav-active-color');
+    });
 });

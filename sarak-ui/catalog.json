@@ -105,6 +105,7 @@
     "SarakChatEngine",
     "SarakChatEngineProps",
     "SarakChatProps",
+    "SarakChromeWidgets",
     "SarakColumn",
     "SarakComponent",
     "SarakComponentProps",
@@ -743,6 +744,24 @@
           "doc": "Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui."
         },
         {
+          "name": "user",
+          "type": "ShellUser",
+          "optional": true,
+          "doc": "Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo)."
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Encerra a sessão a partir do widget de usuário default."
+        },
+        {
+          "name": "widgets",
+          "type": "SarakChromeWidgets",
+          "optional": true,
+          "doc": "O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
@@ -843,6 +862,24 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque)."
+        },
+        {
+          "name": "user",
+          "type": "ShellUser",
+          "optional": true,
+          "doc": "Identidade exibida no widget de usuário default, no rodapé do drawer."
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "widgets",
+          "type": "SarakChromeWidgets",
+          "optional": true,
+          "doc": "Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav."
         },
         {
           "name": "className",

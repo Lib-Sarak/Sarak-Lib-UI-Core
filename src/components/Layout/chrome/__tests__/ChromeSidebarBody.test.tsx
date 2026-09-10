@@ -89,3 +89,25 @@ describe('ChromeSidebarBody — slot de busca (searchPositionSidebar)', () => {
         expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
     });
 });
+
+describe('ChromeSidebarBody — widgets default (busca/tema/usuário/colapso)', () => {
+    it('sem `widgets`, os quatro defaults montam', () => {
+        const { container } = renderBody({});
+        expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
+    });
+
+    it('`widgets` desliga cada default isoladamente', () => {
+        const { container } = render(
+            <SarakUIProvider config={{}}>
+                <ChromeSidebarBody nav={NAV} className="" rootStyle={{}} widgets={{ search: false, collapse: false, themeToggle: false, user: false }}>
+                    <div>x</div>
+                </ChromeSidebarBody>
+            </SarakUIProvider>,
+        );
+        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).toBeNull();
+    });
+});

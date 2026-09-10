@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
+import { ShellSearchWidget } from '../atomic/Navigation/ShellSearchWidget';
+import { SarakSearch } from '../atomic/Inputs/SarakSearch';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
+import type { ShellUser } from '../../core/Shell/Components/types';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralStyles';
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
+import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
+import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /**
  * SarakAppChromeMobile — colapso do cromo no celular (Spec 40.3 — L1).
@@ -52,6 +58,12 @@ export interface SarakAppChromeMobileProps {
     footer?: React.ReactNode;
     /** Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). */
     decoration?: React.ReactNode;
+    /** Identidade exibida no widget de usuário default, no rodapé do drawer. */
+    user?: ShellUser;
+    logout?: () => void;
+    /** Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não
+     * se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. */
+    widgets?: SarakChromeWidgets;
     className?: string;
     rootStyle: React.CSSProperties;
 }
@@ -73,6 +85,9 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     banner,
     footer,
     decoration,
+    user,
+    logout,
+    widgets,
     className = '',
     rootStyle,
 }) => {
@@ -80,6 +95,8 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
+    const w = useChromeDefaultWidgets(widgets);
+    const effectiveSearch = search ?? (w.showSearch ? <ShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
     // A marca aparece na barra compacta E no topo do drawer (mesma variante
     // horizontal nos dois — sempre foi assim).
     const brandNode = <ChromeBrand brand={brand} logo={logo} horizontal />;
@@ -139,11 +156,18 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     >
                         {brand && <div className="px-2 py-3">{brandNode}</div>}
                         {/* É onde a sidebar existe no celular — segue `searchPositionSidebar`. */}
-                        {searchPositionSidebar === 'top' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{search}</ChromeSearchSlot>}
+                        {searchPositionSidebar === 'top' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={handleSelect} orientation="vertical" className="flex-1" />
-                        {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{search}</ChromeSearchSlot>}
+                        {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        <ChromeUserThemeGroup
+                            showThemeToggle={w.showThemeToggle}
+                            showUser={w.showUser}
+                            user={user}
+                            logout={logout}
+                            variant="vertical"
+                        />
                     </aside>
                 </React.Fragment>
             )}
@@ -154,6 +178,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             >
                 {children}
             </main>
+            {w.showSearch && <SarakSearch isOpen={w.isSearchOpen} onClose={w.closeSearch} />}
         </ChromeFrame>
     );
 };

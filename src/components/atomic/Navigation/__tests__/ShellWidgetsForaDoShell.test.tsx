@@ -17,6 +17,12 @@ import { ShellLanguageSelector } from '../ShellLanguageSelector';
  * módulo registrado no Discovery. Falha se algum dos quatro voltar a
  * pressupor o Shell.
  */
+// Os defaults do cromo (busca/tema/usuário/colapso) desligam por inteiro aqui: o
+// objetivo deste arquivo é provar cada widget MONTADO À MÃO pelo consumidor num slot —
+// os defaults montariam um segundo exemplar do mesmo widget e ambiguariam as buscas
+// por texto/role/placeholder abaixo.
+const NO_DEFAULTS = { search: false, themeToggle: false, user: false, collapse: false } as const;
+
 const renderNoSlot = (
     slot: React.ReactNode,
     slotName: 'topbarStart' | 'topbarEnd' | 'sidebarFooter',
@@ -25,7 +31,7 @@ const renderNoSlot = (
     render(
         <SarakUIProvider>
             <DeviceProvider overrideDevice="desktop">
-                <SarakAppChrome navigationStyle={navigationStyle} {...{ [slotName]: slot }}>
+                <SarakAppChrome navigationStyle={navigationStyle} widgets={NO_DEFAULTS} {...{ [slotName]: slot }}>
                     <div>conteúdo do app</div>
                 </SarakAppChrome>
             </DeviceProvider>

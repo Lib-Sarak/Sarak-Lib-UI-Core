@@ -5,6 +5,49 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — O cromo do modo ui-kit nasce com busca, alternância de tema, widget de usuário e colapso da navegação por padrão (plan-67)
+
+**Classificação: MAJOR** — `SarakAppChrome` (e o colapso mobile, `SarakAppChromeMobile`) passam a montar, sem o
+consumidor escrever uma linha: busca (com atalho Ctrl/Cmd+K), alternância de tema, widget de usuário e o
+toggle de colapso da navegação. Antes, o cromo do modo ui-kit não montava nenhum dos quatro — eles já eram
+componentes públicos (`ShellSearchWidget`, `ShellThemeToggle`, `ShellUserWidget`), mas o consumidor tinha
+que importar e encaixar cada um manualmente num slot.
+
+**Por quê.** O cromo do modo módulos-plugin (`SarakShell`) sempre entregou os quatro prontos; o do modo
+ui-kit (`SarakAppChrome`) não entregava nenhum — não por decisão, mas porque nasceu para fechar um sintoma
+pontual (*"topbar e sidebar não aparecem"*), como o mínimo para o cromo existir. A base já resolveu essa
+pergunta duas vezes no mesmo sentido — layout multidispositivo é zero-config
+([[07-responsividade-e-multidispositivo]] §1), e os hosts de toast/overlay já nascem montados — então exigir
+trabalho do consumidor para o cromo completo era bug da lib, não característica.
+
+**O que mudou.**
+
+| Prop nova em `SarakAppChromeProps` | Contrato |
+| --- | --- |
+| `widgets?: { search?, themeToggle?, user?, collapse? }` | Opt-out por widget. **Omitir a prop liga os quatro**; `false` num campo desliga só aquele — os demais continuam. |
+| `user?: ShellUser` / `logout?: () => void` | Alimentam o widget de usuário default (o mesmo tipo que o `SarakShell` já usa). |
+
+**Como migrar.** Quem quer o cromo vazio de antes:
+
+```tsx
+<SarakAppChrome widgets={{ search: false, themeToggle: false, user: false, collapse: false }}>
+    {children}
+</SarakAppChrome>
+```
+
+Quem já montava um dos quatro manualmente num slot (`search`, `topbarEnd`, `sidebarFooter`…) não precisa
+mudar nada: o conteúdo do slot sempre venceu — e continua vencendo — o default correspondente. Hoje só a
+busca tem slot próprio (`search`, [[05-cromo-e-slots]] §2.2); os outros três nascem fora dos 8 slots
+documentados, marcados com `data-sarak-widget` (não `data-sarak-slot` — não é conteúdo do consumidor).
+
+**O que NÃO mudou.** Os oito slots do contrato (`logo`, `topbarStart`, `topbarEnd`, `sidebarHeader`,
+`sidebarFooter`, `banner`, `footer`, `decoration`) continuam exatamente como eram — ausente = não
+renderiza. Seletor de idioma (`ShellLanguageSelector`), redimensionamento por arraste e auto-hide **não**
+entram no conjunto padrão — ficam fora dele por decisão explícita, disponíveis por slot/prop/token como já
+eram. `SarakShell` não muda.
+
+---
+
 ## 7.0.0 — As quatro mídias de atmosfera hospedadas por terceiro viram atmosfera gerada em CSS (plan-69)
 
 **Classificação: MAJOR** — os quatro presets de "Mídia Base" do painel (`bg-kinetic-flow`,

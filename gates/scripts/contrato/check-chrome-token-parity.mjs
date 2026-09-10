@@ -15,14 +15,20 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
  * -------------------------------------------------------------------------
- * 1. ESCOPO FECHADO em `CHROME_TOKENS` — os 12 tokens que a plan-66 fechou
- *    (specs/plan/plan-66 §2), não todo o schema `navigation`. Medido: o Shell tem
- *    tokens ORFÃOS pré-existentes fora desta lista (`sidebarBlur`, `sidebarShadow`,
- *    `navActiveMarkerColor`/`Glow`, `searchDropdownGap`/`Width`,
- *    `topbarNoiseOpacity`, `sidebarNoiseOpacity`, `topbarTitleColor`) — nenhum tem
- *    consumidor nem em `src/core/Shell/`, dívida anterior a esta plan e fora do seu
- *    escopo (§3.2: `src/core/Shell/` não se toca). Ampliar a lista É reabrir essa
- *    dívida; é trabalho futuro, não desta plan.
+ * 1. ESCOPO FECHADO em `CHROME_TOKENS` — os 14 tokens que já têm consumidor nos
+ *    DOIS grupos, não todo o schema `navigation`. Medido varrendo o schema
+ *    `navigation.ts` INTEIRO contra os dois grupos consumidores: 14 tokens de
+ *    cromo seguem ÓRFÃOS de pelo menos um lado hoje —
+ *    `sidebarLabelMaxWidth`/`sidebarMinWidth`/`sidebarMaxWidth`/
+ *    `brandLogoSizeCollapsed`/`topbarLabelMaxWidth` (só faltam em
+ *    `SarakAppChrome` — geometria que o modo ui-kit não replica),
+ *    `topbarTitleColor` (só falta em `SarakShell`), e
+ *    `sidebarNoiseOpacity`/`topbarNoiseOpacity`/`navActiveMarkerColor`/
+ *    `navActiveMarkerGlow`/`sidebarBlur`/`sidebarShadow`/`searchDropdownGap`/
+ *    `searchDropdownWidth` (faltam nos DOIS). Nenhum tem consumidor no lado que
+ *    falta, dívida anterior a este gate e fora do escopo do que o corrigiu
+ *    (widgets do cromo, geometria por modo). Ampliar a lista É reabrir essa
+ *    dívida; é trabalho futuro, não deste gate.
  * 2. É TEXTUAL, não por AST: prova que o `id` do token (palavra inteira) OU uma das
  *    variáveis CSS que ele declara em `cssVars`/o auto-derivado `--sarak-<kebab>`
  *    aparece no arquivo. Não prova que o consumo está CORRETO nem que produz efeito
@@ -48,7 +54,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 
 const toKebabCase = (str) => str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
-/** Os 12 tokens que a plan-66 fechou — ver o limite 1 acima. */
+/** Os 14 tokens com consumidor provado nos DOIS grupos — ver o limite 1 acima. */
 export const CHROME_TOKENS = [
     { id: 'sidebarPosition', cssVars: [] },
     { id: 'navbarLayout', cssVars: [] },
@@ -62,6 +68,8 @@ export const CHROME_TOKENS = [
     { id: 'sidebarActiveColor', cssVars: ['--sarak-sidebar-active-color'] },
     { id: 'sidebarHoverColor', cssVars: ['--sarak-sidebar-hover-color'] },
     { id: 'topbarActiveColor', cssVars: ['--sarak-topbar-active-color'] },
+    { id: 'topbarHoverColor', cssVars: ['--sarak-topbar-hover-color'] },
+    { id: 'navItemActiveColor', cssVars: ['--sarak-nav-active-color'] },
 ];
 
 const SHARED_MENU_ITEM = 'src/components/atomic/Navigation/SarakMenuItem.tsx';

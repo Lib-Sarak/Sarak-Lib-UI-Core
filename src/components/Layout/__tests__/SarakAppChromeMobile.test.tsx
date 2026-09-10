@@ -124,3 +124,27 @@ describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no 
         expect(deco.querySelector('button, a, input')).toBeNull();
     });
 });
+
+describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada some no celular)', () => {
+    it('DEFAULT: busca, tema e usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
+        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+    });
+
+    it('opt-out desliga os três defaults isoladamente', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} widgets={{ search: false, themeToggle: false, user: false }} {...base}>
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.queryByPlaceholderText('Smart Search...')).toBeNull();
+        expect(screen.queryByText(/Mode$/)).toBeNull();
+        expect(screen.queryByTitle('Logout')).toBeNull();
+    });
+});

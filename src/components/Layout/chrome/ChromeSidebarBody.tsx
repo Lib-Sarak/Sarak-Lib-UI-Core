@@ -1,10 +1,17 @@
 import React from 'react';
 import { SarakShellNav, type ShellNavItem } from '../../atomic/Navigation/SarakShellNav';
+import { ShellSearchWidget } from '../../atomic/Navigation/ShellSearchWidget';
+import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
+import type { ShellUser } from '../../../core/Shell/Components/types';
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
+import { ChromeCollapseToggle } from './ChromeCollapseToggle';
+import { ChromeUserThemeGroup } from './ChromeUserThemeGroup';
 import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
+import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
+import type { SarakChromeWidgets } from './chromeWidgets';
 
 export interface ChromeSidebarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -20,6 +27,11 @@ export interface ChromeSidebarBodyProps {
     banner?: React.ReactNode;
     footer?: React.ReactNode;
     decoration?: React.ReactNode;
+    /** Identidade exibida no widget de usuário default (fora do slot `sidebarFooter`). */
+    user?: ShellUser;
+    logout?: () => void;
+    /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
+    widgets?: SarakChromeWidgets;
     className: string;
     rootStyle: React.CSSProperties;
     children: React.ReactNode;
@@ -32,10 +44,14 @@ export interface ChromeSidebarBodyProps {
  */
 export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter,
-    search, banner, footer, decoration, className, rootStyle, children,
+    search, banner, footer, decoration, user, logout, widgets, className, rootStyle, children,
 }) => {
     const { sidebarPosition, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
+    const w = useChromeDefaultWidgets(widgets);
+    const effectiveSearch = search ?? (w.showSearch
+        ? <ShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
+        : null);
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -54,22 +70,34 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                         }}
                     >
-                        <ChromeBrand brand={brand} logo={logo} compact={isNavHidden} />
+                        <div className="flex items-center justify-between px-1">
+                            <ChromeBrand brand={brand} logo={logo} compact={isNavHidden} />
+                            {w.showCollapse && (
+                                <ChromeCollapseToggle orientation="sidebar" collapsed={isNavHidden} onToggle={w.toggleNavHidden} />
+                            )}
+                        </div>
                         {/* Sem barra superior, `topbarStart`/`topbarEnd` degradam para topo/rodapé da sidebar. */}
                         <ChromeTopbarSlot region="start" className="px-2">{topbarStart}</ChromeTopbarSlot>
                         {searchPositionSidebar === 'top' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{search}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>
                         )}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         {nav.length > 0 && (
                             <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="vertical" collapsed={isNavHidden} className="flex-1" />
                         )}
                         {searchPositionSidebar === 'bottom' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{search}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>
                         )}
                         {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
                         {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        <ChromeUserThemeGroup
+                            showThemeToggle={w.showThemeToggle}
+                            showUser={w.showUser}
+                            user={user}
+                            logout={logout}
+                            variant={isNavHidden ? 'mini' : 'vertical'}
+                        />
                     </aside>
                 )}
                 <main
@@ -79,6 +107,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                     {children}
                 </main>
             </div>
+            {w.showSearch && <SarakSearch isOpen={w.isSearchOpen} onClose={w.closeSearch} />}
         </ChromeFrame>
     );
 };

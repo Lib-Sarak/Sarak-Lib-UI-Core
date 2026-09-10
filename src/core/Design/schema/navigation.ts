@@ -293,7 +293,11 @@ export const NavigationSchema: ComponentSchema = {
             description: 'Cor de texto/ícone do item de menu atualmente selecionado — normalmente espelha a cor primária do sistema para reforçar onde o usuário está.',
             axis: 'color',
             defaultValue: '#00f2ff',
-            cssVars: ['--sarak-nav-active-color', '--theme-primary']
+            // `--theme-primary` é variável de `primaryColor` (schema `colors.ts`), não deste
+            // token: duas fontes escrevendo a mesma variável faria o vencedor depender da
+            // ordem de iteração do mapa de tokens, não do autor do tema. `--sarak-nav-active-color`
+            // é a variável própria deste token.
+            cssVars: ['--sarak-nav-active-color']
         },
         {
             id: 'navActiveMarkerColor',

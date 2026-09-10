@@ -3,13 +3,17 @@ import { type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
 import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
+import type { ShellUser } from '../../core/Shell/Components/types';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
 import type { SarakNavItem } from './chrome/navItem';
+import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /** Contrato de navegação estruturada com ícone first-class (Spec 40.2 — L1). */
 export type { SarakNavItem } from './chrome/navItem';
+/** Opt-out dos widgets do cromo que nascem montados por padrão. */
+export type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /**
  * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
@@ -108,6 +112,17 @@ export interface SarakAppChromeProps {
      * COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui.
      */
     decoration?: React.ReactNode;
+    /** Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). */
+    user?: ShellUser;
+    /** Encerra a sessão a partir do widget de usuário default. */
+    logout?: () => void;
+    /**
+     * O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget
+     * de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop
+     * mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais.
+     * Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente.
+     */
+    widgets?: SarakChromeWidgets;
     className?: string;
     style?: React.CSSProperties;
 }
@@ -134,6 +149,9 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     banner,
     footer,
     decoration,
+    user,
+    logout,
+    widgets,
     className = '',
     style,
 }) => {
@@ -193,6 +211,9 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
                 banner={banner}
                 footer={footer}
                 decoration={decoration}
+                user={user}
+                logout={logout}
+                widgets={widgets}
                 className={className}
                 rootStyle={rootStyle}
             >
@@ -206,7 +227,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // 250 linhas (R9) depois de ganhar o consumo dos tokens de cromo que faltavam.
     const shared = {
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
-        topbarStart, endSlot, search, banner, footer, decoration, className, rootStyle,
+        topbarStart, endSlot, search, banner, footer, decoration, user, logout, widgets, className, rootStyle,
     };
 
     if (mode === 'topbar') {

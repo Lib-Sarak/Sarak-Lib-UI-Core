@@ -606,7 +606,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **287** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **288** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (88)
 
@@ -654,8 +654,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakTimePicker** | `label` · `value` · `minuteStep` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakUploader** | `label` · `accept` · `maxSize` · `multiple` · `disabled` · `hint` · `error` · `className` · `style` · `onChange` · `onReject` |
 | Layout | **SarakAnalyticalPage** | `navBar` · `mainContent` · `sidePanel` · `sidePanelAsDrawerOnMobile` · `centeredOnDesktop` |
-| Layout | **SarakAppChrome** | `children` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `style` |
-| Layout | **SarakAppChromeMobile** | `children` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `rootStyle` |
+| Layout | **SarakAppChrome** | `children` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `widgets` · `className` · `style` |
+| Layout | **SarakAppChromeMobile** | `children` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `widgets` · `className` · `rootStyle` |
 | Layout | **SarakHidden** | `children` · `on` |
 | Layouts | **SarakAccordion** | `title` · `children` · `defaultOpen` · `className` |
 | Layouts | **SarakFlex** | `children` · `direction` · `justify` · `align` · `gap` · `wrap` · `as` |
