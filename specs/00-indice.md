@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "70"
+proximo_numero_plan: "71"
 ---
 
 # 0. O que é este arquivo
@@ -42,11 +42,12 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-64-contraparte-e-derivacao-dos-temas-de-referencia](plan/plan-64-contraparte-e-derivacao-dos-temas-de-referencia.md) | Alternar entre claro e escuro deixa de degradar a paleta nos temas de referência e em qualquer tema derivado deles | — | 🔵 Em correção | specs/09-temas-e-presets.md |
+| 1 | [plan-64-contraparte-e-derivacao-dos-temas-de-referencia](plan/plan-64-contraparte-e-derivacao-dos-temas-de-referencia.md) | Alternar entre claro e escuro deixa de degradar a paleta nos temas de referência e em qualquer tema derivado deles | — | 🟠 Em revisão | specs/09-temas-e-presets.md |
 | 2 | [plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo](plan/plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo.md) | Os tokens de cromo clicáveis no painel passam a produzir efeito também no SarakAppChrome, e um gate impede que a lacuna volte | — | 🔴 A executar | specs/05-cromo-e-slots.md |
 | 3 | [plan-67-widgets-do-cromo-por-padrao-com-opt-out](plan/plan-67-widgets-do-cromo-por-padrao-com-opt-out.md) | O cromo do modo ui-kit nasce com busca, alternância de tema, usuário e colapso sem o consumidor escrever uma linha, e o consumidor desliga o que não quiser | plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo | 🔴 A executar | adr/NNN-cromo-do-modo-ui-kit-com-widgets-por-padrao.md · specs/05-cromo-e-slots.md |
 | 4 | [plan-68-metrica-do-item-de-navegacao-horizontal](plan/plan-68-metrica-do-item-de-navegacao-horizontal.md) | Os itens de menu da topbar deixam de ser renderizados como etiqueta e voltam a parecer navegáveis | plan-67-widgets-do-cromo-por-padrao-com-opt-out | 🔴 A executar | adr/NNN-metrica-do-item-de-navegacao-horizontal.md · specs/05-cromo-e-slots.md |
 | 5 | [plan-69-atmosferas-sem-dependencia-de-terceiro](plan/plan-69-atmosferas-sem-dependencia-de-terceiro.md) | Todo fundo que a biblioteca entrega funciona sem rede e sem depender de nenhum servidor de terceiro | — | 🔴 A executar | specs/09-temas-e-presets.md |
+| 6 | [plan-70-predicado-de-midia-aceita-o-conjunto-legitimo](plan/plan-70-predicado-de-midia-aceita-o-conjunto-legitimo.md) | Um valor de mídia legítimo deixa de ser recusado, e as duas barreiras de validação passam a aceitar e recusar exatamente o mesmo conjunto | — | 🔴 A executar | specs/10-seguranca-e-acessibilidade.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
