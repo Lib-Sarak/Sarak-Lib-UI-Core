@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Autorar a contraparte dos temas de referência e dar uma porta de derivação ao consumidor"
 objetivo: "Alternar entre claro e escuro deixa de degradar a paleta nos temas de referência e em qualquer tema derivado deles"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "temas", "contraparte", "modo-claro-escuro"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[arquitetura/01-forma-do-produto-e-modos-de-consumo]]"]
@@ -444,6 +444,37 @@ promovido, cada plan vai reencontrar isto do zero — e o revisor vai gastar uma
 
 O **veredito visual do dono** (passo 9). A tabela de swatches acima é o dado real extraído dos arquivos de
 tema, para embasar a decisão. Ele pode correr em paralelo à correção deste achado.
+
+---
+
+## Veredito — 2026-09-10 — 🟢 Aprovado
+
+**Correção 1 — os nove achados de citação de plan estão fechados.** `grep -rn "plan-64"` sobre `src/` e
+`gates/` (`.ts`, `.tsx`, `.mjs`) → **zero ocorrências**. A decisão de deixar intacta a citação pré-existente
+a `plan-25` no mesmo arquivo de teste está certa: não era achado desta rodada, e mexer nela seria escopo
+excedido. Ela segue coberta pelo achado 5 do [[00-backlog]].
+
+**O que reconferi no estado atual, depois do commit `6997a58`:**
+
+- `contraparte` presente nos dois temas; nenhum dos dois em `CONTRAPARTE_EXEMPTION_LIST`, que tem **16**
+  itens — o encolhimento de 18 → 16 se manteve.
+- `deriveThemeFromReference` exportada pelo barril (`src/index.ts:66`) e documentada em
+  `docs/migracoes.md`.
+- Testes da plan: `contraparteReferencia.test.ts` + `verify_contrast.test.ts` → **2 arquivos / 41 testes,
+  verde**.
+- Suíte completa com todo o trabalho desta leva: **341 arquivos / 1630 testes, verde**
+  (`--maxWorkers=3`). `audit:baseline --with-tsc` **igual ao baseline**.
+
+**Veredito visual do dono (passo 9) — registrado em 2026-09-10:** aprovado. O dono conferiu os dois temas
+no consumidor real, nos dois modos, depois de limpar as duas camadas de cache — a cópia da lib no store foi
+conferida idêntica ao `dist/`, arquivo a arquivo, antes do teste.
+
+**Fronteira que fica registrada, e que não é pendência desta plan:** os temas do próprio ERP ainda são
+montados com `{ ...REF.design, … }`, então **eles** continuam perdendo a contraparte. A lib cumpriu a sua
+metade — a porta existe, está no barril e a migração a documenta. Adotá-la é mudança no consumidor, e é
+decisão do dono.
+
+Critérios de aceite: **9/9 atendidos.**
 
 ---
 
