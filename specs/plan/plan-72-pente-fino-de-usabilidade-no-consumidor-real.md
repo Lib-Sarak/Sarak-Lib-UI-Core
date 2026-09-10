@@ -100,7 +100,7 @@ não para a tabela.
    voltar às telas do passo 2 para ver o efeito:
    - cada tema shippado — pelo menos um claro e um escuro, mais os de referência;
    - **a alternância claro/escuro em cada um** — a paleta volta inteira ao alternar de ida e de volta, ou
-     degrada? *(É esta checagem que fecha a verificação visual pendente da plan-64.)*
+     degrada? Os temas do próprio consumidor contam: é neles que a derivação por espalhamento aparece.
    - cada token de cromo: posição da sidebar, layout da barra, alinhamento do conteúdo, colapso da nav,
      auto-hide, posição da busca, espaçamento das abas, cores de realce;
    - fundo/atmosfera: cada opção que o painel oferece, aplicada e conferida na tela.

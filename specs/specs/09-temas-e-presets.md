@@ -58,6 +58,17 @@ claro → escuro` devolve faixa de faixa, não o original. Com contraparte são 
 > exatamente os 18 e **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
 > permissivo, gate estrito, exceção visível e contável.
 
+**Os dois temas de referência têm contraparte autorada** — `minimalist-airy` e `sarak-sovereign`, o par
+de `SARAK_REFERENCE_THEMES`. Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
+clona não tivesse contraparte, todo tema derivado dela herdaria o fallback que degrada, e a lib estaria
+recomendando exatamente o caminho que falha.
+
+**Quantos temas ainda estão isentos não se escreve aqui.** O `auditor_contraste` imprime o número a cada
+`npm run audit` — é a fonte viva. A contraparte autorada preserva a identidade do tema: fundos graduados em
+camadas distintas e a família de matiz da própria marca atravessando os dois modos, em vez de convergir
+para uma paleta neutra. A marca (`primaryColor` e afins) **não** entra na contraparte; o uso *funcional*
+de uma cor de marca que perderia contraste no modo oposto — como a cor do item de navegação ativo — sim.
+
 Quatro observações que importam mais que o formato:
 
 1. **`design` é `Record<string, unknown>`, não `SarakThemePayload` estrito** — e isso é deliberado,
@@ -125,6 +136,38 @@ raio. Um par que diferisse só na cor não provaria nada.
 de cor, e concluiu que "a lib não muda fonte nem cromo". A lib mudava — o **tema** é que não declarava
 esses eixos. O diagnóstico está registrado no cabeçalho de `reference.ts:1-8` e de
 `utils/themeAxes.ts:1-11`, escritos justamente para não deixar essa conclusão errada se repetir.
+
+### 4.1.1 Derivar é uma chamada, não uma cópia de campo
+
+Derivar um tema da referência é uma chamada, não uma cópia de campo: a porta devolve o tema **completo**,
+com `design` e `contraparte`, e aplica as sobreposições nos dois modos. Espalhar `...tema.design` copia só
+metade do tema — a contraparte fica para trás e a troca de modo passa a degradar, em silêncio.
+
+```ts
+import { deriveThemeFromReference } from '@sarak/lib-ui-core';
+
+const temaDaMarca = deriveThemeFromReference('minimalist-airy', {
+    id: 'minha-marca',
+    name: 'Minha Marca',
+    design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+});
+```
+
+`deriveThemeFromReference` (`reference.ts`) aplica a sobreposição em `design` e **espelha na
+`contraparte`** toda chave que também exista lá. Sem esse espelho, o modo oposto voltaria a mostrar o valor
+antigo da referência, e trocar de modo pareceria desfazer a customização. Chave de marca não está em
+contraparte autorada nenhuma, então para ela o merge em `design` basta — e a marca atravessa os dois modos.
+
+**As três formas de partir da referência, e o que cada uma entrega:**
+
+| Forma | `contraparte` | Sobreposição no modo oposto |
+| --- | --- | --- |
+| `{ id, name, design: { ...ref.design, … } }` | **perdida** — a troca de modo cai no fallback que degrada | — |
+| `{ ...ref, design: { ...ref.design, … } }` | preservada | só para chaves que a contraparte **não** carrega |
+| `deriveThemeFromReference(refId, { … })` | preservada | **sempre** — o caminho recomendado |
+
+O id devolvido é do consumidor, fora da união fechada `ThemePresetId`, e entra por `customThemes` como
+qualquer tema de consumidor (§2 observação 3).
 
 ## 4.2 Validar — a fronteira que trata tema como dado hostil
 
@@ -218,7 +261,7 @@ modo do usuário**. Foi encontrado no consumidor real, não pela suíte.
 
 O fechamento veio em duas partes: a **`plan-26`** criou `resolveThemeForMode` — três casos (modo nativo →
 `design`; modo oposto **com** contraparte → merge autorado; **sem** contraparte → `syncThemeWithMode`, o
-fallback dos 18 legados) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
+fallback dos temas legados isentos) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
 `PresetsCatalog`, `ShellThemeToggle`, `useDesignSync`, `PresetCard` e o **token `mode`** do painel, que só
 trocava o rótulo.
 

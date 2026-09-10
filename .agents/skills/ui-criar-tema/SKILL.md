@@ -77,7 +77,7 @@ Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline
 Sem `contraparte`, escolher este tema troca o MODO do usuário (a regressão que a plan-26 consertou). Escreva
 `contraparte: { ... }` no `ThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
 o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** presença fora da
-lista de isenção (os 18 temas legados, que ficam no fallback sintetizado).
+lista de isenção (temas legados, que ficam no fallback sintetizado — o número vivo sai em `npm run audit`).
 
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do

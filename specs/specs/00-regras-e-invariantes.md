@@ -1008,7 +1008,7 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
   — a causa de o texto de botão primário sair ilegível na conversão.
 - ✅ **E desde a `plan-26` a segunda passada mede a contraparte AUTORADA**, não a sintetizada, quando o tema
   declara uma. O gate deixou de verificar o que a lib derivou e passa a verificar **o que alguém escreveu** —
-  e **exige** contraparte fora da lista de isenção dos 18 legados, imprimindo o número de isentos.
+  e **exige** contraparte fora da lista de isenção dos temas legados, imprimindo o número de isentos.
 
 **O que o gate ainda NÃO vê** — e é por isso que a linha segue ⚠️:
 

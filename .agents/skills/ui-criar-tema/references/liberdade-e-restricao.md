@@ -79,7 +79,7 @@ cobrado de verdade.
 Um tema é escrito para **um** modo (`design.mode`). A `contraparte` é um bloco **parcial**, autorado por você,
 com os tokens que precisam de um valor **diferente** quando alguém vê este tema no modo oposto —
 `resolveThemeForMode` (`presets/themes/color-engine.ts`) aplica esse bloco por cima do `design` nativo. Sem
-`contraparte`, o tema cai no fallback sintetizado (`syncThemeWithMode`) — aceitável para os 18 legados, **não**
+`contraparte`, o tema cai no fallback sintetizado (`syncThemeWithMode`) — aceitável para os legados isentos, **não**
 para tema novo (o gate `auditor_contraste` exige presença fora dessa lista de isenção).
 
 **86% do tema é agnóstico de modo** (estrutura, tipografia, animação, espaço — não toque). O que precisa de
