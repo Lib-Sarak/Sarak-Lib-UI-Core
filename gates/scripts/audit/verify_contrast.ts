@@ -286,7 +286,6 @@ export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
  * (e o retira da lista numa plan futura); crescer exigiria justificativa nova.
  */
 export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
-    'sarak-sovereign',
     'crystal-glass',
     'cyberpunk-neon',
     'holographic-glass',
@@ -299,7 +298,6 @@ export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
     'stellar-nebula',
     'kinetic-flow',
     'cyber-retro-wave',
-    'minimalist-airy',
     'data-terminal',
     'neumorphic-mobile',
     'industrial-dashboard',

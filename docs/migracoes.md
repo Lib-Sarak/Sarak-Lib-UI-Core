@@ -5,6 +5,61 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
+
+**Classificação: MINOR** — capacidade nova, aditiva. `minimalist-airy` e `sarak-sovereign` (os dois
+de `SARAK_REFERENCE_THEMES`) ganharam `contraparte` autorada; nenhum export existente mudou de
+forma, e o comportamento de quem nunca troca de modo é idêntico ao de antes.
+
+**O que estava quebrado.** Só 5 dos 23 temas embarcados tinham `contraparte` — os dois de
+referência não. Sem ela, `resolveThemeForMode` caía no fallback `syncThemeWithMode`
+([[09-temas-e-presets]] §2.1), que satura nos dois sentidos e não é reversível: `escuro → claro →
+escuro` devolvia faixa de faixa, não o original. Como o resultado convertido é **gravado** no
+design do sistema (decisão D, `plan-24-1`), cada ida e volta afastava mais.
+
+**O que passa a existir.** Os dois ganharam `contraparte` medida pelo `auditor_contraste` (R31) em
+**0 reprovados nas duas passadas**, preservando a temperatura de cada tema (a mesma família de
+matiz da própria marca — a navy de `minimalist-airy`, o slate-azul dos cards de `sarak-sovereign`)
+em vez de convergir para uma paleta neutra. E uma porta nova, `deriveThemeFromReference`, para
+quem parte de uma referência:
+
+```ts
+import { deriveThemeFromReference, SarakUIProvider } from '@sarak/lib-ui-core';
+
+const meuTema = deriveThemeFromReference('minimalist-airy', {
+  id: 'erp-theme',
+  name: 'ERP',
+  design: { primaryColor: ERP_BLUE, accentColor: ERP_BLUE, btnPrimaryBg: ERP_BLUE },
+});
+
+<SarakUIProvider customThemes={[meuTema]} initialTheme="erp-theme">…</SarakUIProvider>
+```
+
+`meuTema` já sai **completo** — `design` **e** `contraparte` — com a sobreposição de marca coerente
+nos dois modos.
+
+**Afeta você se** hoje monta um tema de consumidor assim:
+
+```ts
+// ANTES — copia só METADE do tema; a contraparte fica para trás.
+const meuTema = { id: 'erp-theme', name: 'ERP', design: { ...REF.design, primaryColor: ERP_BLUE } };
+```
+
+Espalhar `...REF.design` (onde `REF` vem de `SARAK_REFERENCE_THEMES`, ou de `getThemePreset`) nunca
+copiou `contraparte` — o campo nem é mencionado na desestruturação. Resultado: seu tema derivado
+nasce **sem** contraparte, cai no mesmo fallback saturante que os 18 legados, e trocar de modo
+degrada em silêncio, exatamente como cair no fallback fazia antes desta plan para os dois temas de
+referência. **Troque para `deriveThemeFromReference`** (exemplo acima) — ela aplica a sobreposição
+em `design` e espelha, nos casos em que a chave também exista na `contraparte` da referência, para
+que o valor apareça igual nos dois modos.
+
+**O que NÃO mudou.** Os outros 16 temas isentos continuam isentos — esta plan encolheu a
+`CONTRAPARTE_EXEMPTION_LIST` em dois, não a esvaziou. `SARAK_REFERENCE_THEMES` continua sendo o
+mesmo par de ids (`minimalist-airy`, `sarak-sovereign`) — só o conteúdo interno ganhou a
+contraparte.
+
+---
+
 ## Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum export existente mudou de forma, e o

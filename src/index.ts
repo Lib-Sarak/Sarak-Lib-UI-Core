@@ -63,7 +63,8 @@ export { DESIGN_MANIFEST } from './core/Provider/manifest';
 // helpers de completude (defaults totais + aviso de eixo omitido) e o tipo `ThemePreset`.
 export { GLOBAL_THEMES, THEME_PRESET_IDS } from './core/Design/presets/themes';
 export type { ThemePreset, ThemePresetId } from './core/Design/presets/themes';
-export { SARAK_REFERENCE_THEMES, getThemePreset } from './core/Design/presets/themes/reference';
+export { SARAK_REFERENCE_THEMES, getThemePreset, deriveThemeFromReference } from './core/Design/presets/themes/reference';
+export type { ThemeReferenceOverrides, DerivedThemePreset } from './core/Design/presets/themes/reference';
 export { getDefaultDesignState, getAllDesignTokens } from './core/Design/master-map';
 export { THEME_AXES, findMissingThemeAxes, warnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o

@@ -3440,7 +3440,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
         >
           <div
             class="h-48 w-full relative flex transition-colors overflow-hidden"
-            style="background-color: rgb(38, 38, 38);"
+            style="background-color: rgb(16, 20, 30);"
           >
             <div
               class="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl"
@@ -3448,7 +3448,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
             >
               <div
                 class="w-4 h-4 rounded-sm shadow-lg"
-                style="background-color: rgb(70, 98, 160);"
+                style="background-color: rgb(17, 24, 39);"
               />
               <div
                 class="w-12 h-0.5 rounded-full bg-white/20"
@@ -3505,7 +3505,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       />
                       <div
                         class="w-4 h-2 rounded-full"
-                        style="background-color: rgb(70, 98, 160);"
+                        style="background-color: rgb(17, 24, 39);"
                       />
                     </div>
                     <div
@@ -3525,7 +3525,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                   >
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
-                      style="border-color: rgb(99, 112, 131) transparent rgb(99, 112, 131) rgb(99, 112, 131);"
+                      style="border-color: rgb(75, 85, 99) transparent rgb(75, 85, 99) rgb(75, 85, 99);"
                     />
                   </div>
                 </div>
@@ -3544,35 +3544,35 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     >
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 40%; background-color: rgb(70, 98, 160); opacity: 0.7;"
+                        style="height: 40%; background-color: rgb(17, 24, 39); opacity: 0.7;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 70%; background-color: rgb(70, 98, 160); opacity: 0.73;"
+                        style="height: 70%; background-color: rgb(17, 24, 39); opacity: 0.73;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 30%; background-color: rgb(70, 98, 160); opacity: 0.76;"
+                        style="height: 30%; background-color: rgb(17, 24, 39); opacity: 0.76;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 90%; background-color: rgb(70, 98, 160); opacity: 0.7899999999999999;"
+                        style="height: 90%; background-color: rgb(17, 24, 39); opacity: 0.7899999999999999;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 50%; background-color: rgb(70, 98, 160); opacity: 0.82;"
+                        style="height: 50%; background-color: rgb(17, 24, 39); opacity: 0.82;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 80%; background-color: rgb(70, 98, 160); opacity: 0.85;"
+                        style="height: 80%; background-color: rgb(17, 24, 39); opacity: 0.85;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 60%; background-color: rgb(70, 98, 160); opacity: 0.8799999999999999;"
+                        style="height: 60%; background-color: rgb(17, 24, 39); opacity: 0.8799999999999999;"
                       />
                       <div
                         class="w-full rounded-t-[var(--border-color,#334155)]"
-                        style="height: 45%; background-color: rgb(70, 98, 160); opacity: 0.9099999999999999;"
+                        style="height: 45%; background-color: rgb(17, 24, 39); opacity: 0.9099999999999999;"
                       />
                     </div>
                   </div>
