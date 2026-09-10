@@ -1,6 +1,48 @@
 import { ComponentPreset } from './cards';
 import { TEXTURE_OPTIONS } from '../../schema/atmosphere';
 
+// Atmosferas de tela cheia geradas pelo motor de textura da própria lib (`_atmosphere.css`) — sem
+// dependência de servidor de terceiro. `globalBackgroundImageUrl` vai vazio em cada uma para limpar
+// uma URL de mídia herdada de uma aplicação anterior do mesmo preset.
+const MEDIA_ATMOSPHERE_OPTIONS: Array<{
+    id: string;
+    name: string;
+    description: string;
+    texture: string;
+    textureOpacity: number;
+    vignetteOpacity?: number;
+}> = [
+    {
+        id: 'bg-kinetic-flow',
+        name: 'Aurora Cinética',
+        description: 'Faixas de cor em fluxo contínuo, geradas 100% em CSS — sem vídeo externo.',
+        texture: 'aurora',
+        textureOpacity: 0.35
+    },
+    {
+        id: 'bg-stellar-nebula',
+        name: 'Nebulosa Estelar',
+        description: 'Nebulosa e campo de estrelas renderizados em CSS puro — sem foto de terceiro.',
+        texture: 'nebula',
+        textureOpacity: 0.4
+    },
+    {
+        id: 'bg-cyber-grid-img',
+        name: 'Grade Cibernética',
+        description: 'Grade técnica com brilho, do mesmo motor de textura das superfícies — sem imagem externa.',
+        texture: 'blueprint-pro',
+        textureOpacity: 0.3
+    },
+    {
+        id: 'bg-dark-cinematic',
+        name: 'Cinemático Escuro',
+        description: 'Grão de filme e vinheta acentuada, para telas de teste de contraste — sem mídia de terceiro.',
+        texture: 'grain',
+        textureOpacity: 0.18,
+        vignetteOpacity: 0.55
+    }
+];
+
 export const MEDIA_PRESETS: ComponentPreset[] = [
     {
         id: 'bg-none',
@@ -10,38 +52,17 @@ export const MEDIA_PRESETS: ComponentPreset[] = [
             globalBackgroundImageUrl: ''
         }
     },
-    {
-        id: 'bg-kinetic-flow',
-        name: 'Video Background',
-        description: 'Fluid 3D animation loop.',
+    ...MEDIA_ATMOSPHERE_OPTIONS.map(({ id, name, description, texture, textureOpacity, vignetteOpacity }) => ({
+        id,
+        name,
+        description,
         design: {
-            globalBackgroundImageUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4'
+            globalBackgroundImageUrl: '',
+            texture,
+            textureOpacity,
+            ...(vignetteOpacity !== undefined ? { vignetteOpacity } : {})
         }
-    },
-    {
-        id: 'bg-stellar-nebula',
-        name: 'Image Space',
-        description: 'Deep space photo with organic mesh texture.',
-        design: {
-            globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1920&auto=format&fit=crop'
-        }
-    },
-    {
-        id: 'bg-cyber-grid-img',
-        name: 'Image Cyber Grid',
-        description: 'Neon grid over a dark void.',
-        design: {
-            globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop'
-        }
-    },
-    {
-        id: 'bg-dark-cinematic',
-        name: 'Dark Cinematic',
-        description: 'Mídia noturna/escura para testes de contraste.',
-        design: {
-            globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1503756234508-e32369269deb?q=80&w=1920&auto=format&fit=crop'
-        }
-    }
+    }))
 ];
 
 // Presets gerados dinamicamente a partir das texturas do Schema (1:1 Paridade)

@@ -5,6 +5,47 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — As quatro mídias de atmosfera hospedadas por terceiro viram atmosfera gerada em CSS (plan-69)
+
+**Classificação: MAJOR** — os quatro presets de "Mídia Base" do painel (`bg-kinetic-flow`,
+`bg-stellar-nebula`, `bg-cyber-grid-img`, `bg-dark-cinematic`) deixam de apontar para
+`test-videos.co.uk`/`images.unsplash.com` e passam a aplicar uma atmosfera gerada 100% em CSS pelo
+mesmo motor das 40 texturas (`src/styles/_atmosphere.css`). Os quatro `id` **continuam existindo** —
+não é remoção de preset — mas o `design` que cada um aplica mudou.
+
+**Por quê.** Uma biblioteca plug-and-play não pode ter uma aba do catálogo que depende de rede, de
+CSP permissiva ou de uma URL de terceiro continuar respondendo — e hospedar os arquivos originais
+(~2,9 MB) traria licença de redistribuição (Unsplash License + CC-BY do vídeo *Big Buck Bunny*) que
+uma lib zero-marca não tem onde carimbar. Ver [[adr/006-zero-marca-soberania-host]] e
+[[09-temas-e-presets]] §8 (item 1 do backlog, fechado por esta plan).
+
+**O que mudou.**
+
+| Preset (`id`) | Antes | Depois |
+| --- | --- | --- |
+| `bg-kinetic-flow` | `globalBackgroundImageUrl` → vídeo MP4 em `test-videos.co.uk` | `texture: 'aurora'`, `textureOpacity: 0.35` |
+| `bg-stellar-nebula` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'nebula'`, `textureOpacity: 0.4` |
+| `bg-cyber-grid-img` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'blueprint-pro'`, `textureOpacity: 0.3` |
+| `bg-dark-cinematic` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'grain'`, `textureOpacity: 0.18`, `vignetteOpacity: 0.55` |
+
+Todos os quatro passam a gravar `globalBackgroundImageUrl: ''` — para limpar, ao reaplicar o preset,
+uma URL de mídia que uma versão anterior dele possa ter deixado no seu tema.
+
+**Afeta você se** clicou em um destes quatro presets pelo painel e salvou o resultado (`localStorage`,
+`customThemes`, ou exportou o tema). Nesse caso, o valor persistido é o **dado literal** que o clique
+gravou naquele momento — `globalBackgroundImageUrl` com a URL antiga —, não uma referência ao `id` do
+preset. **Nada muda sozinho na sua tela:** `globalBackgroundImageUrl` continua existindo com a mesma
+assinatura, e `SarakBackgroundRenderer` continua servindo a URL exatamente como antes, contanto que
+ela ainda resolva na rede do seu usuário. Reabrir o painel e clicar de novo no mesmo preset agora
+aplica a atmosfera nova (CSS, sem URL) por cima do que estava salvo.
+
+**O que NÃO mudou.** `globalBackgroundImageUrl`, `globalBackgroundBlur`, `globalBackgroundOpacity` e
+`globalBackgroundBlendMode` continuam com a mesma assinatura — é a porta de foto/vídeo do **seu**
+ativo, por upload no painel ou por URL própria. `TEXTURE_PRESETS` e as 40 texturas não mudaram. Quem
+nunca usou os quatro presets de mídia não vê diferença nenhuma.
+
+---
+
 ## Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
 
 **Classificação: MINOR** — capacidade nova, aditiva. `minimalist-airy` e `sarak-sovereign` (os dois

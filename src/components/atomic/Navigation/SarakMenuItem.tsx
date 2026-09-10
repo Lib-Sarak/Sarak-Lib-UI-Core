@@ -51,9 +51,17 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
 
     const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0 rounded-lg') : '';
 
+    // Cor de ativo/hover do CROMO: `sidebarActiveColor`/`sidebarHoverColor` na
+    // orientação vertical (sidebar/drawer), `topbarActiveColor` na horizontal (topbar) —
+    // o mesmo item atômico desenha os dois cromos (Shell e SarakAppChrome), então a cor
+    // chega aos DOIS por aqui. Fallback idêntico ao tom anterior (zero mudança sem tema).
     const tone = active
-        ? 'font-bold bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]'
-        : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]';
+        ? isVertical
+            ? 'font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-primary-color,#3b82f6)]'
+            : 'font-bold bg-[var(--sarak-topbar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-primary-color,#3b82f6)]'
+        : isVertical
+            ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))]'
+            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]';
 
     const disabledClass = disabled ? 'opacity-30 grayscale cursor-not-allowed pointer-events-none' : 'cursor-pointer';
 

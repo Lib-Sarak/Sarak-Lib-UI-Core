@@ -87,7 +87,9 @@ jobs:
             #                          --with-tsc e themes:diversity para lá).
             #   - class-merge:check  : mesmo padrão dos três acima — vive só no Anel 1
             #                          do pre-commit, não na cadeia de build/gates:full.
-            - name: Os 6 *:check que o gates:full não alcança
+            #   - chrome-token-parity:check (plan-66) : mesmo padrão — vive só no Anel 1
+            #                          do pre-commit, não na cadeia de build/gates:full.
+            - name: Os 7 *:check que o gates:full não alcança
               run: |
                   npm run plan-index:check
                   npm run gate-limits:check
@@ -95,6 +97,7 @@ jobs:
                   npm run container-query-boundary:check
                   npm run persistence-doc:check
                   npm run class-merge:check
+                  npm run chrome-token-parity:check
 
     # ---------------------------------------------------------------------
     # CROMO-CSS-REAL — a única medição de CSS RENDERIZADO (valor computado, não

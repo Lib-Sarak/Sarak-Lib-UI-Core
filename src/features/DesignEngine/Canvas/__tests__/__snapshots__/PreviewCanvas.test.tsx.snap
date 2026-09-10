@@ -1644,7 +1644,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           />
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Formulários"
                           type="button"
                         >
@@ -1692,7 +1692,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Documentos"
                           type="button"
                         >
@@ -1744,7 +1744,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Chat Ops"
                           type="button"
                         >
@@ -1775,7 +1775,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="System Logs"
                           type="button"
                         >
@@ -1812,7 +1812,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Settings"
                           type="button"
                         >
@@ -1867,7 +1867,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Gallery"
                           type="button"
                         >
@@ -1904,7 +1904,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Typography"
                           type="button"
                         >
@@ -1947,7 +1947,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Security Gate"
                           type="button"
                         >
@@ -1986,7 +1986,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Matrix Network"
                           type="button"
                         >
@@ -2023,7 +2023,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Tabela Analítica"
                           type="button"
                         >
@@ -2070,7 +2070,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Caixas de Texto"
                           type="button"
                         >
@@ -2116,7 +2116,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           </span>
                         </button>
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Gráficos Avançados"
                           type="button"
                         >
@@ -2164,7 +2164,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                         style="gap: var(--theme-tab-gap, undefinedpx);"
                       >
                         <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
                           title="Kitchen Sink"
                           type="button"
                         >
@@ -2204,7 +2204,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                       class="relative"
                     >
                       <button
-                        class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+                        class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
                         title="Language"
                         type="button"
                       >
@@ -2252,7 +2252,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                       </button>
                     </div>
                     <button
-                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
                       title="Light Mode"
                       type="button"
                     >
@@ -2309,7 +2309,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                       </span>
                     </button>
                     <button
-                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
                       title="Notifications"
                       type="button"
                     >

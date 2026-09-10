@@ -199,6 +199,7 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | `logo` | `React.ReactNode` | não | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | `React.ReactNode` | não | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
 | `topbarEnd` | `React.ReactNode` | não | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
+| `search` | `React.ReactNode` | não | Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
 | `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
 | `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
 | `banner` | `React.ReactNode` | não | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
@@ -214,12 +215,14 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
-| `brand` | `React.ReactNode` | não |  |
+| `brand` | `{ name?: string; logoUrl?: string }` | não |  |
+| `logo` | `React.ReactNode` | não |  |
 | `nav` | `ShellNavItem[]` | sim |  |
 | `activeRoute` | `string` | não |  |
 | `onNavigate` | `(route: string) => void` | não |  |
 | `topbarActions` | `React.ReactNode` | não | Slot `topbarEnd` (alias legado `topbarActions`) — fim da barra compacta. |
 | `topbarStart` | `React.ReactNode` | não | Slot `topbarStart` — início da barra compacta, logo após a marca. |
+| `search` | `React.ReactNode` | não | Slot `search` — posicionado por `searchPositionSidebar` (é onde a sidebar existe no celular: o drawer). |
 | `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader` — migra para o topo do drawer (a sidebar do celular). |
 | `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter` — migra para o rodapé do drawer. |
 | `banner` | `React.ReactNode` | não | Slot `banner` — faixa full-width no topo. |
@@ -851,6 +854,7 @@ Props (`SarakShellNavProps` — `src/components/atomic/Navigation/SarakShellNav.
 | `onNavigate` | `(route: string) => void` | não | Callback de navegação — o host decide como navegar (router, pushState, assign). |
 | `onChange` | `(route: string) => void` | não | Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. |
 | `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical). |
+| `collapsed` | `boolean` | não | Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. |
 | `className` | `string` | não |  |
 
 ### SarakSkeleton

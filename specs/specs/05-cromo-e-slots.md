@@ -30,7 +30,8 @@ do **modo de consumo #3** ([[005-modelo-modulos-plugin-e-apps-separados]]).
 
 # 2. O contrato
 
-`SarakAppChromeProps` (`SarakAppChrome.tsx:44-107`) — **18 props**, publicadas no catálogo gerado.
+`SarakAppChromeProps` — as props do cromo, **publicadas no catálogo gerado** (`docs/component-catalog.json`).
+A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invariantes]] **R17**).
 
 ## 2.1 Estrutura e navegação
 
@@ -45,8 +46,9 @@ do **modo de consumo #3** ([[005-modelo-modulos-plugin-e-apps-separados]]).
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |
 
 `SarakNavItem` (`src/components/Layout/chrome/navItem.ts:20-31`):
-`{ id, label, icon?, href, active? }` — `id` estável para chave de render, `href` é o destino, e o
-**consumidor marca qual item está ativo**. O `icon` é resolvido pelo `SarakIcon`/`IconMap` curado — o mesmo
+`{ id, label, icon?, href, active?, category? }` — `id` estável para chave de render, `href` é o destino, e o
+**consumidor marca qual item está ativo**. `category` agrupa visualmente (mesmo campo do `ShellNavItem`);
+item sem categoria fica no grupo raiz. O `icon` é resolvido pelo `SarakIcon`/`IconMap` curado — o mesmo
 motor do Shell.
 
 **A resolução de precedência, explícita** (`SarakAppChrome.tsx:143-149`): com `navItems`, o cromo mapeia
@@ -88,22 +90,23 @@ orientação do cromo, ele **também** troca a métrica do item de menu, de list
 ([[00-regras-e-invariantes]] **R35**) — é assim que se pede um rótulo em caixa normal numa topbar, sem
 prop nova.
 
-## 2.2 Os 8 slots
+## 2.2 Os slots
 
 | Slot | Região | Ausente = |
 | --- | --- | --- |
 | `logo` | identidade; **precedência sobre `brand.logoUrl`**, e o `brand.name` continua ao lado | cai em `brand.logoUrl` |
 | `topbarStart` | início da barra superior, após a marca | região não renderiza |
 | `topbarEnd` | fim da barra superior — **alias de `topbarActions`**, e **vence** quando os dois vêm (`:151`) | idem |
+| `search` | busca do consumidor — **posicionada por token**, não por região fixa (§2.4) | região não renderiza |
 | `sidebarHeader` | topo da sidebar, abaixo da marca | idem |
 | `sidebarFooter` | rodapé da sidebar | idem |
 | `banner` | faixa **full-width**, primeira do cromo | idem |
 | `footer` | faixa **full-width**, última do cromo | idem |
 | `decoration` | camada decorativa **atrás** do conteúdo do cromo | idem |
 
-**Verificado no gate:** `npm run catalog:check` verde e os **8/8 slots presentes** nas props publicadas de
-`SarakAppChrome` em `docs/component-catalog.json` (+ `topbarActions`, o alias). O contrato está publicado,
-não só implementado.
+**Verificado no gate:** `npm run catalog:check` verde, com **todos** os slots presentes nas props publicadas
+de `SarakAppChrome` em `docs/component-catalog.json` (+ `topbarActions`, o alias). O contrato está
+publicado, não só implementado.
 
 ### O princípio
 
@@ -158,6 +161,47 @@ sem escrever media query nem condicional por dispositivo.
 Nota de contrato interno: `SarakAppChromeMobile` recebe `brand` como **`ReactNode` já montado**
 (`ChromeBrand`, com o `logo` dentro) e `topbarActions` como o slot de fim já resolvido — por isso as props
 dele no catálogo não repetem `logo`/`topbarEnd`. A tradução acontece em `SarakAppChrome.tsx:171-188`.
+
+## 2.4 Um token de cromo vale nos DOIS modos de consumo, ou não existe
+
+O `SarakAppChrome` (modo ui-kit) e o `SarakShell` (modo módulos-plugin) pintam o **mesmo** cromo a partir
+dos **mesmos** tokens de `schema/navigation.ts`. Um token oferecido no schema e no catálogo é contrato com
+o usuário final ([[09-temas-e-presets]] §4.4.3): **ou ele produz efeito nos dois modos, ou sai do schema.**
+Não existe token que funciona "só no Shell" — para quem clica no painel, isso é indistinguível de defeito.
+
+O cromo do modo ui-kit lê esses tokens por um hook único e os traduz em classe estrutural:
+
+| Token | Efeito no cromo |
+| --- | --- |
+| `sidebarPosition` | lado da sidebar — `left`, `right` (inverte a direção do corpo) ou `floating` (destacada, com raio e sombra) |
+| `navbarLayout` | `sticky`, `inline` ou `hidden` para a barra superior |
+| `contentAlignment` | `stretch` ou `center` — largura máxima centralizada para o conteúdo |
+| `isNavHidden` | colapsa a navegação: sidebar estreita só com ícone, topbar com altura reduzida |
+| `isAutoHideEnabled` | a nav só existe no ar sob o ponteiro; uma faixa sensível na borda a traz de volta |
+| `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |
+| `searchPositionSidebar` | `top`, `bottom` ou `hidden` para o slot `search` na sidebar/drawer |
+| `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
+| `sidebarActiveColor` · `sidebarHoverColor` · `topbarActiveColor` | realce do item de menu, por orientação |
+
+> **`hidden` some com a região mesmo havendo conteúdo.** Quem decide sumir é o token, não a ausência do
+> slot — é assim que o dono do tema desliga a busca sem o consumidor mudar código.
+
+**A regra estrutural, para quem for estender:** a tradução token → classe vive num mapa de **literais**,
+nunca em string interpolada. O scanner do Tailwind lê o arquivo como texto; uma classe montada por
+concatenação não existe no CSS publicado ([[07-responsividade-e-multidispositivo]] §6.1).
+
+### 2.4.1 O gate que impede a lacuna de voltar
+
+`npm run chrome-token-parity:check` cobra a metade que nenhum outro auditor cobrava: **não o valor do
+token, a existência do consumidor**. Para cada token da lista, o gate exige uma referência ao `id` ou a uma
+das variáveis CSS declaradas, **de cada lado** — `src/core/Shell/**` e `src/components/Layout/**`, mais os
+átomos compartilhados que cada cromo usa para pintar o item de menu. Ausência de qualquer lado é bloqueio,
+e ele roda no `pre-commit`.
+
+**Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): o escopo é uma lista fechada,
+não o schema inteiro — há tokens de cromo órfãos **fora** dela, dívida anterior e nomeada no cabeçalho do
+gate; e a checagem é **textual**, não por AST: prova que existe referência, não que o consumo produz efeito
+visual. A prova de efeito é o teste de componente e, para CSS renderizado, `cromo-css-real:check`.
 
 # 3. Os dois níveis de "adicionar imagem/animação"
 
@@ -285,7 +329,11 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | Colapso por dispositivo (desktop/tablet/celular) via `overrideDevice` | `src/components/Layout/__tests__/SarakAppChrome.viewport.test.tsx` | ✅ suíte |
 | Drawer mobile: `aria-expanded`, ESC, foco, fechar ao selecionar | `src/components/Layout/__tests__/SarakAppChromeMobile.test.tsx` | ✅ suíte |
 | Moldura comum (ordem banner/corpo/footer, isolamento com `decoration`) | `src/components/Layout/chrome/__tests__/` | ✅ suíte |
-| Contrato publicado (os 8 slots no catálogo) | `npm run catalog:check` | ✅ gate |
+| Contrato publicado (todos os slots no catálogo) | `npm run catalog:check` | ✅ gate |
+| Cada token de cromo produz a classe estrutural esperada nos dois corpos | `src/components/Layout/chrome/__tests__/ChromeTopbarBody.test.tsx` · `ChromeSidebarBody.test.tsx` | ✅ suíte |
+| O hook de leitura dos tokens cai no default correto quando o design não os traz | `src/components/Layout/chrome/__tests__/useChromeDesignTokens.test.ts` | ✅ suíte |
+| Auto-hide: some sob ausência de ponteiro, volta pelo sensor de borda | `src/components/Layout/chrome/__tests__/useChromeAutoHide.test.ts` | ✅ suíte |
+| Todo token de cromo tem consumidor nos DOIS modos | `npm run chrome-token-parity:check` | ✅ gate (`pre-commit`) |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 

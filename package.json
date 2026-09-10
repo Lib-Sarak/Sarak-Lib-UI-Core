@@ -43,6 +43,7 @@
         "section-pointers:check": "node gates/scripts/contrato/check-section-pointers.mjs",
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
         "class-merge:check": "node gates/scripts/contrato/check-class-merge.mjs",
+        "chrome-token-parity:check": "node gates/scripts/contrato/check-chrome-token-parity.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",
         "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",
         "cromo-css-real:check": "npm run build && playwright test --config=browser-tests/playwright.config.ts",

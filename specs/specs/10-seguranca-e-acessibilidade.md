@@ -71,21 +71,36 @@ aninhado, qualquer profundidade. Não há nível de aninhamento por onde passar 
 ### c-bis) `isSafeMediaString` — o predicado dos tokens de mídia
 
 Os tipos `image` e `file` não passam pela trava geral: toda mídia embutida carrega `;base64,`, e o `;` a
-reprovaria inteira. `isSafeMediaString` (`cssSafety.ts`) aceita **exatamente duas formas**:
+reprovaria inteira. `isSafeMediaString` (`cssSafety.ts`) julga esses tokens sozinho.
 
-- **URL `https://`** — com as duas barras, e ainda sob a trava geral de breakout;
-- **mídia embutida bem-formada** — esquema `data:`, tipo MIME de **imagem ou vídeo**, codificação
-  `base64` **declarada**, e payload restrito ao alfabeto base64.
+**O conjunto aceito**, e o motivo de cada entrada — cada uma é um valor real de consumidor, não hipótese:
 
-Recusa todo o resto: `data:` com MIME que não é mídia, `javascript:`, qualquer outro esquema, e qualquer
-cauda anexada — o padrão é ancorado nas duas pontas.
+| Forma | Por que entra |
+| --- | --- |
+| **string vazia** | é o próprio *"sem mídia"* — o `defaultValue`/`legacyValue` de `globalBackgroundImageUrl` e o preset "Nenhuma (Sem Mídia)" são `''`. É a config de boot de **todo** consumidor que ainda não escolheu fundo |
+| **`https://…`** | ainda sob a trava geral de breakout |
+| **`http://…`** | **mesma classe de risco** que `https://`: quem busca o recurso é o browser do usuário final, não esta lib — ela não faz fetch servidor-a-servidor (§3.2). Intranet e ambiente local servem mídia sem TLS |
+| **mídia embutida bem-formada** | esquema `data:`, MIME de **imagem ou vídeo**, `base64` **declarado**, payload restrito ao alfabeto base64 |
+| **caminho relativo do consumidor** | sem esquema de URI (`/assets/bg.png`, `bg.png`) — ativo do próprio host, resolvido pelo browser contra a origem da página, nunca por esta lib; segue sob a trava de breakout |
+| **qualquer um dos acima envolto em `url(...)`** | herança de valor de CSS cru; é desembrulhado antes do julgamento |
 
-> **Por que não afrouxa a garantia.** Os cinco caracteres de breakout **não pertencem ao alfabeto base64**.
-> Um payload que casa com o padrão é inerte por construção, e não por confiança no autor do tema. O único
-> `;` aceito está no prefixo fixo do formato, em posição que não fecha declaração nenhuma.
+**Recusa todo o resto:** qualquer *outro* esquema de URI — `javascript:`, `vbscript:`, um `data:` fora do
+formato de mídia — e qualquer cauda anexada a um valor válido, porque o padrão é ancorado nas duas pontas.
+
+> **A borda esquerda é normalizada ANTES de qualquer ramo.** O parser de URL do browser apara espaço em
+> branco e controles C0 antes de resolver o esquema (WHATWG URL Standard); um predicado que não faz o mesmo
+> tem a âncora `^` quebrada por um único caractere de ruído, o valor escorre para o ramo de *caminho
+> relativo* — que só barra breakout, não esquema — e `javascript:` atravessa. Normalizar **uma vez**, na
+> entrada, fecha a classe inteira; testar caractere a caractere não fecha.
 >
-> Um valor legado envolto em `url(...)` é desembrulhado antes do julgamento, e a âncora impede o caso
-> perigoso: qualquer coisa depois do `)` faz o desembrulho falhar, o valor volta inteiro e é recusado.
+> **Por que aceitar `;base64,` não afrouxa a garantia.** Os cinco caracteres de breakout **não pertencem ao
+> alfabeto base64**. Um payload que casa com o padrão é inerte por construção, não por confiança no autor
+> do tema. O único `;` aceito está no prefixo fixo do formato, em posição que não fecha declaração nenhuma.
+
+**Um valor legítimo recusado é um defeito de segurança, não um excesso de zelo.** Um predicado estreito
+demais não deixa o sistema mais seguro: ele enche o console de aviso falso a cada render, e aviso falso
+constante é o que treina o mantenedor a ignorar o aviso verdadeiro. O conjunto aceito é medido contra
+valores reais de consumidor por isso.
 
 **O predicado tem fonte única, e isso é o que fecha a segunda barreira.** `useDesignVariables` — a trava
 que existe para o caso de alguém chamar `applyConfig`/`setDesign` sem passar por `validateDesign` —
@@ -354,6 +369,9 @@ que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dad
 | Verificação | Onde | Roda em automação? |
 | --- | --- | --- |
 | `validateDesign` descarta chave/valor fora do contrato | `src/core/Provider/utils/__tests__/validation.test.ts` | ✅ suíte |
+| As DUAS barreiras aceitam e recusam o mesmo conjunto de mídia | `src/core/Provider/utils/__tests__/mediaPredicateTable.ts` (tabela única, consumida pelos dois lados) | ✅ suíte |
+| `isSafeMediaString`: forma aceita × forma recusada, incluindo ruído de borda | `src/core/Provider/utils/__tests__/cssSafety.test.ts` | ✅ suíte |
+| Boot com a config default não emite aviso de mídia | `src/core/Provider/__tests__/mediaBootConsoleClean.test.tsx` | ✅ suíte |
 | Nenhum valor shippado fora do contrato | `…/__tests__/tokenContractParity.test.ts` | ✅ suíte |
 | `sanitizeHtml` neutraliza `<script>`/`on*`/`javascript:` | `src/core/Security/__tests__/sanitizeHtml.test.ts` | ✅ suíte |
 | Modo embarcado não escreve fora do container | `src/core/Provider/__tests__/EmbeddedMode.test.tsx` | ✅ suíte |

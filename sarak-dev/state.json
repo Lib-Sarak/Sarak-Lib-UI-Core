@@ -186,6 +186,10 @@
       "comando": "node scripts/generate-component-catalog.mjs --check"
     },
     {
+      "nome": "npm run chrome-token-parity:check",
+      "comando": "node gates/scripts/contrato/check-chrome-token-parity.mjs"
+    },
+    {
       "nome": "npm run class-merge:check",
       "comando": "node gates/scripts/contrato/check-class-merge.mjs"
     },

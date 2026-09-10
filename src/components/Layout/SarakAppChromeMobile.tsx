@@ -5,7 +5,9 @@ import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
 import { ChromeFrame } from './chrome/ChromeFrame';
-import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralStyles';
+import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 
 /**
  * SarakAppChromeMobile — colapso do cromo no celular (Spec 40.3 — L1).
@@ -29,7 +31,8 @@ import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
  */
 export interface SarakAppChromeMobileProps {
     children: React.ReactNode;
-    brand?: React.ReactNode;
+    brand?: { name?: string; logoUrl?: string };
+    logo?: React.ReactNode;
     nav: ShellNavItem[];
     activeRoute?: string;
     onNavigate?: (route: string) => void;
@@ -37,6 +40,8 @@ export interface SarakAppChromeMobileProps {
     topbarActions?: React.ReactNode;
     /** Slot `topbarStart` — início da barra compacta, logo após a marca. */
     topbarStart?: React.ReactNode;
+    /** Slot `search` — posicionado por `searchPositionSidebar` (é onde a sidebar existe no celular: o drawer). */
+    search?: React.ReactNode;
     /** Slot `sidebarHeader` — migra para o topo do drawer (a sidebar do celular). */
     sidebarHeader?: React.ReactNode;
     /** Slot `sidebarFooter` — migra para o rodapé do drawer. */
@@ -56,11 +61,13 @@ const DRAWER_ID = 'sarak-chrome-drawer';
 export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     children,
     brand,
+    logo,
     nav,
     activeRoute,
     onNavigate,
     topbarActions,
     topbarStart,
+    search,
     sidebarHeader,
     sidebarFooter,
     banner,
@@ -72,6 +79,10 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
+    const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
+    // A marca aparece na barra compacta E no topo do drawer (mesma variante
+    // horizontal nos dois — sempre foi assim).
+    const brandNode = <ChromeBrand brand={brand} logo={logo} horizontal />;
 
     // Trava o scroll do corpo enquanto o drawer está aberto (não vaza rolagem por baixo).
     useEffect(() => {
@@ -107,7 +118,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     style={{ width: 'var(--sarak-topbar-height, 44px)', height: 'var(--sarak-topbar-height, 44px)' }}
                     icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
                 />
-                {brand}
+                {brandNode}
                 <ChromeTopbarSlot region="start" className="overflow-hidden">{topbarStart}</ChromeTopbarSlot>
                 {topbarActions && <div data-sarak-slot="topbarEnd" className="flex items-center gap-2 shrink-0 ml-auto">{topbarActions}</div>}
             </header>
@@ -126,15 +137,21 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                         }}
                     >
-                        {brand && <div className="px-2 py-3">{brand}</div>}
+                        {brand && <div className="px-2 py-3">{brandNode}</div>}
+                        {/* É onde a sidebar existe no celular — segue `searchPositionSidebar`. */}
+                        {searchPositionSidebar === 'top' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{search}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={handleSelect} orientation="vertical" className="flex-1" />
+                        {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{search}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
                     </aside>
                 </React.Fragment>
             )}
 
-            <main className="relative flex-1 min-w-0 min-h-0 overflow-auto" style={{ color: 'var(--text-main, var(--color-theme-title, inherit))' }}>
+            <main
+                className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
+                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))' }}
+            >
                 {children}
             </main>
         </ChromeFrame>

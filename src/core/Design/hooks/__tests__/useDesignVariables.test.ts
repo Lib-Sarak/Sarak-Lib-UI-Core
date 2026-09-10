@@ -5,6 +5,7 @@ import { useDesignVariables } from '../useDesignVariables';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../breakpoints';
 import { getDefaultDesignState } from '../../master-map';
 import { sarakSovereignTheme } from '../../presets/themes/sarak-sovereign';
+import { MEDIA_PREDICATE_TABLE } from '../../../Provider/utils/__tests__/mediaPredicateTable';
 
 describe('useDesignVariables', () => {
     it('should export the hook correctly', () => {
@@ -105,4 +106,31 @@ describe('useDesignVariables — segunda barreira reconhece mídia embutida', ()
         expect(warnSpy).toHaveBeenCalled();
         warnSpy.mockRestore();
     });
+});
+
+/**
+ * A mesma tabela única de `validation.test.ts` (barreira 1), rodada aqui na
+ * barreira 2. Diferente da barreira 1, esta NÃO tem curto-circuito de
+ * entrada: `''` chega ao predicado como qualquer outro valor, e — aceito —
+ * fica exposto tal como escrito, sem warn.
+ */
+describe('useDesignVariables — tabela única de mídia', () => {
+    it.each(MEDIA_PREDICATE_TABLE.map(({ value, accepted, reason }) => [value, accepted, reason] as const))(
+        '%s → %s (%s)',
+        (value, accepted) => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            const { result } = renderHook(() => useDesignVariables({ mode: 'dark', globalBackgroundImageUrl: value }));
+
+            if (accepted) {
+                expect(warnSpy).not.toHaveBeenCalled();
+                expect(result.current.variables['--sarak-global-bg-image']).toBe(value);
+            } else {
+                expect(result.current.variables['--sarak-global-bg-image']).toBe('');
+                expect(warnSpy).toHaveBeenCalled();
+            }
+
+            warnSpy.mockRestore();
+        }
+    );
 });

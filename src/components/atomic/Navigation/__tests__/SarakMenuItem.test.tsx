@@ -77,3 +77,30 @@ describe('SarakMenuItem', () => {
         expect(screen.getByRole('button', { name: 'Módulo' })).toHaveAttribute('title', 'Módulo');
     });
 });
+
+describe('SarakMenuItem — cor de ativo/hover do cromo por orientação', () => {
+    it('vertical ATIVO consome --sarak-sidebar-active-color (sidebar/drawer)', () => {
+        render(<SarakMenuItem label="Módulo" orientation="vertical" active />);
+        const classes = screen.getByRole('button', { name: 'Módulo' }).className;
+        expect(classes).toContain('var(--sarak-sidebar-active-color');
+    });
+
+    it('vertical INATIVO consome --sarak-sidebar-hover-color no hover', () => {
+        render(<SarakMenuItem label="Módulo" orientation="vertical" />);
+        const classes = screen.getByRole('button', { name: 'Módulo' }).className;
+        expect(classes).toContain('hover:bg-[var(--sarak-sidebar-hover-color');
+    });
+
+    it('horizontal ATIVO consome --sarak-topbar-active-color (topbar)', () => {
+        render(<SarakMenuItem label="Aba" orientation="horizontal" active />);
+        const classes = screen.getByRole('button', { name: 'Aba' }).className;
+        expect(classes).toContain('var(--sarak-topbar-active-color');
+        expect(classes).not.toContain('var(--sarak-sidebar-active-color');
+    });
+
+    it('horizontal INATIVO NÃO usa a cor de hover da sidebar (fora do escopo desta plan)', () => {
+        render(<SarakMenuItem label="Aba" orientation="horizontal" />);
+        const classes = screen.getByRole('button', { name: 'Aba' }).className;
+        expect(classes).not.toContain('--sarak-sidebar-hover-color');
+    });
+});

@@ -401,11 +401,11 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   Auditados um a um em 2026-08-01: `DesignScope.tsx:54`, `DesignInjector.tsx:173` e
   `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`
   (R6). A trava geral bloqueia breakout `[<>{};]`; os tokens de **mídia** (`image`/`file`) têm predicado
-  próprio, que aceita só `https://` e mídia embutida bem-formada — cujo payload, por ser base64, **não pode
-  conter** nenhum dos cinco caracteres. Detalhe em [`specs/10-seguranca-e-acessibilidade.md`](specs/10-seguranca-e-acessibilidade.md) §2.1.
+  próprio, com conjunto aceito medido contra valores reais de consumidor — e que recusa todo esquema de URI
+  fora dele, inclusive com ruído antes do esquema. Detalhe em [`specs/10-seguranca-e-acessibilidade.md`](specs/10-seguranca-e-acessibilidade.md) §2.1.
   `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais estáticos**, sem interpolação.
   **Nenhum recebe HTML de origem não confiável.**
-- **`chromeSlots` publica 9 entradas para 8 regiões, e está certo assim.** `topbarActions` é alias legado de
+- **`chromeSlots` publica uma entrada a mais do que há regiões, e está certo assim.** `topbarActions` é alias legado de
   `topbarEnd`; o coletor deriva por **tipo** (`ReactNode` opcional), não por semântica, e o `doc` do próprio
   slot avisa o consumidor de que é alias. Consertar o coletor custa mais que declarar a imprecisão.
 - **O token de breakpoint alcança o CSS, não as classes utilitárias.** `useDesignVariables.ts:58` lê

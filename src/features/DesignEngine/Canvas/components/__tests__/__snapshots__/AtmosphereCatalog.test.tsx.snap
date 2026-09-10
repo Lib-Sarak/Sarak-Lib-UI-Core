@@ -175,26 +175,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       >
         <div
           class="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
+          data-sx-card-texture-type="aurora"
           style="--sarak-card-texture-opacity: 0.8;"
         >
           <div
             class="absolute inset-0 z-0"
-          >
-            <div
-              style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; background-color: var(--sarak-bg-body);"
-            >
-              <video
-                autoplay=""
-                loop=""
-                playsinline=""
-                src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"
-                style="width: 100%; height: 100%; opacity: 1; filter: blur(0px); mix-blend-mode: normal; object-fit: cover;"
-              />
-              <div
-                style="position: absolute; inset: 0px; background: radial-gradient(at 70% 30%, transparent 10%, transparent 140%); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1s ease-in-out;"
-              />
-            </div>
-          </div>
+          />
           <div
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
@@ -202,80 +188,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
             >
               <svg
-                class="lucide lucide-play"
-                fill="none"
-                height="32"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="32"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <polygon
-                  points="5 3 19 12 5 21 5 3"
-                />
-              </svg>
-            </div>
-          </div>
-          <div
-            class="absolute bottom-0 left-0 w-full p-6 z-20"
-          >
-            <div
-              class="flex items-center gap-3 mb-2"
-            >
-              <span
-                class="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
-              >
-                Live Media
-              </span>
-            </div>
-            <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
-            >
-              Video Background
-            </h3>
-            <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
-            >
-              Fluid 3D animation loop.
-            </p>
-          </div>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
-          style="--sarak-card-texture-opacity: 0.8;"
-        >
-          <div
-            class="absolute inset-0 z-0"
-          >
-            <div
-              style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; background-color: var(--sarak-bg-body);"
-            >
-              <div
-                style="width: 100%; height: 100%; opacity: 1; filter: blur(0px); mix-blend-mode: normal; object-fit: cover; background-image: url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1920&auto=format&fit=crop"); background-size: cover; background-position: center center; background-repeat: no-repeat;"
-              />
-              <div
-                style="position: absolute; inset: 0px; background: radial-gradient(at 70% 30%, transparent 10%, transparent 140%); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1s ease-in-out;"
-              />
-            </div>
-          </div>
-          <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
-          >
-            <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
-            >
-              <svg
-                class="lucide lucide-image"
+                class="lucide lucide-grid3x3"
                 fill="none"
                 height="32"
                 stroke="currentColor"
@@ -289,18 +202,21 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
                 <rect
                   height="18"
                   rx="2"
-                  ry="2"
                   width="18"
                   x="3"
                   y="3"
                 />
-                <circle
-                  cx="9"
-                  cy="9"
-                  r="2"
+                <path
+                  d="M3 9h18"
                 />
                 <path
-                  d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+                  d="M3 15h18"
+                />
+                <path
+                  d="M9 3v18"
+                />
+                <path
+                  d="M15 3v18"
                 />
               </svg>
             </div>
@@ -312,20 +228,20 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
-                Static Image
+                CSS Atmosphere
               </span>
             </div>
             <h3
               class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
             >
-              Image Space
+              Aurora Cinética
             </h3>
             <p
               class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
             >
-              Deep space photo with organic mesh texture.
+              Faixas de cor em fluxo contínuo, geradas 100% em CSS — sem vídeo externo.
             </p>
           </div>
         </div>
@@ -338,22 +254,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       >
         <div
           class="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
+          data-sx-card-texture-type="nebula"
           style="--sarak-card-texture-opacity: 0.8;"
         >
           <div
             class="absolute inset-0 z-0"
-          >
-            <div
-              style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; background-color: var(--sarak-bg-body);"
-            >
-              <div
-                style="width: 100%; height: 100%; opacity: 1; filter: blur(0px); mix-blend-mode: normal; object-fit: cover; background-image: url("https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop"); background-size: cover; background-position: center center; background-repeat: no-repeat;"
-              />
-              <div
-                style="position: absolute; inset: 0px; background: radial-gradient(at 70% 30%, transparent 10%, transparent 140%); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1s ease-in-out;"
-              />
-            </div>
-          </div>
+          />
           <div
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
@@ -361,7 +267,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
             >
               <svg
-                class="lucide lucide-image"
+                class="lucide lucide-grid3x3"
                 fill="none"
                 height="32"
                 stroke="currentColor"
@@ -375,18 +281,21 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
                 <rect
                   height="18"
                   rx="2"
-                  ry="2"
                   width="18"
                   x="3"
                   y="3"
                 />
-                <circle
-                  cx="9"
-                  cy="9"
-                  r="2"
+                <path
+                  d="M3 9h18"
                 />
                 <path
-                  d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+                  d="M3 15h18"
+                />
+                <path
+                  d="M9 3v18"
+                />
+                <path
+                  d="M15 3v18"
                 />
               </svg>
             </div>
@@ -398,20 +307,20 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
-                Static Image
+                CSS Atmosphere
               </span>
             </div>
             <h3
               class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
             >
-              Image Cyber Grid
+              Nebulosa Estelar
             </h3>
             <p
               class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
             >
-              Neon grid over a dark void.
+              Nebulosa e campo de estrelas renderizados em CSS puro — sem foto de terceiro.
             </p>
           </div>
         </div>
@@ -424,22 +333,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       >
         <div
           class="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
+          data-sx-card-texture-type="blueprint-pro"
           style="--sarak-card-texture-opacity: 0.8;"
         >
           <div
             class="absolute inset-0 z-0"
-          >
-            <div
-              style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; background-color: var(--sarak-bg-body);"
-            >
-              <div
-                style="width: 100%; height: 100%; opacity: 1; filter: blur(0px); mix-blend-mode: normal; object-fit: cover; background-image: url("https://images.unsplash.com/photo-1503756234508-e32369269deb?q=80&w=1920&auto=format&fit=crop"); background-size: cover; background-position: center center; background-repeat: no-repeat;"
-              />
-              <div
-                style="position: absolute; inset: 0px; background: radial-gradient(at 70% 30%, transparent 10%, transparent 140%); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1s ease-in-out;"
-              />
-            </div>
-          </div>
+          />
           <div
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
@@ -447,7 +346,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
             >
               <svg
-                class="lucide lucide-image"
+                class="lucide lucide-grid3x3"
                 fill="none"
                 height="32"
                 stroke="currentColor"
@@ -461,18 +360,21 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
                 <rect
                   height="18"
                   rx="2"
-                  ry="2"
                   width="18"
                   x="3"
                   y="3"
                 />
-                <circle
-                  cx="9"
-                  cy="9"
-                  r="2"
+                <path
+                  d="M3 9h18"
                 />
                 <path
-                  d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+                  d="M3 15h18"
+                />
+                <path
+                  d="M9 3v18"
+                />
+                <path
+                  d="M15 3v18"
                 />
               </svg>
             </div>
@@ -484,20 +386,99 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
-                Static Image
+                CSS Atmosphere
               </span>
             </div>
             <h3
               class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
             >
-              Dark Cinematic
+              Grade Cibernética
             </h3>
             <p
               class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
             >
-              Mídia noturna/escura para testes de contraste.
+              Grade técnica com brilho, do mesmo motor de textura das superfícies — sem imagem externa.
+            </p>
+          </div>
+        </div>
+      </button>
+      <button
+        animate="[object Object]"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        initial="[object Object]"
+        transition="[object Object]"
+      >
+        <div
+          class="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
+          data-sx-card-texture-type="grain"
+          style="--sarak-card-texture-opacity: 0.8;"
+        >
+          <div
+            class="absolute inset-0 z-0"
+          />
+          <div
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+          >
+            <div
+              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+            >
+              <svg
+                class="lucide lucide-grid3x3"
+                fill="none"
+                height="32"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="32"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="18"
+                  rx="2"
+                  width="18"
+                  x="3"
+                  y="3"
+                />
+                <path
+                  d="M3 9h18"
+                />
+                <path
+                  d="M3 15h18"
+                />
+                <path
+                  d="M9 3v18"
+                />
+                <path
+                  d="M15 3v18"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="absolute bottom-0 left-0 w-full p-6 z-20"
+          >
+            <div
+              class="flex items-center gap-3 mb-2"
+            >
+              <span
+                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+              >
+                CSS Atmosphere
+              </span>
+            </div>
+            <h3
+              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+            >
+              Cinemático Escuro
+            </h3>
+            <p
+              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+            >
+              Grão de filme e vinheta acentuada, para telas de teste de contraste — sem mídia de terceiro.
             </p>
           </div>
         </div>

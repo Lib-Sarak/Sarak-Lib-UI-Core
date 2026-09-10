@@ -852,7 +852,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             class="relative"
           >
             <button
-              class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+              class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
               title="Language"
               type="button"
             >
@@ -900,7 +900,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </button>
           </div>
           <button
-            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
             title="Light Mode"
             type="button"
           >
@@ -957,7 +957,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </span>
           </button>
           <button
-            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
             title="Notifications"
             type="button"
           >

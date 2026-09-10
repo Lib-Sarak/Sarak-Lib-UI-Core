@@ -69,6 +69,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
     );
 
     const isImage = preset.design.globalBackgroundImageUrl && !isVideo;
+    const hasGeneratedAtmosphere = !preset.design.globalBackgroundImageUrl && preset.design.texture && preset.design.texture !== 'none';
 
     return (
         <motion.button
@@ -102,7 +103,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
 
                 <div className="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700">
                     <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl">
-                        {isVideo ? <Play size={32} /> : isImage ? <ImageIcon size={32} /> : <Layers size={32} />}
+                        {isVideo ? <Play size={32} /> : isImage ? <ImageIcon size={32} /> : hasGeneratedAtmosphere ? <Grid size={32} /> : <Layers size={32} />}
                     </div>
                 </div>
 
@@ -110,7 +111,8 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                     <div className="flex items-center gap-3 mb-2">
                         {isVideo && <span className="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
                         {isImage && <span className="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
-                        {!isVideo && !isImage && <span className="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
+                        {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
+                        {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
                     </div>
                     <h3 className="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
                     <p className="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>

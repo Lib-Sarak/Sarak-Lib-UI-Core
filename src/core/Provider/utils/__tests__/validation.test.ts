@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateDesign } from '../validation';
+import { MEDIA_PREDICATE_TABLE } from './mediaPredicateTable';
 
 describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTML cru)', () => {
     let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -187,4 +188,43 @@ describe('validateDesign — predicado de mídia embutida em tokens `image`/`fil
         const asSelect = validateDesign({ mode: 'light' });
         expect(asSelect.mode).toBe('light');
     });
+});
+
+/**
+ * A tabela única (`mediaPredicateTable.ts`), rodada na barreira 1. A mesma
+ * tabela roda na barreira 2 em `useDesignVariables.test.ts`, e é essa dupla
+ * execução — não a leitura de que as duas chamam o mesmo predicado — que
+ * prova a equivalência do critério de aceite.
+ *
+ * `''` é o único caso em que "aceito" não significa "valor preservado em
+ * `s[key]`": o curto-circuito de entrada de `validateDesign` (`value === ''`)
+ * descarta a chave ANTES de chegar ao predicado — sem warn, e o consumidor
+ * cai no `defaultValue` do token, que também é `''`. O resultado observável é
+ * o mesmo; só o caminho interno difere.
+ */
+describe('validateDesign — tabela única de mídia', () => {
+    let warnSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+        warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warnSpy.mockRestore();
+    });
+
+    it.each(MEDIA_PREDICATE_TABLE.map(({ value, accepted, reason }) => [value, accepted, reason] as const))(
+        '%s → %s (%s)',
+        (value, accepted) => {
+            const result = validateDesign({ globalBackgroundImageUrl: value });
+
+            if (accepted) {
+                expect(warnSpy).not.toHaveBeenCalled();
+                expect(result.globalBackgroundImageUrl).toBe(value === '' ? undefined : value);
+            } else {
+                expect(result.globalBackgroundImageUrl).toBeUndefined();
+                expect(warnSpy).toHaveBeenCalled();
+            }
+        }
+    );
 });

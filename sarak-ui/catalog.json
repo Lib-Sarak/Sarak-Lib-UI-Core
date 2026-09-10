@@ -707,6 +707,12 @@
           "doc": "Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual)."
         },
         {
+          "name": "search",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
+        },
+        {
           "name": "sidebarHeader",
           "type": "React.ReactNode",
           "optional": true,
@@ -762,6 +768,12 @@
         },
         {
           "name": "brand",
+          "type": "{ name?: string; logoUrl?: string }",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "logo",
           "type": "React.ReactNode",
           "optional": true,
           "doc": ""
@@ -795,6 +807,12 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Slot `topbarStart` — início da barra compacta, logo após a marca."
+        },
+        {
+          "name": "search",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `search` — posicionado por `searchPositionSidebar` (é onde a sidebar existe no celular: o drawer)."
         },
         {
           "name": "sidebarHeader",
@@ -2846,6 +2864,12 @@
           "type": "'vertical' | 'horizontal' | 'auto'",
           "optional": true,
           "doc": "Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical)."
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem."
         },
         {
           "name": "className",
@@ -6680,6 +6704,10 @@
     {
       "slot": "topbarEnd",
       "doc": "Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual)."
+    },
+    {
+      "slot": "search",
+      "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
     },
     {
       "slot": "sidebarHeader",

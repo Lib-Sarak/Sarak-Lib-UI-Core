@@ -19,14 +19,16 @@ export const ChromeBrand: React.FC<{
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
     horizontal?: boolean;
-}> = ({ brand, logo, horizontal }) => {
+    /** Colapsado (`isNavHidden`): mantém o logo, esconde o nome. */
+    compact?: boolean;
+}> = ({ brand, logo, horizontal, compact }) => {
     if (!logo && !brand?.name && !brand?.logoUrl) return null;
     return (
-        <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'}`}>
+        <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
             {logo
                 ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
                 : brand?.logoUrl && <img src={brand.logoUrl} alt="" className="h-6 w-6 object-contain shrink-0" />}
-            {brand?.name && (
+            {brand?.name && !compact && (
                 <span
                     className="truncate font-bold tracking-tight"
                     style={{ fontFamily: 'var(--font-heading, var(--font-main, inherit))', color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))' }}
@@ -106,6 +108,27 @@ export const ChromeTopbarSlot: React.FC<{ region: 'start' | 'end'; children?: Re
             data-sarak-slot={region === 'start' ? 'topbarStart' : 'topbarEnd'}
             className={`flex items-center gap-2 min-w-0 ${region === 'end' ? 'shrink-0' : ''} ${className}`}
         >
+            {children}
+        </div>
+    );
+};
+
+/**
+ * Posição da BUSCA (`searchPositionSidebar`/`searchPositionTopbar`): a lib dá
+ * a região onde o conteúdo de busca aparece; o consumidor dá o conteúdo
+ * (prop `search`, tipicamente um `ShellSearchWidget`). `position: 'hidden'` some
+ * a região mesmo com `children` — é a única exceção ao princípio "ausente = não
+ * renderiza" desta família, porque aqui quem decide sumir é o TOKEN, não a
+ * ausência de conteúdo.
+ */
+export const ChromeSearchSlot: React.FC<{
+    position: 'top' | 'bottom' | 'left' | 'center' | 'right' | 'hidden';
+    className?: string;
+    children?: React.ReactNode;
+}> = ({ position, className = '', children }) => {
+    if (!children || position === 'hidden') return null;
+    return (
+        <div data-sarak-slot="search" className={`min-w-0 ${className}`}>
             {children}
         </div>
     );

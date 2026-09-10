@@ -40,6 +40,8 @@ export interface SarakShellNavProps {
      * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
      */
     orientation?: 'vertical' | 'horizontal' | 'auto';
+    /** Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. */
+    collapsed?: boolean;
     className?: string;
 }
 
@@ -62,13 +64,15 @@ const NavEntry: React.FC<{
     item: ShellNavItem;
     isActive: boolean;
     horizontal: boolean;
+    collapsed: boolean;
     onSelect: (route: string) => void;
-}> = ({ item, isActive, horizontal, onSelect }) => (
+}> = ({ item, isActive, horizontal, collapsed, onSelect }) => (
     // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
     // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
     <SarakMenuItem
         onClick={() => onSelect(item.route)}
         active={isActive}
+        collapsed={collapsed}
         orientation={horizontal ? 'horizontal' : 'vertical'}
         icon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
         label={item.label}
@@ -83,6 +87,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     onNavigate,
     onChange,
     orientation = 'auto',
+    collapsed = false,
     className = '',
 }) => {
     const navigationStyle = useNavigationStyle();
@@ -149,12 +154,16 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         style={{
                             flexDirection: horizontal ? 'row' : 'column',
                             alignItems: horizontal ? 'center' : undefined,
+                            // Espaço ENTRE itens do grupo é o "gap de aba" do cromo —
+                            // antes lia `--sarak-layout-gap-sm`, que o painel não alcançava
+                            // (`tabGap` do schema ficava sem consumidor aqui). Fallback igual
+                            // ao valor anterior: zero mudança sem o token.
                             gap: horizontal
-                                ? 'var(--sarak-layout-gap-sm, 8px)'
-                                : 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
+                                ? 'var(--sarak-tab-gap, 8px)'
+                                : 'calc(var(--sarak-tab-gap, 8px) * 0.5)',
                         }}
                     >
-                        {category && !horizontal ? (
+                        {category && !horizontal && !collapsed ? (
                             <div
                                 className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)] opacity-70 select-none"
                                 style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
@@ -168,6 +177,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                                 item={item}
                                 isActive={item.route === activeRoute}
                                 horizontal={horizontal}
+                                collapsed={collapsed}
                                 onSelect={select}
                             />
                         ))}

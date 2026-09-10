@@ -72,4 +72,24 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
             expect(screen.getByRole('navigation').style.flexDirection).toBe('column');
         });
     });
+
+    describe('collapsed (isNavHidden)', () => {
+        it('colapsado: some o rótulo da categoria — o item some seu próprio rótulo (SarakMenuItem)', () => {
+            render(<SarakShellNav items={ITEMS} collapsed />);
+            expect(screen.queryByText('Análise')).not.toBeInTheDocument();
+            expect(screen.queryByText('Contratos')).not.toBeInTheDocument();
+        });
+
+        it('sem collapsed (default): categoria e rótulo aparecem — comportamento de hoje', () => {
+            render(<SarakShellNav items={ITEMS} />);
+            expect(screen.getByText('Análise')).toBeInTheDocument();
+            expect(screen.getByText('Contratos')).toBeInTheDocument();
+        });
+    });
+
+    it('o gap entre itens consome --sarak-tab-gap (antes lia --sarak-layout-gap-sm, sem consumidor no painel)', () => {
+        const { container } = render(<SarakShellNav items={ITEMS} />);
+        const grupo = container.querySelector('nav > div:last-child') as HTMLElement;
+        expect(grupo.getAttribute('style')).toContain('var(--sarak-tab-gap');
+    });
 });

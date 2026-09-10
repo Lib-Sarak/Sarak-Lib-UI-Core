@@ -335,7 +335,26 @@ Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts`
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
-## 5.1 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
+## 5.1 Todo fundo que a lib entrega funciona offline
+
+Nenhuma atmosfera shippada busca recurso em servidor de terceiro. As de tela cheia — as que o painel
+oferece como "mídia" — são **geradas pelo motor de textura da própria lib** (`_atmosphere.css`), e cada uma
+grava `globalBackgroundImageUrl: ''` ao ser aplicada, para **limpar** uma URL herdada de um preset aplicado
+antes. As demais saem de `TEXTURE_OPTIONS` do schema, por paridade 1:1.
+
+**Isto é contrato, não conveniência.** Uma lib que se instala e funciona sem configuração
+([[01-forma-do-produto-e-modos-de-consumo]]) não pode entregar uma opção que depende de um domínio que ela
+não controla: o link morre, o dono do domínio troca o arquivo, a rede do consumidor bloqueia o host — e o
+sintoma chega como *"escolhi o fundo e não aconteceu nada"*, indistinguível de um bug da lib. Fundo
+hospedado por terceiro é dívida com data de vencimento desconhecida.
+
+**Consequência para quem escreve tema ou preset:** um valor de `globalBackgroundImageUrl` apontando para
+fora da origem do consumidor não entra no catálogo shippado. O predicado de mídia
+([[10-seguranca-e-acessibilidade]] §2.1 c-bis) **aceita** `https://` — porque o consumidor tem todo direito
+de apontar para a mídia dele —, mas o que a **lib** entrega pronto sai do motor de textura ou de um ativo
+do próprio consumidor.
+
+## 5.2 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
 
 Cinco temas novos entraram — `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
 `forja-ultravioleta`, `grafite-puro`. **Nenhum é `SARAK_REFERENCE_THEMES`** *(decisão do dono)*: a referência
@@ -464,7 +483,7 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 
 | # | Item | Origem | Situação |
 | --- | --- | --- | --- |
-| 1 | **Expansão/hospedagem de mídias de atmosfera** — biblioteca de texturas/imagens de fundo além das embutidas, e a decisão de onde elas ficam hospedadas | plano antigo de mídias de atmosfera *(removido; git)* | nunca executado |
+| 1 | **Expansão do catálogo de atmosferas** — mais texturas além das embutidas | plano antigo de mídias de atmosfera *(removido; git)* | aberto. A parte de **hospedagem** saiu deste item: está decidida e é contrato (§5.1) — toda atmosfera shippada é gerada pela lib, nada vem de terceiro |
 | 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation` | spec antiga de presets *(removida; git)* | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
 
 > ⚠️ **Correção de estado registrada:** a spec antiga de presets carregava
@@ -496,6 +515,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | Nenhum valor shippado fora do contrato do próprio token | `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` |
 | Boot de todos os temas shippados sem aviso de contrato | `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` |
 | `validateDesign` descarta chave/valor fora do domínio | `src/core/Provider/utils/__tests__/validation.test.ts` |
+| Nenhuma atmosfera shippada depende de servidor de terceiro | `src/core/Design/presets/components/__tests__/atmosphere.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |
 

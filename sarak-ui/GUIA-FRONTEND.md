@@ -654,8 +654,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakTimePicker** | `label` · `value` · `minuteStep` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakUploader** | `label` · `accept` · `maxSize` · `multiple` · `disabled` · `hint` · `error` · `className` · `style` · `onChange` · `onReject` |
 | Layout | **SarakAnalyticalPage** | `navBar` · `mainContent` · `sidePanel` · `sidePanelAsDrawerOnMobile` · `centeredOnDesktop` |
-| Layout | **SarakAppChrome** | `children` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `style` |
-| Layout | **SarakAppChromeMobile** | `children` · `brand` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `rootStyle` |
+| Layout | **SarakAppChrome** | `children` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `style` |
+| Layout | **SarakAppChromeMobile** | `children` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `className` · `rootStyle` |
 | Layout | **SarakHidden** | `children` · `on` |
 | Layouts | **SarakAccordion** | `title` · `children` · `defaultOpen` · `className` |
 | Layouts | **SarakFlex** | `children` · `direction` · `justify` · `align` · `gap` · `wrap` · `as` |
@@ -672,7 +672,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakLink** | `href` · `external` · `children` |
 | Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `className` |
 | Navigation | **SarakPagination** | `current` · `total` · `maxVisible` · `onChange` · `className` |
-| Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `className` |
+| Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
 | Navigation | **ShellLanguageSelector** | `variant` |
@@ -718,7 +718,7 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 | `SarakFlex` | `direction` |
 | `SarakGrid` | `templateColumns` |
 
-### A.3 Slots do `SarakAppChrome` (9)
+### A.3 Slots do `SarakAppChrome` (10)
 
 Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente animado).
 
@@ -728,6 +728,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `logo` | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
 | `topbarEnd` | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
+| `search` | Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
 | `sidebarHeader` | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
 | `sidebarFooter` | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
 | `banner` | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
