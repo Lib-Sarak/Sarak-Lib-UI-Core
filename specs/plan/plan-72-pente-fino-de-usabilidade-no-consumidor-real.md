@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "diagnostico", "usabilidade", "navegador", "sem-codigo"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[specs/11-testes-e-cobertura]]", "[[specs/13-instalacao-e-atualizacao]]"]
-depende_de: "plan-68-metrica-do-item-de-navegacao-horizontal"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/00-backlog.md"
 ---

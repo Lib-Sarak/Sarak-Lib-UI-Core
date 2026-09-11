@@ -1,11 +1,11 @@
 ---
 tipo: "adr"
 titulo: "Item de navegação é átomo próprio, não variante do botão de ação"
-status: "🟢 Aceito"
+status: "🔴 Substituído"
 tags: ["adr", "atomos", "cromo", "navegacao", "superficie-publica"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[arquitetura/03-superficie-publica]]"]
 substitui: ""
-substituido_por: ""
+substituido_por: "[[015-metrica-do-item-de-navegacao-horizontal]]"
 alternativas_consideradas:
   - opcao: "Um size/variante de cromo dentro do SarakButton"
     custo: "Nenhuma superfície pública nova — mas o átomo de AÇÃO passaria a carregar um conceito de NAVEGAÇÃO, e toda correção futura de menu viraria uma variante de botão. O acoplamento é permanente e cresce a cada ajuste."

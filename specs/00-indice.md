@@ -42,8 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-68-metrica-do-item-de-navegacao-horizontal](plan/plan-68-metrica-do-item-de-navegacao-horizontal.md) | Os itens de menu da topbar deixam de ser renderizados como etiqueta e voltam a parecer navegáveis | — | 🟢 Aprovada | adr/NNN-metrica-do-item-de-navegacao-horizontal.md · specs/05-cromo-e-slots.md |
-| 2 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-68-metrica-do-item-de-navegacao-horizontal | 🔴 A executar | specs/00-backlog.md |
+| 1 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | — | 🔴 A executar | specs/00-backlog.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

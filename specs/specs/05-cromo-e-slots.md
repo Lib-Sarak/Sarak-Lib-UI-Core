@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -82,11 +82,21 @@ A métrica **difere por orientação**, e a diferença é contrato, não acident
 | `orientation` | Onde | Métrica |
 | --- | --- | --- |
 | `vertical` | sidebar, drawer | linha de lista — recuo e peso de menu, caixa normal, largura cheia resolvida **na origem** (nunca emite piso de `min-width`), rótulo **trunca** em vez de transbordar |
-| `horizontal` | topbar | aba compacta — pílula, caixa alta, peso forte |
+| `horizontal` | topbar | aba compacta — pílula, **caixa normal**, corpo legível, peso forte, rótulo **trunca** ([[015-metrica-do-item-de-navegacao-horizontal]]) |
 
 `SarakShellNav` — o renderizador que o `SarakAppChrome` usa para `navItems`/`nav` — compõe o átomo e segue
 a orientação resolvida pelo `navigationStyle`. **Consequência direta da §2.1:** como trocar o tema troca a
 orientação do cromo, ele **também** troca a métrica do item de menu, de lista para aba.
+
+> ⚠️ **A pílula é contrato, e hoje não renderiza.** Uma regra global de raio para botões
+> (`src/styles/_utilities.css`), fora de qualquer `@layer`, vence todo `rounded-*` em todo `<button>` da
+> lib — o item horizontal computa o raio do botão de ação, e o `rounded-*` das outras orientações também
+> não chega à tela. O conserto alcança todo botão e está no [[00-backlog]]; a medição de navegador mantém
+> o contrato da pílula como **falha esperada** até lá.
+
+**Largura cheia nunca carrega piso de largura no conteúdo**, venha ela da prop `fullWidth`, do tema ou da
+`className` do chamador — o `min-w-fit` é de outro grupo de propriedade que `width` e sobreviveria ao merge,
+impedindo o elemento de encolher.
 
 **O consumidor tem a última palavra:** a `className` que ele passa vence o default do átomo
 ([[00-regras-e-invariantes]] **R35**) — é assim que se pede um rótulo em caixa normal numa topbar, sem
@@ -373,6 +383,8 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | O item ativo se distingue do inativo em **todo** tema shippado, nas duas orientações (ΔE) | `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` | ✅ suíte |
 | Widgets default: conjunto completo, cada opt-out isolado, slot `search` vencendo o default, atalho e suas três travas, celular | `src/components/Layout/__tests__/SarakAppChrome.test.tsx` · `SarakAppChromeMobile.test.tsx` · `chrome/__tests__/useChromeDefaultWidgets.test.ts` | ✅ suíte |
 | O palette busca itens dados e seleciona por clique e teclado; sem itens, segue pelo registro | `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` | ✅ suíte |
+| Item horizontal em caixa normal e corpo legível, medido em navegador real | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ⚠️ **falha esperada** (`test.fail`) até a regra global de raio ser corrigida |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 
