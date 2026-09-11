@@ -29,4 +29,22 @@ describe('ShellUserWidget', () => {
         renderWithProvider(<ShellUserWidget user={user} logout={logoutMock} variant="horizontal" />);
         expect(screen.getByText('testuser')).toBeInTheDocument();
     });
+
+    // Sem `logout`, o botão de sair não aparece — evita montar um controle sem handler.
+    it('sem `logout`, o botão de sair não aparece (vertical)', () => {
+        renderWithProvider(<ShellUserWidget user={user} variant="vertical" />);
+        expect(screen.getByText('testuser')).toBeInTheDocument();
+        expect(screen.queryByTitle('Logout')).toBeNull();
+    });
+
+    it('sem `logout`, o botão de sair não aparece (horizontal)', () => {
+        renderWithProvider(<ShellUserWidget user={user} variant="horizontal" />);
+        expect(screen.getByText('testuser')).toBeInTheDocument();
+        expect(screen.queryByTitle('Logout')).toBeNull();
+    });
+
+    it('sem `logout`, o botão de sair não aparece (mini)', () => {
+        renderWithProvider(<ShellUserWidget user={user} variant="mini" />);
+        expect(screen.queryByTitle('Logout')).toBeNull();
+    });
 });

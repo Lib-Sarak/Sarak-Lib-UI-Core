@@ -41,14 +41,16 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                         <SarakIcon name="User" size={16} className="text-[var(--theme-primary)] relative z-10" />
                     </div>
 
-                    <SarakIconButton
-                        onClick={logout}
-                        variant="ghost"
-                        size="xs"
-                        className="bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg border border-[var(--theme-error-border)]"
-                        title="Logout"
-                        icon={<SarakIcon name="LogOut" size={12} />}
-                    />
+                    {logout && (
+                        <SarakIconButton
+                            onClick={logout}
+                            variant="ghost"
+                            size="xs"
+                            className="bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg border border-[var(--theme-error-border)]"
+                            title="Logout"
+                            icon={<SarakIcon name="LogOut" size={12} />}
+                        />
+                    )}
                 </div>
             </div>
         );
@@ -85,14 +87,16 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                     )}
                 </div>
 
-                <SarakIconButton
-                    onClick={logout}
-                    variant="ghost"
-                    size="xs"
-                    className={`text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
-                    title="Logout"
-                    icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
-                />
+                {logout && (
+                    <SarakIconButton
+                        onClick={logout}
+                        variant="ghost"
+                        size="xs"
+                        className={`text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
+                        title="Logout"
+                        icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
+                    />
+                )}
             </div>
         </div>
     );

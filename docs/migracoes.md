@@ -25,7 +25,8 @@ trabalho do consumidor para o cromo completo era bug da lib, não característic
 | Prop nova em `SarakAppChromeProps` | Contrato |
 | --- | --- |
 | `widgets?: { search?, themeToggle?, user?, collapse? }` | Opt-out por widget. **Omitir a prop liga os quatro**; `false` num campo desliga só aquele — os demais continuam. |
-| `user?: ShellUser` / `logout?: () => void` | Alimentam o widget de usuário default (o mesmo tipo que o `SarakShell` já usa). |
+| `user?: ShellUser` / `logout?: () => void` | Alimentam o widget de usuário default. **Sem `user`, o widget não monta** — a lib não inventa uma identidade "User" genérica. Sem `logout`, o widget monta mas sem o botão de sair (é assim também em `ShellUserWidget` chamado direto, fora do cromo). |
+| `SarakSearchProps.items?` / `.onSelect?` (aditivo, retrocompatível) | O `SarakSearch` (o command palette que o atalho abre) aceita uma lista de itens e um seletor próprios. O cromo alimenta os dois com a mesma navegação (`navItems`/`nav`) e o mesmo `onNavigate` que já recebe — por isso a busca default do modo ui-kit **lista e navega**, em vez de responder sempre "No results". Omitidos, o `SarakSearch` continua pelo registro do Discovery, como sempre — o `SarakShell` não muda. |
 
 **Como migrar.** Quem quer o cromo vazio de antes:
 
@@ -35,16 +36,27 @@ trabalho do consumidor para o cromo completo era bug da lib, não característic
 </SarakAppChrome>
 ```
 
-Quem já montava um dos quatro manualmente num slot (`search`, `topbarEnd`, `sidebarFooter`…) não precisa
-mudar nada: o conteúdo do slot sempre venceu — e continua vencendo — o default correspondente. Hoje só a
-busca tem slot próprio (`search`, [[05-cromo-e-slots]] §2.2); os outros três nascem fora dos 8 slots
-documentados, marcados com `data-sarak-widget` (não `data-sarak-slot` — não é conteúdo do consumidor).
+**Atenção a quem já monta um dos widgets à mão.** A busca continua no slot `search` — quem já a preenche
+não vê nada em dobro, porque o conteúdo do slot sempre venceu, e continua vencendo, o default
+([[05-cromo-e-slots]] §2.2). **Tema e usuário são diferentes: não têm slot.** Se você já monta
+`ShellThemeToggle`/`ShellUserWidget` à mão dentro de `topbarEnd`/`sidebarFooter` (ou de qualquer outro
+slot), a partir desta versão vai ver **os dois exemplares** — o seu e o default, que nasce numa região
+própria (`data-sarak-widget`, fora dos 8 slots documentados, então não compete com nenhum deles). Desligue
+o default correspondente:
+
+```tsx
+<SarakAppChrome widgets={{ themeToggle: false, user: false }} topbarEnd={<MeuThemeEUsuario />}>
+    {children}
+</SarakAppChrome>
+```
 
 **O que NÃO mudou.** Os oito slots do contrato (`logo`, `topbarStart`, `topbarEnd`, `sidebarHeader`,
 `sidebarFooter`, `banner`, `footer`, `decoration`) continuam exatamente como eram — ausente = não
 renderiza. Seletor de idioma (`ShellLanguageSelector`), redimensionamento por arraste e auto-hide **não**
 entram no conjunto padrão — ficam fora dele por decisão explícita, disponíveis por slot/prop/token como já
-eram. `SarakShell` não muda.
+eram. O atalho Ctrl/Cmd+K só escuta quando a busca default está realmente em uso — desligada por opt-out,
+sem `SarakUIProvider`, ou com o slot `search` preenchido pelo consumidor, o atalho fica livre para o
+navegador (e, com `search` preenchido, para o que o consumidor montou ali). `SarakShell` não muda.
 
 ---
 

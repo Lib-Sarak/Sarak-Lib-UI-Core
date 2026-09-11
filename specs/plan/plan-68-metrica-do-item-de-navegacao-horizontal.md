@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "navegacao", "tipografia", "adr", "major"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/04-shell-e-discovery]]", "[[adr/013-item-de-navegacao-como-atomo-proprio]]"]
-depende_de: "plan-67-widgets-do-cromo-por-padrao-com-opt-out"
+depende_de: ""
 retida_por: ""
 destino_sintese: "adr/NNN-metrica-do-item-de-navegacao-horizontal.md · specs/05-cromo-e-slots.md"
 ---
@@ -19,8 +19,9 @@ o realce de item ativo que o distinguem de uma lista.
 
 # 2. Contexto
 
-O dono reportou que a topbar está pobre *"em funcionalidade e aparência"*. As plans 66 e 67, mais a publicação dos widgets, tratam da
-funcionalidade. Esta trata da aparência, e ela tem número medido.
+O dono reportou que a topbar está pobre *"em funcionalidade e aparência"*. A funcionalidade já está
+entregue — tokens de cromo, widgets por padrão e realce do item ([[05-cromo-e-slots]] §2.2.1 e §2.4). Esta
+trata da aparência, e ela tem número medido.
 
 Medição em Chromium real, sobre o `dist/` publicado, no item de navegação do `SarakAppChrome`:
 
@@ -57,8 +58,10 @@ Outro achado do backlog, da mesma família: `useButtonLayoutStyles.ts:20` só la
 largura cheia vem por prop ou por tema; quem pede por `className="w-full"` mantém o piso de largura no
 conteúdo.
 
-Esta plan vem **depois** da 67 de propósito: medir a métrica do cromo final vale mais do que medir um
-estado intermediário que ainda vai mudar.
+A métrica se mede sobre o cromo final — com os widgets montados e o realce do item já corrigido —, não
+sobre um estado intermediário. **Atenção:** o ramo `horizontal` do `SarakMenuItem` já teve a cor revista
+(§2.4 da spec 05: fundo, texto e hover lêem cada um o seu token); esta plan muda só a tipografia dele, e a
+varredura de realce do catálogo (`SarakMenuItem.test.tsx`) tem de continuar verde.
 
 # 3. Escopo
 
@@ -93,7 +96,7 @@ estado intermediário que ainda vai mudar.
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
 | Skill | `padrao-escrita` + `padrao-typescript` | sempre |
 | Skill | `ui-arquitetura-design` | métrica visual de componente |
-| Código | `src/components/atomic/Navigation/SarakMenuItem.tsx:48-58` | a métrica das duas orientações |
+| Código | `src/components/atomic/Navigation/SarakMenuItem.tsx:48-50` | a métrica das duas orientações |
 | Código | `src/components/atomic/hooks/useButtonLayoutStyles.ts:20` | o piso de `min-width` |
 | Código | `browser-tests/cromo-css-real.spec.ts` | o harness e os valores esperados |
 | Código | `docs/migracoes.md` | a entrada da métrica, que passa a ter continuação |

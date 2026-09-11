@@ -822,6 +822,8 @@ Props (`SarakSearchProps` — `src/components/atomic/Inputs/SarakSearch.tsx`):
 | --- | --- | --- | --- |
 | `isOpen` | `boolean` | sim |  |
 | `onClose` | `() => void` | sim |  |
+| `items` | `SarakSearchItem[]` | não | Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`getRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`. |
+| `onSelect` | `(id: string) => void` | não | Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre. |
 
 ### SarakSearchCard
 

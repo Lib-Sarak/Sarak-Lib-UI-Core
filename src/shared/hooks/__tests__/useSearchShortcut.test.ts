@@ -34,4 +34,24 @@ describe('useSearchShortcut', () => {
         pressKey({ key: 'k', ctrlKey: true });
         expect(onTrigger).not.toHaveBeenCalled();
     });
+
+    it('enabled=false: não escuta — Ctrl+K não dispara', () => {
+        const onTrigger = vi.fn();
+        renderHook(() => useSearchShortcut(onTrigger, false));
+        pressKey({ key: 'k', ctrlKey: true });
+        expect(onTrigger).not.toHaveBeenCalled();
+    });
+
+    it('enabled volta a true: passa a escutar', () => {
+        const onTrigger = vi.fn();
+        const { rerender } = renderHook(({ enabled }) => useSearchShortcut(onTrigger, enabled), {
+            initialProps: { enabled: false },
+        });
+        pressKey({ key: 'k', ctrlKey: true });
+        expect(onTrigger).not.toHaveBeenCalled();
+
+        rerender({ enabled: true });
+        pressKey({ key: 'k', ctrlKey: true });
+        expect(onTrigger).toHaveBeenCalledTimes(1);
+    });
 });

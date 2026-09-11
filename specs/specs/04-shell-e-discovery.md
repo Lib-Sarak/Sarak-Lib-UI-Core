@@ -274,6 +274,7 @@ Trocar o tema muda a casca: `SidebarNav`/`TopbarNav` consomem os tokens `--sarak
 > | Precisa de registro? | **sim** (`registerSarakModule`) | **não** |
 > | Quem navega | a própria lib (History API, §4.2) | o **host**, por `onNavigate` |
 > | Modo de consumo | #1 (módulos-plugin) | #3 (ui-kit + central) |
+> | Widgets (busca, tema, usuário, colapso) | montados | montados por padrão, cada um desligável ([[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]) |
 >
 > Os dois pintam topbar/sidebar com os **mesmos tokens**. A diferença não é visual — é **quem manda**.
 > Detalhe do apresentacional em [[05-cromo-e-slots]].

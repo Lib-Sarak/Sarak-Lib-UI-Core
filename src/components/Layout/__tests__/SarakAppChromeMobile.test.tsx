@@ -126,9 +126,9 @@ describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no 
 });
 
 describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada some no celular)', () => {
-    it('DEFAULT: busca, tema e usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
+    it('DEFAULT: com `user`/`logout`, busca/tema/usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
         const { container } = renderMobile(
-            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+            <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
         );
         fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
         expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
@@ -136,9 +136,25 @@ describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada so
         expect(screen.getByTitle('Logout')).toBeInTheDocument();
     });
 
+    it('sem `user`, o widget de usuário não aparece — busca e tema continuam', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
+        expect(screen.queryByTitle('Logout')).toBeNull();
+    });
+
     it('opt-out desliga os três defaults isoladamente', () => {
         const { container } = renderMobile(
-            <SarakAppChromeMobile nav={NAV} widgets={{ search: false, themeToggle: false, user: false }} {...base}>
+            <SarakAppChromeMobile
+                nav={NAV}
+                user={{ username: 'ana' }}
+                logout={vi.fn()}
+                widgets={{ search: false, themeToggle: false, user: false }}
+                {...base}
+            >
                 <div>x</div>
             </SarakAppChromeMobile>,
         );

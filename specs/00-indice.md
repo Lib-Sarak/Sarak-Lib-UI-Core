@@ -42,11 +42,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo](plan/plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo.md) | Os tokens de cromo clicáveis no painel passam a produzir efeito também no SarakAppChrome, e um gate impede que a lacuna volte | — | 🟢 Aprovada | sintetizada · retida por plan-67 |
-| 2 | [plan-67-widgets-do-cromo-por-padrao-com-opt-out](plan/plan-67-widgets-do-cromo-por-padrao-com-opt-out.md) | O cromo do modo ui-kit nasce com busca, alternância de tema, usuário e colapso sem o consumidor escrever uma linha, e o consumidor desliga o que não quiser | plan-66-cromo-do-modo-ui-kit-consome-os-tokens-de-cromo | 🔵 Em correção | adr/NNN-cromo-do-modo-ui-kit-com-widgets-por-padrao.md · specs/05-cromo-e-slots.md |
-| 3 | [plan-68-metrica-do-item-de-navegacao-horizontal](plan/plan-68-metrica-do-item-de-navegacao-horizontal.md) | Os itens de menu da topbar deixam de ser renderizados como etiqueta e voltam a parecer navegáveis | plan-67-widgets-do-cromo-por-padrao-com-opt-out | 🔴 A executar | adr/NNN-metrica-do-item-de-navegacao-horizontal.md · specs/05-cromo-e-slots.md |
-| 4 | [plan-71-realce-do-item-de-navegacao-volta-a-ser-visivel](plan/plan-71-realce-do-item-de-navegacao-volta-a-ser-visivel.md) | Item de menu ativo e item sob o ponteiro voltam a se distinguir dos demais em qualquer tema, nos dois cromos | — | 🟢 Aprovada | specs/05-cromo-e-slots.md |
-| 5 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-68-metrica-do-item-de-navegacao-horizontal | 🔴 A executar | specs/00-backlog.md |
+| 1 | [plan-68-metrica-do-item-de-navegacao-horizontal](plan/plan-68-metrica-do-item-de-navegacao-horizontal.md) | Os itens de menu da topbar deixam de ser renderizados como etiqueta e voltam a parecer navegáveis | — | 🔴 A executar | adr/NNN-metrica-do-item-de-navegacao-horizontal.md · specs/05-cromo-e-slots.md |
+| 2 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-68-metrica-do-item-de-navegacao-horizontal | 🔴 A executar | specs/00-backlog.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

@@ -606,7 +606,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **288** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **289** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (88)
 
@@ -646,7 +646,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakMultiSelect** | `label` · `options` · `value` · `defaultValue` · `placeholder` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakRangeSlider** | `label` · `min` · `max` · `step` · `value` · `defaultValue` · `disabled` · `error` · `hideTooltips` · `onChange` |
 | Inputs | **SarakRichText** | `value` · `defaultValue` · `onChange` · `placeholder` · `disabled` · `error` · `className` |
-| Inputs | **SarakSearch** | `isOpen` · `onClose` |
+| Inputs | **SarakSearch** | `isOpen` · `onClose` · `items` · `onSelect` |
 | Inputs | **SarakSelect** | `error` · `fullWidth` |
 | Inputs | **SarakSlider** | `label` · `valueLabel` |
 | Inputs | **SarakSwitch** | `label` · `description` |

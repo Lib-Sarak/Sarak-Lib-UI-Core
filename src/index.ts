@@ -107,7 +107,7 @@ export type { SarakSliderProps } from './components/atomic/Inputs/SarakSlider';
 export { SarakSwitch } from './components/atomic/Inputs/SarakSwitch';
 export type { SarakSwitchProps } from './components/atomic/Inputs/SarakSwitch';
 export { SarakSearch } from './components/atomic/Inputs/SarakSearch';
-export type { SarakSearchProps } from './components/atomic/Inputs/SarakSearch';
+export type { SarakSearchProps, SarakSearchItem } from './components/atomic/Inputs/SarakSearch';
 // Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
 export * from './components/atomic/Inputs/SarakRangeSlider';
 export * from './components/atomic/Inputs/SarakMultiSelect';

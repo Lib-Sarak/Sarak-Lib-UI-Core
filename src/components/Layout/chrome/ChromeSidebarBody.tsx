@@ -48,7 +48,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
 }) => {
     const { sidebarPosition, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
-    const w = useChromeDefaultWidgets(widgets);
+    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
     const effectiveSearch = search ?? (w.showSearch
         ? <ShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
@@ -107,7 +107,14 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                     {children}
                 </main>
             </div>
-            {w.showSearch && <SarakSearch isOpen={w.isSearchOpen} onClose={w.closeSearch} />}
+            {w.showSearch && (
+                <SarakSearch
+                    isOpen={w.isSearchOpen}
+                    onClose={w.closeSearch}
+                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
+                    onSelect={onNavigate}
+                />
+            )}
         </ChromeFrame>
     );
 };

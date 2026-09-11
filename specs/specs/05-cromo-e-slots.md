@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -43,6 +43,8 @@ A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invar
 | `nav?: ShellNavItem[]` + `activeRoute?` | modelo declarativo legado (`route`/`activeRoute`), mantido por compatibilidade |
 | `onNavigate?: (route) => void` | **o host decide COMO navegar** — redirect de página inteira, router local, o que for |
 | `navigationStyle?: 'sidebar' \| 'topbar' \| 'auto'` | `'auto'` (default) segue `design.navigationStyle` |
+| `widgets?: { search?, themeToggle?, user?, collapse? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele |
+| `user?: ShellUser` · `logout?: () => void` | identidade e sessão **do host**: alimentam o widget de usuário default, que só monta com `user` |
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |
 
 `SarakNavItem` (`src/components/Layout/chrome/navItem.ts:20-31`):
@@ -97,7 +99,7 @@ prop nova.
 | `logo` | identidade; **precedência sobre `brand.logoUrl`**, e o `brand.name` continua ao lado | cai em `brand.logoUrl` |
 | `topbarStart` | início da barra superior, após a marca | região não renderiza |
 | `topbarEnd` | fim da barra superior — **alias de `topbarActions`**, e **vence** quando os dois vêm (`:151`) | idem |
-| `search` | busca do consumidor — **posicionada por token**, não por região fixa (§2.4) | região não renderiza |
+| `search` | busca do consumidor — **posicionada por token**, não por região fixa (§2.4); substitui a busca default inteira — gatilho, palette e atalho | a busca default da lib (§2.2.1) |
 | `sidebarHeader` | topo da sidebar, abaixo da marca | idem |
 | `sidebarFooter` | rodapé da sidebar | idem |
 | `banner` | faixa **full-width**, primeira do cromo | idem |
@@ -147,15 +149,37 @@ quem não usa o slot.
 `decoration` é **ornamento por contrato** (`ChromeSlots.tsx:59-67`): `aria-hidden="true"` +
 `pointer-events: none`. Sai da árvore de acessibilidade e **nunca rouba foco ou toque** da navegação.
 
+### 2.2.1 Os widgets que nascem montados
+
+O cromo nasce com o conjunto de widgets do modo host — busca com atalho, alternância de tema, widget de
+usuário e colapso da navegação — e o consumidor desliga o que não quiser
+([[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]). Idioma, redimensionamento por arraste e auto-hide
+continuam disponíveis e fora do default.
+
+**Um widget default só monta quando tem com o que funcionar:**
+
+| Widget | Monta quando | Como funciona |
+| --- | --- | --- |
+| busca | há `SarakUIProvider`, não foi desligada e o slot `search` está vazio | o palette lista a **própria navegação** do cromo e seleciona pelo mesmo `onNavigate` da navegação; o Ctrl/Cmd+K só é escutado nessas condições — fora delas, fica livre para o navegador e para o consumidor |
+| alternância de tema | há `SarakUIProvider` e não foi desligada | o mesmo resolvedor de modo do painel e do Shell |
+| usuário | há `SarakUIProvider`, não foi desligado **e o host entregou `user`** | sem `user` não monta — a lib não inventa identidade; o botão de sair só existe com `logout` |
+| colapso | há `SarakUIProvider` e não foi desligado | grava `design.isNavHidden`, o mesmo token do Shell |
+
+**Onde cada um mora.** A busca ocupa o slot `search`. Tema e usuário **não têm slot**: nascem numa região
+própria, marcada `data-sarak-widget` — e não `data-sarak-slot`, porque não são conteúdo do consumidor. Por
+isso o conteúdo que o consumidor põe em `topbarEnd`/`sidebarFooter` **não** os substitui: quem já monta
+tema/usuário à mão desliga o default correspondente. A alternativa — dar precedência a esses slots —
+apagaria tema e usuário sempre que qualquer botão fosse posto ali.
+
 ## 2.3 A regra de degradação — nada some
 
 | Modo | O que acontece com os slots |
 | --- | --- |
 | **sidebar** (sem barra superior) | `topbarStart` → topo da sidebar; `topbarEnd` → **rodapé** da sidebar (`SarakAppChrome.tsx:236-241`) |
 | **topbar** | todos na barra superior, como declarados |
-| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx:134,136`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer, `:109-110`); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand` |
+| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx:134,136`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer, `:109-110`); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand`; busca, tema e usuário default vão **para o drawer** e o colapso é o próprio hambúrguer do drawer — selecionar um resultado da busca navega e fecha o drawer |
 
-**Nenhum slot é descartado em nenhum modo.** É por isso que o consumidor pode declarar os 8 e confiar —
+**Nenhum slot nem widget é descartado em nenhum modo.** É por isso que o consumidor pode declarar todos e confiar —
 sem escrever media query nem condicional por dispositivo.
 
 Nota de contrato interno: `SarakAppChromeMobile` recebe `brand` como **`ReactNode` já montado**
@@ -181,7 +205,19 @@ O cromo do modo ui-kit lê esses tokens por um hook único e os traduz em classe
 | `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |
 | `searchPositionSidebar` | `top`, `bottom` ou `hidden` para o slot `search` na sidebar/drawer |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
-| `sidebarActiveColor` · `sidebarHoverColor` · `topbarActiveColor` | realce do item de menu, por orientação |
+| `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
+| `navItemActiveColor` | **texto e ícone** do item ativo, nas duas orientações e nos dois cromos — é o token que carrega o sinal visível |
+| `sidebarHoverColor` · `topbarHoverColor` | fundo do item sob o ponteiro, cada orientação o seu; o texto também muda, de `--text-muted` para `--sarak-text-main` |
+
+**Cada variável CSS tem um único token de origem.** Dois tokens declarando a mesma variável fazem o
+vencedor depender da ordem de iteração do mapa, não do autor do tema — é por isso que `navItemActiveColor`
+declara só `--sarak-nav-active-color`, e `--theme-primary` pertence a `primaryColor`.
+
+**O realce é visível em todo tema shippado, e isso é medido:** uma varredura do catálogo inteiro exige que
+o item ativo se distinga do inativo nas duas orientações, pelo fundo **ou** pelo texto, com distância
+perceptual (ΔE em Lab, acima do limiar de diferença perceptível) — não por desigualdade de valor nem por
+razão de luminância, que enganam em sentidos opostos. A legibilidade do texto ativo sobre o fundo efetivo
+é do `auditor_contraste`.
 
 > **`hidden` some com a região mesmo havendo conteúdo.** Quem decide sumir é o token, não a ausência do
 > slot — é assim que o dono do tema desliga a busca sem o consumidor mudar código.
@@ -199,8 +235,8 @@ das variáveis CSS declaradas, **de cada lado** — `src/core/Shell/**` e `src/c
 e ele roda no `pre-commit`.
 
 **Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): o escopo é uma lista fechada,
-não o schema inteiro — há tokens de cromo órfãos **fora** dela, dívida anterior e nomeada no cabeçalho do
-gate; e a checagem é **textual**, não por AST: prova que existe referência, não que o consumo produz efeito
+não o schema inteiro — e o cabeçalho do gate nomeia **todos** os tokens de `schema/navigation.ts` que ainda
+não têm consumidor em algum dos lados, medidos sobre o schema inteiro, e não só os já conhecidos; e a checagem é **textual**, não por AST: prova que existe referência, não que o consumo produz efeito
 visual. A prova de efeito é o teste de componente e, para CSS renderizado, `cromo-css-real:check`.
 
 # 3. Os dois níveis de "adicionar imagem/animação"
@@ -334,6 +370,9 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | O hook de leitura dos tokens cai no default correto quando o design não os traz | `src/components/Layout/chrome/__tests__/useChromeDesignTokens.test.ts` | ✅ suíte |
 | Auto-hide: some sob ausência de ponteiro, volta pelo sensor de borda | `src/components/Layout/chrome/__tests__/useChromeAutoHide.test.ts` | ✅ suíte |
 | Todo token de cromo tem consumidor nos DOIS modos | `npm run chrome-token-parity:check` | ✅ gate (`pre-commit`) |
+| O item ativo se distingue do inativo em **todo** tema shippado, nas duas orientações (ΔE) | `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` | ✅ suíte |
+| Widgets default: conjunto completo, cada opt-out isolado, slot `search` vencendo o default, atalho e suas três travas, celular | `src/components/Layout/__tests__/SarakAppChrome.test.tsx` · `SarakAppChromeMobile.test.tsx` · `chrome/__tests__/useChromeDefaultWidgets.test.ts` | ✅ suíte |
+| O palette busca itens dados e seleciona por clique e teclado; sem itens, segue pelo registro | `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` | ✅ suíte |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 

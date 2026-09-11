@@ -95,7 +95,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
-    const w = useChromeDefaultWidgets(widgets);
+    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
     const effectiveSearch = search ?? (w.showSearch ? <ShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
     // A marca aparece na barra compacta E no topo do drawer (mesma variante
     // horizontal nos dois — sempre foi assim).
@@ -178,7 +178,14 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             >
                 {children}
             </main>
-            {w.showSearch && <SarakSearch isOpen={w.isSearchOpen} onClose={w.closeSearch} />}
+            {w.showSearch && (
+                <SarakSearch
+                    isOpen={w.isSearchOpen}
+                    onClose={w.closeSearch}
+                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
+                    onSelect={handleSelect}
+                />
+            )}
         </ChromeFrame>
     );
 };

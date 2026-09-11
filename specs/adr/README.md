@@ -51,7 +51,9 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [009](./009-persistencia-tenant-aware.md) | Persistência de tema tenant-aware e strategy configurável | 🟢 Aceito |
 | [010](./010-temas-salvos-pelo-usuario.md) | Temas salvos pelo usuário em runtime — segunda porta de persistência | 🔴 Substituído por [011](./011-tema-salvo-por-uma-porta-de-escrita.md) |
 | [011](./011-tema-salvo-por-uma-porta-de-escrita.md) | Tema salvo em runtime por UMA porta de escrita — a leitura já é `customThemes` | 🟢 Aceito |
+| [012](./012-escrita-git-sob-autorizacao-do-dono.md) | Escrita no Git sob autorização expressa do dono | 🟢 Aceito |
 | [013](./013-item-de-navegacao-como-atomo-proprio.md) | Item de navegação é átomo próprio, não variante do botão de ação | 🟢 Aceito |
+| [014](./014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md) | O cromo do modo ui-kit nasce com os widgets montados, e o consumidor desliga o que não quiser | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

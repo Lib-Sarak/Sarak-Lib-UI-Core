@@ -41,8 +41,18 @@ describe('ChromeUserThemeGroup', () => {
     });
 
     it('os dois ligados: ambos montam juntos', () => {
-        renderGroup(<ChromeUserThemeGroup showThemeToggle showUser variant="horizontal" />);
+        renderGroup(
+            <ChromeUserThemeGroup showThemeToggle showUser user={{ username: 'ana' }} logout={vi.fn()} variant="horizontal" />,
+        );
         expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
         expect(screen.getByTitle('Logout')).toBeInTheDocument();
+    });
+
+    it('showUser sem `logout`: o widget aparece, mas sem o botão de sair', () => {
+        renderGroup(
+            <ChromeUserThemeGroup showThemeToggle={false} showUser user={{ username: 'visitante' }} variant="vertical" />,
+        );
+        expect(screen.getByText('visitante')).toBeInTheDocument();
+        expect(screen.queryByTitle('Logout')).toBeNull();
     });
 });

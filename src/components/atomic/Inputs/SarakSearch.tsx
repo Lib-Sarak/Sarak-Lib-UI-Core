@@ -5,20 +5,37 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
 import { SarakInput } from './SarakInput';
 
+/** Um resultado do palette — o subconjunto de `DiscoveredModule` que a busca lista. */
+export interface SarakSearchItem {
+    id: string;
+    label: string;
+    category?: string;
+}
+
 export interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
+    /**
+     * Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado
+     * (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria
+     * navegação. Omitida, a busca segue pelo registro (`getRegisteredModules`) — o
+     * comportamento de sempre, inclusive no `SarakShell`.
+     */
+    items?: SarakSearchItem[];
+    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
+     * resultados não são acionáveis — o comportamento de sempre. */
+    onSelect?: (id: string) => void;
 }
 
 /**
  * SarakSearch (v6.0 Command Palette)
- * 
+ *
  * Global search component integrated into the Sarak ecosystem.
  */
-export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => {
+export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items, onSelect }) => {
     const { design } = useSarakUI();
     const { searchStyle, systemName } = design || {};
-    const registeredModules = getRegisteredModules();
+    const sourceItems: SarakSearchItem[] = items ?? getRegisteredModules();
 
     const [query, setQuery] = useState('');
 
@@ -36,10 +53,15 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
         }
     }, [isOpen, onClose]);
 
-    const filteredModules = registeredModules.filter(m => 
+    const filteredItems = sourceItems.filter(m =>
         m.label.toLowerCase().includes(query.toLowerCase()) ||
         m.id.toLowerCase().includes(query.toLowerCase())
     );
+
+    const selectItem = (id: string) => {
+        onSelect?.(id);
+        onClose();
+    };
 
     if (!isOpen) return null;
 
@@ -93,27 +115,34 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
 
                     {/* Results Area */}
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        {filteredModules.length > 0 ? (
+                        {filteredItems.length > 0 ? (
                             <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
                                 <h4 className="text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Available Tools</h4>
-                                {filteredModules.map(mod => (
-                                    <div
-                                        key={mod.id}
-                                        className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer"
-                                        style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
-                                    >
-                                        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                                            <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
-                                                <Command size={16} />
+                                {filteredItems.map(item => {
+                                    // Acionável só quando há `onSelect` — sem callback, o resultado
+                                    // fica exatamente como sempre foi (nenhum manipulador).
+                                    const Row: React.ElementType = onSelect ? 'button' : 'div';
+                                    return (
+                                        <Row
+                                            key={item.id}
+                                            type={onSelect ? 'button' : undefined}
+                                            onClick={onSelect ? () => selectItem(item.id) : undefined}
+                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer w-full text-left"
+                                            style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
+                                        >
+                                            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
+                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
+                                                    <Command size={16} />
+                                                </div>
+                                                <div className="flex" style={{ flexDirection: 'column' }}>
+                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{item.label}</span>
+                                                    <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{item.category || 'Module'}</span>
+                                                </div>
                                             </div>
-                                            <div className="flex" style={{ flexDirection: 'column' }}>
-                                                <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{mod.label}</span>
-                                                <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{mod.category || 'Module'}</span>
-                                            </div>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                    </div>
-                                ))}
+                                            <ArrowRight className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                        </Row>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
