@@ -58,4 +58,16 @@ describe('SarakButton', () => {
         expect(classes).not.toContain('w-max');
         expect(classes).not.toContain('min-w-fit');
     });
+
+    it('w-full pedido só por className (sem fullWidth) também produz w-full DE FATO — sem min-w-fit sobrando', () => {
+        render(
+            <SarakButton className="w-full">Um rótulo bem comprido, maior que qualquer container estreito de teste</SarakButton>,
+        );
+        const button = screen.getByRole('button', { name: /Um rótulo bem comprido/ });
+        const classes = button.className.split(' ');
+
+        expect(classes).toContain('w-full');
+        expect(classes).not.toContain('w-max');
+        expect(classes).not.toContain('min-w-fit');
+    });
 });

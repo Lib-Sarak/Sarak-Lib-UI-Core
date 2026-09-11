@@ -5,6 +5,44 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
+
+**Classificação: MAJOR** — comportamento default muda de novo, sem opt-in, para quem usa
+`navigationStyle: 'topbar'` (o mesmo critério que já classificou majors anteriores desta lista: mudar o
+default é MAJOR mesmo sem tocar em export, prop ou token).
+
+**Encadeamento com a entrada abaixo.** Esta entrada revisa **parte** do que
+"`SarakNavItem` — átomo próprio para item de navegação do cromo" (mais abaixo nesta lista) descreveu:
+aquela introduziu, no ramo `horizontal`, `uppercase`/`tracking-widest`/corpo em `text-2xs` — paridade
+deliberada com o `TopbarNav` do Shell, fixada como decisão na ADR-013. O dono decidiu reverter a caixa alta
+em 2026-09-09; o **núcleo** da ADR-013 — item de navegação é átomo próprio, com métrica de navegação e não
+de botão de ação — continua vigente. Só o valor tipográfico do ramo `horizontal` muda.
+
+**O que muda**, só no ramo `horizontal` de `SarakMenuItem` (e em tudo que o compõe — `SarakShellNav`,
+`SarakAppChrome*`, `TopbarNav` do Shell), medido em navegador real sobre o `dist/` publicado:
+
+| Propriedade computada | Antes | Depois |
+| --- | --- | --- |
+| `text-transform` | `uppercase` | `none` |
+| `letter-spacing` | largo (`tracking-widest`) | `normal` (`tracking-normal`) |
+| `font-size` | `text-2xs` (10px) | `text-sm` — corpo legível de navegação |
+
+**O que NÃO muda.** A pílula (`rounded-full`), o peso do item ativo, o truncamento e o ramo `vertical`
+(sidebar/drawer) — todos inalterados. Nenhum export, prop ou token novo.
+
+**Como migrar.** Nada obrigatório. Quem já escrevia a própria `className` para reverter a caixa alta — a
+saída que a entrada anterior já descrevia, via R35 (a `className` do chamador vence o default do átomo) —
+pode remover essa `className` agora: o default passou a fazer isso sozinho.
+
+**Achado corrigido junto, sem efeito de superfície pública.** `useButtonLayoutStyles` (o Hook Controlador
+que `SarakButton` usa para largura) só deixava de emitir o piso `min-w-fit` quando a largura cheia vinha
+pela prop `fullWidth` ou pelo tema (`buttonWidthStrategy: 'full'`); quem pedia largura cheia só pela
+`className` (`<SarakButton className="w-full">`) continuava com o piso de `min-width` do conteúdo preso,
+porque `min-w-fit` e `w-full` são grupos de propriedade diferentes e o merge não os resolve um contra o
+outro. Agora a `className` também conta.
+
+---
+
 ## 7.0.0 — O cromo do modo ui-kit nasce com busca, alternância de tema, widget de usuário e colapso da navegação por padrão (plan-67)
 
 **Classificação: MAJOR** — `SarakAppChrome` (e o colapso mobile, `SarakAppChromeMobile`) passam a montar, sem o

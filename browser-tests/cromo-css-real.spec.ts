@@ -54,6 +54,19 @@
  *    `SarakAppChrome.test.tsx` (jsdom). Também não mede se a IMAGEM em si carrega — só o
  *    `background-color` que a raiz emite (a mídia é resolvida pelo `SarakBackgroundRenderer`
  *    do Provider, atrás da raiz, não pela raiz do cromo).
+ * 8. A medição de `border-radius` do item horizontal é um teste `test.fail` próprio
+ *    (não o teste do tablet) — ele afirma o CONTRATO (raio de pílula, distinto do
+ *    botão de ação), não o defeito. Isolado neste harness: `.rounded-full` sozinho,
+ *    num elemento sintético grande, computa um valor gigante (o clamp de float do
+ *    motor para `calc(infinity * 1px)`) — mas em QUALQUER `<button>` real da base, sem
+ *    a classe `p-0`, o raio publicado vem de `button:not(.p-0)` em
+ *    `src/styles/_utilities.css:29-35`, que tem especificidade maior que a classe
+ *    Tailwind (`button` + `:not(.classe)` supera uma única classe) e sobrescreve
+ *    silenciosamente `rounded-full`/`rounded-btn`/qualquer raio por classe — hoje o
+ *    item horizontal e o botão de referência computam o MESMO raio. O antigo achado de
+ *    "12px medido no item horizontal" media exatamente este mecanismo, não um artefato
+ *    deste harness. `test.fail` deixa a falha visível sem afirmá-la como esperada no
+ *    contrato: corrigir a regra global vira "passou quando devia falhar" no relatório.
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
@@ -76,9 +89,10 @@ interface ComputedMetric {
     fontWeight: string;
     paddingTop: string;
     paddingLeft: string;
+    borderRadius: string;
 }
 
-/** Lê as quatro propriedades computadas que distinguem métrica de LISTA/PÍLULA de métrica de AÇÃO. */
+/** Lê as cinco propriedades computadas que distinguem métrica de LISTA/PÍLULA de métrica de AÇÃO. */
 async function readComputedMetric(page: Page, accessibleName: string): Promise<ComputedMetric> {
     return page.getByRole('button', { name: accessibleName }).first().evaluate((el) => {
         const computed = getComputedStyle(el);
@@ -87,6 +101,7 @@ async function readComputedMetric(page: Page, accessibleName: string): Promise<C
             fontWeight: computed.fontWeight,
             paddingTop: computed.paddingTop,
             paddingLeft: computed.paddingLeft,
+            borderRadius: computed.borderRadius,
         };
     });
 }
@@ -136,13 +151,33 @@ test('mobile (<768): item de navegação usa métrica de LISTA, não de botão d
     await page.close();
 });
 
-test('tablet (768-1023): item de navegação usa métrica de PÍLULA, mas nunca font-black de botão', async () => {
+test('tablet (768-1023): item de navegação usa métrica de PÍLULA em caixa normal, e nunca font-black de botão', async () => {
     const page = await openHarness(BREAKPOINTS.tablet);
     const item = await readComputedMetric(page, NAV_ITEM_NAME);
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
-    expect(item.textTransform, 'aba compacta da topbar É caixa alta por desenho (ADR-013)').toBe('uppercase');
+    expect(item.textTransform, 'aba compacta da topbar usa caixa normal — pílula com corpo legível, nunca a caixa alta de rótulo de seção').toBe('none');
     expect(Number(item.fontWeight), 'aba é font-bold (700), nunca o font-black (900) do botão de ação').toBeLessThan(Number(reference.fontWeight));
+
+    await page.close();
+});
+
+test.fail('tablet (768-1023): o raio do item de navegação deveria ser o da PÍLULA, distinto do botão de ação', async () => {
+    // Falha ESPERADA — marca o contrato, não o defeito. `05-cromo-e-slots.md` §2.1.1 e o
+    // ADR do item de navegação descrevem o ramo horizontal como PÍLULA (`rounded-full`),
+    // com raio que nunca é o de um botão de ação. Hoje isso não é verdade: `button:not(.p-0)`
+    // em `src/styles/_utilities.css:29-35` é um seletor de ELEMENTO com especificidade
+    // maior que qualquer classe Tailwind isolada e sobrescreve, para todo `<button>` sem
+    // a classe `p-0`, o raio publicado por `rounded-full`/`rounded-btn` — então o item de
+    // navegação e o botão de referência computam o MESMO raio. `test.fail` deixa isso
+    // visível no relatório sem afirmar o defeito como esperado: no dia em que a regra
+    // global for corrigida, o Playwright acusa "passou quando devia falhar" e obriga a
+    // remover esta marcação.
+    const page = await openHarness(BREAKPOINTS.tablet);
+    const item = await readComputedMetric(page, NAV_ITEM_NAME);
+    const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
+
+    expect(item.borderRadius, 'o raio do item de navegação (pílula) deveria ser diferente do raio do botão de ação').not.toBe(reference.borderRadius);
 
     await page.close();
 });

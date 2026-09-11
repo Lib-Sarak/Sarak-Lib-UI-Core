@@ -9,17 +9,22 @@ export interface ButtonLayoutContext {
 /**
  * Hook Controlador Estrutural (Camada 6) - Botões
  */
-export const useButtonLayoutStyles = (design: SarakThemePayload | undefined, fullWidth?: boolean): ButtonLayoutContext => {
+export const useButtonLayoutStyles = (design: SarakThemePayload | undefined, fullWidth?: boolean, className?: string): ButtonLayoutContext => {
     return useMemo(() => {
         const iconPosition = design?.buttonIconPosition || 'left';
         const widthStrategy = design?.buttonWidthStrategy || 'auto';
+        // Largura cheia também pode chegar pela `className` do chamador (R35) — sem
+        // isto, o merge sobrevive com `min-w-fit` (grupo `min-width`, diferente de
+        // `width`) e o piso de largura no conteúdo fica preso mesmo com `w-full` pedido.
+        const isFullWidthByClassName = className ? /\bw-full\b/.test(className) : false;
 
         let containerClass = 'flex justify-center items-center gap-2 ';
 
-        // Largura cheia (por instância ou por tema) não pode carregar `min-w-fit`: é um
-        // grupo de propriedade diferente de `width` e sobrevive ao merge com `w-full`,
-        // travando o piso de largura no conteúdo e impedindo o elemento de encolher.
-        if (widthStrategy === 'full' || fullWidth) {
+        // Largura cheia (por instância, por tema ou por classe) não pode carregar
+        // `min-w-fit`: é um grupo de propriedade diferente de `width` e sobrevive ao
+        // merge com `w-full`, travando o piso de largura no conteúdo e impedindo o
+        // elemento de encolher.
+        if (widthStrategy === 'full' || fullWidth || isFullWidthByClassName) {
             containerClass += 'w-full ';
         } else {
             containerClass += 'w-max min-w-fit ';
@@ -35,5 +40,5 @@ export const useButtonLayoutStyles = (design: SarakThemePayload | undefined, ful
             containerClass: containerClass.trim(),
             iconOrderClass: iconOrderClass.trim()
         };
-    }, [design?.buttonIconPosition, design?.buttonWidthStrategy, fullWidth]);
+    }, [design?.buttonIconPosition, design?.buttonWidthStrategy, fullWidth, className]);
 };

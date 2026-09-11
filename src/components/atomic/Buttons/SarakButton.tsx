@@ -36,7 +36,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
     // Átomo: tolera montar sem SarakUIProvider (Spec 18 — R10 §2.3), usa o default abaixo.
     const design = useSarakUIOptional()?.design;
     const { getButtonStyles } = useAtomicStyles();
-    const { containerClass, iconOrderClass } = useButtonLayoutStyles(design, fullWidth);
+    const { containerClass, iconOrderClass } = useButtonLayoutStyles(design, fullWidth, className);
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';

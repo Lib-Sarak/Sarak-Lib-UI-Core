@@ -69,6 +69,17 @@ describe('SarakMenuItem', () => {
         expect(classes).toContain('shrink-0');
     });
 
+    it('orientação horizontal: caixa normal e corpo legível — pílula continua, caixa alta sai', () => {
+        render(<SarakMenuItem label="Aba" orientation="horizontal" />);
+        const classes = screen.getByRole('button', { name: 'Aba' }).className.split(' ');
+        expect(classes).toContain('rounded-full');
+        expect(classes).toContain('normal-case');
+        expect(classes).toContain('tracking-normal');
+        expect(classes).not.toContain('uppercase');
+        expect(classes).not.toContain('tracking-widest');
+        expect(classes).not.toContain('text-2xs');
+    });
+
     it('a className do chamador VENCE os defaults do átomo — merge, não concatenação', () => {
         render(<SarakMenuItem label="Módulo" className="text-lg" />);
         const classes = screen.getByRole('button', { name: 'Módulo' }).className.split(' ');

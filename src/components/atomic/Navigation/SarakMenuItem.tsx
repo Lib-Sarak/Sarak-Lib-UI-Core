@@ -47,7 +47,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
 
     const base = isVertical
         ? 'flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors'
-        : 'inline-flex items-center justify-center gap-2 shrink-0 min-w-0 px-4 py-1.5 rounded-full text-2xs font-bold uppercase tracking-widest transition-colors';
+        : 'inline-flex items-center justify-center gap-2 shrink-0 min-w-0 px-4 py-1.5 rounded-full text-sm font-bold normal-case tracking-normal transition-colors';
 
     const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0 rounded-lg') : '';
 

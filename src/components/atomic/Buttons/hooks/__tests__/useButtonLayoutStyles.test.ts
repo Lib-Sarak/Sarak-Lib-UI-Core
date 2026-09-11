@@ -23,6 +23,19 @@ describe('useButtonLayoutStyles', () => {
         expect(result.current.containerClass).not.toContain('min-w-fit');
     });
 
+    it('com w-full pedido só pela className do chamador (sem fullWidth nem estratégia do tema), também não sobra min-w-fit', () => {
+        const { result } = renderHook(() => useButtonLayoutStyles(undefined, false, 'w-full mt-2'));
+        expect(result.current.containerClass).toContain('w-full');
+        expect(result.current.containerClass).not.toContain('min-w-fit');
+        expect(result.current.containerClass).not.toContain('w-max');
+    });
+
+    it('className com uma classe que só CONTÉM "w-full" como substring não conta como largura cheia', () => {
+        const { result } = renderHook(() => useButtonLayoutStyles(undefined, false, 'not-w-fullish'));
+        expect(result.current.containerClass).toContain('min-w-fit');
+        expect(result.current.containerClass).not.toContain('w-full');
+    });
+
     it('buttonIconPosition "right" inverte a ordem do ícone', () => {
         const { result } = renderHook(() => useButtonLayoutStyles({ buttonIconPosition: 'right' }));
         expect(result.current.iconOrderClass).toBe('flex-row-reverse');
