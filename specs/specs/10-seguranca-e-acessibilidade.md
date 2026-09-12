@@ -327,6 +327,12 @@ Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2) e, no modo app, `<l
 sincroniza com servidor nenhum** — o default é `localStorage`, e sincronizar com backend é código do
 consumidor, chamado pelo callback dele.
 
+A **preferência do usuário** tem porta própria, `options.preferences` (`onSave`/`onLoad`), e o mesmo
+contrato: a lib grava no `localStorage` e, se houver porta, chama o host. **Associar a preferência a uma
+pessoa é do host** — a lib não conhece o usuário ([[016-preferencias-do-usuario-separadas-do-tema]]). A
+preferência lida do `localStorage` ou da porta é **dado hostil como o tema** (§2.1): domínio fechado, valor
+fora do domínio descartado com aviso único.
+
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
 
 1. **Todo dado externo que virar CSS passa por `validateDesign`.** Um caminho novo que aplique design sem

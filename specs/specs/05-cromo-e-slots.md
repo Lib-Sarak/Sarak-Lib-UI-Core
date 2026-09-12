@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -171,9 +171,9 @@ continuam disponíveis e fora do default.
 | Widget | Monta quando | Como funciona |
 | --- | --- | --- |
 | busca | há `SarakUIProvider`, não foi desligada e o slot `search` está vazio | o palette lista a **própria navegação** do cromo e seleciona pelo mesmo `onNavigate` da navegação; o Ctrl/Cmd+K só é escutado nessas condições — fora delas, fica livre para o navegador e para o consumidor |
-| alternância de tema | há `SarakUIProvider` e não foi desligada | o mesmo resolvedor de modo do painel e do Shell |
+| alternância de tema | há `SarakUIProvider` e não foi desligada | grava a **preferência** de modo de quem clicou — nunca o tema do sistema ([[09-temas-e-presets]] §4.7) |
 | usuário | há `SarakUIProvider`, não foi desligado **e o host entregou `user`** | sem `user` não monta — a lib não inventa identidade; o botão de sair só existe com `logout` |
-| colapso | há `SarakUIProvider` e não foi desligado | grava `design.isNavHidden`, o mesmo token do Shell |
+| colapso | há `SarakUIProvider` e não foi desligado | grava a **preferência** de navegação recolhida de quem clicou — nunca o tema; o Shell faz o mesmo |
 
 **Onde cada um mora.** A busca ocupa o slot `search`. Tema e usuário **não têm slot**: nascem numa região
 própria, marcada `data-sarak-widget` — e não `data-sarak-slot`, porque não são conteúdo do consumidor. Por

@@ -6,8 +6,8 @@ dominio: "Sarak-Lib-UI-Core / Componentes atômicos / Navegação · Provider"
 status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "idioma", "preferencias", "fronteira-host"]
-relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/10-seguranca-e-acessibilidade]]", "[[specs/09-temas-e-presets]]"]
-depende_de: "plan-73-preferencias-do-usuario-separadas-do-tema"
+relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/10-seguranca-e-acessibilidade]]", "[[specs/09-temas-e-presets]]", "[[adr/016-preferencias-do-usuario-separadas-do-tema]]"]
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md · specs/10-seguranca-e-acessibilidade.md"
 ---
@@ -36,7 +36,7 @@ funcionar — hoje, o seletor não tem.
 
 ## 2.1 O escopo decidido com o dono (2026-09-11)
 
-- **Dentro:** o seletor funcional, o idioma como preferência (a camada da plan-73), e o caminho para o host
+- **Dentro:** o seletor funcional, o idioma como preferência ([[specs/09-temas-e-presets]] §4.7), e o caminho para o host
   saber o idioma e trocar a própria tradução — ler pelo hook de preferências e ser avisado da troca.
 - **Fora:** traduzir os textos **da própria lib** (hoje há textos fixos em inglês e em português
   misturados — *"No results"*, *"Available Tools"*, *"Logout"*). É outro trabalho, com outro tamanho: vai
@@ -47,7 +47,7 @@ funcionar — hoje, o seletor não tem.
 ## 3.1 Dentro
 - `src/components/atomic/Navigation/ShellLanguageSelector.tsx` — lista os idiomas habilitados no tema e
   grava a preferência; o estado local some.
-- `src/core/Provider/` — o aviso de troca de idioma para o host, pela mesma porta/hook da plan-73.
+- `src/core/Provider/` — o aviso de troca de idioma para o host, pela mesma porta (`options.preferences`) e o mesmo hook (`useSarakPreferences`) da camada de preferências.
 - `src/features/DesignEngine/Panels/LanguageTab.tsx` — **só** se for preciso para `enabledLanguages`
   alimentar o seletor.
 - Testes, `docs/migracoes.md` e kits pelos geradores.
@@ -65,14 +65,14 @@ funcionar — hoje, o seletor não tem.
 | --- | --- | --- |
 | Spec fixa | `specs/10-seguranca-e-acessibilidade.md` | §3 — a fronteira do que o host provê; a tradução entra aqui |
 | Spec fixa | `specs/05-cromo-e-slots.md` | §2.2.1 — o seletor é um dos controles do cromo |
-| Spec fixa | `specs/09-temas-e-presets.md` | a seção de preferências que a plan-73 escreve |
+| Spec fixa | `specs/09-temas-e-presets.md` | §4.7 — a camada de preferências |
 | ADR | `adr/014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` | *"só monta quando tem com o que funcionar"* |
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
 | Skill | `padrao-escrita` + `padrao-typescript` | sempre |
 
 # 5. Instruções de execução
 
-1. Ler as referências da §4 e a camada de preferências da plan-73 como ela ficou no código.
+1. Ler as referências da §4 e a camada de preferências como ela está no código.
 2. Seletor: lista `enabledLanguages` do tema; escolher grava a preferência de idioma; o valor mostrado vem
    da preferência, e na falta dela, do tema.
 3. Com **um** idioma habilitado ou nenhum, o seletor não monta — não há o que escolher.

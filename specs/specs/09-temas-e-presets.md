@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -366,6 +366,46 @@ armazenamento, e a lib não a intermedia.
 
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
+
+## 4.7 Preferência do usuário — sobreposta ao tema, nunca gravada nele
+
+O tema é do administrador e do sistema inteiro; a **preferência** é de cada usuário
+([[016-preferencias-do-usuario-separadas-do-tema]]). Os componentes recebem o **design efetivo** — o tema
+com as preferências oferecidas aplicadas por cima —, e **só o tema é persistido como tema**. O painel edita
+o tema, nunca o design efetivo de quem o está usando: a fonte grande que o administrador escolheu para si
+não entra no tema que ele salva.
+
+**O conjunto é fechado:**
+
+| Preferência | Valores | O que sobrepõe no tema |
+| --- | --- | --- |
+| modo | claro · escuro · sistema (acompanha a troca do sistema operacional) | o modo — só as chaves que carregam modo (abaixo) |
+| tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
+| navegação | topo · lateral | `navigationStyle` |
+| navegação recolhida | sim · não | `isNavHidden` |
+| idioma | um dos habilitados no tema | `language` |
+
+**O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
+oferecida**, **no menu**, **fixa na barra**. É token, e não campo à parte, porque é o administrador quem o
+escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: modo e
+navegação recolhida **fixa na barra**; fonte, navegação e idioma **não oferecida**. **Chave ausente vale o
+padrão de fábrica**, nunca *oferecida* — um design aplicado por substituição, sem essas chaves, não abre nada
+que o administrador não abriu. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
+
+**A troca de modo mexe só nas chaves que carregam modo** — as que a contraparte declara (§2.1):
+1. pedir o modo em que o design já está **não muda nada**;
+2. mudando de modo, essas chaves vêm da contraparte no modo oposto ao nativo, e do próprio tema no nativo —
+   qualquer que seja o modo em que o tema foi salvo;
+3. todo o resto é o design atual do tema. Tema sem contraparte cai no fallback sintetizado (§2.1).
+
+**Persistência:** por usuário, no `localStorage`, com chave própria isolada por tenant (§4.4.1), gravada
+**no ato da escolha** — a navegação por recarga de página não pode perdê-la — e sincronizada entre abas. O
+host que quiser guardar no servidor usa a porta opcional `options.preferences` (`onSave`/`onLoad`); a lib
+não conhece o usuário, e quem associa a preferência a ele é o host, pela porta. Leitura e escrita pela
+aplicação: `useSarakPreferences()`.
+
+> **No `localStorage`, a preferência é por navegador, não por pessoa.** Num computador compartilhado, as
+> pessoas compartilham a preferência até o host usar a porta.
 
 # 5. O catálogo shippado — números DERIVADOS
 

@@ -55,6 +55,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [013](./013-item-de-navegacao-como-atomo-proprio.md) | Item de navegação é átomo próprio, não variante do botão de ação | 🔴 Substituído por [015](./015-metrica-do-item-de-navegacao-horizontal.md) |
 | [014](./014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md) | O cromo do modo ui-kit nasce com os widgets montados, e o consumidor desliga o que não quiser | 🟢 Aceito |
 | [015](./015-metrica-do-item-de-navegacao-horizontal.md) | O item de navegação horizontal usa caixa normal e corpo legível, não tipografia de etiqueta | 🟢 Aceito |
+| [016](./016-preferencias-do-usuario-separadas-do-tema.md) | Preferência do usuário é uma camada separada do tema — sobreposta ao renderizar, nunca gravada nele | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

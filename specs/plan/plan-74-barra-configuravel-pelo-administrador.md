@@ -6,8 +6,8 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo · Design Engine"
 status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "cromo", "preferencias", "design-engine", "painel"]
-relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[adr/014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
-depende_de: "plan-73-preferencias-do-usuario-separadas-do-tema"
+relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[adr/014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[adr/016-preferencias-do-usuario-separadas-do-tema]]"]
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md"
 ---
@@ -20,7 +20,8 @@ isso — nos dois cromos e no celular.
 
 # 2. Contexto
 
-A plan-73 cria a camada de preferências e a regra de que o tema decide o que é oferecido. Esta plan dá a
+A camada de preferências e a regra de que o tema decide o que é oferecido já existem ([[specs/09-temas-e-presets]] §4.7 ·
+[[adr/016-preferencias-do-usuario-separadas-do-tema]]). Esta plan dá a
 cara dela: o que aparece na barra e onde o administrador configura.
 
 ## 2.1 A forma decidida com o dono (2026-09-11) — menu, mais itens fixados
@@ -29,7 +30,7 @@ Foram três opções: um botão por preferência (a barra lota e espreme a naveg
 limpa, mas o que se usa todo dia passa a custar dois cliques, e muda o que a barra já mostra); **menu mais
 itens fixados** (escolhida — o frequente fica a um clique, o raro fica guardado).
 
-Para cada uma das cinco preferências da plan-73, o administrador escolhe uma de três posições:
+Para cada uma das cinco preferências ([[specs/09-temas-e-presets]] §4.7), o administrador escolhe uma de três posições:
 
 | Posição | O que o usuário final vê |
 | --- | --- |
@@ -57,7 +58,7 @@ monta com `user`; sem identidade, as preferências ficariam sem lugar.
 # 3. Escopo
 
 ## 3.1 Dentro
-- **Não** cria o token de posição: ele nasce na plan-73, no `design`, com as três posições e o padrão de
+- **Não** cria o token de posição: ele já existe, no `design`, com as três posições e o padrão de
   fábrica da §2.1. Esta plan o **lê**, o renderiza e o expõe no painel.
 - `src/components/Layout/chrome/` — o widget ⚙ "Preferências", os controles fixados, a montagem nos dois
   corpos do cromo.
@@ -68,7 +69,7 @@ monta com `user`; sem identidade, as preferências ficariam sem lugar.
 - Testes, `docs/migracoes.md`, kits pelos geradores, barril e catálogo.
 
 ## 3.2 Fora
-- A camada de preferências em si — plan-73.
+- A camada de preferências em si — já existe ([[specs/09-temas-e-presets]] §4.7).
 - O seletor de idioma funcional — plan-75. Aqui o item de idioma aparece conforme a configuração, com o
   seletor no estado em que a plan-75 o deixar.
 - Preferências além das cinco.
@@ -79,7 +80,7 @@ monta com `user`; sem identidade, as preferências ficariam sem lugar.
 | Tipo | Referência | Por quê |
 | --- | --- | --- |
 | Spec fixa | `specs/05-cromo-e-slots.md` | §2.2.1 widgets default · §2.3 degradação · §2.4 tokens nos dois modos |
-| Spec fixa | `specs/09-temas-e-presets.md` | a seção de preferências que a plan-73 escreve |
+| Spec fixa | `specs/09-temas-e-presets.md` | §4.7 — a camada de preferências, os tokens de posição e o padrão de fábrica |
 | ADR | `adr/014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` | `widgets` como teto; *"só monta quando tem com o que funcionar"* |
 | Spec fixa | `specs/10-seguranca-e-acessibilidade.md` | §2.4 — o menu é um overlay: foco, ESC, teclado |
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
@@ -88,8 +89,8 @@ monta com `user`; sem identidade, as preferências ficariam sem lugar.
 
 # 5. Instruções de execução
 
-1. Ler as referências da §4, e a camada da plan-73 como ela ficou no código.
-2. Ler a posição de cada preferência do token que a plan-73 criou — conferir que o padrão de fábrica dele é
+1. Ler as referências da §4, e a camada de preferências como ela está no código (`useSarakPreferences`).
+2. Ler a posição de cada preferência do seu token de tema — conferir que o padrão de fábrica dele é
    o da §2.1 antes de montar qualquer coisa.
 3. Montar na barra: controles fixados como botões diretos; o ⚙ com os itens do menu; nada do ⚙ quando o
    menu está vazio. Nos dois cromos, com a mesma regra.
@@ -118,7 +119,7 @@ monta com `user`; sem identidade, as preferências ficariam sem lugar.
 
 # 7. Como verificar (uso do revisor)
 
-**Gate:** `nenhum` novo — o token de posição nasce na plan-73, já sob a paridade de tokens; o
+**Gate:** `nenhum` novo — o token de posição já existe, sob a paridade de tokens; o
 comportamento desta plan tem dono no teste do cromo.
 
 - `git diff --stat` → só a §3.1.
