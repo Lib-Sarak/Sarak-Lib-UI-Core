@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "diagnostico", "usabilidade", "navegador", "sem-codigo"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[specs/11-testes-e-cobertura]]", "[[specs/13-instalacao-e-atualizacao]]"]
-depende_de: ""
+depende_de: "plan-74-barra-configuravel-pelo-administrador"
 retida_por: ""
 destino_sintese: "specs/00-backlog.md"
 ---
@@ -32,7 +32,8 @@ vezes em que alguém olhou a tela de verdade, o retorno foi imediato e caro — 
 tokens de cromo sem consumidor, o realce do item ativo que sumiu. Nenhum dos três tinha gate que os
 pegasse, e todos apareceram em segundos para quem estava olhando.
 
-Esta plan fecha a campanha do jeito que ela deveria ter começado.
+Esta plan fecha a campanha do jeito que ela deveria ter começado. Roda **depois das plans 74 e 75** —
+`depende_de` aponta a 74; a 75 corre em paralelo a ela e também precisa estar aprovada antes do passo 1.
 
 ## 2.1 A armadilha que já custou dois ciclos, e que é pré-condição aqui
 
@@ -103,7 +104,15 @@ não para a tabela.
      degrada? Os temas do próprio consumidor contam: é neles que a derivação por espalhamento aparece.
    - cada token de cromo: posição da sidebar, layout da barra, alinhamento do conteúdo, colapso da nav,
      auto-hide, posição da busca, espaçamento das abas, cores de realce;
-   - fundo/atmosfera: cada opção que o painel oferece, aplicada e conferida na tela.
+   - fundo/atmosfera: cada opção que o painel oferece, aplicada e conferida na tela;
+   - **a barra configurada pelo administrador**: cada preferência em cada posição (não oferecida, no menu,
+     fixa na barra), e o que o usuário final vê em cada caso — nos dois cromos e no drawer do celular;
+   - **as preferências como usuário final**: modo (inclusive *sistema*), tamanho da fonte, navegação topo ou
+     lateral, recolher e idioma — cada uma aplicada e conferida nas telas do passo 2.
+
+   **Isolamento entre usuários — obrigatório:** com dois perfis de navegador abertos ao mesmo tempo, uma
+   preferência escolhida num **não** pode aparecer no outro, e **não** pode alterar o tema salvo no
+   servidor. É a garantia central da camada de preferências; se ela falhar, é achado de severidade máxima.
 
    **Trocar `navigationStyle` e repetir os tokens que dependem da outra orientação.** Token de sidebar
    medido com topbar ativa não tem no que agir — isso não é achado, é medição inválida.

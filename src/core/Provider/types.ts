@@ -1,4 +1,5 @@
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
+import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -40,9 +41,7 @@ export interface ThemeEntry {
 }
 
 /** Assinatura do setter do design-state (valor ou updater functional). */
-export type SetDesign = (
-    updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState),
-) => void;
+export type SetDesign = (updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => void;
 
 /**
  * Campos presentes no payload que ainda NÃO foram modelados como design tokens
@@ -121,8 +120,7 @@ interface SarakThemePayloadExtras {
 }
 
 // `PAYLOAD_EXTRA_KEYS` (espelho em runtime das chaves acima, usado por
-// `validateDesign`) mora em `./payloadExtraKeys.ts` — só para manter este
-// arquivo abaixo do limite de linhas do auditor de Clean Code (250).
+// `validateDesign`) mora em `./payloadExtraKeys.ts` — só p/ o limite de linhas (250).
 
 /**
  * Modo de consumo da biblioteca (Spec 24).
@@ -188,6 +186,7 @@ export interface SarakUIOptions {
          */
         onSave?: (theme: ThemeEntry) => Promise<void> | void;
     };
+    preferences?: SarakPreferencesOptions; // Porta opcional de preferências do usuário
     /**
      * Marca/branding do sistema (Spec 44 — sem backend próprio): `initial` semeia
      * o estado; `onChange` é a porta "traga sua persistência" (sync no backend DO
@@ -199,9 +198,8 @@ export interface SarakUIOptions {
     };
 }
 
-/** Estado de marca/branding do sistema (nome, logo, textos de login/aba). Identidade
- *  (`companyName`/`tabName`/`logoBase64`) nasce AUSENTE — a lib nunca impõe a própria
- *  marca (Spec 47; contrato em `docs/identidade-do-host.md`). */
+/** Estado de marca/branding (nome, logo, textos de login/aba). Identidade nasce
+ *  AUSENTE — a lib nunca impõe a própria marca (Spec 47, `docs/identidade-do-host.md`). */
 export interface SarakBrandingState {
     companyName?: string;
     loginName: string;
@@ -210,6 +208,8 @@ export interface SarakBrandingState {
 }
 
 export interface SarakUIContextType {
+    preferences: SarakUserPreferences; // Preferências do usuário — camada separada do tema
+    updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
     discoveryEndpoints: string[];
     design: SarakThemePayload;
     systemDesign?: SarakThemePayload; // Design persistido do sistema (sem rascunho/branding)
@@ -230,10 +230,9 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
-    /** Salva um tema em runtime (ADR-011): valida (`validateDesign`), funde no
-     *  estado de SESSÃO — aparece em `allThemes` na mesma sessão, substituindo
-     *  entrada de mesmo `id` — e entrega a `options.theme.onSave`, se configurado.
-     *  Sem a porta, o tema entra na sessão mas não sobrevive a um reload. */
+    /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
+     *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
+     *  se configurado — sem a porta, não sobrevive a um reload. */
     saveTheme: (theme: ThemeEntry) => Promise<void>;
     activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
     resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru

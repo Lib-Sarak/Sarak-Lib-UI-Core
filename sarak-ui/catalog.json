@@ -69,6 +69,8 @@
     "PaginationToken",
     "PdfSource",
     "PinnedOffsets",
+    "PreferenceId",
+    "PreferencePosition",
     "RangeValue",
     "ResponsiveDevice",
     "ResponsiveValue",
@@ -106,6 +108,7 @@
     "SarakChatEngineProps",
     "SarakChatProps",
     "SarakChromeWidgets",
+    "SarakColorModePreference",
     "SarakColumn",
     "SarakComponent",
     "SarakComponentProps",
@@ -133,6 +136,7 @@
     "SarakFlexProps",
     "SarakFlowEngine",
     "SarakFlowEngineProps",
+    "SarakFontSizePreference",
     "SarakForm",
     "SarakFormGroup",
     "SarakFormGroupProps",
@@ -167,6 +171,7 @@
     "SarakMultiSelect",
     "SarakMultiSelectProps",
     "SarakNavItem",
+    "SarakNavigationStylePreference",
     "SarakOverlayController",
     "SarakOverlayProvider",
     "SarakOverlayRequest",
@@ -176,6 +181,8 @@
     "SarakPageTransitionProps",
     "SarakPagination",
     "SarakPaginationProps",
+    "SarakPreferencesHook",
+    "SarakPreferencesOptions",
     "SarakRangeSlider",
     "SarakRangeSliderProps",
     "SarakRichText",
@@ -239,6 +246,7 @@
     "SarakUIProviderProps",
     "SarakUploader",
     "SarakUploaderProps",
+    "SarakUserPreferences",
     "ShellLanguageSelector",
     "ShellLanguageSelectorProps",
     "ShellNavItem",
@@ -295,6 +303,7 @@
     "useModuleDiscovery",
     "useOverlay",
     "useSarakDevice",
+    "useSarakPreferences",
     "useSarakRouter",
     "useSarakUI",
     "useToast",
@@ -4515,7 +4524,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 423,
+    "count": 428,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -5971,6 +5980,31 @@
       },
       {
         "id": "pageTransitionType",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "preferenceFontSizePosition",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "preferenceLanguagePosition",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "preferenceModePosition",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "preferenceNavCollapsePosition",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "preferenceNavigationStylePosition",
         "type": "string",
         "responsive": false
       },

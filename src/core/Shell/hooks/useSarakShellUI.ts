@@ -3,7 +3,7 @@ import { useSarakUI } from '../../Provider/SarakUIProvider';
 import { useSearchShortcut } from '../../../shared/hooks/useSearchShortcut';
 
 export const useSarakShellUI = () => {
-    const { design, applyConfig } = useSarakUI();
+    const { design, applyConfig, updatePreferences } = useSarakUI();
 
     const [state, setState] = useState({
         isSearchOpen: false,
@@ -21,9 +21,11 @@ export const useSarakShellUI = () => {
     const topbarMinHeight = 40;
     const topbarMaxHeight = 120;
 
+    // Grava PREFERÊNCIA de recolhimento, nunca o tema — `design` já é o
+    // EFETIVO (tema + preferência sobreposta).
     const toggleNav = useCallback(() => {
-        applyConfig({ isNavHidden: !design?.isNavHidden });
-    }, [applyConfig, design?.isNavHidden]);
+        updatePreferences({ navCollapsed: !design?.isNavHidden });
+    }, [updatePreferences, design?.isNavHidden]);
 
     const setSidebarWidth = useCallback((w: number) => {
         applyConfig({ sidebarWidth: w });

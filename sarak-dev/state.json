@@ -7,7 +7,7 @@
   },
   "design": {
     "schemaFiles": {
-      "count": 28,
+      "count": 29,
       "files": [
         "advanced.ts",
         "animations.ts",
@@ -29,6 +29,7 @@
         "motion.ts",
         "navigation.ts",
         "overlays.ts",
+        "preferences.ts",
         "scrollbars.ts",
         "specialized.ts",
         "status.ts",
@@ -44,16 +45,16 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 423,
-        "idsUnicos": 423
+        "entradasBrutas": 428,
+        "idsUnicos": 428
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 423
+        "tokens": 428
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 423,
+        "ids": 428,
         "responsivos": 40
       }
     }

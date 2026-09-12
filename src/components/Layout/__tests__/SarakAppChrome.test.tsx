@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
 import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
@@ -10,6 +10,11 @@ const NAV = [
     { label: 'Propostas', route: '/propostas' },
     { label: 'Projetos', route: '/projetos' },
 ];
+
+// A escrita de preferência (toggle de recolher/tema) é imediata — sem isto um
+// clique num teste anterior sobrevive, via `localStorage`, ao Provider novo
+// do teste seguinte.
+afterEach(() => localStorage.clear());
 
 describe('SarakAppChrome (Spec 40.1 — L2, cromo apresentacional temável)', () => {
     it('renderiza sidebar por padrão com brand, nav e conteúdo', () => {

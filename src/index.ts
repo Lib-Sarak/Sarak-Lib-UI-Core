@@ -21,6 +21,18 @@ export type {
     SarakBrandingState,
 } from './core/Provider/types';
 export type { SarakUIProviderProps } from './core/Provider/providerProps';
+// Preferências do usuário como camada separada do tema — sobreposta ao
+// renderizar, nunca gravada nele.
+export { useSarakPreferences } from './core/Provider/hooks/useSarakPreferences';
+export type { SarakPreferencesHook } from './core/Provider/hooks/useSarakPreferences';
+export type {
+    SarakUserPreferences,
+    SarakPreferencesOptions,
+    SarakColorModePreference,
+    SarakFontSizePreference,
+    SarakNavigationStylePreference,
+} from './core/Provider/preferencesTypes';
+export type { PreferenceId, PreferencePosition } from './core/Design/schema/preferences';
 export type { SarakDesignTokens } from './core/Provider/generated/design-token-ids';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
 export { DesignScope } from './core/Design/components/DesignScope';

@@ -27,6 +27,7 @@ import { LayersSchema } from './schema/layers';
 import { AdvancedSchema } from './schema/advanced';
 import { MediaSchema } from './schema/media';
 import { StructuralSchema } from './schema/structural';
+import { PreferencesSchema } from './schema/preferences';
 import themeTableMapping from './catalog/theme_table_mapping.json';
 
 /**
@@ -64,7 +65,8 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         LayersSchema,
         AdvancedSchema,
         MediaSchema,
-        StructuralSchema
+        StructuralSchema,
+        PreferencesSchema
     ]
 };
 

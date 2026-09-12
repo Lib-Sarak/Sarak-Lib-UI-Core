@@ -5,6 +5,51 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
+
+**Classificação: MAJOR** — `ShellThemeToggle` (usado pelos dois cromos, `SarakAppChrome` e `SarakShell`) e o
+toggle de recolher (`ChromeCollapseToggle` no modo ui-kit, o hambúrguer/chevron do `SarakShell` no modo
+módulos-plugin) deixam de escrever no `design` do sistema. Antes, o clique de **um** usuário final —
+alternar claro/escuro, recolher a navegação — reescrevia o tema de **todos**, porque a única gravação que
+existia era a do tema (`persistDesign`, `localStorage` + `persistence.onSave`, debounce de 1,5s).
+
+**O que muda.** Existe uma camada nova de **preferências do usuário**, separada do tema: sobreposta ao
+design ao renderizar, guardada por usuário, e nunca gravada como tema. As duas ações acima passam a gravar
+ali — hook público `useSarakPreferences()`, campo `preferences` + `updatePreferences` em `useSarakUI()`, e a
+porta opcional `options.preferences` (`storageKey`, `onSave`, `onLoad`) para quem quer guardar por usuário
+no servidor. O conjunto é fechado: `colorMode` (`'light' | 'dark' | 'system'`), `fontSize`
+(`'sm' | 'md' | 'lg'`, escala relativa à base do tema — degrau a degrau sobre `bodySize`, o token que de
+fato emite `--theme-font-size-base`), `navigationStyle` (`'topbar' | 'sidebar'`), `navCollapsed` (boolean)
+e `language` (string, só como dado — a tradução funcional fica para um passo seguinte).
+
+**Cinco tokens novos no `design`, um por preferência** — `preferenceModePosition`,
+`preferenceFontSizePosition`, `preferenceNavigationStylePosition`, `preferenceNavCollapsePosition`,
+`preferenceLanguagePosition` — cada um `'off' | 'menu' | 'pinned'`. É o administrador, no tema, quem
+decide se cada preferência aparece e onde; a posição vive no `design` (persiste com o resto do tema, no
+mesmo `PUT`) e nunca em um campo fora dele. **Padrão de fábrica — a barra de hoje, sem nenhuma mudança
+visível:** modo e recolhimento nascem `'pinned'`; fonte, navegação e idioma nascem `'off'`.
+
+**Por quê.** O tema é do administrador, e continua sendo — a preferência é do usuário final, e não deveria
+existir só uma gaveta (`design`) para os dois guardarem. Medido no consumidor real: o tema salvo no servidor
+carregava `navigationStyle`/`sidebarPosition`/`navbarLayout`/`contentAlignment` dos testes do dono no
+painel, porque o painel e o alternador de tema escreviam no mesmo lugar.
+
+**A troca de modo preserva a customização do administrador.** Escolher claro/escuro só troca os tokens que
+a contraparte autorada do tema declara (specs/09 §2.1) — cor de marca, navegação, imagem de fundo e
+qualquer outro token fora da contraparte continuam exatamente como o administrador configurou. Sem
+contraparte, o fallback sintetizado de sempre (`syncThemeWithMode`) continua valendo.
+
+**Como migrar.** Quem lia `design.mode`/`design.isNavHidden` para saber o estado atual continua funcionando
+sem mudar nada — `useSarakUI().design` (e `activeDesign`) já é o **efetivo**: tema com as preferências
+oferecidas sobrepostas. Quem editava o **tema** pelo painel administrativo também não muda: o painel lê e
+grava `sarak.systemDesign` (o persistido puro), nunca o efetivo. Quem já implementava a própria alternância
+de tema/colapso chamando `applyConfig`/`applyFullConfigRaw` diretamente **deve migrar para
+`updatePreferences`**, senão volta a reescrever o tema do sistema. Quem quer voltar ao comportamento antigo
+(alternador de tema grava o tema, para todos) grava direto em `applyFullConfigRaw`/`persistDesign`, como
+antes — a porta continua pública, só deixou de ser o caminho dos dois widgets default.
+
+---
+
 ## Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
 
 **Classificação: MAJOR** — comportamento default muda de novo, sem opt-in, para quem usa

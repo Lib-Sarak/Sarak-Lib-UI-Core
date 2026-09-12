@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "73"
+proximo_numero_plan: "76"
 ---
 
 # 0. O que é este arquivo
@@ -42,7 +42,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | — | 🔴 A executar | specs/00-backlog.md |
+| 1 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-74-barra-configuravel-pelo-administrador | 🔴 A executar | specs/00-backlog.md |
+| 2 | [plan-73-preferencias-do-usuario-separadas-do-tema](plan/plan-73-preferencias-do-usuario-separadas-do-tema.md) | O que um usuário escolhe para si deixa de reescrever o tema do sistema inteiro — a escolha dele vale só para ele, e o tema continua sendo do administrador | — | 🟢 Aprovada | adr/NNN-preferencias-do-usuario-separadas-do-tema.md · specs/09-temas-e-presets.md |
+| 3 | [plan-74-barra-configuravel-pelo-administrador](plan/plan-74-barra-configuravel-pelo-administrador.md) | O administrador monta a barra no painel — cada preferência oferecida fica fixa na barra ou dentro do menu Preferências —, e o usuário final usa o que foi configurado | plan-73-preferencias-do-usuario-separadas-do-tema | 🔴 A executar | specs/05-cromo-e-slots.md |
+| 4 | [plan-75-idioma-como-preferencia-funcional](plan/plan-75-idioma-como-preferencia-funcional.md) | Escolher um idioma na barra passa a fazer alguma coisa: a escolha fica guardada como preferência do usuário e chega ao host, que traduz as próprias telas | plan-73-preferencias-do-usuario-separadas-do-tema | 🔴 A executar | specs/05-cromo-e-slots.md · specs/10-seguranca-e-acessibilidade.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

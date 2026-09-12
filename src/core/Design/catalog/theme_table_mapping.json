@@ -446,6 +446,11 @@
     "formLabelPosition",
     "formFieldDensity",
     "switchLabelPosition",
-    "splitPaneMinWidth"
+    "splitPaneMinWidth",
+    "preferenceModePosition",
+    "preferenceFontSizePosition",
+    "preferenceNavigationStylePosition",
+    "preferenceNavCollapsePosition",
+    "preferenceLanguagePosition"
   ]
 }

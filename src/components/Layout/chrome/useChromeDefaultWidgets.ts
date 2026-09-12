@@ -52,8 +52,11 @@ export const useChromeDefaultWidgets = (
     const closeSearch = useCallback(() => setIsSearchOpen(false), []);
     useSearchShortcut(openSearch, showSearch);
 
+    // Grava PREFERÊNCIA de recolhimento, nunca o tema — `sarak.design` já é o
+    // EFETIVO (tema + preferência sobreposta), então o valor lido aqui é o mesmo
+    // que aparece na tela.
     const toggleNavHidden = useCallback(() => {
-        sarak?.applyConfig({ isNavHidden: !sarak?.design?.isNavHidden });
+        sarak?.updatePreferences({ navCollapsed: !sarak?.design?.isNavHidden });
     }, [sarak]);
 
     return {

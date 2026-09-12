@@ -1,10 +1,27 @@
-// @vitest-environment node
-import { describe, it, expect } from 'vitest';
-import * as HookModule from '../useSarakShellUI';
+import { describe, it, expect, vi } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { useSarakShellUI } from '../useSarakShellUI';
+
+const mockApplyConfig = vi.fn();
+const mockUpdatePreferences = vi.fn();
+
+vi.mock('../../../Provider/SarakUIProvider', () => ({
+    useSarakUI: () => ({
+        design: { isNavHidden: false },
+        applyConfig: mockApplyConfig,
+        updatePreferences: mockUpdatePreferences,
+    }),
+}));
 
 describe('useSarakShellUI', () => {
-    it('should export the hook correctly', () => {
-        expect(HookModule).toBeDefined();
-        // TODO: Escrever testes comportamentais para este hook
+    it('toggleNav grava a PREFERÊNCIA de recolhimento, nunca o tema', () => {
+        const { result } = renderHook(() => useSarakShellUI());
+
+        act(() => {
+            result.current.toggleNav();
+        });
+
+        expect(mockUpdatePreferences).toHaveBeenCalledWith({ navCollapsed: true });
+        expect(mockApplyConfig).not.toHaveBeenCalled();
     });
 });
