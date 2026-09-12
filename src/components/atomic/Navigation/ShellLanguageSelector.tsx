@@ -3,6 +3,8 @@ import { Globe, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { getLocalComponent } from '../../../core/Discovery/registry';
+import { LANGUAGES } from '../../../core/Discovery/constants';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakMenuItem } from './SarakMenuItem';
 
@@ -10,14 +12,26 @@ export interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
 }
 
-const LANGUAGES = [
-    { code: 'pt-BR', label: 'Português', flag: '🇧🇷' },
-    { code: 'en-US', label: 'English', flag: '🇺🇸' }
-];
+interface ResolvedLanguage {
+    id: string;
+    name: string;
+    flag: string;
+}
+
+/** Idioma habilitado que não bate com o catálogo curado (`Discovery/constants`)
+ *  ainda conta para a regra de montagem — é o tema quem decide o conjunto,
+ *  não o catálogo de rótulos/bandeiras conhecidos. */
+const resolveLanguage = (code: string): ResolvedLanguage => {
+    const known = LANGUAGES.find((lang) => lang.id === code);
+    return known ? { id: known.id, name: known.name, flag: known.flag } : { id: code, name: code, flag: '🌐' };
+};
 
 /**
- * ShellLanguageSelector — Global Language Switcher (v8.5)
- * Standardizes language selection in the Sarak Shell.
+ * ShellLanguageSelector — lista os idiomas que o TEMA habilita
+ * (`design.enabledLanguages`) e grava a escolha como PREFERÊNCIA do usuário
+ * (`updatePreferences({ language })`), nunca no tema (specs/09 §4.7). Um
+ * idioma só, ou nenhum, não monta — não há escolha possível
+ * (ADR-014: "só monta quando tem com o que funcionar").
  */
 export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
     variant = 'horizontal'
@@ -29,8 +43,8 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
         : null);
     const OverrideSelector = fromRegistry || fromGlobal;
 
+    const { design, updatePreferences } = useSarakUI();
     const [isOpen, setIsOpen] = useState(false);
-    const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
 
     if (OverrideSelector) {
         return (
@@ -39,6 +53,21 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
             </div>
         );
     }
+
+    const enabledLanguages = (design?.enabledLanguages || []).map(resolveLanguage);
+    if (enabledLanguages.length <= 1) return null;
+
+    // `design` já é o EFETIVO (`overlayPreferences` sobrepõe a preferência por cima
+    // do tema) — é o único idioma que vale: a preferência, se o tema a oferece E a
+    // habilita; senão, o idioma do próprio tema. Ler a preferência crua aqui mostraria
+    // um idioma que o tema não habilita, ou ignoraria a preferência estar desligada.
+    const currentCode = design?.language || enabledLanguages[0].id;
+    const currentLang = enabledLanguages.find((lang) => lang.id === currentCode) || enabledLanguages[0];
+
+    const selectLanguage = (code: string) => {
+        updatePreferences({ language: code });
+        setIsOpen(false);
+    };
 
     const isHorizontal = variant === 'horizontal';
 
@@ -57,23 +86,20 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                         [isHorizontal ? 'marginTop' : 'marginBottom']: 'var(--sarak-layout-gap-sm, 8px)',
                     }}
                 >
-                    {LANGUAGES.map((lang) => (
+                    {enabledLanguages.map((lang) => (
                         <SarakMenuItem
-                            key={lang.code}
-                            active={currentLang.code === lang.code}
-                            onClick={() => {
-                                setCurrentLang(lang);
-                                setIsOpen(false);
-                            }}
+                            key={lang.id}
+                            active={currentLang.id === lang.id}
+                            onClick={() => selectLanguage(lang.id)}
                             icon={<span>{lang.flag}</span>}
-                            label={lang.label}
+                            label={lang.name}
                             className={`rounded-lg text-2xs tracking-wider ${
-                                currentLang.code === lang.code
+                                currentLang.id === lang.id
                                     ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]'
                                     : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                             }`}
                         >
-                            {currentLang.code === lang.code && <Check size={10} />}
+                            {currentLang.id === lang.id && <Check size={10} />}
                         </SarakMenuItem>
                     ))}
                 </motion.div>
@@ -92,7 +118,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                     <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         <span className="text-2xs">{currentLang.flag}</span>
                         <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
-                            {currentLang.code.split('-')[0]}
+                            {currentLang.id}
                         </span>
                         <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </div>
@@ -110,7 +136,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                 icon={<Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
                 label="Language"
             >
-                <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
+                <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.id.toUpperCase()}</span>
             </SarakMenuItem>
             {dropdown}
         </div>

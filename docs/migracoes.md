@@ -5,6 +5,122 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
+
+**Classificação: aditiva, não MAJOR.** O token de posição de cada preferência (`preference*Position`,
+schema `preferences.ts`) já existia; esta entrada só cobre a UI nova que o lê — o widget ⚙ "Preferências",
+os controles fixados na barra e a seção do painel que os configura. **O padrão de fábrica não muda a barra**
+de nenhum consumidor: `colorMode` e `navCollapsed` continuam `pinned` (exatamente os widgets que já existiam
+— ADR-014 no `SarakAppChrome`, sempre-ligados no `SarakShell`); `fontSize`, `navigationStyle` e `language`
+continuam `off` — e nenhum tema shippado ou de consumidor declara essas três chaves hoje.
+
+**O que passa a existir**, nos dois cromos (`SarakAppChrome` e `SarakShell`) e no drawer mobile:
+
+- Para cada uma das 5 preferências, o administrador escolhe no painel (nova seção "Barra de Preferências do
+  Usuário") uma de três posições: **não oferecida** (nada), **no menu** (item dentro do ⚙ "Preferências") ou
+  **fixa na barra** (controle direto — e também dentro do ⚙, quando ele existe).
+- **O ⚙ só nasce quando pelo menos uma preferência está em `menu`.** Uma barra só com fixadas (o padrão de
+  fábrica) não o faz aparecer — não existe botão que abre um painel vazio, e por isso o padrão de fábrica
+  fica idêntico ao de hoje.
+- Duas preferências novas ganham controle: **tamanho da fonte** (P/M/G, `ShellFontSizeControl`) e
+  **navegação topo/lateral** (`ShellNavigationStyleControl`). O seletor de idioma (plan-75) e a alternância
+  de tema/colapso (plan-73/ADR-014) reusam os componentes que já existiam.
+- **No celular, tudo o que é oferecido vai para o drawer**, fixado ou não — não há ⚙ separado ali (Spec 05
+  §2.3, "nada some"); a exceção é `navCollapsed`, que nunca ganha linha própria no drawer porque o próprio
+  hambúrguer já é o controle de colapso.
+- **O `widgets` do `SarakAppChrome` continua sendo o teto do código** (`themeToggle`/`collapse`): o que o
+  desenvolvedor desligou ali não volta pela configuração do tema. O `SarakShell` não tem essa camada — só a
+  posição do tema decide.
+
+**Quem quiser o comportamento novo** não precisa fazer nada além de abrir o painel e mudar a posição de uma
+preferência — a barra de todo mundo que não tocar nisso continua exatamente como está.
+
+**A única exceção — o seletor de idioma do `SarakShell`.** Antes deste par de plans (74 + 75), o Shell
+renderizava o seletor de idioma **sem condição nenhuma**; o `SarakAppChrome` nunca o teve. Com o padrão de
+fábrica desta plan (`language` = `off`), o Shell passa a escondê-lo também — é o único dos cinco widgets em
+que "o padrão de fábrica não muda a barra" não se aplica, porque só o Shell tinha esse widget sempre ligado,
+sem teto de `widgets` (que só o `SarakAppChrome` tem). Quem quiser o seletor de volta no Shell **oferece
+`language` no painel** (`pinned` ou `menu`) — e, com a plan-75 no mesmo release, também precisa de
+`enabledLanguages` com dois ou mais códigos no tema (ver a entrada abaixo).
+
+---
+
+## O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
+
+**Classificação: MAJOR** — mesmo critério das entradas anteriores desta lista: mudar o default é MAJOR
+mesmo sem tocar em export, prop ou token. `ShellLanguageSelector` deixava a escolha morrer num
+`useState` local (`pt-BR`/`en-US` fixos, sempre visíveis); agora ele lista os idiomas que o **tema**
+habilita (`design.enabledLanguages`) e grava a escolha como **preferência** do usuário
+(`updatePreferences({ language })`, a mesma camada do plan-73 — nunca no tema).
+
+**O que muda.**
+
+- **A lista vem do tema, não é mais fixa.** Sem `enabledLanguages` no `design` (o caso de todo tema
+  shippado hoje, e de qualquer tema de consumidor que nunca declarou o eixo), o seletor **não tem o que
+  listar**. Com um idioma só, também não há escolha possível.
+- **Consequência direta — regra de montagem (ADR-014, "só monta quando tem com o que funcionar"):** o
+  seletor deixa de renderizar sempre. Ele só aparece com **dois ou mais** idiomas em
+  `design.enabledLanguages`. Um host que já usava o painel (`LanguageTab`) para habilitar mais de um
+  idioma não percebe diferença; um host que nunca configurou o eixo deixa de ver o seletor onde antes via
+  o par fixo `pt-BR`/`English`. **No `SarakShell`, há uma segunda condição, que vem de outra entrada desta
+  lista (plan-74):** o `enabledLanguages` deixou de ser suficiente sozinho — o Shell só monta o seletor
+  quando `language` também está **oferecido** no painel (`pinned` ou `menu`; o padrão de fábrica é `off`).
+  O `SarakAppChrome` nunca teve o seletor por padrão, então essa segunda condição não é novidade para ele.
+- **A escolha sobrevive a recarregamento e não vaza para o sistema.** Antes, trocar de idioma no seletor
+  não persistia nada (estado local, morria no F5) e não alcançava lugar nenhum. Agora persiste por
+  usuário, sincroniza entre abas e chega à porta opcional `options.preferences.onSave` — a mesma porta e o
+  mesmo `useSarakPreferences().updatePreferences()` do plan-73, generalizados para a quinta preferência
+  (`language`). **Só para GRAVAR** — para LER o idioma que vale, ver abaixo: não é o mesmo canal.
+- **O caminho de substituição pelo host** (`getLocalComponent('shell-language-selector')` /
+  `window.__SARAK_OVERRIDES__`) **continua funcionando, sem mudança** — inclusive sem depender da regra de
+  montagem acima, porque quem decide o que aparece ali passa a ser o host.
+
+**O que a lib continua NÃO fazendo.** Ela entrega a **escolha**, não o **texto traduzido**: não há motor de
+tradução nesta biblioteca, e os textos da própria lib não são afetados por esta mudança. Traduzir as telas
+da aplicação é do host — é exatamente o que a porta abaixo existe para viabilizar.
+
+**Como o host lê a escolha e traduz a própria aplicação.** Pelo `design` público de `useSarakUI()` — o
+estado EFETIVO (tema com as preferências oferecidas sobrepostas), nunca `useSarakPreferences().preferences`
+direto: a preferência crua não é o idioma que vale. `design.language` já resolve os três casos —
+preferência ausente (cai no idioma do tema), preferência para uma posição que o administrador desligou no
+painel (`preferenceLanguagePosition: 'off'`, o padrão de fábrica — cai no idioma do tema) e preferência para
+um idioma que o administrador **desabilitou** depois de salva (`enabledLanguages` não contém mais aquele
+código — cai no idioma do tema). Ler a preferência crua reabre os três: aplica um idioma desligado, ignora
+que o administrador nunca ofereceu a troca, ou aplica um idioma que o tema não habilita mais.
+
+É reativo (React re-renderiza sozinho a cada troca; não há polling nem callback novo a assinar) e a mesma
+leitura já funciona entre abas, porque a camada de preferências sincroniza pelo `storage` event. Exemplo com
+`i18next` (qualquer outra biblioteca de i18n do host se encaixa do mesmo jeito — a lib não sabe qual o host
+usa):
+
+```tsx
+import { useEffect } from 'react';
+import i18n from 'i18next';
+import { useSarakUI } from '@sarak/lib-ui-core';
+
+function AppI18nBridge() {
+    const { design } = useSarakUI();
+
+    useEffect(() => {
+        if (design.language) {
+            i18n.changeLanguage(design.language);
+        }
+    }, [design.language]);
+
+    return null;
+}
+```
+
+**Como migrar.** Quem quer o seletor visível declara `enabledLanguages` com dois ou mais códigos no tema
+(painel → aba de Idioma, ou o campo direto no JSON do tema) — e, no `SarakShell`, também oferece `language`
+na seção "Barra de Preferências do Usuário" do painel (plan-74), já que lá ele deixou de vir sempre ligado.
+Quem quer manter o par fixo de antes, independente do tema, monta o próprio componente pelo caminho de substituição
+(`window.__SARAK_OVERRIDES__['shell-language-selector']`), que não mudou. Quem já lia
+`design.language`/`design.enabledLanguages` diretamente continua funcionando sem alteração — só a
+**escolha do usuário final**, que antes não ia a lugar nenhum, agora tem onde pousar.
+
+---
+
 ## O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
 
 **Classificação: MAJOR** — `ShellThemeToggle` (usado pelos dois cromos, `SarakAppChrome` e `SarakShell`) e o

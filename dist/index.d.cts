@@ -501,8 +501,8 @@ interface SarakDesignTokens {
  * some do menu), `menu` (item dentro do ⚙ "Preferências") ou `pinned` (botão
  * direto na barra, e também no menu). A declaração vive no `design`, como
  * qualquer outro token de tema — não num campo fora dele: é o administrador
- * quem escolhe isso em runtime (a barra da plan-74), e só sobrevive a um
- * recarregamento se estiver onde o `design` já é persistido.
+ * quem escolhe isso em runtime, no painel, e só sobrevive a um recarregamento
+ * se estiver onde o `design` já é persistido.
  */
 declare const PREFERENCE_IDS: readonly ["colorMode", "fontSize", "navigationStyle", "navCollapsed", "language"];
 type PreferenceId = typeof PREFERENCE_IDS[number];
@@ -1832,8 +1832,11 @@ interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
 }
 /**
- * ShellLanguageSelector — Global Language Switcher (v8.5)
- * Standardizes language selection in the Sarak Shell.
+ * ShellLanguageSelector — lista os idiomas que o TEMA habilita
+ * (`design.enabledLanguages`) e grava a escolha como PREFERÊNCIA do usuário
+ * (`updatePreferences({ language })`), nunca no tema (specs/09 §4.7). Um
+ * idioma só, ou nenhum, não monta — não há escolha possível
+ * (ADR-014: "só monta quando tem com o que funcionar").
  */
 declare const ShellLanguageSelector: React__default.FC<ShellLanguageSelectorProps>;
 

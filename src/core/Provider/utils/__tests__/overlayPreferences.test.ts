@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { overlayPreferences } from '../overlayPreferences';
+import { overlayPreferences, isLanguageEnabled } from '../overlayPreferences';
 import { useDesignVariables } from '../../../Design/hooks/useDesignVariables';
 import type { SarakDesignState, ThemeEntry } from '../../types';
 
@@ -132,10 +132,52 @@ describe('overlayPreferences', () => {
         expect(result.isNavHidden).toBe(true);
     });
 
-    it('language sobrepõe o idioma do tema, quando oferecida', () => {
-        const design = { language: 'pt', preferenceLanguagePosition: 'menu' } as unknown as SarakDesignState;
-        const result = overlayPreferences(design, { language: 'en-US' }, undefined, 'light');
-        expect(result.language).toBe('en-US');
+    describe('language — só vale a preferência para um idioma que o TEMA habilita', () => {
+        it('sobrepõe o idioma do tema quando oferecida E o tema habilita o idioma pedido', () => {
+            const design = {
+                language: 'pt',
+                enabledLanguages: ['pt', 'en-US'],
+                preferenceLanguagePosition: 'menu',
+            } as unknown as SarakDesignState;
+            const result = overlayPreferences(design, { language: 'en-US' }, undefined, 'light');
+            expect(result.language).toBe('en-US');
+        });
+
+        it('oferecida, mas o administrador DESABILITOU o idioma da preferência → cai no idioma do tema', () => {
+            // A preferência salva para um idioma deixa de valer quando o administrador tira esse
+            // idioma de `enabledLanguages` — `overlayPreferences` é quem recusa, não o seletor (ele
+            // só lê o que a sobreposição já resolveu).
+            const design = {
+                language: 'pt',
+                enabledLanguages: ['pt'], // 'en-US' não está mais habilitado
+                preferenceLanguagePosition: 'menu',
+            } as unknown as SarakDesignState;
+            const result = overlayPreferences(design, { language: 'en-US' }, undefined, 'light');
+            expect(result.language).toBe('pt');
+        });
+
+        it('oferecida, mas o tema NUNCA declarou `enabledLanguages` → nada é habilitado por omissão', () => {
+            const design = { language: 'pt', preferenceLanguagePosition: 'menu' } as unknown as SarakDesignState;
+            const result = overlayPreferences(design, { language: 'en-US' }, undefined, 'light');
+            expect(result.language).toBe('pt');
+        });
+    });
+
+    describe('isLanguageEnabled — a régua única que overlayPreferences usa (exportada para o seletor)', () => {
+        it('true quando o código está em `enabledLanguages`', () => {
+            const design = { enabledLanguages: ['pt', 'en'] } as unknown as SarakDesignState;
+            expect(isLanguageEnabled(design, 'en')).toBe(true);
+        });
+
+        it('false quando o código não está na lista', () => {
+            const design = { enabledLanguages: ['pt'] } as unknown as SarakDesignState;
+            expect(isLanguageEnabled(design, 'en')).toBe(false);
+        });
+
+        it('false quando `enabledLanguages` não é um array (ausente, ou tema legado)', () => {
+            const design = {} as unknown as SarakDesignState;
+            expect(isLanguageEnabled(design, 'en')).toBe(false);
+        });
     });
 
     describe('fontSize — escala relativa sobre `bodySize` (o token que de fato chega à tela)', () => {

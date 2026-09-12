@@ -79,6 +79,20 @@ const applyColorMode = (
 };
 
 /**
+ * Um idioma de preferência só vale se o TEMA o habilita — "idioma" na
+ * preferência é `um dos habilitados no tema` (specs/09 §4.7), nunca um valor
+ * livre. Tema sem `enabledLanguages` declarado não habilita nenhum: nada é
+ * "habilitado por omissão". Exportado porque é a MESMA régua que decide o que
+ * `overlayPreferences` aplica e o que o seletor mostra como valor corrente —
+ * fonte única, para as duas pontas nunca divergirem (o mesmo espírito de
+ * `isSafeMediaString`, specs/10 §2.1).
+ */
+export const isLanguageEnabled = (design: SarakDesignState, language: string): boolean => {
+    const enabledLanguages = design.enabledLanguages;
+    return Array.isArray(enabledLanguages) && enabledLanguages.includes(language);
+};
+
+/**
  * A sobreposição: aplica, por cima do design já resolvido, só as preferências
  * cuja posição (token `preference*Position`, lido do próprio `design`) não é
  * `'off'` — nunca grava nada, é pura.
@@ -107,7 +121,7 @@ export const overlayPreferences = (
     if (offered('fontSize') && preferences.fontSize) {
         result = { ...result, bodySize: applyFontSizeDelta(String(result.bodySize ?? '14px'), preferences.fontSize) };
     }
-    if (offered('language') && preferences.language) {
+    if (offered('language') && preferences.language && isLanguageEnabled(design, preferences.language)) {
         result = { ...result, language: preferences.language };
     }
 

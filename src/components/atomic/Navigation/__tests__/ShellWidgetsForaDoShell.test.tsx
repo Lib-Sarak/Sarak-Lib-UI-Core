@@ -27,9 +27,10 @@ const renderNoSlot = (
     slot: React.ReactNode,
     slotName: 'topbarStart' | 'topbarEnd' | 'sidebarFooter',
     navigationStyle: 'topbar' | 'sidebar' = 'topbar',
+    config: Record<string, unknown> = {},
 ) =>
     render(
-        <SarakUIProvider>
+        <SarakUIProvider config={config}>
             <DeviceProvider overrideDevice="desktop">
                 <SarakAppChrome navigationStyle={navigationStyle} widgets={NO_DEFAULTS} {...{ [slotName]: slot }}>
                     <div>conteúdo do app</div>
@@ -63,7 +64,7 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
     });
 
     it('ShellLanguageSelector: abre o dropdown sem SarakShell', () => {
-        renderNoSlot(<ShellLanguageSelector variant="horizontal" />, 'topbarEnd');
+        renderNoSlot(<ShellLanguageSelector variant="horizontal" />, 'topbarEnd', 'topbar', { enabledLanguages: ['pt', 'en'] });
         fireEvent.click(screen.getByRole('button'));
         expect(screen.getByText('English')).toBeInTheDocument();
     });

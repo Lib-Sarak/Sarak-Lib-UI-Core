@@ -1,6 +1,10 @@
 import React from 'react';
 import { SarakShellNav, type ShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { ShellSearchWidget } from '../../atomic/Navigation/ShellSearchWidget';
+import { ShellLanguageSelector } from '../../atomic/Navigation/ShellLanguageSelector';
+import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { ShellUser } from '../../../core/Shell/Components/types';
 import { ChromeFrame } from './ChromeFrame';
@@ -49,7 +53,12 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     const effectiveSearch = search ?? (w.showSearch
         ? <ShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
-    const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right') || w.showThemeToggle || w.showUser;
+    const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
+    const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
+    const showLanguage = w.preferencePlacement.pinned.includes('language');
+    const hasPreferencesMenu = w.preferencePlacement.menu.length > 0;
+    const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
+        || w.showThemeToggle || w.showUser || showFontSize || showNavigationStyle || showLanguage || hasPreferencesMenu;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -89,6 +98,9 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                                 <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
                             )}
                             <ChromeTopbarSlot region="end">{endSlot}</ChromeTopbarSlot>
+                            {showFontSize && <ShellFontSizeControl />}
+                            {showNavigationStyle && <ShellNavigationStyleControl />}
+                            {showLanguage && <ShellLanguageSelector variant="horizontal" />}
                             <ChromeUserThemeGroup
                                 showThemeToggle={w.showThemeToggle}
                                 showUser={w.showUser}
@@ -97,6 +109,13 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                                 variant="horizontal"
                                 className="flex items-center gap-2"
                             />
+                            {hasPreferencesMenu && (
+                                <ShellPreferencesMenu
+                                    menuIds={w.preferencePlacement.menu}
+                                    isNavHidden={isNavHidden}
+                                    onToggleNavCollapsed={w.toggleNavHidden}
+                                />
+                            )}
                         </div>
                     )}
                 </header>

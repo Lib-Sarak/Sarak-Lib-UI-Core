@@ -1,7 +1,7 @@
 import type { PreferenceId, PreferencePosition } from '../Design/schema/preferences';
 
 export type { PreferenceId, PreferencePosition };
-export { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, isPreferenceOffered } from '../Design/schema/preferences';
+export { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, isPreferenceOffered, getPreferencePosition } from '../Design/schema/preferences';
 
 export type SarakColorModePreference = 'light' | 'dark' | 'system';
 export type SarakFontSizePreference = 'sm' | 'md' | 'lg';

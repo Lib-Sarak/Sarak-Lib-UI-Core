@@ -1,6 +1,10 @@
 import React from 'react';
 import { SarakShellNav, type ShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { ShellSearchWidget } from '../../atomic/Navigation/ShellSearchWidget';
+import { ShellLanguageSelector } from '../../atomic/Navigation/ShellLanguageSelector';
+import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { ShellUser } from '../../../core/Shell/Components/types';
 import { ChromeFrame } from './ChromeFrame';
@@ -52,6 +56,15 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     const effectiveSearch = search ?? (w.showSearch
         ? <ShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
+    const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
+    const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
+    const showLanguage = w.preferencePlacement.pinned.includes('language');
+    // Sidebar recolhida (ícone-only) não tem coluna para o controle com rótulo —
+    // mas a preferência continua oferecida (Spec 05 §2.3, "nada some"), então o ⚙
+    // a recebe, mesmo quando nenhuma está em posição `menu` (que já a levaria).
+    const collapsedExtras = w.preferencePlacement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
+    const menuIdsToShow = isNavHidden && w.preferencePlacement.menu.length === 0 ? collapsedExtras : w.preferencePlacement.menu;
+    const hasPreferencesMenu = menuIdsToShow.length > 0;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -91,6 +104,13 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
                         {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        {!isNavHidden && (showFontSize || showNavigationStyle || showLanguage) && (
+                            <div className="flex flex-col gap-2 px-2 py-1">
+                                {showFontSize && <ShellFontSizeControl />}
+                                {showNavigationStyle && <ShellNavigationStyleControl />}
+                                {showLanguage && <ShellLanguageSelector variant="horizontal" />}
+                            </div>
+                        )}
                         <ChromeUserThemeGroup
                             showThemeToggle={w.showThemeToggle}
                             showUser={w.showUser}
@@ -98,6 +118,16 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             logout={logout}
                             variant={isNavHidden ? 'mini' : 'vertical'}
                         />
+                        {hasPreferencesMenu && (
+                            <div className="px-2 pb-1">
+                                <ShellPreferencesMenu
+                                    menuIds={menuIdsToShow}
+                                    isNavHidden={isNavHidden}
+                                    onToggleNavCollapsed={w.toggleNavHidden}
+                                    align="start"
+                                />
+                            </div>
+                        )}
                     </aside>
                 )}
                 <main

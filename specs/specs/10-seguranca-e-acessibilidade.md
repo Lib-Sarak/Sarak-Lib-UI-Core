@@ -333,6 +333,26 @@ pessoa é do host** — a lib não conhece o usuário ([[016-preferencias-do-usu
 preferência lida do `localStorage` ou da porta é **dado hostil como o tema** (§2.1): domínio fechado, valor
 fora do domínio descartado com aviso único.
 
+## 3.6 Tradução
+
+**A lib entrega a escolha do idioma, não o texto traduzido.** Ela não tem motor de tradução. O que ela
+garante: um seletor que lista os idiomas habilitados no tema, grava a escolha como preferência do usuário,
+e um valor público com **o idioma que vale** — `useSarakUI().design.language`, reativo à troca e à
+sincronização entre abas ([[09-temas-e-presets]] §4.7).
+
+**Traduzir as telas da aplicação é do host**, com a biblioteca de i18n que ele escolher — a lib não sabe
+qual é, e não precisa saber:
+
+```tsx
+const { design } = useSarakUI();
+useEffect(() => {
+    if (design.language) i18n.changeLanguage(design.language);
+}, [design.language]);
+```
+
+> ⚠️ **Os textos da própria lib não são traduzidos.** Há rótulos fixos, hoje em inglês e português
+> misturados. Está no [[00-backlog]].
+
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
 
 1. **Todo dado externo que virar CSS passa por `validateDesign`.** Um caminho novo que aplique design sem

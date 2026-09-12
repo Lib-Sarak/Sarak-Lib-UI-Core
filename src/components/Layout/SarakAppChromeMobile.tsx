@@ -7,6 +7,7 @@ import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
 import type { ShellUser } from '../../core/Shell/Components/types';
+import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
@@ -97,6 +98,11 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
     const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
     const effectiveSearch = search ?? (w.showSearch ? <ShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
+    // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
+    // — não há distinção de "botão direto vs. dentro do ⚙" quando só existe uma barra.
+    // `navCollapsed` fica de fora: o próprio hambúrguer já é o controle de colapso aqui.
+    const mobileShowThemeToggle = w.preferencePlacement.offered.includes('colorMode');
+    const extraPreferenceRows = w.preferencePlacement.offered.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
     // A marca aparece na barra compacta E no topo do drawer (mesma variante
     // horizontal nos dois — sempre foi assim).
     const brandNode = <ChromeBrand brand={brand} logo={logo} horizontal />;
@@ -162,12 +168,16 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                         {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
                         <ChromeUserThemeGroup
-                            showThemeToggle={w.showThemeToggle}
+                            showThemeToggle={mobileShowThemeToggle}
                             showUser={w.showUser}
                             user={user}
                             logout={logout}
                             variant="vertical"
                         />
+                        {extraPreferenceRows.map((id) => renderShellPreferenceRow(id, {
+                            isNavHidden: false,
+                            onToggleNavCollapsed: w.toggleNavHidden,
+                        }))}
                     </aside>
                 </React.Fragment>
             )}

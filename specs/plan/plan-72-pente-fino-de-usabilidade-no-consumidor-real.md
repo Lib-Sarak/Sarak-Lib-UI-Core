@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "diagnostico", "usabilidade", "navegador", "sem-codigo"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[specs/11-testes-e-cobertura]]", "[[specs/13-instalacao-e-atualizacao]]"]
-depende_de: "plan-74-barra-configuravel-pelo-administrador"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/00-backlog.md"
 ---
@@ -32,8 +32,9 @@ vezes em que alguém olhou a tela de verdade, o retorno foi imediato e caro — 
 tokens de cromo sem consumidor, o realce do item ativo que sumiu. Nenhum dos três tinha gate que os
 pegasse, e todos apareceram em segundos para quem estava olhando.
 
-Esta plan fecha a campanha do jeito que ela deveria ter começado. Roda **depois das plans 74 e 75** —
-`depende_de` aponta a 74; a 75 corre em paralelo a ela e também precisa estar aprovada antes do passo 1.
+Esta plan fecha a campanha do jeito que ela deveria ter começado. A barra configurada pelo administrador
+e as preferências do usuário já existem ([[05-cromo-e-slots]] §2.2.2 · [[09-temas-e-presets]] §4.7), e o
+passo 3 as exercita.
 
 ## 2.1 A armadilha que já custou dois ciclos, e que é pré-condição aqui
 

@@ -9,6 +9,10 @@ import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSe
 import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUserWidget';
 import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
 import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
+import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
@@ -39,6 +43,16 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
     const { topbarClass } = useShellLayoutStyles(design);
 
     const isTopbar = navigationStyle === 'topbar';
+
+    // Barra configurável pelo administrador (Spec 05 §2.2.1) — Shell não tem
+    // `widgets` de código (não é apps-separados) — só a posição do tema decide.
+    const placement = splitPreferencesByPlacement(design as unknown as Record<string, unknown>);
+    const showThemeToggle = placement.pinned.includes('colorMode');
+    const showLanguage = placement.pinned.includes('language');
+    const showFontSize = placement.pinned.includes('fontSize');
+    const showNavigationStyle = placement.pinned.includes('navigationStyle');
+    const showCollapseToggle = placement.pinned.includes('navCollapsed');
+    const hasPreferencesMenu = placement.menu.length > 0;
 
     // Sovereign Logic: Parity with Sidebar Hover
     const effectiveIsNavHidden = isNavHidden && !isHovered;
@@ -73,13 +87,15 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
             <div className="flex items-center justify-between w-full h-full relative z-10 !overflow-visible">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <SarakIconButton
-                            onClick={toggleNav}
-                            variant="secondary"
-                            size="sm"
-                            className="shrink-0"
-                            icon={<SarakIcon name="Menu" size={16} />}
-                        />
+                        {showCollapseToggle && (
+                            <SarakIconButton
+                                onClick={toggleNav}
+                                variant="secondary"
+                                size="sm"
+                                className="shrink-0"
+                                icon={<SarakIcon name="Menu" size={16} />}
+                            />
+                        )}
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
@@ -159,11 +175,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     {searchPos === 'right' && renderSearch()}
 
                     <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
-                        <ShellLanguageSelector variant="horizontal" />
+                        {showLanguage && <ShellLanguageSelector variant="horizontal" />}
 
                         <div className="w-[var(--theme-border-width,1px)] h-4 bg-[var(--theme-border)] mx-1" />
 
-                        <ShellThemeToggle variant="horizontal" />
+                        {showThemeToggle && <ShellThemeToggle variant="horizontal" />}
+                        {showFontSize && <ShellFontSizeControl />}
+                        {showNavigationStyle && <ShellNavigationStyleControl />}
 
                         <SarakIconButton
                             variant="ghost"
@@ -175,6 +193,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             </>}
                         />
                         {extraToolbarItems}
+                        {hasPreferencesMenu && (
+                            <ShellPreferencesMenu
+                                menuIds={placement.menu}
+                                isNavHidden={Boolean(isNavHidden)}
+                                onToggleNavCollapsed={toggleNav}
+                            />
+                        )}
                     </div>
 
                     {/* 4. User Widget */}

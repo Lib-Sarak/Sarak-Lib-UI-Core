@@ -383,7 +383,7 @@ não entra no tema que ele salva.
 | tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
 | navegação | topo · lateral | `navigationStyle` |
 | navegação recolhida | sim · não | `isNavHidden` |
-| idioma | um dos habilitados no tema | `language` |
+| idioma | um dos habilitados no tema | `language` — só se o tema oferece **e** habilita o idioma escolhido (abaixo) |
 
 **O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
 oferecida**, **no menu**, **fixa na barra**. É token, e não campo à parte, porque é o administrador quem o
@@ -397,6 +397,12 @@ que o administrador não abriu. Preferência não oferecida é ignorada, mesmo q
 2. mudando de modo, essas chaves vêm da contraparte no modo oposto ao nativo, e do próprio tema no nativo —
    qualquer que seja o modo em que o tema foi salvo;
 3. todo o resto é o design atual do tema. Tema sem contraparte cai no fallback sintetizado (§2.1).
+
+**O idioma que vale é um só**, e é ele que a lib aplica, que o seletor mostra e que o host lê: a
+preferência do usuário, **se** o tema oferece a preferência de idioma **e** o idioma escolhido está em
+`enabledLanguages`; senão, o idioma do tema. Uma preferência salva para um idioma que o administrador
+desabilitou depois deixa de valer. **O host lê esse valor em `useSarakUI().design.language`** — nunca a
+preferência crua, que ignora as duas condições e, quando o usuário nunca escolheu, é vazia.
 
 **Persistência:** por usuário, no `localStorage`, com chave própria isolada por tenant (§4.4.1), gravada
 **no ato da escolha** — a navegação por recarga de página não pode perdê-la — e sincronizada entre abas. O

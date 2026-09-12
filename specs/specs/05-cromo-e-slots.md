@@ -181,6 +181,35 @@ isso o conteúdo que o consumidor põe em `topbarEnd`/`sidebarFooter` **não** o
 tema/usuário à mão desliga o default correspondente. A alternativa — dar precedência a esses slots —
 apagaria tema e usuário sempre que qualquer botão fosse posto ali.
 
+### 2.2.2 A barra configurada pelo administrador
+
+Cada uma das cinco preferências do usuário ([[09-temas-e-presets]] §4.7) tem, no tema, uma de três
+posições — escolhida pelo administrador no painel, na seção *Barra de Preferências do Usuário*:
+
+| Posição | O que o usuário final vê |
+| --- | --- |
+| **não oferecida** | nada — vale o valor do tema |
+| **no menu** | um item dentro do ⚙ *Preferências* |
+| **fixa na barra** | um controle direto na barra — e também dentro do ⚙, quando ele existe |
+
+**Regras que fecham o comportamento:**
+- **O ⚙ só nasce quando pelo menos uma preferência está *no menu*.** Uma barra só com fixadas não o faz
+  aparecer — não há botão que abre painel vazio. É o que mantém o padrão de fábrica igual à barra que já
+  existia: modo e navegação recolhida **fixas**; fonte, navegação topo/lateral e idioma **não oferecidas**.
+- **Sidebar recolhida:** o ⚙ continua — é um ícone e cabe — e recebe o que é fixado e não tem ícone
+  próprio. Recolher a navegação nunca tira do usuário o acesso a uma preferência oferecida.
+- **Celular:** tudo o que é oferecido vai para o drawer, fixado ou não, sem ⚙ separado; a navegação
+  recolhida não ganha linha, porque o hambúrguer já é o colapso. Nada some (§2.3).
+- **Duas camadas de controle:** a prop `widgets` do `SarakAppChrome` é do **código** e é o teto — o que o
+  desenvolvedor desligou não volta pelo painel. A posição é do **tema** e escolhe dentro desse teto. O
+  `SarakShell` não tem essa camada de código: nele, só a posição decide.
+- A prévia do painel mostra a barra que o usuário vai ver, porque monta os cromos reais.
+
+**O seletor de idioma** só monta com **dois ou mais** idiomas habilitados no tema, e, fora do caminho de
+substituição pelo host, também precisa estar oferecido. Ele mostra o **idioma que vale**
+([[09-temas-e-presets]] §4.7) e grava a preferência; o host pode substituí-lo inteiro pelo registro de
+componentes locais, e esse caminho não depende das duas condições.
+
 ## 2.3 A regra de degradação — nada some
 
 | Modo | O que acontece com os slots |
@@ -383,6 +412,9 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | O item ativo se distingue do inativo em **todo** tema shippado, nas duas orientações (ΔE) | `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` | ✅ suíte |
 | Widgets default: conjunto completo, cada opt-out isolado, slot `search` vencendo o default, atalho e suas três travas, celular | `src/components/Layout/__tests__/SarakAppChrome.test.tsx` · `SarakAppChromeMobile.test.tsx` · `chrome/__tests__/useChromeDefaultWidgets.test.ts` | ✅ suíte |
 | O palette busca itens dados e seleciona por clique e teclado; sem itens, segue pelo registro | `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` | ✅ suíte |
+| Posição de cada preferência: as três posições, ⚙ só com item no menu, teto de `widgets`, sidebar recolhida | `src/core/Provider/utils/__tests__/chromePreferencePlacement.test.ts` · `src/components/Layout/__tests__/SarakAppChrome.preferencesBar.test.tsx` · `src/core/Shell/Components/__tests__/SidebarNav.preferencesBar.test.tsx` · `TopbarNav.preferencesBar.test.tsx` | ✅ suíte |
+| O ⚙ como overlay: abre por teclado, ESC fecha, o foco volta ao ⚙; não monta vazio | `src/components/atomic/Navigation/__tests__/ShellPreferencesMenu.test.tsx` | ✅ suíte |
+| O seletor de idioma: lista o que o tema habilita, grava preferência, não monta com um idioma, mostra o idioma que vale | `src/components/atomic/Navigation/__tests__/ShellLanguageSelector.test.tsx` | ✅ suíte |
 | Item horizontal em caixa normal e corpo legível, medido em navegador real | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ⚠️ **falha esperada** (`test.fail`) até a regra global de raio ser corrigida |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |

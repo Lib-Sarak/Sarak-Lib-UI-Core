@@ -2210,57 +2210,6 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                   <div
                     class="mt-auto space-y-1 p-2"
                   >
-                    <div
-                      class="relative"
-                    >
-                      <button
-                        class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
-                        title="Language"
-                        type="button"
-                      >
-                        <span
-                          class="shrink-0 inline-flex items-center justify-center"
-                        >
-                          <svg
-                            class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-                            fill="none"
-                            height="18"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                            width="18"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle
-                              cx="12"
-                              cy="12"
-                              r="10"
-                            />
-                            <line
-                              x1="2"
-                              x2="22"
-                              y1="12"
-                              y2="12"
-                            />
-                            <path
-                              d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="flex-1 min-w-0 truncate text-left"
-                        >
-                          Language
-                        </span>
-                        <span
-                          class="text-2xs font-bold text-[var(--theme-primary)]"
-                        >
-                          PT
-                        </span>
-                      </button>
-                    </div>
                     <button
                       class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
                       title="Light Mode"

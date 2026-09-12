@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useSearchShortcut } from '../../../shared/hooks/useSearchShortcut';
+import { splitPreferencesByPlacement, type ChromePreferencesPlacement } from '../../../core/Provider/utils/chromePreferencePlacement';
 import { isChromeWidgetEnabled, type SarakChromeWidgets } from './chromeWidgets';
 
 export interface ChromeDefaultWidgetsOptions {
@@ -23,6 +24,11 @@ export interface ChromeDefaultWidgetsState {
     openSearch: () => void;
     closeSearch: () => void;
     toggleNavHidden: () => void;
+    /** Onde cada preferência aparece na barra (Spec 05 — barra configurável pelo
+     *  administrador): `pinned` já respeita o teto de `widgets.themeToggle`/
+     *  `widgets.collapse`; `menu` é o conteúdo do ⚙ "Preferências" (fixadas
+     *  inclusive). Vazio fora do `SarakUIProvider` — nenhum widget default monta ali. */
+    preferencePlacement: ChromePreferencesPlacement;
 }
 
 /**
@@ -59,15 +65,26 @@ export const useChromeDefaultWidgets = (
         sarak?.updatePreferences({ navCollapsed: !sarak?.design?.isNavHidden });
     }, [sarak]);
 
+    // `colorMode`/`navCollapsed` já eram widget antes desta barra existir — o teto de
+    // código continua vencendo a posição do tema (Spec 05 §2.2.1); as outras três
+    // preferências não têm teto, só a posição decide.
+    const preferencePlacement: ChromePreferencesPlacement = hasProvider
+        ? splitPreferencesByPlacement(sarak?.design as unknown as Record<string, unknown>, {
+              colorMode: isChromeWidgetEnabled(widgets.themeToggle),
+              navCollapsed: isChromeWidgetEnabled(widgets.collapse),
+          })
+        : { pinned: [], offered: [], menu: [] };
+
     return {
         hasProvider,
         showSearch,
-        showThemeToggle: hasProvider && isChromeWidgetEnabled(widgets.themeToggle),
+        showThemeToggle: preferencePlacement.pinned.includes('colorMode'),
         showUser: hasProvider && isChromeWidgetEnabled(widgets.user) && hasUser,
-        showCollapse: hasProvider && isChromeWidgetEnabled(widgets.collapse),
+        showCollapse: preferencePlacement.pinned.includes('navCollapsed'),
         isSearchOpen: showSearch && isSearchOpen,
         openSearch,
         closeSearch,
         toggleNavHidden,
+        preferencePlacement,
     };
 };

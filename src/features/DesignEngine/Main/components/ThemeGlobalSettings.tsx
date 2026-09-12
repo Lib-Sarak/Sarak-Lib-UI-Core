@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Shield } from 'lucide-react';
+import { Globe, Shield, SlidersHorizontal } from 'lucide-react';
 import { CategoryLabel, Section, InputControl, MediaUploaderControl } from '../../components/DesignControls';
 import { TokenControl } from './TokenControl';
+import { PreferencesSchema } from '../../../../core/Design/schema/preferences';
 import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 import type { ComponentSchema, DesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
@@ -41,7 +42,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
         <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
             <CategoryLabel
                 icon={Globe}
-                title="0. Configurações Globais (2)"
+                title="0. Configurações Globais (3)"
                 index={0}
                 isOpen={activePillarId === 'global'}
                 onToggle={() => setActivePillarId(activePillarId === 'global' ? null : 'global')}
@@ -79,6 +80,29 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                     </div>
                                 </Section>
                             )}
+
+                            {/* Barra de preferências do usuário (Spec 05 §2.2.1): para
+                                cada uma das 5 preferências, a posição que o usuário final vê —
+                                não oferecida, no menu ⚙, ou fixa na barra. A prévia ao lado
+                                reflete a escolha porque renderiza o mesmo `SidebarNav`/`TopbarNav`
+                                que o consumidor real usa. */}
+                            <Section
+                                id="global-preferences-bar"
+                                icon={SlidersHorizontal}
+                                title={`Barra de Preferências do Usuário (${PreferencesSchema.tokens.length})`}
+                                activeSection={activeSectionId}
+                                onToggle={setActiveSectionId}
+                            >
+                                <div className="flex flex-col gap-4">
+                                    {PreferencesSchema.tokens.map((token: DesignToken) => {
+                                        const meta = catalogMap.get(token.id);
+                                        const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
+                                        return (
+                                            <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                        );
+                                    })}
+                                </div>
+                            </Section>
 
                             {/* Identidade da Empresa */}
                             {sarak.branding && sarak.updateBranding && (

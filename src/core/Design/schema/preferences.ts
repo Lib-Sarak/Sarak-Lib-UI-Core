@@ -102,3 +102,15 @@ export const isPreferenceOffered = (design: Record<string, unknown> | undefined,
     const value = design?.[tokenId] ?? DEFAULT_POSITIONS[tokenId];
     return value !== 'off';
 };
+
+/**
+ * Lê a POSIÇÃO efetiva de `id` — mesma leitura de `isPreferenceOffered`
+ * (chave ausente cai no padrão de fábrica do PRÓPRIO token), só que devolve o
+ * valor em vez do booleano. Fonte única dos defaults: quem precisa saber
+ * "fixada ou no menu" (a barra configurável pelo administrador) lê por aqui,
+ * nunca reconstrói a tabela de defaults em outro arquivo.
+ */
+export const getPreferencePosition = (design: Record<string, unknown> | undefined, id: PreferenceId): PreferencePosition => {
+    const tokenId = PREFERENCE_POSITION_TOKEN_IDS[id];
+    return (design?.[tokenId] as PreferencePosition | undefined) ?? DEFAULT_POSITIONS[tokenId];
+};

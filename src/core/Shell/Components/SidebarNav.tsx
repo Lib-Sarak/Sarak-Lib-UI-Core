@@ -11,6 +11,10 @@ import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUser
 import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSearchWidget';
 import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
 import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
+import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface SidebarNavProps {
@@ -42,6 +46,21 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
     // Sovereign Logic: Effective state for hover expansion
     const effectiveIsNavHidden = isNavHidden && !isHovered;
+
+    // Barra configurável pelo administrador (Spec 05 §2.2.1): Shell não tem
+    // `widgets` de código (não é apps-separados) — só a posição do tema decide.
+    const placement = splitPreferencesByPlacement(design as unknown as Record<string, unknown>);
+    const showThemeToggle = placement.pinned.includes('colorMode');
+    const showLanguage = placement.pinned.includes('language');
+    const showFontSize = placement.pinned.includes('fontSize');
+    const showNavigationStyle = placement.pinned.includes('navigationStyle');
+    const showCollapseToggle = placement.pinned.includes('navCollapsed');
+    // Sidebar recolhida (ícone-only) não tem coluna para fonte/navegação com
+    // rótulo — mas seguem oferecidas (Spec 05 §2.3, "nada some"), então o ⚙
+    // as recebe, mesmo quando nenhuma preferência está em posição `menu`.
+    const collapsedExtras = placement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed' && id !== 'language');
+    const menuIdsToShow = effectiveIsNavHidden && placement.menu.length === 0 ? collapsedExtras : placement.menu;
+    const hasPreferencesMenu = menuIdsToShow.length > 0;
 
     const searchPos = design?.searchPositionSidebar || 'top';
 
@@ -116,7 +135,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     </div>
                 )}
 
-                {!effectiveIsNavHidden && logoPosition !== 'center' && (
+                {!effectiveIsNavHidden && logoPosition !== 'center' && showCollapseToggle && (
                     <SarakIconButton
                         onClick={toggleNav}
                         variant="ghost"
@@ -171,11 +190,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 {/* Search - BOTTOM */}
                 {searchPos === 'bottom' && renderSearch()}
 
-                {/* 2. Language Selector */}
-                <ShellLanguageSelector variant="vertical" />
-
-                {/* Theme Toggle */}
-                <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
+                {/* Barra configurável pelo administrador (Spec 05 §2.2.1) — cada
+                    controle só monta se a posição da preferência for `pinned`. */}
+                {showLanguage && <ShellLanguageSelector variant="vertical" />}
+                {showThemeToggle && <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />}
+                {!effectiveIsNavHidden && showFontSize && <div className="px-1"><ShellFontSizeControl /></div>}
+                {!effectiveIsNavHidden && showNavigationStyle && <div className="px-1"><ShellNavigationStyleControl /></div>}
 
                 {/* 3. Notifications */}
                 <SarakMenuItem
@@ -186,6 +206,17 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 >
                     <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
                 </SarakMenuItem>
+
+                {hasPreferencesMenu && (
+                    <div className="px-1">
+                        <ShellPreferencesMenu
+                            menuIds={menuIdsToShow}
+                            isNavHidden={Boolean(isNavHidden)}
+                            onToggleNavCollapsed={toggleNav}
+                            align="start"
+                        />
+                    </div>
+                )}
             </div>
 
             {/* 4. User Profile & Logout */}
