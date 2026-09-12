@@ -548,8 +548,9 @@ de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado cheg
 
 O critério de aceite desta spec, como procedimento:
 
-1. **Parta de uma referência completa** — clone um item de `SARAK_REFERENCE_THEMES` (ou exporte um tema
-   do painel, que já sai completo por §4.5). **Não** comece de `{}`.
+1. **Parta de uma referência completa** — derive com `deriveThemeFromReference` (§4.1.1), que devolve
+   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5. **Não** comece de
+   `{}`, e **não** espalhe `...ref.design`: a contraparte fica para trás.
 2. **Troque só os valores que você quer mudar.** Mantenha as chaves; um tema completo com 3 cores
    trocadas é um tema válido.
 3. **Use apenas ids que existem** — a régua é `getAllDesignTokens()`. Chave inventada é descartada com
@@ -561,7 +562,10 @@ O critério de aceite desta spec, como procedimento:
    trocar de tema não vai mudar a topbar — e alguém vai reportar isso como bug da lib.
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
    `THEME_PRESET_IDS` e importe em `GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
-   (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele).
+   (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
+   shippado também exige: `contraparte` autorada (§2.1), fundo de hover do item de navegação preenchido nas
+   duas orientações ([[05-cromo-e-slots]] §2.4), nenhuma mídia de terceiro (§5.1) e as posições de
+   preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
 
 Os passos 3-5 são exatamente o que os três gates da §6 cobram. Seguir o procedimento e passar nos gates
 são a mesma coisa dita de dois jeitos.

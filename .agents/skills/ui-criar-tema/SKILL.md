@@ -73,11 +73,25 @@ resolvido" exige uma decisão sua (ver `references/liberdade-e-restricao.md` §1
 
 Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md`, nunca com zero.
 
-### 5.5. Contraparte de modo (obrigatória para tema NOVO — plan-26)
-Sem `contraparte`, escolher este tema troca o MODO do usuário (a regressão que a plan-26 consertou). Escreva
+### 5.5. Contraparte de modo (obrigatória para tema NOVO)
+O modo é **preferência do usuário** (`specs/specs/09-temas-e-presets.md` §4.7): o tema é escrito para um modo,
+e quem pede o oposto recebe a `contraparte`. Sem ela, recebe o fallback sintetizado — que satura e **não
+volta ao original** numa ida e volta (`specs/specs/09-temas-e-presets.md` §2.1). Escreva
 `contraparte: { ... }` no `ThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
 o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** presença fora da
 lista de isenção (temas legados, que ficam no fallback sintetizado — o número vivo sai em `npm run audit`).
+
+### 5.6. O que o gerador preenche e você precisa conferir
+
+- **Realce do item de navegação.** O fundo do item ativo (`sidebarActiveColor`/`topbarActiveColor`) e o do
+  item sob o ponteiro (`sidebarHoverColor`/`topbarHoverColor`) **nascem `transparent`**; o texto do item
+  ativo é `navItemActiveColor`. Sem preencher os de hover, o tema fica sem fundo de hover na navegação — o
+  realce passa a ser só de texto. Os papéis estão em `specs/specs/05-cromo-e-slots.md` §2.4.
+- **Mídia de fundo.** Tema shippado **nunca** aponta `globalBackgroundImageUrl` para servidor de terceiro:
+  use as atmosferas geradas pela lib ou deixe vazio (`specs/specs/09-temas-e-presets.md` §5.1).
+- **Posição das preferências do usuário** (`preference*Position`). O gerador as escreve com o **padrão de
+  fábrica** — mantenha. Quem decide o que a barra oferece é o administrador de cada instalação, no painel;
+  mudar isso num tema shippado muda a barra dos usuários de todo consumidor.
 
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do
@@ -101,13 +115,15 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] O solucionador rodou e o relatório foi colado? Todo par "não resolvido" tem decisão registrada?
 - [ ] `npm run audit` fecha sem regressão no auditor de contraste (R31)?
 - [ ] Tema NOVO: `contraparte` foi autorada (bloco parcial) e o gate deixou de acusar isenção faltando?
+- [ ] Hover do item de navegação preenchido nas duas orientações? Nenhuma mídia de terceiro? Posições de
+      preferência no padrão de fábrica?
 
 ## Referências (Camada 3)
 
 **Gerador — esta skill invoca:**
 - `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` — gera o arquivo do tema
   pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
-- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador (plan-24-1). Mede
+- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador. Mede
   contraste com o gate da R31 e corrige **só a luminosidade** do texto que reprovar, preservando matiz e
   saturação. Devolve tema + relatório; **não escreve arquivo sozinho** — você aplica o valor corrigido.
 - `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` — o mapa de onde há restrição
@@ -117,7 +133,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - `gates/scripts/audit/verify_contrast.ts` (`auditor_contraste.mjs`) — **tem gate**, dentro de
   `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado (nativo E o
   modo oposto, via `resolveThemeForMode`); é o que o solucionador (acima) consulta para saber o que
-  corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`, plan-26).
+  corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`).
 - `src/core/Design/presets/themes/color-engine.ts` (`resolveThemeForMode`) — a função que decide o que
   aplicar ao trocar de tema/modo: nativo → `design`; oposto com `contraparte` → o bloco autorado; oposto
   sem `contraparte` → `syncThemeWithMode` (fallback dos legados). Todo caminho de aplicar tema passa por ela.

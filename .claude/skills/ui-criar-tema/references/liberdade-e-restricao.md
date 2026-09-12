@@ -18,7 +18,7 @@ O que importa saber, sem abrir o código:
 | `textColorMaster` / `textColorSecondary` / `textColorMuted` / `titleColor` | as superfícies estruturais do tema — body, layers, card, modal, sidebar, topbar |
 | `cardTitleColor` · `cardActionBtnText` · `cardSearchTextFocusColor` | as superfícies do próprio card (fundo do card, fundo do botão de ação, fundo do campo de busca focado) |
 | `btnPrimaryText` · `inputTextColor` · `topbarTitleColor` · `tooltipTextColor` | o fundo do próprio componente (botão primário, input, topbar, tooltip) |
-| `navItemActiveColor` | o fundo do item ativo — sidebar ou topbar, conforme `navigationStyle` |
+| `navItemActiveColor` | o fundo do item ativo — o da sidebar **e** o da topbar: o token pinta o texto do item ativo nas duas orientações, e o gate mede as duas |
 
 **Se você preencher um destes tokens, ele vira um par a verificar.** Rode o solucionador
 (`.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts`) antes de dar o tema por pronto — ele mede
@@ -74,7 +74,7 @@ Para a lista **viva** de tokens de texto e de fundo por trás da tabela da §1, 
 `gates/scripts/audit/verify_contrast.ts` — é a mesma fonte que o gate usa, então nunca diverge do que é
 cobrado de verdade.
 
-## 5. Contraparte — o que muda para o modo OPOSTO (plan-26)
+## 5. Contraparte — o que muda para o modo OPOSTO
 
 Um tema é escrito para **um** modo (`design.mode`). A `contraparte` é um bloco **parcial**, autorado por você,
 com os tokens que precisam de um valor **diferente** quando alguém vê este tema no modo oposto —
@@ -90,7 +90,7 @@ status) normalmente **não muda**, é identidade. A lista viva de qual token cai
 já erra nas pontas por heurística de nome (`textureColor`/`cardTitleIconGlow` não são texto, são
 fundo/marca) e será corrigida com o tempo; este documento não pode divergir dela por estar desatualizado.
 
-**Como autorar, na prática (o que os 5 temas da plan-25 fizeram):**
+**Como autorar, na prática (o que os temas com contraparte autorada fizeram):**
 
 1. Rode o solucionador (`solve_theme_contrast.ts`) sobre um design candidato para o modo oposto — ele mede
    com o MESMO `PAIRS` do gate e corrige só a luminosidade do texto que reprovar.

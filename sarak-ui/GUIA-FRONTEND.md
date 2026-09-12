@@ -451,18 +451,27 @@ o pacote também traz `docs/component-catalog.md`.
 `tokenId → valor`.
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, deriveThemeFromReference } from '@sarak/lib-ui-core';
 
-// Parta de um tema COMPLETO e troque poucos valores.
-const TEMAS = SARAK_REFERENCE_THEMES.map((tema) => ({
-  ...tema,
-  design: { ...tema.design, primaryColor: '#2563eb', accentColor: '#38bdf8' },
-}));
+// Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
+const TEMAS = [
+  deriveThemeFromReference('minimalist-airy', {
+    id: 'marca-claro', name: 'Marca (claro)',
+    design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+  }),
+  deriveThemeFromReference('sarak-sovereign', {
+    id: 'marca-escuro', name: 'Marca (escuro)',
+    design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
+  }),
+];
 ```
 
 - **Nunca monte um tema do zero** com um punhado de chaves de cor: eixos omitidos (fonte, cromo,
   raio, espaçamento) simplesmente não mudam, e o sintoma vira "troquei o tema e a fonte continuou
-  igual". Parta de `SARAK_REFERENCE_THEMES` (o par completo) ou de um id de `themes.presetIds`.
+  igual". Derive de um id de `SARAK_REFERENCE_THEMES` (o par completo) ou de `themes.presetIds`.
+- **Derivar é uma chamada, não uma cópia de campo.** `deriveThemeFromReference` devolve o tema completo —
+  `design` **e** `contraparte` — e aplica a customização nos dois modos. Espalhar `{ ...ref.design, … }`
+  perde a contraparte, e a troca de claro/escuro passa a degradar em silêncio.
 - **Qual tema está ativo** — três caminhos, não confunda:
   | Prop | Comportamento |
   | --- | --- |

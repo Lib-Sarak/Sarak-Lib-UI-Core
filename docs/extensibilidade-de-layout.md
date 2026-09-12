@@ -25,21 +25,20 @@ pelo `SarakUIProvider`, zero-config) desenha o fundo da aplicação inteira. **N
 componente para isso** — preenche-se o tema (Configuração, não Expansão).
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, deriveThemeFromReference } from '@sarak/lib-ui-core';
 
-const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
-  ...t,
+const MEU_TEMA = deriveThemeFromReference('sarak-sovereign', {
+  id: 'meu-tema', name: 'Meu Tema',
   design: {
-    ...t.design,
-    globalBackgroundImageUrl: '/midia/fundo.webm', // imagem OU vídeo (animação)
+    globalBackgroundImageUrl: '/midia/fundo.webm', // imagem OU vídeo (animação), do SEU servidor
     globalBackgroundOpacity: 0.35,
     globalBackgroundBlur: 4,
     texture: 'aurora',          // textura/atmosfera procedural (sem arquivo)
     bgNoiseAnimation: true,     // ruído animado
   },
-}));
+});
 
-<SarakUIProvider customThemes={MEUS_TEMAS} initialTheme={MEUS_TEMAS[0].id}>
+<SarakUIProvider customThemes={[MEU_TEMA]} initialTheme={MEU_TEMA.id}>
   <App />
 </SarakUIProvider>
 ```

@@ -95,17 +95,41 @@ funciona hoje e fica **fora da central para sempre**. A lista real de CSS Variab
 `catalog.json` → `tokens.cssVars`; nome fora dela não existe e não pinta nada.
 
 **Temas em JSON (sem backend):** um tema é `{ id, name, description, design }`, com `design` = mapa
-`tokenId → valor`. Passe via `customThemes`. **Parta de um tema COMPLETO** (`SARAK_REFERENCE_THEMES`)
-e troque poucos valores — montar do zero com um punhado de chaves de cor produz o sintoma clássico
-"troquei o tema e a fonte continuou igual" (eixos omitidos não mudam). Três controles, não confunda:
+`tokenId → valor`. Passe via `customThemes`. **Derive de um tema de referência, não monte do zero:**
+montar com um punhado de chaves de cor produz o sintoma clássico "troquei o tema e a fonte continuou
+igual" (eixos omitidos não mudam). A derivação é **uma chamada**, não uma cópia de campo:
+
+```tsx
+import { deriveThemeFromReference } from '@sarak/lib-ui-core';
+
+const MEU_TEMA = deriveThemeFromReference('minimalist-airy', {
+  id: 'minha-marca', name: 'Minha Marca',
+  design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+});
+```
+
+Ela devolve o tema **completo** — `design` e `contraparte` — e aplica a sua customização nos dois modos.
+Espalhar `{ ...ref.design, … }` perde a contraparte; `{ ...ref, design: { ...ref.design, … } }` a mantém,
+mas uma customização de cor de modo não chega ao modo oposto. Três controles, não confunda:
 
 - **`activeThemeId`** — CONTROLADO: sempre vence e reaplica a cada mudança. Use quando o app decide.
 - **`initialTheme`** — SEMENTE, não-controlado: só semeia o primeiro carregamento; o usuário troca
   depois sem ser forçado de volta. É a opção segura.
 - Nenhum dos dois: cai em `options.theme.defaultTheme` ou no primeiro tema global.
 
-A seleção do usuário persiste em `localStorage` sozinha. Para sincronizar no backend **do
-consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`. Para a troca de
+A seleção do tema persiste em `localStorage` sozinha. Para sincronizar no backend **do
+consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`.
+
+**Tema × preferência — duas camadas.** O **tema** é do administrador e vale para o sistema inteiro; o painel
+(`/design`) o edita — **proteja essa rota**: a lib não autentica ninguém. A **preferência** é de cada usuário
+— modo, tamanho da fonte, barra no topo ou na lateral, navegação recolhida, idioma —, aplicada por cima do
+tema e **nunca gravada nele**. O administrador escolhe no painel o que a barra oferece; o usuário usa. Ela
+persiste por navegador (`localStorage`); para guardar por usuário no seu servidor, use
+`options.preferences.onSave`/`onLoad`. Ler e escrever pela aplicação: `useSarakPreferences()`.
+
+**Idioma:** a lib entrega a escolha, não o texto traduzido. Traduza as suas telas lendo **o idioma que
+vale**, `useSarakUI().design.language` — nunca a preferência crua, que ignora o que o administrador
+ofereceu e habilitou. Para a troca de
 tema atravessar apps de **mesma origem**, use a mesma `options.persistence.storageKey` em todos
 (`crossTabSync` é `true` por padrão).
 

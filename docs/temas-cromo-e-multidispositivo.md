@@ -12,13 +12,19 @@ valores; **não monte um tema do zero** (é como o `ERP_THEMES` do 1º teste nas
 cor, e por isso "fonte/cromo não mudavam").
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, deriveThemeFromReference } from '@sarak/lib-ui-core';
 
-// Customização mínima: clona o par completo e troca só a cor da marca.
-const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
-  ...t,
-  design: { ...t.design, primaryColor: '#2563eb', accentColor: '#38bdf8' },
-}));
+// Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
+const MEUS_TEMAS = [
+  deriveThemeFromReference('minimalist-airy', {
+    id: 'marca-claro', name: 'Marca (claro)',
+    design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+  }),
+  deriveThemeFromReference('sarak-sovereign', {
+    id: 'marca-escuro', name: 'Marca (escuro)',
+    design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
+  }),
+];
 
 <SarakUIProvider customThemes={MEUS_TEMAS} initialTheme={MEUS_TEMAS[0].id}>
   <App />
@@ -26,7 +32,9 @@ const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
 ```
 
 APIs relacionadas:
-- `GLOBAL_THEMES: ThemePreset[]` — catálogo completo (18 temas) para escolher o ponto de partida.
+- `GLOBAL_THEMES: ThemePreset[]` — o catálogo completo, para escolher o ponto de partida.
+- `deriveThemeFromReference(id, { id, name, design })` — deriva um tema completo, com `contraparte`, a partir
+  de qualquer tema do catálogo. Espalhar `.design` perde a contraparte.
 - `SARAK_REFERENCE_THEMES` — o par recomendado (`minimalist-airy` claro + `sarak-sovereign` escuro), que difere em modo, cromo e fonte de propósito.
 - `getThemePreset(id)` — busca um preset por id.
 - `getDefaultDesignState()` / `getAllDesignTokens()` — o **schema vivo** de tokens (fonte da verdade; cada `token.id` é uma chave válida de `design`).
