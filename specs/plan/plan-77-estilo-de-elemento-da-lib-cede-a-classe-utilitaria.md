@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o estilo de elemento da lib ceder à classe utilitária"
 objetivo: "Fazer toda classe utilitária aplicada a um elemento vencer o estilo padrão que a lib impõe a esse elemento, mantendo o padrão onde não há classe"
 dominio: "Sarak-Lib-UI-Core / Design Engine / CSS publicado"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "css", "cascade-layers", "tailwind", "botao", "tipografia"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[arquitetura/02-design-engine]]", "[[specs/11-testes-e-cobertura]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[015-metrica-do-item-de-navegacao-horizontal]]"]
@@ -85,6 +85,48 @@ recalibração do catálogo, que vem depois desta plan. **Não** mude default de
   classe, isso é achado, não conserto desta plan.
 - O consumidor (ERP), nem código nem dado.
 
+## 3.3 Emenda — 2026-09-13 (três decisões levantadas pelo executor durante a execução)
+
+A execução mediu três casos em que *"mover sem mudar o conteúdo"* quebraria o próprio objetivo da plan. As
+três decisões abaixo **ampliam** a §3.1 e **prevalecem** sobre a frase *"o conteúdo das regras não muda"*
+**só nestes três pontos**.
+
+1. **`[class*="border"]` — acrescentar a variável do Tailwind.** Toda utilitária de borda (`border`,
+   `border-2`, `border-t`…) escreve `border-style` por `var(--tw-border-style)`. Movida como está, a regra
+   perde para a utilitária, e o token `borderStyle` morre nos elementos com `border`. A regra movida passa a
+   declarar também `--tw-border-style: var(--border-style, solid)`. Com isso:
+   - `border` + token `dashed` → `dashed`: é o comportamento de hoje, mantido;
+   - `border-dashed` + token `solid` → `dashed`: é o que a plan conserta.
+
+   Os dois entram como casos do harness.
+
+2. **`.rounded-btn` passa a ler os cantos.** Entra na §3.1: `src/styles/_theme.css`, a classe
+   `.rounded-btn`. Hoje os sete usos dela são `<button>` e recebem os tokens de canto (`btnRadiusTL/TR/BR/BL`)
+   pela regra de botão. Com a regra de botão cedendo, a classe própria vence e os cantos param de chegar. No
+   `minimalist-airy` (tema de referência) o botão iria de pílula para quadrado.
+
+   `.rounded-btn` passa a compor os quatro cantos, com o raio mestre como reserva de cada um — o mesmo valor
+   que a regra de botão entregava. **Isto preserva o comportamento de hoje.** O caso "não muda nada" do
+   harness passa a usar **um valor que importa**: `SarakButton` com mestre `0` e cantos `9999px` computa
+   `9999px`. Um tema com mestre igual aos cantos não prova nada.
+
+3. **A família de `h1`–`h3` perde o `!important`** (`_typography.css:40`). Ele não serve para herança,
+   porque regra de elemento já vence o valor herdado. Serve só para vencer a classe no próprio título, que é
+   exatamente o defeito desta plan. Medido pelo revisor: o único título da lib com classe de família é
+   `src/features/DesignEngine/Canvas/Mocks/TableMock.tsx:122` (`<h3 … font-mono>`). Hoje ele renderiza com a
+   fonte de título, contra o que está escrito; passa a renderizar mono. Sem o `!important`, a regra vai para a
+   camada dos padrões de elemento, como as demais. Caso no harness: `h2.font-mono` → família mono, e `h2` sem
+   classe → família de título.
+
+**O que fica na camada final, e é limite declarado:**
+- `body`, porque o `line-height` de `_base.css` o prenderia;
+- o `transform !important` do botão ativo.
+
+Os dois vão no resumo e na nota de migração como o que ainda não cede à classe.
+
+**Arquivos de depuração.** `browser-tests/.debug-hover.tmp.mjs`, `.debug-ref.tmp.mjs` e
+`.measure-scenarios.tmp.mjs` não entram na entrega. Apague-os antes do resumo.
+
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
@@ -142,7 +184,8 @@ recalibração do catálogo, que vem depois desta plan. **Não** mude default de
       no resumo, antes e depois.
 - [ ] O caso da pílula passa como `test`. Não resta `test.fail` nem `skip` no arquivo.
 - [ ] Os casos do passo 4 existem e passam, incluindo "não muda nada" e as duas direções do hover.
-- [ ] Nenhum valor de estilo mudou: o diff das regras movidas mostra só mudança de camada ou de arquivo.
+- [ ] Nenhum valor de estilo mudou: o diff das regras movidas mostra só mudança de camada ou de arquivo — com
+      as três exceções da §3.3, cada uma com os seus casos no harness.
 - [ ] A nota de migração está sob a 7.0.0 e diz o que o consumidor pode ver de diferente.
 - [ ] `audit:baseline` sem regressão; suíte inteira verde. Falha em arquivo não tocado foi rodada isolada
       antes de ser atribuída ([[00-backlog]] #5).

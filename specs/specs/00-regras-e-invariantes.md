@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**35 regras: 32 verificáveis (§2) e 3 de conduta (§3).**
+**36 regras: 33 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
-| ⚠️ escopo menor que a regra | **10** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** |
+| ⚠️ escopo menor que a regra | **11** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -90,8 +90,8 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > (escopo do gate, e o gate de R8.1). Medido o vão inteiro — não há **componente ou hook** fora do alcance
 > de `auditor_coverage.mjs` — e a linha `**Estado:**` de R8 foi alinhada a ✅. Os dois voltam a concordar.
 >
-> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **36**, não 35: a extra é a sub-regra **R8.1**, que não entra
-> na contagem das regras numeradas (§1.3 conta 35).
+> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **37**, não 36: a extra é a sub-regra **R8.1**, que não entra
+> na contagem das regras numeradas (§1.3 conta 36).
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
@@ -1189,6 +1189,50 @@ nesta prosa.
 
 ---
 
+## R36 — O código não cita o rastro de execução
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só as linhas **adicionadas** no commit local; o
+legado, a CI e os arquivos isentos ficam fora.
+
+**Enunciado.** Comentário, string e nome em `src/`, `gates/`, `scripts/` e `bin/` não citam plan, veredito
+nem achado de veredito. Explique a decisão no próprio código, ou cite a spec **fixa** que é dona do fato.
+`achado N` só aparece junto do nome da spec que o numera (`15-divida-conhecida`).
+
+**Por quê.** A plan sai do disco na síntese, e o veredito vive dentro dela: a citação vira ponteiro morto no
+dia seguinte. Nada cobrava a norma mecanicamente, e ela custou oito rodadas de correção numa só campanha — o
+revisor inclusive deixou passar uma. Numa medição de 2026-09-13, os três padrões apareciam mais de 500 vezes
+no código; por isso o gate cobra só o que entra, e a regra fecha a classe daqui para frente sem exigir limpar
+o legado antes.
+
+**Certo × Errado.**
+
+```
+ERRADO   // corrigido na plan-12
+ERRADO   // achado 3 do veredito de 2026-09-10
+ERRADO   // (achado 3)                                   ← ambíguo: de qual documento?
+CERTO    // o fallback precisa do sinal porque o token é magnitude (01-gates-e-baseline §4.1)
+CERTO    // achado 40, 15-divida-conhecida               ← spec fixa, numeração estável
+```
+
+**Cobrada por:** `check-trail-citation.mjs` (`npm run trail-citation:check`), no Anel 1 do
+`.githooks/pre-commit`, sobre as linhas **adicionadas** do staged (`--staged`). Sem flag, o mesmo gate lê o
+worktree contra o `HEAD` **mais os arquivos não rastreados** — é o modo de quem revisa. Caminho com acento é
+lido sem escape. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
+motivo, os arquivos cujo domínio é o próprio identificador de plan. O gate também reprova entrada **sem
+motivo** ou de arquivo que **não existe mais**.
+
+**O vão.**
+- **O legado não é cobrado.** Só linha adicionada.
+- **A CI não roda o gate.** O runner não tem staging, e um intervalo de commits incluiria histórico anterior
+  ao gate. É a mesma razão do Anel 0.
+- **Documento não entra.** `specs/`, `docs/` e `.agents/` ficam fora; em `docs/migracoes.md`, a menção à
+  plan é procedência.
+- **A isenção é do arquivo inteiro.** Nome de teste ou comentário num arquivo isento passa sem ser visto. A
+  revisão confere esses arquivos por grep.
+- **É textual.** Outra forma de apontar para o rastro, como *"na campanha anterior"*, não é vista.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1327,6 +1371,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
+| **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1359,6 +1404,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
 | **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
+| **`check-trail-citation.mjs`** | **R36** | `gates/scripts/contrato/` | ✅ Anel 1 do `pre-commit` (`--staged`) · `npm run trail-citation:check` para revisão — **só local**, sem CI; allowlist em `gates/allowlists/trailCitationExclusions.mjs` |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 

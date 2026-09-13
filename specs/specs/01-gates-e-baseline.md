@@ -77,6 +77,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
+| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -158,6 +159,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
+| `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
@@ -582,9 +584,9 @@ Três coisas são **proibidas**, sem exceção:
 
 - [x] Rodar os comandos deste documento reproduz exatamente a tabela da §3. As duas exceções que existiam foram fechadas: §3.1 (teste não-hermético, 2026-07-28) e §3.2 (subprojeto carona, 2026-07-29).
 - [x] Todo item de dívida tem `arquivo:linha` e a coluna "visível em gate".
-- [x] Todos os auditores (a lista viva está no array de `run_audit.mjs`, §2.1) e os 5 scripts de check foram lidos um por um antes de descritos.
+- [x] Todos os auditores (a lista viva está no array de `run_audit.mjs`, §2.1) e os scripts de check da §2.2 foram lidos um por um antes de descritos.
 - [x] Nenhum item do baseline foi corrigido nesta entrega.
-- [x] **Todo gate cita o número da regra que cobra** — incluindo os três que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22) e o Playwright, que declara **não** cobrar regra nenhuma *(2026-08-02, `plan-13`)*.
+- [x] **Todo gate cita o número da regra que cobra** — incluindo os que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22). O aparato de Playwright que existia em 2026-08-02 foi removido (§2.6); a medição de navegador de hoje é o `cromo-css-real:check` ([[11-testes-e-cobertura]] §7).
 
 # 8. Plano de testes (Quality Gate)
 

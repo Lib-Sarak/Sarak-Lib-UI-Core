@@ -64,6 +64,7 @@ Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `check-container-query-boundary.mjs` | — *(`plan-41`)* — todo `@min-[…]` tem ancestral `container-type` *(entrou em 2026-08-18, `plan-52`)* |
 | `check-persistence-doc.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
 | `check-class-merge.mjs` | R35 — a classe do chamador vence a do átomo *(entrou em 2026-09-08)* |
+| `check-trail-citation.mjs --staged` | R36 — o código não cita o rastro de execução. Lê só as linhas **adicionadas** do staged; é o único gate do Anel 1 que não roda também na CI, pela mesma razão do Anel 0 (§9) *(entrou em 2026-09-13)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
 
