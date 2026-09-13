@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 82** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (26)
+### B.3 Gates registrados (27)
 
 | Comando | O que roda |
 | --- | --- |
@@ -344,6 +344,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
+| `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
 **Auditores agregados por `run_audit.mjs` (12):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs` · `auditor_contraste.mjs`

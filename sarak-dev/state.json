@@ -271,6 +271,10 @@
       "comando": "npx tsx scripts/generate-token-types.ts --check"
     },
     {
+      "nome": "npm run trail-citation:check",
+      "comando": "node gates/scripts/contrato/check-trail-citation.mjs"
+    },
+    {
       "nome": "npm run zero-brand:check",
       "comando": "node gates/scripts/contrato/check-zero-brand.mjs --check"
     }
