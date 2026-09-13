@@ -472,6 +472,76 @@ verde.
 
 Todos os critérios de aceite da §6 têm evidência, nos dois vereditos desta data.
 
+## Veredito — 2026-09-13 (pós-aprovação) — 🔴 Reprovado
+
+**A aprovação acima é revogada: o commit do dono foi bloqueado no Anel 0.** A verificação do revisor não
+rodou o gate de segredos sobre a entrega, e é ele que roda no commit. **A falha é do revisor.**
+
+**Achado:**
+
+1. **`browser-tests/cromo-css-real.spec.ts:104` — falso positivo do Anel 0, que bloqueia o commit.** A linha
+   da chave `borderByToken`, que recebe como valor um texto de mais de 8 caracteres, casa com o padrão *"Segredo atribuído"*
+   (`gates/scripts/segredo/config.json:14`): `token` seguido de `:` e de uma string de 8 caracteres ou mais,
+   sem diferenciar maiúsculas e sem fronteira de palavra. O nome da chave termina em *"Token"*. Rodado pelo
+   revisor sobre o staged, `verificar_commit.py --raiz .` dá **1 achado, só este**. **Correção:** renomear a
+   chave (e o uso dela, `PROBE.borderByToken`) para um nome sem `token`, `secret`, `password`, `senha` nem
+   `key` — por exemplo `borderFromTheme`. Só o nome muda; o texto acessível `'Prova borda pelo token'`
+   pode ficar. **Não** mexer no gate nem contorná-lo.
+
+**Pronto quando:** `python gates/scripts/segredo/verificar_commit.py --raiz .` sobre o staged dá
+`"bloqueado": false`, e `npm run cromo-css-real:check` continua em **16 passed**.
+
+## Resumo da execução (correção 2) — 2026-09-13
+
+**Resultado:** Concluído
+
+**Achado 1 — `browser-tests/cromo-css-real.spec.ts:104`, falso positivo do Anel 0.**
+- **O que mudou:** a chave `PROBE.borderByToken` (`:104`) e o único uso dela (`:335`, antes `:337`) viraram
+  `PROBE.borderFromTheme`. Só o nome da chave — o texto acessível `'Prova borda pelo token'` que ela mapeia
+  não mudou, como o achado permitia.
+- **Verificação do Anel 0:** `git add browser-tests/cromo-css-real.spec.ts` seguido de
+  `python gates/scripts/segredo/verificar_commit.py --raiz .` → `{"bloqueado": false, "achados_segredo": [],
+  "arquivos_sensiveis": []}`.
+- **Harness:** `npm run cromo-css-real:check` (com rebuild) deu **8 failed** na primeira rodada — todos com
+  a mesma causa, não relacionada ao achado: `"beforeAll" hook timeout of 30000ms exceeded` em
+  `cromo-css-real.spec.ts:168` (`buildHarness()`, o `esbuild` do harness, competindo por CPU logo depois do
+  `npm run build` completo). Registrado aqui para não virar dúvida depois: `npx playwright test
+  --config=browser-tests/playwright.config.ts`, rodado em seguida sobre o mesmo `dist/` já buildado (sem
+  competir com o build), deu **16 passed (44.2s)**, sem nenhum erro de `beforeAll`. O achado tratava só do
+  Anel 0; a suíte de navegador não faz parte do "pronto quando" além do número final.
+
+**Arquivos alterados nesta correção**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/cromo-css-real.spec.ts` | alterado | `borderByToken` → `borderFromTheme` (chave e uso) |
+| `specs/plan/plan-77-…md` | alterado | `status` e este bloco |
+
+---
+
+## Veredito — 2026-09-13 (correção 2) — 🟢 Aprovado
+
+**O achado fechou.** A chave `borderByToken` virou `borderFromTheme` na definição (`cromo-css-real.spec.ts:104`)
+e no único uso (`:335`). O texto acessível não mudou. O `verificar_commit.py --raiz .`, rodado pelo revisor
+sobre o staged, dá `"bloqueado": false`, sem nenhum achado.
+
+**O `git add` do executor** foi consequência da instrução do revisor: o "pronto quando" exigia o scanner
+sobre o staged, e ele só lê o staged. É defeito da instrução, não da execução. Ninguém commitou.
+
+**Harness:** duas rodadas completas de `npm run cromo-css-real:check` (build + navegador, como na CI):
+- 1ª: `"beforeAll" hook timeout of 30000ms exceeded`;
+- 2ª: **16 passed**.
+
+O `dist/sarak.css` saiu com o mesmo hash das rodadas anteriores. **A falha não vem desta plan.** Medido: o
+`buildHarness()` sozinho leva **16,6 s a frio** e **2,5 s a quente**. Rodando logo depois do `npm run build`
+completo, a passada a frio encosta nos 30 s do `beforeAll` e às vezes passa. A fixture desta plan acrescentou
+só nove elementos HTML. O defeito, anterior a esta plan e presente no job da CI, foi para o [[00-backlog]].
+
+**Estado final:**
+- nenhum arquivo com mudança fora do staged, além do carimbo de hora do `dist/BUILD_INFO.json` e das specs do
+  revisor;
+- a suíte inteira e a mutação da rodada anterior continuam valendo: esta correção só trocou um nome num
+  `.spec.ts` que o Vitest não coleta.
+
 ---
 
 # 11. Síntese
