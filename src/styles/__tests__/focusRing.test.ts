@@ -14,8 +14,9 @@ import { EngineeringSchema } from '../../core/Design/schema/engineering';
  * enxerga `.css`, então a suíte é quem cobra.
  */
 describe('Anel de foco governado por token (F4)', () => {
-    const utilities = fs.readFileSync(
-        path.join(process.cwd(), 'src/styles/_utilities.css'),
+    // A regra de foco é padrão de ELEMENTO: mora em `_elements.css`, a camada que cede à classe.
+    const elements = fs.readFileSync(
+        path.join(process.cwd(), 'src/styles/_elements.css'),
         'utf-8'
     );
     const focusVar = EngineeringSchema.tokens.find((t) => t.id === 'focusRingWidth');
@@ -25,12 +26,12 @@ describe('Anel de foco governado por token (F4)', () => {
     });
 
     it('a regra global de foco lê o token, com o default do schema como fallback', () => {
-        expect(utilities).toMatch(/button:focus-visible\s*\{[^}]*outline:\s*var\(--sarak-focus-width,\s*2px\)/);
+        expect(elements).toMatch(/button:focus-visible\s*\{[^}]*outline:\s*var\(--sarak-focus-width,\s*2px\)/);
         expect(focusVar?.defaultValue).toBe(2);
     });
 
-    it('nenhuma regra de foco em _utilities.css chumba a largura do outline', () => {
-        const outlines = utilities.match(/outline:\s*[^;]+;/g) ?? [];
+    it('nenhuma regra de foco em _elements.css chumba a largura do outline', () => {
+        const outlines = elements.match(/outline:\s*[^;]+;/g) ?? [];
         const chumbadas = outlines.filter((regra) => /outline:\s*\d/.test(regra));
         expect(chumbadas).toEqual([]);
     });

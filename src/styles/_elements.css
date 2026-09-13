@@ -1,0 +1,96 @@
+/* =========================================
+   PADRÕES DE ELEMENTO DA LIB — título, texto, botão e campo
+   =========================================
+   Importado em `components.sarak-elements` (ver `sarak-base.css`): depois do
+   preflight do Tailwind (`base`) e antes das utilitárias (`utilities`). O padrão
+   sobrepõe o reset e CEDE a qualquer classe utilitária que escreva a mesma
+   propriedade no mesmo elemento — da lib ou do consumidor. Sem classe, vale o padrão.
+
+   Por que subcamada de `components`, e não uma camada de topo nova: todo documento
+   com Tailwind v4 já declara `theme, base, components, utilities`. Quando o CSS do
+   consumidor carrega ANTES do CSS da lib, uma camada de topo nova entra no fim da
+   ordem — depois de `utilities` — e voltaria a vencer toda classe. A subcamada de
+   `components` fica antes de `utilities` nas duas ordens de carregamento.
+
+   Regra que mira elemento ou atributo solto não mora na camada `sarak-lib`, a última:
+   lá ela venceria toda classe de todo elemento.
+
+   Declaração `!important` NÃO mora aqui. Entre camadas, a ordem se inverte para
+   declarações importantes: nesta camada ela venceria até a utilitária `!important`.
+   Ela fica na `sarak-lib`, onde uma utilitária `!important` ainda a vence. */
+
+/* 2. GLOBAL REACITIVITY BRIDGE (Sovereignty v8.5)
+   Toda utilitária de borda do Tailwind (`border`, `border-2`, `border-t`…) escreve
+   `border-style: var(--tw-border-style)`, e ela vence esta camada. Por isso a ponte
+   alimenta também essa variável: `border` segue o token `borderStyle`, e `border-dashed`
+   (que reescreve a variável) vence o token. */
+[class*="border"] { border-style: var(--border-style, solid); --tw-border-style: var(--border-style, solid); }
+
+/* Typography Personalities */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    color: var(--text-title, var(--theme-title, #ffffff));
+    transition: all 0.4s ease;
+}
+
+h1 {
+    font-size: var(--sarak-h1-size, 48px);
+    font-weight: var(--sarak-h1-weight, 900);
+    line-height: var(--sarak-h1-lh, 1.1);
+    letter-spacing: var(--sarak-h1-ls, -1px);
+    text-transform: var(--sarak-h-transform, none);
+    text-shadow: 0 0 calc(var(--sarak-text-glow, 0) * 20px) var(--theme-primary);
+}
+
+h2 {
+    font-size: var(--sarak-h2-size, 32px);
+    font-weight: var(--sarak-h2-weight, 700);
+    line-height: var(--sarak-h2-lh, 1.2);
+    text-transform: var(--sarak-h-transform, none);
+}
+
+h3 {
+    font-size: var(--sarak-h3-size, 24px);
+    font-weight: var(--sarak-h2-weight, 600);
+}
+
+h3, h4 { font-family: var(--font-heading, 'Inter', sans-serif); }
+
+/* Sincronização de Tipografia Dinâmica — sem `!important`: regra de elemento já vence o
+   valor herdado; o `!important` só servia para vencer a classe no próprio título. */
+h1, h2, h3 { font-family: var(--font-heading); }
+body, span, p, div { font-family: var(--font-main); }
+
+/* Sincronização de Geometria Atômica em Botões e Inputs */
+button:not(.p-0) {
+    border-radius: var(--sarak-btn-radius-tl, var(--sarak-btn-border-radius, 8px))
+                   var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px))
+                   var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px))
+                   var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
+    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+input, select, textarea {
+    border-radius: var(--sarak-input-border-radius, 8px);
+    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+button:hover:not(.p-0) {
+    background-color: var(--theme-primary-hover);
+    transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
+}
+
+/* O `transform` do estado ativo é `!important` e fica em `_utilities.css`. */
+button:active:not(.p-0) {
+    background-color: var(--theme-primary-active);
+    transition: transform 0.1s var(--sarak-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,
+   emite `--sarak-focus-width`) — a mesma variável que o `SarakLink` honra, para que
+   mexer no token mova o anel de botão e de link juntos. */
+button:focus-visible {
+    outline: var(--sarak-focus-width, 2px) solid var(--theme-texture-color, var(--theme-primary));
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--theme-primary-focus);
+}

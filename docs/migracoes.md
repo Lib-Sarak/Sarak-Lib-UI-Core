@@ -5,6 +5,60 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — A classe utilitária passa a vencer o estilo padrão que a lib dá a botão, campo, título e texto (plan-77)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda, mas a aparência muda sem o consumidor tocar
+em nada: o mesmo critério das demais entradas da 7.0.0.
+
+**O que estava errado.** O CSS da lib publica as camadas nesta ordem: `theme, base, components, utilities,
+sarak-lib`. Os padrões que a lib dá a **elemento** — raio e hover de `<button>`, raio de `<input>`/`<select>`/
+`<textarea>`, família/cor/tamanho de `h1`–`h6`, família de `span`/`p`/`div`, o estilo de borda de todo
+elemento com classe de borda — moravam em `sarak-lib`, a **última** camada. Entre camadas quem decide é a
+posição, não a especificidade: essas regras venciam **toda** classe utilitária do Tailwind no mesmo
+elemento — da lib e a **sua**. Um `<button className="rounded-full">` do seu app saía com o raio do tema;
+um `<h2 className="text-sm">` saía com o tamanho de título do tema; `hover:bg-*` em botão não aparecia.
+
+**O que muda.** Esses padrões passam para uma camada entre o preflight e as utilitárias
+(`components.sarak-elements`). A ordem publicada fica: preflight → **padrões de elemento da lib** →
+utilitárias → classes próprias da lib (`rounded-btn`, `bg-theme-card`, `border-theme`…). Num elemento
+com classe utilitária, **a classe decide**; sem classe, **vale o padrão da lib**, como antes. Vale nos dois
+modos (`sarak.css` e `sarak-scoped.css`) e também para quem compila o `sarak-base.css` cru no próprio
+Tailwind — a subcamada fica antes de `utilities` qualquer que seja a ordem em que os dois CSS carregam.
+
+**O que você pode ver de diferente** — sempre algo que o seu código (ou o da lib) já declarava e não
+recebia:
+
+| Onde | Antes | Depois |
+| --- | --- | --- |
+| `<button>` com `rounded-*` | raio do tema (`btnBorderRadius`) | o raio da classe — é assim que a **pílula** do item de navegação da topbar passa a aparecer |
+| `<button>` com `hover:bg-*` / `active:bg-*` / `focus-visible:*` | fundo de hover/ativo e anel de foco do tema | o que a classe diz |
+| `<input>`/`<select>`/`<textarea>` com `rounded-*` | raio do token de campo | o raio da classe |
+| Título (`h1`–`h6`) com `text-*`, `font-*` ou cor por classe | tamanho, peso, família e cor de título do tema | os da classe. Componentes da lib que põem classe de tamanho no próprio título passam a renderizar nesse tamanho |
+| `span`/`p`/`div` com `font-*` (ex.: `font-mono`) | família de texto do tema | a família da classe |
+| Elemento com `border-dashed`/`border-dotted` | o estilo de borda do tema (`borderStyle`) | o estilo da classe |
+| Item de navegação sob o ponteiro | o hover primário de botão | o fundo do token `topbarHoverColor`/`sidebarHoverColor`, cujo default é `transparent` — **temas sem esses tokens ficam sem fundo de hover no item**, só com a troca de cor do texto |
+
+**O que NÃO muda.** Sem classe, o padrão continua exatamente igual. O token `borderStyle` continua
+chegando a todo elemento com `border`/`border-2`/`border-t`… — a ponte passou a alimentar também a variável
+que essas utilitárias leem. Os quatro cantos do botão (`btnRadiusTL/TR/BR/BL`) continuam chegando ao
+`SarakButton`/`SarakIconButton`: a classe `rounded-btn` passou a compô-los, com o raio mestre como reserva —
+um tema com canto diferente do mestre (o `minimalist-airy`, por exemplo) segue com a mesma forma.
+
+**Ainda NÃO cede à classe** (continua na última camada, por motivo):
+- o `body` (tamanho, peso e entrelinha) — outra regra da lib também escreve `line-height` no `body`, e só a
+  ordem atual garante que o token de entrelinha vença;
+- o `transform` do botão pressionado (`:active`), que é `!important` — `active:scale-*`/`translate-*`
+  continuam compondo, porque escrevem `scale`/`translate`, não `transform`.
+
+**Como migrar.** Nada obrigatório. Onde a mudança for indesejada:
+- **Uma classe sua que "não fazia nada" e agora aparece** — a classe estava errada e o padrão a escondia.
+  Remova-a: sem classe, o padrão da lib volta.
+- **Um título ou botão de componente da lib mudou** — a `className` que você passa ao átomo continua
+  vencendo a dele (R35); passe a classe que quiser.
+- **Hover do item de navegação sumiu no seu tema** — defina `topbarHoverColor`/`sidebarHoverColor` no tema.
+
+---
+
 ## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
 
 **Classificação: aditiva, não MAJOR.** O token de posição de cada preferência (`preference*Position`,
