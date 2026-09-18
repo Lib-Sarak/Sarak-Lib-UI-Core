@@ -22,7 +22,9 @@ describe('ThemeSidebarHeader', () => {
         setIsEssentialMode: vi.fn(),
         isPreviewStacked: false,
         setIsPreviewStacked: vi.fn(),
-        handleApplyGlobalChanges: vi.fn()
+        handleApplyGlobalChanges: vi.fn(),
+        canUndoLastApply: false,
+        onUndoLastApply: vi.fn()
     });
 
     // plan-37: o switch dizia "Modo Avançado (Hyper-Granular)" com a posição LIGADA
@@ -90,5 +92,26 @@ describe('ThemeSidebarHeader', () => {
         await user.keyboard(' ');
 
         expect(setIsPreviewStacked).toHaveBeenCalledWith(true);
+    });
+
+    // O controle "Desfazer última aplicação" só existe quando há o que desfazer,
+    // e aciona o mesmo caminho de "Aplicar" (via `onUndoLastApply`).
+    describe('"Desfazer última aplicação"', () => {
+        it('não aparece quando `canUndoLastApply` é false', () => {
+            render(<ThemeSidebarHeader {...baseProps()} canUndoLastApply={false} />);
+
+            expect(screen.queryByText('Desfazer última aplicação')).toBeNull();
+        });
+
+        it('aparece quando `canUndoLastApply` é true, e clicar chama `onUndoLastApply`', async () => {
+            const user = userEvent.setup();
+            const onUndoLastApply = vi.fn();
+            render(<ThemeSidebarHeader {...baseProps()} canUndoLastApply={true} onUndoLastApply={onUndoLastApply} />);
+
+            const botao = screen.getByText('Desfazer última aplicação');
+            await user.click(botao);
+
+            expect(onUndoLastApply).toHaveBeenCalledTimes(1);
+        });
     });
 });

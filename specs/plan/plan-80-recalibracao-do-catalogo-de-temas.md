@@ -7,7 +7,7 @@ status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "catalogo", "contraparte", "contraste", "diversidade", "hitl"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[specs/05-cromo-e-slots]]", "[[specs/11-testes-e-cobertura]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
-depende_de: "plan-81-painel-e-templates-cumprem-o-que-oferecem"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md"
 ---
@@ -115,6 +115,12 @@ Disjunção declarada pelo revisor, medida sobre o worktree da `plan-79` em anda
 A primeira parte desta plan (remover os temas que o dono listou) já foi executada e commitada. O pente fino
 no ERP rodou em seguida, e a segunda parte (alterar, reconstruir e criar temas) passa a **depender da
 `plan-81`**, que conserta na lib o que o pente fino achou.
+
+**Estado em 2026-09-18:** as plans 72, 78, 79 e 81 foram executadas, aprovadas e sintetizadas, e saíram do
+disco. A emenda §3.3 não vale mais: não há outra plan no worktree. O que elas deixaram de verdade está nas
+specs fixas: a prop `data` dos templates em `specs/arquitetura/03-superficie-publica.md` §6.3; a prévia na
+tela real e o desfazer em `specs/specs/06-painel-de-customizacao-e-preview.md` §4; os textos da lib em seis
+idiomas em `specs/specs/10-seguranca-e-acessibilidade.md` §3.6.
 
 **O que a tela real mostrou, e como entra aqui:**
 - **Borda usada como fundo.** O `SarakBadge` `muted` pintava o fundo com o token de borda, e no

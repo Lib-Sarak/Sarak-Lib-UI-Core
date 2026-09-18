@@ -23,14 +23,9 @@ funciona**.
 > **O `Sarak-MyService` é OBSOLETO.** Ele era o consumidor real que sustentava este modo na regra de
 > corte do [[001-tres-arquiteturas]] — *"só permanece o que tem consumidor real provado"*.
 >
-> Portanto, com honestidade: **o modo #1 existe, funciona e está coberto por teste — e hoje não tem
-> consumidor real conhecido.** O único consumidor real vivo (o ERP) usa o modo #3 (ui-kit + cromo
-> por-app, [[05-cromo-e-slots]]).
->
-> **Esta spec NÃO decide nada sobre o futuro dele.** Manter × depreciar × remover é decisão do dono e
-> exige uma varredura de consumidores que esta spec não faz. Registrar o fato é obrigação; decidir por
-> conta seria repetir exatamente o erro que esta campanha existe para corrigir — uma spec descrevendo um
-> mundo que não é mais o real.
+> **O modo #1 tem consumidor real:** o sistema de automação de relatórios
+> (`ZP/Automacao-relatorios/Novo`) monta o `SarakShell`. O ERP usa o modo #3 (ui-kit + cromo por-app,
+> [[05-cromo-e-slots]]). Os dois modos de consumo estão vivos.
 
 # 2. O contrato de registro
 
@@ -194,7 +189,7 @@ neste modo.
 | `SidebarNav` / `TopbarNav` / `DockNav` | as três navegações, por `navigationStyle` |
 | `ShellContent` | renderiza o módulo ativo (e os contratos visuais dele) |
 | `ShellUserWidget` | bloco de usuário/logout no cromo |
-| `ShellSearchWidget` + `SarakSearch` | busca global (`SarakShell.tsx:221`, overlay com `isSearchOpen`) |
+| `ShellSearchWidget` + `SarakSearch` | busca global (`SarakShell.tsx:231-237`, overlay com `isSearchOpen`); escolher um resultado ativa o módulo (`onSelect`) e fecha a busca |
 | `ShellThemeToggle` | alternância de tema |
 | `ShellLanguageSelector` | seleção de idioma |
 | `IconRenderer` | resolve o `icon` do manifesto para o ícone real |
@@ -211,7 +206,11 @@ navegação** — nas variantes de controle isolado (ícone na topbar, campo de 
 ação ou de entrada, porque ali não são item de lista.
 
 Estados cobertos pelo átomo: ativo, inativo, **desabilitado/offline** (esmaecido, sem ponteiro) e
-**colapsado** (só o ícone). Decoração adicional do chamador — a pílula de item ativo, o ponto de offline,
+**colapsado** (só o ícone). A cor do item ativo é a do próprio átomo (`--sarak-nav-active-color`, token
+`navItemActiveColor`), a mesma nos dois cromos; o `SidebarNav` não a sobrescreve.
+
+**Auto-hide:** com `isAutoHideEnabled`, a `SidebarNav` só existe no ar enquanto a navegação está visível
+(`SarakShell.tsx:118`), a mesma regra do `DockNav`; uma faixa sensível na borda a traz de volta. Decoração adicional do chamador — a pílula de item ativo, o ponto de offline,
 a etiqueta de serviço fora do ar — entra por `children`.
 
 **Cromo mobile embutido:** com `sidebar` no celular, o Shell troca a coluna por um **header com
@@ -301,13 +300,10 @@ contrato pública, parte do major junto com `partialMode` e o `SarakSecurityOrch
 
 O ramo `'glass'` foi removido em 2026-08-04 (`plan-08`, F3). Não é mais código morto: não existe.
 
-## 7.3 Ghost vars no cromo do Shell — nenhum gate os vê
+## 7.3 ✅ FECHADO — o cromo do Shell não consome variável fantasma
 
-`SidebarNav.tsx:142` consome `--sarak-sidebar-active` e `TopbarNav.tsx:123-124` consome
-`--sarak-topbar-active`; a engine emite `--sarak-sidebar-active-color` e `--sarak-topbar-active-color`
-(`schema/navigation.ts:97,162`). **Os consumos não resolvem** — o realce de item ativo depende de
-fallback. E `auditor_ghostvars` **não varre `src/core/`**, então isto está verde em gate e quebrado no
-código. Detalhe em [[01-gates-e-baseline]] §4.3b.
+Os consumos de cor de item ativo usam os nomes que a engine emite, e o `auditor_ghostvars` varre
+`src/core/`, então um consumo que não resolve no Shell passa a reprovar.
 
 # 8. Critérios de aceite
 
@@ -332,24 +328,12 @@ código. Detalhe em [[01-gates-e-baseline]] §4.3b.
 | Orquestração (módulo ativo, agrupamento, ativação inicial) | `src/core/Shell/__tests__/useSarakShell.test.ts` | ✅ suíte |
 | Guardas de dimensão e de segurança visual | `src/core/Shell/hooks/__tests__/` (5 arquivos) | ✅ suíte |
 | Tokens estruturais → classes do Shell | `src/core/Shell/hooks/__tests__/useShellLayoutStyles.test.ts` | ✅ suíte |
-| **Discovery passiva** (formatação, ordem por prioridade, blacklist) | — | ❌ **SEM TESTE** |
-| **Rota nativa** (segmentos, `navigate`, `popstate`) | — | ❌ **SEM TESTE** |
+| **Discovery passiva** (formatação, ordem por prioridade, blacklist) | `src/shared/hooks/__tests__/useModuleDiscovery.test.ts` | ✅ suíte |
+| **Rota nativa** (segmentos, `navigate`, `popstate`) | `src/shared/hooks/__tests__/useSarakRouter.test.ts` | ✅ suíte |
+| Auto-hide da sidebar, busca que ativa o módulo | `src/core/Shell/__tests__/SarakShell.test.tsx` | ✅ suíte |
 
-> ### ⚠️ LACUNA GRAVE: `src/shared/` está FORA do escopo do gate de cobertura
->
-> `useModuleDiscovery.ts` e `useSarakRouter.ts` moram em `src/shared/hooks/` — que **não tem pasta
-> `__tests__` nenhuma** (`find src/shared -type d -name __tests__` = vazio). E `auditor_coverage` está
-> **verde**, porque ele varre apenas `src/components`, `src/features` e `src/core`
-> (`auditor_coverage.mjs:52-60`). `src/shared/` inteiro é invisível para o gate: 3 arquivos sem teste
-> (os dois hooks + `services/api.ts`).
->
-> **Por que isto importa aqui em especial:** esses dois hooks são o **coração do modo #1**. A derivação do
-> módulo ativo a partir da URL e a escrita no `history` (§4.2) — o comportamento mais frágil e mais
-> acoplado a browser de todo o modo — não têm um único teste, e nenhum gate reclama.
->
-> É a mesma classe de defeito da lacuna do `auditor_ghostvars` ([[01-gates-e-baseline]] §4.3): **escopo do
-> auditor menor que o alcance da regra** → gate verde, regra violada. Registrado também em
-> [[11-testes-e-cobertura]]; a correção (ampliar o escopo **e** escrever os testes) é spec própria.
+`src/shared/` está no escopo do `auditor_coverage` (`auditor_coverage.mjs`, `SCOPE_DIRS`), e os dois hooks
+do modo #1 têm teste próprio.
 
 **Outra lacuna, menor:** não há teste que prove o comportamento do Shell com `navigationStyle` inválido
 (§4.1) — hoje a prova de que `'glass'` nunca chega é indireta, via o teste de `validateDesign`.

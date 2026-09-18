@@ -73,7 +73,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         isDirty,
         toast,
         showToast,
-        handleThemePreview
+        handleThemePreview,
+        canUndoLastApply,
+        undoLastApply
     } = useDesignDraft(sarak);
 
     const handleApplyToSystemWrapper = useCallback(() => {
@@ -162,6 +164,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isPreviewStacked={isPreviewStacked}
                     setIsPreviewStacked={setIsPreviewStacked}
                     handleApplyGlobalChanges={handleApplyGlobalChanges}
+                    canUndoLastApply={canUndoLastApply}
+                    onUndoLastApply={undoLastApply}
                 />
 
                 {/* Área de Conteúdo (Scrollable) */}

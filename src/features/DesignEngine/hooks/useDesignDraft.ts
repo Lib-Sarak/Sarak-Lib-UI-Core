@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
+import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
 import { SarakUIContextType, SarakDesignState, ThemeEntry } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
@@ -37,12 +38,10 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
     // Se não há rascunho ativo, usamos o design do sistema.
     const draft = useMemo(() => {
         if (draftState) return draftState;
-        
         // Fallback para o design do sistema ou defaults totais se nada existir
         const base = sarak.systemDesign || {} as SarakDesignState;
         const allTokens = getAllDesignTokens();
         const resolved: Record<string, SarakTokenValue> = { ...(base as Record<string, SarakTokenValue>) };
-        
         allTokens.forEach(token => {
             if (resolved[token.id] === undefined) {
                 resolved[token.id] = token.defaultValue;
@@ -52,16 +51,20 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         // Propriedades estruturais obrigatórias
         if (!resolved.layout) resolved.layout = base.layout || 'glass';
         if (!resolved.mode) resolved.mode = base.mode || 'dark';
-        
         return resolved as unknown as SarakDesignState;
     }, [draftState, sarak.systemDesign]);
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
-
     const showToast = useCallback((type: 'success' | 'warning', message: string) => {
         setToast({ type, message });
         setTimeout(() => setToast(null), 3000);
     }, []);
+    const { canUndoLastApply, captureBeforeApply, undoLastApply: undoLastApplyRaw } = useLastAppliedSnapshot(sarak, showToast);
+    // `setDraftState` local, nunca `sarak.setDraftDesign` direto — mesmo caminho
+    // de `resetToken`/`resetComponent`, sem eco na ponte bidirecional (a chamada
+    // direta a `sarak.setDraftDesign` compete com o sync de `useDesignDraftSync`
+    // e o rascunho antigo volta a vencer).
+    const undoLastApply = useCallback(() => { undoLastApplyRaw(); setDraftState(null); }, [undoLastApplyRaw]);
 
     // 3. Mapeamento Dinâmico de Tokens por Componente (Schema ID)
     const getTokensByComponent = useCallback((schemaId: string) => {
@@ -157,7 +160,6 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             : MASTER_DESIGN_MAP.components
                 .filter(c => schemaIdOrSchemas.includes(c.id))
                 .flatMap(c => c.tokens.map(t => t.id));
-        
         setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
             const newDraft: Record<string, SarakTokenValue> = { ...(current as Record<string, SarakTokenValue>) };
@@ -196,11 +198,10 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         if (themeId) setPendingThemeId(themeId);
     };
 
-    /**
-     * APLICAÇÃO REAL AO SISTEMA (Commit Total)
-     */
+    // APLICAÇÃO REAL AO SISTEMA (Commit Total)
     const handleApplyToSystem = () => {
         if (sarak.applyFullConfigRaw && isDirty) {
+            captureBeforeApply(); // foto do sistema ANTES de aplicar (useLastAppliedSnapshot.ts)
             sarak.applyFullConfigRaw(draft);
             if (sarak.persistDesign) {
                 sarak.persistDesign(draft);
@@ -215,9 +216,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         }
     };
 
-    /**
-     * APLICAÇÃO GRANULAR (Commit por Componente)
-     */
+    // APLICAÇÃO GRANULAR (Commit por Componente)
     const handleApplyComponent = (schemaId: string) => {
         if (sarak.applyConfigRaw && isComponentDirty(schemaId)) {
             const componentKeys = getTokensByComponent(schemaId);
@@ -227,7 +226,6 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             componentKeys.forEach(key => {
                 patchRecord[key] = draftRecord[key];
             });
-            
             sarak.applyConfigRaw(patch);
             showToast('success', `Módulo ${schemaId.toUpperCase()} aplicado.`);
         }
@@ -243,6 +241,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         handleThemePreview,
         handleApplyToSystem,
         handleApplyComponent,
+        canUndoLastApply,
+        undoLastApply,
         toast,
         showToast
     };

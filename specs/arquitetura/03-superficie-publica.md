@@ -215,6 +215,19 @@ registradas ali: classe própria que nascer depois e **não** for registrada nã
 
 O contrato é **fechado**: passar um nome que não está no mapa não quebra a tela — não desenha ícone. Confira o catálogo.
 
+## 6.3 Templates de dado: `data` vence `endpoint`
+
+`SarakTable`, `SarakCardGrid` e `SarakStats` (`src/components/atomic/Templates/`) aceitam o dado de duas
+formas, e as duas props são opcionais:
+
+- **com `data`**, renderizam o dado recebido e **não fazem nenhuma chamada de rede**, nem no mount nem
+  para revalidar;
+- **sem `data`**, buscam por `endpoint`.
+
+`SarakTable` e `SarakCardGrid` recebem `data` como lista de itens; `SarakStats`, como um objeto de métricas.
+Sem nenhuma das duas props, `SarakTable` e `SarakCardGrid` não buscam e não ficam presos em carregamento.
+A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridState`, `useSarakStatsData`).
+
 # 7. Fronteiras de bundle — a parte MEDIDA
 
 O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1%)**, medido em app mínimo. Três hipóteses foram investigadas, e **duas foram refutadas** — o que é a parte mais útil deste registro:

@@ -209,6 +209,9 @@ substituição pelo host, também precisa estar oferecido. Ele mostra o **idioma
 ([[09-temas-e-presets]] §4.7) e grava a preferência; o host pode substituí-lo inteiro pelo registro de
 componentes locais, e esse caminho não depende das duas condições.
 
+Existe **um** seletor de idioma na lib, o `ShellLanguageSelector`. Trocar o idioma repinta os textos do
+cromo e dos widgets na hora, **sem recarregar a página** ([[10-seguranca-e-acessibilidade]] §3.6).
+
 ## 2.3 A regra de degradação — nada some
 
 | Modo | O que acontece com os slots |
@@ -246,6 +249,13 @@ O cromo do modo ui-kit lê esses tokens por um hook único e os traduz em classe
 | `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
 | `navItemActiveColor` | **texto e ícone** do item ativo, nas duas orientações e nos dois cromos — é o token que carrega o sinal visível |
 | `sidebarHoverColor` · `topbarHoverColor` | fundo do item sob o ponteiro, cada orientação o seu; o texto também muda, de `--text-muted` para `--sarak-text-main` |
+| `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo, nos dois cromos (no ui-kit, o marcador é desenhado pelo `SarakShellNav`) |
+| `sidebarNoiseOpacity` · `topbarNoiseOpacity` | camada de ruído sobre cada barra (`chrome/noiseTexture.ts`, compartilhado pelos dois cromos) |
+| `sidebarBlur` · `sidebarShadow` | desfoque de fundo e sombra da sidebar; a sombra do modo `floating` também vem do token |
+| `sidebarMinWidth` · `sidebarMaxWidth` · `sidebarLabelMaxWidth` · `topbarLabelMaxWidth` | limites de largura da sidebar e do rótulo da marca, por orientação |
+| `shellBrandLogoSize` · `brandLogoSizeCollapsed` | altura do logo com a navegação expandida e recolhida |
+| `topbarTitleColor` | cor do nome do sistema na topbar |
+| `searchDropdownGap` · `searchDropdownWidth` | distância e largura máxima do painel de busca (o palette do `SarakSearch`) |
 
 **Cada variável CSS tem um único token de origem.** Dois tokens declarando a mesma variável fazem o
 vencedor depender da ordem de iteração do mapa, não do autor do tema — é por isso que `navItemActiveColor`
@@ -272,10 +282,16 @@ das variáveis CSS declaradas, **de cada lado** — `src/core/Shell/**` e `src/c
 átomos compartilhados que cada cromo usa para pintar o item de menu. Ausência de qualquer lado é bloqueio,
 e ele roda no `pre-commit`.
 
-**Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): o escopo é uma lista fechada,
-não o schema inteiro — e o cabeçalho do gate nomeia **todos** os tokens de `schema/navigation.ts` que ainda
-não têm consumidor em algum dos lados, medidos sobre o schema inteiro, e não só os já conhecidos; e a checagem é **textual**, não por AST: prova que existe referência, não que o consumo produz efeito
-visual. A prova de efeito é o teste de componente e, para CSS renderizado, `cromo-css-real:check`.
+**O escopo é o schema inteiro:** todo token de `schema/navigation.ts`, mais `isAutoHideEnabled`
+(`schema/system.ts`). Não há lista fechada, então token novo no schema entra na varredura sem editar o gate.
+Hoje são **35 de 35**, sem nenhuma exceção declarada (`ORPHAN_TOKENS` vazio). `SarakMenuItem` e
+`SarakSearch` contam para os dois lados, porque os dois cromos os compõem; `SarakShellNav` conta só para o
+ui-kit.
+
+**Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): a checagem é **textual**, não
+por AST — prova que existe referência, não que o consumo produz efeito visual, e não distingue consumo de
+menção em comentário. A prova de efeito é o teste de componente e, para CSS renderizado,
+`cromo-css-real:check`.
 
 # 3. Os dois níveis de "adicionar imagem/animação"
 

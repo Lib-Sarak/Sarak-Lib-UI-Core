@@ -350,8 +350,11 @@ useEffect(() => {
 }, [design.language]);
 ```
 
-> ⚠️ **Os textos da própria lib não são traduzidos.** Há rótulos fixos, hoje em inglês e português
-> misturados. Está no [[00-backlog]].
+**Os textos da própria lib seguem o idioma que vale.** Cromo, widgets, palette e rótulos padrão de átomo
+saem de um catálogo com os seis idiomas oferecidos (`src/core/i18n/`, lido por `useLibraryText`), e
+repintam na troca, sem recarga. Sem Provider, ou fora dos seis, saem em português. O painel de design é
+ferramenta do administrador e não entra nessa promessa. Texto passado pelo consumidor por prop é dele, e a
+lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
 
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import api from '../../../../shared/services/api';
 
-export const useSarakTableData = <T extends Record<string, unknown>>(endpoint: string) => {
+export const useSarakTableData = <T extends Record<string, unknown>>(endpoint?: string, initialData?: T[]) => {
     const [state, setState] = useState({
-        data: [] as T[],
-        loading: true,
+        data: initialData || ([] as T[]),
+        loading: !initialData && Boolean(endpoint),
         error: null as string | null,
         search: ''
     });
@@ -14,6 +14,7 @@ export const useSarakTableData = <T extends Record<string, unknown>>(endpoint: s
     };
 
     const fetchData = async () => {
+        if (!endpoint) return;
         try {
             updateState({ loading: true, error: null });
             const response = await api.get(endpoint);
@@ -36,8 +37,19 @@ export const useSarakTableData = <T extends Record<string, unknown>>(endpoint: s
     };
 
     useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+        // Dado pronto vence endpoint (mesmo contrato de `useSarakStatsData`): com
+        // `data`, nunca há chamada de rede — nem para revalidar, nem no mount.
+        if (initialData) {
+            setState(prev => {
+                if (JSON.stringify(prev.data) === JSON.stringify(initialData)) return prev;
+                return { ...prev, data: initialData, loading: false };
+            });
+            return;
+        }
+        if (endpoint) {
+            fetchData();
+        }
+    }, [endpoint, initialData]);
 
     const filteredData = state.data.filter(item => 
         Object.values(item).some(val => 

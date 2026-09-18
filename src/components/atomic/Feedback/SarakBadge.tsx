@@ -68,7 +68,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
             : "bg-blue-500 text-white border border-transparent",
             
         muted: soft
-            ? "bg-[var(--theme-border)] text-[var(--theme-muted)] border border-transparent"
+            ? "bg-[var(--theme-surface)] text-[var(--theme-muted)] border border-transparent"
             : "bg-[var(--theme-muted)] text-[var(--theme-surface)] border border-transparent",
     };
 

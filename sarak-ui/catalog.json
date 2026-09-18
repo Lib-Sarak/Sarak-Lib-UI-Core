@@ -1166,8 +1166,14 @@
         {
           "name": "endpoint",
           "type": "string",
-          "optional": false,
-          "doc": ""
+          "optional": true,
+          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
+        },
+        {
+          "name": "data",
+          "type": "TData[]",
+          "optional": true,
+          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
         },
         {
           "name": "label",
@@ -3235,14 +3241,14 @@
         {
           "name": "endpoint",
           "type": "string",
-          "optional": false,
-          "doc": ""
+          "optional": true,
+          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
         },
         {
           "name": "data",
           "type": "TData[]",
           "optional": true,
-          "doc": ""
+          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
         },
         {
           "name": "label",

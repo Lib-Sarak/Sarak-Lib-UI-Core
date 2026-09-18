@@ -105,6 +105,22 @@ escuro (o default do schema) — e emite **um** `console.warn` nomeando o id que
 `THEME_PRESET_IDS` são a fonte viva), ou por um tema seu via `customThemes`. Não fazer nada não quebra a
 tela — o consumidor cai na referência do próprio modo, com o aviso no console apontando a causa.
 
+### `SarakBadge` `muted` deixa de usar o token de borda como fundo (plan-81)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda, mas a variante `muted` (o default quando
+`soft`) muda de cor sem o consumidor tocar em nada.
+
+**O que estava errado.** O fundo da variante soft usava `--theme-border` — o token de `cardBorderColor`,
+cujo contrato é "borda sutil, baixa opacidade", não fundo. Num tema de borda opaca (`neo-brutalism`, borda
+branca sólida), o badge saía branco sobre branco — contraste ~1:1, medido na tela.
+
+**O que muda.** O fundo passa a usar `--theme-surface` (`cardBackgroundColor` — contrato de fundo de
+superfície). O par texto×fundo resultante (`textColorMuted`/`cardBackgroundColor`) já é um dos pares que o
+`auditor_contraste` (R31) mede, e passa 4,5:1 em todo tema shippado, nos dois modos.
+
+**Como migrar.** Nada obrigatório. Se você mirava `--theme-border` por CSS externo para customizar o fundo
+deste badge, mire `--theme-surface`.
+
 ---
 
 ## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)

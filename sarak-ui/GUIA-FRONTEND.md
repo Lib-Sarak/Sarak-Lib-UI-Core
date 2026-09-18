@@ -698,7 +698,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **FilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
 | Templates | **ImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakAuthScreen** | `branding` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `onMasterLogin` · `onChange` · `role` · `density` · `importance` |
-| Templates | **SarakCardGrid** | `endpoint` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
+| Templates | **SarakCardGrid** | `endpoint` · `data` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
 | Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` · `role` · `density` · `importance` |
 | Templates | **SarakChart** | `endpoint` · `label` · `mapping` · `role` · `density` · `importance` |
 | Templates | **SarakChat** | `endpoint` · `modelsEndpoint` · `label` · `role` · `density` · `importance` |

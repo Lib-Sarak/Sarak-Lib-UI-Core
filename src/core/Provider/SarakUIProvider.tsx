@@ -102,7 +102,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const mode = resolveSarakUIMode(options);
     const [scopeElement, setScopeElement] = useState<HTMLElement | null>(null);
     const isEmbedded = mode === 'embedded';
-
     // 1. Gerenciamento do Registro e Discovery
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
@@ -122,19 +121,21 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // 2.5 Gerenciamento do Estado da Marca (Branding)
     const { branding, updateBranding } = useBrandingManager(options);
-
     // 2.6 Preferências do usuário — camada separada, nunca persistida no tema;
     //     `effectiveDesign` sobrepõe as OFERECIDAS pelo tema resolvido.
     const { preferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
     const activeTheme = (allThemes as ThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
-    const effectiveDesign = useMemo(
-        () => overlayPreferences(design, preferences, activeTheme, systemColorScheme),
-        [design, preferences, activeTheme, systemColorScheme],
-    );
 
     // 3. Gerenciamento de Rascunho (Live Preview) — sobre o design BRUTO: o
     //    painel edita e comita o tema, nunca o efetivo.
     const drafting = useSarakDrafting(design, applyConfig, applyFullConfig);
+    // A TELA REAL mostra o rascunho por cima do sistema enquanto o painel está aberto
+    // e diverge — nunca grava nada; sem rascunho, cai exatamente no sistema (preferências continuam por cima).
+    const liveDesign = drafting.isDrafting && drafting.draftDesign ? drafting.draftDesign : design;
+    const effectiveDesign = useMemo(
+        () => overlayPreferences(liveDesign, preferences, activeTheme, systemColorScheme),
+        [liveDesign, preferences, activeTheme, systemColorScheme],
+    );
 
     // 4. Efeitos Colaterais globais (Fontes, Título, Ícone) — inertes no Modo Embarcado.
     //    FONTE ÚNICA da identidade da aba (Spec 47): recebe as DUAS portas pelas quais
@@ -177,7 +178,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         branding,
         updateBranding,
         onMediaUpload,
-        activeDesign: drafting.isDrafting && drafting.draftDesign ? drafting.draftDesign : effectiveDesign
+        activeDesign: effectiveDesign // já é o sistema (+ rascunho, se houver) + preferências
     }), [
         discoveryEndpoints, design, effectiveDesign, preferences, updatePreferences,
         drafting.draftDesign, drafting.isDrafting,
@@ -223,11 +224,11 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     <SovereignThemeInjector design={effectiveDesign} manifest={options?.manifest} mode={mode} />
                     {!isEmbedded && (
                         <SarakBackgroundRenderer
-                            imageUrl={design?.globalBackgroundImageUrl}
-                            opacity={design?.globalBackgroundOpacity}
-                            blur={design?.globalBackgroundBlur}
+                            imageUrl={effectiveDesign?.globalBackgroundImageUrl}
+                            opacity={effectiveDesign?.globalBackgroundOpacity}
+                            blur={effectiveDesign?.globalBackgroundBlur}
                             isFixed={true}
-                            mode={design?.mode as 'light' | 'dark' | undefined}
+                            mode={effectiveDesign?.mode as 'light' | 'dark' | undefined}
                         />
                     )}
 

@@ -22,7 +22,9 @@ import { SarakTableCards } from './SarakTableCards';
 import { twMerge } from 'tailwind-merge';
 
 export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
-    endpoint: string;
+    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
+    endpoint?: string;
+    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
     data?: TData[];
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
@@ -61,7 +63,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
         search,
         setSearch,
         fetchData
-    } = useSarakTableData<TData>(endpoint);
+    } = useSarakTableData<TData>(endpoint, initialData);
 
     // Gerar colunas dinamicamente caso não exista um mapping
     const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);

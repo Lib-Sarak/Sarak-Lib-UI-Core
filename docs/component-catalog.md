@@ -313,7 +313,8 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
+| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
+| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
 | `label` | `string` | não |  |
 | `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `FilterConfig[]` | não |  |
@@ -971,8 +972,8 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `data` | `TData[]` | não |  |
+| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
+| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
 | `label` | `string` | não |  |
 | `mapping` | `Record<string, string>` | não |  |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |

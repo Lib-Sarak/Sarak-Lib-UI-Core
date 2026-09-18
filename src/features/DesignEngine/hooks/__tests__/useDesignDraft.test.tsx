@@ -281,4 +281,57 @@ describe('useDesignDraft', () => {
             expect(setResolvedThemeId).not.toHaveBeenCalled();
         });
     });
+
+    // Desfazer a última aplicação — um nível, pelo mesmo caminho do Aplicar.
+    describe('canUndoLastApply / undoLastApply', () => {
+        it('sem nenhuma aplicação, não há o que desfazer', () => {
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            expect(result.current.canUndoLastApply).toBe(false);
+        });
+
+        it('aplicar → desfazer volta ao design anterior, E a persistência recebe o valor restaurado', () => {
+            const applyFullConfigRaw = vi.fn();
+            const persistDesign = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark', primaryColor: '#111' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                applyFullConfigRaw,
+                persistDesign,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.updateDraft('primaryColor', '#222');
+            });
+            expect(result.current.isDirty).toBe(true);
+
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#222' }));
+            expect(result.current.canUndoLastApply).toBe(true);
+
+            act(() => {
+                result.current.undoLastApply();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenLastCalledWith({ mode: 'dark', primaryColor: '#111' });
+            expect(persistDesign).toHaveBeenLastCalledWith({ mode: 'dark', primaryColor: '#111' });
+            expect(result.current.canUndoLastApply).toBe(false);
+        });
+    });
 });

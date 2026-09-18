@@ -1292,6 +1292,8 @@ declare const useDesignDraft: (sarak: SarakUIContextType) => {
     handleThemePreview: (presetDesign: Partial<SarakDesignState>, presetKeyId?: string, themeId?: string) => void;
     handleApplyToSystem: () => void;
     handleApplyComponent: (schemaId: string) => void;
+    canUndoLastApply: boolean;
+    undoLastApply: () => void;
     toast: {
         type: "success" | "warning";
         message: string;
@@ -2128,7 +2130,9 @@ declare const HelpButton: ({ text }: {
 }) => react_jsx_runtime.JSX.Element;
 
 interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
-    endpoint: string;
+    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
+    endpoint?: string;
+    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
     data?: TData[];
     label?: string;
     mapping?: Record<string, string>;
@@ -2161,8 +2165,11 @@ interface FilterConfig {
     }[];
     dynamic?: boolean;
 }
-interface SarakCardGridProps {
-    endpoint: string;
+interface SarakCardGridProps<TData extends Record<string, unknown> = Record<string, unknown>> {
+    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
+    endpoint?: string;
+    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
+    data?: TData[];
     label?: string;
     /**
      * Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os
@@ -2210,7 +2217,7 @@ interface SarakCardGridProps {
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-declare const SarakCardGrid: <TData extends Record<string, unknown>>({ endpoint, label, mapping, filters, variant }: SarakCardGridProps) => react_jsx_runtime.JSX.Element;
+declare const SarakCardGrid: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, filters, variant }: SarakCardGridProps<TData>) => react_jsx_runtime.JSX.Element;
 
 interface SarakStatsProps<TData extends Record<string, unknown>> {
     endpoint?: string;
