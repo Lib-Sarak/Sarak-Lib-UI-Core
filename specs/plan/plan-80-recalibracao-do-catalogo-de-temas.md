@@ -7,7 +7,7 @@ status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "catalogo", "contraparte", "contraste", "diversidade", "hitl"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[specs/05-cromo-e-slots]]", "[[specs/11-testes-e-cobertura]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
-depende_de: "plan-78-o-que-o-painel-oferece-a-tela-faz"
+depende_de: "plan-81-painel-e-templates-cumprem-o-que-oferecem"
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md"
 ---
@@ -110,6 +110,24 @@ Disjunção declarada pelo revisor, medida sobre o worktree da `plan-79` em anda
 - **Temas:** nenhum arquivo de tema é tocado antes de a `plan-79` estar commitada. A autoria (§5 passo 5 em
   diante) começa só depois disso.
 
+## 3.4 Emenda — 2026-09-18 (o que o pente fino no ERP mostrou, e a nova ordem)
+
+A primeira parte desta plan (remover os temas que o dono listou) já foi executada e commitada. O pente fino
+no ERP rodou em seguida, e a segunda parte (alterar, reconstruir e criar temas) passa a **depender da
+`plan-81`**, que conserta na lib o que o pente fino achou.
+
+**O que a tela real mostrou, e como entra aqui:**
+- **Borda usada como fundo.** O `SarakBadge` `muted` pintava o fundo com o token de borda, e no
+  `neo-brutalism` (borda branca sólida) o badge ficou branco sobre branco. A `plan-81` tira esse uso e faz o
+  `auditor_contraste` medir o par do badge. Depois dela, borda opaca volta a ser escolha estética livre —
+  mas **confira o badge `muted` na vitrine de todo tema de borda forte**.
+- **Capacidade que nenhum tema mostra hoje:** sidebar `floating` (medida ao vivo no ERP: margem, raio e
+  sombra corretos) e `right`; o estilo de botão `cyberpunk`, único dos seis que nenhum tema usa; e 35 das 41
+  texturas de fundo e de card, sem uso. O catálogo final passa a cobri-los (critério na §6).
+- **O pente fino exercitou só um tema ao vivo** (por decisão do dono). Os outros dez são vistos pela
+  vitrine, que por isso passa a mostrar exatamente o que quebrou na tela: badges em todas as variantes e uma
+  tabela com dados (§5 passo 2).
+
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
@@ -135,8 +153,10 @@ Disjunção declarada pelo revisor, medida sobre o worktree da `plan-79` em anda
 
 2. **A vitrine.** Um comando (`themes:showcase`) que gera, a partir do `dist/`, uma captura por **tema ×
    modo × orientação**, fora do versionamento. Cada captura mostra o cromo com item ativo e item em hover,
-   mais uma amostra do conteúdo: card, tabela, botões, campos e tipografia. O comando também gera **um
-   arquivo único** que reúne as capturas lado a lado, para o dono abrir e comparar.
+   mais uma amostra do conteúdo: card, tabela com dados, botões, campos, tipografia e o `SarakBadge` em
+   **todas** as variantes (o `muted` inclusive). A tabela usa a prop `data` (entregue pela `plan-81`), sem
+   rede falsa. O comando também gera **um arquivo único** que reúne as capturas lado a lado, para o dono
+   abrir e comparar.
 
 3. **Inventário da capacidade.** Por script, sem transcrever lista de token (R17), produza no resumo uma
    matriz com duas coisas:
@@ -206,6 +226,9 @@ Disjunção declarada pelo revisor, medida sobre o worktree da `plan-79` em anda
 - [ ] Todo tema shippado: `findMissingThemeAxes` = `[]`; contraparte; hover perceptível nas duas orientações
       e nos dois modos (varredura); seis idiomas em `enabledLanguages`; preferências no padrão de fábrica.
 - [ ] `CONTRAPARTE_EXEMPTION_LIST` vazia; `auditor_contraste` 0 e 0; `themes:diversity` passa nos nove.
+- [ ] O catálogo final usa sidebar `floating` e `right`, os seis estilos de botão (inclusive `cyberpunk`) e
+      o leque de texturas aprovado pelo dono na Parada — cada item apontado no tema que o usa.
+- [ ] A vitrine mostra o `SarakBadge` em todas as variantes e uma tabela com dados, em cada tema.
 - [ ] `docs/migracoes.md` lista cada id removido e para onde cai quem o usava.
 - [ ] A skill `ui-criar-tema` descreve a vitrine e a varredura de hover.
 - [ ] `audit` sem regressão; suíte inteira verde. Falha em arquivo não tocado foi rodada isolada antes de

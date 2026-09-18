@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "81"
+proximo_numero_plan: "82"
 ---
 
 # 0. O que é este arquivo
@@ -42,10 +42,11 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-78-o-que-o-painel-oferece-a-tela-faz](plan/plan-78-o-que-o-painel-oferece-a-tela-faz.md) | Fazer todo token de navegação oferecido no painel agir no SarakShell e no SarakAppChrome, e o painel só alterar o sistema quando o usuário aplica | plan-77-estilo-de-elemento-da-lib-cede-a-classe-utilitaria | 🟢 Aprovada | specs/05-cromo-e-slots.md · specs/04-shell-e-discovery.md · specs/06-painel-de-customizacao-e-preview.md · specs/07-responsividade-e-multidispositivo.md · arquitetura/04-contrato-de-tokens-e-paridade.md |
-| 2 | [plan-79-idioma-de-ponta-a-ponta](plan/plan-79-idioma-de-ponta-a-ponta.md) | Fazer todo texto que a lib mostra ao usuário final aparecer no idioma que vale, nos seis idiomas oferecidos, com um único seletor de idioma na base | plan-78-o-que-o-painel-oferece-a-tela-faz | 🟢 Aprovada | specs/10-seguranca-e-acessibilidade.md · specs/05-cromo-e-slots.md |
-| 3 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | plan-78-o-que-o-painel-oferece-a-tela-faz | 🟡 Em execução | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
-| 4 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-79-idioma-de-ponta-a-ponta | 🔴 A executar | specs/00-backlog.md |
+| 1 | [plan-72-pente-fino-de-usabilidade-no-consumidor-real](plan/plan-72-pente-fino-de-usabilidade-no-consumidor-real.md) | Fechar a campanha com um inventário medido do que ainda falta, colhido navegando e interagindo com o sistema de verdade | plan-79-idioma-de-ponta-a-ponta | 🟢 Aprovada | specs/00-backlog.md |
+| 2 | [plan-81-painel-e-templates-cumprem-o-que-oferecem](plan/plan-81-painel-e-templates-cumprem-o-que-oferecem.md) | Fazer o badge legível em todo tema, os templates aceitarem dado pronto, a busca do painel registrar a primeira tecla, o painel desfazer a última aplicação e mostrar o rascunho na tela real sem gravar nada | — | 🔴 A executar | specs/06-painel-de-customizacao-e-preview.md · specs/09-temas-e-presets.md · arquitetura/03-superficie-publica.md |
+| 3 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | plan-81-painel-e-templates-cumprem-o-que-oferecem | 🟡 Em execução | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
+| 4 | [plan-78-o-que-o-painel-oferece-a-tela-faz](plan/plan-78-o-que-o-painel-oferece-a-tela-faz.md) | Fazer todo token de navegação oferecido no painel agir no SarakShell e no SarakAppChrome, e o painel só alterar o sistema quando o usuário aplica | plan-77-estilo-de-elemento-da-lib-cede-a-classe-utilitaria | 🟢 Aprovada | specs/05-cromo-e-slots.md · specs/04-shell-e-discovery.md · specs/06-painel-de-customizacao-e-preview.md · specs/07-responsividade-e-multidispositivo.md · arquitetura/04-contrato-de-tokens-e-paridade.md |
+| 5 | [plan-79-idioma-de-ponta-a-ponta](plan/plan-79-idioma-de-ponta-a-ponta.md) | Fazer todo texto que a lib mostra ao usuário final aparecer no idioma que vale, nos seis idiomas oferecidos, com um único seletor de idioma na base | plan-78-o-que-o-painel-oferece-a-tela-faz | 🟢 Aprovada | specs/10-seguranca-e-acessibilidade.md · specs/05-cromo-e-slots.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
