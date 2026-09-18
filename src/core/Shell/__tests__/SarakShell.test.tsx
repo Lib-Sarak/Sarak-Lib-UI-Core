@@ -186,7 +186,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         render(
             <SarakUIProvider
                 options={{ persistence: { storageKey: 'spec43-test-c' } }}
-                activeThemeId="nature-breeze"
+                activeThemeId="sarak-sovereign"
                 customThemes={STABLE_EMPTY_CUSTOM_THEMES}
             >
                 <SarakShell />

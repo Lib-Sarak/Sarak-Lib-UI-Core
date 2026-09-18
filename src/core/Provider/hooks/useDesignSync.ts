@@ -1,6 +1,7 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
+import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
 import type { SarakTokenValue } from '../../Design/types';
 import { ThemeEntry, SetDesign } from '../types';
 
@@ -45,7 +46,20 @@ export const useDesignSync = (
                     );
                     return validateDesign({ ...prev, ...resolved });
                 });
+                return;
             }
+
+            // `activeThemeId` pedido não corresponde a NENHUM tema conhecido —
+            // removido do catálogo, ou nunca existiu. Contrato de remoção
+            // (R33): nunca lança, nunca deixa a tela sem tema — cai na
+            // referência do modo atual, com um aviso.
+            lastAppliedThemeIdRef.current = activeThemeId;
+            console.warn(`[SarakUIProvider] activeThemeId "${activeThemeId}" não corresponde a nenhum tema conhecido — aplicando a referência do modo atual.`);
+            setDesign((prev) => {
+                const requestedMode: 'light' | 'dark' = (prev.mode as 'light' | 'dark') || 'dark';
+                const reference = SARAK_REFERENCE_THEMES.find((t) => (t.design.mode ?? 'dark') === requestedMode) ?? SARAK_REFERENCE_THEMES[0];
+                return validateDesign({ ...prev, ...reference.design });
+            });
             return;
         }
 

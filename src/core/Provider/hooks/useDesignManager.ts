@@ -3,6 +3,7 @@ import { validateDesign } from '../utils/validation';
 import { resolveStorageKey } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { GLOBAL_THEMES } from '../../Design/presets/themes';
+import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
 import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
@@ -46,10 +47,21 @@ export const useDesignManager = (props: {
      * `allThemes` para achar o id pedido), cai no tema padrão do sistema. É a
      * MESMA lógica que `getSeedConfig` usa para os tokens — extraída para que
      * `resolvedThemeId` (abaixo) nasça consistente com o design semeado.
+     *
+     * Um id EXPLICITAMENTE pedido (`activeThemeId`/`initialTheme`) que não bate
+     * com nenhum tema conhecido — removido do catálogo, ou nunca existiu — nunca
+     * deixa a semente sem tema: cai na referência do modo pedido (`config.mode`
+     * explícito, se houver; senão escuro, o default do schema), com um aviso.
      */
     const resolveSeedThemeId = useCallback((): string | undefined => {
         const seedThemeId = activeThemeId || initialTheme;
-        if (seedThemeId && allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
+        if (seedThemeId) {
+            if (allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
+            const requestedMode: 'light' | 'dark' = (configRef.current?.mode as 'light' | 'dark') || 'dark';
+            const reference = SARAK_REFERENCE_THEMES.find((t) => (t.design.mode ?? 'dark') === requestedMode) ?? SARAK_REFERENCE_THEMES[0];
+            console.warn(`[SarakUIProvider] tema "${seedThemeId}" não existe (removido do catálogo ou nunca existiu) — semeando com a referência "${reference.id}" (modo "${requestedMode}").`);
+            return reference.id;
+        }
         const defaultThemeId = optionsRef.current?.theme?.defaultTheme || 'classic';
         const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
         return themeEntry?.id;

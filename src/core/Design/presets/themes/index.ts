@@ -19,28 +19,16 @@ import type { SarakDesignState } from '../../../Provider/types';
  */
 export const THEME_PRESET_IDS = [
     'sarak-sovereign',
-    'crystal-glass',
     'cyberpunk-neon',
-    'holographic-glass',
     'industrial-terminal',
-    'nature-breeze',
     'neo-brutalism',
     'synthwave-retro',
     'nebula-space',
-    'dot-matrix-elegant',
-    'stellar-nebula',
     'kinetic-flow',
     'cyber-retro-wave',
     'minimalist-airy',
     'data-terminal',
     'neumorphic-mobile',
-    'industrial-dashboard',
-    'asymmetric-editorial',
-    'terracota-solar',
-    'musgo-do-vale',
-    'ardosia-ao-entardecer',
-    'forja-ultravioleta',
-    'grafite-puro',
 ] as const;
 
 export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
@@ -62,51 +50,27 @@ export interface ThemePreset {
 }
 
 import { sarakSovereignTheme } from './sarak-sovereign';
-import { crystalGlassTheme } from './crystal-glass';
 import { cyberpunkneonTheme } from './cyberpunk-neon';
-import { holographicGlassTheme } from './holographic-glass';
 import { industrialTerminalTheme } from './industrial-terminal';
-import { naturebreezeTheme } from './nature-breeze';
 import { neobrutalismTheme } from './neo-brutalism';
 import { synthwaveRetroTheme } from './synthwave-retro';
 import { nebulaSpaceTheme } from './nebula-space';
-import { dotMatrixElegantTheme } from './dot-matrix-elegant';
-import { stellarNebulaTheme } from './stellar-nebula';
 import { kineticFlowTheme } from './kinetic-flow';
 import { cyberRetroWaveTheme } from './cyber-retro-wave';
 import { minimalistAiry } from './minimalist-airy';
 import { dataTerminal } from './data-terminal';
 import { neumorphicMobile } from './neumorphic-mobile';
-import { industrialDashboard } from './industrial-dashboard';
-import { asymmetricEditorial } from './asymmetric-editorial';
-import { terracotaSolarTheme } from './terracota-solar';
-import { musgoDoValeTheme } from './musgo-do-vale';
-import { ardosiaAoEntardecerTheme } from './ardosia-ao-entardecer';
-import { forjaUltravioletaTheme } from './forja-ultravioleta';
-import { grafitePuroTheme } from './grafite-puro';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
-    crystalGlassTheme,
     cyberpunkneonTheme,
-    holographicGlassTheme,
     industrialTerminalTheme,
-    naturebreezeTheme,
     neobrutalismTheme,
     synthwaveRetroTheme,
     nebulaSpaceTheme,
-    dotMatrixElegantTheme,
-    stellarNebulaTheme,
     kineticFlowTheme,
     cyberRetroWaveTheme,
     minimalistAiry,
     dataTerminal,
     neumorphicMobile,
-    industrialDashboard,
-    asymmetricEditorial,
-    terracotaSolarTheme,
-    musgoDoValeTheme,
-    ardosiaAoEntardecerTheme,
-    forjaUltravioletaTheme,
-    grafitePuroTheme
 ];

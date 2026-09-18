@@ -52,7 +52,6 @@ Não copie um tema existente linha a linha. Eles servem para mostrar **quão lon
 não como ponto de partida:
 
 - Um **brutalista** (`neo-brutalism`) — contraste geométrico, cor quase binária, zero suavização.
-- Um **glass** (`holographic-glass` / `crystal-glass`) — translucidez, blur, luz difusa.
 - Um **minimalista** (`minimalist-airy`, a referência clonável — `SARAK_REFERENCE_THEMES`) — claro, neutro,
   respiro generoso.
 - Um **neon/cyberpunk** (`cyberpunk-neon` / `synthwave-retro`) — saturação alta, glow, contraste elétrico.

@@ -4,32 +4,32 @@ import { useResolvedThemeId } from '../useResolvedThemeId';
 
 describe('useResolvedThemeId', () => {
     it('nasce com o resultado de resolveSeedThemeId (a semente)', () => {
-        const resolveSeedThemeId = vi.fn(() => 'terracota-solar');
+        const resolveSeedThemeId = vi.fn(() => 'minimalist-airy');
         const { result } = renderHook(() => useResolvedThemeId(undefined, resolveSeedThemeId));
         const [resolvedThemeId] = result.current;
-        expect(resolvedThemeId).toBe('terracota-solar');
+        expect(resolvedThemeId).toBe('minimalist-airy');
     });
 
     it('acompanha `activeThemeId` quando a prop CONTROLADA muda de fato', () => {
-        const resolveSeedThemeId = vi.fn(() => 'grafite-puro');
+        const resolveSeedThemeId = vi.fn(() => 'sarak-sovereign');
         const { result, rerender } = renderHook(
             ({ activeThemeId }: { activeThemeId: string | undefined }) => useResolvedThemeId(activeThemeId, resolveSeedThemeId),
             { initialProps: { activeThemeId: undefined as string | undefined } },
         );
-        expect(result.current[0]).toBe('grafite-puro');
+        expect(result.current[0]).toBe('sarak-sovereign');
 
-        rerender({ activeThemeId: 'forja-ultravioleta' });
-        expect(result.current[0]).toBe('forja-ultravioleta');
+        rerender({ activeThemeId: 'kinetic-flow' });
+        expect(result.current[0]).toBe('kinetic-flow');
     });
 
     it('não muda quando `activeThemeId` continua undefined (ex.: consumidor usa `initialTheme`)', () => {
-        const resolveSeedThemeId = vi.fn(() => 'musgo-do-vale');
+        const resolveSeedThemeId = vi.fn(() => 'neo-brutalism');
         const { result, rerender } = renderHook(
             ({ activeThemeId }: { activeThemeId: string | undefined }) => useResolvedThemeId(activeThemeId, resolveSeedThemeId),
             { initialProps: { activeThemeId: undefined as string | undefined } },
         );
         rerender({ activeThemeId: undefined });
-        expect(result.current[0]).toBe('musgo-do-vale');
+        expect(result.current[0]).toBe('neo-brutalism');
     });
 
     it('expõe um setter manual — quem aplica um preset novo pode anunciar o id (caminho do PresetsCatalog)', () => {
@@ -38,9 +38,9 @@ describe('useResolvedThemeId', () => {
         expect(result.current[0]).toBeUndefined();
 
         act(() => {
-            result.current[1]('ardosia-ao-entardecer');
+            result.current[1]('cyber-retro-wave');
         });
 
-        expect(result.current[0]).toBe('ardosia-ao-entardecer');
+        expect(result.current[0]).toBe('cyber-retro-wave');
     });
 });

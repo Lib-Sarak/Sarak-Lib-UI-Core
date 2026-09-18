@@ -35,25 +35,25 @@ const Probe = () => {
 };
 
 describe('Tema rastreável — a contraparte é encontrada pela porta `initialTheme` (plan-27)', () => {
-    it('trocar de modo pelo ShellThemeToggle aplica a CONTRAPARTE AUTORADA de terracota-solar, não a síntese', () => {
+    it('trocar de modo pelo ShellThemeToggle aplica a CONTRAPARTE AUTORADA de minimalist-airy, não a síntese', () => {
         render(
-            <SarakUIProvider initialTheme="terracota-solar">
+            <SarakUIProvider initialTheme="minimalist-airy">
                 <ShellThemeToggle variant="mini" />
                 <Probe />
             </SarakUIProvider>,
         );
 
-        // `terracota-solar` é nativamente `light`, com `colorBgBody: '#f9f5f1'`.
+        // `minimalist-airy` é nativamente `light`, com `colorBgBody: '#F9FAFB'`.
         expect(screen.getByTestId('mode')).toHaveTextContent('light');
-        expect(screen.getByTestId('bg')).toHaveTextContent('#f9f5f1');
+        expect(screen.getByTestId('bg')).toHaveTextContent('#F9FAFB');
 
         fireEvent.click(screen.getByRole('button'));
 
-        // A contraparte AUTORADA (plan-26) declara `colorBgBody: '#0e0a06'` para
-        // o modo escuro — um valor ESCOLHIDO, que `syncThemeWithMode` nunca
-        // produziria a partir de `#f9f5f1` (suas faixas fixas de `bg` mandam
-        // L≤15, mas preservando H/S de `#f9f5f1`, não este valor específico).
+        // A contraparte AUTORADA declara `colorBgBody: '#0d1016'` para o modo
+        // escuro — um valor ESCOLHIDO, que `syncThemeWithMode` nunca produziria
+        // a partir de `#F9FAFB` (suas faixas fixas de `bg` mandam L≤15,
+        // preservando H/S de `#F9FAFB`, não este valor específico).
         expect(screen.getByTestId('mode')).toHaveTextContent('dark');
-        expect(screen.getByTestId('bg')).toHaveTextContent('#0e0a06');
+        expect(screen.getByTestId('bg')).toHaveTextContent('#0d1016');
     });
 });

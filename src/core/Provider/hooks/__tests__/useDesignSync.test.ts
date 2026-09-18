@@ -80,4 +80,27 @@ describe('useDesignSync', () => {
 
         expect(setDesign).not.toHaveBeenCalled();
     });
+
+    it('`activeThemeId` sem tema correspondente (removido do catálogo) cai na referência do MODO ATUAL, com aviso — nunca lança, nunca fica sem tema (R33)', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const setDesign = vi.fn();
+        const hasHydratedRef = { current: false };
+        const themeA: ThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
+
+        expect(() =>
+            renderHook(() => useDesignSync(true, 'tema-removido-do-catalogo', [themeA], 'test-key', hasHydratedRef, setDesign)),
+        ).not.toThrow();
+
+        expect(setDesign).toHaveBeenCalledTimes(1);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        expect(warnSpy.mock.calls[0][0]).toContain('tema-removido-do-catalogo');
+
+        const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
+        // O usuário estava no modo ESCURO — a referência aplicada tem de ser a
+        // do mesmo modo, não a que calhar de vir primeiro em `SARAK_REFERENCE_THEMES`.
+        const result = updater({ mode: 'dark' });
+        expect(result.mode).toBe('dark');
+
+        warnSpy.mockRestore();
+    });
 });

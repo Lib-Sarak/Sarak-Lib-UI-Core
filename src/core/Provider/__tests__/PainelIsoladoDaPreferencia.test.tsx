@@ -25,7 +25,7 @@ const Probe = () => {
 describe('O painel enxerga só o tema — a preferência não vaza para `systemDesign`', () => {
     it('trocar a preferência de modo muda o EFETIVO e preserva o SISTEMA (tema)', () => {
         render(
-            <SarakUIProvider initialTheme="terracota-solar">
+            <SarakUIProvider initialTheme="minimalist-airy">
                 <Probe />
             </SarakUIProvider>,
         );

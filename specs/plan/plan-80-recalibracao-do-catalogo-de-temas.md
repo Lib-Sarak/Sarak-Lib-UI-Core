@@ -485,6 +485,135 @@ segue bloqueado pelo commit da `plan-79`, que não aconteceu).
 - Aguardando o commit do dono para: (a) remover os 12 temas, (b) guiar a atualização no ERP, (c) executar a
   `plan-72`. Nenhum dos três começou.
 
+## Resumo da execução (continuação 3) — 2026-09-18
+
+**Resultado:** Concluído com pendências (remoção dos 12 temas feita e verificada; a atualização do ERP e a
+execução da `plan-72` seguem como próximos passos desta mesma conversa, fora deste bloco).
+
+**O que foi feito**
+- `src/core/Design/presets/themes/index.ts` — os 12 ids removidos de `THEME_PRESET_IDS`/`GLOBAL_THEMES` e
+  seus imports; `THEME_PRESET_IDS` cai de 23 para 11.
+- Removidos os 12 arquivos de tema: `crystal-glass.ts`, `holographic-glass.ts`, `nature-breeze.ts`,
+  `dot-matrix-elegant.ts`, `asymmetric-editorial.ts`, `stellar-nebula.ts`, `industrial-dashboard.ts`,
+  `terracota-solar.ts`, `musgo-do-vale.ts`, `ardosia-ao-entardecer.ts`, `forja-ultravioleta.ts`,
+  `grafite-puro.ts`.
+- **Achado real, corrigido — §5 passo 5 (o id removido):** medi o comportamento ANTES de mexer.
+  `resolveSeedThemeId` (`src/core/Provider/hooks/useDesignManager.ts:50-56`, seed) caía sempre em
+  `GLOBAL_THEMES[0]` (`sarak-sovereign`, sempre escuro, ignorando qualquer modo) **sem nenhum aviso**; o
+  efeito de `activeThemeId` controlado (`src/core/Provider/hooks/useDesignSync.ts:33-49`) simplesmente NÃO
+  FAZIA NADA quando o id não batia com nenhum tema — nem aviso, nem fallback, o design anterior ficava
+  congelado. Nenhum dos dois cumpria o §2 da plan ("cair num tema de referência do modo pedido, com um aviso
+  de console"). Corrigido nos dois arquivos: id explicitamente pedido (via `activeThemeId`, `initialTheme`,
+  ou um id restaurado de persistência própria do consumidor e re-passado numa dessas duas props — as
+  "três portas") que não bate com tema nenhum agora cai em `SARAK_REFERENCE_THEMES` no modo pedido
+  (`config.mode` explícito, senão o modo atual do design, senão escuro) e emite **um** `console.warn`
+  nomeando o id. Testes novos nos dois arquivos (`useDesignManager.test.ts`, `useDesignSync.test.ts`) provam
+  as três portas.
+- `gates/scripts/audit/verify_contrast.ts` — `CONTRAPARTE_EXEMPTION_LIST` cai de 16 para 9 (os 7 ids
+  removidos que estavam isentos saem da lista — ela só encolhe, nunca cresce, e entrada apontando pra um
+  tema que não existe mais é dívida morta).
+- Testes que citavam os ids removidos, corrigidos para usar temas que continuam no catálogo (trocando o id,
+  nunca a intenção do teste): `SarakShell.test.tsx`, `PainelIsoladoDaPreferencia.test.tsx`,
+  `TemaRastreavel.test.tsx`, `DuasPortasModoTema.test.tsx`, `useResolvedThemeId.test.ts`,
+  `verify_contrast.test.ts`. Em `verify_diversity.test.ts`, removi a suíte
+  `OS_18_ORIGINAIS`/`themesOriginais()` que congelava uma medição histórica sobre um conjunto de temas que
+  não existe mais (7 dos 18 originais saíram) — a função `aggregate()` que ela cobria ganhou uma fixture
+  sintética própria, e o teste de recalibragem do `bucket3` passou a medir `GLOBAL_THEMES` (o catálogo real
+  de hoje) em vez do conjunto congelado.
+- 2 snapshots desatualizados pelo encolhimento do catálogo (achados só ao rodar a suíte INTEIRA, não nos
+  arquivos tocados): `PreviewCanvas.test.tsx.snap` e `PresetsCatalog.test.tsx.snap`. Regenerados
+  (`vitest --update`) e conferidos byte a byte: os 11 temas mantidos aparecem, nenhum dos 12 removidos
+  sobrou.
+- `docs/migracoes.md` — nova entrada sob o bloco `## 7.0.0` (a mesma major ainda não publicada que já reúne
+  o plan-77 e o plan-78): lista os 12 ids removidos e o comportamento de fallback para quem os tinha salvo.
+- `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` — removida a linha de exemplo "glass"
+  que citava `holographic-glass`/`crystal-glass` (removidos); os outros três exemplos da lista continuam
+  válidos, sem outra alteração.
+- `npm run guide` — regenerado `sarak-ui/` (kit do consumidor), que ficava defasado após a remoção
+  (`guide:check` acusou antes de eu rodar o gerador).
+- `npm run build` rodado duas vezes (antes e depois do fix do §5 passo 5) — as duas vezes verde.
+
+**Arquivos alterados** (além dos 12 arquivos de tema removidos e do `index.ts` de temas)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/hooks/useDesignManager.ts` | alterado | `resolveSeedThemeId` cai na referência do modo pedido + avisa, em vez de `GLOBAL_THEMES[0]` mudo |
+| `src/core/Provider/hooks/useDesignSync.ts` | alterado | `activeThemeId` desconhecido cai na referência do modo atual + avisa, em vez de não fazer nada |
+| `src/core/Provider/hooks/__tests__/useDesignManager.test.ts` | alterado | 3 testes novos (as três portas) |
+| `src/core/Provider/hooks/__tests__/useDesignSync.test.ts` | alterado | 1 teste novo (activeThemeId desconhecido) |
+| `gates/scripts/audit/verify_contrast.ts` | alterado | `CONTRAPARTE_EXEMPTION_LIST` 16→9 |
+| `gates/scripts/audit/__tests__/verify_contrast.test.ts` | alterado | contagens e id de exemplo atualizados |
+| `gates/scripts/audit/__tests__/verify_diversity.test.ts` | alterado | suíte histórica congelada removida; `aggregate()` ganha fixture própria |
+| `src/core/Shell/__tests__/SarakShell.test.tsx` | alterado | `nature-breeze` → `sarak-sovereign` |
+| `src/core/Provider/__tests__/PainelIsoladoDaPreferencia.test.tsx` | alterado | `terracota-solar` → `minimalist-airy` |
+| `src/core/Provider/__tests__/TemaRastreavel.test.tsx` | alterado | `terracota-solar` → `minimalist-airy`, valores hex atualizados |
+| `src/features/DesignEngine/hooks/__tests__/DuasPortasModoTema.test.tsx` | alterado | `ardosia-ao-entardecer` → `sarak-sovereign` |
+| `src/core/Provider/hooks/__tests__/useResolvedThemeId.test.ts` | alterado | ids de exemplo trocados por ids que continuam no catálogo |
+| `docs/migracoes.md` | alterado | nova entrada de remoção sob `## 7.0.0` |
+| `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` | alterado | exemplo "glass" removido |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado (gerado) | regenerado |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado (gerado) | regenerado |
+| `sarak-ui/*`, `dist/*` | alterado (gerado) | `npm run guide` + `npm run build` |
+
+**Verificações executadas**
+- `npx vitest run --maxWorkers=3` → **370 arquivos / 1923 testes, 0 falhas** (rodada completa, duas vezes —
+  a primeira achou os 2 snapshots defasados, a segunda, após regenerá-los, fechou 100% verde).
+- `npx tsc --noEmit` → 0 erros.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-08-11 —
+  nenhuma regressão" (as 2 violações pré-existentes de `auditor_composicaoatomica` em
+  `SarakMultiSelect.tsx`/`SarakUploader.tsx` são o baseline conhecido, não-relacionadas a temas).
+- `npx tsx gates/scripts/audit/verify_contrast.ts` → 0 reprovados nos dois modos; 9 isentos, 2 com
+  contraparte, 0 sem contraparte fora da isenção.
+- `npx tsx gates/scripts/audit/verify_presets.ts` → 113 itens auditados (11 temas + 102 presets), 0 órfãs.
+- `npx tsx gates/scripts/audit/verify_diversity.ts` → catálogo de 11 medido: 9/11 escuro, 8/11 primária
+  S=100, 6/11 ciano+magenta, 0/11 claro-saturado, 0/11 fundo médio — **a concentração piora em proporção**
+  (era 18/23, 10/23, 8/23, 0/23, 0/23) porque os 5 temas que mais contribuíam para a diversidade (a leva com
+  contraparte) saíram. Não é regressão de gate (`themes:diversity` só avalia os 9 critérios quando chamado
+  com `--new`, para validar um LOTE novo — sem lote novo, só imprime); é um dado para a autoria futura.
+- `npm run dev-kit:check` → em dia, 0 ponteiros mortos.
+- `npm run build` (2x) → verde as duas vezes, incluindo `guide:check`, `catalog:check`, `barrel:check`,
+  `zero-brand:check`, `public-types:check`.
+
+**Critérios de aceite (desta parte)**
+- [x] Id de tema removido cai na referência do modo pedido, com um aviso, pelas três portas (teste) —
+  evidência: `useDesignManager.test.ts` (`describe('useDesignManager — id de tema removido/inexistente...`)
+  e `useDesignSync.test.ts`.
+- [x] `git status`/`git diff` conferem com o escopo desta remoção — só temas, os testes que os citavam, o
+  fallback de id removido, `docs/migracoes.md`, a skill `ui-criar-tema` e os gerados.
+- [ ] `CONTRAPARTE_EXEMPTION_LIST` vazia — **não é objetivo desta parte**; ela encolheu (16→9) porque 7 dos
+  removidos eram isentos, mas os 9 restantes (temas "melhorar"/"recriar") ainda não têm contraparte —
+  isso é trabalho da autoria futura, não desta remoção.
+
+**Decisões e suposições**
+- Achei o bug real do §5 passo 5 ao medir ANTES de implementar (como a plan manda) e decidi corrigi-lo nesta
+  mesma ação, não só documentá-lo: é o mecanismo de segurança que a PRÓPRIA remoção que acabei de fazer
+  passa a exercitar de verdade (qualquer app com um dos 12 ids salvo no `localStorage`/backend próprio bate
+  nisso assim que atualizar a lib) — corrigir depois seria deixar uma janela de tela-sem-aviso entre esta
+  remoção e uma plan futura.
+- `verify_diversity.test.ts`: removi a suíte que congelava a medição dos "18 originais" em vez de tentar
+  recalibrar os números — a premissa dela (um conjunto de temas legados intocável) contradiz a própria
+  decisão do dono que autorizou esta plan ("remover todos e recriar é aceitável"). `aggregate()` e o teste de
+  recalibragem do `bucket3` continuam cobertos, agora sem depender de um recorte que deixou de existir.
+- `docs/migracoes.md`: a entrada nova entrou sob o `## 7.0.0` já aberto (plan-77/plan-78), não uma major
+  nova — é a mesma major ainda não publicada (`package.json` segue em `6.3.0`).
+- Não toquei `specs/specs/09-temas-e-presets.md` (cita os 5 temas da leva por nome, no §5.2) — não está
+  em `§3.1` desta plan como arquivo editável agora; fica para a síntese do revisor, que já é o destino
+  declarado no §8.
+- Observei (não fiz) uma edição em `specs/plan/plan-72-...md` (mudou `depende_de` para `plan-79` e ganhou uma
+  seção `2.0` descrevendo a plan-80 partida em duas) — não é desta conversa; não revertida, não tocada.
+
+**Achados fora do escopo (não corrigidos, registrados apenas)**
+- `src/core/Design/presets/themes/kinetic-flow.ts:176` segue com o vídeo de terceiro
+  (`test-videos.co.uk`) — o dono marcou `kinetic-flow` como "melhorar", não "remover"; o conserto é da
+  autoria futura, não desta remoção.
+
+**Pendências / riscos**
+- Próximos passos combinados nesta conversa: guiar o dono na atualização do ERP (as duas camadas de cache
+  de specs/13-instalacao-e-atualizacao.md §9.1) e, depois, executar a `plan-72`. Nenhum dos dois começou
+  ainda neste bloco.
+- `sarak-dev/` não foi regenerado nesta ação (só `sarak-ui/` via `guide`) — `dev-kit:check` confirmou que
+  não havia necessidade (0 ponteiros mortos, kit em dia), reconferido depois da segunda rodada do `build`
+  (a que já inclui o fix do §5 passo 5).
+
 ---
 
 # 11. Síntese

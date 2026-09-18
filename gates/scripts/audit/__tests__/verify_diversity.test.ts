@@ -11,34 +11,6 @@ import {
 } from '../verify_diversity.ts';
 import { GLOBAL_THEMES, type ThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
-// Os 18 ids EXISTENTES no HEAD anterior à plan-25 — a plan proíbe tocar
-// nesses temas (§3.2), então filtrar por este id congelado continua válido
-// depois que os 5 novos entrarem em GLOBAL_THEMES.
-const OS_18_ORIGINAIS = [
-    'sarak-sovereign',
-    'crystal-glass',
-    'cyberpunk-neon',
-    'holographic-glass',
-    'industrial-terminal',
-    'nature-breeze',
-    'neo-brutalism',
-    'synthwave-retro',
-    'nebula-space',
-    'dot-matrix-elegant',
-    'stellar-nebula',
-    'kinetic-flow',
-    'cyber-retro-wave',
-    'minimalist-airy',
-    'data-terminal',
-    'neumorphic-mobile',
-    'industrial-dashboard',
-    'asymmetric-editorial',
-];
-
-function themesOriginais(): ThemePreset[] {
-    return GLOBAL_THEMES.filter((t) => OS_18_ORIGINAIS.includes(t.id));
-}
-
 describe('hueFamily', () => {
     it('classifica ciano', () => expect(hueFamily(183, 100)).toBe('ciano'));
     it('classifica verde', () => expect(hueFamily(135, 100)).toBe('verde'));
@@ -132,29 +104,9 @@ describe('measureTheme', () => {
     });
 });
 
-describe('aggregate — reproduz a tabela §2.2 do plan-25 sobre os 18 temas originais', () => {
-    it('reproduz exatamente os 5 números medidos pelo revisor em 2026-08-11', () => {
-        const rows = themesOriginais().map(measureTheme);
-        expect(rows.length).toBe(18);
-        const a = aggregate(rows);
-        expect(a.modeDark).toBe(15);
-        expect(a.saturacao100).toBe(10);
-        expect(a.cianoOuMagenta).toBe(8);
-        expect(a.claroSaturado).toBe(0);
-        expect(a.fundoMedio).toBe(0);
-    });
-
-    it('classifica neumorphic-mobile e asymmetric-editorial como "neutro"', () => {
-        const rows = themesOriginais().map(measureTheme);
-        const neumorphic = rows.find((r) => r.id === 'neumorphic-mobile');
-        const asymmetric = rows.find((r) => r.id === 'asymmetric-editorial');
-        expect(neumorphic?.familia).toBe('neutro');
-        expect(asymmetric?.familia).toBe('neutro');
-    });
-});
-
-// Fixtures sintéticas para os critérios — não dependem dos temas shippados,
-// então continuam válidas depois que os 5 novos entrarem em GLOBAL_THEMES.
+// Fixture sintética, reutilizada por `aggregate` e por `evaluateDistanceCriteria`
+// abaixo — não depende do catálogo shippado, então o teste não fica frágil a
+// cada tema que entra ou sai de `GLOBAL_THEMES`.
 function linha(parcial: Partial<ThemeDiversityRow>): ThemeDiversityRow {
     return {
         id: 'x',
@@ -171,6 +123,30 @@ function linha(parcial: Partial<ThemeDiversityRow>): ThemeDiversityRow {
         ...parcial,
     };
 }
+
+describe('aggregate', () => {
+    const rowsSinteticas: ThemeDiversityRow[] = [
+        linha({ id: 'a', mode: 'dark', familia: 'ciano', hue: 183, saturation: 100, fundoL: 5 }),
+        linha({ id: 'b', mode: 'dark', familia: 'magenta', hue: 300, saturation: 100, fundoL: 5 }),
+        linha({ id: 'c', mode: 'light', familia: 'laranja', hue: 30, saturation: 70, fundoL: 50 }),
+    ];
+
+    it('conta modo escuro, saturação 100, família ciano/magenta, claro-saturado e fundo médio', () => {
+        const a = aggregate(rowsSinteticas);
+        expect(a.total).toBe(3);
+        expect(a.modeDark).toBe(2);
+        expect(a.saturacao100).toBe(2);
+        expect(a.cianoOuMagenta).toBe(2);
+        expect(a.claroSaturado).toBe(1);
+        expect(a.fundoMedio).toBe(1);
+    });
+
+    it('classifica neumorphic-mobile (real, GLOBAL_THEMES) como "neutro" — H cromático com S abaixo do limiar', () => {
+        const tema = GLOBAL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
+        const row = measureTheme(tema);
+        expect(row.familia).toBe('neutro');
+    });
+});
 
 describe('evaluateDistanceCriteria', () => {
     const existentesSinteticos: ThemeDiversityRow[] = [
@@ -271,19 +247,19 @@ describe('evaluateDistanceCriteria', () => {
         expect(r?.ok).toBe(false);
     });
 
-    // Recalibragem (achado do revisor, plan-25 §11.3/§11.5): os limites antigos e
-    // hardcoded do bucket3 (0-120/0-20/0-100 — o `constraints.min..max` do
-    // schema) eram tão mais largos que o uso real que nenhum tema jamais
-    // escapava da faixa "baixo". Um conjunto de 5 novos cujo `cardBorderRadius`
-    // cobre TODA a faixa real observada nos 18 temas existentes (0 a 32, de
-    // `nature-breeze`) é genuinamente diverso — mas com os limites antigos,
-    // colapsava inteiro em "baixo" (0 faixas distintas detectadas) e, com
-    // borda/blur/densidade mantidos constantes, o critério 9 REPROVARIA essa
-    // dispersão real por engano. Com os limites novos — derivados dos
-    // `existentes`, nunca dos `novos` — a mesma dispersão é corretamente
-    // detectada.
-    it('recalibragem: raio que cobre toda a faixa real (0..32) escapava de "baixo" com os limites antigos e agora é detectado', () => {
-        const existentesReais = themesOriginais().map(measureTheme);
+    // Recalibragem (achado do revisor, específico do histórico desta métrica): os
+    // limites antigos e hardcoded do bucket3 (0-120/0-20/0-100 — o
+    // `constraints.min..max` do schema) eram tão mais largos que o uso real que
+    // nenhum tema jamais escapava da faixa "baixo". Um conjunto de 5 novos cujo
+    // `cardBorderRadius` cobre uma faixa bem maior que a do catálogo shippado
+    // é genuinamente diverso — mas com os limites antigos, colapsava inteiro em
+    // "baixo" (0 faixas distintas detectadas) e, com borda/blur/densidade
+    // mantidos constantes, o critério 9 REPROVARIA essa dispersão real por
+    // engano. Com os limites novos — derivados dos `existentes` (o catálogo
+    // shippado de verdade, nunca dos `novos`) — a mesma dispersão é
+    // corretamente detectada.
+    it('recalibragem: raio que cobre uma faixa bem maior que a do catálogo escapava de "baixo" com os limites antigos e agora é detectado', () => {
+        const existentesReais = GLOBAL_THEMES.map(measureTheme);
         const novos = [0, 8, 16, 24, 32].map((radius, i) =>
             linha({ id: `novo-${i}`, cardBorderRadius: radius, cardBorderWidth: 1, cardBackdropBlur: 0, layoutDensity: 'comfortable' }),
         );
@@ -293,7 +269,7 @@ describe('evaluateDistanceCriteria', () => {
         const faixasComLimiteAntigo = new Set(novos.map((n) => bucket3(n.cardBorderRadius, 0, 120)));
         expect(faixasComLimiteAntigo.size).toBe(1);
 
-        // Com a recalibragem (limites derivados dos 18 existentes reais), o
+        // Com a recalibragem (limites derivados do catálogo shippado real), o
         // critério 9 passa a enxergar essa mesma dispersão corretamente.
         const r = evaluateDistanceCriteria(existentesReais, novos).find((c) => c.criterio === 9);
         expect(r?.ok).toBe(true);

@@ -176,13 +176,14 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
 
 // A EXIGÊNCIA de contraparte (plan-26 §2.4/§3.1 item 6) — o gate, não o tipo.
 describe('auditContraparteRequired', () => {
-  it('a lista de isenção tem exatamente os 16 temas legados restantes (plan-25 menos os 2 que ganharam contraparte autorada)', () => {
-    expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(16);
+  it('a lista de isenção tem exatamente os temas legados que ainda não têm contraparte autorada', () => {
+    expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(9);
   });
 
-  it('sobre GLOBAL_THEMES hoje: 16 isentos, 0 faltando (os 7 com contraparte: 5 da plan-25 + minimalist-airy/sarak-sovereign)', () => {
+  it('sobre GLOBAL_THEMES hoje: um isento por tema legado sem contraparte, e nenhum faltando', () => {
     const audit = auditContraparteRequired(GLOBAL_THEMES);
-    expect(audit.isentos.length).toBe(16);
+    const comContraparte = GLOBAL_THEMES.filter((t) => Boolean(t.contraparte)).length;
+    expect(audit.isentos.length).toBe(GLOBAL_THEMES.length - comContraparte);
     expect(audit.faltando).toEqual([]);
   });
 
@@ -194,11 +195,11 @@ describe('auditContraparteRequired', () => {
 
   it('não acusa um tema legado sem contraparte — ele está na isenção', () => {
     // `sarak-sovereign` SAIU da isenção (ganhou contraparte autorada);
-    // `crystal-glass` continua legado, sem contraparte, e é quem prova a isenção agora.
-    const legado = GLOBAL_THEMES.find((t) => t.id === 'crystal-glass')!;
+    // `industrial-terminal` continua legado, sem contraparte, e é quem prova a isenção agora.
+    const legado = GLOBAL_THEMES.find((t) => t.id === 'industrial-terminal')!;
     expect(legado.contraparte).toBeUndefined();
     const audit = auditContraparteRequired([legado]);
     expect(audit.faltando).toEqual([]);
-    expect(audit.isentos).toEqual(['crystal-glass']);
+    expect(audit.isentos).toEqual(['industrial-terminal']);
   });
 });

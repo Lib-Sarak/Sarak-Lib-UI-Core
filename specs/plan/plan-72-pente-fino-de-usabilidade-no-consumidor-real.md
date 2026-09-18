@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "diagnostico", "usabilidade", "navegador", "sem-codigo"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/09-temas-e-presets]]", "[[specs/11-testes-e-cobertura]]", "[[specs/13-instalacao-e-atualizacao]]"]
-depende_de: "plan-80-recalibracao-do-catalogo-de-temas"
+depende_de: "plan-79-idioma-de-ponta-a-ponta"
 retida_por: ""
 destino_sintese: "specs/00-backlog.md"
 ---
@@ -17,8 +17,9 @@ destino_sintese: "specs/00-backlog.md"
 Um inventário **medido** do que ainda separa a biblioteca de "instalar, escolher o tema e estar pronto" —
 colhido percorrendo e operando um consumidor real, tela a tela, não lendo código.
 
-A saída desta plan **não é código**: é uma tabela de achados com dono, que o dono usa para decidir a
-próxima campanha.
+A saída desta plan **não é código**: é uma tabela de achados com dono, mais duas listas de melhoria — uma
+para a **biblioteca** (funcionalidade) e uma para os **temas** —, que o dono usa para decidir a próxima
+campanha e a autoria dos temas.
 
 # 2. Contexto
 
@@ -35,6 +36,17 @@ pegasse, e todos apareceram em segundos para quem estava olhando.
 Esta plan fecha a campanha do jeito que ela deveria ter começado. A barra configurada pelo administrador
 e as preferências do usuário já existem ([[05-cromo-e-slots]] §2.2.2 · [[09-temas-e-presets]] §4.7), e o
 passo 3 as exercita.
+
+## 2.0 Onde esta plan entra na ordem — e o que ela entrega à recalibração dos temas
+
+*(Decisão do dono, 2026-09-18.)* A `plan-80` foi partida em duas. A primeira parte já rodou: ela **removeu**
+os temas que o dono listou e **pausou**. Esta plan roda agora, **entre** as duas partes — o mesmo agente
+executa as duas. A segunda parte da `plan-80` (alterar e reconstruir os temas que o dono listou, e criar os
+novos) só começa depois do veredito desta.
+
+Por isso esta plan entrega, além da tabela de achados, um **insumo para a autoria dos temas**: o que a tela
+real mostrou que os temas precisam fazer melhor. A lista do dono (quais temas saem, quais mudam, quais são
+reconstruídos) e a matriz de capacidade estão no resumo da `plan-80` — é contra elas que o insumo se escreve.
 
 ## 2.1 A armadilha que já custou dois ciclos, e que é pré-condição aqui
 
@@ -59,6 +71,8 @@ não para a tabela.
 - Percorrer e operar um consumidor real em navegador, nas telas que ele tiver.
 - Exercitar o painel de design: temas, modo claro/escuro, tokens de cromo, atmosfera/fundo.
 - Registrar cada achado no formato da §5 item 5.
+- Escrever as **sugestões de melhoria da biblioteca** (§5 passo 7), a partir do que se tentou fazer na tela.
+- Escrever o **insumo para a recalibração dos temas** (§5 passo 8), a partir do que se viu na tela.
 - Escrever o resumo da §9 com a tabela completa e o roteamento de cada linha.
 
 ## 3.2 Fora
@@ -81,6 +95,9 @@ não para a tabela.
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
 | Skill | `padrao-escrita` | sempre |
 | Skill | `ui-arquitetura-design` | julgar usabilidade com critério, não com gosto |
+| Skill | `ui-criar-tema` | o que um tema shippado precisa cumprir — é o critério do insumo do passo 8 |
+| Sistema | `ZP/Automacao-relatorios/Novo` (`modules/painel-web/web/`) | o sistema de referência da campanha, na lib antiga: é a comparação que ancora as sugestões do passo 7 |
+| Plan | `specs/plan/plan-80-recalibracao-do-catalogo-de-temas.md` | a lista do dono (temas que saem, mudam e são reconstruídos) e a matriz de capacidade, no resumo dela |
 
 # 5. Instruções de execução
 
@@ -138,8 +155,38 @@ não para a tabela.
 6. **Não consertar nada.** Achado é achado. Se algo for trivial de corrigir, isso entra na coluna de
    severidade como observação, não no código.
 
-7. Fechar o resumo (§9) com a tabela completa, a seção de impressões, e a lista do que foi **conferido e
-   está correto** — o que passou vale tanto quanto o que falhou, porque é o que evita remedir depois.
+7. **Sugestões de melhoria da biblioteca.** Numa seção própria do resumo, separada da tabela de achados
+   (achado é o que **descumpre** o contrato; sugestão é o que **falta** nele). Registre o que um usuário ou
+   um desenvolvedor do consumidor tentou fazer e a lib não oferece, ou oferece mal. Cada sugestão com:
+
+   | Campo | Regra |
+   | --- | --- |
+   | O que se tentou fazer | a tarefa, reproduzível, na tela onde ela aparece |
+   | O que falta | o comportamento, componente, token ou opção de painel que não existe hoje |
+   | De onde vem a expectativa | o sistema de referência que fazia isso (com a tela), a regra de zero-config, ou um padrão já presente em outra parte da lib |
+   | Ganho | o que muda para quem usa — menos passos, menos código no consumidor, algo que hoje é impossível |
+
+   **Sem sugestão por gosto.** Sem uma das três âncoras, ela vai para as impressões.
+
+8. **Insumo para a recalibração dos temas.** Numa seção própria do resumo, separada da tabela de
+   achados, registre o que a tela real mostrou sobre os temas — para a segunda parte da `plan-80` usar na
+   autoria. Três blocos:
+   - **Por tema que o dono mandou alterar ou reconstruir:** o que ele faz mal hoje, na tela (contraste,
+     hover, item ativo, modo oposto, densidade, atmosfera, tipografia, cromo), e o que a versão nova
+     precisa fazer. Cada ponto com a mesma âncora da tabela: spec, token ou medida, nunca gosto solto.
+   - **Capacidade que nenhum tema mostra:** tokens e opções que funcionam na tela (medido no passo 3) e que
+     nenhum tema do catálogo explora — é a lista do que os temas novos precisam cobrir.
+   - **Armadilhas vistas na tela:** combinações de token que degradam (por exemplo, fundo de hover que some
+     sobre a barra, texto que perde contraste no modo oposto, atmosfera que atrapalha a leitura), para a
+     autoria evitar.
+
+   **O que o dono achar bonito ou feio não entra aqui**: esta seção é critério, e o veredito visual dele vem
+   na `plan-80`, por lote.
+
+9. Fechar o resumo (§9) com a tabela completa, a seção de impressões, as sugestões do passo 7, o insumo
+   do passo 8, e a lista do
+   que foi **conferido e está correto** — o que passou vale tanto quanto o que falhou, porque é o que
+   evita remedir depois.
 
 # 6. Critérios de aceite
 
@@ -152,6 +199,9 @@ não para a tabela.
 - [ ] Impressões sem âncora estão numa seção separada e rotulada.
 - [ ] **Zero arquivo de produção alterado** — `git status` limpo fora desta plan.
 - [ ] A lista do que foi conferido e está correto existe.
+- [ ] As sugestões de melhoria da biblioteca existem, cada uma com os quatro campos do passo 7 e uma âncora.
+- [ ] O insumo para a recalibração dos temas existe, com os três blocos do passo 8, e cobre cada tema que o
+      dono mandou alterar ou reconstruir.
 
 # 7. Como verificar (uso do revisor)
 
@@ -172,7 +222,13 @@ A tabela de achados **não vira spec fixa** — ela é matéria-prima. Na sínte
 o dono ([[00-prompt-revisor]] §4) e a manda para **um** destino: plan nova, backlog, ou descartada com o
 motivo escrito. Achado sem destino não sobrevive à síntese.
 
-O que for **confirmado como correto** no passo 7 não vai para lugar nenhum — não é verdade nova, é a
+As **sugestões de melhoria da biblioteca** (passo 7) passam pela mesma triagem da tabela: com o dono, cada
+uma vira plan nova, backlog, ou é descartada com o motivo escrito.
+
+O **insumo para a recalibração dos temas** (passo 8) vai para a `plan-80`: o revisor o transporta para o
+contexto dela antes de liberar a segunda parte, porque é lá que a autoria acontece.
+
+O que for **confirmado como correto** no passo 9 não vai para lugar nenhum — não é verdade nova, é a
 verdade que já estava escrita, agora conferida na tela.
 
 Ao registrar no backlog, vale a regra de sempre: reler os itens que já estão lá e **remover** os que esta

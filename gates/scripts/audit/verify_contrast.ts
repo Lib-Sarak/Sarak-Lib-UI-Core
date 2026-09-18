@@ -280,28 +280,22 @@ export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
 }
 
 /**
- * Os 18 temas legados que a `plan-25` mediu como grupo de controle — a ÚNICA
- * lista de isenção da exigência de `contraparte` (plan-26 §2.4, decisão 2 do
- * dono). Ela SÓ PODE ENCOLHER: autorar contraparte para um destes é permitido
- * (e o retira da lista numa plan futura); crescer exigiria justificativa nova.
+ * Os temas legados sem `contraparte` autorada — a ÚNICA lista de isenção da
+ * exigência de `contraparte` (specs/specs/09-temas-e-presets.md §2.1). Ela SÓ PODE
+ * ENCOLHER: autorar contraparte para um destes é permitido (e o retira da
+ * lista); crescer exigiria justificativa nova. Tema removido do catálogo sai
+ * também daqui — entrada apontando para um id inexistente é dívida morta.
  */
 export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
-    'crystal-glass',
     'cyberpunk-neon',
-    'holographic-glass',
     'industrial-terminal',
-    'nature-breeze',
     'neo-brutalism',
     'synthwave-retro',
     'nebula-space',
-    'dot-matrix-elegant',
-    'stellar-nebula',
     'kinetic-flow',
     'cyber-retro-wave',
     'data-terminal',
     'neumorphic-mobile',
-    'industrial-dashboard',
-    'asymmetric-editorial',
 ];
 
 export interface ContraparteAudit {

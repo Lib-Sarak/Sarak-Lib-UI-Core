@@ -77,6 +77,34 @@ temas embarcados que declaravam a chave. `SarakBackgroundRenderer` deixa de acei
 `globalBackgroundBlendMode` tem a chave descartada por `validateDesign`, com um único
 `console.warn` por sessão — não a cada render. Remova a chave do seu tema para não vê-lo mais.
 
+### 12 temas saem do catálogo shippado — recalibração da vitrine (plan-80)
+
+**Classificação: MAJOR** — encolhe a união pública `ThemePresetId` e `GLOBAL_THEMES`/`THEME_PRESET_IDS`
+perdem 12 entradas.
+
+**O que muda.** Decisão do dono: o catálogo de 23 temas concentrava demais num só canto (escuro + neon +
+ciano/magenta, medido em `specs/09-temas-e-presets.md` §5.2) e parte dele não representava bem a
+capacidade da biblioteca. Saem do catálogo:
+
+`crystal-glass`, `holographic-glass`, `nature-breeze`, `dot-matrix-elegant`, `asymmetric-editorial`,
+`stellar-nebula`, `industrial-dashboard`, `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
+`forja-ultravioleta`, `grafite-puro`.
+
+Os dois temas de referência (`SARAK_REFERENCE_THEMES` — `minimalist-airy` claro, `sarak-sovereign` escuro)
+**continuam existindo com os mesmos ids**, inalterados nesta entrada. Os 11 temas restantes seguem sem
+mudança de conteúdo por ora; uma campanha de melhoria/recriação deles é trabalho futuro, separado desta
+remoção.
+
+**O que acontece com quem já tem um dos 12 ids salvo** (`activeThemeId`, `initialTheme`, ou um id restaurado
+de persistência própria do consumidor e re-passado numa dessas duas props): a lib nunca fica sem tema e
+nunca lança. Ela cai no tema de referência do **modo pedido** — o de `config.mode`, se você passar um
+explícito, senão o modo atual do design (para quem já tinha um tema no ar e muda de id em runtime), senão
+escuro (o default do schema) — e emite **um** `console.warn` nomeando o id que não foi encontrado.
+
+**Como migrar.** Troque o id salvo por um dos 11 que continuam no catálogo (`GLOBAL_THEMES`/
+`THEME_PRESET_IDS` são a fonte viva), ou por um tema seu via `customThemes`. Não fazer nada não quebra a
+tela — o consumidor cai na referência do próprio modo, com o aviso no console apontando a causa.
+
 ---
 
 ## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
