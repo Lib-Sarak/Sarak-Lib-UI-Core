@@ -8,6 +8,7 @@ import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
 import type { ShellUser } from '../../core/Shell/Components/types';
 import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
+import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
@@ -96,6 +97,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
+    const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
     const effectiveSearch = search ?? (w.showSearch ? <ShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
     // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
@@ -136,7 +138,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     onClick={() => setOpen((v) => !v)}
                     aria-expanded={open}
                     aria-controls={DRAWER_ID}
-                    aria-label={open ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+                    aria-label={open ? t('mobileMenuCloseAriaLabel') : t('mobileMenuOpenAriaLabel')}
                     className="shrink-0 rounded-[var(--sarak-card-radius,8px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.06))]"
                     style={{ width: 'var(--sarak-topbar-height, 44px)', height: 'var(--sarak-topbar-height, 44px)' }}
                     icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
@@ -148,7 +150,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
 
             {open && (
                 <React.Fragment>
-                    <SarakScrim onClose={close} ariaLabel="Fechar menu de navegação" />
+                    <SarakScrim onClose={close} ariaLabel={t('mobileMenuCloseAriaLabel')} />
                     <aside
                         id={DRAWER_ID}
                         ref={containerRef}
@@ -177,6 +179,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                         {extraPreferenceRows.map((id) => renderShellPreferenceRow(id, {
                             isNavHidden: false,
                             onToggleNavCollapsed: w.toggleNavHidden,
+                            t,
                         }))}
                     </aside>
                 </React.Fragment>

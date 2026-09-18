@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
+import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { SarakHidden } from './SarakHidden';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 
@@ -28,6 +29,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
     centeredOnDesktop = false
 }) => {
     const device = useSarakDevice();
+    const t = useLibraryText();
     const isMobile = device === 'smartphone';
     const isTablet = device === 'tablet';
 
@@ -46,7 +48,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                             <SarakIconButton
                                 onClick={() => setIsMobileNavOpen(true)}
                                 variant="ghost"
-                                aria-label="Abrir menu de navegação"
+                                aria-label={t('mobileMenuOpenAriaLabel')}
                                 className="bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
@@ -59,7 +61,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                             <SarakIconButton
                                 onClick={() => setIsSidePanelOpen(true)}
                                 variant="ghost"
-                                aria-label="Abrir painel lateral"
+                                aria-label={t('sidePanelOpenAriaLabel')}
                                 className="bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
@@ -90,7 +92,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 <SarakIconButton
                                     onClick={() => setIsMobileNavOpen(false)}
                                     variant="ghost"
-                                    aria-label="Fechar menu de navegação"
+                                    aria-label={t('mobileMenuCloseAriaLabel')}
                                     style={{ borderRadius: 0 }}
                                     icon="✕"
                                 />
@@ -109,7 +111,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 <SarakIconButton
                                     onClick={() => setIsSidePanelOpen(false)}
                                     variant="ghost"
-                                    aria-label="Fechar painel lateral"
+                                    aria-label={t('sidePanelCloseAriaLabel')}
                                     style={{ borderRadius: 0 }}
                                     icon="✕"
                                 />

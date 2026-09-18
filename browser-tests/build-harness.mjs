@@ -1,6 +1,7 @@
 /**
- * Empacota o harness (`fixtures/harness-entry.tsx`) num único bundle IIFE autocontido,
- * para o teste de browser (`cromo-css-real.spec.ts`) carregar por `file://`, sem
+ * Empacota um entry point de harness (`fixtures/harness-entry.tsx` por padrão) num
+ * único bundle IIFE autocontido, para um teste de browser (`cromo-css-real.spec.ts`)
+ * ou a vitrine de temas (`generate-showcase.mts`) carregarem por `file://`, sem
  * servidor e sem import map — o especificador `@sarak/lib-ui-core` resolve para o
  * `dist/index.js` já BUILDADO (o artefato que o consumidor de verdade instala; este
  * script nunca gera nem edita `dist/`, só o LÊ — se ele não existir, falha cedo com uma
@@ -8,7 +9,7 @@
  *
  * A saída vai para um diretório TEMPORÁRIO (`fs.mkdtempSync`), nunca para dentro do
  * repositório — não há artefato de build deste harness para `.gitignore` nem para
- * commitar; cada execução do teste gera e descarta o próprio bundle.
+ * commitar; cada execução gera e descarta o próprio bundle.
  */
 import { build } from 'esbuild';
 import fs from 'node:fs';
@@ -35,8 +36,12 @@ const HTML_TEMPLATE = `<!doctype html>
 </html>
 `;
 
-/** Builda o harness e devolve o caminho do `index.html` gerado, pronto para `file://`. */
-export async function buildHarness() {
+/**
+ * Builda o harness e devolve o caminho do `index.html` gerado, pronto para
+ * `file://`. `entryPath` escolhe o entry point (default: `harness-entry.tsx`, o do
+ * `cromo-css-real.spec.ts`); a vitrine de temas passa `showcase-entry.tsx`.
+ */
+export async function buildHarness(entryPath = ENTRY) {
     for (const required of [DIST_INDEX, DIST_CSS]) {
         if (!fs.existsSync(required)) {
             throw new Error(
@@ -49,7 +54,7 @@ export async function buildHarness() {
     const bundlePath = path.join(outDir, 'bundle.js');
 
     await build({
-        entryPoints: [ENTRY],
+        entryPoints: [entryPath],
         outfile: bundlePath,
         bundle: true,
         format: 'iife',

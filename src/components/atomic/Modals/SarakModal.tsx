@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
 import { useModalBehavior } from './hooks/useModalBehavior';
 import { clsx } from 'clsx';
@@ -43,8 +44,10 @@ export const SarakModal: React.FC<SarakModalProps> = ({
     hideCloseButton = false,
     className,
 }) => {
-    const { design } = useSarakUI();
-    const { headerClass, footerClass, closeButtonClass } = useModalLayoutStyles(design);
+    // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
+    const { design } = useSarakUIOptional() || {};
+    const t = useLibraryText();
+    const { headerClass, footerClass, closeButtonClass } = useModalLayoutStyles(design ?? {});
     const { dialogRef, stepIndex, setStepIndex, handleTrap } = useModalBehavior(isOpen, onClose);
 
     const hasSteps = Array.isArray(steps) && steps.length > 0;
@@ -73,13 +76,13 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                 className="text-sm normal-case font-normal tracking-normal rounded-md disabled:opacity-50"
                 style={wizardBtnStyle}
             >
-                Voltar
+                {t('modalWizardBack')}
             </SarakButton>
             <span className="text-xs text-[var(--theme-muted)]">
                 {stepIndex + 1} / {steps.length}
             </span>
             <SarakButton type="button" variant="ghost" onClick={advance} className="text-sm normal-case font-normal tracking-normal rounded-md" style={wizardBtnStyle}>
-                {stepIndex === lastStep ? 'Concluir' : 'Avançar'}
+                {stepIndex === lastStep ? t('modalWizardFinish') : t('modalWizardNext')}
             </SarakButton>
         </div>
     ) : (
@@ -138,7 +141,7 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                                         closeButtonClass
                                     )}
                                     style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
-                                    aria-label="Fechar modal"
+                                    aria-label={t('modalCloseAriaLabel')}
                                     icon={<X size={18} />}
                                 />
                             )}

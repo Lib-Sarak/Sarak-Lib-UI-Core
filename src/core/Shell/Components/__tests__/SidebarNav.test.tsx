@@ -80,4 +80,36 @@ describe('SidebarNav', () => {
             expect(aside.className).not.toContain('shadow-2xl');
         });
     });
+
+    // os textos da própria lib seguem o idioma que vale.
+    describe('idioma que vale', () => {
+        const offlineProps = {
+            ...defaultProps,
+            groupedModules: {
+                Core: [{ id: 'm1', label: 'Module 1', icon: 'Home', status: 'offline' }] as any,
+            },
+        };
+
+        it('módulo offline: título e badge saem em português por padrão', () => {
+            renderWithProvider(<SidebarNav {...offlineProps} />);
+            expect(screen.getByText('Módulo offline')).toBeInTheDocument();
+            expect(screen.getByTitle('Módulo offline: Erro de conexão')).toBeInTheDocument();
+        });
+
+        it('módulo offline: título e badge saem em inglês com `config.language: "en"`', () => {
+            render(
+                <SarakUIProvider config={{ language: 'en' }}>
+                    <SidebarNav {...offlineProps} />
+                </SarakUIProvider>,
+            );
+            expect(screen.getByText('Module offline')).toBeInTheDocument();
+            expect(screen.getByTitle('Offline module: Connection error')).toBeInTheDocument();
+        });
+
+        it('o rótulo de notificações e a dica de redimensionar saem em português por padrão', () => {
+            renderWithProvider(<SidebarNav {...defaultProps} />);
+            expect(screen.getByText('Notificações')).toBeInTheDocument();
+            expect(screen.getByTitle('Arraste para redimensionar')).toBeInTheDocument();
+        });
+    });
 });

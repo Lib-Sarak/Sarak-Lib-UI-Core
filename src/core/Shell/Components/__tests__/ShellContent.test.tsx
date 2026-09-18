@@ -5,6 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 import * as ComponentModule from '../ShellContent';
 import { ShellContent } from '../ShellContent';
 import { BREAKPOINT_DESKTOP } from '../../../Design/breakpoints';
+import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
@@ -41,5 +42,38 @@ describe('ShellContent', () => {
 
         const title = screen.getByText('Módulo Um');
         expect(title.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:text-5xl`);
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    describe('idioma que vale', () => {
+        const activeModule = { id: 'mod1', label: 'Módulo Um', icon: 'Box', status: 'online', priority: 1 } as any;
+
+        it('categoria ausente e modo API saem em português por padrão', () => {
+            render(
+                <ShellContent
+                    activeModule={activeModule}
+                    discoveredModules={[activeModule]}
+                    design={{}}
+                    setIsSearchOpen={vi.fn()}
+                />,
+            );
+            expect(screen.getByText('Módulo')).toBeInTheDocument();
+            expect(screen.getByText('Módulo em modo API (sem interface local)')).toBeInTheDocument();
+        });
+
+        it('categoria ausente e modo API saem em inglês com `config.language: "en"`', () => {
+            render(
+                <SarakUIProvider config={{ language: 'en' }}>
+                    <ShellContent
+                        activeModule={activeModule}
+                        discoveredModules={[activeModule]}
+                        design={{ language: 'en' }}
+                        setIsSearchOpen={vi.fn()}
+                    />
+                </SarakUIProvider>,
+            );
+            expect(screen.getByText('Module')).toBeInTheDocument();
+            expect(screen.getByText('Module in API mode (no local interface)')).toBeInTheDocument();
+        });
     });
 });

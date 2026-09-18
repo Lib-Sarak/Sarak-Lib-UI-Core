@@ -9,6 +9,7 @@ import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
@@ -24,6 +25,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
 }) => {
     const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId } = design || {};
     const { mainContentClass } = useShellLayoutStyles(design);
+    const t = useLibraryText();
 
     const transitionEffect = {
         initial: { opacity: 0 },
@@ -49,7 +51,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                 <div>
                                     <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
                                         <div className="p-2 rounded-[var(--radius-theme)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
-                                        <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
+                                        <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || t('genericModuleLabel')}</span>
                                     </div>
                                     {/* sarak-allow-hardcode: breakpoint de container query do Tailwind (plan-39), não valor de tema */}
                                     <h1 className="text-4xl @min-[1024px]:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
@@ -75,13 +77,13 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                             return <DynamicRenderer contracts={contracts} module={activeModule} />;
                                         }
 
-                                        return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Module in API Mode (No Local Interface)</div>;
+                                        return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">{t('shellContentApiModeMessage')}</div>;
                                     })()}
                                 {isSplitViewEnabled && secondaryModuleId && (
                                     <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">
                                         {(() => {
                                             const SecMod = discoveredModules.find(m => m.id === secondaryModuleId)?.component;
-                                            return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">Select a secondary module</div>;
+                                            return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">{t('shellContentSelectSecondaryModule')}</div>;
                                         })()}
                                     </div>
                                 )}

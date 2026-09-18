@@ -45,12 +45,12 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
             <ShellSearchWidget variant="bar" onClick={vi.fn()} />,
             'topbarStart',
         );
-        const input = screen.getByPlaceholderText('Smart Search...');
+        const input = screen.getByPlaceholderText('Busca inteligente…');
         expect(container.querySelector('[data-sarak-slot="topbarStart"]')).toContainElement(input);
 
         fireEvent.change(input, { target: { value: 'qualquer coisa' } });
         // Sem SarakShell/registro, nenhum módulo existe — a busca funciona e devolve vazio.
-        expect(screen.getByText(/No results for/i)).toBeInTheDocument();
+        expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
     });
 
     it('ShellThemeToggle: alterna o tema sem SarakShell', () => {
@@ -77,7 +77,7 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
             'sidebar',
         );
         expect(screen.getByText('visitante')).toBeInTheDocument();
-        fireEvent.click(screen.getByTitle('Logout'));
+        fireEvent.click(screen.getByTitle('Sair'));
         expect(logout).toHaveBeenCalled();
     });
 });

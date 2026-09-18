@@ -2,6 +2,7 @@ import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { SarakMenuItem } from './SarakMenuItem';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
@@ -107,6 +108,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     className = '',
 }) => {
     const navigationStyle = useNavigationStyle();
+    const t = useLibraryText();
     // `auto` segue o Design Engine: só `topbar` vira horizontal (dock/glass = vertical).
     const resolved = orientation === 'auto'
         ? (navigationStyle === 'topbar' ? 'horizontal' : 'vertical')
@@ -122,7 +124,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
 
     return (
         <nav
-            aria-label="Navegação principal"
+            aria-label={t('shellNavAriaLabel')}
             className={`flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto'} ${className}`}
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
@@ -142,7 +144,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     {brand.logoUrl ? (
                         <img
                             src={brand.logoUrl}
-                            alt={brand.name ?? 'Logo'}
+                            alt={brand.name ?? t('shellNavBrandLogoAlt')}
                             className="object-contain"
                             style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)' }}
                         />

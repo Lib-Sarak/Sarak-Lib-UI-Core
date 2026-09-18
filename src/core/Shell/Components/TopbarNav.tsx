@@ -16,6 +16,7 @@ import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferen
 import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface TopbarNavProps {
     design: SarakDesignState;
@@ -34,6 +35,7 @@ interface TopbarNavProps {
 export const TopbarNav: React.FC<TopbarNavProps> = ({
     design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems, user, logout, startResizing
 }) => {
+    const t = useLibraryText();
     const [isHovered, setIsHovered] = React.useState(false);
     const {
         mode, navigationStyle, isNavHidden, systemName, logoUrl, logoDarkUrl, logoScale,
@@ -223,7 +225,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                 <div
                     onMouseDown={startResizing}
                     className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                    title="Arraste para ajustar a altura"
+                    title={t('topbarResizeHint')}
                 />
             )}
         </header>

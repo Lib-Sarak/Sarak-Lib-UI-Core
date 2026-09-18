@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Passo de um fluxo orientado (Spec 14, Regra 2). */
 export interface StepConfig {
@@ -43,13 +44,14 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
     orientation = 'horizontal',
     className = '',
 }) => {
+    const t = useLibraryText();
     const isVertical = orientation === 'vertical';
     const container = isVertical
         ? 'flex flex-col gap-1'
         : 'flex flex-row items-center overflow-x-auto whitespace-nowrap';
 
     return (
-        <ol className={`${container} ${className}`} aria-label="Progresso por etapas">
+        <ol className={`${container} ${className}`} aria-label={t('stepperAriaLabel')}>
             {steps.map((step, index) => {
                 const state = stateOf(index, current);
                 const isLast = index === steps.length - 1;

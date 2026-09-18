@@ -44,7 +44,7 @@ describe('SarakAppChrome — barra configurável pelo administrador', () => {
         // colorMode (pinned de fábrica) também aparece DENTRO do menu — além do
         // controle direto que já existia fora dele (por isso a busca é escopada).
         const { getByText } = within(menu);
-        expect(getByText('Light Mode')).toBeInTheDocument();
+        expect(getByText('Modo Claro')).toBeInTheDocument();
     });
 
     it("posição 'pinned' de uma preferência NOVA (navigationStyle) mostra o controle direto na barra", () => {

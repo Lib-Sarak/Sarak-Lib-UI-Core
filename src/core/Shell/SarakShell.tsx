@@ -12,6 +12,7 @@ import { useShellDiagnostics } from './hooks/useShellDiagnostics';
 
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useSarakDevice } from '../Provider/DeviceProvider';
+import { useLibraryText } from '../i18n/useLibraryText';
 
 interface Props {
   children?: ReactNode;
@@ -37,10 +38,13 @@ class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      // Classe: sem acesso a hooks, não lê `useLibraryText()`. Todo uso real desta
+      // classe passa `fallback` explícito (ver SarakShell abaixo) — este default só
+      // existe para quem não passar, e cai direto na base da lib (pt, specs/10 §3.6).
       return this.props.fallback || (
         <div className="p-8 text-[var(--theme-error)] bg-[var(--theme-error-bg)] border border-[var(--theme-error-border)] rounded-lg">
-          <h2 className="text-xl font-bold mb-2">Falha Industrial de Renderização</h2>
-          <p>O módulo encontrou um erro crítico. Tente recarregar a página.</p>
+          <h2 className="text-xl font-bold mb-2">Este módulo não pôde ser exibido</h2>
+          <p>Tente recarregar a página.</p>
         </div>
       );
     }
@@ -54,15 +58,16 @@ class ErrorBoundary extends Component<Props, State> {
  */
 export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const ui = useSarakUI();
-    const { 
-        brand = ui.options?.manifest?.brand || { name: "Sistema" },
-        user, 
-        logout, 
-        token, 
-        authApi, 
-        extraToolbarItems 
+    const t = useLibraryText();
+    const {
+        brand = ui.options?.manifest?.brand || { name: t('genericSystemLabel') },
+        user,
+        logout,
+        token,
+        authApi,
+        extraToolbarItems
     } = props;
-    
+
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
     const { shellClass } = useShellLayoutStyles(design);
@@ -71,7 +76,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const isMobile = device === 'smartphone';
 
     // --- DIMENSION GUARD & VISUAL SAFETY GATE (v10.1.10 Industrial Diagnostic) ---
-    const { isReady, contentRef, dimensions } = useShellDiagnostics({ activeModuleId: shell.activeModuleId });
+    const { isReady, contentRef } = useShellDiagnostics({ activeModuleId: shell.activeModuleId });
 
     // --- DESIGN HYDRATION LOG (v10.1) ---
     // Log removido para produção
@@ -138,7 +143,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                             icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>}
                         />
                         <span className="font-bold tracking-tight text-[var(--theme-title)] truncate">
-                            {brand.name || "Sistema"}
+                            {brand.name || t('genericSystemLabel')}
                         </span>
                     </div>
                 </div>
@@ -202,10 +207,10 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
 
                 {/* MAIN CONTENT CANVAS */}
                 <div ref={contentRef} className="flex-1 relative min-h-0 min-w-0 flex flex-col" data-sx-texture={design?.texture || 'none'}>
-                    <ErrorBoundary fallback={<div className="sarak-critical-error">Falha Industrial detectada no Módulo. Reiniciando Engine...</div>}>
-                        <React.Suspense fallback={<div className="sarak-loader">Sincronizando DNA Industrial...</div>}>
+                    <ErrorBoundary fallback={<div className="sarak-critical-error">{t('shellErrorHeading')}</div>}>
+                        <React.Suspense fallback={<div className="sarak-loader">{t('shellLoading')}</div>}>
                             {isReady ? (
-                                <ShellContent 
+                                <ShellContent
                                     activeModule={shell.activeModule}
                                     discoveredModules={shell.discoveredModules}
                                     design={design}
@@ -215,9 +220,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                                 />
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse border-2 border-dashed border-[var(--theme-primary)] m-4 rounded-xl">
-                                    <div className="text-xl font-bold mb-2">Estabilizando Ambiente Industrial...</div>
-                                    <div className="text-xs font-mono">Monitorando Layout: {Math.round(dimensions.w)}x{Math.round(dimensions.h)}</div>
-                                    <div className="text-2xs mt-4 opacity-30 italic">v10.1.10 Diagnostic Active</div>
+                                    <div className="text-xl font-bold mb-2">{t('shellLoading')}</div>
                                 </div>
                             )}
                         </React.Suspense>

@@ -1,12 +1,7 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { SarakFontSizePreference } from '../../../core/Provider/preferencesTypes';
-
-const OPTIONS: { value: SarakFontSizePreference; label: string; full: string }[] = [
-    { value: 'sm', label: 'P', full: 'Pequena' },
-    { value: 'md', label: 'M', full: 'Média' },
-    { value: 'lg', label: 'G', full: 'Grande' },
-];
 
 /**
  * Controle da preferência "tamanho da fonte" (Spec 09 §4.7) — três degraus
@@ -20,12 +15,19 @@ const OPTIONS: { value: SarakFontSizePreference; label: string; full: string }[]
  */
 export const ShellFontSizeControl: React.FC = () => {
     const sarak = useSarakUIOptional();
+    const t = useLibraryText();
     const current = sarak?.preferences.fontSize ?? 'md';
+
+    const OPTIONS: { value: SarakFontSizePreference; label: string; full: string }[] = [
+        { value: 'sm', label: t('fontSizeSmallAbbrev'), full: t('fontSizeSmallFull') },
+        { value: 'md', label: t('fontSizeMediumAbbrev'), full: t('fontSizeMediumFull') },
+        { value: 'lg', label: t('fontSizeLargeAbbrev'), full: t('fontSizeLargeFull') },
+    ];
 
     return (
         <div
             role="group"
-            aria-label="Tamanho da fonte"
+            aria-label={t('fontSizeGroupAriaLabel')}
             className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,2px)] rounded-[var(--sarak-card-radius,8px)] p-[var(--sarak-layout-gap-sm,2px)] bg-[var(--theme-muted,#94a3b8)]/10"
         >
             {OPTIONS.map((opt) => (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakMenuItem } from './SarakMenuItem';
 
@@ -10,6 +11,7 @@ export interface ShellThemeToggleProps {
 
 export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'horizontal' }) => {
     const { design, updatePreferences } = useSarakUI();
+    const t = useLibraryText();
 
     // Safely fallback to 'dark' if undefined
     const isDarkMode = (design?.mode || 'dark') === 'dark';
@@ -33,7 +35,7 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
                 variant="ghost"
                 size="md"
                 className="w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]"
-                title={`Mudar para modo ${isDarkMode ? 'claro' : 'escuro'}`}
+                title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
                 icon={isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             />
         );
@@ -49,7 +51,7 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
                 ) : (
                     <Moon size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 )}
-                label={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                label={isDarkMode ? t('themeToggleLabelLight') : t('themeToggleLabelDark')}
             />
         );
     }
@@ -61,7 +63,7 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
             variant="ghost"
             size="xs"
             className="relative text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10"
-            title={`Mudar para modo ${isDarkMode ? 'claro' : 'escuro'}`}
+            title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
             icon={isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
         />
     );

@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 import * as ComponentModule from '../SarakAnalyticalPage';
 import { SarakAnalyticalPage } from '../SarakAnalyticalPage';
 import { DeviceProvider } from '../../../core/Provider/DeviceProvider';
+import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
 
 describe('SarakAnalyticalPage', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -50,5 +51,20 @@ describe('SarakAnalyticalPage', () => {
             fireEvent.click(screen.getByLabelText('Fechar painel lateral'));
             expect(screen.queryByText('Painel de verdade')).not.toBeInTheDocument();
         });
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <DeviceProvider overrideDevice="smartphone">
+                    <SarakAnalyticalPage
+                        navBar={<div>Real nav</div>}
+                        mainContent={<div>Content</div>}
+                    />
+                </DeviceProvider>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Open navigation menu')).toBeInTheDocument();
     });
 });

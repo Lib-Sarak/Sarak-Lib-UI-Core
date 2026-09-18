@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakShellNav, type ShellNavItem } from '../SarakShellNav';
-import { DesignOverrideContext } from '../../../../core/Provider/SarakUIProvider';
+import { DesignOverrideContext, SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const ITEMS: ShellNavItem[] = [
     { label: 'Contratos', route: '/contratos' },
@@ -91,5 +91,22 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
         const { container } = render(<SarakShellNav items={ITEMS} />);
         const grupo = container.querySelector('nav > div:last-child') as HTMLElement;
         expect(grupo.getAttribute('style')).toContain('var(--sarak-tab-gap');
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakShellNav — idioma que vale', () => {
+    it('sem Provider, sai em português (R34)', () => {
+        render(<SarakShellNav items={ITEMS} />);
+        expect(screen.getByLabelText('Navegação principal')).toBeInTheDocument();
+    });
+
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakShellNav items={ITEMS} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Main navigation')).toBeInTheDocument();
     });
 });

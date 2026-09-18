@@ -187,6 +187,63 @@ function isDistinguishable(css1: [number, number, number], css2: [number, number
 }
 
 /**
+ * `parseToRgba` (motor de runtime) devolve PRETO OPACO para o que não
+ * reconhece — correto para pintar (precisa de uma cor), errado para MEDIR
+ * (mediria contra um valor inventado, em silêncio). Mesmo critério de
+ * `gates/scripts/audit/verify_contrast.ts::parseColor`: só HEX
+ * (#rgb/#rrggbb/#rrggbbaa), `rgb()`/`rgba()` e `transparent` são
+ * conversíveis; `hsl()`, `var()` não resolvido e gradiente **não são**.
+ */
+function isParseableColor(css: string | undefined): css is string {
+    if (typeof css !== 'string') return false;
+    const value = css.trim();
+    return value === 'transparent'
+        || /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)
+        || /^rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(?:,\s*[\d.]+\s*)?\)$/.test(value);
+}
+
+type DistinctionResult =
+    | { pulado: true; motivo: string }
+    | { pulado: false; distinguishable: boolean };
+
+/**
+ * O NÚCLEO da varredura de realce, isolado do `it.each` para ser exercitável
+ * com valores sintéticos (o teste do `hsl()` abaixo). Fundo não conversível
+ * declara `pulado` em vez de compor contra o preto de `parseToRgba`.
+ */
+function evaluateActiveDistinction(
+    variables: Record<string, string | undefined>,
+    activeBgVar: string,
+    baseBgVar: string,
+    activeTextCss: string | undefined,
+    inactiveTextCss: string | undefined,
+): DistinctionResult {
+    const baseBgCss = variables[baseBgVar];
+    const activeBgCss = variables[activeBgVar];
+    if (!isParseableColor(baseBgCss) || !isParseableColor(activeBgCss)) {
+        return {
+            pulado: true,
+            motivo: `fundo não conversível (${baseBgVar}: ${JSON.stringify(baseBgCss)}, ${activeBgVar}: ${JSON.stringify(activeBgCss)})`,
+        };
+    }
+
+    const baseBg = parseToRgba(baseBgCss);
+    const baseBgRgb: [number, number, number] = [baseBg.r, baseBg.g, baseBg.b];
+    const activeBgRgb = compositeOverOpaque(activeBgCss, baseBgRgb);
+
+    const distinguishByBg = isDistinguishable(activeBgRgb, baseBgRgb);
+    const distinguishByText =
+        isParseableColor(activeTextCss) &&
+        isParseableColor(inactiveTextCss) &&
+        isDistinguishable(
+            compositeOverOpaque(activeTextCss, activeBgRgb),
+            compositeOverOpaque(inactiveTextCss, baseBgRgb),
+        );
+
+    return { pulado: false, distinguishable: distinguishByText || distinguishByBg };
+}
+
+/**
  * Em TODO tema shippado, o item ativo se distingue do inativo nas duas
  * orientações — varredura de `GLOBAL_THEMES` inteiro (não amostra), pelo mesmo
  * caminho de runtime que o Provider usa (`useDesignVariables`). Distinção por
@@ -194,7 +251,9 @@ function isDistinguishable(css1: [number, number, number], css2: [number, number
  * `sidebarColor`/`topbarColor`) OU por TEXTO (`navItemActiveColor` composto
  * sobre o mesmo fundo, contra `textColorMuted` composto sobre o fundo inativo),
  * medido por ΔE — não por desigualdade de string. Tema que falhar aqui é
- * achado a relatar, não tema a editar (fora do escopo).
+ * achado a relatar, não tema a editar (fora do escopo). Par cujo fundo não
+ * converte (`hsl()`, `var()` não resolvido, gradiente) é PULADO e DECLARADO
+ * no console — nunca medido contra o preto que `parseToRgba` devolveria.
  */
 describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredura, não amostra)', () => {
     it.each(GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
@@ -211,21 +270,38 @@ describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredur
                 ['--sarak-sidebar-active-color', '--sarak-sidebar-bg'],
                 ['--sarak-topbar-active-color', '--sarak-topbar-bg'],
             ] as const) {
-                const baseBg = parseToRgba(variables[baseBgVar]);
-                const baseBgRgb: [number, number, number] = [baseBg.r, baseBg.g, baseBg.b];
-                const activeBgRgb = compositeOverOpaque(variables[activeBgVar], baseBgRgb);
-
-                const distinguishByBg = isDistinguishable(activeBgRgb, baseBgRgb);
-                const distinguishByText =
-                    activeTextCss !== undefined &&
-                    inactiveTextCss !== undefined &&
-                    isDistinguishable(
-                        compositeOverOpaque(activeTextCss, activeBgRgb),
-                        compositeOverOpaque(inactiveTextCss, baseBgRgb),
-                    );
-
-                expect(distinguishByText || distinguishByBg).toBe(true);
+                const result = evaluateActiveDistinction(variables, activeBgVar, baseBgVar, activeTextCss, inactiveTextCss);
+                if (result.pulado) {
+                    console.warn(`[SarakMenuItem realce] tema "${theme.id}" / ${activeBgVar}: pulado — ${result.motivo}`);
+                    continue;
+                }
+                expect(result.distinguishable).toBe(true);
             }
         }
     );
+});
+
+describe('SarakMenuItem — a régua não mede cor não-conversível contra preto', () => {
+    it('hsl() no fundo ativo é PULADO e DECLARADO, nunca composto contra preto', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        const variables: Record<string, string> = {
+            '--sarak-sidebar-bg': '#ffffff',
+            '--sarak-sidebar-active-color': 'hsl(210, 50%, 50%)',
+        };
+        const result = evaluateActiveDistinction(
+            variables,
+            '--sarak-sidebar-active-color',
+            '--sarak-sidebar-bg',
+            undefined,
+            undefined,
+        );
+
+        expect(result.pulado).toBe(true);
+        if (result.pulado) {
+            expect(result.motivo).toContain('hsl(210, 50%, 50%)');
+        }
+
+        warnSpy.mockRestore();
+    });
 });

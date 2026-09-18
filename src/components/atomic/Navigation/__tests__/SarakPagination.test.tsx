@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakPagination, buildPaginationRange } from '../SarakPagination';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('Spec 14 — buildPaginationRange (cortes precisos)', () => {
     it('sem reticências quando total ≤ maxVisible', () => {
@@ -48,5 +49,26 @@ describe('Spec 14 — SarakPagination', () => {
     it('o botão anterior fica desabilitado na primeira página', () => {
         render(<SarakPagination current={1} total={5} onChange={() => {}} />);
         expect(screen.getByLabelText('Página anterior')).toBeDisabled();
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale (R34: sem Provider, sai em português).
+describe('SarakPagination — idioma que vale', () => {
+    it('sem Provider, os rótulos saem em português', () => {
+        render(<SarakPagination current={2} total={5} onChange={() => {}} />);
+        expect(screen.getByLabelText('Paginação')).toBeInTheDocument();
+        expect(screen.getByLabelText('Página anterior')).toBeInTheDocument();
+        expect(screen.getByLabelText('Próxima página')).toBeInTheDocument();
+    });
+
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakPagination current={2} total={5} onChange={() => {}} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Pagination')).toBeInTheDocument();
+        expect(screen.getByLabelText('Previous page')).toBeInTheDocument();
+        expect(screen.getByLabelText('Next page')).toBeInTheDocument();
     });
 });

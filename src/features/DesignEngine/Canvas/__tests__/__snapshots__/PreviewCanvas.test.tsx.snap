@@ -1590,7 +1590,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                               <input
                                 class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
                                 id=":r2:"
-                                placeholder="Smart Search..."
+                                placeholder="Busca inteligente…"
                                 style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                                 value=""
                               />
@@ -2216,7 +2216,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                   >
                     <button
                       class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
-                      title="Light Mode"
+                      title="Modo Claro"
                       type="button"
                     >
                       <span
@@ -2268,12 +2268,12 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                       <span
                         class="flex-1 min-w-0 truncate text-left"
                       >
-                        Light Mode
+                        Modo Claro
                       </span>
                     </button>
                     <button
                       class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
-                      title="Notifications"
+                      title="Notificações"
                       type="button"
                     >
                       <span
@@ -2302,7 +2302,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                       <span
                         class="flex-1 min-w-0 truncate text-left"
                       >
-                        Notifications
+                        Notificações
                       </span>
                       <div
                         class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
@@ -2355,7 +2355,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           <span
                             class="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate"
                           >
-                            User
+                            Usuário
                           </span>
                           <div
                             class="flex items-center"
@@ -2380,14 +2380,14 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                             <span
                               class="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] uppercase tracking-widest font-black"
                             >
-                              User
+                              Usuário
                             </span>
                           </div>
                         </div>
                       </div>
                       <button
                         class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)]"
-                        title="Logout"
+                        title="Sair"
                       >
                         <svg
                           class=""

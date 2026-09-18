@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakBreadcrumbs } from '../SarakBreadcrumbs';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const items = [
     { label: 'Início', href: '/' },
@@ -33,5 +34,22 @@ describe('Spec 14 — SarakBreadcrumbs', () => {
         render(<SarakBreadcrumbs items={items} onNavigate={onNavigate} />);
         fireEvent.click(screen.getByText('Detalhe'));
         expect(onNavigate).not.toHaveBeenCalled();
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakBreadcrumbs — idioma que vale', () => {
+    it('sem Provider, sai em português (R34)', () => {
+        render(<SarakBreadcrumbs items={items} />);
+        expect(screen.getByLabelText('Trilha de navegação')).toBeInTheDocument();
+    });
+
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakBreadcrumbs items={items} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Breadcrumb')).toBeInTheDocument();
     });
 });

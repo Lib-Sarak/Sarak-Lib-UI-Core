@@ -1,11 +1,7 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { SarakNavigationStylePreference } from '../../../core/Provider/preferencesTypes';
-
-const OPTIONS: { value: SarakNavigationStylePreference; label: string }[] = [
-    { value: 'sidebar', label: 'Lateral' },
-    { value: 'topbar', label: 'Topo' },
-];
 
 /**
  * Controle da preferência "navegação topo/lateral" (Spec 09 §4.7). Sem
@@ -18,13 +14,19 @@ const OPTIONS: { value: SarakNavigationStylePreference; label: string }[] = [
  */
 export const ShellNavigationStyleControl: React.FC = () => {
     const sarak = useSarakUIOptional();
+    const t = useLibraryText();
     const themeStyle: SarakNavigationStylePreference = sarak?.design?.navigationStyle === 'topbar' ? 'topbar' : 'sidebar';
     const current = sarak?.preferences.navigationStyle ?? themeStyle;
+
+    const OPTIONS: { value: SarakNavigationStylePreference; label: string }[] = [
+        { value: 'sidebar', label: t('navigationStyleSidebarLabel') },
+        { value: 'topbar', label: t('navigationStyleTopbarLabel') },
+    ];
 
     return (
         <div
             role="group"
-            aria-label="Estilo de navegação"
+            aria-label={t('navigationStyleGroupAriaLabel')}
             className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,2px)] rounded-[var(--sarak-card-radius,8px)] p-[var(--sarak-layout-gap-sm,2px)] bg-[var(--theme-muted,#94a3b8)]/10"
         >
             {OPTIONS.map((opt) => (

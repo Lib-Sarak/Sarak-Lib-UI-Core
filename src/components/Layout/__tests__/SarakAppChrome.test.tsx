@@ -425,28 +425,28 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         renderAtDevice('desktop',
             <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
         );
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('DEFAULT: omitir `widgets`, com `user`/`logout`, monta os quatro no modo topbar', () => {
         renderAtDevice('desktop',
             <SarakAppChrome navigationStyle="topbar" nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
         );
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('DEFAULT sem `user`: busca/tema/colapso montam, o widget de usuário NÃO', () => {
         renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.queryByTitle('Logout')).toBeNull();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
         expect(screen.queryByText('User')).toBeNull();
     });
 
@@ -454,35 +454,35 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         renderAtDevice('desktop',
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ search: false }}><div>x</div></SarakAppChrome>,
         );
-        expect(screen.queryByPlaceholderText('Smart Search...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('opt-out isolado: search=false TAMBÉM desarma o atalho — não fica engolindo Ctrl/Cmd+K à toa', () => {
         renderAtDevice('desktop', <SarakAppChrome nav={NAV} widgets={{ search: false }}><div>x</div></SarakAppChrome>);
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
     });
 
     it('opt-out isolado: themeToggle=false remove só a alternância de tema', () => {
         renderAtDevice('desktop',
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ themeToggle: false }}><div>x</div></SarakAppChrome>,
         );
-        expect(screen.queryByText(/Mode$/)).toBeNull();
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.queryByText(/^Modo /)).toBeNull();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('opt-out isolado: user=false remove o widget de usuário mesmo com `user` dado', () => {
         renderAtDevice('desktop',
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ user: false }}><div>x</div></SarakAppChrome>,
         );
-        expect(screen.queryByTitle('Logout')).toBeNull();
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
     });
 
@@ -491,9 +491,9 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ collapse: false }}><div>x</div></SarakAppChrome>,
         );
         expect(screen.queryByLabelText('Recolher navegação')).toBeNull();
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('o colapso alterna design.isNavHidden ao clicar (sidebar encolhe)', () => {
@@ -509,7 +509,7 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome nav={NAV} search={<div data-testid="busca-custom">minha busca</div>}><div>x</div></SarakAppChrome>,
         );
         expect(screen.getByTestId('busca-custom')).toBeInTheDocument();
-        expect(screen.queryByPlaceholderText('Smart Search...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
     });
 
     it('com `search` do consumidor, o atalho NÃO abre o palette da lib por cima', () => {
@@ -517,14 +517,14 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome nav={NAV} search={<div data-testid="busca-custom">minha busca</div>}><div>x</div></SarakAppChrome>,
         );
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
     });
 
     it('atalho Ctrl/Cmd+K abre o command palette (SarakSearch) sem SarakShell', () => {
         renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-        expect(screen.getByPlaceholderText('Search tool, record or configuration...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
     });
 
     it('o palette alimentado pela busca lista a própria navegação e seleciona por onNavigate', () => {
@@ -538,10 +538,10 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
 
     it('sem SarakUIProvider, nenhum default monta e o atalho não é escutado (degradação, não regra nova)', () => {
         render(<SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
-        expect(screen.queryByPlaceholderText('Smart Search...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
         expect(screen.queryByLabelText('Recolher navegação')).toBeNull();
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).toBeNull();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
     });
 });
 
@@ -551,23 +551,23 @@ describe('SarakAppChrome — widgets por padrão no celular (nada some)', () => 
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
         );
         fireEvent.click(toggleOf(container)!);
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('sem `user`, o widget de usuário não aparece no drawer — tema continua aparecendo', () => {
         const { container } = renderAtDevice('smartphone', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         fireEvent.click(toggleOf(container)!);
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
-        expect(screen.queryByTitle('Logout')).toBeNull();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
     });
 
     it('a busca default aparece no drawer, e o atalho de teclado também funciona no celular', () => {
         const { container } = renderAtDevice('smartphone', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         fireEvent.click(toggleOf(container)!);
-        expect(screen.getByPlaceholderText('Smart Search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         fireEvent.keyDown(window, { key: 'k', metaKey: true });
-        expect(screen.getByPlaceholderText('Search tool, record or configuration...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
     });
 });
 

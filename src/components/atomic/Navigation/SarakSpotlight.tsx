@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SarakInput } from '../Inputs/SarakInput';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Item navegável da Command Palette (Spec 14, Regra 1). */
 export interface NavigationItem {
@@ -66,8 +67,10 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
     open,
     onOpenChange,
     onSelect,
-    placeholder = 'Buscar…',
+    placeholder,
 }) => {
+    const t = useLibraryText();
+    const effectivePlaceholder = placeholder ?? t('genericSearchLabel');
     const [internalOpen, setInternalOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
@@ -124,7 +127,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
             <div
                 role="dialog"
                 aria-modal="true"
-                aria-label="Command Palette"
+                aria-label={t('spotlightAriaLabel')}
                 className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] shadow-2xl"
                 onClick={(event) => event.stopPropagation()}
             >
@@ -143,13 +146,13 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     autoFocus
                     type="text"
                     value={query}
-                    placeholder={placeholder}
+                    placeholder={effectivePlaceholder}
                     onChange={(event) => {
                         setQuery(event.target.value);
                         setActiveIndex(0);
                     }}
                     onKeyDown={onKeyDown}
-                    aria-label="Campo de busca"
+                    aria-label={t('searchFieldAriaLabel')}
                     fullWidth
                     className="text-[var(--sarak-text-main,#ffffff)]"
                     style={{
@@ -179,7 +182,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     ))}
                     {results.length === 0 && (
                         <li className="text-center text-sm text-[var(--text-muted,#94a3b8)]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                            Nenhum resultado
+                            {t('spotlightNoResults')}
                         </li>
                     )}
                 </ul>

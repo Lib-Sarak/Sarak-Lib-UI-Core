@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useFocusTrap } from './hooks/useFocusTrap';
 import { SarakScrim } from '../Layouts/SarakScrim';
 
@@ -26,7 +27,9 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     size = 320,
     className = ''
 }) => {
-    const { design } = useSarakUI();
+    // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
+    const { design } = useSarakUIOptional() || {};
+    const t = useLibraryText();
     const [shouldRender, setShouldRender] = useState(isOpen);
     // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
     const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
@@ -110,7 +113,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
                 visible={isOpen}
                 durationMs={typeof animSlow === 'number' ? animSlow : 400}
                 onClose={onClose}
-                ariaLabel="Fechar painel"
+                ariaLabel={t('drawerCloseAriaLabel')}
                 testId="sarak-drawer-overlay"
                 style={{
                     background: String(overlayBg),

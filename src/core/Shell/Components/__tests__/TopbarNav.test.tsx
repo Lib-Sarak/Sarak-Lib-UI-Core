@@ -116,4 +116,21 @@ describe('TopbarNav', () => {
         expect(noiseLayer).not.toBeNull();
         expect(noiseLayer!.style.opacity).toBe('var(--sarak-topbar-noise-opacity, 0)');
     });
+
+    // os textos da própria lib seguem o idioma que vale.
+    describe('idioma que vale', () => {
+        it('a dica de redimensionar sai em português por padrão', () => {
+            renderWithProvider(<TopbarNav {...mockProps} />);
+            expect(screen.getByTitle('Arraste para ajustar a altura')).toBeInTheDocument();
+        });
+
+        it('a dica de redimensionar sai em inglês com `config.language: "en"`', () => {
+            render(
+                <SarakUIProvider config={{ language: 'en' }}>
+                    <TopbarNav {...mockProps} />
+                </SarakUIProvider>,
+            );
+            expect(screen.getByTitle('Drag to adjust the height')).toBeInTheDocument();
+        });
+    });
 });

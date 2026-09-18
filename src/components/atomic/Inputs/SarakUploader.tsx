@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /**
  * Tipos estruturais do react-dropzone declarados localmente — os tipos nomeados
@@ -59,6 +60,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
     onChange,
     onReject,
 }) => {
+    const t = useLibraryText();
     const onDrop = useCallback(
         (accepted: File[], rejections: FileRejection[]): void => {
             if (accepted.length > 0) onChange?.(accepted);
@@ -113,7 +115,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 12l3-3m0 0l3 3m-3-3v9" />
                 </svg>
                 <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">
-                    {isDragActive ? 'Solte os arquivos aqui...' : 'Arraste arquivos ou clique para selecionar'}
+                    {isDragActive ? t('uploaderDragActive') : t('uploaderDropInstruction')}
                 </span>
                 {hint && <span className="text-2xs text-[var(--text-muted,#94a3b8)]/70">{hint}</span>}
             </div>

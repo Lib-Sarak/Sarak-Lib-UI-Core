@@ -48,3 +48,33 @@ describe('SarakDatePicker', () => {
         expect(onChange).toHaveBeenCalledWith(['2026-01-10', '2026-01-20']);
     });
 });
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakDatePicker — idioma que vale', () => {
+    it('sem valor, o placeholder sai em português por padrão', () => {
+        render(
+            <SarakUIProvider>
+                <SarakDatePicker />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Selecione…')).toBeInTheDocument();
+    });
+
+    it('sem valor, o placeholder sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakDatePicker />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Select…')).toBeInTheDocument();
+    });
+
+    it('o placeholder do consumidor vence sempre, e a lib não o traduz', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakDatePicker placeholder="Meu placeholder" />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Meu placeholder')).toBeInTheDocument();
+    });
+});

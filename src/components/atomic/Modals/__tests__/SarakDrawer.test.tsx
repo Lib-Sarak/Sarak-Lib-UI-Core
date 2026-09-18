@@ -73,3 +73,17 @@ describe('SarakDrawer', () => {
         expect(onCloseMock).toHaveBeenCalled();
     });
 });
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakDrawer — idioma que vale', () => {
+    it('o overlay sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakDrawer isOpen onClose={() => undefined}>
+                    <div>conteúdo</div>
+                </SarakDrawer>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Close panel')).toBeInTheDocument();
+    });
+});

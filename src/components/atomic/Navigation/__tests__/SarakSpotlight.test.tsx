@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakSpotlight, type NavigationItem } from '../SarakSpotlight';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const items: NavigationItem[] = [
     { id: 'home', label: 'Início', keywords: 'dashboard home' },
@@ -50,5 +51,30 @@ describe('Spec 14 — SarakSpotlight (Command Palette)', () => {
         render(<SarakSpotlight items={items} open onSelect={onSelect} />);
         fireEvent.keyDown(screen.getByLabelText('Campo de busca'), { key: 'Enter' });
         expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'home' }));
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakSpotlight — idioma que vale', () => {
+    it('sem `placeholder`, o padrão sai em português por padrão, e em inglês com `config.language: "en"`', () => {
+        render(<SarakSpotlight items={items} open onSelect={() => {}} />);
+        expect(screen.getByPlaceholderText('Buscar…')).toBeInTheDocument();
+
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakSpotlight items={items} open onSelect={() => {}} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByPlaceholderText('Search…')).toBeInTheDocument();
+    });
+
+    it('sem resultados, sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakSpotlight items={items} open onSelect={() => {}} />
+            </SarakUIProvider>,
+        );
+        fireEvent.change(screen.getByLabelText('Search field'), { target: { value: 'zzz' } });
+        expect(screen.getByText('No results')).toBeInTheDocument();
     });
 });

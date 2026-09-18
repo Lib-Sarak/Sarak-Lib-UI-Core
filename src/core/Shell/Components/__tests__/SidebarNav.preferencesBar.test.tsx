@@ -34,7 +34,7 @@ const renderSidebar = (design: Record<string, unknown>) =>
 describe('SidebarNav — barra configurável pelo administrador', () => {
     it('padrão de fábrica: alternância de tema fixada (variante vertical), idioma NÃO monta, ⚙ não aparece', () => {
         renderSidebar({});
-        expect(screen.getByText('Light Mode')).toBeInTheDocument();
+        expect(screen.getByText('Modo Claro')).toBeInTheDocument();
         expect(screen.queryByText('Language')).toBeNull();
         expect(screen.queryByLabelText('Preferências')).toBeNull();
     });
@@ -44,7 +44,7 @@ describe('SidebarNav — barra configurável pelo administrador', () => {
             [PREFERENCE_POSITION_TOKEN_IDS.language]: 'pinned',
             enabledLanguages: ['pt-BR', 'en-US'],
         });
-        expect(screen.getByText('Language')).toBeInTheDocument();
+        expect(screen.getByText('Idioma')).toBeInTheDocument();
     });
 
     it("fontSize='menu' faz o ⚙ nascer com a linha 'Tamanho da fonte' — e o teto do tema (colorMode pinned) some junto no menu", () => {

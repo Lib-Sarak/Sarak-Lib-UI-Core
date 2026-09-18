@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PreferenceId } from '../../../core/Provider/preferencesTypes';
+import type { LibraryTextFn } from '../../../core/i18n/useLibraryText';
 import { SarakMenuItem } from './SarakMenuItem';
 import { ShellThemeToggle } from './ShellThemeToggle';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
@@ -11,6 +12,13 @@ export interface ShellPreferenceRowContext {
     isNavHidden: boolean;
     /** Grava a preferência de recolhimento (a mesma função que o toggle de sempre usa). */
     onToggleNavCollapsed: () => void;
+    /**
+     * O texto da lib no idioma que vale. Recebido de fora — nunca lido por
+     * `useLibraryText()` aqui dentro: esta função não é um componente, e é chamada
+     * dentro de um `.map()` do chamador; um hook aqui violaria a ordem de chamada
+     * entre renders (a lista de preferências muda de tamanho).
+     */
+    t: LibraryTextFn;
 }
 
 /**
@@ -42,18 +50,18 @@ export const renderShellPreferenceRow = (id: PreferenceId, ctx: ShellPreferenceR
                 <SarakMenuItem
                     key={id}
                     onClick={ctx.onToggleNavCollapsed}
-                    label={ctx.isNavHidden ? 'Expandir navegação' : 'Recolher navegação'}
+                    label={ctx.isNavHidden ? ctx.t('chromeCollapseExpand') : ctx.t('chromeCollapseCollapse')}
                 />
             );
         case 'fontSize':
             return (
-                <PreferenceMenuRow key={id} label="Tamanho da fonte">
+                <PreferenceMenuRow key={id} label={ctx.t('fontSizeGroupAriaLabel')}>
                     <ShellFontSizeControl />
                 </PreferenceMenuRow>
             );
         case 'navigationStyle':
             return (
-                <PreferenceMenuRow key={id} label="Navegação">
+                <PreferenceMenuRow key={id} label={ctx.t('preferenceNavigationStyleRowLabel')}>
                     <ShellNavigationStyleControl />
                 </PreferenceMenuRow>
             );

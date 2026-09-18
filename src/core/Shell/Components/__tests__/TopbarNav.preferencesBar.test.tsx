@@ -39,7 +39,7 @@ describe('TopbarNav — barra configurável pelo administrador', () => {
         fireEvent.click(screen.getByLabelText('Preferências'));
         const menu = within(screen.getByRole('menu'));
         expect(menu.getByText('Navegação')).toBeInTheDocument();
-        expect(menu.getByText('Light Mode')).toBeInTheDocument();
+        expect(menu.getByText('Modo Claro')).toBeInTheDocument();
     });
 
     it("fontSize='pinned' mostra o controle direto (P/M/G) na barra", () => {

@@ -3,10 +3,11 @@ import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { PreferenceId } from '../../../core/Provider/preferencesTypes';
 import { renderShellPreferenceRow, type ShellPreferenceRowContext } from './shellPreferenceRow';
 
-export interface ShellPreferencesMenuProps extends ShellPreferenceRowContext {
+export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContext, 't'> {
     /** TODAS as preferências oferecidas (fixadas inclusive). Vazio = não monta. */
     menuIds: PreferenceId[];
     /** Lado da tela em que a barra vive — decide para onde o menu abre. */
@@ -35,6 +36,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const close = () => setIsOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(isOpen, close);
+    const t = useLibraryText();
 
     if (menuIds.length === 0) return null;
 
@@ -48,7 +50,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                 aria-haspopup="true"
                 aria-expanded={isOpen}
                 aria-controls={MENU_ID}
-                aria-label={isOpen ? 'Fechar preferências' : 'Preferências'}
+                aria-label={isOpen ? t('preferencesCloseAriaLabel') : t('preferencesLabel')}
                 icon={<SarakIcon name="Settings" size={16} />}
             />
             {isOpen && (
@@ -56,7 +58,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     id={MENU_ID}
                     ref={containerRef}
                     role="menu"
-                    aria-label="Preferências"
+                    aria-label={t('preferencesLabel')}
                     onKeyDown={handleTrap}
                     className={`absolute z-[1000] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,220px)] rounded-[var(--sarak-card-radius,12px)] border p-[var(--sarak-layout-gap-sm,4px)] flex shadow-2xl ${
                         align === 'end' ? 'right-0' : 'left-0'
@@ -68,7 +70,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                         borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                     }}
                 >
-                    {menuIds.map((id) => renderShellPreferenceRow(id, { isNavHidden, onToggleNavCollapsed }))}
+                    {menuIds.map((id) => renderShellPreferenceRow(id, { isNavHidden, onToggleNavCollapsed, t }))}
                 </div>
             )}
         </div>

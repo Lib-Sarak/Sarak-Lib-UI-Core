@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SarakLink, isSafeLinkHref } from '../SarakLink';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('SarakLink (átomo de link acessível)', () => {
     let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -71,5 +72,19 @@ describe('SarakLink (átomo de link acessível)', () => {
     it('rejeita href vazio', () => {
         expect(isSafeLinkHref('')).toBe(false);
         expect(isSafeLinkHref('   ')).toBe(false);
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakLink — idioma que vale', () => {
+    it('a dica de link externo sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakLink href="https://exemplo.com" external>
+                    External site
+                </SarakLink>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('(opens in a new tab)', { exact: false })).toBeInTheDocument();
     });
 });

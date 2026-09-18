@@ -4,9 +4,11 @@ import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
 import { useSarakRouter } from '../../shared/hooks/useSarakRouter';
 import { DiscoveredModule } from '../Discovery/types';
 import { useSarakShellUI } from './hooks/useSarakShellUI';
+import { useLibraryText } from '../i18n/useLibraryText';
 
 export const useSarakShell = (loggedIn: boolean) => {
     const { design, options } = useSarakUI();
+    const t = useLibraryText();
     const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
     const { segments, navigate } = useSarakRouter();
     const { state: uiState, updateState, toggleNav, startResizingSidebar, startResizingTopbar } = useSarakShellUI();
@@ -39,12 +41,12 @@ export const useSarakShell = (loggedIn: boolean) => {
     
     const groupedModules = useMemo(() => {
         return discoveredModules.reduce((acc: Record<string, DiscoveredModule[]>, mod: DiscoveredModule) => {
-            const cat = mod.category || 'System Modules';
+            const cat = mod.category || t('shellDefaultModuleCategory');
             if (!acc[cat]) acc[cat] = [];
             acc[cat].push(mod);
             return acc;
         }, {} as Record<string, DiscoveredModule[]>);
-    }, [discoveredModules]);
+    }, [discoveredModules, t]);
 
     return {
         design,

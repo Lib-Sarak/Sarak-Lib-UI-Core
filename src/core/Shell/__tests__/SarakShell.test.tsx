@@ -334,6 +334,52 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         await waitFor(() => {
             expect(screen.getByTestId('outro-modulo')).toBeInTheDocument();
         });
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).not.toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).not.toBeInTheDocument();
+    });
+
+    // os textos da própria lib seguem o idioma que vale (specs/10 §3.6).
+    it('a busca do Shell sai em português por padrão, e em inglês com `config.language: "en"`', async () => {
+        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+
+        render(
+            <SarakUIProvider
+                options={{ persistence: { storageKey: 'plan79-idioma-pt' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(await screen.findByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
+    });
+
+    it('a busca do Shell sai em inglês com `config.language: "en"`', async () => {
+        const EN_MODULE_ID = 'plan79-idioma-en';
+        registerLocalComponent(EN_MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: EN_MODULE_ID, label: 'English Test Module', icon: 'Box' });
+        window.history.replaceState(null, '', `/${EN_MODULE_ID}`);
+
+        render(
+            <SarakUIProvider
+                config={{ language: 'en' }}
+                options={{ persistence: { storageKey: 'plan79-idioma-en' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(await screen.findByPlaceholderText('Search tool, record or configuration…')).toBeInTheDocument();
     });
 });

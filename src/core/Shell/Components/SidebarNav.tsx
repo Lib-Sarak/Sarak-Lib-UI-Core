@@ -1,9 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
-import { IconRenderer } from './IconRenderer';
+import { SidebarNavModuleItem } from './SidebarNavModuleItem';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { ShellUser } from './types';
@@ -17,6 +16,7 @@ import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/Shel
 import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface SidebarNavProps {
     design: SarakDesignState;
@@ -36,6 +36,7 @@ interface SidebarNavProps {
 export const SidebarNav: React.FC<SidebarNavProps> = ({
     design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing, isMobileDrawer
 }) => {
+    const t = useLibraryText();
     const [isHovered, setIsHovered] = React.useState(false);
     const {
         mode, animationSpeed, sidebarWidth, isNavHidden, isAutoHideEnabled,
@@ -158,43 +159,16 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
                         {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[var(--sarak-tracking-tight,0.2em)] mb-3 px-3">{category}</h4>}
                         <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                            {mods.map(mod => {
-                                const isOffline = mod.status === 'offline';
-                                const isActive = activeModuleId === mod.id;
-                                return (
-                                    <SarakMenuItem
-                                        key={mod.id}
-                                        onClick={() => !isOffline && setActiveModuleId(mod.id)}
-                                        disabled={isOffline}
-                                        active={isActive}
-                                        collapsed={effectiveIsNavHidden}
-                                        title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
-                                        icon={<IconRenderer name={mod.icon} className={isActive ? 'text-[var(--sarak-nav-active-color,#00f2ff)]' : 'text-[var(--theme-muted)]'} />}
-                                        label={mod.label}
-                                        // Sem `text-*` aqui: o `tone` do próprio SarakMenuItem já pinta o
-                                        // ativo com `--sarak-nav-active-color` — repetir venceria por R35.
-                                        className={`relative group font-tab ${
-                                            isActive ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]' : ''
-                                        } ${isOffline ? 'border border-dashed border-[var(--theme-border)]' : ''}`}
-                                    >
-                                        {isOffline && !effectiveIsNavHidden && (
-                                            <span className="shrink-0 text-3xs text-[var(--theme-error)] font-bold uppercase tracking-wider">Service Offline</span>
-                                        )}
-                                        {/* Marcador do ativo: navActiveMarkerColor/Glow (Spec 05 §2.4). */}
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="active-pill"
-                                                className="absolute left-0 w-1 h-4 rounded-full"
-                                                style={{
-                                                    background: 'var(--sarak-nav-marker-color, #00f2ff)',
-                                                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff)', // sarak-allow-hardcode: 1px converte slider unitless
-                                                }}
-                                            />
-                                        )}
-                                        {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
-                                    </SarakMenuItem>
-                                );
-                            })}
+                            {mods.map(mod => (
+                                <SidebarNavModuleItem
+                                    key={mod.id}
+                                    mod={mod}
+                                    isActive={activeModuleId === mod.id}
+                                    effectiveIsNavHidden={Boolean(effectiveIsNavHidden)}
+                                    onSelect={setActiveModuleId}
+                                    t={t}
+                                />
+                            ))}
                         </div>
                     </div>
                 ))}
@@ -215,7 +189,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <SarakMenuItem
                     collapsed={effectiveIsNavHidden}
                     icon={<SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
-                    label="Notifications"
+                    label={t('sidebarNotificationsLabel')}
                     className="group font-tab"
                 >
                     <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
@@ -241,7 +215,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <div
                     onMouseDown={startResizing}
                     className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                    title="Arraste para redimensionar"
+                    title={t('sidebarResizeHint')}
                 />
             )}
         </aside>

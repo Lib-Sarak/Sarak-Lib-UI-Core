@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Command, ArrowRight } from 'lucide-react';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from '../Inputs/SarakInput';
 import { SarakMenuItem } from './SarakMenuItem';
 
@@ -16,6 +17,7 @@ export interface ShellSearchWidgetProps {
 export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
     variant = 'bar', onClick
 }) => {
+    const t = useLibraryText();
     const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -41,9 +43,9 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
             <SarakMenuItem
                 onClick={onClick}
                 className="group font-tab"
-                title="Search (Ctrl + K)"
+                title={t('shellSearchWidgetTitle')}
                 icon={<Search size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
-                label="Search..."
+                label={t('genericSearchLabel')}
             >
                 <div
                     className="ml-auto flex items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity"
@@ -65,7 +67,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
         <div className="hidden md:flex items-center w-64 group relative" ref={containerRef}>
             <SarakInput
                 value={query}
-                placeholder="Smart Search..."
+                placeholder={t('shellSearchWidgetPlaceholder')}
                 onChange={(e) => {
                     setQuery(e.target.value);
                     setIsOpen(true);
@@ -98,7 +100,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                                     className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-[var(--theme-muted)]"
                                     style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}
                                 >
-                                    Results
+                                    {t('shellSearchResultsHeading')}
                                 </h4>
                                 {filteredModules.map(mod => (
                                     <div
@@ -112,7 +114,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                                             </div>
                                             <div className="flex" style={{ flexDirection: 'column' }}>
                                                 <span className="text-xs font-bold text-[var(--theme-title)]/80 group-hover:text-[var(--theme-primary)]">{mod.label}</span>
-                                                <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || 'Module'}</span>
+                                                <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || t('genericModuleLabel')}</span>
                                             </div>
                                         </div>
                                         <ArrowRight className="w-3 h-3 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
@@ -125,7 +127,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                                 style={{ paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 2.5)', flexDirection: 'column' }}
                             >
                                 <Search className="w-8 h-8 text-[var(--theme-title)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
-                                <span className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">No results for "{query}"</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">{t('searchNoResultsFor', { query })}</span>
                             </div>
                         )}
                     </div>

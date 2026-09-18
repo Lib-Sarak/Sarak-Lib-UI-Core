@@ -4,19 +4,25 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import SarakUIProvider from '../../../../core/Provider/SarakUIProvider';
 import { renderShellPreferenceRow } from '../shellPreferenceRow';
+import { LIBRARY_TEXT_CATALOG, type SarakLibraryLanguage } from '../../../../core/i18n/catalog';
 
 const renderRow = (ui: React.ReactNode) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
+
+/** `t` de teste — resolve direto do catálogo, no idioma pedido (default: pt, a base da lib). */
+const makeT = (language: SarakLibraryLanguage = 'pt') =>
+    ((key: keyof typeof LIBRARY_TEXT_CATALOG) => LIBRARY_TEXT_CATALOG[key][language]) as Parameters<typeof renderShellPreferenceRow>[1]['t'];
 
 const ctx = (overrides: Partial<Parameters<typeof renderShellPreferenceRow>[1]> = {}) => ({
     isNavHidden: false,
     onToggleNavCollapsed: vi.fn(),
+    t: makeT(),
     ...overrides,
 });
 
 describe('renderShellPreferenceRow — dispatcher do ⚙ Preferências / drawer mobile', () => {
     it('colorMode: linha do ShellThemeToggle (variante vertical)', () => {
         renderRow(renderShellPreferenceRow('colorMode', ctx()));
-        expect(screen.getByText(/Mode$/)).toBeInTheDocument();
+        expect(screen.getByText(/^Modo (Claro|Escuro)$/)).toBeInTheDocument();
     });
 
     it("navCollapsed: linha própria, rótulo muda conforme isNavHidden e dispara onToggleNavCollapsed", () => {
@@ -47,5 +53,11 @@ describe('renderShellPreferenceRow — dispatcher do ⚙ Preferências / drawer 
     it('language: linha do ShellLanguageSelector (variante vertical) — não monta sem 2+ idiomas habilitados', () => {
         renderRow(renderShellPreferenceRow('language', ctx()));
         expect(screen.queryByRole('button')).toBeNull();
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    it('navCollapsed: com `t` em inglês, o rótulo sai em inglês', () => {
+        renderRow(renderShellPreferenceRow('navCollapsed', ctx({ t: makeT('en') })));
+        expect(screen.getByText('Collapse navigation')).toBeInTheDocument();
     });
 });

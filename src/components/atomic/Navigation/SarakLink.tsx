@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Esquemas de URL aceitos (allow-list — mais seguro que bloquear caso a caso). */
 const SAFE_LINK_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
@@ -59,6 +60,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
     style,
     ...props
 }) => {
+    const t = useLibraryText();
     const safe = isSafeLinkHref(href);
 
     if (!safe) {
@@ -86,7 +88,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
             {external && (
                 <>
                     <ExternalLink size={12} aria-hidden="true" className="shrink-0" />
-                    <span className="sr-only"> (abre em nova aba)</span>
+                    <span className="sr-only">{t('linkExternalHint')}</span>
                 </>
             )}
         </a>

@@ -21,7 +21,7 @@ describe('ChromeUserThemeGroup', () => {
         );
         const group = container.querySelector('[data-sarak-widget="user-theme"]') as HTMLElement;
         expect(group).not.toBeNull();
-        expect(screen.queryByTitle('Logout')).toBeNull();
+        expect(screen.queryByTitle('Sair')).toBeNull();
         expect(group.querySelector('button')).not.toBeNull();
     });
 
@@ -37,7 +37,7 @@ describe('ChromeUserThemeGroup', () => {
             />,
         );
         expect(screen.getByText('visitante')).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('os dois ligados: ambos montam juntos', () => {
@@ -45,7 +45,7 @@ describe('ChromeUserThemeGroup', () => {
             <ChromeUserThemeGroup showThemeToggle showUser user={{ username: 'ana' }} logout={vi.fn()} variant="horizontal" />,
         );
         expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
-        expect(screen.getByTitle('Logout')).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
     it('showUser sem `logout`: o widget aparece, mas sem o botão de sair', () => {
@@ -53,6 +53,6 @@ describe('ChromeUserThemeGroup', () => {
             <ChromeUserThemeGroup showThemeToggle={false} showUser user={{ username: 'visitante' }} variant="vertical" />,
         );
         expect(screen.getByText('visitante')).toBeInTheDocument();
-        expect(screen.queryByTitle('Logout')).toBeNull();
+        expect(screen.queryByTitle('Sair')).toBeNull();
     });
 });

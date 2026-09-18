@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SarakStepper } from '../SarakStepper';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const steps = [{ label: 'Conta' }, { label: 'Perfil' }, { label: 'Revisão' }];
 
@@ -23,5 +24,22 @@ describe('Spec 14 — SarakStepper', () => {
     it('renderiza todos os rótulos', () => {
         render(<SarakStepper steps={steps} current={0} />);
         steps.forEach((s) => expect(screen.getByText(s.label)).toBeInTheDocument());
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakStepper — idioma que vale', () => {
+    it('sem Provider, sai em português (R34)', () => {
+        render(<SarakStepper steps={steps} current={0} />);
+        expect(screen.getByLabelText('Progresso por etapas')).toBeInTheDocument();
+    });
+
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakStepper steps={steps} current={0} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Step progress')).toBeInTheDocument();
     });
 });

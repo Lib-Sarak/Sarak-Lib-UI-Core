@@ -18,18 +18,18 @@ describe('SarakSearch', () => {
                 <SarakSearch isOpen={false} onClose={() => undefined} />
             </SarakUIProvider>,
         );
-        expect(screen.queryByPlaceholderText('Search tool, record or configuration...')).not.toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).not.toBeInTheDocument();
     });
 
     it('foca o campo de busca automaticamente ao abrir (conserto R10 — plan-22)', async () => {
         renderSearch();
-        const input = screen.getByPlaceholderText('Search tool, record or configuration...');
+        const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…');
         await waitFor(() => expect(document.activeElement).toBe(input));
     });
 
     it('atualiza o valor digitado', () => {
         renderSearch();
-        const input = screen.getByPlaceholderText('Search tool, record or configuration...') as HTMLInputElement;
+        const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…') as HTMLInputElement;
         fireEvent.change(input, { target: { value: 'financeiro' } });
         expect(input.value).toBe('financeiro');
     });
@@ -69,7 +69,7 @@ describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
 
     it('filtra os `items` pela mesma busca por texto', () => {
         renderSearch({ items });
-        const input = screen.getByPlaceholderText('Search tool, record or configuration...');
+        const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…');
         fireEvent.change(input, { target: { value: 'propo' } });
         expect(screen.getByText('Propostas')).toBeInTheDocument();
         expect(screen.queryByText('Projetos')).not.toBeInTheDocument();
@@ -96,6 +96,27 @@ describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
 
     it('sem `items`, continua usando o registro do Discovery (Shell intacto)', () => {
         renderSearch();
-        expect(screen.getByText(/No results for/i)).toBeInTheDocument();
+        expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale (specs/10 §3.6).
+describe('SarakSearch — idioma que vale', () => {
+    const items = [{ id: '/propostas', label: 'Propostas', category: 'Comercial' }];
+
+    it('sai em português por padrão (sem preferência de idioma)', () => {
+        renderSearch({ items });
+        expect(screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
+        expect(screen.getByText('Ferramentas disponíveis')).toBeInTheDocument();
+    });
+
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakSearch isOpen onClose={() => undefined} items={items} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByPlaceholderText('Search tool, record or configuration…')).toBeInTheDocument();
+        expect(screen.getByText('Available tools')).toBeInTheDocument();
     });
 });

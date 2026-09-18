@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getLocalComponent } from '../../../core/Discovery/registry';
 import { LANGUAGES } from '../../../core/Discovery/constants';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakMenuItem } from './SarakMenuItem';
 
@@ -44,6 +45,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
     const OverrideSelector = fromRegistry || fromGlobal;
 
     const { design, updatePreferences } = useSarakUI();
+    const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
 
     if (OverrideSelector) {
@@ -134,7 +136,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                 onClick={() => setIsOpen(!isOpen)}
                 className="group font-tab"
                 icon={<Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
-                label="Language"
+                label={t('languageSelectorLabel')}
             >
                 <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.id.toUpperCase()}</span>
             </SarakMenuItem>

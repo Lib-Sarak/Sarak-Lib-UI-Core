@@ -1,14 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Box, Compass } from 'lucide-react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakEmptyStateProps {
     type?: 'minimal' | 'abstract' | 'geometric';
 }
 
 export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstract' }) => {
-    const { design } = useSarakUI();
+    // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança
+    // (`useSarakUI` lançava, e derrubava o texto padrão em português junto).
+    const { design } = useSarakUIOptional() || {};
+    const t = useLibraryText();
     const { primaryColor, systemName } = design || {};
 
     const containerVariants = {
@@ -36,8 +40,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 <motion.div variants={itemVariants} className="pointer-events-none" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                     <Compass size={64} strokeWidth={1} />
                 </motion.div>
-                <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase" style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}>{systemName || 'Sistema'}</motion.h2>
-                <motion.p variants={itemVariants} className="text-2xs uppercase tracking-widest italic" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>Waiting for System Interaction...</motion.p>
+                <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase" style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}>{systemName || t('genericSystemLabel')}</motion.h2>
+                <motion.p variants={itemVariants} className="text-2xs uppercase tracking-widest italic" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{t('emptyStateMinimalCaption')}</motion.p>
             </motion.div>
         );
     }
@@ -71,8 +75,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                     <motion.div variants={itemVariants} className="text-[var(--sarak-primary-color,#3b82f6)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                         <Box size={40} strokeWidth={1} />
                     </motion.div>
-                    <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase text-white/10" style={{ letterSpacing: 'var(--sarak-tracking-ultra, 0.8em)', marginLeft: 'var(--sarak-empty-state-void-letter-offset, 0.8em)' }}>VOID</motion.h2>
-                    <motion.p variants={itemVariants} className="text-2xs uppercase text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Start a module in the toolbar</motion.p>
+                    <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase text-white/10" style={{ letterSpacing: 'var(--sarak-tracking-ultra, 0.8em)', marginLeft: 'var(--sarak-empty-state-void-letter-offset, 0.8em)' }}>{t('emptyStateGeometricTitle')}</motion.h2>
+                    <motion.p variants={itemVariants} className="text-2xs uppercase text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('emptyStateGeometricCaption')}</motion.p>
                 </div>
             </motion.div>
         );
@@ -108,11 +112,11 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
             </motion.div>
 
             <motion.div variants={itemVariants} className="text-center z-10">
-                <h2 className="text-sm font-black uppercase text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>{systemName || 'System Core Engine'}</h2>
+                <h2 className="text-sm font-black uppercase text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>{systemName || t('genericSystemLabel')}</h2>
                 <div className="h-px w-12 bg-[var(--sarak-primary-color,#3b82f6)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
                 <p className="text-2xs text-white/20 uppercase tracking-widest max-w-[var(--sarak-empty-state-caption-max-width,280px)] leading-loose">
-                    The ecosystem is in harmony. <br/>
-                    No signal detected in the main viewport.
+                    {t('emptyStateAbstractCaptionLine1')} <br/>
+                    {t('emptyStateAbstractCaptionLine2')}
                 </p>
             </motion.div>
         </motion.div>

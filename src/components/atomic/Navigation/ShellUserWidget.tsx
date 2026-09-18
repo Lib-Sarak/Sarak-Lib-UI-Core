@@ -2,6 +2,7 @@ import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { motion } from 'framer-motion';
 import { ShellUser } from '../../../core/Shell/Components/types';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface ShellUserWidgetProps {
@@ -17,8 +18,10 @@ export interface ShellUserWidgetProps {
 export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
     user, logout, variant = 'vertical'
 }) => {
+    const t = useLibraryText();
     const isHorizontal = variant === 'horizontal';
     const isMini = variant === 'mini';
+    const roleLabel = user?.level === 100 ? t('userRoleMaster') : (user?.level ?? 0) >= 50 ? t('userRoleAdmin') : t('genericUserLabel');
 
     if (isHorizontal) {
         return (
@@ -28,10 +31,10 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
             >
                 <div className="flex items-end" style={{ flexDirection: 'column' }}>
                     <span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest leading-tight">
-                        {user?.username || user?.email?.split('@')[0] || 'User'}
+                        {user?.username || user?.email?.split('@')[0] || t('genericUserLabel')}
                     </span>
                     <span className="text-[var(--sarak-type-scale-micro,7px)] text-[var(--theme-primary)] font-bold uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
-                        {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
+                        {roleLabel}
                     </span>
                 </div>
 
@@ -47,7 +50,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                             variant="ghost"
                             size="xs"
                             className="bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg border border-[var(--theme-error-border)]"
-                            title="Logout"
+                            title={t('userLogoutTitle')}
                             icon={<SarakIcon name="LogOut" size={12} />}
                         />
                     )}
@@ -75,12 +78,12 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                     {!isMini && (
                         <div className="flex overflow-hidden" style={{ flexDirection: 'column' }}>
                             <span className="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate">
-                                {user?.username || user?.email?.split('@')[0] || 'User'}
+                                {user?.username || user?.email?.split('@')[0] || t('genericUserLabel')}
                             </span>
                             <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
                                 <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
                                 <span className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] uppercase tracking-widest font-black">
-                                    {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
+                                    {roleLabel}
                                 </span>
                             </div>
                         </div>
@@ -93,7 +96,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                         variant="ghost"
                         size="xs"
                         className={`text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
-                        title="Logout"
+                        title={t('userLogoutTitle')}
                         icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
                     />
                 )}
