@@ -134,6 +134,29 @@ idiomas em `specs/specs/10-seguranca-e-acessibilidade.md` §3.6.
   vitrine, que por isso passa a mostrar exatamente o que quebrou na tela: badges em todas as variantes e uma
   tabela com dados (§5 passo 2).
 
+## 3.5 Emenda — 2026-09-18 (três temas novos, decisão do dono)
+
+Além dos 11 aprovados na Parada 1 (8 "melhorar" e 3 "recriar"), o dono pediu **três temas novos,
+diferentes dos demais**. O catálogo final passa a ter **14 temas**.
+
+**"Diferente dos demais" é medido, não declarado.** Cada tema novo:
+- passa em `themes:diversity --new` contra os outros temas do catálogo. Ninguém fica na mesma família de
+  matiz **e** no mesmo modo a menos da distância de matiz que o critério 6 exige;
+- tem uma identidade estrutural que nenhum outro tema do catálogo repete inteira: a combinação de
+  navegação (`navigationStyle`, `sidebarPosition`), estilo de botão, estilo de card e textura.
+
+**O espaço onde os novos mais valem.** A proposta de identidade parte do que a Parada 1 deixou em aberto:
+- o catálogo aprovado tem 9 de 11 temas nativamente escuros, e só 2 claros;
+- a capacidade que nenhum tema mostra: a lista da emenda §3.4.
+
+A proposta diz, por tema, o que ele traz que o catálogo não tinha.
+
+**Cumprem tudo o que os outros cumprem:** §5 passo 6 inteiro (gabarito vivo, eixos, contraparte, hover
+perceptível, seis idiomas, preferências de fábrica, nenhuma mídia de terceiro, `description`).
+
+**A ordem:** os três novos formam o **último lote**, e ele começa por uma parada própria (§5 passo 6,
+"Parada da identidade dos novos"). Nenhum arquivo dos três é escrito antes da aprovação dessa parada.
+
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
@@ -204,6 +227,18 @@ idiomas em `specs/specs/10-seguranca-e-acessibilidade.md` §3.6.
    Tema que sai: `THEME_PRESET_IDS`, `GLOBAL_THEMES`, o arquivo, os testes que o citam, e a linha em
    `docs/migracoes.md`.
 
+   **⛔ Parada da identidade dos novos (emenda §3.5)** — antes do lote dos três temas novos, entregue ao
+   dono, em texto e **sem escrever tema**, uma linha de identidade por tema, com:
+   - id e nome;
+   - modo nativo;
+   - navegação e posição da sidebar;
+   - família de matiz de `primaryColor` e luminosidade do fundo;
+   - estilos de botão e de card, e textura;
+   - o que ele traz que nenhum outro tema do catálogo traz.
+
+   Some a isso a saída de `themes:diversity --new` com os valores propostos. **Pare.** O lote só começa
+   com a aprovação registrada no resumo.
+
 7. **⛔ Parada por lote — o veredito visual.** Ao fechar cada lote:
    - rode `npm run audit` (contraste com 0 reprovados nas duas passadas), `npm run themes:diversity` e a
      vitrine;
@@ -235,6 +270,9 @@ idiomas em `specs/specs/10-seguranca-e-acessibilidade.md` §3.6.
 - [ ] O catálogo final usa sidebar `floating` e `right`, os seis estilos de botão (inclusive `cyberpunk`) e
       o leque de texturas aprovado pelo dono na Parada — cada item apontado no tema que o usa.
 - [ ] A vitrine mostra o `SarakBadge` em todas as variantes e uma tabela com dados, em cada tema.
+- [ ] Três temas novos (emenda §3.5), com a identidade aprovada na parada própria: cada um passa em
+      `themes:diversity --new` contra o resto do catálogo, e nenhum outro tema repete inteira a combinação
+      de navegação, botão, card e textura dele.
 - [ ] `docs/migracoes.md` lista cada id removido e para onde cai quem o usava.
 - [ ] A skill `ui-criar-tema` descreve a vitrine e a varredura de hover.
 - [ ] `audit` sem regressão; suíte inteira verde. Falha em arquivo não tocado foi rodada isolada antes de
