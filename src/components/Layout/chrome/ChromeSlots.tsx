@@ -27,11 +27,27 @@ export const ChromeBrand: React.FC<{
         <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
             {logo
                 ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
-                : brand?.logoUrl && <img src={brand.logoUrl} alt="" className="h-6 w-6 object-contain shrink-0" />}
+                : brand?.logoUrl && (
+                    // `shellBrandLogoSize`/`brandLogoSizeCollapsed` (Spec 05 §2.4) — altura
+                    // por token em vez do quadrado fixo; a largura acompanha por
+                    // `object-contain`, igual ao Shell (`SidebarNav`/`TopbarNav`).
+                    <img
+                        src={brand.logoUrl}
+                        alt=""
+                        className="object-contain shrink-0"
+                        style={{ height: compact ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)' }}
+                    />
+                )}
             {brand?.name && !compact && (
                 <span
                     className="truncate font-bold tracking-tight"
-                    style={{ fontFamily: 'var(--font-heading, var(--font-main, inherit))', color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))' }}
+                    style={{
+                        fontFamily: 'var(--font-heading, var(--font-main, inherit))',
+                        color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))',
+                        // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
+                        // por orientação, mesmo par de tokens que o Shell já consome.
+                        maxWidth: horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)',
+                    }}
                 >
                     {brand.name}
                 </span>

@@ -66,6 +66,43 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
     });
 });
 
+// Spec 05 §2.4 — tokens que faltavam nos dois cromos.
+describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
+    it('sidebarNoiseOpacity: a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+        const { container } = renderBody({});
+        const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+        expect(noiseLayer).not.toBeNull();
+        expect(noiseLayer!.style.opacity).toBe('var(--sarak-sidebar-noise-opacity, 0)');
+    });
+
+    it('sidebarBlur/sidebarShadow chegam à sidebar por token, com fallback', () => {
+        const { container } = renderBody({});
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('var(--sarak-sidebar-blur, 0px)');
+        expect(style).toContain('var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))');
+    });
+
+    it('sidebarMinWidth/sidebarMaxWidth chegam à sidebar por token (limitam mesmo sem redimensionar por arraste)', () => {
+        const { container } = renderBody({});
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('var(--sidebar-min-width, 150px)');
+        expect(style).toContain('var(--sidebar-max-width, 450px)');
+    });
+
+    it('navActiveMarkerColor/navActiveMarkerGlow: o item ativo tem marcador próprio, com o brilho por token', () => {
+        const { container } = render(
+            <SarakUIProvider config={{}}>
+                <ChromeSidebarBody nav={[{ label: 'Propostas', route: '/propostas' }]} activeRoute="/propostas" className="" rootStyle={{}}>
+                    <div>x</div>
+                </ChromeSidebarBody>
+            </SarakUIProvider>,
+        );
+        const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
+        expect(marker).not.toBeNull();
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+    });
+});
+
 describe('ChromeSidebarBody — slot de busca (searchPositionSidebar)', () => {
     it('"top": a busca aparece antes do conteúdo de navegação', () => {
         const { container } = render(

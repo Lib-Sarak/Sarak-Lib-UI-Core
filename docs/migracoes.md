@@ -57,6 +57,26 @@ um tema com canto diferente do mestre (o `minimalist-airy`, por exemplo) segue c
   vencendo a dele (R35); passe a classe que quiser.
 - **Hover do item de navegação sumiu no seu tema** — defina `topbarHoverColor`/`sidebarHoverColor` no tema.
 
+### `globalBackgroundBlendMode` sai do schema (plan-78)
+
+**Classificação: MAJOR** — remove um token do schema, do tipo público (`SarakDesignState`) e das
+chaves aceitas por `validateDesign`.
+
+**O que estava errado.** O token oferecia cinco modos de mesclagem (Overlay/Multiply/Screen/Soft
+Light/Color Dodge) entre a imagem de fundo global e as cores do tema, mas `SarakBackgroundRenderer`
+sempre renderizava em `'normal'` — regra do dono: qualquer outro modo produz resultado oposto entre
+claro e escuro (o container alterna entre branco e preto). As outras quatro opções nunca tiveram
+efeito visível; a descrição do próprio token já registrava a pendência.
+
+**O que muda.** `globalBackgroundBlendMode` sai de `src/core/Design/schema/media.ts`, do tipo
+`SarakDesignState`, de `PAYLOAD_EXTRA_KEYS`, do roteamento de persistência e do catálogo — e dos 15
+temas embarcados que declaravam a chave. `SarakBackgroundRenderer` deixa de aceitar a prop
+`blendMode`; a mesclagem `'normal'` continua fixa no código, como sempre foi na prática.
+
+**Como migrar.** Nada obrigatório. Um tema (seu ou persistido em `localStorage`) que ainda carregue
+`globalBackgroundBlendMode` tem a chave descartada por `validateDesign`, com um único
+`console.warn` por sessão — não a cada render. Remova a chave do seu tema para não vê-lo mais.
+
 ---
 
 ## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)

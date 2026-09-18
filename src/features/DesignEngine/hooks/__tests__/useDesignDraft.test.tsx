@@ -200,4 +200,85 @@ describe('useDesignDraft', () => {
             expect(result.current.toast).toBeNull();
         });
     });
+
+    // Pré-visualizar um tema no catálogo não pode anunciar o id ao Provider — só
+    // aplicar ao sistema anuncia (06-painel-de-customizacao-e-preview.md §4;
+    // JSDoc de useResolvedThemeId.ts).
+    describe('handleThemePreview(..., themeId) + handleApplyToSystem — o id só é anunciado ao APLICAR', () => {
+        it('pré-visualizar NÃO chama setResolvedThemeId', () => {
+            const setResolvedThemeId = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw: vi.fn(),
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.handleThemePreview({ mode: 'light' }, undefined, 'tema-escolhido');
+            });
+
+            expect(result.current.draft.mode).toBe('light');
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+        });
+
+        it('aplicar ao sistema DEPOIS de pré-visualizar anuncia o id pendente', () => {
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfigRaw = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.handleThemePreview({ mode: 'light' }, undefined, 'tema-escolhido');
+            });
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalled();
+            expect(setResolvedThemeId).toHaveBeenCalledWith('tema-escolhido');
+        });
+
+        it('sem themeId (preview de preset comum), aplicar NÃO chama setResolvedThemeId', () => {
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfigRaw = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.updateDraft('mode', 'light');
+            });
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalled();
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+        });
+    });
 });

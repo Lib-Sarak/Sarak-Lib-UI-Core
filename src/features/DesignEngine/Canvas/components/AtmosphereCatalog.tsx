@@ -24,7 +24,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                         className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                     >
                         <Video size={12} />
-                        Mídia Base
+                        Atmosferas
                     </button>
                     <button
                         onClick={() => setActiveTab('textures')}
@@ -90,7 +90,6 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                             imageUrl={preset.design.globalBackgroundImageUrl}
                             opacity={preset.design.globalBackgroundOpacity}
                             blur={preset.design.globalBackgroundBlur}
-                            blendMode={preset.design.globalBackgroundBlendMode as React.CSSProperties['mixBlendMode']}
                             isFixed={false}
                             mode={(preset.design.mode || currentMode) as 'light' | 'dark'}
                             disableOverlay={true}

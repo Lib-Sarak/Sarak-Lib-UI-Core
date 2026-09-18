@@ -19,7 +19,7 @@ export const PAYLOAD_EXTRA_KEYS = [
     'cardGeometricCut', 'cardVariant', 'imageOverlay', 'imageCardHoverZoom', 'imageCardOverlayOpacity',
     'iconStrokeWidth', 'layoutDensity', 'fontScale', 'navigationStyle', 'sidebarMinWidth',
     'sidebarMaxWidth', 'sidebarWidth', 'headingFont', 'bodyFont', 'globalBackgroundImageUrl',
-    'globalBackgroundOpacity', 'globalBackgroundBlur', 'globalBackgroundBlendMode', 'moduleBlacklist',
+    'globalBackgroundOpacity', 'globalBackgroundBlur', 'moduleBlacklist',
     'searchVariant', 'columnGap', 'iconSize', 'iconFamily', 'iconWeight', 'scale', 'btnStyleType',
     'radius', 'borderStyle', 'shadowType', 'chartGridStyle', 'map', 'imageOpacity', 'imageScale',
     'layoutMaxWidth', 'enabledLanguages', 'inputIconPosition', 'qrSize', 'isAutoHideEnabled',

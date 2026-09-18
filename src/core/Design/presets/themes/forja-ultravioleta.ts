@@ -247,7 +247,6 @@ export const forjaUltravioletaTheme: ThemePreset = {
         layerElevationFactor: 1,
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
-        globalBackgroundBlendMode: 'normal',
         globalBackgroundOpacity: 1,
         motionEaseMain: 'cubic-bezier(0.4, 0, 0.2, 1)',
         motionEaseOut: 'cubic-bezier(0, 0, 0.2, 1)',

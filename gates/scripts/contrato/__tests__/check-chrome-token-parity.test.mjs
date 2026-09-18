@@ -1,7 +1,7 @@
 // @vitest-environment node
-// Teste do PRÓPRIO GATE (plan-66): os 12 tokens de cromo do painel (`sidebarPosition`,
-// `sidebarHoverColor`, etc.) tinham consumidor no `SarakShell` mas nenhum no
-// `SarakAppChrome` — o painel confirmava a mudança, a tela do modo ui-kit não reagia.
+// Teste do PRÓPRIO GATE (Spec 05 §2.4.1): tokens de cromo do painel (`sidebarPosition`,
+// `sidebarHoverColor`, etc.) podem ter consumidor no `SarakShell` mas nenhum no
+// `SarakAppChrome` — o painel confirmaria a mudança, a tela do modo ui-kit não reagiria.
 // Casos PLANTADOS que o gate PEGA (token sem consumidor num lado, nos dois) e os que
 // ele DEIXA PASSAR (token referenciado pelo `id`, por `cssVars` ou pelo auto-derivado
 // `--sarak-<kebab>`, no átomo compartilhado) — e, por fim, o repositório real.
@@ -9,7 +9,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { describe, expect, it, afterEach } from 'vitest';
-import { CHROME_TOKENS, checkChromeTokenParity, tokenHasConsumer } from '../check-chrome-token-parity.mjs';
+import { ORPHAN_TOKENS, checkChromeTokenParity, getChromeTokens, tokenHasConsumer } from '../check-chrome-token-parity.mjs';
 
 const scratchDirs = [];
 
@@ -125,19 +125,71 @@ describe('checkChromeTokenParity', () => {
     });
 });
 
-describe('check-chrome-token-parity — repositório real', () => {
-    it('os 14 tokens de cromo cobertos têm consumidor no SarakShell E no SarakAppChrome', () => {
-        expect(checkChromeTokenParity()).toEqual([]);
+describe('getChromeTokens (extração dinâmica do schema)', () => {
+    it('PLANTADO: token novo no schema sem consumidor em NENHUM grupo — pego', () => {
+        const root = makeFixtureRoot({
+            'src/core/Design/schema/navigation.ts': `
+                export const NavigationSchema = {
+                    id: 'navigation',
+                    tokens: [
+                        {
+                            id: 'meuTokenNovo',
+                            type: 'select',
+                            description: 'x',
+                            constraints: { options: [{ id: 'a', value: 'a', label: 'A' }] },
+                            defaultValue: 'a',
+                            cssVars: ['--meu-token-novo'],
+                        },
+                        // comentário entre tokens não deve virar um objeto próprio
+                        { id: 'semCssVars', type: 'text', description: 'y', defaultValue: 'z' },
+                    ],
+                };
+            `,
+            'shell/Nav.tsx': 'export const Nav = () => null;',
+            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
+        });
+        const tokens = getChromeTokens({ root });
+        expect(tokens.map((t) => t.id)).toEqual(['meuTokenNovo', 'semCssVars', 'isAutoHideEnabled']);
+        expect(tokens.find((t) => t.id === 'meuTokenNovo').cssVars).toEqual(['--meu-token-novo']);
+        expect(tokens.find((t) => t.id === 'semCssVars').cssVars).toEqual([]);
+
+        const groups = {
+            SarakShell: { dirs: ['shell'], extraFiles: [] },
+            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+        };
+        const missing = checkChromeTokenParity({ root, tokens, groups });
+        expect(missing.map((m) => m.id).sort()).toEqual(['isAutoHideEnabled', 'meuTokenNovo', 'semCssVars']);
     });
 
-    it('a lista fechada tem exatamente os 14 tokens com consumidor provado', () => {
-        expect(CHROME_TOKENS.map((t) => t.id).sort()).toEqual(
-            [
-                'contentAlignment', 'isAutoHideEnabled', 'isNavHidden', 'navbarLayout',
-                'navItemActiveColor', 'searchPositionSidebar', 'searchPositionTopbar',
-                'sidebarActiveColor', 'sidebarHoverColor', 'sidebarPosition', 'tabGap',
-                'tabSectionMargin', 'topbarActiveColor', 'topbarHoverColor',
-            ].sort(),
-        );
+    it('DEIXA PASSAR: token novo com consumidor dos dois lados — liberado', () => {
+        const root = makeFixtureRoot({
+            'src/core/Design/schema/navigation.ts': `
+                export const NavigationSchema = {
+                    id: 'navigation',
+                    tokens: [
+                        { id: 'meuTokenNovo', type: 'text', description: 'x', defaultValue: 'y', cssVars: ['--meu-token-novo'] },
+                    ],
+                };
+            `,
+            'shell/Nav.tsx': "style.x = 'var(--meu-token-novo, 1px)';",
+            'appchrome/Chrome.tsx': 'const { meuTokenNovo } = design;',
+        });
+        const tokens = getChromeTokens({ root }).filter((t) => t.id !== 'isAutoHideEnabled');
+        const groups = {
+            SarakShell: { dirs: ['shell'], extraFiles: [] },
+            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+        };
+        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([]);
+    });
+});
+
+describe('check-chrome-token-parity — repositório real', () => {
+    it('o schema `navigation` inteiro tem consumidor no SarakShell E no SarakAppChrome — zero dívida', () => {
+        const tokens = getChromeTokens().filter((t) => !ORPHAN_TOKENS.includes(t.id));
+        expect(checkChromeTokenParity({ tokens })).toEqual([]);
+    });
+
+    it('não há dívida declarada (R18) — todo token do schema já tem consumidor nos dois lados', () => {
+        expect(ORPHAN_TOKENS).toEqual([]);
     });
 });

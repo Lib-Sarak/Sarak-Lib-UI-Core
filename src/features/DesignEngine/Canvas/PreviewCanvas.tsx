@@ -34,7 +34,7 @@ interface PreviewCanvasProps {
     customThemes?: Record<string, Partial<SarakDesignState>>[];
     sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
-    onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
+    onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({

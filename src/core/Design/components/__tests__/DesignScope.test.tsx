@@ -13,13 +13,12 @@ vi.mock('../../hooks/useDesignVariables', () => ({
 }));
 
 vi.mock('../SarakBackgroundRenderer', () => ({
-    SarakBackgroundRenderer: ({ imageUrl, opacity, blur, blendMode, mode }: any) => (
-        <div 
+    SarakBackgroundRenderer: ({ imageUrl, opacity, blur, mode }: any) => (
+        <div
             data-testid="background-renderer"
             data-image={imageUrl}
             data-opacity={opacity}
             data-blur={blur}
-            data-blend={blendMode}
             data-mode={mode}
         />
     )
@@ -82,8 +81,7 @@ describe('DesignScope', () => {
             mode: 'light',
             globalBackgroundImageUrl: 'image.png',
             globalBackgroundOpacity: 0.5,
-            globalBackgroundBlur: '10px',
-            globalBackgroundBlendMode: 'multiply'
+            globalBackgroundBlur: '10px'
         };
 
         render(
@@ -96,7 +94,6 @@ describe('DesignScope', () => {
         expect(bgRenderer).toHaveAttribute('data-image', 'image.png');
         expect(bgRenderer).toHaveAttribute('data-opacity', '0.5');
         expect(bgRenderer).toHaveAttribute('data-blur', '10px');
-        expect(bgRenderer).toHaveAttribute('data-blend', 'multiply');
         expect(bgRenderer).toHaveAttribute('data-mode', 'light');
     });
 

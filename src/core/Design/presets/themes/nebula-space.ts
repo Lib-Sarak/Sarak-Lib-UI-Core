@@ -272,7 +272,6 @@ export const nebulaSpaceTheme: ThemePreset = {
         matrixBlur: 10,
         globalBackgroundImageUrl: 'url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop")',
         globalBackgroundBlur: 4,
-        globalBackgroundBlendMode: 'screen',
         globalBackgroundOpacity: 0.25,
     }
 };

@@ -54,11 +54,10 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, unknown>> =
                     <style dangerouslySetInnerHTML={{ __html: responsiveCSS }} />
                 )}
 
-                <SarakBackgroundRenderer 
+                <SarakBackgroundRenderer
                     imageUrl={design?.globalBackgroundImageUrl}
                     opacity={design?.globalBackgroundOpacity}
                     blur={design?.globalBackgroundBlur}
-                    blendMode={design?.globalBackgroundBlendMode}
                     mode={design?.mode as 'light' | 'dark' | undefined}
                 />
                 {children}

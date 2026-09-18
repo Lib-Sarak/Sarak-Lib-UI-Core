@@ -28,6 +28,11 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
     const [draftState, setDraftState] = useState<SarakDesignState | null>((sarak.draftDesign as SarakDesignState) || null);
     const isSyncingRef = React.useRef(false);
 
+    // O id do tema escolhido no catálogo acompanha o RASCUNHO — só é anunciado ao
+    // Provider (`handleApplyToSystem`, abaixo) quando o rascunho é aplicado (06-
+    // painel-de-customizacao-e-preview.md §4; JSDoc de useResolvedThemeId.ts).
+    const [pendingThemeId, setPendingThemeId] = useState<string | undefined>(undefined);
+
     // 2. Resolução Dinâmica (Ground Truth)
     // Se não há rascunho ativo, usamos o design do sistema.
     const draft = useMemo(() => {
@@ -177,10 +182,10 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
     }, [draft, sarak.systemDesign]);
 
     /**
-     * Preview de um preset genérico (qualquer subcategoria)
-     * Aceita diretamente o payload { design } do preset selecionado.
+     * Preview de um preset genérico (qualquer subcategoria) — payload { design }.
+     * `themeId`: escolha de TEMA completo; acompanha o rascunho até `handleApplyToSystem`.
      */
-    const handleThemePreview = (presetDesign: Partial<SarakDesignState>, presetKeyId?: string) => {
+    const handleThemePreview = (presetDesign: Partial<SarakDesignState>, presetKeyId?: string, themeId?: string) => {
         if (presetDesign && typeof presetDesign === 'object') {
             setDraftState((prev: SarakDesignState | null) => ({
                 ...(prev || draft),
@@ -188,6 +193,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
                 ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
             } as SarakDesignState));
         }
+        if (themeId) setPendingThemeId(themeId);
     };
 
     /**
@@ -198,6 +204,12 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             sarak.applyFullConfigRaw(draft);
             if (sarak.persistDesign) {
                 sarak.persistDesign(draft);
+            }
+            // Só agora o tema escolhido no catálogo é anunciado como o tema no ar —
+            // é o que `useResolvedThemeId.ts` promete ("só quem aplica anuncia").
+            if (pendingThemeId) {
+                sarak.setResolvedThemeId?.(pendingThemeId);
+                setPendingThemeId(undefined);
             }
             showToast('success', 'Design aplicado ao sistema com sucesso.');
         }

@@ -15,6 +15,7 @@ import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/Shel
 import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
 
 interface TopbarNavProps {
     design: SarakDesignState;
@@ -83,7 +84,10 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         >
             {/* Background isolado para evitar o bug de clip-path do backdrop-filter no Chromium */}
             <div className="absolute inset-0 backdrop-blur-2xl pointer-events-none" style={{ borderRadius: `inherit` }} />
-            
+            {/* `topbarNoiseOpacity` (Spec 05 §2.4) — grão sobreposto ao fundo, 0 por
+                default (imperceptível). */}
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={{ ...chromeNoiseLayerStyle('--sarak-topbar-noise-opacity'), borderRadius: 'inherit' }} />
+
             <div className="flex items-center justify-between w-full h-full relative z-10 !overflow-visible">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
@@ -119,7 +123,14 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             ) : (
                                 <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-2xs' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
                             )}
-                            {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[var(--sarak-topbar-label-max-width,150px)]">{systemName || brand.name}</span>}
+                            {!effectiveIsNavHidden && (
+                                <span
+                                    className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[var(--sarak-topbar-label-max-width,150px)]"
+                                    style={{ color: 'var(--sarak-topbar-title-color, #ffffff)' }}
+                                >
+                                    {systemName || brand.name}
+                                </span>
+                            )}
                         </div>
                         {searchPos === 'left' && renderSearch()}
                     </div>

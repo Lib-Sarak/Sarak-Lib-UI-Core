@@ -23,8 +23,20 @@ describe('useApplyPreset', () => {
         const fullTheme = { primaryColor: '#f97316', mode: 'dark' };
         result.current(fullTheme);
 
-        expect(onApplyFullTheme).toHaveBeenCalledWith(fullTheme);
+        // 3º argumento é o `themeId` — aqui não veio, então undefined.
+        expect(onApplyFullTheme).toHaveBeenCalledWith(fullTheme, undefined);
         expect(onUpdateDraft).not.toHaveBeenCalled();
+    });
+
+    it('em aplicação completa com `themeId`, repassa para onApplyFullTheme (o id do tema acompanha o rascunho)', () => {
+        const onUpdateDraft = vi.fn();
+        const onApplyFullTheme = vi.fn();
+        const { result } = renderHook(() => useApplyPreset(onUpdateDraft, onApplyFullTheme));
+
+        const fullTheme = { primaryColor: '#f97316', mode: 'dark' };
+        result.current(fullTheme, false, 'tema-escolhido');
+
+        expect(onApplyFullTheme).toHaveBeenCalledWith(fullTheme, 'tema-escolhido');
     });
 
     it('em aplicação completa sem onApplyFullTheme, cai no fallback e aplica cada chave via onUpdateDraft', () => {

@@ -15,6 +15,7 @@ import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resol
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
+import { chromeNoiseLayerStyle } from './noiseTexture';
 import type { SarakChromeWidgets } from './chromeWidgets';
 
 export interface ChromeSidebarBodyProps {
@@ -75,14 +76,24 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 {isVisible && (
                     <aside
                         {...surfaceProps}
-                        className={`flex flex-col shrink-0 overflow-y-auto transition-[width] duration-300 ${resolveChromeAsidePositionClass(sidebarPosition)}`}
+                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-300 ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
                             width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
+                            // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a
+                            // largura efetiva mesmo sem redimensionamento por arraste (que o
+                            // cromo apresentacional não tem).
+                            minWidth: 'var(--sidebar-min-width, 150px)',
+                            maxWidth: 'var(--sidebar-max-width, 450px)',
                             margin: 'var(--sarak-tab-section-margin, 0px)',
                             background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                            // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
+                            backdropFilter: 'blur(var(--sarak-sidebar-blur, 0px))',
+                            boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
                         }}
                     >
+                        {/* `sidebarNoiseOpacity` (Spec 05 §2.4). */}
+                        <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity')} />
                         <div className="flex items-center justify-between px-1">
                             <ChromeBrand brand={brand} logo={logo} compact={isNavHidden} />
                             {w.showCollapse && (

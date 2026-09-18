@@ -39,6 +39,21 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(result.primaryColor).toBe('var(--sarak-primary-color, #00f2ff)');
     });
 
+    // `globalBackgroundBlendMode` saiu do schema (7.0.0, docs/migracoes.md).
+    // Um tema persistido que ainda o carregue não pode encher o console — mesmo
+    // precedente de `persistenceStrategy.ts` (`hasWarnedRemoteWithoutPort`): aviso
+    // ÚNICO por sessão, não a cada `validateDesign`.
+    it('descarta `globalBackgroundBlendMode` (token removido) e avisa só UMA VEZ por sessão', () => {
+        const first = validateDesign({ mode: 'dark', globalBackgroundBlendMode: 'multiply' });
+        expect((first as Record<string, unknown>).globalBackgroundBlendMode).toBeUndefined();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+
+        warnSpy.mockClear();
+        const second = validateDesign({ mode: 'dark', globalBackgroundBlendMode: 'screen' });
+        expect((second as Record<string, unknown>).globalBackgroundBlendMode).toBeUndefined();
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
     it('clampa um token numérico/responsivo (`sidebarWidth`, min 200 max 400) dentro da faixa', () => {
         const result = validateDesign({ sidebarWidth: { desk: 9999, tab: -50, mob: 240 } });
         expect(result.sidebarWidth).toEqual({ desk: 400, tab: 200, mob: 240 });

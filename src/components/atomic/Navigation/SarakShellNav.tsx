@@ -69,6 +69,8 @@ const NavEntry: React.FC<{
 }> = ({ item, isActive, horizontal, collapsed, onSelect }) => (
     // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
     // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
+    // `className="relative"` ancora o marcador do item ativo (abaixo), equivalente ao
+    // do `SidebarNav` do Shell (`navActiveMarkerColor`/`navActiveMarkerGlow`, Spec 05 §2.4).
     <SarakMenuItem
         onClick={() => onSelect(item.route)}
         active={isActive}
@@ -76,7 +78,21 @@ const NavEntry: React.FC<{
         orientation={horizontal ? 'horizontal' : 'vertical'}
         icon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
         label={item.label}
-    />
+        className="relative"
+    >
+        {isActive && (
+            <span
+                aria-hidden="true"
+                className={horizontal
+                    ? 'absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 w-4 rounded-full'
+                    : 'absolute left-0 w-1 h-4 rounded-full'}
+                style={{
+                    background: 'var(--sarak-nav-marker-color, #00f2ff)',
+                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff)', // sarak-allow-hardcode: 1px converte slider unitless
+                }}
+            />
+        )}
+    </SarakMenuItem>
 );
 
 /** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */

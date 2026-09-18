@@ -40,6 +40,17 @@ describe('SarakSearch', () => {
         fireEvent.keyDown(window, { key: 'Escape' });
         expect(onClose).toHaveBeenCalled();
     });
+
+    // Spec 05 §2.4 — searchDropdownGap/searchDropdownWidth: o
+    // "dropdown de busca" aqui é o próprio painel do palette (overlay), não um
+    // dropdown inline sob um input.
+    it('searchDropdownWidth/searchDropdownGap chegam ao painel do palette por token', () => {
+        const { container } = renderSearch();
+        const palette = container.querySelector('[style*="search-dropdown-width"]') as HTMLElement | null;
+        expect(palette).not.toBeNull();
+        expect(palette!.getAttribute('style')).toContain('var(--sarak-search-dropdown-width, 400px)');
+        expect(palette!.getAttribute('style')).toContain('var(--sarak-search-dropdown-gap, 0.5rem)');
+    });
 });
 
 // `items`/`onSelect` deixam quem chama alimentar a busca com a própria navegação, no

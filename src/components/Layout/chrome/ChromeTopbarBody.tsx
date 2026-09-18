@@ -15,6 +15,7 @@ import { resolveChromeContentAlignmentClass, resolveChromeNavbarLayoutClass } fr
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
+import { chromeNoiseLayerStyle } from './noiseTexture';
 import type { SarakChromeWidgets } from './chromeWidgets';
 
 export interface ChromeTopbarBodyProps {
@@ -76,6 +77,8 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                     }}
                 >
+                    {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}
+                    <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-topbar-noise-opacity')} />
                     {w.showCollapse && (
                         <ChromeCollapseToggle orientation="topbar" collapsed={isNavHidden} onToggle={w.toggleNavHidden} />
                     )}

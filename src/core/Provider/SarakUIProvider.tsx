@@ -226,7 +226,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                             imageUrl={design?.globalBackgroundImageUrl}
                             opacity={design?.globalBackgroundOpacity}
                             blur={design?.globalBackgroundBlur}
-                            blendMode={design?.globalBackgroundBlendMode}
                             isFixed={true}
                             mode={design?.mode as 'light' | 'dark' | undefined}
                         />

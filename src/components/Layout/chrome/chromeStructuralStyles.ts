@@ -19,12 +19,14 @@ const BODY_DIRECTION_CLASS: Record<ChromeSidebarPosition, string> = {
 };
 
 // `floating` não usa posicionamento absoluto (diferente do Shell): o objetivo é o
-// mesmo cromo apresentacional, só com a sidebar destacada do restante — margem,
-// borda e sombra em vez do `border-r` colado na borda do conteúdo.
+// mesmo cromo apresentacional, só com a sidebar destacada do restante — margem e
+// borda em vez do `border-r` colado na borda do conteúdo. A sombra vem do token
+// `sidebarShadow` (Spec 05 §2.4), aplicado por `ChromeSidebarBody` nas três
+// posições — não hardcoded aqui.
 const ASIDE_POSITION_CLASS: Record<ChromeSidebarPosition, string> = {
     left: 'border-r',
     right: 'border-l',
-    floating: 'border rounded-[var(--sarak-card-radius,12px)] shadow-2xl m-3',
+    floating: 'border rounded-[var(--sarak-card-radius,12px)] m-3',
 };
 
 const NAVBAR_LAYOUT_CLASS: Record<ChromeNavbarLayout, string> = {

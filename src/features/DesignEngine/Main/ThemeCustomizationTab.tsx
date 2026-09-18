@@ -89,7 +89,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         saveTheme: sarak.saveTheme
     });
 
-    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
+    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }, themeId?: string) => {
         setCurrentThemeName(design.systemName || 'Novo Tema');
 
         // Escolher um tema no catálogo alimenta só o rascunho, como qualquer outro
@@ -98,8 +98,10 @@ export const ThemeCustomizationTab: React.FC = () => {
         // do usuário (`handleApplyToSystemWrapper`), o mesmo caminho que qualquer
         // outro token já usa — sem essa simetria, experimentar um tema seria
         // irreversível sempre que a conversão de modo claro/escuro não for exata.
+        // `themeId` acompanha o rascunho — só vira `resolvedThemeId` do Provider
+        // quando `handleApplyToSystemWrapper` comitar.
         if (handleThemePreview) {
-            handleThemePreview(design);
+            handleThemePreview(design, undefined, themeId);
         }
     }, [handleThemePreview, setCurrentThemeName]);
 

@@ -2717,7 +2717,7 @@
           "name": "style",
           "type": "React.CSSProperties",
           "optional": true,
-          "doc": "Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
+          "doc": "Sobrepõe o fundo padrão (`--sarak-modal-overlay`, do token `modalOverlayColor`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
         },
         {
           "name": "animate",
@@ -4524,7 +4524,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 428,
+    "count": 427,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -5436,11 +5436,6 @@
       {
         "id": "glassSpecularity",
         "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "globalBackgroundBlendMode",
-        "type": "string",
         "responsive": false
       },
       {

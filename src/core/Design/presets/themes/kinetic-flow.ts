@@ -175,7 +175,6 @@ export const kineticFlowTheme: ThemePreset = {
         layerElevationFactor: 1,
         globalBackgroundImageUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4',
         globalBackgroundBlur: 0,
-        globalBackgroundBlendMode: 'color-dodge',
         globalBackgroundOpacity: 0.8,
         motionEaseMain: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         motionEaseOut: 'cubic-bezier(0, 0, 0.2, 1)',

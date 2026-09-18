@@ -5,18 +5,16 @@ interface SarakBackgroundRendererProps {
     imageUrl?: string;
     opacity?: number;
     blur?: number;
-    blendMode?: string;
     isFixed?: boolean;
     mode?: 'light' | 'dark';
     disableOverlay?: boolean;
     zIndex?: number;
 }
 
-export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
-    imageUrl, 
-    opacity = 1, 
-    blur = 0, 
-    blendMode = 'normal',
+export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({
+    imageUrl,
+    opacity = 1,
+    blur = 0,
     isFixed = false,
     mode,
     disableOverlay = false,
@@ -30,13 +28,13 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     const isLightMode = mode === 'light';
     const luminance = useMediaLuminance(rawUrl, isVideo);
 
-    // 1. Escudo de Simetria Absoluta
-    // Os logs revelaram que o preset estava usando 'color-dodge'.
-    // Em um sistema dual-theme, o fundo do container alterna entre Branco (#ffffff) e Preto (#0f0f11).
-    // QUALQUER blend-mode que não seja 'normal' vai gerar um resultado matemático brutalmente diferente
-    // entre claro e escuro (ex: color-dodge no claro = branco puro, no escuro = contraste extremo).
-    // Para garantir a regra do usuário ("Não devemos inverter cores da midia base"), 
-    // a base DEVE ser renderizada com blend-mode 'normal'.
+    // Escudo de Simetria Absoluta: em um sistema dual-theme, o fundo do container
+    // alterna entre branco e preto — qualquer blend-mode que não seja 'normal' gera
+    // um resultado matemático oposto entre claro e escuro (ex.: color-dodge no claro
+    // vira branco puro; no escuro, contraste extremo). Regra do dono ("não devemos
+    // inverter cores da mídia base"): a base é SEMPRE renderizada em 'normal' — não
+    // é configurável (o token `globalBackgroundBlendMode` saiu do schema por isso,
+    // 7.0.0, docs/migracoes.md).
     const safeBlendMode = 'normal';
 
     const containerStyle: React.CSSProperties = {

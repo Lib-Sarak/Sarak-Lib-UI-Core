@@ -238,7 +238,6 @@ interface SarakDesignTokens {
     glassRoughness: number;
     glassSaturation: number;
     glassSpecularity: number;
-    globalBackgroundBlendMode: string;
     globalBackgroundBlur: number;
     globalBackgroundImageUrl: string;
     globalBackgroundOpacity: number;
@@ -638,7 +637,6 @@ interface SarakThemePayloadExtras {
     globalBackgroundImageUrl?: string;
     globalBackgroundOpacity?: number;
     globalBackgroundBlur?: number;
-    globalBackgroundBlendMode?: string;
     moduleBlacklist?: string;
     searchVariant?: "search" | "classic" | "title" | "action";
     columnGap?: string | number;
@@ -1291,7 +1289,7 @@ declare const useDesignDraft: (sarak: SarakUIContextType) => {
     updateDraft: (key: string, value: SarakTokenValue) => void;
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
-    handleThemePreview: (presetDesign: Partial<SarakDesignState>, presetKeyId?: string) => void;
+    handleThemePreview: (presetDesign: Partial<SarakDesignState>, presetKeyId?: string, themeId?: string) => void;
     handleApplyToSystem: () => void;
     handleApplyComponent: (schemaId: string) => void;
     toast: {
@@ -1619,8 +1617,9 @@ interface SarakScrimProps {
      * `ariaLabel`. Não é passthrough genérico de props — evita colidir com os tipos de
      * evento do `motion.button` (que redefine `onDrag` e afins com assinatura própria). */
     testId?: string;
-    /** Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a
-     * cor do overlay de um token de design próprio antes de migrar para este átomo. */
+    /** Sobrepõe o fundo padrão (`--sarak-modal-overlay`, do token `modalOverlayColor`) —
+     * para consumidores que já liam a cor do overlay de um token de design próprio antes
+     * de migrar para este átomo. */
     style?: React__default.CSSProperties;
     /** Ativa a transição de opacidade na entrada/saída. Default `false` — o comportamento
      * de sempre, sem animação (plan-19/20/22 pararam exatamente por causa disto: dar

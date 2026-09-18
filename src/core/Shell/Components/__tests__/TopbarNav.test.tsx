@@ -103,4 +103,17 @@ describe('TopbarNav', () => {
         const activeItem = screen.getByRole('button', { name: 'Mod 1' });
         expect(activeItem.className).toContain('var(--sarak-nav-active-color');
     });
+
+    // Spec 05 §2.4 — tokens que faltavam só no Shell.
+    it('topbarTitleColor: o título do sistema pinta pelo token', () => {
+        renderWithProvider(<TopbarNav {...mockProps} />);
+        expect(screen.getByText('Sarak Test').getAttribute('style')).toContain('var(--sarak-topbar-title-color, #ffffff)');
+    });
+
+    it('topbarNoiseOpacity: a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+        const { container } = renderWithProvider(<TopbarNav {...mockProps} />);
+        const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+        expect(noiseLayer).not.toBeNull();
+        expect(noiseLayer!.style.opacity).toBe('var(--sarak-topbar-noise-opacity, 0)');
+    });
 });

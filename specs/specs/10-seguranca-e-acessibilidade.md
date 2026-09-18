@@ -225,7 +225,7 @@ sem motivo validado. O schema que o hospeda chama-se, literalmente, "Acessibilid
 | Onde o anel é desenhado | Respeita o token? |
 | --- | --- |
 | `SarakLink` (`src/components/atomic/Navigation/SarakLink.tsx:72`) | ✅ `outlineWidth: 'var(--sarak-focus-width, 2px)'` |
-| Regra global de botão (`src/styles/_utilities.css:58`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
+| Regra global de botão (`src/styles/_elements.css:92`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
 
 **Fechado.** A regra global de foco passou a ler o token, junto com o anel de link. Teste dedicado em
 `src/styles/__tests__/focusRing.test.ts` (3 casos).
@@ -374,7 +374,7 @@ useEffect(() => {
 | **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
 | **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
-| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_utilities.css:58` |
+| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:92` |
 | **5.7** | **E2E de isolamento não roda em automação** — `EmbeddedNoLeak.spec.tsx` exige build e execução manual | a garantia mais difícil de manter (não-vazamento) é a menos exercitada | [[01-gates-e-baseline]] §2.6 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas

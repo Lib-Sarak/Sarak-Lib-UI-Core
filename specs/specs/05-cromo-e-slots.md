@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[02-design-engine]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -88,11 +88,10 @@ A métrica **difere por orientação**, e a diferença é contrato, não acident
 a orientação resolvida pelo `navigationStyle`. **Consequência direta da §2.1:** como trocar o tema troca a
 orientação do cromo, ele **também** troca a métrica do item de menu, de lista para aba.
 
-> ⚠️ **A pílula é contrato, e hoje não renderiza.** Uma regra global de raio para botões
-> (`src/styles/_utilities.css`), fora de qualquer `@layer`, vence todo `rounded-*` em todo `<button>` da
-> lib — o item horizontal computa o raio do botão de ação, e o `rounded-*` das outras orientações também
-> não chega à tela. O conserto alcança todo botão e está no [[00-backlog]]; a medição de navegador mantém
-> o contrato da pílula como **falha esperada** até lá.
+**A pílula chega à tela porque o padrão de raio de `<button>` cede à classe.** O raio que a lib dá a todo botão
+mora numa camada anterior às utilitárias ([[02-design-engine]] §9.1), então o `rounded-*` do item de menu
+vence nas três orientações. A medição de navegador compara o raio computado do item horizontal com o do botão
+de ação.
 
 **Largura cheia nunca carrega piso de largura no conteúdo**, venha ela da prop `fullWidth`, do tema ou da
 `className` do chamador — o `min-w-fit` é de outro grupo de propriedade que `width` e sobreviveria ao merge,
@@ -416,7 +415,7 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | O ⚙ como overlay: abre por teclado, ESC fecha, o foco volta ao ⚙; não monta vazio | `src/components/atomic/Navigation/__tests__/ShellPreferencesMenu.test.tsx` | ✅ suíte |
 | O seletor de idioma: lista o que o tema habilita, grava preferência, não monta com um idioma, mostra o idioma que vale | `src/components/atomic/Navigation/__tests__/ShellLanguageSelector.test.tsx` | ✅ suíte |
 | Item horizontal em caixa normal e corpo legível, medido em navegador real | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
-| Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ⚠️ **falha esperada** (`test.fail`) até a regra global de raio ser corrigida |
+| Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 

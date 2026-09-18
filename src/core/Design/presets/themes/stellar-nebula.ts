@@ -176,7 +176,6 @@ export const stellarNebulaTheme: ThemePreset = {
         layerElevationFactor: 1,
         globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1920&auto=format&fit=crop',
         globalBackgroundBlur: 4,
-        globalBackgroundBlendMode: 'screen',
         globalBackgroundOpacity: 0.6,
         motionEaseMain: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         motionEaseOut: 'cubic-bezier(0, 0, 0.2, 1)',

@@ -3,6 +3,7 @@ import { PAYLOAD_EXTRA_KEYS } from '../payloadExtraKeys';
 import { getAllDesignTokens } from '../../Design/master-map';
 import { DESIGN_MANIFEST } from '../manifest';
 import { isSafeCssString, isSafeMediaString } from './cssSafety';
+import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
 import type { DesignToken } from '../../Design/types';
 
 /**
@@ -15,7 +16,6 @@ import type { DesignToken } from '../../Design/types';
  * `console.warn`, nunca injetado. É isto que torna localStorage e um JSON de
  * tema escrito à mão seguros por construção, independente de onde vieram.
  */
-
 let tokenIndexCache: Map<string, DesignToken> | null = null;
 const getTokenIndex = (): Map<string, DesignToken> => {
     if (!tokenIndexCache) {
@@ -188,6 +188,11 @@ export const validateDesign = (design: unknown): SarakDesignState => {
 
     Object.entries(input).forEach(([key, value]) => {
         if (value === null || value === undefined || value === '') return;
+
+        if (REMOVED_TOKEN_KEYS.has(key)) {
+            warnRemovedTokenKeyOnce(key, value);
+            return;
+        }
 
         const token = tokenIndex.get(key);
         if (token) {

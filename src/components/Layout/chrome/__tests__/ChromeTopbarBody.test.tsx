@@ -95,3 +95,20 @@ describe('ChromeTopbarBody — widgets default (busca/tema/usuário/colapso)', (
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).toBeNull();
     });
 });
+
+// Spec 05 §2.4 — token que faltava nos dois cromos.
+describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
+    it('a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+        const { container } = renderBody({});
+        const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+        expect(noiseLayer).not.toBeNull();
+        expect(noiseLayer!.style.opacity).toBe('var(--sarak-topbar-noise-opacity, 0)');
+    });
+
+    it('a marcação do item ativo (navActiveMarkerColor/Glow) também existe na topbar (horizontal)', () => {
+        const { container } = renderBody({}, { activeRoute: '/propostas' });
+        const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
+        expect(marker).not.toBeNull();
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+    });
+});

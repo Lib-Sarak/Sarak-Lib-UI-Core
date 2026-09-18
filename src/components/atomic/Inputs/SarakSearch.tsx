@@ -77,12 +77,20 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     className={`absolute inset-0 bg-[var(--color-theme-card,#1e293b)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
                 />
 
-                {/* Palette Container */}
+                {/* Palette Container — o "dropdown de busca" a que `searchDropdownGap`/
+                    `searchDropdownWidth` (Spec 05 §2.4) se referem: aqui não há um
+                    input inline com painel abaixo (é um command palette em overlay),
+                    então o equivalente é a distância do topo e a largura do próprio
+                    painel. */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                    className={`relative w-full ${searchStyle === 'minimal' ? 'max-w-lg mt-[5vh]' : 'max-w-2xl mt-[10vh]'} bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden`}
+                    className="relative w-full bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
+                    style={{
+                        maxWidth: 'var(--sarak-search-dropdown-width, 400px)',
+                        marginTop: `calc(${searchStyle === 'minimal' ? '5vh' : '10vh'} + var(--sarak-search-dropdown-gap, 0.5rem))`,
+                    }}
                 >
                     {/* Input Area */}
                     <div

@@ -106,9 +106,12 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 </>
             )}
 
-            {/* SIDEBAR NAVIGATION (DESKTOP) */}
-            {isSidebar && !isMobile && (
-                <SidebarNav 
+            {/* SIDEBAR NAVIGATION (DESKTOP) — mesma regra do DockNav (:167-178): com
+                auto-hide, só existe no ar enquanto `isNavVisible`; sem auto-hide, sempre
+                visível. Sem esta condição, o sensor de borda acima aparecia mas a
+                sidebar nunca saía do lugar (05-cromo-e-slots.md §5.2). */}
+            {isSidebar && !isMobile && (shell.isNavVisible || !design.isAutoHideEnabled) && (
+                <SidebarNav
                     design={design}
                     brand={brand}
                     user={user}
@@ -222,7 +225,14 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 </div>
             </div>
 
-            <SarakSearch isOpen={shell.isSearchOpen} onClose={() => shell.setIsSearchOpen(false)} />
+            {/* `onSelect` ativa o módulo escolhido (clique ou teclado) e fecha o palette —
+                sem ele o SarakSearch listava os módulos e nenhum resultado navegava
+                (05-cromo-e-slots.md §5.2). */}
+            <SarakSearch
+                isOpen={shell.isSearchOpen}
+                onClose={() => shell.setIsSearchOpen(false)}
+                onSelect={shell.setActiveModuleId}
+            />
         </div>
     );
 };

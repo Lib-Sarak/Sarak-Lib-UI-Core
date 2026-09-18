@@ -27,6 +27,15 @@ describe('SarakScrim', () => {
         expect(scrim.className).toContain('inset-0');
     });
 
+    // `--sarak-overlay-bg` nunca foi emitido pela engine — era variável-fantasma
+    // mascarada por uma opção de select removida. `--sarak-modal-overlay` (token
+    // `modalOverlayColor`) é o que a engine de fato emite para este papel.
+    it('o fundo padrão usa o token que a engine realmente emite (--sarak-modal-overlay)', () => {
+        const { getByRole } = render(<SarakScrim onClose={() => {}} ariaLabel="Fechar menu" />);
+        const scrim = getByRole('button', { name: 'Fechar menu' });
+        expect(scrim.getAttribute('style')).toContain('var(--sarak-modal-overlay, rgba(0,0,0,0.5))');
+    });
+
     describe('animate (opcional — plan-23)', () => {
         it('sem `animate`, continua um <button> puro, sem atributos de motion (default = comportamento de hoje)', () => {
             const { getByRole } = render(<SarakScrim onClose={() => {}} ariaLabel="Fechar menu" />);

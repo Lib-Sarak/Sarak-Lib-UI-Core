@@ -20,17 +20,17 @@ export const usePreviewContextValue = (parentContext: SarakUIContextType, tokens
     }), [parentContext, tokens, onUpdateDraft]);
 };
 
-export const useApplyPreset = (onUpdateDraft: (key: string, value: SarakTokenValue) => void, onApplyFullTheme?: (design: Partial<SarakDesignState>) => void) => {
-    return React.useCallback((presetTokens: Partial<SarakDesignState>, isPartial = false) => {
+export const useApplyPreset = (onUpdateDraft: (key: string, value: SarakTokenValue) => void, onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void) => {
+    return React.useCallback((presetTokens: Partial<SarakDesignState>, isPartial = false, themeId?: string) => {
         if (isPartial) {
             Object.entries(presetTokens).forEach(([key, value]) => {
                 if (value !== undefined) onUpdateDraft(key, value as SarakTokenValue);
             });
             return;
         }
-        
+
         if (onApplyFullTheme) {
-            onApplyFullTheme(presetTokens);
+            onApplyFullTheme(presetTokens, themeId);
             return;
         }
 

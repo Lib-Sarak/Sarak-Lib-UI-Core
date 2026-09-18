@@ -85,7 +85,6 @@ interface SarakThemePayloadExtras {
     globalBackgroundImageUrl?: string;
     globalBackgroundOpacity?: number;
     globalBackgroundBlur?: number;
-    globalBackgroundBlendMode?: string;
     moduleBlacklist?: string;
     searchVariant?: "search" | "classic" | "title" | "action";
     columnGap?: string | number;

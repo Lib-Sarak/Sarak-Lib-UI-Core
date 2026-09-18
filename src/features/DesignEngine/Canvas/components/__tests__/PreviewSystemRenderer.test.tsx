@@ -154,6 +154,69 @@ describe('PreviewSystemRenderer — escala pela largura REAL do container (plan-
     });
 });
 
+// 06-painel-de-customizacao-e-preview.md §6 — se a mídia global aparece no Gêmeo
+// Digital. `PreviewSystemRenderer` já envolve o conteúdo em `DesignScope` com o
+// `tokens` (rascunho) intacto — SEM a exclusão de `globalBackgroundImageUrl` que
+// `PreviewCanvas.tsx` aplica no `DesignScope` EXTERNO (`outerScopeDesign`, que só
+// existe para não pintar o fundo atrás do cromo do PRÓPRIO painel). Este teste é a
+// evidência: a mídia aparece.
+describe('PreviewSystemRenderer — mídia global do rascunho no Gêmeo Digital', () => {
+    const mediaProps = {
+        previewDevice: 'desktop' as const,
+        previewNavVisible: true,
+        setPreviewNavVisible: () => {},
+        previewMobileNavOpen: false,
+        setPreviewMobileNavOpen: () => {},
+        isSidebar: true,
+        isDock: false,
+        isTopbar: false,
+        parentContext: {} as unknown as SarakUIContextType,
+        onUpdateDraft: () => {},
+        mockGroupedModules: {},
+        mockDiscoveredModules: [],
+        startResizingTopbar: () => {},
+        sarak: {} as unknown as SarakUIContextType,
+        startResizingSidebar: () => {},
+        apps: { dashboard: <div>Mock App</div> },
+        activePreviewApp: 'dashboard',
+        setActivePreviewApp: () => {},
+    };
+
+    it('aplicar uma mídia global ao rascunho a faz aparecer (SarakBackgroundRenderer real, sem mock)', () => {
+        const { container } = render(
+            <SarakUIProvider>
+                <PreviewSystemRenderer
+                    {...mediaProps}
+                    tokens={{ globalBackgroundImageUrl: 'https://example.com/bg-plan78.png' } as unknown as Partial<SarakDesignState>}
+                />
+            </SarakUIProvider>,
+        );
+
+        const mediaLayer = container.querySelector('[style*="bg-plan78.png"]');
+        expect(mediaLayer).not.toBeNull();
+
+        // A raiz escalada e o container de fundo ficam transparentes para a mídia
+        // (z-index -1, dentro do mesmo DesignScope) aparecer por baixo.
+        const scaledNode = container.querySelector('.origin-top-left');
+        expect(scaledNode?.className).toMatch(/bg-transparent/);
+    });
+
+    it('sem mídia global, a raiz pinta o token de fundo do tema (nada transparente)', () => {
+        const { container } = render(
+            <SarakUIProvider>
+                <PreviewSystemRenderer {...mediaProps} tokens={{}} />
+            </SarakUIProvider>,
+        );
+
+        // Nenhum `SarakBackgroundRenderer` monta sem `imageUrl` (retorna `null`) — o
+        // seletor busca só a URL de teste, não a textura do `NoiseOverlay` global
+        // (infraestrutura do `SarakUIProvider`, não relacionada à mídia de fundo).
+        expect(container.querySelector('[style*="bg-plan78.png"]')).toBeNull();
+        const scaledNode = container.querySelector('.origin-top-left');
+        expect(scaledNode?.className).not.toMatch(/bg-transparent/);
+    });
+});
+
 describe('arePreviewPropsEqual — o comparador do React.memo (plan-36, corta a 2ª computação de computeColorVariants quando nada visual mudou)', () => {
     const makeProps = (overrides: Partial<PreviewSystemRendererProps> = {}): PreviewSystemRendererProps => ({
         sarak: {} as unknown as SarakUIContextType,

@@ -2324,7 +2324,7 @@
           "name": "style",
           "type": "React.CSSProperties",
           "optional": true,
-          "doc": "Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
+          "doc": "Sobrepõe o fundo padrão (`--sarak-modal-overlay`, do token `modalOverlayColor`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
         },
         {
           "name": "animate",

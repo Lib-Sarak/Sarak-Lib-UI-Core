@@ -202,8 +202,9 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         fireEvent.click(screen.getByTestId('apply-full-theme'));
 
         const expected = { mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' };
-        // Reflete no rascunho/preview...
-        expect(mockPreview).toHaveBeenCalledWith(expected);
+        // Reflete no rascunho/preview... (3º argumento é o `themeId` — o mock de
+        // disparo não simula um clique real no catálogo, então undefined).
+        expect(mockPreview).toHaveBeenCalledWith(expected, undefined, undefined);
         // ...e NÃO toca o design do sistema nem o armazenamento — a escolha de um tema
         // no catálogo é rascunho, como qualquer outro token.
         expect(mockApplyFullConfigRaw).not.toHaveBeenCalled();

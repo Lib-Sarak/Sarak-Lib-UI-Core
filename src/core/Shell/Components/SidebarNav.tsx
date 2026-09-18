@@ -16,6 +16,7 @@ import { ShellNavigationStyleControl } from '../../../components/atomic/Navigati
 import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
 import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
 
 interface SidebarNavProps {
     design: SarakDesignState;
@@ -41,7 +42,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         tabSectionMargin, borderRadius, borderWidth, borderStyle,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition, tabGap
     } = design || {};
-    
     const { sidebarClass } = useShellLayoutStyles(design);
 
     // Sovereign Logic: Effective state for hover expansion
@@ -63,7 +63,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     const hasPreferencesMenu = menuIdsToShow.length > 0;
 
     const searchPos = design?.searchPositionSidebar || 'top';
-
     const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
     const isVideo = (url?: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
 
@@ -97,10 +96,16 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 borderWidth: isMobileDrawer ? '0' : `${borderWidth ?? 1}px`,
                 borderStyle: borderStyle || 'solid',
                 backgroundColor: 'var(--theme-sidebar-bg, var(--theme-sidebar))',
-                borderColor: 'var(--theme-border)'
+                borderColor: 'var(--theme-border)',
+                // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl fixo.
+                backdropFilter: 'blur(var(--sarak-sidebar-blur, 0px))',
+                // sarak-allow-hardcode: fallback multi-valor = defaultValue do próprio token.
+                boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))'
             }}
-            className={`sarak-shell-sidebar ${sidebarClass} flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden`}
+            className={`sarak-shell-sidebar ${sidebarClass} flex flex-col shrink-0 relative z-[100] overflow-hidden`}
         >
+            {/* `sidebarNoiseOpacity` (Spec 05 §2.4) — grão sobreposto ao fundo, 0 por default. */}
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity')} />
             <div className={`h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 ${effectiveIsNavHidden ? 'justify-center' : 'justify-between'}`}>
                 {!effectiveIsNavHidden && (
                     <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
@@ -164,19 +169,28 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         active={isActive}
                                         collapsed={effectiveIsNavHidden}
                                         title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
-                                        icon={<IconRenderer name={mod.icon} className={isActive ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />}
+                                        icon={<IconRenderer name={mod.icon} className={isActive ? 'text-[var(--sarak-nav-active-color,#00f2ff)]' : 'text-[var(--theme-muted)]'} />}
                                         label={mod.label}
-                                        className={`relative group font-tab
-                                            ${isActive
-                                                ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] text-[var(--theme-primary)] shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
-                                                : ''}
-                                            ${isOffline ? 'border border-dashed border-[var(--theme-border)]' : ''}
-                                        `}
+                                        // Sem `text-*` aqui: o `tone` do próprio SarakMenuItem já pinta o
+                                        // ativo com `--sarak-nav-active-color` — repetir venceria por R35.
+                                        className={`relative group font-tab ${
+                                            isActive ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]' : ''
+                                        } ${isOffline ? 'border border-dashed border-[var(--theme-border)]' : ''}`}
                                     >
                                         {isOffline && !effectiveIsNavHidden && (
                                             <span className="shrink-0 text-3xs text-[var(--theme-error)] font-bold uppercase tracking-wider">Service Offline</span>
                                         )}
-                                        {isActive && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
+                                        {/* Marcador do ativo: navActiveMarkerColor/Glow (Spec 05 §2.4). */}
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="active-pill"
+                                                className="absolute left-0 w-1 h-4 rounded-full"
+                                                style={{
+                                                    background: 'var(--sarak-nav-marker-color, #00f2ff)',
+                                                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff)', // sarak-allow-hardcode: 1px converte slider unitless
+                                                }}
+                                            />
+                                        )}
                                         {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
                                     </SarakMenuItem>
                                 );
@@ -233,5 +247,3 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </aside>
     );
 };
-;
-
