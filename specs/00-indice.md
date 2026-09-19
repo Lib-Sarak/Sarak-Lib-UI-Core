@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟡 Em execução | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
+| 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟠 Em revisão | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

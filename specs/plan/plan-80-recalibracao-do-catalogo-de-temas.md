@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Recalibrar o catálogo de temas shippados para representar a capacidade da biblioteca"
 objetivo: "Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "temas", "catalogo", "contraparte", "contraste", "diversidade", "hitl"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[specs/05-cromo-e-slots]]", "[[specs/11-testes-e-cobertura]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
@@ -1155,6 +1155,136 @@ ciano+magenta (4/11) e mode:dark (8/11), e somar mais claro-saturado e fundo-mé
 
 ---
 
+## Registro — Parada da identidade dos três novos — 2026-09-18
+
+**Proposta entregue em texto, sem escrever tema** (nenhum arquivo dos três existia até a aprovação), com a
+saída de `themes:diversity --new` medida por script descartável sobre valores propostos, contra os 11
+existentes. **Aprovada pelo dono** ("prossiga"):
+
+| Tema | Modo · navegação | Matiz · fundo | Botão · textura | Só ele traz |
+| --- | --- | --- | --- | --- |
+| `golden-hour` | claro · sidebar **à direita** | laranja/dourado H39 S67 · fundo claro | `borderline` · `honeycomb` | única sidebar à direita; único `borderline` claro |
+| `aurora-veil` | claro · topbar | roxo H264 S37 · fundo claro | `frosted` · `aurora` | única família roxo; único `frosted` |
+| `blueprint-protocol` | escuro · sidebar **flutuante** | azul H210 S42 · fundo de luminosidade média (28) | `cyberpunk` · `blueprint-pro` | único azul escuro; único `cyberpunk`; única sidebar flutuante |
+
+---
+
+## Resumo da execução — Lote 5 (os três temas novos) e fechamento — 2026-09-18
+
+**Resultado:** concluído. Os três temas novos foram autorados com a identidade aprovada, o fechamento inteiro
+do §5 passo 8 foi feito (inclusive a nota de migração dos temas que mantiveram o id e mudaram) e as
+verificações da §7 rodaram. **Fica para o revisor o veredito técnico e, para o dono, a revisão visual única do
+catálogo inteiro, com a lib atualizada no ERP (emenda §3.6).**
+
+**O que foi feito**
+- `golden-hour`, `aurora-veil`, `blueprint-protocol`: arquivos novos, registrados em `THEME_PRESET_IDS` e
+  `GLOBAL_THEMES` (catálogo de 11 → 14). Cada um: `findMissingThemeAxes` vazio, `contraparte` autorada (a
+  contraparte de cada um é a mesma identidade no outro modo, não um tema à parte), fundo de hover perceptível
+  nas duas orientações e nos dois modos, `enabledLanguages` com os seis idiomas, preferências no padrão de
+  fábrica, nenhuma mídia de terceiro, `description` em uma frase.
+- **Contraste medido antes de fechar cor** (`auditTheme`/`auditThemeOppositeMode` num script descartável, a
+  régua real): nenhum dos três fechou de primeira. Falhas medidas e corrigidas: `textColorMuted` (os três,
+  nos dois modos), `cardActionBtnText` contra o fundo do botão (`golden-hour`, `blueprint-protocol`) e
+  **`colorBgModal` sem sobreposição na contraparte** (os três: texto escuro sobre modal que continuou escuro,
+  razão ~1,1) — a mesma classe de defeito dos lotes 3 e 4, e agora registrada na skill. Resultado final: 0
+  reprovados nos dois modos; os pulados são barras/superfícies translúcidas por desenho (mesma classe já
+  registrada), e `btnPrimaryText` sobre `btnPrimaryBg` transparente/quase transparente nos temas de botão
+  contornado ou vidro.
+- **Dois achados de contrato, pegos pela suíte (não pelo `audit`) e corrigidos:** `bodySize: '15px'`
+  (`golden-hour`, `aurora-veil`) e `easeMain` com curva própria (`blueprint-protocol`) estão fora das
+  opções do schema — o valor seria descartado em runtime com aviso (`shippedThemesConsoleClean`,
+  `tokenContractParity`). Trocados por opções válidas (`16px`/`14px` e a curva "Expo Glide"). Entrou na
+  skill, na seção do que se confere.
+
+**Fechamento do §5 passo 8**
+- `CONTRAPARTE_EXEMPTION_LIST` **vazia** (desde o lote 4) e o `auditor_contraste` exige contraparte de todo
+  tema shippado: **14 de 14**. Mutação: sem a contraparte do `aurora-veil`, `verify_contrast.ts` sai com
+  erro ("Faltando em: aurora-veil"); restaurado byte a byte.
+- **Mutação de hover:** com `sidebarHoverColor: 'transparent'` no `golden-hour`, a varredura de
+  `SarakMenuItem` cai (1 de 48); restaurado, 48/48.
+- **Efeito** (a verificação da §7 que mede o que a tela recebe, não o valor devolvido): `useDesignVariables`
+  em `react-dom/server` para os três temas novos, no modo nativo e no oposto — as variáveis emitidas
+  (`--sarak-mode`, os dois hovers, `--sarak-nav-item-active-color`) batem 24 de 24 com o escrito e com a
+  contraparte.
+- **`themes:diversity`**: os nove critérios passam (saída abaixo). Script novo `themes:showcase` no
+  `package.json`.
+- **Skill `ui-criar-tema`** atualizada: a vitrine (`build` + `themes:showcase`, o que olhar, o badge `muted`),
+  a varredura de hover (mede só o fundo, nos dois modos), a contraparte obrigatória de todo tema (sem lista
+  de isenção; sobrepor `colorBgModal`), `enabledLanguages` com os seis idiomas, e valor enumerado só nas
+  opções do schema. Checklist estendido.
+- **`docs/migracoes.md`**, sob a 7.0.0: entrada nova "Catálogo recalibrado" — os 3 ids novos (a união
+  `ThemePresetId` cresce) e, **para cada tema que manteve o id e mudou**, o que era e o que passa a ser:
+  `data-terminal` (de escuro para **claro**, com o caminho de volta pela preferência de modo — e a ressalva
+  honesta de que o visual escuro ciano de antes não existe mais no catálogo), `synthwave-retro`,
+  `neo-brutalism`, `neumorphic-mobile`, `nebula-space`, `kinetic-flow`; mais o que muda nos 11 (hover,
+  seis idiomas, contraparte autorada). A entrada dos "12 temas saem" deixou de dizer que os 11 restantes
+  "seguem sem mudança".
+- Geradores rodados: `npm run guide` (o `guide:check` acusava o kit defasado); `dev-kit:check`,
+  `catalog:check` e `guide:check` em dia depois.
+- Comentário de `presets/themes/index.ts` sobre a contraparte estava defasado ("lista de isenção que nasce
+  com os 18 legados") e citava uma plan — reescrito apontando para a spec fixa, o achado da grep da §7.
+
+**Catálogo final × critérios de capacidade (§6), cada item apontado no tema que o usa**
+- Sidebar `right`: `golden-hour` · `floating`: `blueprint-protocol` · `left` (padrão): os demais com sidebar.
+- Estilos de botão (os seis): `matte` (vários), `neon` (`cyber-retro-wave`), `borderline` (`cyberpunk-neon`,
+  `synthwave-retro`, `golden-hour`), `neumorphism` (`neumorphic-mobile`), `frosted` (`aurora-veil`),
+  `cyberpunk` (`blueprint-protocol`).
+- Texturas de fundo em uso: `none`, `grid`, `waves`, `scanlines` (já usadas) e três **nunca antes usadas**:
+  `honeycomb` (`golden-hour`), `aurora` (`aurora-veil`), `blueprint-pro` (`blueprint-protocol`) — 7 das 41
+  opções, contra 4 antes.
+- Nenhum tema aponta para mídia de terceiro.
+
+**Verificações executadas (§7)**
+- `npx tsx verify_contrast.ts` → 0 reprovados nas duas passadas; 0 isentos; 14 com contraparte.
+- `npx tsx verify_presets.ts` → 116 itens (14 temas + 102 presets), 0 órfãs.
+- `npm run themes:diversity -- --new golden-hour,aurora-veil,blueprint-protocol` → **9 de 9 critérios**.
+  Quadro do catálogo de 14: escuro 9/14 (era 8/11), primária S=100 9/14, ciano+magenta 4/14, claro-saturado
+  2/14 (era 1/11), fundo médio 2/14 (era 1/11). Dos três novos: 1 escuro, 0 com S=100, 0 em ciano/magenta.
+  (O quadro "9 de 14 escuros" é a proporção mais baixa que o catálogo teve desde a remoção: 64%, contra 73%.)
+- `npm run audit` → 2 regras estruturais quebradas, as do baseline conhecido (`auditor_ghostvars`,
+  `auditor_composicaoatomica`); `check-audit-baseline --with-tsc` → igual ao baseline.
+- `npm run trail-citation:check` → `[OK]`; `grep -nE "plan-[0-9]+|achado [0-9]+|veredito"` nos arquivos
+  de código da entrega (rastreados e não rastreados) → só o comentário acima, corrigido.
+- `npm run build` verde (`guide:check`, `catalog:check`, `barrel:check`, `zero-brand:check`,
+  `public-types:check`); `npm run cromo-css-real:check` → **16 de 16**.
+- Vitrine: `npm run themes:showcase` → **56 capturas (14 temas × 2 modos × 2 orientações), 0 falhas**;
+  inspecionados os três novos nos dois modos (badges legíveis em toda variante, sidebar à direita visível no
+  `golden-hour`).
+- `npx vitest run --maxWorkers=3` → **376 arquivos / 1975 testes, 0 falhas.**
+
+**Arquivos alterados neste bloco**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/golden-hour.ts` · `aurora-veil.ts` · `blueprint-protocol.ts` | novos | os três temas |
+| `src/core/Design/presets/themes/index.ts` | alterado | 3 ids e 3 imports; comentário da contraparte atualizado |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` · `.../components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado (gerado) | só acréscimo: 3 entradas novas por snapshot (752 linhas cada, 0 removidas — os 11 anteriores byte a byte iguais) |
+| `package.json` | alterado | script `themes:showcase` |
+| `browser-tests/generate-showcase.mts` | alterado | cabeçalho aponta para o script |
+| `.agents/skills/ui-criar-tema/SKILL.md` (e o espelho em `.claude/`) | alterado | vitrine, hover, idiomas, enum, contraparte |
+| `docs/migracoes.md` | alterado | entrada "Catálogo recalibrado" |
+| `sarak-ui/*`, `dist/*` | alterado (gerado) | `npm run guide` + `npm run build` |
+
+**Decisões e suposições**
+- Os três nomes/ids (`golden-hour`, `aurora-veil`, `blueprint-protocol`) foram escolha minha dentro da
+  identidade aprovada — a proposta dizia "Golden Hour / Aurora Veil / Blueprint Protocol" e os ids seguem o
+  padrão kebab-case do catálogo. O dono pode renomear na revisão.
+- `sidebarPosition: 'floating'` no `blueprint-protocol` é, pelo código do cromo, margem + raio + borda
+  (`m-3`, raio do card) — sutil numa captura reduzida; medida ao vivo no ERP, como a emenda §3.4 já registrava.
+  Fica para a revisão visual única.
+- Os critérios 7 e 8 do `themes:diversity` ainda dizem "os 5" na descrição impressa (texto herdado de quando o
+  gate foi construído para cinco temas); a lógica não depende da contagem, e não toquei o gate — fora da §3.1.
+- A alegação "9 de 14 escuros é a proporção mais baixa" é sobre esta campanha (73% → 64%), não sobre o
+  catálogo original de 23 (78%); o dono decide se ainda é escuro demais.
+
+**Pendências / riscos**
+- **Veredito técnico do revisor** e **revisão visual única do dono** (emenda §3.6), com a lib atualizada no ERP
+  — inclusive a decisão sobre o `cyberpunk-neon` (entregue como "melhorar"; classificado "recriar" na Parada 1).
+- Backlog #26: com barra translúcida, o `auditor_contraste` pula os pares de texto sobre a barra (agora também
+  `aurora-veil` e `blueprint-protocol`, além de `nebula-space` e `kinetic-flow`); a legibilidade da navegação
+  nesses quatro só a revisão visual mede.
+
+---
+
 # 10. Veredito
 
 ## Veredito do lote 1 — 2026-09-18 — 🔴 Reprovado
@@ -1314,6 +1444,40 @@ para claro: quem o tinha aplicado abre a tela clara, sem aviso nenhum hoje.
 
 **Para a parada de identidade dos três novos (emenda §3.5):** o quadro acima ainda concentra primária neon
 pura (9 de 11) e tema escuro (8 de 11). Os três novos são o último espaço para mexer nisso.
+
+---
+
+## Veredito técnico — três temas novos e fechamento — 2026-09-18 — 🟢 Liberado
+
+Verificado pelo revisor:
+- Suíte inteira: **376 arquivos, 1975 testes, todos verdes**. `cromo-css-real:check` **16 de 16**.
+  `check-audit-baseline --with-tsc` igual ao baseline. `trail-citation:check` verde, e o grep do revisor
+  (código, skill e os três temas novos, não rastreados) não acha nada. Anel 0 simulado: 0 achado.
+- **Geradores em dia:** `catalog:check`, `guide:check`, `dev-kit:check` (0 ponteiro morto),
+  `token-types:check` (427) e `barrel:check`. O `dist/` foi reconstruído depois da última edição e contém os
+  três temas novos.
+- **Contraste:** 14 de 14 temas com contraparte, 0 isento, 0 reprovado.
+- **Diversidade:** `themes:diversity --new golden-hour,aurora-veil,blueprint-protocol` passa nos 9
+  critérios, rodado pelo revisor.
+- **Emenda §3.5, por script do revisor:** a combinação de navegação, posição da sidebar, botão, card e
+  textura de cada tema novo é única no catálogo.
+- **Capacidade (§6):** os seis estilos de botão (`matte`, `borderline`, `neon`, `neumorphism`, `frosted`,
+  `cyberpunk`) e a sidebar `right` (`golden-hour`) e `floating` (`blueprint-protocol`) aparecem no catálogo.
+  As texturas passam de quatro para sete em uso (`aurora`, `honeycomb` e `blueprint-pro` entram).
+- **Migração:** a entrada "Catálogo recalibrado" cobre os três ids novos e, tema a tema, o que muda para
+  quem mantinha o id, inclusive o `data-terminal`, que passa de escuro a claro, e o caminho de volta.
+- **Skill `ui-criar-tema`:** descreve a vitrine, a varredura de hover, a contraparte obrigatória e os seis
+  idiomas. O espelho em `.claude/skills` é o mesmo arquivo (link simbólico).
+- Os valores fora das opções do schema, pegos na autoria, têm trava: a suíte os reprova
+  (`shippedThemesConsoleClean`, `tokenContractParity`).
+
+**Falta um critério, que é do dono:** o veredito visual único do catálogo inteiro, com a lib atualizada no
+ERP (emenda §3.6). Nele se decidem:
+- o `cyberpunk-neon`, que continua como "melhorar" ou é recriado;
+- se a sidebar `floating` do `blueprint-protocol` basta;
+- a legibilidade da navegação nos temas de barra translúcida (backlog #26).
+
+Aprovado o visual, o revisor fecha a plan (🟢) e propõe a síntese.
 
 ---
 

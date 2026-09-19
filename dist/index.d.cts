@@ -1319,7 +1319,7 @@ declare const useDesignDraft: (sarak: SarakUIContextType) => {
  * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
  * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
  */
-declare const THEME_PRESET_IDS: readonly ["sarak-sovereign", "cyberpunk-neon", "industrial-terminal", "neo-brutalism", "synthwave-retro", "nebula-space", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile"];
+declare const THEME_PRESET_IDS: readonly ["sarak-sovereign", "cyberpunk-neon", "industrial-terminal", "neo-brutalism", "synthwave-retro", "nebula-space", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "golden-hour", "aurora-veil", "blueprint-protocol"];
 type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
 interface ThemePreset {
     id: ThemePresetId;
@@ -1328,11 +1328,11 @@ interface ThemePreset {
     design: Record<string, unknown>;
     /**
      * Bloco PARCIAL, autorado, com os tokens que mudam para o modo OPOSTO ao
-     * nativo (`design.mode`) — plan-26. OPCIONAL no tipo de propósito: torná-lo
-     * obrigatório quebraria os 18 temas legados e todo tema de consumidor
-     * (R33). `resolveThemeForMode` (abaixo) é quem decide o que aplicar; o
-     * gate de contraste (`auditor_contraste`) é quem EXIGE presença, com uma
-     * lista de isenção que nasce com exatamente os 18 legados.
+     * nativo (`design.mode`) — specs/specs/09-temas-e-presets.md §2.1. OPCIONAL
+     * no tipo de propósito: torná-lo obrigatório quebraria todo tema de
+     * consumidor (R33). `resolveThemeForMode` (abaixo) é quem decide o que
+     * aplicar; o gate de contraste (`auditor_contraste`) é quem EXIGE presença
+     * de todo tema shippado — a lista de isenção terminou vazia.
      */
     contraparte?: Partial<SarakDesignState>;
 }

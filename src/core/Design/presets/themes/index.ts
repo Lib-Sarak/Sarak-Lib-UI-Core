@@ -29,6 +29,9 @@ export const THEME_PRESET_IDS = [
     'minimalist-airy',
     'data-terminal',
     'neumorphic-mobile',
+    'golden-hour',
+    'aurora-veil',
+    'blueprint-protocol',
 ] as const;
 
 export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
@@ -40,11 +43,11 @@ export interface ThemePreset {
     design: Record<string, unknown>;
     /**
      * Bloco PARCIAL, autorado, com os tokens que mudam para o modo OPOSTO ao
-     * nativo (`design.mode`) — plan-26. OPCIONAL no tipo de propósito: torná-lo
-     * obrigatório quebraria os 18 temas legados e todo tema de consumidor
-     * (R33). `resolveThemeForMode` (abaixo) é quem decide o que aplicar; o
-     * gate de contraste (`auditor_contraste`) é quem EXIGE presença, com uma
-     * lista de isenção que nasce com exatamente os 18 legados.
+     * nativo (`design.mode`) — specs/specs/09-temas-e-presets.md §2.1. OPCIONAL
+     * no tipo de propósito: torná-lo obrigatório quebraria todo tema de
+     * consumidor (R33). `resolveThemeForMode` (abaixo) é quem decide o que
+     * aplicar; o gate de contraste (`auditor_contraste`) é quem EXIGE presença
+     * de todo tema shippado — a lista de isenção terminou vazia.
      */
     contraparte?: Partial<SarakDesignState>;
 }
@@ -60,6 +63,9 @@ import { cyberRetroWaveTheme } from './cyber-retro-wave';
 import { minimalistAiry } from './minimalist-airy';
 import { dataTerminal } from './data-terminal';
 import { neumorphicMobile } from './neumorphic-mobile';
+import { goldenHourTheme } from './golden-hour';
+import { auroraVeilTheme } from './aurora-veil';
+import { blueprintProtocolTheme } from './blueprint-protocol';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
@@ -73,4 +79,7 @@ export const GLOBAL_THEMES: ThemePreset[] = [
     minimalistAiry,
     dataTerminal,
     neumorphicMobile,
+    goldenHourTheme,
+    auroraVeilTheme,
+    blueprintProtocolTheme,
 ];

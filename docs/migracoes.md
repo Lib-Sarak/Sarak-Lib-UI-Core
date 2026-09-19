@@ -91,9 +91,8 @@ capacidade da biblioteca. Saem do catálogo:
 `forja-ultravioleta`, `grafite-puro`.
 
 Os dois temas de referência (`SARAK_REFERENCE_THEMES` — `minimalist-airy` claro, `sarak-sovereign` escuro)
-**continuam existindo com os mesmos ids**, inalterados nesta entrada. Os 11 temas restantes seguem sem
-mudança de conteúdo por ora; uma campanha de melhoria/recriação deles é trabalho futuro, separado desta
-remoção.
+**continuam existindo com os mesmos ids**, inalterados nesta entrada. O conteúdo dos 11 que ficam mudou em
+seguida, na mesma versão — ver a entrada "Catálogo recalibrado" mais abaixo.
 
 **O que acontece com quem já tem um dos 12 ids salvo** (`activeThemeId`, `initialTheme`, ou um id restaurado
 de persistência própria do consumidor e re-passado numa dessas duas props): a lib nunca fica sem tema e
@@ -120,6 +119,54 @@ superfície). O par texto×fundo resultante (`textColorMuted`/`cardBackgroundCol
 
 **Como migrar.** Nada obrigatório. Se você mirava `--theme-border` por CSS externo para customizar o fundo
 deste badge, mire `--theme-surface`.
+
+### Catálogo recalibrado: 3 temas novos e 11 que mudam o que o usuário vê (plan-80)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda de forma, mas temas que **mantêm o id** passam a
+renderizar diferente sem o consumidor tocar em nada: o mesmo critério das demais entradas da 7.0.0. Vale para
+quem aplica um tema shippado por `initialTheme`/`activeThemeId`, ou o tem salvo no design do sistema.
+
+**O que entra.** Três ids novos em `THEME_PRESET_IDS` e `GLOBAL_THEMES` (o catálogo passa de 11 para 14):
+`golden-hour` (claro, dourado, sidebar à direita), `aurora-veil` (claro, lavanda, vidro fosco, topbar) e
+`blueprint-protocol` (escuro, azul, sidebar flutuante, botão wireframe). A união `ThemePresetId` cresce —
+código seu que faz `switch` exaustivo sobre ela precisa de três casos a mais.
+
+**O que muda para quem já tinha um dos ids abaixo aplicado**, cada um com o que era e o que passa a ser:
+
+| Tema (id mantido) | Antes | Depois |
+| --- | --- | --- |
+| `data-terminal` | **escuro** nativo, ciano sobre preto, com partes claras misturadas (cabeçalho de card branco sobre corpo preto) | **claro** nativo, verde vívido sobre quase-branco, monoespaçado, sidebar. Quem o tinha aplicado abre a tela clara |
+| `synthwave-retro` | magenta/ciano neon sobre roxo quase preto | laranja sobre céu de dusk em ameixa (fundo de luminosidade média); continua escuro nativo, com grid retrô |
+| `neo-brutalism` | acentos ciano (item ativo, botão de ação do card) num tema vermelho/preto | os mesmos acentos em vermelho, a cor do próprio tema |
+| `neumorphic-mobile` | acentos azul genérico (item ativo, botão de ação, switch) | os mesmos acentos no rosa pastel do próprio tema |
+| `nebula-space` | imagem de fundo hospedada em terceiro | sem imagem de fundo (`globalBackgroundImageUrl: ''`) |
+| `kinetic-flow` | vídeo de fundo hospedado em terceiro, e `description` que o prometia | sem vídeo de fundo; `description` reescrita |
+
+**O que muda em todos os 11 que já existiam:**
+
+- **Hover do item de navegação.** Os que tinham o fundo de hover `transparent` (só a cor do texto trocava)
+  ganham um fundo perceptível, nas duas orientações. A varredura de realce do `SarakMenuItem` agora mede o
+  fundo de hover de todo tema, nos dois modos.
+- **Idiomas.** Todo tema shippado declara `enabledLanguages` com os seis idiomas da lib (`pt`, `en`, `es`,
+  `fr`, `de`, `it`). Pela regra de montagem do seletor (entrada "O seletor de idioma passa a gravar
+  preferência…", abaixo), quem **oferece** `language` no painel passa a ver o seletor com os seis; quem não
+  oferece continua sem ele.
+- **Contraparte autorada em todos.** Antes, só 2 dos 11 tinham (`sarak-sovereign` e `minimalist-airy`); o
+  modo oposto dos outros nove vinha do fallback sintetizado (`syncThemeWithMode`). Agora todo tema tem o bloco autorado, e a lista de isenção do
+  `auditor_contraste` terminou vazia. Quem alternava para o modo oposto num destes vê um resultado
+  **diferente** do sintetizado — de propósito.
+
+**Como migrar.** Nada obrigatório: a tela nunca fica sem tema e nada lança. Onde a mudança for indesejada:
+
+- **`data-terminal` claro demais para o seu app** — peça o modo escuro (`updatePreferences({ colorMode:
+  'dark' })`, a mesma porta do alternador de tema): a contraparte é um terminal escuro verde sobre preto. **O
+  visual escuro ciano de antes não existe mais no catálogo**; para mantê-lo, copie os valores da versão
+  anterior da lib (histórico do Git da tag) para um tema seu em `customThemes`.
+- **Qualquer outro** — o mesmo caminho: um tema seu em `customThemes`, ou `deriveThemeFromReference` a partir
+  de `minimalist-airy`/`sarak-sovereign`, que continuam com os mesmos ids e o mesmo papel de referência.
+- **Mídia de fundo que você quer de volta** (`nebula-space`, `kinetic-flow`) — aponte o
+  `globalBackgroundImageUrl` do **seu** tema para um ativo **seu**; a lib não hospeda nem referencia mídia de
+  terceiro.
 
 ---
 

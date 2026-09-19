@@ -1,10 +1,10 @@
 /**
  * A VITRINE de temas — gera, a partir do `dist/` já buildado, uma captura por
  * TEMA × MODO × ORIENTAÇÃO, e um arquivo único que reúne todas lado a lado, para
- * o dono aprovar visualmente o catálogo shippado. Roda por COMANDO DIRETO — não
- * há script equivalente em `package.json` ainda:
+ * o dono aprovar visualmente o catálogo shippado. Roda pelo script do
+ * `package.json` (precisa de `npm run build` antes — lê o `dist/`):
  *
- *     npx tsx browser-tests/generate-showcase.mts
+ *     npm run themes:showcase
  *
  * A saída vai para `browser-tests/showcase-output/` — dentro do repositório para o
  * dono abrir fácil, mas fora do versionamento (`.gitignore`).
