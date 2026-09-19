@@ -21,10 +21,10 @@
  * antes de capturar, para uma única imagem mostrar as duas cores de realce
  * (ativo e hover) ao mesmo tempo.
  *
- * Card e tabela usam `endpoint` em origem própria (`https://showcase.sarak.local`)
- * — o script intercepta essas chamadas com `page.route` e devolve dado fixo; é
- * assim que os dois componentes (que só sabem buscar por `endpoint`, sem prop de
- * dado direto hoje) renderizam conteúdo determinístico offline.
+ * Card e tabela usam a prop `data` (array já em mãos, sem `endpoint`) — as duas
+ * aceitam dado direto, sem chamada de rede. A amostra também inclui `SarakBadge`
+ * em todas as variantes, `muted` inclusive (o que ficava ilegível em temas de
+ * borda sólida antes do conserto do badge).
  */
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -32,6 +32,7 @@ import {
     SarakUIProvider,
     SarakAppChrome,
     SarakButton,
+    SarakBadge,
     SarakInput,
     SarakSelect,
     SarakSwitch,
@@ -51,6 +52,19 @@ const NAV_ITEMS = [
     { id: 'relatorios', label: 'Relatórios', href: '/relatorios' },
     { id: 'config', label: 'Configurações', href: '/config' },
 ];
+
+const CARD_ITEMS = [
+    { titulo: 'Cartão Um', subtitulo: 'Categoria A', descricao: 'Texto de exemplo do card.', badge: 'Ativo' },
+    { titulo: 'Cartão Dois', subtitulo: 'Categoria B', descricao: 'Outro texto de exemplo.', badge: 'Pendente' },
+];
+
+const TABLE_ITEMS = [
+    { nome: 'Item Um', status: 'Ativo', valor: 'R$ 120,00' },
+    { nome: 'Item Dois', status: 'Pendente', valor: 'R$ 80,00' },
+    { nome: 'Item Três', status: 'Inativo', valor: 'R$ 45,00' },
+];
+
+const BADGE_VARIANTS = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'muted'] as const;
 
 /** Aplica a preferência de MODO pela mesma porta pública que `ShellThemeToggle` usa. */
 const PreferencesDriver: React.FC<{ colorMode: 'light' | 'dark' }> = ({ colorMode }) => {
@@ -90,9 +104,18 @@ const ShowcaseContent: React.FC = () => (
             <SarakSwitch label="Ativar recurso" defaultChecked />
         </section>
 
+        <section style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            {BADGE_VARIANTS.map((variant) => (
+                <SarakBadge key={`${variant}-soft`} variant={variant}>{variant}</SarakBadge>
+            ))}
+            {BADGE_VARIANTS.map((variant) => (
+                <SarakBadge key={`${variant}-solid`} variant={variant} soft={false}>{variant}</SarakBadge>
+            ))}
+        </section>
+
         <section>
             <SarakCardGrid
-                endpoint="https://showcase.sarak.local/api/cards"
+                data={CARD_ITEMS}
                 label="Cartões de exemplo"
                 mapping={{ title: 'titulo', subtitle: 'subtitulo', description: 'descricao', badge: 'badge' }}
             />
@@ -100,7 +123,7 @@ const ShowcaseContent: React.FC = () => (
 
         <section>
             <SarakTable
-                endpoint="https://showcase.sarak.local/api/table"
+                data={TABLE_ITEMS}
                 label="Tabela de exemplo"
                 mapping={{ nome: 'Nome', status: 'Status', valor: 'Valor' }}
             />

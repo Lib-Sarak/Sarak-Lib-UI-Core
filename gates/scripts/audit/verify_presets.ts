@@ -13,6 +13,7 @@ import { BUTTON_PRESETS } from '../../../src/core/Design/presets/components/butt
 import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs.ts';
 import { ATMOSPHERE_PRESETS } from '../../../src/core/Design/presets/components/atmosphere.ts';
 import { TYPOGRAPHY_PRESETS } from '../../../src/core/Design/presets/components/typography.ts';
+import { PAYLOAD_EXTRA_KEYS } from '../../../src/core/Provider/payloadExtraKeys.ts';
 
 // ==========================================================================
 // Auditor de Drift de Presets/Temas — cobra a regra R5.
@@ -22,15 +23,29 @@ import { TYPOGRAPHY_PRESETS } from '../../../src/core/Design/presets/components/
 // é descartada com aviso por `validateDesign` (src/core/Provider/utils/validation.ts),
 // então o tema PARECE completo e não é. Contrato em
 // specs/arquitetura/04-contrato-de-tokens-e-paridade.md §9.
+//
+// O Gabarito Dinâmico só conhece TOKEN VISUAL (`MASTER_DESIGN_MAP`). Chave de
+// payload legítima fora dele (branding/estrutura — `enabledLanguages` e as
+// demais de `PAYLOAD_EXTRA_KEYS`, a mesma lista que `validateDesign` usa em
+// runtime) não é órfã: é a OUTRA metade do contrato, não um drift. Sem esta
+// distinção, todo tema que declarasse uma dessas chaves reprovaria aqui, por
+// este auditor não conhecer a lista.
 // ==========================================================================
 
-interface AuditableItem {
+const KNOWN_EXTRA_KEYS = new Set<string>(PAYLOAD_EXTRA_KEYS);
+
+export interface AuditableItem {
     id: string;
     label: string;
     design: Record<string, unknown>;
 }
 
-function collect(): AuditableItem[] {
+/** Chave que não está no gabarito visual E não é payload extra conhecido. */
+export function findOrphanKeys(design: Record<string, unknown>, scaffold: Record<string, unknown>): string[] {
+    return Object.keys(design).filter((key) => !(key in scaffold) && !KNOWN_EXTRA_KEYS.has(key));
+}
+
+export function collect(): AuditableItem[] {
     const items: AuditableItem[] = [];
     GLOBAL_THEMES.forEach(t => items.push({ id: t.id, label: `Tema: ${t.name}`, design: t.design }));
     CARD_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Card: ${p.name}`, design: p.design }));
@@ -52,7 +67,7 @@ function runAudit() {
     let itemsWithOrphans = 0;
 
     items.forEach(item => {
-        const orphans = Object.keys(item.design).filter(key => !(key in fullScaffold));
+        const orphans = findOrphanKeys(item.design, fullScaffold);
         if (orphans.length > 0) {
             itemsWithOrphans++;
             orphans.forEach(o => distinctOrphans.add(o));
@@ -73,4 +88,10 @@ function runAudit() {
     process.exit(1);
 }
 
-runAudit();
+// Guarda de execução direta — sem isto, o teste do próprio gate (que importa
+// `findOrphanKeys`/`collect`) rodaria `runAudit()` como efeito colateral do
+// import (mesmo padrão de `verify_contrast.ts`).
+const isMain = /verify_presets\.ts$/.test(process.argv[1] ?? '');
+if (isMain) {
+    runAudit();
+}

@@ -11,7 +11,8 @@
  *
  * Cada captura mostra o cromo com o item "Início" ATIVO e o item "Relatórios" em
  * HOVER (mouse real, via Playwright) na mesma imagem, mais uma amostra de
- * conteúdo — card, tabela, botões, campos e tipografia (`showcase-entry.tsx`).
+ * conteúdo — card, tabela (as duas com a prop `data`, sem rede), botões, campos,
+ * tipografia e o `SarakBadge` em todas as variantes (`showcase-entry.tsx`).
  *
  * O ids de tema vêm do CÓDIGO-FONTE (`GLOBAL_THEMES`), nunca transcritos (R17) —
  * este script só itera o que o dicionário já lista, e o total impresso ao final é
@@ -33,33 +34,12 @@ const VIEWPORT = { width: 1440, height: 960 };
 const MODES = ['light', 'dark'] as const;
 const ORIENTATIONS = ['sidebar', 'topbar'] as const;
 
-const MOCK_CARDS = {
-    items: [
-        { titulo: 'Cartão Um', subtitulo: 'Categoria A', descricao: 'Texto de exemplo do card.', badge: 'Ativo' },
-        { titulo: 'Cartão Dois', subtitulo: 'Categoria B', descricao: 'Outro texto de exemplo.', badge: 'Pendente' },
-    ],
-};
-const MOCK_TABLE = {
-    items: [
-        { nome: 'Item Um', status: 'Ativo', valor: 'R$ 120,00' },
-        { nome: 'Item Dois', status: 'Pendente', valor: 'R$ 80,00' },
-        { nome: 'Item Três', status: 'Inativo', valor: 'R$ 45,00' },
-    ],
-};
-
 interface CaptureResult {
     temaId: string;
     modo: (typeof MODES)[number];
     nav: (typeof ORIENTATIONS)[number];
     fileName: string;
     erro?: string;
-}
-
-async function mockShowcaseEndpoints(page: import('@playwright/test').Page): Promise<void> {
-    await page.route('https://showcase.sarak.local/api/cards', (route) =>
-        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_CARDS) }));
-    await page.route('https://showcase.sarak.local/api/table', (route) =>
-        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_TABLE) }));
 }
 
 async function captureOne(
@@ -73,7 +53,6 @@ async function captureOne(
     const context = await browser.newContext({ viewport: VIEWPORT });
     const page = await context.newPage();
     try {
-        await mockShowcaseEndpoints(page);
         await page.goto(`${harnessUrl}?tema=${encodeURIComponent(temaId)}&modo=${modo}&nav=${nav}`);
         // `isAutoHideEnabled` (specs/specs/05-cromo-e-slots.md §2.4) começa a nav OCULTA
         // até o ponteiro tocar o sensor fixo no canto (0,0) — sem isto, temas com o

@@ -176,8 +176,8 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
 
 // A EXIGÊNCIA de contraparte (plan-26 §2.4/§3.1 item 6) — o gate, não o tipo.
 describe('auditContraparteRequired', () => {
-  it('a lista de isenção tem exatamente os temas legados que ainda não têm contraparte autorada', () => {
-    expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(9);
+  it('a lista de isenção está vazia — todo tema do catálogo shippado tem contraparte autorada', () => {
+    expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(0);
   });
 
   it('sobre GLOBAL_THEMES hoje: um isento por tema legado sem contraparte, e nenhum faltando', () => {
@@ -191,15 +191,5 @@ describe('auditContraparteRequired', () => {
     const semContraparte = { id: 'tema-novo-sem-contraparte', name: 'x', description: 'x', design: { mode: 'dark' } } as unknown as ThemePreset;
     const audit = auditContraparteRequired([...GLOBAL_THEMES, semContraparte]);
     expect(audit.faltando).toEqual(['tema-novo-sem-contraparte']);
-  });
-
-  it('não acusa um tema legado sem contraparte — ele está na isenção', () => {
-    // `sarak-sovereign` SAIU da isenção (ganhou contraparte autorada);
-    // `industrial-terminal` continua legado, sem contraparte, e é quem prova a isenção agora.
-    const legado = GLOBAL_THEMES.find((t) => t.id === 'industrial-terminal')!;
-    expect(legado.contraparte).toBeUndefined();
-    const audit = auditContraparteRequired([legado]);
-    expect(audit.faltando).toEqual([]);
-    expect(audit.isentos).toEqual(['industrial-terminal']);
   });
 });

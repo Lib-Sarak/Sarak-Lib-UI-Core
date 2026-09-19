@@ -4,6 +4,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../../../core/Design/types';
 import { getDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
 
@@ -276,6 +278,94 @@ describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredur
                     continue;
                 }
                 expect(result.distinguishable).toBe(true);
+            }
+        }
+    );
+});
+
+/**
+ * O NÚCLEO da varredura de HOVER — só de FUNDO, ao contrário de
+ * `evaluateActiveDistinction`. O hover troca a cor do TEXTO em TODO tema, sem
+ * exceção (`--text-muted` → `--sarak-text-main`, SarakMenuItem.tsx:73-74) —
+ * então medir texto OU fundo faz o texto sempre "salvar" um fundo
+ * `transparent`, mascarando o próprio defeito que a régua existe para achar.
+ */
+function evaluateHoverBgDistinction(
+    variables: Record<string, string | undefined>,
+    hoverBgVar: string,
+    baseBgVar: string,
+): DistinctionResult {
+    const baseBgCss = variables[baseBgVar];
+    const hoverBgCss = variables[hoverBgVar];
+    if (!isParseableColor(baseBgCss) || !isParseableColor(hoverBgCss)) {
+        return {
+            pulado: true,
+            motivo: `fundo não conversível (${baseBgVar}: ${JSON.stringify(baseBgCss)}, ${hoverBgVar}: ${JSON.stringify(hoverBgCss)})`,
+        };
+    }
+
+    const baseBg = parseToRgba(baseBgCss);
+    const baseBgRgb: [number, number, number] = [baseBg.r, baseBg.g, baseBg.b];
+    const hoverBgRgb = compositeOverOpaque(hoverBgCss, baseBgRgb);
+
+    return { pulado: false, distinguishable: isDistinguishable(hoverBgRgb, baseBgRgb) };
+}
+
+/**
+ * Tema ainda não reautorado nesta campanha, no MESMO formato e com o MESMO
+ * conteúdo hoje de `CONTRAPARTE_EXEMPTION_LIST`
+ * (`gates/scripts/audit/verify_contrast.ts`) — autorar hover e contraparte
+ * andam juntos, lote a lote. Cópia local, não import: `verify_contrast.ts`
+ * mora fora do `include` do `tsconfig.json` (só `"src"`) e nunca foi
+ * type-checado por `tsc --noEmit`; importar um `.ts` de lá a partir de um
+ * arquivo de `src/` arrasta o arquivo inteiro para dentro do programa e do
+ * escopo de PRODUÇÃO do R30 — medido: acusa os dois erros de sintaxe já
+ * existentes nele (import com extensão `.ts`, sem `allowImportingTsExtensions`
+ * no `tsconfig.json`) como regressão nova. Esta lista só encolhe e termina
+ * vazia no fechamento — igual à de lá.
+ */
+const TEMAS_AINDA_NAO_REAUTORADOS: readonly string[] = [];
+
+/**
+ * Fundo de hover contra o fundo da barra, nas duas orientações e nos dois
+ * modos — o nativo (`theme.design`) e o modo oposto tal como o Provider o
+ * resolve de verdade (`resolveThemeForMode`: contraparte autorada quando
+ * existe, senão a conversão automática dos temas legados). Medir só o modo
+ * nativo deixaria a metade da experiência real sem régua nenhuma.
+ */
+describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado, nos dois modos', () => {
+    const temasReautorados = GLOBAL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
+
+    it('a lista de temas reautorados não está vazia (a varredura abaixo não pode virar no-op silencioso)', () => {
+        expect(temasReautorados.length).toBeGreaterThan(0);
+    });
+
+    it.each(temasReautorados.map((theme) => [theme.id, theme] as const))(
+        `tema "%s": o fundo de hover se distingue do repouso nas DUAS orientações e nos DOIS modos (ΔE > ${JND_DELTA_E})`,
+        (_id, theme) => {
+            const nativeMode: 'light' | 'dark' = (theme.design.mode as 'light' | 'dark') || 'dark';
+            const oppositeMode: 'light' | 'dark' = nativeMode === 'dark' ? 'light' : 'dark';
+
+            for (const modo of [nativeMode, oppositeMode]) {
+                const resolved = resolveThemeForMode(
+                    { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+                    modo,
+                );
+                const design = { ...getDefaultDesignState(), ...(resolved as Record<string, unknown>) };
+                const { result: hookResult } = renderHook(() => useDesignVariables(design));
+                const { variables } = hookResult.current;
+
+                for (const [hoverBgVar, baseBgVar] of [
+                    ['--sarak-sidebar-hover-color', '--sarak-sidebar-bg'],
+                    ['--sarak-topbar-hover-color', '--sarak-topbar-bg'],
+                ] as const) {
+                    const result = evaluateHoverBgDistinction(variables, hoverBgVar, baseBgVar);
+                    if (result.pulado) {
+                        console.warn(`[SarakMenuItem hover] tema "${theme.id}" / modo "${modo}" / ${hoverBgVar}: pulado — ${result.motivo}`);
+                        continue;
+                    }
+                    expect(result.distinguishable).toBe(true);
+                }
             }
         }
     );

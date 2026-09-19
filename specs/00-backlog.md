@@ -86,6 +86,8 @@ via normal.
 | 22 | "Aplicar Alterações Globais" com tema do catálogo entrega ao `persistence.onSave` o design novo com o id do tema **anterior**: `handleApplyToSystem` (`useDesignDraft.ts`) chama `persistDesign` antes de `setResolvedThemeId`, e `persistDesign` lê o id de uma ref que só se atualiza no render seguinte. A gravação automática corrige o par 1,5 s depois; quem fecha a aba nesse intervalo guarda o par errado no backend (medido: `[design do minimalist-airy, "sarak-sovereign"]`) | plan-81 | 2026-09-18 | médio |
 | 23 | `SarakStats` sem `data` e sem `endpoint` fica em carregamento para sempre: `useSarakStatsData.ts:7` nasce com `loading: !initialData` e o efeito não busca sem `endpoint`. `SarakTable` e `SarakCardGrid` já tratam o caso ([[03-superficie-publica]] §6.3) | síntese plan-81 | 2026-09-18 | baixo |
 | 24 | No tablet (900px), com a topbar compacta, um item de navegação ("Contratos", no ERP) apareceu só com ícone, sem rótulo, entre itens rotulados. Pode ser overflow por falta de espaço; não foi aprofundado | plan-72 | 2026-09-18 | baixo |
+| 25 | O `trail-citation:check` (`gates/scripts/*/check-trail-citation.mjs:41`, `VEREDITO_RE = /veredito de/i`) só casa "veredito **de**": "veredito do lote 1", "veredito da correção" passam, e a citação do rastro chega ao código sem o gate ver (medido em `verify_presets.ts:30`) | plan-80 | 2026-09-18 | médio |
+| 26 | Com `sidebarColor`/`topbarColor` translúcidos (`nebula-space`, `kinetic-flow`), o `auditor_contraste` pula os pares de texto sobre a barra nos dois modos: a legibilidade da navegação desses temas não é medida por nenhum gate. Medir exige compor a barra sobre o fundo efetivo (`colorBgBody`), como a varredura de hover já faz | plan-80 | 2026-09-18 | médio |
 
 ---
 

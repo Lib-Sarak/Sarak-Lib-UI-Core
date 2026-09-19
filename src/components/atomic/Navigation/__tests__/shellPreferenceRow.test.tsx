@@ -6,7 +6,8 @@ import SarakUIProvider from '../../../../core/Provider/SarakUIProvider';
 import { renderShellPreferenceRow } from '../shellPreferenceRow';
 import { LIBRARY_TEXT_CATALOG, type SarakLibraryLanguage } from '../../../../core/i18n/catalog';
 
-const renderRow = (ui: React.ReactNode) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
+const renderRow = (ui: React.ReactNode, config?: Record<string, unknown>) =>
+    render(<SarakUIProvider config={config}>{ui}</SarakUIProvider>);
 
 /** `t` de teste — resolve direto do catálogo, no idioma pedido (default: pt, a base da lib). */
 const makeT = (language: SarakLibraryLanguage = 'pt') =>
@@ -51,7 +52,9 @@ describe('renderShellPreferenceRow — dispatcher do ⚙ Preferências / drawer 
     });
 
     it('language: linha do ShellLanguageSelector (variante vertical) — não monta sem 2+ idiomas habilitados', () => {
-        renderRow(renderShellPreferenceRow('language', ctx()));
+        // Zero idioma explícito: o comportamento sob teste é o do COMPONENTE
+        // (esconder com 0 ou 1 idioma), não o que o tema-padrão declara hoje.
+        renderRow(renderShellPreferenceRow('language', ctx()), { enabledLanguages: [] });
         expect(screen.queryByRole('button')).toBeNull();
     });
 

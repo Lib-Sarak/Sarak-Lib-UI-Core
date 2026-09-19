@@ -286,17 +286,7 @@ export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
  * lista); crescer exigiria justificativa nova. Tema removido do catálogo sai
  * também daqui — entrada apontando para um id inexistente é dívida morta.
  */
-export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
-    'cyberpunk-neon',
-    'industrial-terminal',
-    'neo-brutalism',
-    'synthwave-retro',
-    'nebula-space',
-    'kinetic-flow',
-    'cyber-retro-wave',
-    'data-terminal',
-    'neumorphic-mobile',
-];
+export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [];
 
 export interface ContraparteAudit {
     isentos: string[];

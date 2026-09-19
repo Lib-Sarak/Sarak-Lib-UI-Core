@@ -38,7 +38,11 @@ describe('ShellLanguageSelector', () => {
     });
 
     it('sem nenhum idioma habilitado, não monta', () => {
-        renderWithProvider(<ShellLanguageSelector variant="horizontal" />, {});
+        // Zero idioma explícito, não `{}` — `{}` dependeria de o tema semente
+        // (`GLOBAL_THEMES[0]`) não declarar `enabledLanguages`, um detalhe do
+        // catálogo que pode mudar; o comportamento sob teste é o do
+        // COMPONENTE (esconder com 0 ou 1 idioma), não o do tema-padrão.
+        renderWithProvider(<ShellLanguageSelector variant="horizontal" />, { enabledLanguages: [] });
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 

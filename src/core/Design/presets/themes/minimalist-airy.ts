@@ -269,6 +269,7 @@ export const minimalistAiry: ThemePreset = {
         headingTransform: 'none',
         textSmoothing: true,
         textGlowIntensity: 0,
+        enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
         mode: 'dark',
