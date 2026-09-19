@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Recalibrar o catálogo de temas shippados para representar a capacidade da biblioteca"
 objetivo: "Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "temas", "catalogo", "contraparte", "contraste", "diversidade", "hitl"]
 relacionados: ["[[specs/09-temas-e-presets]]", "[[specs/05-cromo-e-slots]]", "[[specs/11-testes-e-cobertura]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
@@ -1478,6 +1478,17 @@ ERP (emenda §3.6). Nele se decidem:
 - a legibilidade da navegação nos temas de barra translúcida (backlog #26).
 
 Aprovado o visual, o revisor fecha a plan (🟢) e propõe a síntese.
+
+## Veredito — 2026-09-19 — 🟢 Aprovado
+
+- **Veredito visual único do dono (emenda §3.6):** o dono reviu o catálogo inteiro com a lib atualizada no
+  ERP e aprovou sem devolução ("tudo correto"). Decorre disso: o `cyberpunk-neon` fica como entregue, a
+  sidebar `floating` do `blueprint-protocol` basta e a navegação dos temas de barra translúcida está
+  legível a olho.
+- **O backlog #26 continua valendo:** o dono aprovou o que viu, mas o vão do gate (o `auditor_contraste`
+  não mede o texto sobre barra translúcida) segue aberto.
+- **O resto dos critérios** foi verificado nos vereditos técnicos dos lotes, acima. Depois do último
+  (2026-09-18), nenhum arquivo mudou: o worktree está limpo e a plan foi commitada (`c4cb38b`).
 
 ---
 
