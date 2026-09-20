@@ -19,6 +19,7 @@ import { SarakInput, SarakSelect } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { SarakCoreCard } from './components/SarakCoreCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 
 export interface FilterConfig {
     id: string;
@@ -86,7 +87,8 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
     const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint, initialData);
-    const { getFlexStyles, getResponsiveStackStyles, getGridStyles } = useStructuralStyles();
+    const { getFlexStyles, getGridStyles } = useStructuralStyles();
+    const { getResponsiveStackStyles } = useResponsiveStyles();
     const outerStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)');
     const headerBlockStack = getFlexStyles('column', undefined, undefined, 'var(--sarak-layout-gap-md,16px)');
     const headerRow = getResponsiveStackStyles('md', 'var(--sarak-layout-gap-md,16px)');

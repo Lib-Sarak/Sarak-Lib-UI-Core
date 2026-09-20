@@ -2,6 +2,8 @@ export * from './SarakSearch';
 export * from './SarakInput';
 export * from './SarakTextarea';
 export * from './SarakSelect';
+export * from './SarakCheckbox';
+export * from './SarakRadio';
 export * from './SarakSwitch';
 export * from './SarakSlider';
 // Spec 11 (Onda 8) — entrada de dados avançada.

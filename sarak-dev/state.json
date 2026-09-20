@@ -82,7 +82,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 82,
+      "count": 84,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -105,6 +105,7 @@
         "SarakChartEngine",
         "SarakChat",
         "SarakChatEngine",
+        "SarakCheckbox",
         "SarakContextMenu",
         "SarakDataEmpty",
         "SarakDataGrid",
@@ -136,6 +137,7 @@
         "SarakPDFViewer",
         "SarakPageTransition",
         "SarakPagination",
+        "SarakRadio",
         "SarakRangeSlider",
         "SarakRichText",
         "SarakScrim",

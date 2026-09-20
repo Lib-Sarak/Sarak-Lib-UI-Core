@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
-import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface ExpandableCardProps {
@@ -32,7 +32,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
     const design = globalUI.design;
     const layout = useCardLayoutStyles(design);
     const { isExpanded, setIsExpanded, mounted } = useExpandableCard();
-    const { getResponsiveSpacingStyles } = useStructuralStyles();
+    const { getResponsiveSpacingStyles } = useResponsiveStyles();
     const bodyPadding = getResponsiveSpacingStyles('expandableCardBody');
     const headerMargin = getResponsiveSpacingStyles('expandableCardHeader');
 

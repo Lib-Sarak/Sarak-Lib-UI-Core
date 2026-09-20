@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "83"
+proximo_numero_plan: "84"
 ---
 
 # 0. O que é este arquivo
@@ -43,7 +43,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟢 Aprovada | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
-| 2 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
+| 2 | [plan-83-caixa-de-selecao-e-botao-de-opcao](plan/plan-83-caixa-de-selecao-e-botao-de-opcao.md) | SarakCheckbox e SarakRadio funcionam controlados e não controlados, com a pele visual sempre igual ao valor efetivo, sem hardcode de cor e sem regressão na suíte | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
+| 3 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

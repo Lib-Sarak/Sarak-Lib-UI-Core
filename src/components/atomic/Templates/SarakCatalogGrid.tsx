@@ -12,6 +12,7 @@ import {
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { twMerge } from 'tailwind-merge';
 
 export interface CatalogItem {
@@ -56,7 +57,8 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
-    const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles, getResponsiveStackStyles } = useStructuralStyles();
+    const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles } = useStructuralStyles();
+    const { getResponsiveStackStyles } = useResponsiveStyles();
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
     const gridLayout = getGridStyles(undefined, undefined, undefined, 'catalogStandard');

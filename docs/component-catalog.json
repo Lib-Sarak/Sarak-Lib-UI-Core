@@ -1048,6 +1048,31 @@
         }
       ]
     },
+    "SarakCheckbox": {
+      "propsInterface": "SarakCheckboxProps",
+      "source": "src/components/atomic/Inputs/SarakCheckbox.tsx",
+      "extends": "Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakContextMenu": {
       "propsInterface": "SarakContextMenuProps",
       "source": "src/components/atomic/UX/SarakContextMenu.tsx",
@@ -2178,6 +2203,25 @@
         {
           "name": "className",
           "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakRadio": {
+      "propsInterface": "SarakRadioProps",
+      "source": "src/components/atomic/Inputs/SarakRadio.tsx",
+      "extends": "Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
           "optional": true,
           "doc": ""
         }
