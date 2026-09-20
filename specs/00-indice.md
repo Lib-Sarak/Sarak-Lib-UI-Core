@@ -101,6 +101,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > *(Registro datado. Consulte a tabela acima para o estado corrente da fila — prosa que afirma estado
 > envelhece no dia seguinte, e é o padrão que [[15-divida-conhecida]] §3.3 cataloga.)*
 
+> **Tarefa que não é plan não aparece nesta tabela.** As de **via direta** — instrução completa, sem
+> arquivo de plan — estão na **§6**, com os prompts guardados em `plan/prompts/`.
+
 # 2. Legenda de status
 
 | Status | Significado | Quem move para cá |
@@ -195,3 +198,34 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
   execução. O `plan-index:check` bloqueia o commit na divergência, e a divergência nasce de um movimento
   **legítimo** do executor (🟡 ao iniciar, 🟠 ao entregar). Espelhar no veredito basta para o fluxo normal;
   espelhar **ao liberar** é o que cobre a liberação parcial. Ver a nota da §2.
+
+---
+
+# 6. Tarefas diretas pendentes — os prompts guardados
+
+Estas **não são plans**: são tarefas de [via direta](00-prompt-revisor.md) (§6), sem `NN`, sem status de
+fila e fora da tabela gerada acima. O que as traz para cá é uma decisão do dono, de 2026-09-19: os prompts
+não seriam executados na mesma conversa em que nasceram, e ficariam perdidos.
+
+⚠️ **Prompt guardado em arquivo envelhece** — é por isso que a [[00-prompt-revisor]] §1 manda mantê-lo só na
+conversa. Cada arquivo diz a data em que foi escrito e o que foi medido nela. **Antes de despachar um,
+confira que o código ainda é o que o bloco afirma.** Uma vez executada, a tarefa sai desta tabela e o
+arquivo dela é removido: quem responde pelo resultado é o veredito do revisor, na conversa.
+
+Origem: o relatório do agente que integra a lib no ERP Earendel, triado em 2026-09-19. A ordem é de
+execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
+
+| # | Tarefa | O que entrega | Depende de |
+|---|---|---|---|
+| 1 | [02 — tabelas](plan/prompts/02-tabelas-ordenacao-e-selecao.md) | ordenação por coluna e seleção de linhas, com a mesma API no `SarakDataTable` e no `SarakTable` | `SarakCheckbox` (plan-83) |
+| 2 | [03 — JSDoc, leva 1](plan/prompts/03-jsdoc-leva-1-entrada-de-dados.md) | documentação de prop nos sete componentes de entrada de dados | — |
+| 3 | [04 — JSDoc, leva 2](plan/prompts/04-jsdoc-leva-2-botoes-cartoes-estrutura.md) | idem, nos dez de botão, cartão e estrutura | — |
+| 4 | [05 — JSDoc, leva 3](plan/prompts/05-jsdoc-leva-3-templates-motores-cromo.md) | idem, nos catorze de template, motor e cromo | — |
+| 5 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
+| 6 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
+| 7 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
+| 8 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
+| 9 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
+| 10 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
+| 11 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 12 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
