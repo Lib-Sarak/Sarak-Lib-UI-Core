@@ -90,6 +90,7 @@ via normal.
 | 26 | Com `sidebarColor`/`topbarColor` translúcidos (`nebula-space`, `kinetic-flow`), o `auditor_contraste` pula os pares de texto sobre a barra nos dois modos: a legibilidade da navegação desses temas não é medida por nenhum gate. Medir exige compor a barra sobre o fundo efetivo (`colorBgBody`), como a varredura de hover já faz | plan-80 | 2026-09-18 | médio |
 | 27 | `src/components/atomic/Templates/SarakCatalogGrid.tsx:16` importa `twMerge` direto de `tailwind-merge`, contra a R35, que declara `mergeSarakClasses` como porta única de configuração do merge nesta base; o `check-class-merge` não enxerga (é um limite declarado dele, que só mede concatenação por template literal) | plan-83 | 2026-09-19 | médio |
 | 28 | `src/components/atomic/hooks/useAtomicStyles.ts` — valores CSS provavelmente inválidos para o navegador: parêntese sobrando em `getSwitchStyles` (`:138`, `:147-148`) e `getInputStyles` (`:58`), e `boxShadow` que é só `var(...)` no trecho `neumorphism` (`:106-113`); pré-existente, e nenhum gate mede validade de valor CSS | plan-83 | 2026-09-19 | médio |
+| 29 | `SarakSelect.tsx:42` — sem `fullWidth`, o invólucro `div` é bloco e ocupa a largura da célula, enquanto o `<select>` (`:44`) fica com a largura intrínseca do conteúdo; como a seta é absoluta ancorada em `right-0` do invólucro (`:55`), ela flutua sozinha no canto direito em grid que estica. Ou o `<select>` acompanha o invólucro, ou a seta se ancora no `<select>` | ritual | 2026-09-19 | médio |
 
 ---
 

@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "84"
+proximo_numero_plan: "86"
 ---
 
 # 0. O que é este arquivo
@@ -44,7 +44,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 |---|---|---|---|---|---|
 | 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟢 Aprovada | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
 | 2 | [plan-83-caixa-de-selecao-e-botao-de-opcao](plan/plan-83-caixa-de-selecao-e-botao-de-opcao.md) | SarakCheckbox e SarakRadio funcionam controlados e não controlados, com a pele visual sempre igual ao valor efetivo, sem hardcode de cor e sem regressão na suíte | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 3 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
+| 3 | [plan-84-altura-do-cromo-e-rolagem-interna](plan/plan-84-altura-do-cromo-e-rolagem-interna.md) | A barra lateral e a barra superior permanecem visíveis e do tamanho da janela em páginas de rolagem longa, com o conteúdo rolando dentro do cromo | — | 🔴 A executar | specs/05-cromo-e-slots.md |
+| 4 | [plan-85-respiro-do-conteudo-nos-dois-modos](plan/plan-85-respiro-do-conteudo-nos-dois-modos.md) | O token layoutPadding governa o espaçamento do conteúdo em relação às bordas nos dois cromos e nos quatro lados, e o gate de paridade de cromo passa a cobrar os tokens de layout do schema de sistema | plan-84-altura-do-cromo-e-rolagem-interna | 🔴 A executar | specs/05-cromo-e-slots.md · specs/01-gates-e-baseline.md |
+| 5 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
