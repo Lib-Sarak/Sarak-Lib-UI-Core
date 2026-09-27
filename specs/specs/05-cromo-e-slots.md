@@ -230,7 +230,8 @@ dele no catálogo não repetem `logo`/`topbarEnd`. A tradução acontece em `Sar
 ## 2.4 Um token de cromo vale nos DOIS modos de consumo, ou não existe
 
 O `SarakAppChrome` (modo ui-kit) e o `SarakShell` (modo módulos-plugin) pintam o **mesmo** cromo a partir
-dos **mesmos** tokens de `schema/navigation.ts`. Um token oferecido no schema e no catálogo é contrato com
+dos **mesmos** tokens: o `schema/navigation.ts` inteiro e os tokens de layout do `schema/system.ts` que
+governam o cromo. Um token oferecido no schema e no catálogo é contrato com
 o usuário final ([[09-temas-e-presets]] §4.4.3): **ou ele produz efeito nos dois modos, ou sai do schema.**
 Não existe token que funciona "só no Shell" — para quem clica no painel, isso é indistinguível de defeito.
 
@@ -256,6 +257,13 @@ O cromo do modo ui-kit lê esses tokens por um hook único e os traduz em classe
 | `shellBrandLogoSize` · `brandLogoSizeCollapsed` | altura do logo com a navegação expandida e recolhida |
 | `topbarTitleColor` | cor do nome do sistema na topbar |
 | `searchDropdownGap` · `searchDropdownWidth` | distância e largura máxima do painel de busca (o palette do `SarakSearch`) |
+| `layoutPadding` | **respiro do conteúdo** em relação às bordas, nos quatro lados e com valor por dispositivo (`--sarak-layout-padding`, faixa de 0 a 80). É do **conteúdo**: `banner`, `footer` e as barras não o recebem |
+
+**O respiro do conteúdo vem do token nos dois modos, inclusive no `SarakShell`** — nenhuma classe fixa
+participa dele, nos quatro lados, e o refluxo do celular usa o mesmo valor. O invólucro de conteúdo de cada
+cromo carrega `data-sarak-content`, que é por onde a medição em navegador real o encontra
+([[11-testes-e-cobertura]] §7). Quem quer o conteúdo encostado na borda põe o token em zero — não existe
+caminho por classe.
 
 **Cada variável CSS tem um único token de origem.** Dois tokens declarando a mesma variável fazem o
 vencedor depender da ordem de iteração do mapa, não do autor do tema — é por isso que `navItemActiveColor`
@@ -282,11 +290,20 @@ das variáveis CSS declaradas, **de cada lado** — `src/core/Shell/**` e `src/c
 átomos compartilhados que cada cromo usa para pintar o item de menu. Ausência de qualquer lado é bloqueio,
 e ele roda no `pre-commit`.
 
-**O escopo é o schema inteiro:** todo token de `schema/navigation.ts`, mais `isAutoHideEnabled`
-(`schema/system.ts`). Não há lista fechada, então token novo no schema entra na varredura sem editar o gate.
-Hoje são **35 de 35**, sem nenhuma exceção declarada (`ORPHAN_TOKENS` vazio). `SarakMenuItem` e
-`SarakSearch` contam para os dois lados, porque os dois cromos os compõem; `SarakShellNav` conta só para o
-ui-kit.
+**O escopo são dois schemas, e nenhum deles por lista fechada:** todo token de `schema/navigation.ts` e a
+seção de layout de `schema/system.ts`, recortada no marcador da seção de bordas. Token novo dentro desse
+recorte entra na varredura sem editar o gate — token de layout declarado **depois** daquele marcador fica
+fora, e é limite declarado, não descuido.
+
+**A contagem é fonte viva: o próprio comando a imprime.** O que esta spec fixa é a *relação* — todo token
+coberto tem consumidor nos dois lados, e o que não tem está em `ORPHAN_TOKENS`, cada um com origem
+`arquivo:linha` e o modo faltante. A dívida declarada hoje são tokens de layout que o painel oferece e o
+cromo não lê.
+
+`SarakMenuItem` e `SarakSearch` contam para os dois lados, porque os dois cromos os compõem;
+`SarakShellNav` conta só para o ui-kit. **CSS global não conta:** mapear uma variável em `src/styles/` não é
+consumo do cromo — se contasse, o gate aprovaria um cromo que nunca lê o token, que é exatamente a lacuna
+que ele existe para fechar.
 
 **Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): a checagem é **textual**, não
 por AST — prova que existe referência, não que o consumo produz efeito visual, e não distingue consumo de

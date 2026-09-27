@@ -26,10 +26,10 @@ barra lateral, então ela estica para acompanhar a altura total de páginas com 
 
 - `SarakAppChrome.tsx:193` define `minHeight: '100dvh'`. **Mínimo, não altura**: o cromo cresce com o
   conteúdo, e a barra lateral, que é filha de um `flex` que se estica, cresce junto.
-- `ChromeFrame.tsx:49` põe `h-full` na raiz. Esse percentual resolve contra o ancestral do host; sem
+- `ChromeFrame.tsx:50` põe `h-full` na raiz. Esse percentual resolve contra o ancestral do host; sem
   `height` no host, ele vira `auto` — ou seja, não limita nada.
 - **A estrutura interna já foi construída para rolagem interna e só não tem o que a segure:**
-  `ChromeSidebarBody.tsx:72` (`flex-1 min-h-0`), `:79` (`overflow-y-auto` na barra) e `:145`
+  `ChromeSidebarBody.tsx:72` (`flex-1 min-h-0`), `:79` (`overflow-y-auto` na barra) e `:146`
   (`overflow-auto` no conteúdo). Falta a altura no topo da cadeia.
 
 **Por que o `minHeight` existe, e por que ele NÃO pode simplesmente virar `height`:** a

@@ -79,6 +79,8 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
 | Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
+
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
 > prova que a regra correspondente foi de fato **gerada** no `dist/sarak.css` publicado (isso exige rodar
@@ -159,6 +161,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
+| `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
@@ -708,3 +711,22 @@ não só do `textColorMuted` mais apagado, e `minimalist-airy` (um dos dois `SAR
 eles. O dono decidiu a fronteira (36 pares reais, 4,5:1 sem relaxamento, alfa composto), o gate
 `auditor_contraste.mjs` nasceu vermelho por desenho e fechou na `plan-24-1` (2026-08-11) — baseline
 corrente **0 e 0** (§3). Detalhe em [[00-regras-e-invariantes]] R31.
+
+## 9.6 O gate de paridade de cromo — o vão que fechou e o que continua fora
+
+**O vão fechado:** o `chrome-token-parity:check` lia **um schema só** (`navigation.ts`), então todo token de
+cromo declarado fora dele ficava sem paridade cobrada — a regra de [[05-cromo-e-slots]] §2.4 valia para o
+schema inteiro e o gate valia para um arquivo. O escopo passou a incluir a seção de layout de
+`schema/system.ts`, lida por recorte de seção e não por lista de `id`.
+
+**O segundo vão, da mesma família, fechado junto:** um mapeamento de variável em `src/styles/` contava como
+consumo do cromo. Contava um cromo que **nunca lê o token** como consumidor dele — o gate ficava verde por
+cima da própria violação que existe para pegar. CSS global saiu do escopo de arquivo dos dois grupos.
+
+**O que ele continua sem ver, e está declarado no cabeçalho dele (R18):**
+
+- É **textual, não por AST**: prova que existe referência ao `id` ou a uma `cssVar`, não que o consumo
+  produz efeito. A prova de efeito é o teste de componente e, para CSS renderizado, o `cromo-css-real:check`.
+- **Token de layout declarado depois do marcador da seção de bordas** fica fora do recorte.
+- **Não distingue consumo de citação em comentário** — a mesma limitação do `auditor_ghostvars` (§4.3.c).
+- Não mede o **valor**: um consumo que lê o token e o ignora passa.
