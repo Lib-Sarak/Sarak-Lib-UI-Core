@@ -17,6 +17,12 @@ const renderBody = (design: Record<string, unknown>, props: Partial<React.Compon
     );
 
 describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
+    it('layoutPadding chega aos quatro lados do conteúdo por token', () => {
+        const { container } = renderBody({});
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
+    });
+
     it('navbarLayout="hidden": a topbar some da tela (o token controla, não um bug)', () => {
         const { container } = renderBody({ navbarLayout: 'hidden' });
         expect(container.querySelector('header')!.className).toContain('hidden');

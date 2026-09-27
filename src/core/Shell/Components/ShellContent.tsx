@@ -36,15 +36,14 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     return (
         <main className={`${mainContentClass} custom-scrollbar isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
 
-            {/* sarak-allow-hardcode: breakpoint de container query do Tailwind (plan-39, mesmo valor de BREAKPOINT_DESKTOP), não valor de tema — o scanner do Tailwind v4 lê o arquivo como texto e exige o número literal na classe */}
-            <div className="flex-1 flex flex-col relative w-full pt-8 @min-[1024px]:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
+            <div className="flex-1 flex flex-col relative w-full z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">
                     {activeModule ? (
                         <motion.div 
                             key={activeModule.id} 
                             {...transitionEffect}
-                            className="pb-12 flex flex-col min-h-full" 
-                            style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}
+                            className="flex flex-col min-h-full"
+                            style={{ padding: 'var(--sarak-layout-padding, 16px)' }}
                         >
                             
                             <header className="mb-10 flex items-end justify-between border-b border-[var(--theme-border)]/50 pb-8 shrink-0">

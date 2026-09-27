@@ -90,6 +90,7 @@ const NAV_ITEM_NAME = 'Início';
 const REFERENCE_BUTTON_NAME = 'Referência';
 const DRAWER_TOGGLE_NAME = 'Abrir menu de navegação';
 const CHROME_ROOT_SELECTOR = '.sarak-chrome-root';
+const CONTENT_SELECTOR = '[data-sarak-content]';
 
 /** Elementos de prova da fixture (`ElementDefaultProbes`), por nome acessível ou texto. */
 const PROBE = {
@@ -113,6 +114,14 @@ interface ComputedMetric {
     paddingTop: string;
     paddingLeft: string;
     borderRadius: string;
+}
+
+interface ContentPadding {
+    top: string;
+    right: string;
+    bottom: string;
+    left: string;
+    token: string;
 }
 
 /** Lê as cinco propriedades computadas que distinguem métrica de LISTA/PÍLULA de métrica de AÇÃO. */
@@ -156,6 +165,19 @@ async function readComputed(target: Locator, property: string): Promise<string> 
     return target.evaluate((el, prop) => getComputedStyle(el).getPropertyValue(prop), property);
 }
 
+async function readContentPadding(page: Page): Promise<ContentPadding> {
+    return page.locator(CONTENT_SELECTOR).evaluate((el) => {
+        const computed = getComputedStyle(el);
+        return {
+            top: computed.paddingTop,
+            right: computed.paddingRight,
+            bottom: computed.paddingBottom,
+            left: computed.paddingLeft,
+            token: computed.getPropertyValue('--sarak-layout-padding'),
+        };
+    });
+}
+
 /** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
 async function readRootBackgroundColor(page: Page): Promise<string> {
     return page.locator(CHROME_ROOT_SELECTOR).first().evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -187,6 +209,36 @@ async function openHarness(viewport: { width: number; height: number }, tema?: s
     }
     return page;
 }
+
+test('layoutPadding produz respiro nos quatro lados nos cromos e acompanha o tema responsivo', async () => {
+    const expectedResponsivePadding = ['16px', '24px', '32px'];
+    const expectedCompactPadding = ['5px', '10px', '15px'];
+
+    for (const [index, viewport] of Object.values(BREAKPOINTS).entries()) {
+        const defaultPage = await openHarness(viewport);
+        const defaultPadding = await readContentPadding(defaultPage);
+        expect([defaultPadding.top, defaultPadding.right, defaultPadding.bottom, defaultPadding.left]).toEqual(
+            Array(4).fill(defaultPadding.token),
+        );
+        await defaultPage.close();
+
+        const responsivePage = await openHarness(viewport, 'respiro-responsivo');
+        const responsivePadding = await readContentPadding(responsivePage);
+        expect([responsivePadding.top, responsivePadding.right, responsivePadding.bottom, responsivePadding.left]).toEqual(
+            Array(4).fill(expectedResponsivePadding[index]),
+        );
+        expect(responsivePadding.token).toBe(expectedResponsivePadding[index]);
+        await responsivePage.close();
+
+        const compactPage = await openHarness(viewport, 'respiro-compacto');
+        const compactPadding = await readContentPadding(compactPage);
+        expect([compactPadding.top, compactPadding.right, compactPadding.bottom, compactPadding.left]).toEqual(
+            Array(4).fill(expectedCompactPadding[index]),
+        );
+        expect(compactPadding.token).toBe(expectedCompactPadding[index]);
+        await compactPage.close();
+    }
+});
 
 test('mobile (<768): item de navegação usa métrica de LISTA, não de botão de ação', async () => {
     const page = await openHarness(BREAKPOINTS.mobile);

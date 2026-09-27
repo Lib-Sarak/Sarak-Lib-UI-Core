@@ -39,11 +39,14 @@ const hasGlobalBackground = searchParams.get('bg') === '1';
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
     'botao-cantos': { btnBorderRadius: 0, btnRadiusTL: 9999, btnRadiusTR: 9999, btnRadiusBR: 9999, btnRadiusBL: 9999 },
+    'respiro-responsivo': { layoutPadding: { mob: 16, tab: 24, desk: 32 } },
+    'respiro-compacto': { layoutPadding: { mob: 5, tab: 10, desk: 15 } },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
-    if (hasGlobalBackground) return { globalBackgroundImageUrl: 'https://harness.local/bg.png' };
-    return TOKEN_VARIANTS[searchParams.get('tema') ?? ''] ?? {};
+    const variant = TOKEN_VARIANTS[searchParams.get('tema') ?? ''] ?? {};
+    if (hasGlobalBackground) return { ...variant, globalBackgroundImageUrl: 'https://harness.local/bg.png' };
+    return variant;
 }
 
 /**

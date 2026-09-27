@@ -2,9 +2,8 @@
  * Gate de PARIDADE TOKEN DE CROMO × CONSUMIDOR (Spec 05 §2.4.1).
  *
  * O `SarakAppChrome` (modo ui-kit) e o `SarakShell` (modo módulos-plugin) pintam o
- * MESMO cromo com os MESMOS tokens de `src/core/Design/schema/navigation.ts` (mais
- * `isAutoHideEnabled`, de `schema/system.ts`, comportamento de cromo declarado fora
- * daquele arquivo). Um token oferecido no schema e no catálogo é contrato com o
+ * MESMO cromo com os MESMOS tokens de `src/core/Design/schema/navigation.ts` e os
+ * tokens de sistema que governam o cromo. Um token oferecido no schema e no catálogo é contrato com o
  * usuário final (specs/specs/09-temas-e-presets.md §4.4.3): ou ele funciona nos
  * DOIS modos de consumo, ou sai do schema. Este gate cobra a metade que nenhum
  * outro auditor cobrava — não o VALOR do token, a EXISTÊNCIA do consumidor.
@@ -16,12 +15,10 @@
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
  * -------------------------------------------------------------------------
  * 1. ESCOPO = o schema `navigation.ts` INTEIRO (lido em texto, ver `extractSchemaTokens`
- *    abaixo) + `isAutoHideEnabled` (`schema/system.ts`, sem `cssVars` — só o `id`
- *    conta). Não há mais lista fechada — todo token novo do schema já entra na
- *    varredura sem precisar editar este arquivo. `ORPHAN_TOKENS` é a dívida que
- *    SOBRA depois de ligar os tokens medidos aqui: cada um tem `arquivo:linha` de
- *    por que falta, e o gate os IGNORA de propósito — ampliar a lista de exceção
- *    é reabrir a mesma dívida, trabalho futuro e não deste gate.
+ *    abaixo) + a seção de layout de `schema/system.ts`, até a seção de bordas. Ambos
+ *    entram sem lista fechada: token novo no recorte entra sem editar este arquivo.
+ *    `ORPHAN_TOKENS` declara somente a dívida já medida fora desta entrega, com a
+ *    origem `arquivo:linha` e o modo faltante; ampliar a exceção não é correção.
  * 2. É TEXTUAL, não por AST: prova que o `id` do token (palavra inteira) OU uma das
  *    variáveis CSS que ele declara em `cssVars`/o auto-derivado `--sarak-<kebab>`
  *    aparece no arquivo. Não prova que o consumo está CORRETO nem que produz efeito
@@ -32,8 +29,9 @@
  *    fato usa para pintar o item de menu ou a busca — `SarakMenuItem.tsx` e
  *    `SarakSearch.tsx` contam para os DOIS lados (o mesmo átomo que os dois cromos
  *    compõem), e `SarakShellNav.tsx` conta só para o AppChrome (o Shell tem sua
- *    própria navegação). `__tests__/` é ignorado dos dois lados — um teste que
- *    referencia um token não é o cromo consumindo-o.
+ *    própria navegação). CSS global, inclusive `src/styles/_base.css`, não conta:
+ *    mapear uma variável não é consumo do cromo. `__tests__/` é ignorado dos dois
+ *    lados — um teste que referencia um token não é o cromo consumindo-o.
  * 4. Não distingue "consumo real" de "citado em comentário/JSDoc" — a mesma
  *    limitação de `auditor_ghostvars.mjs` (specs/specs/01-gates-e-baseline.md §4.3.c).
  *    Nenhum caso assim existe hoje nos dois grupos de arquivo (conferido na entrega).
@@ -44,7 +42,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-const NAVIGATION_SCHEMA = path.join(ROOT, 'src/core/Design/schema/navigation.ts');
 
 const toKebabCase = (str) => str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
@@ -55,8 +52,9 @@ const toKebabCase = (str) => str.replace(/[A-Z]/g, (letter) => `-${letter.toLowe
  * token sem `cssVars` (ex. `sidebarShadow`) e um `constraints.options` aninhado
  * (ex. `sidebarPosition`) não confundem a extração.
  */
-function extractSchemaTokens(schemaPath) {
+function extractSchemaTokens(schemaPath, sectionEndMarker) {
     const src = fs.readFileSync(schemaPath, 'utf8');
+    const sectionEnd = sectionEndMarker ? src.indexOf(sectionEndMarker) : -1;
     const arrayStart = src.indexOf('[', src.indexOf('tokens:'));
     let depth = 0;
     let arrayEnd = arrayStart;
@@ -71,34 +69,44 @@ function extractSchemaTokens(schemaPath) {
     let start = -1;
     for (let i = 0; i < body.length; i++) {
         if (body[i] === '{') { if (objDepth === 0) start = i; objDepth++; }
-        else if (body[i] === '}' && --objDepth === 0 && start >= 0) { objects.push(body.slice(start, i + 1)); start = -1; }
+        else if (body[i] === '}' && --objDepth === 0 && start >= 0) {
+            objects.push({ source: body.slice(start, i + 1), offset: arrayStart + 1 + start });
+            start = -1;
+        }
     }
 
-    return objects.map((obj) => {
+    return objects
+        .filter(({ offset }) => sectionEnd < 0 || offset < sectionEnd)
+        .map(({ source: obj }) => {
         const id = obj.match(/\bid:\s*'([^']+)'/)[1];
         const cssVarsBlock = obj.match(/cssVars:\s*\[([^\]]*)\]/);
         const cssVars = cssVarsBlock
             ? Array.from(cssVarsBlock[1].matchAll(/'(--[a-z0-9-]+)'/g)).map((m) => m[1])
             : [];
         return { id, cssVars };
-    });
+        });
 }
 
-/** Todo o schema `navigation` + `isAutoHideEnabled` (`schema/system.ts`, sem `cssVars` própria). */
+/** Todo o schema `navigation` + a seção de layout do schema de sistema. */
 export function getChromeTokens({ root = ROOT } = {}) {
+    const systemTokens = extractSchemaTokens(path.join(root, 'src/core/Design/schema/system.ts'), '// --- ARQUITETURA DE BORDAS ---');
     return [
         ...extractSchemaTokens(path.join(root, 'src/core/Design/schema/navigation.ts')),
-        { id: 'isAutoHideEnabled', cssVars: [] },
+        ...systemTokens,
     ];
 }
 
 /**
  * Dívida MEDIDA e DECLARADA (limite 1 acima) — tokens fora do conjunto que o dono
  * decidiu ligar até agora. Cada um tem o motivo e o lado que falta; o gate os
- * ignora até uma entrega futura ligá-los. Vazia hoje: o schema `navigation`
- * inteiro tem consumidor nos dois lados.
+ * ignora até uma entrega futura ligá-los. O schema `navigation` inteiro tem
+ * consumidor nos dois lados.
  */
-export const ORPHAN_TOKENS = [];
+export const ORPHAN_TOKENS = [
+    'layoutDensity', // src/core/Design/schema/system.ts:26 — sem consumidor nos dois cromos.
+    'maxContentWidth', // src/core/Design/schema/system.ts:39 — sem consumidor nos dois cromos.
+    'isSplitViewEnabled', // src/core/Shell/Components/ShellContent.tsx:26 — consumido só pelo Shell; falta no AppChrome.
+];
 
 const SHARED_MENU_ITEM = 'src/components/atomic/Navigation/SarakMenuItem.tsx';
 const SHARED_SEARCH = 'src/components/atomic/Inputs/SarakSearch.tsx';
@@ -163,13 +171,13 @@ export function checkChromeTokenParity({ root = ROOT, tokens = getChromeTokens({
 }
 
 function main() {
-    console.log('--- check-chrome-token-parity (schema `navigation` inteiro) ---');
+    console.log('--- check-chrome-token-parity (schema `navigation` + sistema de cromo) ---');
     const allTokens = getChromeTokens();
     const covered = allTokens.filter((t) => !ORPHAN_TOKENS.includes(t.id));
     const missing = checkChromeTokenParity({ tokens: covered });
 
     if (missing.length === 0) {
-        console.log(`[OK] Os ${covered.length} tokens de cromo cobertos (de ${allTokens.length} no schema) têm consumidor no SarakShell E no SarakAppChrome.`);
+        console.log(`[OK] Os ${covered.length} tokens de cromo cobertos (de ${allTokens.length} nos schemas) têm consumidor no SarakShell E no SarakAppChrome.`);
         if (ORPHAN_TOKENS.length > 0) {
             console.log(`  Dívida declarada (R18, fora da cobertura): ${ORPHAN_TOKENS.join(', ')}.`);
         }

@@ -17,6 +17,12 @@ const renderBody = (design: Record<string, unknown>) =>
     );
 
 describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
+    it('layoutPadding chega aos quatro lados do conteúdo por token', () => {
+        const { container } = renderBody({});
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
+    });
+
     it('sidebarPosition="right": a sidebar migra para o fim da linha (flex-row-reverse) e ganha border-l', () => {
         const { container } = renderBody({ sidebarPosition: 'right' });
         const row = container.querySelector('aside')!.parentElement!;

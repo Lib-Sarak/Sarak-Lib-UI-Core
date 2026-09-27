@@ -23,7 +23,7 @@ describe('ShellContent', () => {
         expect(ComponentModule).toBeDefined();
     });
 
-    it('as classes de container query do conteúdo são LITERAIS — mesmo número de BREAKPOINT_DESKTOP (plan-39)', () => {
+    it('o título preserva a container query literal e o conteúdo recebe padding do token nos quatro lados', () => {
         const activeModule = {
             id: 'mod1', label: 'Módulo Um', icon: 'Box', status: 'online', category: 'system', priority: 1
         } as any;
@@ -38,7 +38,8 @@ describe('ShellContent', () => {
         );
 
         const wrapperDiv = container.querySelector('main > div');
-        expect(wrapperDiv?.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:pt-12`);
+        const content = wrapperDiv?.querySelector(':scope > div') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
 
         const title = screen.getByText('Módulo Um');
         expect(title.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:text-5xl`);

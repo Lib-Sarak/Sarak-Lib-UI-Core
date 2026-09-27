@@ -123,6 +123,36 @@ describe('checkChromeTokenParity', () => {
         const missing = checkChromeTokenParity({ root, tokens, groups });
         expect(missing).toEqual([{ id: 'meuToken', semConsumidor: ['SarakAppChrome'] }]);
     });
+
+    it('MUTAÇÃO: retirar layoutPadding do Shell nomeia o SarakShell como lado faltante', () => {
+        const root = makeFixtureRoot({
+            'shell/ShellContent.tsx': 'export const ShellContent = () => null;',
+            'appchrome/ChromeBody.tsx': "const padding = 'var(--sarak-layout-padding, 16px)';",
+        });
+        const groups = {
+            SarakShell: { dirs: ['shell'], extraFiles: [] },
+            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+        };
+        const tokens = [{ id: 'layoutPadding', cssVars: ['--sarak-layout-padding'] }];
+        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([
+            { id: 'layoutPadding', semConsumidor: ['SarakShell'] },
+        ]);
+    });
+
+    it('MUTAÇÃO: retirar layoutPadding do AppChrome nomeia o SarakAppChrome como lado faltante', () => {
+        const root = makeFixtureRoot({
+            'shell/ShellContent.tsx': "const padding = 'var(--sarak-layout-padding, 16px)';",
+            'appchrome/ChromeBody.tsx': 'export const ChromeBody = () => null;',
+        });
+        const groups = {
+            SarakShell: { dirs: ['shell'], extraFiles: [] },
+            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+        };
+        const tokens = [{ id: 'layoutPadding', cssVars: ['--sarak-layout-padding'] }];
+        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([
+            { id: 'layoutPadding', semConsumidor: ['SarakAppChrome'] },
+        ]);
+    });
 });
 
 describe('getChromeTokens (extração dinâmica do schema)', () => {
@@ -145,11 +175,19 @@ describe('getChromeTokens (extração dinâmica do schema)', () => {
                     ],
                 };
             `,
+            'src/core/Design/schema/system.ts': `
+                export const SystemSchema = {
+                    tokens: [
+                        { id: 'isAutoHideEnabled', type: 'boolean', defaultValue: false },
+                        { id: 'layoutPadding', type: 'slider', defaultValue: 16, cssVars: ['--sarak-layout-padding'] },
+                    ],
+                };
+            `,
             'shell/Nav.tsx': 'export const Nav = () => null;',
             'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
         });
         const tokens = getChromeTokens({ root });
-        expect(tokens.map((t) => t.id)).toEqual(['meuTokenNovo', 'semCssVars', 'isAutoHideEnabled']);
+        expect(tokens.map((t) => t.id)).toEqual(['meuTokenNovo', 'semCssVars', 'isAutoHideEnabled', 'layoutPadding']);
         expect(tokens.find((t) => t.id === 'meuTokenNovo').cssVars).toEqual(['--meu-token-novo']);
         expect(tokens.find((t) => t.id === 'semCssVars').cssVars).toEqual([]);
 
@@ -158,7 +196,7 @@ describe('getChromeTokens (extração dinâmica do schema)', () => {
             SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
         };
         const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing.map((m) => m.id).sort()).toEqual(['isAutoHideEnabled', 'meuTokenNovo', 'semCssVars']);
+        expect(missing.map((m) => m.id).sort()).toEqual(['isAutoHideEnabled', 'layoutPadding', 'meuTokenNovo', 'semCssVars']);
     });
 
     it('DEIXA PASSAR: token novo com consumidor dos dois lados — liberado', () => {
@@ -171,25 +209,49 @@ describe('getChromeTokens (extração dinâmica do schema)', () => {
                     ],
                 };
             `,
+            'src/core/Design/schema/system.ts': `
+                export const SystemSchema = {
+                    tokens: [
+                        { id: 'isAutoHideEnabled', type: 'boolean', defaultValue: false },
+                        { id: 'layoutPadding', type: 'slider', defaultValue: 16, cssVars: ['--sarak-layout-padding'] },
+                    ],
+                };
+            `,
             'shell/Nav.tsx': "style.x = 'var(--meu-token-novo, 1px)';",
             'appchrome/Chrome.tsx': 'const { meuTokenNovo } = design;',
         });
-        const tokens = getChromeTokens({ root }).filter((t) => t.id !== 'isAutoHideEnabled');
+        const tokens = getChromeTokens({ root }).filter((t) => !['isAutoHideEnabled', 'layoutPadding'].includes(t.id));
         const groups = {
             SarakShell: { dirs: ['shell'], extraFiles: [] },
             SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
         };
         expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([]);
     });
+
+    it('lê toda a seção de layout e para antes da seção de bordas', () => {
+        const root = makeFixtureRoot({
+            'src/core/Design/schema/navigation.ts': "export const NavigationSchema = { tokens: [] };",
+            'src/core/Design/schema/system.ts': `
+                export const SystemSchema = {
+                    tokens: [
+                        { id: 'layoutPadding', type: 'slider', defaultValue: 16 },
+                        // --- ARQUITETURA DE BORDAS ---
+                        { id: 'borderRadius', type: 'slider', defaultValue: 8 },
+                    ],
+                };
+            `,
+        });
+        expect(getChromeTokens({ root }).map((token) => token.id)).toEqual(['layoutPadding']);
+    });
 });
 
 describe('check-chrome-token-parity — repositório real', () => {
-    it('o schema `navigation` inteiro tem consumidor no SarakShell E no SarakAppChrome — zero dívida', () => {
+    it('os tokens cobertos de navigation e layout têm consumidor no SarakShell E no SarakAppChrome', () => {
         const tokens = getChromeTokens().filter((t) => !ORPHAN_TOKENS.includes(t.id));
         expect(checkChromeTokenParity({ tokens })).toEqual([]);
     });
 
-    it('não há dívida declarada (R18) — todo token do schema já tem consumidor nos dois lados', () => {
-        expect(ORPHAN_TOKENS).toEqual([]);
+    it('declara somente a dívida de layout medida fora desta entrega (R18)', () => {
+        expect(ORPHAN_TOKENS).toEqual(['layoutDensity', 'maxContentWidth', 'isSplitViewEnabled']);
     });
 });

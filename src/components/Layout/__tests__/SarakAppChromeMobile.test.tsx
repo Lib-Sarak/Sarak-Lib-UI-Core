@@ -15,6 +15,14 @@ const renderMobile = (ui: React.ReactElement) => render(<SarakUIProvider config=
 const base = { rootStyle: { minHeight: '100dvh' } };
 
 describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)', () => {
+    it('layoutPadding chega aos quatro lados do conteúdo por token', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>conteúdo</div></SarakAppChromeMobile>,
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
+    });
+
     it('começa fechado: toggle acessível (aria-expanded=false) e drawer ausente', () => {
         const { container } = renderMobile(
             <SarakAppChromeMobile nav={NAV} {...base}><div>conteúdo</div></SarakAppChromeMobile>,

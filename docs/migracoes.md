@@ -5,6 +5,16 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — O conteúdo do cromo passa a respeitar o respiro do tema
+
+**Classificação: MAJOR** — telas que já compensavam manualmente a distância até as bordas terão o layout deslocado.
+
+**O que muda.** O conteúdo do `SarakAppChrome` agora recebe, nos quatro lados e nos três dispositivos, o valor de `layoutPadding` do tema. O mesmo token passa a governar também o respiro vertical do `SarakShell`; antes, esse espaço era parcialmente fixo e o modo ui-kit não tinha respiro próprio.
+
+**Como migrar.** Remova a compensação de padding que sua tela tenha adicionado apenas para afastar o conteúdo das bordas. Para preservar o comportamento sem respiro, configure `layoutPadding` como `{ mob: 0, tab: 0, desk: 0 }` no tema.
+
+---
+
 ## 7.0.0 — A classe utilitária passa a vencer o estilo padrão que a lib dá a botão, campo, título e texto (plan-77)
 
 **Classificação: MAJOR** — nenhum export, prop ou token muda, mas a aparência muda sem o consumidor tocar

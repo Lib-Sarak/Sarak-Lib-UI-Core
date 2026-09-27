@@ -142,8 +142,9 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                     </aside>
                 )}
                 <main
+                    data-sarak-content
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))' }}
+                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
                 >
                     {children}
                 </main>
