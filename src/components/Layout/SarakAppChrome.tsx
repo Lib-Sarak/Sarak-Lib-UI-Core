@@ -183,14 +183,16 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // mesma semântica. Preservado sem breaking change; `topbarEnd` tem precedência.
     const endSlot = topbarEnd ?? topbarActions;
 
-    // Altura própria do cromo (Spec 40.2 R2 — bug de browser): o cromo é a casca do app,
+    // Altura própria do cromo: o cromo é a casca do app,
     // então NÃO pode depender do host setar `html/body/#root { height:100% }`. Sem uma
     // altura definida, o `h-full` colapsa (percentual sobre ancestral indefinido) e a
     // sidebar/topbar somem (a nav tem `overflow` → é recortada) enquanto o `children`
     // (flex-1) ainda aparece — exatamente o sintoma reportado. `100dvh` dá ao cromo uma
-    // altura de viewport própria; o `style` do consumidor sobrescreve (uso embarcado).
+    // altura de viewport própria; a rolagem fica nos painéis internos. O `style` do
+    // consumidor sobrescreve ambos (uso embarcado).
     const rootStyle: React.CSSProperties = {
-        minHeight: '100dvh',
+        height: '100dvh',
+        overflow: 'hidden',
         background: useHasGlobalBackgroundMedia() ? 'transparent' : 'var(--bg-body, var(--theme-body, transparent))',
         ...style,
     };

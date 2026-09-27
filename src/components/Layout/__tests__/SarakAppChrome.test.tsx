@@ -134,16 +134,16 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
     it('o cromo tem altura de viewport PRÓPRIA (não depende do host setar height no #root)', () => {
         // Bug de browser (Spec 40.2): sem altura própria, `h-full` colapsa e a sidebar/topbar
-        // somem. O root do cromo deve trazer `min-height: 100dvh` em ambas as orientações.
+        // somem. O root do cromo deve trazer `height: 100dvh` em ambas as orientações.
         const { container: side } = render(<SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         const { container: top } = render(<SarakAppChrome navigationStyle="topbar" nav={NAV}><div>x</div></SarakAppChrome>);
-        expect((side.firstChild as HTMLElement).style.minHeight).toBe('100dvh');
-        expect((top.firstChild as HTMLElement).style.minHeight).toBe('100dvh');
+        expect((side.firstChild as HTMLElement).style.height).toBe('100dvh');
+        expect((top.firstChild as HTMLElement).style.height).toBe('100dvh');
     });
 
     it('o consumidor pode sobrescrever a altura via style (uso embarcado)', () => {
-        const { container } = render(<SarakAppChrome nav={NAV} style={{ minHeight: 0 }}><div>x</div></SarakAppChrome>);
-        expect((container.firstChild as HTMLElement).style.minHeight).toBe('0px');
+        const { container } = render(<SarakAppChrome nav={NAV} style={{ height: 0 }}><div>x</div></SarakAppChrome>);
+        expect((container.firstChild as HTMLElement).style.height).toBe('0px');
     });
 
     // Sob `SarakUIProvider`, a raiz do cromo NÃO é `container.firstChild` — o Provider

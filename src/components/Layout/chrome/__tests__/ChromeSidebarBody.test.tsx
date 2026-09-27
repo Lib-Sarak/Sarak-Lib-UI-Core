@@ -66,9 +66,11 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(container.querySelector('aside')).not.toBeNull();
     });
 
-    it('tabSectionMargin chega à margem da sidebar por token', () => {
+    it('tabSectionMargin chega às quatro margens da sidebar e compensa sua altura', () => {
         const { container } = renderBody({});
-        expect(container.querySelector('aside')!.getAttribute('style')).toContain('var(--sarak-tab-section-margin');
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('margin: var(--sarak-tab-section-margin');
+        expect(style).toContain('height: calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))');
     });
 });
 

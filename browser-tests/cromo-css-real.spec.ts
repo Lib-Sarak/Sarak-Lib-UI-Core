@@ -178,6 +178,13 @@ async function readContentPadding(page: Page): Promise<ContentPadding> {
     });
 }
 
+async function readBox(target: Locator): Promise<{ height: number; top: number }> {
+    return target.evaluate((el) => {
+        const { height, top } = el.getBoundingClientRect();
+        return { height, top };
+    });
+}
+
 /** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
 async function readRootBackgroundColor(page: Page): Promise<string> {
     return page.locator(CHROME_ROOT_SELECTOR).first().evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -238,6 +245,74 @@ test('layoutPadding produz respiro nos quatro lados nos cromos e acompanha o tem
         expect(compactPadding.token).toBe(expectedCompactPadding[index]);
         await compactPage.close();
     }
+});
+
+test('sidebar ocupa a viewport, enquanto apenas o painel de conteúdo rola', async () => {
+    const page = await openHarness(BREAKPOINTS.desktop);
+    const sidebar = page.locator('aside');
+    const content = page.locator(CONTENT_SELECTOR);
+    const initialSidebarBox = await readBox(sidebar);
+
+    const sidebarMargins = await sidebar.evaluate((el) => {
+        const computed = getComputedStyle(el);
+        return parseFloat(computed.marginTop) + parseFloat(computed.marginBottom);
+    });
+    expect(initialSidebarBox.height + sidebarMargins).toBe(BREAKPOINTS.desktop.height);
+    expect(await content.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+
+    await content.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+    expect((await readBox(sidebar)).top).toBe(initialSidebarBox.top);
+
+    await page.close();
+});
+
+test('sidebar extensa rola por dentro até o último item', async () => {
+    const page = await openHarness(BREAKPOINTS.desktop);
+    const sidebar = page.locator('aside');
+    const navigation = sidebar.locator('nav');
+    const lastItem = page.getByRole('button', { name: 'Seção 30' });
+
+    await navigation.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+    const [navigationBox, lastItemBox] = await Promise.all([readBox(navigation), readBox(lastItem)]);
+    expect(lastItemBox.top + lastItemBox.height).toBeLessThanOrEqual(navigationBox.top + navigationBox.height);
+
+    await page.close();
+});
+
+test('topbar não estica com conteúdo longo e permanece no topo após a rolagem interna', async () => {
+    const page = await browser.newPage({ viewport: BREAKPOINTS.tablet });
+    await page.goto(`${harnessUrl}?chrome=topbar`);
+    const topbar = page.locator('header');
+    const content = page.locator(CONTENT_SELECTOR);
+    const initialTopbarBox = await readBox(topbar);
+
+    await content.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+    expect((await readBox(topbar)).top).toBe(initialTopbarBox.top);
+    expect((await readBox(topbar)).height).toBe(initialTopbarBox.height);
+
+    await page.close();
+});
+
+test('a altura própria não depende do host e o style do consumidor a sobrescreve', async () => {
+    const standalonePage = await openHarness(BREAKPOINTS.desktop);
+    expect((await readBox(standalonePage.locator(CHROME_ROOT_SELECTOR))).height).toBe(BREAKPOINTS.desktop.height);
+    await standalonePage.close();
+
+    const embeddedPage = await browser.newPage({ viewport: BREAKPOINTS.desktop });
+    await embeddedPage.goto(`${harnessUrl}?embedded=1`);
+    expect((await readBox(embeddedPage.locator(CHROME_ROOT_SELECTOR))).height).toBe(320);
+    await embeddedPage.close();
+});
+
+test('mobile preserva a altura de viewport e a rolagem no painel de conteúdo', async () => {
+    const page = await openHarness(BREAKPOINTS.mobile);
+    const root = page.locator(CHROME_ROOT_SELECTOR);
+    const content = page.locator(CONTENT_SELECTOR);
+
+    expect((await readBox(root)).height).toBe(BREAKPOINTS.mobile.height);
+    expect(await content.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+
+    await page.close();
 });
 
 test('mobile (<768): item de navegação usa métrica de LISTA, não de botão de ação', async () => {

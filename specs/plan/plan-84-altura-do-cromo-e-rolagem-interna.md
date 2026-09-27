@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao cromo altura de viewport e rolagem interna, para a barra lateral não esticar"
 objetivo: "A barra lateral e a barra superior permanecem visíveis e do tamanho da janela em páginas de rolagem longa, com o conteúdo rolando dentro do cromo"
 dominio: "Sarak-Lib-UI-Core / Cromo e layout de aplicação"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "cromo", "layout", "rolagem", "multidispositivo", "major"]
 relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/07-responsividade-e-multidispositivo]]", "[[specs/11-testes-e-cobertura]]", "[[arquitetura/01-forma-do-produto-e-modos-de-consumo]]"]
@@ -161,14 +161,185 @@ cabem.
 
 <!-- Preenchido pelo EXECUTOR. Append-only. -->
 
+## Resumo da execução — 2026-09-27
+
+**Resultado:** Concluído com pendências
+
+**O que foi feito**
+- `SarakAppChrome.tsx` — a raiz passou de `minHeight` para `height: 100dvh` e contém o excedente; `style` continua vindo por último.
+- `ChromeFrame.tsx` e `ChromeSidebarBody.tsx` — a moldura contém o excedente e a sidebar preserva toda a altura, com `tabSectionMargin` só no eixo horizontal.
+- `cromo-css-real.spec.ts` e sua fixture — adicionados cinco casos reais para altura, rolagem do conteúdo, navegação extensa, topbar, modo móvel e uso embarcado.
+- `docs/migracoes.md` — registrada a mudança major da rolagem e a alternativa por `style`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/Layout/SarakAppChrome.tsx` | alterado | Altura própria e contenção de rolagem na raiz. |
+| `src/components/Layout/chrome/ChromeFrame.tsx` | alterado | Excedente contido pela moldura. |
+| `src/components/Layout/chrome/ChromeSidebarBody.tsx` | alterado | Margem da sidebar limitada ao eixo horizontal. |
+| `src/components/Layout/chrome/__tests__/ChromeSidebarBody.test.tsx` | alterado | Assertiva da margem horizontal atualizada. |
+| `browser-tests/cromo-css-real.spec.ts` | alterado | Cinco medições reais adicionadas. |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | Conteúdo e navegação longos para a medição. |
+| `docs/migracoes.md` | alterado | Nota de migração 7.0.0. |
+| `dist/**` | regenerado | Artefatos oficiais regenerados pelos scripts do projeto. |
+
+**Verificações executadas**
+- `npm run build` → interrompido pelo ambiente antes das etapas CSS; as etapas geradas foram então executadas pelos scripts oficiais.
+- `npx playwright test --config=browser-tests/playwright.config.ts --workers=1 --grep "sidebar ocupa|sidebar extensa|topbar não estica|altura própria|mobile preserva"` → bloqueado no `beforeAll`: `buildHarness()` excedeu 30s; nenhum dos cinco casos executou.
+- `npx vitest run src/components/Layout/chrome/__tests__/ChromeSidebarBody.test.tsx` → não concluiu; a única saída lida foi `Could not parse CSS stylesheet`.
+
+**Critérios de aceite**
+- [ ] Medições reais de sidebar, topbar, celular e estilo embarcado — motivo: o harness excedeu o timeout antes dos casos.
+- [x] A documentação de migração explica a mudança e a saída por `style` — evidência: `docs/migracoes.md`.
+- [ ] Suíte completa, harness e gates exigidos — motivo: não foram concluídos nesta execução.
+
+**Decisões e suposições**
+- `tabSectionMargin` permanece aplicado lateralmente na sidebar; sua margem vertical diminuía a caixa medida e contradizia a altura de viewport exigida.
+
+**Achados fora do escopo (não corrigidos)**
+- `.claude/settings.local.json` — arquivo não rastreado, pré-existente e não alterado nesta execução.
+
+**Pendências / riscos**
+- Reexecutar o harness e todos os gates da §5.6 num ambiente em que `buildHarness()` conclua antes de 30 segundos.
+
+## Resumo da execução (correção 1) — 2026-09-27
+
+**Resultado:** Concluído
+
+**Achados corrigidos**
+- **1. Teste da altura própria:** `src/components/Layout/__tests__/SarakAppChrome.test.tsx:134-146` passou a verificar `height: '100dvh'` e a sobrescrita por `style.height`, refletindo a regra atual de `src/components/Layout/SarakAppChrome.tsx:194`.
+- **2. Navegação lateral inalcançável:** `src/components/Layout/chrome/ChromeSidebarBody.tsx:111` aplica `min-h-0` ao `SarakShellNav`; `browser-tests/cromo-css-real.spec.ts:269-279` rola o `<nav>`, e não a `<aside>`, porque o `<nav>` é o painel que tem `overflow-y-auto` e contém os itens de navegação.
+- **3. Paridade de `tabSectionMargin`:** `src/components/Layout/chrome/ChromeSidebarBody.tsx:87-88` restaura a margem nos quatro lados e compensa a altura com `calc(100% - 2 × margem)`, mantendo o mesmo significado do token na barra lateral e na superior.
+
+**Medições executadas**
+- `npx playwright test --config=browser-tests/playwright.config.ts --workers=1 --timeout=240000 --grep "sidebar ocupa|sidebar extensa|topbar não estica|altura própria|mobile preserva"` → **5/5 aprovados em 7,3s**.
+  - Sidebar: altura externa (caixa + margens verticais) de **900px** na viewport desktop de 900px; conteúdo rolável internamente.
+  - Navegação extensa: o último item (`Seção 30`) ficou alcançável dentro do `<nav>` após a rolagem.
+  - Uso embarcado: `style.height` do consumidor mediu **320px**, sobrescrevendo a altura padrão.
+  - Topbar e celular: permaneceram estáveis durante a rolagem interna nos casos medidos.
+
+**Decisões e suposições**
+- O alvo da rolagem de navegação é o `<nav>` interno, não a `<aside>`: ele é a região semântica que possui `overflow-y-auto`; a `<aside>` conserva a moldura e a geometria do cromo.
+
+**Pendências / riscos**
+- Nenhum dentro do escopo dos achados corrigidos.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
 
+## Veredito — 2026-09-27 — 🔴 Reprovado
+
+**O que foi verificado:** `git status` + `git diff` integrais (8 arquivos, nada fora da §3.1, nada em `specs/`
+além da própria plan) · diff lido linha por linha · `npx vitest run` inteiro · o harness de navegador **rodado
+de verdade**, com os 22 casos executando · `audit:baseline` · `barrel`/`catalog`/`guide`/`dev-kit` ·
+`trail-citation:check` · `grep` de citação de plan/veredito nas linhas adicionadas.
+
+**O que está certo:** a raiz ganhou altura própria com o `...style` do consumidor ainda por último
+(`SarakAppChrome.tsx:193-197`), o teste embarcado prova a sobrescrita (320px medidos em navegador), a topbar
+não estica, o celular preserva a altura de viewport com rolagem no painel, e 21 dos 22 casos de navegador
+passam. `audit:baseline` igual ao baseline de 2026-08-11; barril, catálogo e os dois kits em dia; nenhuma
+citação de rastro nova.
+
+### Achados
+
+1. **`src/components/Layout/__tests__/SarakAppChrome.test.tsx:140` — a suíte está VERMELHA por causa desta
+   entrega.** O teste que **guarda a regra da §5** espera `style.minHeight === '100dvh'` e recebe `''`, porque
+   a raiz passou a usar `height`. `AssertionError: expected '' to be '100dvh'`. Nesta rodada foi o **único**
+   vermelho da suíte inteira (2023 de 2024, sem a intermitência de sempre), então não há dúvida de origem.
+   Critério violado: *"O cromo continua íntegro sem o host definir `height` … **Teste explícito**"* (§6) — o
+   teste explícito existia e ficou quebrado em vez de passar a cobrar a verdade nova.
+
+2. **O caso novo escrito pelo próprio executor reprova a entrega:** `sidebar extensa rola por dentro até o
+   último item` falha com `Expected: <= 900 / Received: 1370.78125`. O último item da navegação termina
+   **470px abaixo** do fim da caixa da barra lateral (que está correta, com os 900px da janela), e rolar a
+   `aside` não o alcança. Com `overflow: hidden` na raiz (`SarakAppChrome.tsx:194`) e na moldura
+   (`ChromeFrame.tsx:50`), o item não fica só fora da caixa: fica **recortado**. Critério violado: *"Com muitos
+   itens, a barra lateral rola por dentro e o último item é alcançável"* (§6) — e é a §2.3 da
+   [[05-cromo-e-slots]] (*nada some*) ao contrário. A cadeia de rolagem da barra lateral **não fechou**: a
+   `aside` tem `overflow-y-auto` (`ChromeSidebarBody.tsx:79`), mas o conteúdo dela não está contido, então não
+   há o que rolar.
+
+3. **`ChromeSidebarBody.tsx:87` — `tabSectionMargin` deixou de valer igual nos dois modos.** A margem passou a
+   `marginInline` (só horizontal) na barra lateral do `SarakAppChrome`, enquanto `ChromeTopbarBody.tsx:75` e o
+   Shell (`SidebarNav.tsx:94`) continuam aplicando `margin` nos **quatro** lados. Isso é exatamente o que a
+   §2.4 da [[05-cromo-e-slots]] proíbe — *um token de cromo vale nos DOIS modos, ou não existe* — e o
+   `chrome-token-parity:check` não vê, porque o limite declarado dele é a **existência** do consumidor, não o
+   valor. **A saída já está escrita no Shell:** `SidebarNav.tsx:96` preserva a margem nos quatro lados e
+   compensa a altura (`calc(100vh - 2 × margem)`). A decisão declarada no resumo (*"sua margem vertical
+   diminuía a caixa medida"*) trocou a regra pela conveniência do teste; o certo é compensar, não apagar.
+
+4. **A entrega chegou sem nenhuma das medições que a plan exige, e o resumo o declara.** Dois dos três grupos
+   de critério estão sem evidência, o `npx vitest run` e os gates da §5.6 não foram rodados, e o harness não
+   executou um único caso. Os achados 1 e 2 são precisamente o que essas medições pegariam — a pendência
+   relatada não é neutra: ela é o motivo de a entrega estar quebrada.
+
+### Como medir o harness nesta máquina (não é achado — é o caminho para fechar)
+
+O `beforeAll` estourar 30s **não** impede a medição. A causa é mecânica: `playwright.config.ts` usa
+`fullyParallel: true` sem fixar `workers`, então o Playwright abre ~8 workers e **cada um roda o `beforeAll`
+com um `buildHarness()` próprio** — oito builds Vite concorrentes. Com um worker e teto folgado os 22 casos
+rodam em 44,7s:
+
+```
+npx playwright test --config=browser-tests/playwright.config.ts --workers=1 --timeout=240000
+```
+
+O item **12** do [[00-backlog]] ganhou esse mecanismo medido.
+
+
+## Veredito — 2026-09-27 (correção 1) — 🟢 Aprovado
+
+**O resumo da §9 chegou e bate com o diff.** Ele afirma 5/5 nos casos novos em 7,3s; eu rodei os **22** casos
+do harness, em 54,1s, e fecharam todos. Nenhuma alegação do resumo divergiu do que eu medi.
+
+**Os três achados, fechados com evidência:**
+
+1. **`SarakAppChrome.test.tsx:137-146`** passou a cobrar `height: '100dvh'` nas duas orientações e a
+   sobrescrita por `style={{ height: 0 }}`. A suíte inteira não tem mais nenhum vermelho vindo da entrega.
+2. **`ChromeSidebarBody.tsx:111`** — a causa era estrutural e ficou clara: o `SarakShellNav` vertical já
+   carrega `h-full min-h-0 overflow-y-auto` (`SarakShellNav.tsx:128`); faltava o `min-h-0` no lado do
+   chamador, para o flex deixá-lo encolher. Com isso o painel rolável é o `<nav>`, e o último item cai dentro
+   da caixa dele. **A troca do alvo do teste é legítima, não um afrouxamento:** o `<nav>` é filho flex da
+   `aside`, e o caso `sidebar ocupa a viewport` prova que a `aside` mais as margens verticais dão exatamente
+   os 900px da janela — medir por dentro do `nav` é mais preciso.
+3. **`ChromeSidebarBody.tsx:87-88`** — margem de volta nos quatro lados e altura compensada com
+   `calc(100% - (margem * 2))`, a mesma técnica do Shell (`SidebarNav.tsx:94,96`), com `100%` no lugar de
+   `100vh`, que é o correto dentro do cromo. O topbar segue com margem nos quatro lados: o token voltou a
+   significar a mesma coisa nos dois modos, que é o que a §2.4 exige.
+
+**Critérios de aceite, um a um (todos com medição minha, em navegador real):**
+
+| Critério | Evidência |
+|---|---|
+| Barra lateral com altura de janela e visível após rolar | `sidebar ocupa a viewport…` — caixa + margens = **900px** em viewport de 900px; `top` inalterado depois de rolar o conteúdo ao fim |
+| Muitos itens: rola por dentro e o último é alcançável | `sidebar extensa…` — `Seção 30` dentro da caixa do `<nav>` após a rolagem (o caso que reprovou na rodada anterior) |
+| Barra superior não estica | `topbar não estica…` — `top` e `height` idênticos antes e depois da rolagem interna |
+| Cromo íntegro sem `height` no host — teste explícito | `a altura própria não depende do host…` — 900px medidos com o HTML do harness **sem** altura em `html`/`body`; e o teste unitário restaurado |
+| `style` do consumidor sobrescreve (embarcado) | mesmo caso — **320px** medidos com `style={{ height: '320px' }}` |
+| Celular sem regressão | `mobile preserva a altura de viewport…` — raiz em 800px e conteúdo rolável |
+| `docs/migracoes.md` explica a mudança e a saída | entrada 7.0.0, com `window.scrollTo`/âncoras e a saída pelo `style` |
+| Suíte, harness, `audit:baseline` e kits | **22/22** no harness · `audit:baseline` igual ao baseline de 2026-08-11 · barril 84, catálogo, guia 6, dev-kit 3/0 · `plan-index` em dia |
+
+**A suíte de unidade:** 2023 de 2024. O único vermelho é o `SarakPDFViewerImpl` por timeout de 5000 ms —
+rodado isolado com os outros dois arquivos tocados, **70 de 70 passam**. É a intermitência de
+[[11-testes-e-cobertura]] §3.5.1 e do achado **5** do [[00-backlog]], não desta entrega.
+
+**Conferi que medi o código entregue:** os fontes têm mtime de 01:03 e 01:41; minhas rodadas de verificação
+são de 01:45 em diante (a última, isolada, marcou `Start at 01:58:05`).
+
+**Fora do escopo, registrado:** `dist/BUILD_INFO.json`, `index.cjs` e `index.js` estão regenerados — artefato
+gerado, autorizado pela §3.1; o carimbo é das rodadas de verificação. O achado **12** do [[00-backlog]] ganhou
+o mecanismo medido do timeout do harness (8 workers, um `buildHarness()` cada), que é o que permitiu medir
+esta entrega.
+
+**Liberado para commit.**
+
 ---
 
 # 11. Síntese
 
 <!-- Preenchido pelo REVISOR na síntese, imediatamente antes da remoção da plan. -->
+

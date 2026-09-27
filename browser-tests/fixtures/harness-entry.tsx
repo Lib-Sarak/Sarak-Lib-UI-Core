@@ -23,10 +23,17 @@ import { SarakUIProvider, SarakAppChrome, SarakButton } from '@sarak/lib-ui-core
 const NAV_ITEMS = [
     { id: 'inicio', label: 'Início', href: '/inicio' },
     { id: 'relatorios', label: 'Relatórios', href: '/relatorios', active: true },
+    ...Array.from({ length: 30 }, (_, index) => ({
+        id: `secao-${index + 1}`,
+        label: `Seção ${index + 1}`,
+        href: `/secao-${index + 1}`,
+    })),
 ];
 
 const searchParams = new URLSearchParams(window.location.search);
 const hasGlobalBackground = searchParams.get('bg') === '1';
+const navigationStyle = searchParams.get('chrome') === 'topbar' ? 'topbar' : 'sidebar';
+const embeddedStyle = searchParams.get('embedded') === '1' ? { height: '320px' } : undefined;
 
 /**
  * `?tema=<nome>` troca a `config` do Provider por um recorte de tokens nomeado — o mesmo
@@ -80,9 +87,16 @@ const ElementDefaultProbes: React.FC = () => (
 
 const App: React.FC = () => (
     <SarakUIProvider config={resolveHarnessConfig()}>
-        <SarakAppChrome navItems={NAV_ITEMS} brand={{ name: 'Harness' }} className="sarak-chrome-root">
+        <SarakAppChrome
+            navItems={NAV_ITEMS}
+            brand={{ name: 'Harness' }}
+            className="sarak-chrome-root"
+            navigationStyle={navigationStyle}
+            style={embeddedStyle}
+        >
             <SarakButton>Referência</SarakButton>
             <ElementDefaultProbes />
+            <div data-harness-long-content style={{ minHeight: '2400px' }}>Conteúdo longo</div>
         </SarakAppChrome>
     </SarakUIProvider>
 );

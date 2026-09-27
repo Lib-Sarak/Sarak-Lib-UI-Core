@@ -85,6 +85,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             minWidth: 'var(--sidebar-min-width, 150px)',
                             maxWidth: 'var(--sidebar-max-width, 450px)',
                             margin: 'var(--sarak-tab-section-margin, 0px)',
+                            height: 'calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))',
                             background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
@@ -107,7 +108,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         )}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         {nav.length > 0 && (
-                            <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="vertical" collapsed={isNavHidden} className="flex-1" />
+                            <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="vertical" collapsed={isNavHidden} className="flex-1 min-h-0" />
                         )}
                         {searchPositionSidebar === 'bottom' && (
                             <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>

@@ -5,6 +5,16 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — A rolagem do `SarakAppChrome` passa para o painel de conteúdo
+
+**Classificação: MAJOR** — páginas longas deixam de rolar no documento; a barra lateral e a barra superior passam a permanecer dentro da altura do cromo.
+
+**O que muda.** A raiz do `SarakAppChrome` ocupa a viewport e contém o excedente. O painel marcado por `data-sarak-content` passa a ser a região rolável; a barra lateral só rola quando sua própria navegação não cabe. Isso mantém a navegação visível em telas longas e vale também para o modo de barra superior.
+
+**Como migrar.** Mova usos de `window.scrollTo`, âncoras e integrações que dependiam da rolagem do documento para o painel de conteúdo. Em uso embarcado, preserve o comportamento anterior ou defina outra altura passando `style` ao `SarakAppChrome`; esse estilo continua sobrescrevendo a altura padrão da viewport.
+
+---
+
 ## 7.0.0 — O conteúdo do cromo passa a respeitar o respiro do tema
 
 **Classificação: MAJOR** — telas que já compensavam manualmente a distância até as bordas terão o layout deslocado.
