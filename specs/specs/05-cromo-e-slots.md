@@ -361,17 +361,18 @@ padrão diferente, com obrigações próprias:
 O detalhe do `useFocusTrap` (por que `onClose` fica atrás de ref) está em
 [[10-seguranca-e-acessibilidade]] §2.4a.
 
-# 5. ⚠️ A altura própria (`minHeight: 100dvh`) e o bug de browser que a originou
+# 5. ⚠️ A altura própria do cromo, a rolagem interna, e o bug de browser que originou a altura
 
 ```ts
 const rootStyle: React.CSSProperties = {
-    minHeight: '100dvh',
+    height: '100dvh',
+    overflow: 'hidden',
     background: 'var(--bg-body, var(--theme-body, transparent))',
     ...style,
 };
 ```
 
-`SarakAppChrome.tsx:153-165` — com o motivo escrito no código, e **vale documentar porque é a classe de
+`SarakAppChrome.tsx:186-198` — com o motivo escrito no código, e **vale documentar porque é a classe de
 bug que volta**:
 
 O cromo é a casca do app, e **não pode depender de o host ter setado `html/body/#root { height: 100% }`**.
@@ -387,6 +388,38 @@ container de altura fixa.
 **Por que registrar:** o sintoma parece bug de componente (a sidebar!), a causa está no CSS do **host**, e
 a correção mora numa terceira camada (a raiz do cromo). Sem isto escrito, o diagnóstico se refaz do zero
 a cada ocorrência.
+
+## 5.1 A altura é fixa, e quem rola é o painel de conteúdo
+
+A raiz tem **altura de janela, não piso**, e **contém** o excedente (`overflow: hidden`), o mesmo valendo
+para a moldura (`ChromeFrame.tsx:50`). A consequência é o contrato de rolagem do cromo:
+
+| Região | Rola? |
+| --- | --- |
+| O documento | **não** — a raiz do cromo não cresce com o conteúdo |
+| O painel de conteúdo (`data-sarak-content`) | **sim** — é a região rolável da página |
+| A navegação lateral (o `<nav>` dentro da `<aside>`) | **sim, por dentro**, e só quando os itens não cabem |
+| `banner`, `footer`, barra lateral e barra superior | **não** — são faixas do cromo e permanecem no lugar |
+
+**Quem rola a navegação é o `<nav>`, não a `<aside>`.** O `SarakShellNav` vertical já nasce com
+`h-full min-h-0 overflow-y-auto` (`SarakShellNav.tsx:128`); o que fecha a cadeia é o chamador declarar
+`min-h-0` nele (`ChromeSidebarBody.tsx:111`), sem o qual o flex não o deixa encolher e os itens **saem
+recortados** pela raiz — a §2.3 ao contrário. A `<aside>` guarda a moldura e a geometria; o `<nav>` guarda
+a rolagem.
+
+**A margem da barra lateral é compensada na altura.** `tabSectionMargin` vale nos quatro lados (§2.4), e
+por isso a altura da `<aside>` é `calc(100% - (margem * 2))` (`ChromeSidebarBody.tsx:87-88`) — é o que
+impede a barra de exceder a janela sem quebrar a paridade do token, e é a mesma técnica que o Shell usa
+(`SidebarNav.tsx:94,96`), ali com `100vh` porque não há moldura acima.
+
+**Consequência para quem já consome:** a rolagem da página deixou de ser a do documento, então
+`window.scrollTo`, âncoras e `scrollIntoView` sobre o documento mudam de alvo — e quem precisa do
+comportamento antigo passa outra altura por `style`. A nota está em `docs/migracoes.md` (7.0.0).
+
+**Onde isso se mede:** em navegador real (`browser-tests/`, [[11-testes-e-cobertura]] §7), que é o único
+lugar onde altura e posição se verificam de verdade. Teste de componente prova a declaração; só o
+navegador prova a caixa.
+
 
 # 6. Zero hardcode
 

@@ -44,11 +44,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 |---|---|---|---|---|---|
 | 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟢 Aprovada | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
 | 2 | [plan-83-caixa-de-selecao-e-botao-de-opcao](plan/plan-83-caixa-de-selecao-e-botao-de-opcao.md) | SarakCheckbox e SarakRadio funcionam controlados e não controlados, com a pele visual sempre igual ao valor efetivo, sem hardcode de cor e sem regressão na suíte | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 3 | [plan-84-altura-do-cromo-e-rolagem-interna](plan/plan-84-altura-do-cromo-e-rolagem-interna.md) | A barra lateral e a barra superior permanecem visíveis e do tamanho da janela em páginas de rolagem longa, com o conteúdo rolando dentro do cromo | — | 🟢 Aprovada | specs/specs/05-cromo-e-slots.md |
-| 4 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
+| 3 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> ⚪ **A `plan-85` foi SINTETIZADA e REMOVIDA em 2026-09-27.** O arquivo saiu; a verdade dela vive nas specs
+> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27.** O arquivo saiu; a verdade delas vive nas specs
 > fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/` a recupera. **Destino
 > demonstrado**, como a [[00-contexto]] §5 exige de toda remoção:
 >
@@ -56,6 +55,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > |---|---|
 > | **85** | [[05-cromo-e-slots]] §2.4 e §2.4.1 — o respiro do conteúdo por token, nos quatro lados e nos dois modos · o escopo do gate em **dois** schemas, sem lista fechada · e a regra nova: **CSS global não é consumo do cromo** |
 > | | [[01-gates-e-baseline]] §2.2 e §2.2.1 — o `chrome-token-parity:check` entrou no catálogo e na tabela de onde cada gate roda, o que **fechou o item 2 do [[00-backlog]]** · **§9.6 (nova)** — os dois vãos que fecharam e os quatro limites que continuam declarados |
+> | **84** | [[05-cromo-e-slots]] **§5 reescrita** — a raiz do cromo tem altura de janela e contém o excedente · **§5.1 (nova)** — o contrato de rolagem: o documento não rola, o painel de conteúdo rola, o `<nav>` da barra lateral rola por dentro, e as faixas ficam no lugar |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
