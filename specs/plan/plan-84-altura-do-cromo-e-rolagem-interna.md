@@ -6,10 +6,10 @@ dominio: "Sarak-Lib-UI-Core / Cromo e layout de aplicação"
 status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "cromo", "layout", "rolagem", "multidispositivo", "major"]
-relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/07-responsividade-e-multidispositivo]]", "[[specs/11-testes-e-cobertura]]", "[[specs/24-modo-embarcado]]"]
+relacionados: ["[[specs/05-cromo-e-slots]]", "[[specs/07-responsividade-e-multidispositivo]]", "[[specs/11-testes-e-cobertura]]", "[[arquitetura/01-forma-do-produto-e-modos-de-consumo]]"]
 depende_de: ""
 retida_por: ""
-destino_sintese: "specs/05-cromo-e-slots.md"
+destino_sintese: "specs/specs/05-cromo-e-slots.md"
 ---
 
 # 1. Objetivo
@@ -75,15 +75,15 @@ observável, então entra na nota do próximo major.
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/05-cromo-e-slots.md` | **§5** (a altura própria e o bug que a originou — a regra que muda) · §2.2 (geometria dos slots) · §2.3 (nada some) |
-| Spec fixa | `specs/07-responsividade-e-multidispositivo.md` | o refluxo do cromo e o colapso no celular |
-| Spec fixa | `specs/24-modo-embarcado.md` | o cromo dentro de container do host — o `...style` do consumidor tem de continuar vencendo |
-| Spec fixa | `specs/11-testes-e-cobertura.md` | **§7** — o harness de navegador, que é o único lugar onde altura se mede de verdade |
-| Spec fixa | `specs/01-gates-e-baseline.md` | como ler cada gate e o baseline do `audit` |
+| Spec fixa | `specs/specs/05-cromo-e-slots.md` | **§5** (a altura própria e o bug que a originou — a regra que muda) · §2.2 (geometria dos slots) · §2.3 (nada some) |
+| Spec fixa | `specs/specs/07-responsividade-e-multidispositivo.md` | o refluxo do cromo e o colapso no celular |
+| Spec fixa | `specs/arquitetura/01-forma-do-produto-e-modos-de-consumo.md` | **§5** — o eixo de modo (`'app'` e `'embedded'`): o cromo dentro de container do host, e o `...style` do consumidor tem de continuar vencendo. A regra do confinamento é a **R24** de `specs/specs/00-regras-e-invariantes.md` |
+| Spec fixa | `specs/specs/11-testes-e-cobertura.md` | **§7** — o harness de navegador, que é o único lugar onde altura se mede de verdade |
+| Spec fixa | `specs/specs/01-gates-e-baseline.md` | como ler cada gate e o baseline do `audit` |
 | Contexto | `specs/00-contexto.md` · `specs/00-knowledge.md` | sempre |
 | Skill | `padrao-escrita` · `padrao-typescript` · `ui-arquitetura-design` · `test-unitario` | sempre |
 | Código | `src/components/Layout/SarakAppChrome.tsx:186-196` | a altura da raiz, com o motivo escrito ao lado |
-| Código | `src/components/Layout/chrome/ChromeSidebarBody.tsx:72,79,145` | a cadeia de rolagem que já existe |
+| Código | `src/components/Layout/chrome/ChromeSidebarBody.tsx:72,79,146` | a cadeia de rolagem que já existe |
 | Código | `browser-tests/cromo-css-real.spec.ts` · `build-harness.mjs` | o molde do teste em navegador real |
 
 # 5. Instruções de execução
@@ -146,7 +146,7 @@ regra nova de gate nasce aqui.
 
 # 8. Destino da síntese
 
-**Destino:** `specs/05-cromo-e-slots.md`
+**Destino:** `specs/specs/05-cromo-e-slots.md`
 
 A **§5 é reescrita**, não acrescida: ela hoje afirma `minHeight: 100dvh` e explica por quê. Passa a
 afirmar a altura de janela com rolagem interna, **preservando** o que continua verdadeiro e é a parte mais
