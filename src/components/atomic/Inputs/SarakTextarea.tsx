@@ -3,7 +3,15 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 
 export interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    /**
+     * Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o
+     * texto não é associado automaticamente ao `<textarea>` por `aria-describedby`.
+     */
     error?: string;
+    /**
+     * Faz o contêiner e a área de texto ocuparem toda a largura disponível.
+     * Omitida ou `false`, a largura depende do layout pai.
+     */
     fullWidth?: boolean;
 }
 

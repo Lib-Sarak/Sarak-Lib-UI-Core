@@ -3,7 +3,15 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 
 export interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    /**
+     * Texto mostrado acima do controle e usado como nome acessível quando
+     * `aria-label` não é informado. Sem `label`, forneça `aria-label`.
+     */
     label?: string;
+    /**
+     * Texto apresentado ao lado do rótulo e exposto como `aria-valuetext`; não
+     * altera o valor numérico. Sem a prop, o navegador anuncia o valor nativo.
+     */
     valueLabel?: string | number;
 }
 

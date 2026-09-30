@@ -1761,37 +1761,37 @@
           "name": "isOpen",
           "type": "boolean",
           "optional": false,
-          "doc": ""
+          "doc": "Controla a abertura do painel. `true` mostra o diálogo; `false` mantém a estrutura durante a saída animada e depois a desmonta. Obrigatória, sem estado padrão."
         },
         {
           "name": "onClose",
           "type": "() => void",
           "optional": false,
-          "doc": ""
+          "doc": "Callback chamado ao clicar no scrim ou pressionar `Escape`. É obrigatório; sem ele, a integração não compila nem pode solicitar o fechamento."
         },
         {
           "name": "direction",
           "type": "'left' | 'right' | 'top' | 'bottom'",
           "optional": true,
-          "doc": ""
+          "doc": "Borda pela qual o painel entra; o padrão é `right`. `left`/`right` usam `size` como largura, enquanto `top`/`bottom` usam como altura."
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Conteúdo renderizado dentro do diálogo. Obrigatório; não há conteúdo padrão."
         },
         {
           "name": "size",
           "type": "string | number",
           "optional": true,
-          "doc": ""
+          "doc": "Largura para direções laterais ou altura para direções verticais; aceita número (pixels) ou valor CSS com unidade. O padrão é `320`, limitado à área da tela."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Classes adicionais aplicadas ao elemento do diálogo, que já mantém rolagem vertical. Sem a prop, usa apenas as classes internas."
         }
       ]
     },
@@ -1930,61 +1930,61 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio."
         },
         {
           "name": "mode",
           "type": "'create' | 'edit'",
           "optional": true,
-          "doc": ""
+          "doc": "Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`."
         },
         {
           "name": "initialData",
           "type": "TData",
           "optional": true,
-          "doc": ""
+          "doc": "Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário."
         },
         {
           "name": "actions",
           "type": "Array<{ label: string; endpoint: string; method: 'POST' | 'PATCH' | 'DELETE'; }>",
           "optional": true,
-          "doc": ""
+          "doc": "Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo."
         },
         {
           "name": "onSuccess",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual."
         }
       ]
     },
@@ -2144,37 +2144,37 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário."
         },
         {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone do campo; sua posição vem do layout do tema. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone."
         },
         {
           "name": "leftIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone de compatibilidade usado somente quando `icon` não é fornecido. Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não fixa o lado visual."
         },
         {
           "name": "rightIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone de compatibilidade usado quando `icon` e `leftIcon` não são fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo fica sem decoração."
         },
         {
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai."
         }
       ]
     },
@@ -2911,13 +2911,13 @@
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<select>` por `aria-describedby`."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai."
         }
       ]
     },
@@ -3068,13 +3068,13 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto mostrado acima do controle e usado como nome acessível quando `aria-label` não é informado. Sem `label`, forneça `aria-label`."
         },
         {
           "name": "valueLabel",
           "type": "string | number",
           "optional": true,
-          "doc": ""
+          "doc": "Texto apresentado ao lado do rótulo e exposto como `aria-valuetext`; não altera o valor numérico. Sem a prop, o navegador anuncia o valor nativo."
         }
       ]
     },
@@ -3303,13 +3303,13 @@
           "name": "label",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Conteúdo visível ao lado do controle e clicável como parte do rótulo. Sem `label` e `description`, nenhum texto é mostrado; nesse caso, dê um nome acessível ao controle."
         },
         {
           "name": "description",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Texto auxiliar exibido junto ao rótulo e ligado ao controle por `aria-describedby`. Sem a prop, não há descrição adicional."
         }
       ]
     },
@@ -3460,13 +3460,13 @@
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<textarea>` por `aria-describedby`."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai."
         }
       ]
     },

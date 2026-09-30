@@ -1,5 +1,5 @@
 import * as React$1 from 'react';
-import React__default, { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes } from 'react';
+import React__default, { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes, Key } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import ReactFlow from 'reactflow';
 
@@ -1842,11 +1842,37 @@ interface ShellLanguageSelectorProps {
 declare const ShellLanguageSelector: React__default.FC<ShellLanguageSelectorProps>;
 
 interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    /**
+     * Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado).
+     * Sem ele, não há rótulo visível; forneça outro nome acessível se necessário.
+     */
     label?: string;
+    /**
+     * Ícone do campo; sua posição vem do layout do tema. Quando definido,
+     * prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone.
+     */
     icon?: React__default.ReactNode;
+    /**
+     * Ícone de compatibilidade usado somente quando `icon` não é fornecido.
+     * Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não
+     * fixa o lado visual.
+     */
     leftIcon?: React__default.ReactNode;
+    /**
+     * Ícone de compatibilidade usado quando `icon` e `leftIcon` não são
+     * fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo
+     * fica sem decoração.
+     */
     rightIcon?: React__default.ReactNode;
+    /**
+     * Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca
+     * `aria-invalid`. Sem a prop, não há mensagem nem estado inválido.
+     */
     error?: string;
+    /**
+     * Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`,
+     * a largura fica a cargo do layout pai.
+     */
     fullWidth?: boolean;
 }
 /**
@@ -1859,7 +1885,15 @@ interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
 declare const SarakInput: React__default.FC<SarakInputProps>;
 
 interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    /**
+     * Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto
+     * não é associado automaticamente ao `<select>` por `aria-describedby`.
+     */
     error?: string;
+    /**
+     * Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou
+     * `false`, a largura depende do layout pai.
+     */
     fullWidth?: boolean;
 }
 /**
@@ -1872,7 +1906,15 @@ interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 declare const SarakSelect: React__default.FC<SarakSelectProps>;
 
 interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    /**
+     * Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o
+     * texto não é associado automaticamente ao `<textarea>` por `aria-describedby`.
+     */
     error?: string;
+    /**
+     * Faz o contêiner e a área de texto ocuparem toda a largura disponível.
+     * Omitida ou `false`, a largura depende do layout pai.
+     */
     fullWidth?: boolean;
 }
 /**
@@ -1881,7 +1923,15 @@ interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement>
 declare const SarakTextarea: React__default.FC<SarakTextareaProps>;
 
 interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    /**
+     * Texto mostrado acima do controle e usado como nome acessível quando
+     * `aria-label` não é informado. Sem `label`, forneça `aria-label`.
+     */
     label?: string;
+    /**
+     * Texto apresentado ao lado do rótulo e exposto como `aria-valuetext`; não
+     * altera o valor numérico. Sem a prop, o navegador anuncia o valor nativo.
+     */
     valueLabel?: string | number;
 }
 /**
@@ -1894,7 +1944,16 @@ interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, '
 declare const SarakSlider: React__default.FC<SarakSliderProps>;
 
 interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    /**
+     * Conteúdo visível ao lado do controle e clicável como parte do rótulo.
+     * Sem `label` e `description`, nenhum texto é mostrado; nesse caso, dê um
+     * nome acessível ao controle.
+     */
     label?: React__default.ReactNode;
+    /**
+     * Texto auxiliar exibido junto ao rótulo e ligado ao controle por
+     * `aria-describedby`. Sem a prop, não há descrição adicional.
+     */
     description?: React__default.ReactNode;
 }
 /**
@@ -2166,6 +2225,53 @@ declare const HelpButton: ({ text }: {
     text: string;
 }) => react_jsx_runtime.JSX.Element;
 
+/**
+ * Modelo de colunas do SarakDataTable (Spec 12, Regra 2 · Onda 9).
+ *
+ * Lógica pura (sem React/DOM) de ordenação, largura e deslocamento das colunas
+ * congeladas (pinned). Mantém o componente visual enxuto e testável de forma isolada.
+ */
+
+interface SarakColumn<T> {
+    /** Identidade estável da coluna (chave de largura/ordem/reorder). */
+    id: string;
+    /** Conteúdo do cabeçalho. */
+    header: React__default.ReactNode;
+    /** Largura inicial em px (default: `DEFAULT_COLUMN_WIDTH`). */
+    width?: number;
+    /** Largura mínima ao redimensionar em px (default: `MIN_COLUMN_WIDTH`). */
+    minWidth?: number;
+    /** Congelamento lateral; ausente = coluna rola normalmente. */
+    pinned?: 'left' | 'right';
+    /** Exibe controle de ordenação para esta coluna. */
+    sortable?: boolean;
+    /** Render da célula; ausente = `String(row[id])`. */
+    render?: (row: T, rowIndex: number) => React__default.ReactNode;
+}
+interface SarakTableSort {
+    columnId: string;
+    direction: 'asc' | 'desc';
+}
+declare const DEFAULT_COLUMN_WIDTH = 160;
+declare const MIN_COLUMN_WIDTH = 60;
+/** Resolve a largura efetiva da coluna a partir do estado controlado + default. */
+declare const widthOf: <T>(column: SarakColumn<T>, widths: Record<string, number>) => number;
+/** Reordena `order` movendo `fromId` para a posição de `toId` (imutável). */
+declare const reorder: (order: string[], fromId: string, toId: string) => string[];
+interface PinnedOffsets {
+    /** Deslocamento `left` acumulado por id de coluna congelada à esquerda. */
+    left: Record<string, number>;
+    /** Deslocamento `right` acumulado por id de coluna congelada à direita. */
+    right: Record<string, number>;
+    /** Soma das larguras de todas as colunas ordenadas. */
+    total: number;
+}
+/**
+ * Calcula os deslocamentos sticky das colunas congeladas na ordem atual:
+ * left-pinned acumulam da esquerda; right-pinned acumulam da direita (ré).
+ */
+declare const computeOffsets: <T>(ordered: Array<SarakColumn<T>>, widths: Record<string, number>) => PinnedOffsets;
+
 interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
     endpoint?: string;
@@ -2173,6 +2279,18 @@ interface SarakTableProps<TData extends Record<string, unknown> = Record<string,
     data?: TData[];
     label?: string;
     mapping?: Record<string, string>;
+    /** Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. */
+    getRowKey?: (row: TData, index: number) => Key;
+    /** Omitido, ordena localmente; passe null para controlar o estado sem ordenação. */
+    sort?: SarakTableSort | null;
+    /** Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. */
+    onSortChange?: (sort: SarakTableSort | null) => void;
+    /** Habilita a seleção de linhas e a caixa das linhas visíveis. */
+    selectable?: boolean;
+    /** Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. */
+    selectedKeys?: Key[];
+    /** Recebe as chaves selecionadas atualizadas. */
+    onSelectionChange?: (selectedKeys: Key[]) => void;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
@@ -2183,13 +2301,9 @@ interface SarakTableProps<TData extends Record<string, unknown> = Record<string,
      */
     responsive?: boolean;
 }
-/**
- * SarakTable Genérica (v6.0)
- *
- * Um componente agnóstico que renderiza qualquer conjunto de dados tabular
- * baseado em um contrato visual enviado pelo manifesto do módulo.
- */
-declare const SarakTable: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role, density, responsive }: SarakTableProps<TData>) => react_jsx_runtime.JSX.Element;
+
+/** Generated columns are sortable; selection and sort controls mirror SarakDataTable. */
+declare const SarakTable: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role, density, responsive, getRowKey, sort, onSortChange, selectable, selectedKeys, onSelectionChange }: SarakTableProps<TData>) => react_jsx_runtime.JSX.Element;
 
 interface FilterConfig {
     id: string;
@@ -2290,19 +2404,51 @@ interface SarakChartProps {
 declare const SarakChart: React__default.FC<SarakChartProps>;
 
 interface SarakFormProps<TData extends Record<string, unknown>> {
+    /**
+     * URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos
+     * os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento.
+     */
     endpoint: string;
+    /** Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto. */
     label?: string;
+    /**
+     * Define as chaves e os rótulos dos campos. Sem ela, as chaves de
+     * `formData` viram campos e `_` é trocado por espaço; em `create`, as
+     * chaves mapeadas ausentes começam como texto vazio.
+     */
     mapping?: Record<string, string>;
+    /**
+     * Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create`
+     * não busca, usa `initialData` e salva por padrão com `POST`.
+     */
     mode?: 'create' | 'edit';
+    /**
+     * Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da
+     * busca os substitui; em `create`, são preservados. A prop é lida na
+     * montagem, então mudanças posteriores não reinicializam o formulário.
+     */
     initialData?: TData;
+    /**
+     * Configura o destino e o método do botão Salvar; somente `actions[0]` é
+     * usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou
+     * `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem
+     * usados; em `DELETE`, `formData` vai como configuração, não como corpo.
+     */
     actions?: Array<{
         label: string;
         endpoint: string;
         method: 'POST' | 'PATCH' | 'DELETE';
     }>;
+    /**
+     * Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário
+     * salva e exibe o status, mas não notifica o chamador.
+     */
     onSuccess?: () => void;
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 /**
@@ -2547,11 +2693,34 @@ interface SarakModalProps {
 declare const SarakModal: React__default.FC<SarakModalProps>;
 
 interface SarakDrawerProps {
+    /**
+     * Controla a abertura do painel. `true` mostra o diálogo; `false` mantém
+     * a estrutura durante a saída animada e depois a desmonta. Obrigatória,
+     * sem estado padrão.
+     */
     isOpen: boolean;
+    /**
+     * Callback chamado ao clicar no scrim ou pressionar `Escape`. É
+     * obrigatório; sem ele, a integração não compila nem pode solicitar o fechamento.
+     */
     onClose: () => void;
+    /**
+     * Borda pela qual o painel entra; o padrão é `right`. `left`/`right` usam
+     * `size` como largura, enquanto `top`/`bottom` usam como altura.
+     */
     direction?: 'left' | 'right' | 'top' | 'bottom';
+    /** Conteúdo renderizado dentro do diálogo. Obrigatório; não há conteúdo padrão. */
     children: React__default.ReactNode;
+    /**
+     * Largura para direções laterais ou altura para direções verticais; aceita
+     * número (pixels) ou valor CSS com unidade. O padrão é `320`, limitado à
+     * área da tela.
+     */
     size?: string | number;
+    /**
+     * Classes adicionais aplicadas ao elemento do diálogo, que já mantém
+     * rolagem vertical. Sem a prop, usa apenas as classes internas.
+     */
     className?: string;
 }
 /**
@@ -2813,71 +2982,34 @@ declare const SarakDataGridImpl: React__default.FC<SarakDataGridProps>;
  */
 declare const SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
 
-/**
- * Modelo de colunas do SarakDataTable (Spec 12, Regra 2 · Onda 9).
- *
- * Lógica pura (sem React/DOM) de ordenação, largura e deslocamento das colunas
- * congeladas (pinned). Mantém o componente visual enxuto e testável de forma isolada.
- */
-
-interface SarakColumn<T> {
-    /** Identidade estável da coluna (chave de largura/ordem/reorder). */
-    id: string;
-    /** Conteúdo do cabeçalho. */
-    header: React__default.ReactNode;
-    /** Largura inicial em px (default: `DEFAULT_COLUMN_WIDTH`). */
-    width?: number;
-    /** Largura mínima ao redimensionar em px (default: `MIN_COLUMN_WIDTH`). */
-    minWidth?: number;
-    /** Congelamento lateral; ausente = coluna rola normalmente. */
-    pinned?: 'left' | 'right';
-    /** Render da célula; ausente = `String(row[id])`. */
-    render?: (row: T, rowIndex: number) => React__default.ReactNode;
-}
-declare const DEFAULT_COLUMN_WIDTH = 160;
-declare const MIN_COLUMN_WIDTH = 60;
-/** Resolve a largura efetiva da coluna a partir do estado controlado + default. */
-declare const widthOf: <T>(column: SarakColumn<T>, widths: Record<string, number>) => number;
-/** Reordena `order` movendo `fromId` para a posição de `toId` (imutável). */
-declare const reorder: (order: string[], fromId: string, toId: string) => string[];
-interface PinnedOffsets {
-    /** Deslocamento `left` acumulado por id de coluna congelada à esquerda. */
-    left: Record<string, number>;
-    /** Deslocamento `right` acumulado por id de coluna congelada à direita. */
-    right: Record<string, number>;
-    /** Soma das larguras de todas as colunas ordenadas. */
-    total: number;
-}
-/**
- * Calcula os deslocamentos sticky das colunas congeladas na ordem atual:
- * left-pinned acumulam da esquerda; right-pinned acumulam da direita (ré).
- */
-declare const computeOffsets: <T>(ordered: Array<SarakColumn<T>>, widths: Record<string, number>) => PinnedOffsets;
-
 interface SarakDataTableProps<T = Record<string, unknown>> {
     /** Definição declarativa das colunas (ordem inicial = ordem do array). */
     columns: Array<SarakColumn<T>>;
     /** Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. */
     rows: T[];
-    /** Altura de cada linha em px (default: 44). */
     rowHeight?: number;
-    /** Altura do cabeçalho em px (default: 44). */
     headerHeight?: number;
-    /** Altura da janela de scroll (default: 100% do contêiner pai). */
     height?: number | string;
-    /** Linhas extra montadas fora da viewport (default: 8). */
     overscan?: number;
-    /** Chave estável da linha (default: índice). */
+    /** Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. */
     getRowKey?: (row: T, index: number) => React__default.Key;
-    /** Notifica nova largura ao soltar o handle de resize. */
+    /** Omitido, ordena localmente; passe null para controlar o estado sem ordenação. */
+    sort?: SarakTableSort | null;
+    /** Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. */
+    onSortChange?: (sort: SarakTableSort | null) => void;
+    /** Habilita a seleção de linhas e a caixa das linhas visíveis. */
+    selectable?: boolean;
+    /** Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. */
+    selectedKeys?: React__default.Key[];
+    /** Recebe as chaves selecionadas atualizadas. */
+    onSelectionChange?: (selectedKeys: React__default.Key[]) => void;
     onColumnResize?: (columnId: string, width: number) => void;
-    /** Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. */
     onColumnReorder?: (fromId: string, toId: string) => void;
     /** L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. */
     responsive?: boolean;
     className?: string;
 }
-declare function SarakDataTableImpl<T>({ columns, rows, rowHeight, headerHeight, height, overscan, getRowKey, onColumnResize, onColumnReorder, responsive, className, }: SarakDataTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function SarakDataTableImpl<T>({ columns, rows, rowHeight, headerHeight, height, overscan, getRowKey, onColumnResize, onColumnReorder, sort, onSortChange, selectable, selectedKeys, onSelectionChange, responsive, className, }: SarakDataTableProps<T>): react_jsx_runtime.JSX.Element;
 
 /**
  * SarakDataTable — barrel + carregamento preguiçoso (Spec 12, Regra 2 · Onda 9).
@@ -3318,4 +3450,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type Accept, type BadgeSize, type BadgeVariant, type BreadcrumbItem, type CardMove, type CatalogItem, type ChartDataItem, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DEFAULT_DEVICE_BREAKPOINTS, DESIGN_MANIFEST, type DateLocale, type DatePickerValue, type DerivedThemePreset, DesignScope, type DesignScopeProps, type DesignToken, type DeviceBreakpoints, DeviceProvider, type DeviceProviderProps, type DeviceType, type DiscoveredModule, DynamicRenderer, type DynamicRendererProps, ExpandableCard, type ExpandableCardProps, type FileRejection, type FilterConfig, type FilterDescriptor, FilterSelect, type FilterSelectProps, type FlexDirection, GLOBAL_THEMES, HelpButton, ICONE_DESCONHECIDO, ICON_NAMES, type IconFamily, IconMap, type IconName, type IconTriple, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LightboxImage, MIN_COLUMN_WIDTH, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type Message, type ModalLayoutContext, type ModuleManifest, type MultiSelectOption, type NavigationItem, type PaginationToken, type PdfSource, type PinnedOffsets, type PreferenceId, type PreferencePosition, type RangeValue, type ResponsiveDevice, type ResponsiveValue, SARAK_MODE_ATTRIBUTE, SARAK_REFERENCE_THEMES, SARAK_SCOPE_CLASS, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, type SarakBrandingState, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, type SarakCardGridProps, SarakCatalogGrid, type SarakCatalogGridProps, SarakChart, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatProps, SarakCheckbox, type SarakCheckboxProps, type SarakChromeWidgets, type SarakColorModePreference, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, type SarakDesignState, type SarakDesignTokens, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFlex, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, type SarakFontSizePreference, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGrid, type SarakGridProps, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInput, type SarakInputProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakMenuItem, type SarakMenuItemOrientation, type SarakMenuItemProps, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakNavItem, type SarakNavigationStylePreference, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, type SarakPreferencesHook, type SarakPreferencesOptions, SarakRadio, type SarakRadioProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchItem, type SarakSearchProps, SarakSelect, type SarakSelectProps, SarakShell, SarakShellNav, type SarakShellNavProps, type SarakShellProps, SarakSkeleton, type SarakSkeletonProps, SarakSlider, type SarakSliderProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsProps, SarakStepper, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableProps, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, type SarakThemePayload, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, type SarakTitleCardProps, SarakToastProvider, type SarakTokenValue, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIContextType, type SarakUIMode, type SarakUIOptions, SarakUIProvider, type SarakUIProviderProps, SarakUploader, type SarakUploaderProps, type SarakUserPreferences, ShellLanguageSelector, type ShellLanguageSelectorProps, type ShellNavItem, ShellSearchWidget, type ShellSearchWidgetProps, ShellThemeToggle, type ShellThemeToggleProps, type ShellUser, ShellUserWidget, type ShellUserWidgetProps, type SkeletonShape, SocialButton, type SocialButtonProps, type SparklineVariant, type StepConfig, type StepperOrientation, THEME_AXES, THEME_PRESET_IDS, type ThemeEntry, type ThemePreset, type ThemePresetId, type ThemeReferenceOverrides, type ToastController, type ToastOptions, type ToastVariant, type TokenValueType, type TooltipPosition, type VisualContract, type VisualContractType, type WeekStart, buildPaginationRange, computeOffsets, deriveThemeFromReference, deviceForWidth, findMissingThemeAxes, getAllDesignTokens, getDefaultDesignState, getLocalComponent, getLocalComponentIds, getRegisteredModules, getSarakModule, getThemePreset, isResponsiveValue, isSafeLinkHref, moveCard, registerLocalComponent, registerSarakModule, reorder, resolveResponsiveValue, sanitizeRichText, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakPreferences, useSarakRouter, useSarakUI, useToast, warnOnIncompleteTheme, widthOf };
+export { type Accept, type BadgeSize, type BadgeVariant, type BreadcrumbItem, type CardMove, type CatalogItem, type ChartDataItem, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DEFAULT_DEVICE_BREAKPOINTS, DESIGN_MANIFEST, type DateLocale, type DatePickerValue, type DerivedThemePreset, DesignScope, type DesignScopeProps, type DesignToken, type DeviceBreakpoints, DeviceProvider, type DeviceProviderProps, type DeviceType, type DiscoveredModule, DynamicRenderer, type DynamicRendererProps, ExpandableCard, type ExpandableCardProps, type FileRejection, type FilterConfig, type FilterDescriptor, FilterSelect, type FilterSelectProps, type FlexDirection, GLOBAL_THEMES, HelpButton, ICONE_DESCONHECIDO, ICON_NAMES, type IconFamily, IconMap, type IconName, type IconTriple, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LightboxImage, MIN_COLUMN_WIDTH, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type Message, type ModalLayoutContext, type ModuleManifest, type MultiSelectOption, type NavigationItem, type PaginationToken, type PdfSource, type PinnedOffsets, type PreferenceId, type PreferencePosition, type RangeValue, type ResponsiveDevice, type ResponsiveValue, SARAK_MODE_ATTRIBUTE, SARAK_REFERENCE_THEMES, SARAK_SCOPE_CLASS, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, type SarakBrandingState, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, type SarakCardGridProps, SarakCatalogGrid, type SarakCatalogGridProps, SarakChart, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatProps, SarakCheckbox, type SarakCheckboxProps, type SarakChromeWidgets, type SarakColorModePreference, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, type SarakDesignState, type SarakDesignTokens, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFlex, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, type SarakFontSizePreference, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGrid, type SarakGridProps, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInput, type SarakInputProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakMenuItem, type SarakMenuItemOrientation, type SarakMenuItemProps, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakNavItem, type SarakNavigationStylePreference, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, type SarakPreferencesHook, type SarakPreferencesOptions, SarakRadio, type SarakRadioProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchItem, type SarakSearchProps, SarakSelect, type SarakSelectProps, SarakShell, SarakShellNav, type SarakShellNavProps, type SarakShellProps, SarakSkeleton, type SarakSkeletonProps, SarakSlider, type SarakSliderProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsProps, SarakStepper, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableProps, type SarakTableSort, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, type SarakThemePayload, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, type SarakTitleCardProps, SarakToastProvider, type SarakTokenValue, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIContextType, type SarakUIMode, type SarakUIOptions, SarakUIProvider, type SarakUIProviderProps, SarakUploader, type SarakUploaderProps, type SarakUserPreferences, ShellLanguageSelector, type ShellLanguageSelectorProps, type ShellNavItem, ShellSearchWidget, type ShellSearchWidgetProps, ShellThemeToggle, type ShellThemeToggleProps, type ShellUser, ShellUserWidget, type ShellUserWidgetProps, type SkeletonShape, SocialButton, type SocialButtonProps, type SparklineVariant, type StepConfig, type StepperOrientation, THEME_AXES, THEME_PRESET_IDS, type ThemeEntry, type ThemePreset, type ThemePresetId, type ThemeReferenceOverrides, type ToastController, type ToastOptions, type ToastVariant, type TokenValueType, type TooltipPosition, type VisualContract, type VisualContractType, type WeekStart, buildPaginationRange, computeOffsets, deriveThemeFromReference, deviceForWidth, findMissingThemeAxes, getAllDesignTokens, getDefaultDesignState, getLocalComponent, getLocalComponentIds, getRegisteredModules, getSarakModule, getThemePreset, isResponsiveValue, isSafeLinkHref, moveCard, registerLocalComponent, registerSarakModule, reorder, resolveResponsiveValue, sanitizeRichText, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakPreferences, useSarakRouter, useSarakUI, useToast, warnOnIncompleteTheme, widthOf };

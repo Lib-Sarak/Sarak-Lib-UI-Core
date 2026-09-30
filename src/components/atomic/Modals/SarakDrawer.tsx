@@ -7,11 +7,34 @@ import { useFocusTrap } from './hooks/useFocusTrap';
 import { SarakScrim } from '../Layouts/SarakScrim';
 
 export interface SarakDrawerProps {
+    /**
+     * Controla a abertura do painel. `true` mostra o diálogo; `false` mantém
+     * a estrutura durante a saída animada e depois a desmonta. Obrigatória,
+     * sem estado padrão.
+     */
     isOpen: boolean;
+    /**
+     * Callback chamado ao clicar no scrim ou pressionar `Escape`. É
+     * obrigatório; sem ele, a integração não compila nem pode solicitar o fechamento.
+     */
     onClose: () => void;
+    /**
+     * Borda pela qual o painel entra; o padrão é `right`. `left`/`right` usam
+     * `size` como largura, enquanto `top`/`bottom` usam como altura.
+     */
     direction?: 'left' | 'right' | 'top' | 'bottom';
+    /** Conteúdo renderizado dentro do diálogo. Obrigatório; não há conteúdo padrão. */
     children: React.ReactNode;
+    /**
+     * Largura para direções laterais ou altura para direções verticais; aceita
+     * número (pixels) ou valor CSS com unidade. O padrão é `320`, limitado à
+     * área da tela.
+     */
     size?: string | number;
+    /**
+     * Classes adicionais aplicadas ao elemento do diálogo, que já mantém
+     * rolagem vertical. Sem a prop, usa apenas as classes internas.
+     */
     className?: string;
 }
 

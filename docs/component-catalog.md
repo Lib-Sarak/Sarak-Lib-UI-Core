@@ -489,12 +489,12 @@ Props (`SarakDrawerProps` — `src/components/atomic/Modals/SarakDrawer.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `isOpen` | `boolean` | sim |  |
-| `onClose` | `() => void` | sim |  |
-| `direction` | `'left' \| 'right' \| 'top' \| 'bottom'` | não |  |
-| `children` | `React.ReactNode` | sim |  |
-| `size` | `string \| number` | não |  |
-| `className` | `string` | não |  |
+| `isOpen` | `boolean` | sim | Controla a abertura do painel. `true` mostra o diálogo; `false` mantém a estrutura durante a saída animada e depois a desmonta. Obrigatória, sem estado padrão. |
+| `onClose` | `() => void` | sim | Callback chamado ao clicar no scrim ou pressionar `Escape`. É obrigatório; sem ele, a integração não compila nem pode solicitar o fechamento. |
+| `direction` | `'left' \| 'right' \| 'top' \| 'bottom'` | não | Borda pela qual o painel entra; o padrão é `right`. `left`/`right` usam `size` como largura, enquanto `top`/`bottom` usam como altura. |
+| `children` | `React.ReactNode` | sim | Conteúdo renderizado dentro do diálogo. Obrigatório; não há conteúdo padrão. |
+| `size` | `string \| number` | não | Largura para direções laterais ou altura para direções verticais; aceita número (pixels) ou valor CSS com unidade. O padrão é `320`, limitado à área da tela. |
+| `className` | `string` | não | Classes adicionais aplicadas ao elemento do diálogo, que já mantém rolagem vertical. Sem a prop, usa apenas as classes internas. |
 
 ### SarakEmptyState
 
@@ -549,16 +549,16 @@ Props (`SarakFormProps` — `src/components/atomic/Templates/SarakForm.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `label` | `string` | não |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `mode` | `'create' \| 'edit'` | não |  |
-| `initialData` | `TData` | não |  |
-| `actions` | `Array<{ label: string; endpoint: string; method: 'POST' \| 'PATCH' \| 'DELETE'; }>` | não |  |
-| `onSuccess` | `() => void` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `endpoint` | `string` | sim | URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento. |
+| `label` | `string` | não | Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto. |
+| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio. |
+| `mode` | `'create' \| 'edit'` | não | Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`. |
+| `initialData` | `TData` | não | Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário. |
+| `actions` | `Array<{ label: string; endpoint: string; method: 'POST' \| 'PATCH' \| 'DELETE'; }>` | não | Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo. |
+| `onSuccess` | `() => void` | não | Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual. |
 
 ### SarakFormGroup
 
@@ -626,12 +626,12 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `string` | não |  |
-| `icon` | `React.ReactNode` | não |  |
-| `leftIcon` | `React.ReactNode` | não |  |
-| `rightIcon` | `React.ReactNode` | não |  |
-| `error` | `string` | não |  |
-| `fullWidth` | `boolean` | não |  |
+| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
+| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
+| `leftIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado somente quando `icon` não é fornecido. Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não fixa o lado visual. |
+| `rightIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado quando `icon` e `leftIcon` não são fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo fica sem decoração. |
+| `error` | `string` | não | Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
+| `fullWidth` | `boolean` | não | Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai. |
 
 Estende: `InputHTMLAttributes<HTMLInputElement>`
 
@@ -874,8 +874,8 @@ Props (`SarakSelectProps` — `src/components/atomic/Inputs/SarakSelect.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não |  |
-| `fullWidth` | `boolean` | não |  |
+| `error` | `string` | não | Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<select>` por `aria-describedby`. |
+| `fullWidth` | `boolean` | não | Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `SelectHTMLAttributes<HTMLSelectElement>`
 
@@ -912,8 +912,8 @@ Props (`SarakSliderProps` — `src/components/atomic/Inputs/SarakSlider.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `string` | não |  |
-| `valueLabel` | `string \| number` | não |  |
+| `label` | `string` | não | Texto mostrado acima do controle e usado como nome acessível quando `aria-label` não é informado. Sem `label`, forneça `aria-label`. |
+| `valueLabel` | `string \| number` | não | Texto apresentado ao lado do rótulo e exposto como `aria-valuetext`; não altera o valor numérico. Sem a prop, o navegador anuncia o valor nativo. |
 
 Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
@@ -989,8 +989,8 @@ Props (`SarakSwitchProps` — `src/components/atomic/Inputs/SarakSwitch.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `React.ReactNode` | não |  |
-| `description` | `React.ReactNode` | não |  |
+| `label` | `React.ReactNode` | não | Conteúdo visível ao lado do controle e clicável como parte do rótulo. Sem `label` e `description`, nenhum texto é mostrado; nesse caso, dê um nome acessível ao controle. |
+| `description` | `React.ReactNode` | não | Texto auxiliar exibido junto ao rótulo e ligado ao controle por `aria-describedby`. Sem a prop, não há descrição adicional. |
 
 Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
@@ -1035,8 +1035,8 @@ Props (`SarakTextareaProps` — `src/components/atomic/Inputs/SarakTextarea.tsx`
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não |  |
-| `fullWidth` | `boolean` | não |  |
+| `error` | `string` | não | Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<textarea>` por `aria-describedby`. |
+| `fullWidth` | `boolean` | não | Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `TextareaHTMLAttributes<HTMLTextAreaElement>`
 
