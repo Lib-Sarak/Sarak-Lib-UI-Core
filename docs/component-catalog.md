@@ -62,6 +62,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
 | `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
 | `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
+| `SarakSpinner` | `size` | `sm` · `md` · `lg` |
 | `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakStats` | `density` | `compact` · `standard` · `spacious` |
 | `SarakStats` | `importance` | `hero` · `base` · `subtle` |
@@ -91,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (84)
+## Componentes públicos (85)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -931,6 +932,16 @@ Props (`SarakSparklineProps` — `src/components/atomic/DataDisplay/SarakSparkli
 | `label` | `string` | não | Descrição acessível do gráfico (vira `<title>` + `aria-label`). |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
+
+### SarakSpinner
+
+Props (`SarakSpinnerProps` — `src/components/atomic/Feedback/SarakSpinner.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `size` | `'sm' \| 'md' \| 'lg'` | não | Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema. |
+| `label` | `string` | não | Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado. |
+| `className` | `string` | não | Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido. |
 
 ### SarakSplitPane
 

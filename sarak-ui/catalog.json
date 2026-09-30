@@ -211,6 +211,8 @@
     "SarakSliderProps",
     "SarakSparkline",
     "SarakSparklineProps",
+    "SarakSpinner",
+    "SarakSpinnerProps",
     "SarakSplitPane",
     "SarakSplitPaneProps",
     "SarakSpotlight",
@@ -3132,6 +3134,30 @@
         }
       ]
     },
+    "SarakSpinner": {
+      "propsInterface": "SarakSpinnerProps",
+      "source": "src/components/atomic/Feedback/SarakSpinner.tsx",
+      "props": [
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "optional": true,
+          "doc": "Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido."
+        }
+      ]
+    },
     "SarakSplitPane": {
       "propsInterface": "SarakSplitPaneProps",
       "source": "src/components/atomic/Layouts/SarakSplitPane.tsx",
@@ -4338,6 +4364,15 @@
           "vertical",
           "horizontal",
           "auto"
+        ]
+      },
+      {
+        "component": "SarakSpinner",
+        "prop": "size",
+        "values": [
+          "sm",
+          "md",
+          "lg"
         ]
       },
       {

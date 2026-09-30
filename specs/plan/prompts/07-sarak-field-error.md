@@ -28,6 +28,12 @@ sentido, é tarefa seguinte. Criar token novo. Nada em `specs/`.
 anunciada por leitor de tela e associável ao campo) · como
 `src/components/atomic/Inputs/SarakInput.tsx` desenha hoje o texto de `error` —
 o componente novo tem de sair igual, e você diz no resumo se saiu.
+**Medido em 2026-09-30, para você não redescobrir:** os átomos **divergem** hoje no que fazem com
+`error`. O `SarakInput` liga a mensagem ao controle por `aria-describedby` **e** marca `aria-invalid`; o
+`SarakSelect` e o `SarakTextarea` **apenas exibem o texto**, sem associar nem marcar. Então "sair igual ao
+que o `SarakInput` desenha" é a referência **visual**; a ligação acessível é o que o componente novo tem de
+oferecer por conta própria, via o id do campo que ele descreve.
+
 **Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
 dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
 publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3

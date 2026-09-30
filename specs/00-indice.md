@@ -227,11 +227,10 @@ execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
 | # | Tarefa | O que entrega | Depende de |
 |---|---|---|---|
-| 1 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
-| 2 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
-| 3 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
-| 4 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
-| 5 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
-| 6 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
-| 7 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
-| 8 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+| 1 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
+| 2 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
+| 3 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
+| 4 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
+| 5 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
+| 6 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 7 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
