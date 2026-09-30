@@ -10,12 +10,19 @@ import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface ExpandableCardProps {
+    /** Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio. */
     title: string;
+    /** Elemento ao lado do título; omitido, o cabeçalho não reserva um ícone. */
     iconContent?: React.ReactNode;
+    /** Ação ou conteúdo auxiliar no cabeçalho; omitido, essa área não é renderizada. */
     helpButton?: React.ReactNode;
+    /** Conteúdo obrigatório das visualizações compacta e expandida; se omitido ou vazio, deixa o corpo sem conteúdo. */
     children: React.ReactNode;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Acrescenta classes à área do conteúdo; omitida, a área usa apenas as classes internas do cartão. */
     contentClassName?: string;
+    /** Altura mínima compacta em pixels, ajustada pelo fator tipográfico do tema; sem a prop, usa 300 px. */
     baseHeight?: number;
 }
 

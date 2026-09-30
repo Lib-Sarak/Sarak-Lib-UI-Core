@@ -5,6 +5,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakEmptyStateProps {
+    /** Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`. */
     type?: 'minimal' | 'abstract' | 'geometric';
 }
 

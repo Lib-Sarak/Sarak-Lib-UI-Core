@@ -5,12 +5,19 @@ import { CardSchema } from '../../../core/Design/schema/cards';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface ImageCardProps {
+    /** Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia. */
     src: string;
+    /** Texto alternativo da imagem; sem a prop, usa o texto genérico `Image Card`, então informe uma descrição para imagens informativas. */
     alt?: string;
+    /** Título sobreposto à imagem; omitido, o título não aparece. */
     title?: string;
+    /** Texto secundário sob o título; omitido, o subtítulo não aparece. */
     subtitle?: string;
+    /** Conteúdo adicional sob os textos; omitido, não há conteúdo extra. */
     children?: React.ReactNode;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Executa uma ação quando o cartão recebe clique; omitida, não há ação, e a raiz continua sem semântica de botão nem suporte de teclado. */
     onClick?: () => void;
 }
 

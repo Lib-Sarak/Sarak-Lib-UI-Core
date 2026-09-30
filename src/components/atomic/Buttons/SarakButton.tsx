@@ -5,11 +5,17 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useButtonLayoutStyles } from './hooks/useButtonLayoutStyles';
 
 export interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
+    /** Troca os ícones pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. */
     isLoading?: boolean;
+    /** Exibe um elemento antes do conteúdo; omitida, não há ícone à esquerda, e durante o carregamento é substituída pelo indicador. */
     leftIcon?: React.ReactNode;
+    /** Exibe um elemento depois do conteúdo; omitida, não há ícone à direita, e durante o carregamento fica oculta. */
     rightIcon?: React.ReactNode;
+    /** Faz o botão ocupar a largura disponível; omitida, a largura acompanha o conteúdo. */
     fullWidth?: boolean;
+    /** Define a escala de altura, espaçamento e texto; sem a prop, usa `md`. */
     size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 

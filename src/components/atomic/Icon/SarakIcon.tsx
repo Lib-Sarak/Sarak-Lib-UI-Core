@@ -4,11 +4,17 @@ import { IconMap, type IconFamily } from './IconMap';
 import { ICONE_DESCONHECIDO, type IconName } from './iconNames';
 
 export interface SarakIconProps {
+    /** Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. */
     name: IconName | string;
+    /** Define a dimensão SVG; sem a prop, usa 24 px. */
     size?: number | string;
+    /** Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. */
     color?: string;
+    /** Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. */
     style?: React.CSSProperties;
+    /** Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. */
     onClick?: () => void;
 }
 

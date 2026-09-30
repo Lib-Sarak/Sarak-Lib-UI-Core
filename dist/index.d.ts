@@ -852,11 +852,17 @@ interface DesignScopeProps {
 declare const DesignScope: React__default.FC<DesignScopeProps & Record<string, unknown>>;
 
 interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
+    /** Troca os ícones pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. */
     isLoading?: boolean;
+    /** Exibe um elemento antes do conteúdo; omitida, não há ícone à esquerda, e durante o carregamento é substituída pelo indicador. */
     leftIcon?: React__default.ReactNode;
+    /** Exibe um elemento depois do conteúdo; omitida, não há ícone à direita, e durante o carregamento fica oculta. */
     rightIcon?: React__default.ReactNode;
+    /** Faz o botão ocupar a largura disponível; omitida, a largura acompanha o conteúdo. */
     fullWidth?: boolean;
+    /** Define a escala de altura, espaçamento e texto; sem a prop, usa `md`. */
     size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 /**
@@ -869,9 +875,13 @@ interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 declare const SarakButton: React__default.FC<SarakButtonProps>;
 
 interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+    /** Define a largura e a altura quadradas do botão; sem a prop, usa `md` (40 × 40 px). */
     size?: 'xs' | 'sm' | 'md' | 'lg';
+    /** Troca o ícone pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. */
     isLoading?: boolean;
+    /** Elemento exibido dentro do botão; é obrigatório, e sem ele o botão não mostra um glifo; `isLoading` o substitui pelo indicador. */
     icon: React__default.ReactNode;
 }
 /**
@@ -1251,11 +1261,17 @@ type IconName = (typeof ICON_NAMES)[number];
 declare const ICONE_DESCONHECIDO: IconName;
 
 interface SarakIconProps {
+    /** Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. */
     name: IconName | string;
+    /** Define a dimensão SVG; sem a prop, usa 24 px. */
     size?: number | string;
+    /** Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. */
     color?: string;
+    /** Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. */
     style?: React__default.CSSProperties;
+    /** Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. */
     onClick?: () => void;
 }
 declare const SarakIcon: React__default.FC<SarakIconProps>;
@@ -1470,12 +1486,19 @@ interface SarakTypographyProps extends React__default.HTMLAttributes<HTMLElement
 declare const SarakTypography: React__default.FC<SarakTypographyProps>;
 
 interface ExpandableCardProps {
+    /** Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio. */
     title: string;
+    /** Elemento ao lado do título; omitido, o cabeçalho não reserva um ícone. */
     iconContent?: React__default.ReactNode;
+    /** Ação ou conteúdo auxiliar no cabeçalho; omitido, essa área não é renderizada. */
     helpButton?: React__default.ReactNode;
+    /** Conteúdo obrigatório das visualizações compacta e expandida; se omitido ou vazio, deixa o corpo sem conteúdo. */
     children: React__default.ReactNode;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Acrescenta classes à área do conteúdo; omitida, a área usa apenas as classes internas do cartão. */
     contentClassName?: string;
+    /** Altura mínima compacta em pixels, ajustada pelo fator tipográfico do tema; sem a prop, usa 300 px. */
     baseHeight?: number;
 }
 declare const ExpandableCard: React__default.FC<ExpandableCardProps>;
@@ -1493,21 +1516,33 @@ interface SarakActionCardProps<TItem extends Record<string, unknown>> {
 declare const SarakActionCard: <TItem extends Record<string, unknown>>({ item, mapping, className, onAction, design: localDesign, label, actionLabel }: SarakActionCardProps<TItem>) => react_jsx_runtime.JSX.Element;
 
 interface SarakSearchCardProps<TItem extends Record<string, unknown>> {
+    /** Registro genérico exigido pela assinatura; a implementação atual não o consulta, então ele não altera o conteúdo visível. */
     item: TItem;
+    /** Caminhos de campos previstos para o registro; a implementação atual não lê o mapa, então fornecê-lo não altera o cartão. */
     mapping?: Record<string, string>;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Recebe o texto a cada edição da busca; sem callback, a busca ainda muda localmente, mas nenhum valor é enviado ao consumidor. */
     onSearchChange?: (text: string) => void;
+    /** Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local. */
     onToggleCapability?: (cap: string, active: boolean) => void;
+    /** Substitui o tema do provider para este cartão; omitida, usa o tema global. */
     design?: SarakThemePayload;
+    /** Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho. */
     label?: string;
 }
 declare const SarakSearchCard: <TItem extends Record<string, unknown>>({ item, mapping, className, onSearchChange, onToggleCapability, design: propDesign, label }: SarakSearchCardProps<TItem>) => react_jsx_runtime.JSX.Element;
 
 interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
+    /** Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`. */
     item: TItem;
+    /** Associa esses campos a caminhos do registro; aceita caminhos pontuados e, sem a prop, não há valores mapeados (o subtítulo usa `Modelo`). */
     mapping?: Record<string, string>;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Substitui o tema do provider para este cartão; omitida, usa o tema global. */
     design?: SarakThemePayload;
+    /** Texto do selo de rascunho; sem a prop, usa `Card de Título`, e o selo só aparece durante a composição de rascunho. */
     label?: string;
 }
 declare const SarakTitleCard: <TItem extends Record<string, unknown>>({ item, mapping, className, design: localDesign, label }: SarakTitleCardProps<TItem>) => react_jsx_runtime.JSX.Element;
@@ -1566,11 +1601,17 @@ interface SarakGridProps extends Omit<React__default.HTMLAttributes<HTMLDivEleme
 declare const SarakGrid: React__default.FC<SarakGridProps>;
 
 interface SarakSplitPaneProps {
+    /** Conteúdo obrigatório do painel esquerdo; em celulares, aparece antes do painel direito. */
     leftPane: React__default.ReactNode;
+    /** Conteúdo obrigatório do painel direito; em celulares, aparece depois do painel esquerdo. */
     rightPane: React__default.ReactNode;
+    /** Limite inferior, em pixels, ao arrastar com mouse; sem a prop, usa 200 px, não se aplica no celular e não é ajustável por toque em tablet. */
     minLeftWidth?: number;
+    /** Limite superior, em pixels, ao arrastar com mouse; sem a prop, usa 800 px, não se aplica no celular e não é ajustável por toque em tablet. */
     maxLeftWidth?: number;
+    /** Largura inicial do painel esquerdo, em pixels; sem a prop, usa 300 px, sem ajustar esse valor aos limites até o primeiro arraste. */
     defaultLeftWidth?: number;
+    /** Acrescenta classes ao contêiner; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
 }
 /**
@@ -1585,9 +1626,13 @@ interface SarakSplitPaneProps {
 declare const SarakSplitPane: React__default.FC<SarakSplitPaneProps>;
 
 interface SarakAccordionProps {
+    /** Título obrigatório do botão que abre e fecha o painel; sem conteúdo, o controle fica sem título visível. */
     title: React__default.ReactNode;
+    /** Conteúdo obrigatório do painel, mantido no DOM mesmo quando recolhido; se omitido, o painel fica vazio. */
     children: React__default.ReactNode;
+    /** Define o estado inicial do painel; sem a prop, começa recolhido e mudanças posteriores não o controlam. */
     defaultOpen?: boolean;
+    /** Acrescenta classes à raiz do acordeão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
 }
 /**
@@ -2652,12 +2697,19 @@ interface SarakExpandableMatrixProps<TData extends MatrixParentData> {
 declare const SarakExpandableMatrix: <TData extends MatrixParentData>({ data, subItems, activeMapping, onToggle, renderItemHeader, manifest }: SarakExpandableMatrixProps<TData>) => react_jsx_runtime.JSX.Element;
 
 interface ImageCardProps {
+    /** Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia. */
     src: string;
+    /** Texto alternativo da imagem; sem a prop, usa o texto genérico `Image Card`, então informe uma descrição para imagens informativas. */
     alt?: string;
+    /** Título sobreposto à imagem; omitido, o título não aparece. */
     title?: string;
+    /** Texto secundário sob o título; omitido, o subtítulo não aparece. */
     subtitle?: string;
+    /** Conteúdo adicional sob os textos; omitido, não há conteúdo extra. */
     children?: React__default.ReactNode;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Executa uma ação quando o cartão recebe clique; omitida, não há ação, e a raiz continua sem semântica de botão nem suporte de teclado. */
     onClick?: () => void;
 }
 declare const ImageCard: React__default.FC<ImageCardProps>;
@@ -2768,6 +2820,7 @@ interface ModalLayoutContext {
 declare const useModalLayoutStyles: (design: SarakThemePayload) => ModalLayoutContext;
 
 interface SarakEmptyStateProps {
+    /** Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`. */
     type?: 'minimal' | 'abstract' | 'geometric';
 }
 declare const SarakEmptyState: React__default.FC<SarakEmptyStateProps>;

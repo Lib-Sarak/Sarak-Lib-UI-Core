@@ -103,13 +103,13 @@ Props (`ExpandableCardProps` — `src/components/atomic/Cards/ExpandableCard.tsx
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `title` | `string` | sim |  |
-| `iconContent` | `React.ReactNode` | não |  |
-| `helpButton` | `React.ReactNode` | não |  |
-| `children` | `React.ReactNode` | sim |  |
-| `className` | `string` | não |  |
-| `contentClassName` | `string` | não |  |
-| `baseHeight` | `number` | não |  |
+| `title` | `string` | sim | Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio. |
+| `iconContent` | `React.ReactNode` | não | Elemento ao lado do título; omitido, o cabeçalho não reserva um ícone. |
+| `helpButton` | `React.ReactNode` | não | Ação ou conteúdo auxiliar no cabeçalho; omitido, essa área não é renderizada. |
+| `children` | `React.ReactNode` | sim | Conteúdo obrigatório das visualizações compacta e expandida; se omitido ou vazio, deixa o corpo sem conteúdo. |
+| `className` | `string` | não | Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. |
+| `contentClassName` | `string` | não | Acrescenta classes à área do conteúdo; omitida, a área usa apenas as classes internas do cartão. |
+| `baseHeight` | `number` | não | Altura mínima compacta em pixels, ajustada pelo fator tipográfico do tema; sem a prop, usa 300 px. |
 
 ### FilterSelect
 
@@ -133,13 +133,13 @@ Props (`ImageCardProps` — `src/components/atomic/Templates/ImageCard.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `src` | `string` | sim |  |
-| `alt` | `string` | não |  |
-| `title` | `string` | não |  |
-| `subtitle` | `string` | não |  |
-| `children` | `React.ReactNode` | não |  |
-| `className` | `string` | não |  |
-| `onClick` | `() => void` | não |  |
+| `src` | `string` | sim | Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia. |
+| `alt` | `string` | não | Texto alternativo da imagem; sem a prop, usa o texto genérico `Image Card`, então informe uma descrição para imagens informativas. |
+| `title` | `string` | não | Título sobreposto à imagem; omitido, o título não aparece. |
+| `subtitle` | `string` | não | Texto secundário sob o título; omitido, o subtítulo não aparece. |
+| `children` | `React.ReactNode` | não | Conteúdo adicional sob os textos; omitido, não há conteúdo extra. |
+| `className` | `string` | não | Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. |
+| `onClick` | `() => void` | não | Executa uma ação quando o cartão recebe clique; omitida, não há ação, e a raiz continua sem semântica de botão nem suporte de teclado. |
 
 ### MIN_COLUMN_WIDTH
 
@@ -151,10 +151,10 @@ Props (`SarakAccordionProps` — `src/components/atomic/Layouts/SarakAccordion.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `title` | `React.ReactNode` | sim |  |
-| `children` | `React.ReactNode` | sim |  |
-| `defaultOpen` | `boolean` | não |  |
-| `className` | `string` | não |  |
+| `title` | `React.ReactNode` | sim | Título obrigatório do botão que abre e fecha o painel; sem conteúdo, o controle fica sem título visível. |
+| `children` | `React.ReactNode` | sim | Conteúdo obrigatório do painel, mantido no DOM mesmo quando recolhido; se omitido, o painel fica vazio. |
+| `defaultOpen` | `boolean` | não | Define o estado inicial do painel; sem a prop, começa recolhido e mudanças posteriores não o controlam. |
+| `className` | `string` | não | Acrescenta classes à raiz do acordeão; omitida, nenhuma classe adicional é aplicada. |
 
 ### SarakActionCard
 
@@ -298,12 +298,12 @@ Props (`SarakButtonProps` — `src/components/atomic/Buttons/SarakButton.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger' \| 'success' \| 'outline'` | não |  |
-| `isLoading` | `boolean` | não |  |
-| `leftIcon` | `React.ReactNode` | não |  |
-| `rightIcon` | `React.ReactNode` | não |  |
-| `fullWidth` | `boolean` | não |  |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | não |  |
+| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger' \| 'success' \| 'outline'` | não | Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. |
+| `isLoading` | `boolean` | não | Troca os ícones pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. |
+| `leftIcon` | `React.ReactNode` | não | Exibe um elemento antes do conteúdo; omitida, não há ícone à esquerda, e durante o carregamento é substituída pelo indicador. |
+| `rightIcon` | `React.ReactNode` | não | Exibe um elemento depois do conteúdo; omitida, não há ícone à direita, e durante o carregamento fica oculta. |
+| `fullWidth` | `boolean` | não | Faz o botão ocupar a largura disponível; omitida, a largura acompanha o conteúdo. |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | não | Define a escala de altura, espaçamento e texto; sem a prop, usa `md`. |
 
 Estende: `ButtonHTMLAttributes<HTMLButtonElement>`
 
@@ -502,7 +502,7 @@ Props (`SarakEmptyStateProps` — `src/components/atomic/Feedback/SarakEmptyStat
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `type` | `'minimal' \| 'abstract' \| 'geometric'` | não |  |
+| `type` | `'minimal' \| 'abstract' \| 'geometric'` | não | Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`. |
 
 ### SarakExpandableMatrix
 
@@ -600,12 +600,12 @@ Props (`SarakIconProps` — `src/components/atomic/Icon/SarakIcon.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `name` | `IconName \| string` | sim |  |
-| `size` | `number \| string` | não |  |
-| `className` | `string` | não |  |
-| `color` | `string` | não |  |
-| `style` | `React.CSSProperties` | não |  |
-| `onClick` | `() => void` | não |  |
+| `name` | `IconName \| string` | sim | Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. |
+| `size` | `number \| string` | não | Define a dimensão SVG; sem a prop, usa 24 px. |
+| `className` | `string` | não | Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. |
+| `color` | `string` | não | Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. |
+| `style` | `React.CSSProperties` | não | Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. |
+| `onClick` | `() => void` | não | Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. |
 
 ### SarakIconButton
 
@@ -613,10 +613,10 @@ Props (`SarakIconButtonProps` — `src/components/atomic/Buttons/SarakIconButton
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | não |  |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | não |  |
-| `isLoading` | `boolean` | não |  |
-| `icon` | `React.ReactNode` | sim |  |
+| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | não | Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | não | Define a largura e a altura quadradas do botão; sem a prop, usa `md` (40 × 40 px). |
+| `isLoading` | `boolean` | não | Troca o ícone pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. |
+| `icon` | `React.ReactNode` | sim | Elemento exibido dentro do botão; é obrigatório, e sem ele o botão não mostra um glifo; `isLoading` o substitui pelo indicador. |
 
 Estende: `ButtonHTMLAttributes<HTMLButtonElement>`
 
@@ -860,13 +860,13 @@ Props (`SarakSearchCardProps` — `src/components/atomic/Cards/SarakSearchCard.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `item` | `TItem` | sim |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `className` | `string` | não |  |
-| `onSearchChange` | `(text: string) => void` | não |  |
-| `onToggleCapability` | `(cap: string, active: boolean) => void` | não |  |
-| `design` | `SarakThemePayload` | não |  |
-| `label` | `string` | não |  |
+| `item` | `TItem` | sim | Registro genérico exigido pela assinatura; a implementação atual não o consulta, então ele não altera o conteúdo visível. |
+| `mapping` | `Record<string, string>` | não | Caminhos de campos previstos para o registro; a implementação atual não lê o mapa, então fornecê-lo não altera o cartão. |
+| `className` | `string` | não | Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. |
+| `onSearchChange` | `(text: string) => void` | não | Recebe o texto a cada edição da busca; sem callback, a busca ainda muda localmente, mas nenhum valor é enviado ao consumidor. |
+| `onToggleCapability` | `(cap: string, active: boolean) => void` | não | Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local. |
+| `design` | `SarakThemePayload` | não | Substitui o tema do provider para este cartão; omitida, usa o tema global. |
+| `label` | `string` | não | Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho. |
 
 ### SarakSelect
 
@@ -938,12 +938,12 @@ Props (`SarakSplitPaneProps` — `src/components/atomic/Layouts/SarakSplitPane.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `leftPane` | `React.ReactNode` | sim |  |
-| `rightPane` | `React.ReactNode` | sim |  |
-| `minLeftWidth` | `number` | não |  |
-| `maxLeftWidth` | `number` | não |  |
-| `defaultLeftWidth` | `number` | não |  |
-| `className` | `string` | não |  |
+| `leftPane` | `React.ReactNode` | sim | Conteúdo obrigatório do painel esquerdo; em celulares, aparece antes do painel direito. |
+| `rightPane` | `React.ReactNode` | sim | Conteúdo obrigatório do painel direito; em celulares, aparece depois do painel esquerdo. |
+| `minLeftWidth` | `number` | não | Limite inferior, em pixels, ao arrastar com mouse; sem a prop, usa 200 px, não se aplica no celular e não é ajustável por toque em tablet. |
+| `maxLeftWidth` | `number` | não | Limite superior, em pixels, ao arrastar com mouse; sem a prop, usa 800 px, não se aplica no celular e não é ajustável por toque em tablet. |
+| `defaultLeftWidth` | `number` | não | Largura inicial do painel esquerdo, em pixels; sem a prop, usa 300 px, sem ajustar esse valor aos limites até o primeiro arraste. |
+| `className` | `string` | não | Acrescenta classes ao contêiner; omitida, nenhuma classe adicional é aplicada. |
 
 ### SarakSpotlight
 
@@ -1061,11 +1061,11 @@ Props (`SarakTitleCardProps` — `src/components/atomic/Cards/SarakTitleCard.tsx
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `item` | `TItem` | sim |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `className` | `string` | não |  |
-| `design` | `SarakThemePayload` | não |  |
-| `label` | `string` | não |  |
+| `item` | `TItem` | sim | Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`. |
+| `mapping` | `Record<string, string>` | não | Associa esses campos a caminhos do registro; aceita caminhos pontuados e, sem a prop, não há valores mapeados (o subtítulo usa `Modelo`). |
+| `className` | `string` | não | Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. |
+| `design` | `SarakThemePayload` | não | Substitui o tema do provider para este cartão; omitida, usa o tema global. |
+| `label` | `string` | não | Texto do selo de rascunho; sem a prop, usa `Card de Título`, e o selo só aparece durante a composição de rascunho. |
 
 ### SarakToastProvider
 

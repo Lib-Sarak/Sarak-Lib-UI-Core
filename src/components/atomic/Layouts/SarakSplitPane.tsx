@@ -3,11 +3,17 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 
 export interface SarakSplitPaneProps {
+    /** Conteúdo obrigatório do painel esquerdo; em celulares, aparece antes do painel direito. */
     leftPane: React.ReactNode;
+    /** Conteúdo obrigatório do painel direito; em celulares, aparece depois do painel esquerdo. */
     rightPane: React.ReactNode;
+    /** Limite inferior, em pixels, ao arrastar com mouse; sem a prop, usa 200 px, não se aplica no celular e não é ajustável por toque em tablet. */
     minLeftWidth?: number;
+    /** Limite superior, em pixels, ao arrastar com mouse; sem a prop, usa 800 px, não se aplica no celular e não é ajustável por toque em tablet. */
     maxLeftWidth?: number;
+    /** Largura inicial do painel esquerdo, em pixels; sem a prop, usa 300 px, sem ajustar esse valor aos limites até o primeiro arraste. */
     defaultLeftWidth?: number;
+    /** Acrescenta classes ao contêiner; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
 }
 
