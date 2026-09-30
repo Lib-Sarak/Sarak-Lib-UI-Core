@@ -227,15 +227,14 @@ execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
 | # | Tarefa | O que entrega | Depende de |
 |---|---|---|---|
-| 1 | [02 — tabelas](plan/prompts/02-tabelas-ordenacao-e-selecao.md) | ordenação por coluna e seleção de linhas, com a mesma API no `SarakDataTable` e no `SarakTable` | `SarakCheckbox` (plan-83) |
-| 2 | [03 — JSDoc, leva 1](plan/prompts/03-jsdoc-leva-1-entrada-de-dados.md) | documentação de prop nos sete componentes de entrada de dados | — |
-| 3 | [04 — JSDoc, leva 2](plan/prompts/04-jsdoc-leva-2-botoes-cartoes-estrutura.md) | idem, nos dez de botão, cartão e estrutura | — |
-| 4 | [05 — JSDoc, leva 3](plan/prompts/05-jsdoc-leva-3-templates-motores-cromo.md) | idem, nos catorze de template, motor e cromo | — |
-| 5 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
-| 6 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
-| 7 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
-| 8 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
-| 9 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
-| 10 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
-| 11 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
-| 12 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+| 1 | [03 — JSDoc, leva 1](plan/prompts/03-jsdoc-leva-1-entrada-de-dados.md) | documentação de prop nos sete componentes de entrada de dados | — |
+| 2 | [04 — JSDoc, leva 2](plan/prompts/04-jsdoc-leva-2-botoes-cartoes-estrutura.md) | idem, nos dez de botão, cartão e estrutura | — |
+| 3 | [05 — JSDoc, leva 3](plan/prompts/05-jsdoc-leva-3-templates-motores-cromo.md) | idem, nos catorze de template, motor e cromo | — |
+| 4 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
+| 5 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
+| 6 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
+| 7 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
+| 8 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
+| 9 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
+| 10 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 11 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
