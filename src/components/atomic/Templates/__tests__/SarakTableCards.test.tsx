@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { SarakTableCards } from '../SarakTableCards';
 
 const COLUMNS = ['nome', 'ativo'];
@@ -29,5 +29,33 @@ describe('SarakTableCards (Spec 40.3 — L3, colapso mobile do denso genérico)'
         const { container } = render(<SarakTableCards rows={ROWS} columns={COLUMNS} columnLabels={LABELS} />);
         const list = container.querySelector('[data-sarak-tablecards]') as HTMLElement;
         expect(list.style.maxWidth).toBe('100%');
+    });
+
+    it('mantém ordenação, seleção individual e seleção das linhas visíveis', () => {
+        const onSort = vi.fn();
+        const onToggleRow = vi.fn();
+        const onToggleAll = vi.fn();
+        render(
+            <SarakTableCards
+                rows={ROWS}
+                columns={COLUMNS}
+                columnLabels={LABELS}
+                selectable
+                selectedKeys={new Set([1])}
+                partiallySelected
+                sortableColumns={COLUMNS}
+                onSort={onSort}
+                onToggleRow={onToggleRow}
+                onToggleAll={onToggleAll}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole('button', { name: 'Ordenar por nome' }));
+        fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar linha 2' }));
+        fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar todas as linhas visíveis' }));
+
+        expect(onSort).toHaveBeenCalledWith('nome');
+        expect(onToggleRow).toHaveBeenCalledWith(2, true);
+        expect(onToggleAll).toHaveBeenCalledWith(true);
     });
 });

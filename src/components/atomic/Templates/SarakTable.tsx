@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Search, 
-    ArrowUpDown, 
-    ChevronLeft, 
-    ChevronRight, 
     MoreHorizontal, 
-    Download,
-    Filter,
     RefreshCw,
     AlertCircle
 } from 'lucide-react';
@@ -18,38 +13,21 @@ import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakTableData } from './hooks/useSarakTableData';
-import { SarakTableCards } from './SarakTableCards';
+import { SarakTableCards, SarakTableSelectionCheckbox } from './SarakTableCards';
+import type { SarakTableProps } from './SarakTableProps';
+import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
+import { useTableInteractions } from '../DataDisplay/SarakDataTable/useTableInteractions';
+import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
 import { twMerge } from 'tailwind-merge';
 
-export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
-    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
-    endpoint?: string;
-    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
-    data?: TData[];
-    label?: string;
-    mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
-    /**
-     * No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo
-     * default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes
-     * públicos de tabela não tenham APIs divergentes.
-     */
-    responsive?: boolean;
-}
+export type { SarakTableProps } from './SarakTableProps';
 
-/**
- * SarakTable Genérica (v6.0)
- * 
- * Um componente agnóstico que renderiza qualquer conjunto de dados tabular
- * baseado em um contrato visual enviado pelo manifesto do módulo.
- */
-export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard', responsive = true }: SarakTableProps<TData>) => {
+/** Generated columns are sortable; selection and sort controls mirror SarakDataTable. */
+export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard', responsive = true, getRowKey, sort, onSortChange, selectable = false, selectedKeys, onSelectionChange }: SarakTableProps<TData>) => {
     const { design } = useSarakUI();
     const device = useSarakDevice();
     const collapseToCards = responsive && device === 'smartphone';
-    const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
+    const { cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
     const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
     
     const containerLayout = getContainerStyles();
@@ -64,8 +42,16 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
         setSearch,
         fetchData
     } = useSarakTableData<TData>(endpoint, initialData);
+    const interactions = useTableInteractions({
+        rows: filteredData,
+        getRowKey,
+        sort,
+        onSortChange,
+        selectedKeys,
+        onSelectionChange,
+        getSortValue: (row, columnId) => row[columnId],
+    });
 
-    // Gerar colunas dinamicamente caso não exista um mapping
     const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);
     const columnLabels = mapping || columns.reduce((acc: Record<string, string>, col) => ({ ...acc, [col]: col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ') }), {} as Record<string, string>);
 
@@ -82,12 +68,8 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
         );
     }
 
-    // plan-41: `@container` plantado na raiz — `headerLayout` abaixo usa classe
-    // `@min-[…]` (container query), que precisa de um ancestral com `container-type`
-    // para casar (achado real em consumidor, `plan-40`).
     return (
         <div className={`@container ${containerLayout.className}`} style={containerLayout.style}>
-            {/* Header da Tabela */}
             <div className={headerLayout.className} style={headerLayout.style}>
                 <div>
                     <h3 
@@ -120,28 +102,49 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                 </div>
             </div>
 
-            {/* Container da Tabela com Glassmorphism */}
             <div className="relative bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden rounded-[var(--sarak-card-radius,12px)]">
                 {collapseToCards ? (
                     // L3 (Spec 40.3): no celular a tabela larga colapsa para cards empilhados
                     // (mesmas colunas/rótulos), sem overflow horizontal da página. O consumidor
                     // desliga com `responsive={false}` quando a tabela colunar é o requisito.
-                    <SarakTableCards rows={filteredData} columns={columns} columnLabels={columnLabels} loading={loading} />
+                    <SarakTableCards
+                        rows={interactions.entries.map(({ row }) => row)}
+                        rowKeys={interactions.entries.map(({ key }) => key)}
+                        columns={columns}
+                        columnLabels={columnLabels}
+                        loading={loading}
+                        sort={interactions.sort}
+                        onSort={interactions.changeSort}
+                        sortableColumns={columns}
+                        selectable={selectable}
+                        selectedKeys={interactions.selectedKeys}
+                        allVisibleSelected={interactions.allVisibleSelected}
+                        partiallySelected={interactions.partiallySelected}
+                        onToggleRow={interactions.toggleRow}
+                        onToggleAll={interactions.toggleAll}
+                    />
                 ) : (
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
+                                {selectable && (
+                                    <th className={cellDensityClass}>
+                                        <SarakTableSelectionCheckbox
+                                            label="Selecionar todas as linhas visíveis"
+                                            checked={interactions.allVisibleSelected}
+                                            indeterminate={interactions.partiallySelected}
+                                            onChange={interactions.toggleAll}
+                                        />
+                                    </th>
+                                )}
                                 {columns.map(col => (
                                     <th
                                         key={col}
                                         className={`text-2xs font-black text-white/30 uppercase ${cellDensityClass}`}
                                         style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}
                                     >
-                                        <div className="flex items-center cursor-pointer hover:text-white transition-colors" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                            {columnLabels[col]}
-                                            <ArrowUpDown size={10} />
-                                        </div>
+                                        <SarakTableSortButton columnId={col} label={columnLabels[col]} sort={interactions.sort} onSort={interactions.changeSort} />
                                     </th>
                                 ))}
                                 <th className={cellDensityClass}></th>
@@ -161,14 +164,23 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                                         </tr>
                                     ))
                                 ) : (
-                                    filteredData.map((row, idx) => (
+                                    interactions.entries.map(({ row, key }, idx) => (
                                         <motion.tr 
-                                            key={String(row.id || idx)}
+                                            key={key}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: idx * 0.05 }}
                                             className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group"
                                         >
+                                            {selectable && (
+                                                <td className={cellDensityClass}>
+                                                    <SarakTableSelectionCheckbox
+                                                        label={`Selecionar linha ${String(key)}`}
+                                                        checked={interactions.selectedKeys.has(key)}
+                                                        onChange={(checked) => interactions.toggleRow(key, checked)}
+                                                    />
+                                                </td>
+                                            )}
                                             {columns.map(col => (
                                                 <td 
                                                     key={col} 

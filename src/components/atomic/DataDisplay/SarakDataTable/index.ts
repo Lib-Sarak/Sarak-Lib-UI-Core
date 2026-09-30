@@ -12,5 +12,5 @@ export const SarakDataTable = lazy(() => import('./SarakDataTableImpl'));
 
 export { default as SarakDataTableImpl } from './SarakDataTableImpl';
 export type { SarakDataTableProps } from './SarakDataTableImpl';
-export type { SarakColumn } from './columnModel';
+export type { SarakColumn, SarakTableSort } from './columnModel';
 export { reorder, computeOffsets, widthOf, DEFAULT_COLUMN_WIDTH, MIN_COLUMN_WIDTH } from './columnModel';

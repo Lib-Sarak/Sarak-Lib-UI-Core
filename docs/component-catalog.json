@@ -1189,43 +1189,73 @@
           "name": "rowHeight",
           "type": "number",
           "optional": true,
-          "doc": "Altura de cada linha em px (default: 44)."
+          "doc": ""
         },
         {
           "name": "headerHeight",
           "type": "number",
           "optional": true,
-          "doc": "Altura do cabeçalho em px (default: 44)."
+          "doc": ""
         },
         {
           "name": "height",
           "type": "number | string",
           "optional": true,
-          "doc": "Altura da janela de scroll (default: 100% do contêiner pai)."
+          "doc": ""
         },
         {
           "name": "overscan",
           "type": "number",
           "optional": true,
-          "doc": "Linhas extra montadas fora da viewport (default: 8)."
+          "doc": ""
         },
         {
           "name": "getRowKey",
           "type": "(row: T, index: number) => React.Key",
           "optional": true,
-          "doc": "Chave estável da linha (default: índice)."
+          "doc": "Chave estável da linha para seleção; por padrão, usa row.id ou o índice original."
+        },
+        {
+          "name": "sort",
+          "type": "SarakTableSort | null",
+          "optional": true,
+          "doc": "Omitido, ordena localmente; passe null para controlar o estado sem ordenação."
+        },
+        {
+          "name": "onSortChange",
+          "type": "(sort: SarakTableSort | null) => void",
+          "optional": true,
+          "doc": "Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas."
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Habilita a seleção de linhas e a caixa das linhas visíveis."
+        },
+        {
+          "name": "selectedKeys",
+          "type": "React.Key[]",
+          "optional": true,
+          "doc": "Chaves selecionadas controladas; omitido, a tabela gerencia a seleção."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(selectedKeys: React.Key[]) => void",
+          "optional": true,
+          "doc": "Recebe as chaves selecionadas atualizadas."
         },
         {
           "name": "onColumnResize",
           "type": "(columnId: string, width: number) => void",
           "optional": true,
-          "doc": "Notifica nova largura ao soltar o handle de resize."
+          "doc": ""
         },
         {
           "name": "onColumnReorder",
           "type": "(fromId: string, toId: string) => void",
           "optional": true,
-          "doc": "Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho."
+          "doc": ""
         },
         {
           "name": "responsive",
@@ -2839,7 +2869,7 @@
     },
     "SarakTable": {
       "propsInterface": "SarakTableProps",
-      "source": "src/components/atomic/Templates/SarakTable.tsx",
+      "source": "src/components/atomic/Templates/SarakTableProps.ts",
       "props": [
         {
           "name": "endpoint",
@@ -2864,6 +2894,42 @@
           "type": "Record<string, string>",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "getRowKey",
+          "type": "(row: TData, index: number) => Key",
+          "optional": true,
+          "doc": "Chave estável da linha para seleção; por padrão, usa row.id ou o índice original."
+        },
+        {
+          "name": "sort",
+          "type": "SarakTableSort | null",
+          "optional": true,
+          "doc": "Omitido, ordena localmente; passe null para controlar o estado sem ordenação."
+        },
+        {
+          "name": "onSortChange",
+          "type": "(sort: SarakTableSort | null) => void",
+          "optional": true,
+          "doc": "Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas."
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Habilita a seleção de linhas e a caixa das linhas visíveis."
+        },
+        {
+          "name": "selectedKeys",
+          "type": "Key[]",
+          "optional": true,
+          "doc": "Chaves selecionadas controladas; omitido, a tabela gerencia a seleção."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(selectedKeys: Key[]) => void",
+          "optional": true,
+          "doc": "Recebe as chaves selecionadas atualizadas."
         },
         {
           "name": "role",

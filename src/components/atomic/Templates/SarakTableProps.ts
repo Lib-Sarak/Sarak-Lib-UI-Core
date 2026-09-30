@@ -1,0 +1,32 @@
+import type { Key } from 'react';
+import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
+
+export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
+    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
+    endpoint?: string;
+    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
+    data?: TData[];
+    label?: string;
+    mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
+    /** Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. */
+    getRowKey?: (row: TData, index: number) => Key;
+    /** Omitido, ordena localmente; passe null para controlar o estado sem ordenação. */
+    sort?: SarakTableSort | null;
+    /** Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. */
+    onSortChange?: (sort: SarakTableSort | null) => void;
+    /** Habilita a seleção de linhas e a caixa das linhas visíveis. */
+    selectable?: boolean;
+    /** Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. */
+    selectedKeys?: Key[];
+    /** Recebe as chaves selecionadas atualizadas. */
+    onSelectionChange?: (selectedKeys: Key[]) => void;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
+    /**
+     * No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo
+     * default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes
+     * públicos de tabela não tenham APIs divergentes.
+     */
+    responsive?: boolean;
+}

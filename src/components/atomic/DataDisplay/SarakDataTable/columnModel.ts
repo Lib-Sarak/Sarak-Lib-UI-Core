@@ -18,16 +18,88 @@ export interface SarakColumn<T> {
     minWidth?: number;
     /** Congelamento lateral; ausente = coluna rola normalmente. */
     pinned?: 'left' | 'right';
+    /** Exibe controle de ordenação para esta coluna. */
+    sortable?: boolean;
     /** Render da célula; ausente = `String(row[id])`. */
     render?: (row: T, rowIndex: number) => React.ReactNode;
 }
 
+export interface SarakTableSort {
+    columnId: string;
+    direction: 'asc' | 'desc';
+}
+
+export interface TableRowEntry<T> {
+    row: T;
+    /** Posição da linha antes da ordenação local. */
+    index: number;
+}
+
+export const defaultTableRowKey = <T,>(row: T, index: number): React.Key => {
+    if (typeof row !== 'object' || row === null || !('id' in row)) return index;
+    const id = (row as { id?: unknown }).id;
+    return typeof id === 'string' || typeof id === 'number' ? id : index;
+};
+
+export const nextTableSort = (current: SarakTableSort | null, columnId: string): SarakTableSort | null => {
+    if (current?.columnId !== columnId) return { columnId, direction: 'asc' };
+    if (current.direction === 'asc') return { columnId, direction: 'desc' };
+    return null;
+};
+
+const compareSortValues = (left: unknown, right: unknown): number => {
+    if (Object.is(left, right)) return 0;
+    if (left === null || left === undefined) return -1;
+    if (right === null || right === undefined) return 1;
+    if (typeof left === 'number' && typeof right === 'number') return left - right;
+    if (typeof left === 'boolean' && typeof right === 'boolean') return Number(left) - Number(right);
+
+    const leftValue = left instanceof Date ? left.getTime() : String(left);
+    const rightValue = right instanceof Date ? right.getTime() : String(right);
+    if (typeof leftValue === 'number' && typeof rightValue === 'number') return leftValue - rightValue;
+    return String(leftValue).localeCompare(String(rightValue), undefined, { numeric: true, sensitivity: 'base' });
+};
+
+export const sortTableRows = <T,>(
+    rows: T[],
+    sort: SarakTableSort | null,
+    getSortValue: (row: T, columnId: string) => unknown,
+): Array<TableRowEntry<T>> => {
+    const entries = rows.map((row, index) => ({ row, index }));
+    if (!sort) return entries;
+
+    const direction = sort.direction === 'asc' ? 1 : -1;
+    return entries.sort((left, right) => {
+        const compared = compareSortValues(
+            getSortValue(left.row, sort.columnId),
+            getSortValue(right.row, sort.columnId),
+        );
+        return compared * direction || left.index - right.index;
+    });
+};
+
 export const DEFAULT_COLUMN_WIDTH = 160;
 export const MIN_COLUMN_WIDTH = 60;
+export const SELECTION_COLUMN_WIDTH = 48;
 
 /** Resolve a largura efetiva da coluna a partir do estado controlado + default. */
 export const widthOf = <T,>(column: SarakColumn<T>, widths: Record<string, number>): number =>
     widths[column.id] ?? column.width ?? DEFAULT_COLUMN_WIDTH;
+
+export const pinnedStyle = <T,>(
+    column: SarakColumn<T>,
+    offsets: PinnedOffsets,
+    background: string,
+    selectionWidth = 0,
+): React.CSSProperties => {
+    if (column.pinned === 'left') {
+        return { position: 'sticky', left: offsets.left[column.id] + selectionWidth, zIndex: 2, background };
+    }
+    if (column.pinned === 'right') {
+        return { position: 'sticky', right: offsets.right[column.id], zIndex: 2, background };
+    }
+    return {};
+};
 
 /** Reordena `order` movendo `fromId` para a posição de `toId` (imutável). */
 export const reorder = (order: string[], fromId: string, toId: string): string[] => {

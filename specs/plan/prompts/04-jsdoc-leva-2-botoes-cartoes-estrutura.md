@@ -23,6 +23,10 @@ dos componentes desta leva, mais os artefatos gerados por regeneração
 **Componentes desta leva:** `SarakButton`, `SarakIconButton`, `SarakIcon`,
 `ExpandableCard`, `ImageCard`, `SarakTitleCard`, `SarakSearchCard`,
 `SarakEmptyState`, `SarakAccordion`, `SarakSplitPane`.
+**Como escrever, e isto é regra, não estilo:** o JSDoc desta base é em **português**
+— é o que o catálogo publica ao consumidor. Não traduza nem reescreva bloco que já
+exista: só acrescente o que falta. E confira o **teto de 250 linhas** do arquivo antes
+de comentar — comentário conta, e arquivo perto do teto exige extrair antes.
 **Fora do escopo:** mudar nome, tipo, valor padrão, ordem ou comportamento de
 qualquer prop; renomear qualquer coisa; tocar em componente fora da lista. Se
 achar defeito, **anote no resumo em "Achados fora do escopo" e não conserte**.

@@ -445,13 +445,18 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | --- | --- | --- | --- |
 | `columns` | `Array<SarakColumn<T>>` | sim | Definição declarativa das colunas (ordem inicial = ordem do array). |
 | `rows` | `T[]` | sim | Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. |
-| `rowHeight` | `number` | não | Altura de cada linha em px (default: 44). |
-| `headerHeight` | `number` | não | Altura do cabeçalho em px (default: 44). |
-| `height` | `number \| string` | não | Altura da janela de scroll (default: 100% do contêiner pai). |
-| `overscan` | `number` | não | Linhas extra montadas fora da viewport (default: 8). |
-| `getRowKey` | `(row: T, index: number) => React.Key` | não | Chave estável da linha (default: índice). |
-| `onColumnResize` | `(columnId: string, width: number) => void` | não | Notifica nova largura ao soltar o handle de resize. |
-| `onColumnReorder` | `(fromId: string, toId: string) => void` | não | Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. |
+| `rowHeight` | `number` | não |  |
+| `headerHeight` | `number` | não |  |
+| `height` | `number \| string` | não |  |
+| `overscan` | `number` | não |  |
+| `getRowKey` | `(row: T, index: number) => React.Key` | não | Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. |
+| `sort` | `SarakTableSort \| null` | não | Omitido, ordena localmente; passe null para controlar o estado sem ordenação. |
+| `onSortChange` | `(sort: SarakTableSort \| null) => void` | não | Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. |
+| `selectable` | `boolean` | não | Habilita a seleção de linhas e a caixa das linhas visíveis. |
+| `selectedKeys` | `React.Key[]` | não | Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. |
+| `onSelectionChange` | `(selectedKeys: React.Key[]) => void` | não | Recebe as chaves selecionadas atualizadas. |
+| `onColumnResize` | `(columnId: string, width: number) => void` | não |  |
+| `onColumnReorder` | `(fromId: string, toId: string) => void` | não |  |
 | `responsive` | `boolean` | não | L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. |
 | `className` | `string` | não |  |
 
@@ -991,7 +996,7 @@ Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
 ### SarakTable
 
-Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
+Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTableProps.ts`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
@@ -999,6 +1004,12 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 | `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
 | `label` | `string` | não |  |
 | `mapping` | `Record<string, string>` | não |  |
+| `getRowKey` | `(row: TData, index: number) => Key` | não | Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. |
+| `sort` | `SarakTableSort \| null` | não | Omitido, ordena localmente; passe null para controlar o estado sem ordenação. |
+| `onSortChange` | `(sort: SarakTableSort \| null) => void` | não | Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. |
+| `selectable` | `boolean` | não | Habilita a seleção de linhas e a caixa das linhas visíveis. |
+| `selectedKeys` | `Key[]` | não | Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. |
+| `onSelectionChange` | `(selectedKeys: Key[]) => void` | não | Recebe as chaves selecionadas atualizadas. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |

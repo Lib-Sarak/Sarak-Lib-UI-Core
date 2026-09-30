@@ -1,22 +1,49 @@
 import React from 'react';
+import { SarakCheckbox } from '../Inputs/SarakCheckbox';
+import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
+import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
 
-/**
- * SarakTableCards — degradação mobile do `SarakTable` genérico (Spec 40.3 — L3).
- *
- * Mesmo princípio do `SarakDataCards` (Spec 40.2), estendido ao denso genérico que o
- * manifesto/consumidor usa: no celular uma tabela larga é ilegível e transborda a página.
- * Aqui cada LINHA vira um CARD empilhado com pares rótulo/valor, reusando as MESMAS colunas
- * e rótulos da tabela — sem o consumidor escrever CSS. Zero Hardcode: superfície/espaçamento
- * por tokens `--sarak-*`; estrutura (flex/gap/padding) inline (o auditor trata flex/spacing
- * EM CLASSE como hardcode estrutural nos átomos).
- */
+export interface SarakTableSelectionCheckboxProps {
+    label: string;
+    checked: boolean;
+    indeterminate?: boolean;
+    disabled?: boolean;
+    onChange: (checked: boolean) => void;
+}
+
+export function SarakTableSelectionCheckbox({
+    label,
+    checked,
+    indeterminate = false,
+    disabled = false,
+    onChange,
+}: SarakTableSelectionCheckboxProps) {
+    return (
+        <SarakCheckbox
+            aria-label={label}
+            checked={checked}
+            indeterminate={indeterminate}
+            disabled={disabled}
+            onChange={(event) => onChange(event.currentTarget.checked)}
+        />
+    );
+}
+
 export interface SarakTableCardsProps<T extends Record<string, unknown>> {
     rows: T[];
-    /** Chaves das colunas (mesma ordem da tabela). */
     columns: string[];
-    /** Rótulo legível por coluna (mesmo `columnLabels` da tabela). */
     columnLabels: Record<string, string>;
     loading?: boolean;
+    rowKeys?: React.Key[];
+    sort?: SarakTableSort | null;
+    onSort?: (columnId: string) => void;
+    sortableColumns?: string[];
+    selectable?: boolean;
+    selectedKeys?: Set<React.Key>;
+    allVisibleSelected?: boolean;
+    partiallySelected?: boolean;
+    onToggleRow?: (key: React.Key, checked: boolean) => void;
+    onToggleAll?: (checked: boolean) => void;
 }
 
 /** Valor exibido de uma célula — booleano vira Ativo/Inativo (paridade com a tabela). */
@@ -42,29 +69,74 @@ export function SarakTableCards<T extends Record<string, unknown>>({
     columns,
     columnLabels,
     loading = false,
+    rowKeys,
+    sort = null,
+    onSort,
+    sortableColumns = [],
+    selectable = false,
+    selectedKeys = new Set<React.Key>(),
+    allVisibleSelected = false,
+    partiallySelected = false,
+    onToggleRow,
+    onToggleAll,
 }: SarakTableCardsProps<T>) {
-    const items = loading ? Array.from({ length: 3 }, (_, i) => ({ __skeleton: i } as unknown as T)) : rows;
+    const items = loading ? Array.from({ length: 3 }, (_, index) => ({ __skeleton: index } as unknown as T)) : rows;
+    const canSelect = selectable && !loading;
 
     return (
-        <div
-            role="list"
-            data-sarak-tablecards="true"
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', maxWidth: '100%' }}
-        >
-            {items.map((row, idx) => (
-                <div key={String((row as Record<string, unknown>).id ?? idx)} role="listitem" style={cardStyle}>
-                    {columns.map((col) => (
-                        <div key={col} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
-                            <span className="text-2xs font-black uppercase tracking-widest text-white/30">
-                                {columnLabels[col]}
-                            </span>
-                            <span className="text-sm break-words min-w-0 text-white/70">
-                                {loading ? '' : displayValue((row as Record<string, unknown>)[col])}
-                            </span>
-                        </div>
+        <div data-sarak-tablecards="true" style={{ maxWidth: '100%' }}>
+            {selectable && (
+                <div role="group" aria-label="Seleção das linhas visíveis">
+                    <SarakTableSelectionCheckbox
+                        label="Selecionar todas as linhas visíveis"
+                        checked={allVisibleSelected}
+                        indeterminate={partiallySelected}
+                        disabled={loading || rows.length === 0}
+                        onChange={(checked) => onToggleAll?.(checked)}
+                    />
+                </div>
+            )}
+            {sortableColumns.length > 0 && (
+                <div role="group" aria-label="Ordenação por coluna" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                    {sortableColumns.map((columnId) => (
+                        <SarakTableSortButton
+                            key={columnId}
+                            columnId={columnId}
+                            label={columnLabels[columnId]}
+                            sort={sort}
+                            onSort={(id) => onSort?.(id)}
+                        />
                     ))}
                 </div>
-            ))}
+            )}
+            <div role="list" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', maxWidth: '100%' }}>
+                {items.map((row, index) => {
+                    const rowId = row.id;
+                    const rowKey = rowKeys?.[index]
+                        ?? (typeof rowId === 'string' || typeof rowId === 'number' ? rowId : index);
+                    return (
+                        <div key={rowKey} role="listitem" style={cardStyle}>
+                            {canSelect && (
+                                <SarakTableSelectionCheckbox
+                                    label={`Selecionar linha ${String(rowKey)}`}
+                                    checked={selectedKeys.has(rowKey)}
+                                    onChange={(checked) => onToggleRow?.(rowKey, checked)}
+                                />
+                            )}
+                            {columns.map((columnId) => (
+                                <div key={columnId} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
+                                    <span className="text-2xs font-black uppercase tracking-widest text-white/30">
+                                        {columnLabels[columnId]}
+                                    </span>
+                                    <span className="text-sm break-words min-w-0 text-white/70">
+                                        {loading ? '' : displayValue(row[columnId])}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

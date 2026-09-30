@@ -5,6 +5,17 @@ import SarakDataTableImpl from '../SarakDataTableImpl';
 import type { SarakColumn } from '../columnModel';
 import { DeviceProvider } from '../../../../../core/Provider/DeviceProvider';
 
+vi.mock('@tanstack/react-virtual', () => ({
+    useVirtualizer: ({ count, estimateSize }: { count: number; estimateSize: () => number }) => {
+        const size = estimateSize();
+        return {
+            getTotalSize: () => count * size,
+            getVirtualItems: () => Array.from({ length: count }, (_, index) => ({ index, key: index, start: index * size, size })),
+            measureElement: () => undefined,
+        };
+    },
+}));
+
 interface Row {
     name: string;
     role: string;
@@ -13,8 +24,13 @@ interface Row {
 const rows: Row[] = Array.from({ length: 500 }, (_, i) => ({ name: `User ${i}`, role: 'admin' }));
 
 const columns: Array<SarakColumn<Row>> = [
-    { id: 'name', header: 'Nome', width: 160, pinned: 'left' },
+    { id: 'name', header: 'Nome', width: 160, pinned: 'left', sortable: true },
     { id: 'role', header: 'Papel', width: 200 },
+];
+
+const interactionRows: Row[] = [
+    { name: 'Beto', role: 'admin' },
+    { name: 'Ana', role: 'analista' },
 ];
 
 const headerCell = (id: string) =>
@@ -66,6 +82,51 @@ describe('Spec 12 (Onda 9) — SarakDataTable: colunas avançadas', () => {
         );
         expect(headers).toEqual(['role', 'name']);
     });
+
+    it('ordena localmente em crescente, decrescente e sem ordenação', () => {
+        const { container } = render(<SarakDataTableImpl columns={columns} rows={interactionRows} />);
+        const readNames = () => Array.from(container.querySelectorAll('[role="cell"][data-column-id="name"]'))
+            .map((cell) => cell.textContent);
+        const sortButton = screen.getByRole('button', { name: 'Ordenar por name' });
+
+        fireEvent.click(sortButton);
+        expect(readNames()).toEqual(['Ana', 'Beto']);
+        fireEvent.click(sortButton);
+        expect(readNames()).toEqual(['Beto', 'Ana']);
+        fireEvent.click(sortButton);
+        expect(readNames()).toEqual(['Beto', 'Ana']);
+    });
+
+    it('com sort controlado, delega a nova direção e mantém a ordem recebida', () => {
+        const onSortChange = vi.fn();
+        const { container } = render(
+            <SarakDataTableImpl
+                columns={columns}
+                rows={interactionRows}
+                sort={{ columnId: 'name', direction: 'asc' }}
+                onSortChange={onSortChange}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole('button', { name: 'Ordenar por name' }));
+
+        expect(onSortChange).toHaveBeenCalledWith({ columnId: 'name', direction: 'desc' });
+        expect(Array.from(container.querySelectorAll('[role="cell"][data-column-id="name"]'))
+            .map((cell) => cell.textContent)).toEqual(['Beto', 'Ana']);
+    });
+
+    it('seleciona uma linha, mostra seleção parcial e marca as linhas visíveis', () => {
+        const onSelectionChange = vi.fn();
+        render(<SarakDataTableImpl columns={columns} rows={interactionRows} selectable onSelectionChange={onSelectionChange} />);
+
+        fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar linha 0' }));
+        expect(onSelectionChange).toHaveBeenLastCalledWith([0]);
+        expect((screen.getByRole('checkbox', { name: 'Selecionar todas as linhas visíveis' }) as HTMLInputElement).indeterminate).toBe(true);
+
+        fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar todas as linhas visíveis' }));
+        expect(onSelectionChange).toHaveBeenLastCalledWith([0, 1]);
+        expect(screen.getByRole('checkbox', { name: 'Selecionar linha 1' })).toBeChecked();
+    });
 });
 
 describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mobile-usável)', () => {
@@ -83,6 +144,22 @@ describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mob
         );
         expect(container.querySelector('[data-sarak-datacards="true"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-datatable="true"]')).toBeNull();
+    });
+
+    it('no modo cartão, mantém os controles de ordenação e seleção', () => {
+        const { container } = render(
+            <DeviceProvider overrideDevice="smartphone">
+                <SarakDataTableImpl columns={columns} rows={interactionRows} selectable />
+            </DeviceProvider>,
+        );
+
+        fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar linha 0' }));
+        fireEvent.click(screen.getByRole('button', { name: 'Ordenar por name' }));
+
+        expect(container.querySelector('[data-sarak-datacards="true"]')).not.toBeNull();
+        expect(screen.getByRole('checkbox', { name: 'Selecionar linha 0' })).toBeChecked();
+        expect(screen.getByText('Ana')).toBeInTheDocument();
+        expect(screen.getByText('Beto')).toBeInTheDocument();
     });
 
     it('o container de cards contém o scroll (overflow-x hidden + maxWidth 100%) — sem overflow da página', () => {

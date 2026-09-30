@@ -615,7 +615,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **302** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **303** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (90)
 
@@ -638,7 +638,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Core | **SarakShell** | `children` · `brand` · `extraToolbarItems` · `user` · `logout` · `token` · `authApi` |
 | Core | **SarakUIProvider** | `children` · `discoveryEndpoints` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
-| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `onColumnResize` · `onColumnReorder` · `responsive` · `className` |
+| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `className` |
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `className` |
 | DataDisplay | **SarakSparkline** | `data` · `variant` · `height` · `strokeWidth` · `fillOpacity` · `label` · `className` · `style` |
 | DataDisplay | **SarakTreeView** | `data` · `manifest` · `lazyLoadingIcon` · `onExpand` · `selectedIds` · `onSelect` · `className` |
@@ -709,7 +709,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakManagementGrid** | `endpoint` · `groupBy` · `ghostGroups` · `mapping` · `headerActions` · `groupActions` · `formMapping` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
 | Templates | **SarakStats** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` · `responsive` |
+| Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `role` · `density` · `importance` · `responsive` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `variant` · `fullWidth` · `className` · `listClassName` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |

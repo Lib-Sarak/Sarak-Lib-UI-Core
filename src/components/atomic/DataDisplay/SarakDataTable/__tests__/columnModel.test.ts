@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { reorder, computeOffsets, widthOf, type SarakColumn } from '../columnModel';
+import { reorder, computeOffsets, widthOf, nextTableSort, sortTableRows, pinnedStyle, type SarakColumn } from '../columnModel';
 
 interface Row {
     name: string;
@@ -39,5 +39,31 @@ describe('Spec 12 (Onda 9) — columnModel', () => {
         ];
         const offsets = computeOffsets(stacked, {});
         expect(offsets.left).toEqual({ a: 0, b: 100 });
+    });
+
+    it('nextTableSort percorre crescente, decrescente e sem ordenação', () => {
+        const ascending = nextTableSort(null, 'name');
+        const descending = nextTableSort(ascending, 'name');
+        expect(ascending).toEqual({ columnId: 'name', direction: 'asc' });
+        expect(descending).toEqual({ columnId: 'name', direction: 'desc' });
+        expect(nextTableSort(descending, 'name')).toBeNull();
+        expect(nextTableSort(descending, 'role')).toEqual({ columnId: 'role', direction: 'asc' });
+    });
+
+    it('sortTableRows ordena por número e texto preservando a posição original nos empates', () => {
+        const records = [
+            { name: 'Beto', score: 2 },
+            { name: 'ana', score: 1 },
+            { name: 'Ana', score: 1 },
+        ];
+        expect(sortTableRows(records, { columnId: 'score', direction: 'asc' }, (row, id) => row[id as keyof typeof row])
+            .map(({ row }) => row.name)).toEqual(['ana', 'Ana', 'Beto']);
+        expect(sortTableRows(records, { columnId: 'name', direction: 'desc' }, (row, id) => row[id as keyof typeof row])
+            .map(({ row }) => row.name)).toEqual(['Beto', 'ana', 'Ana']);
+    });
+
+    it('pinnedStyle desloca a primeira coluna congelada após a coluna de seleção', () => {
+        expect(pinnedStyle(cols[0], computeOffsets(cols, {}), 'surface', 48).left).toBe(48);
+        expect(pinnedStyle(cols[2], computeOffsets(cols, {}), 'surface', 48).right).toBe(0);
     });
 });
