@@ -6,7 +6,9 @@ import { SarakInput } from '../Inputs/SarakInput';
 import { SarakMenuItem } from './SarakMenuItem';
 
 export interface ShellSearchWidgetProps {
+    /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
+    /** Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. */
     onClick: () => void;
 }
 

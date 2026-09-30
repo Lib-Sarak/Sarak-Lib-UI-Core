@@ -25,6 +25,10 @@ pergunte. Nada em `specs/`.
 `specs/specs/10-seguranca-e-acessibilidade.md` (o papel e o rótulo acessível de
 um indicador de progresso) · `src/components/atomic/Feedback/SarakSkeleton.tsx`,
 de onde você copia o idioma da categoria.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** tamanhos acompanham a escala já usada pelos átomos
 (pequeno, médio, grande), a cor vem de token e acompanha o tema, o componente
 tem rótulo acessível e respeita `prefers-reduced-motion`; teste 1:1; barril e

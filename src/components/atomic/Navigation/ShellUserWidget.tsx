@@ -6,8 +6,11 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface ShellUserWidgetProps {
+    /** Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. */
     user?: ShellUser;
+    /** Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. */
     logout?: () => void;
+    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 

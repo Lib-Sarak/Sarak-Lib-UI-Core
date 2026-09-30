@@ -53,9 +53,9 @@ autoradas: **93 a 98% dos valores diferem** do que a síntese produziria, e elas
 claro → escuro` devolve faixa de faixa, não o original. Com contraparte são dois conjuntos fixos, e alternar
 é reversível por construção — provado chave a chave.
 
-> **Opcional no TIPO, obrigatória no GATE.** Obrigatória no tipo quebraria os 18 legados e todo tema de
-> consumidor (**R33**). Quem exige é o `auditor_contraste`, com uma lista de isenção declarada que nasce com
-> exatamente os 18 e **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
+> **Opcional no TIPO, obrigatória no GATE.** Obrigatória no tipo quebraria todo tema de
+> consumidor (**R33**). Quem exige é o `auditor_contraste`, com uma lista de isenção declarada que
+> **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
 > permissivo, gate estrito, exceção visível e contável.
 
 **Os dois temas de referência têm contraparte autorada** — `minimalist-airy` e `sarak-sovereign`, o par
@@ -63,8 +63,11 @@ de `SARAK_REFERENCE_THEMES`. Não é detalhe: é o que torna segura a regra da �
 clona não tivesse contraparte, todo tema derivado dela herdaria o fallback que degrada, e a lib estaria
 recomendando exatamente o caminho que falha.
 
-**Quantos temas ainda estão isentos não se escreve aqui.** O `auditor_contraste` imprime o número a cada
-`npm run audit` — é a fonte viva. A contraparte autorada preserva a identidade do tema: fundos graduados em
+✅ **A lista de isenção encolheu até o fim.** `CONTRAPARTE_EXEMPTION_LIST`
+(`gates/scripts/audit/verify_contrast.ts`) está **vazia**: nenhum tema shippado é isento, e todos têm
+`contraparte` autorada — a exceção deixou de existir em vez de ser tolerada. A lista continua declarada no
+código, e é isso que torna visível qualquer tentativa de reabri-la; quem confere é o `npm run audit`, a
+fonte viva. A contraparte autorada preserva a identidade do tema: fundos graduados em
 camadas distintas e a família de matiz da própria marca atravessando os dois modos, em vez de convergir
 para uma paleta neutra. A marca (`primaryColor` e afins) **não** entra na contraparte; o uso *funcional*
 de uma cor de marca que perderia contraste no modo oposto — como a cor do item de navegação ativo — sim.
@@ -200,6 +203,14 @@ ela impede que a incompletude seja silenciosa. A diferença é de projeto: forç
 motivo legítimo para um tema parcial.
 
 ## 4.3 Aplicar — `activeThemeId` × `initialTheme`
+
+> **Um id de tema que não existe mais não quebra nada — e não passa em silêncio.** Venha ele de
+> `activeThemeId`, de `initialTheme` ou da persistência do próprio consumidor, a lib **nunca fica sem tema e
+> nunca lança**: cai no tema de referência do **modo pedido** — o de `config.mode` quando há um explícito,
+> senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
+> o id que não encontrou. `getThemePreset` (`presets/themes/reference.ts:18`) devolve `undefined` para id
+> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `THEME_PRESET_IDS`
+> e `GLOBAL_THEMES`.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
@@ -443,25 +454,18 @@ fora da origem do consumidor não entra no catálogo shippado. O predicado de m�
 de apontar para a mídia dele —, mas o que a **lib** entrega pronto sai do motor de textura ou de um ativo
 do próprio consumidor.
 
-## 5.2 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
+## 5.2 A diversidade do catálogo é MEDIDA, não afirmada
 
-Cinco temas novos entraram — `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
-`forja-ultravioleta`, `grafite-puro`. **Nenhum é `SARAK_REFERENCE_THEMES`** *(decisão do dono)*: a referência
-segue `minimalist-airy` + `sarak-sovereign`, porque é dali que o consumidor clona (§4.1) e trocá-la mudaria a
-base de quem já integrou.
+**A referência não muda com o catálogo.** `SARAK_REFERENCE_THEMES` segue sendo `minimalist-airy` +
+`sarak-sovereign` *(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
+quem já integrou. O catálogo ao redor dela pode crescer, encolher ou ser reautorado — e já foi as três
+coisas.
 
-**O que motivou os cinco.** Medido antes de criá-los, o catálogo de 18 morava num canto só:
-
-| Concentração | 18 | 23 |
-|---|---|---|
-| `mode: dark` | 15 | 18 |
-| Primária com saturação **100** (neon puro) | 10 | **10** — nenhum novo entrou no padrão |
-| Família ciano + magenta | 8 | **8** — nenhum novo |
-| Claro com primária saturada (S ≥ 60) | **0** | **1** |
-| Fundo de luminosidade média (25 ≤ L ≤ 75) | **0** | **1** |
-
-**A biblioteca inteira morava em "escuro + neon + ciano/magenta"** — e isso aconteceu **sem** nunca ter havido
-gerador de paleta. Homogeneização não precisa de fórmula; basta ninguém medir.
+**O que a medição existe para impedir.** O catálogo já morou inteiro num canto só — escuro, primária neon,
+família ciano/magenta — e isso aconteceu **sem** nunca ter havido gerador de paleta. Homogeneização não
+precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se distribuem, não se escreve
+aqui:** é `THEME_PRESET_IDS`/`GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
+cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
 `navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
@@ -563,9 +567,10 @@ O critério de aceite desta spec, como procedimento:
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
    `THEME_PRESET_IDS` e importe em `GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
    (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
-   shippado também exige: `contraparte` autorada (§2.1), fundo de hover do item de navegação preenchido nas
-   duas orientações ([[05-cromo-e-slots]] §2.4), nenhuma mídia de terceiro (§5.1) e as posições de
-   preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
+   shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
+   navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não
+   declarado** ([[05-cromo-e-slots]] §2.4), `enabledLanguages` com os **seis** idiomas que a lib oferece,
+   nenhuma mídia de terceiro (§5.1) e as posições de preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
 
 Os passos 3-5 são exatamente o que os três gates da §6 cobram. Seguir o procedimento e passar nos gates
 são a mesma coisa dita de dois jeitos.

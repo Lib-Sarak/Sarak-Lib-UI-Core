@@ -25,6 +25,10 @@ nomes que estejam no `IconMap` (o contrato de ícones é fechado, com 100 nomes 
 `specs/specs/10-seguranca-e-acessibilidade.md` (papel e anúncio de mensagem
 importante) · `src/components/atomic/Feedback/SarakToast.tsx`, de onde você tira
 o vocabulário de intenção já em uso, para não inventar um segundo.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** as quatro intenções saem com cor de token e passam no
 contraste nos dois modos; o botão de fechar é `SarakIconButton`, não elemento
 cru; teste 1:1 cobrindo as quatro intenções, a ação e o fechamento;

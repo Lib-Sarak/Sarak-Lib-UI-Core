@@ -895,11 +895,17 @@ interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 declare const SarakIconButton: React__default.FC<SarakIconButtonProps>;
 
 interface SocialButtonProps {
+    /** Escolhe o ícone e o rótulo padrão do provedor; obrigatória. */
     provider: 'google' | 'github';
+    /** Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`. */
     variant: 'glass' | 'sovereign';
+    /** Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação. */
     onClick?: (provider: 'google' | 'github') => void;
+    /** Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor. */
     label?: string;
+    /** Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão. */
     hideLabel?: boolean;
+    /** Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas. */
     className?: string;
 }
 /**
@@ -1849,7 +1855,9 @@ interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
 declare const SarakMenuItem: React__default.FC<SarakMenuItemProps>;
 
 interface ShellSearchWidgetProps {
+    /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
+    /** Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. */
     onClick: () => void;
 }
 /**
@@ -1859,13 +1867,17 @@ interface ShellSearchWidgetProps {
 declare const ShellSearchWidget: React__default.FC<ShellSearchWidgetProps>;
 
 interface ShellThemeToggleProps {
+    /** Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 declare const ShellThemeToggle: React__default.FC<ShellThemeToggleProps>;
 
 interface ShellUserWidgetProps {
+    /** Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. */
     user?: ShellUser;
+    /** Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. */
     logout?: () => void;
+    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 /**
@@ -1875,6 +1887,7 @@ interface ShellUserWidgetProps {
 declare const ShellUserWidget: React__default.FC<ShellUserWidgetProps>;
 
 interface ShellLanguageSelectorProps {
+    /** Posiciona o seletor na barra ou na lateral; omitida, usa `horizontal`. Com zero ou um idioma habilitado, nada é renderizado. */
     variant?: 'horizontal' | 'vertical';
 }
 /**
@@ -2258,10 +2271,15 @@ interface SarakRichTextProps {
 declare const SarakRichText: React__default.FC<SarakRichTextProps>;
 
 interface FilterSelectProps {
+    /** Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória. */
     col: string;
+    /** Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`. */
     placeholder?: string;
+    /** Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. */
     filters: Record<string, string>;
+    /** Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor. */
     onChange: (col: string, value: string) => void;
+    /** Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia. */
     options: string[];
 }
 declare const FilterSelect: React__default.FC<FilterSelectProps>;
@@ -2416,12 +2434,19 @@ interface SarakCardGridProps<TData extends Record<string, unknown> = Record<stri
 declare const SarakCardGrid: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, filters, variant }: SarakCardGridProps<TData>) => react_jsx_runtime.JSX.Element;
 
 interface SarakStatsProps<TData extends Record<string, unknown>> {
+    /** Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. */
     endpoint?: string;
+    /** Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. */
     data?: TData;
+    /** Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. */
     label?: string;
+    /** Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. */
     mapping?: Record<string, string>;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 /**
@@ -2433,11 +2458,17 @@ interface SarakStatsProps<TData extends Record<string, unknown>> {
 declare const SarakStats: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data, label, mapping }: SarakStatsProps<TData>) => react_jsx_runtime.JSX.Element | null;
 
 interface SarakChartProps {
+    /** Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido. */
     endpoint: string;
+    /** Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão. */
     label?: string;
+    /** Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`. */
     mapping?: Record<string, string>;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 /**
@@ -2505,9 +2536,13 @@ interface SarakFormProps<TData extends Record<string, unknown>> {
 declare const SarakForm: <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, label, mapping, actions, mode, initialData, onSuccess, role, density, importance }: SarakFormProps<TData>) => react_jsx_runtime.JSX.Element;
 
 interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
+    /** Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. */
     endpoint: string;
+    /** Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. */
     groupBy: string;
+    /** Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. */
     ghostGroups?: string[];
+    /** Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. */
     mapping: {
         id: string;
         title: string;
@@ -2516,28 +2551,40 @@ interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
         description?: string;
         error?: string;
     };
+    /** Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. */
     headerActions?: {
         label: string;
         action: string;
     }[];
+    /** Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. */
     groupActions?: {
         label: string;
         icon?: 'plus' | 'settings';
         action: string;
     }[];
+    /** Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. */
     formMapping?: Record<string, string>;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakManagementGrid: <TItem extends Record<string, unknown> = Record<string, unknown>>({ endpoint, groupBy, ghostGroups, mapping, headerActions, groupActions, formMapping }: SarakManagementGridProps<TItem>) => react_jsx_runtime.JSX.Element;
 
 interface SarakChatProps {
+    /** Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. */
     endpoint: string;
+    /** Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. */
     modelsEndpoint?: string;
+    /** Nome exibido no cabeçalho; omitido, usa `AI Chat`. */
     label?: string;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakChat: React__default.FC<SarakChatProps>;
@@ -2614,18 +2661,30 @@ interface CatalogItem {
     [key: string]: unknown;
 }
 interface SarakCatalogGridProps {
+    /** Itens filtrados e exibidos; obrigatória. Cada registro precisa de `id` e `display_name`; a busca ignora `description` e outros campos. */
     items: CatalogItem[];
+    /** Exibe o indicador de carga no lugar de todo o catálogo; omitida, os itens são renderizados sem espera. */
     loading?: boolean;
+    /** Título obrigatório do catálogo; não há valor padrão e ele também fica oculto enquanto `loading` for verdadeiro. */
     title: string;
+    /** Texto complementar do cabeçalho; omitido, a linha de subtítulo não aparece. */
     subtitle?: string;
+    /** Mapeia cada valor de `item.category` para o rótulo do filtro; omitida, oferece apenas `all: 'Todos'`. Inclua `all` para manter o botão de mostrar tudo. */
     categories?: Record<string, string>;
+    /** Habilita o botão que chama a rotina de sincronização; omitida, o botão não aparece. Ele fica fixo no canto inferior direito. */
     onSync?: () => void;
-    renderCard?: (item: CatalogItem) => React__default.ReactNode;
+    /** Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`. */
+    renderCard?: (item: CatalogItem) => React$1.ReactNode;
+    /** Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. */
     emptyMessage?: string;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
+
 /**
  * SarakCatalogGrid (Industrial Template v9.5)
  *
@@ -3261,8 +3320,11 @@ declare const SarakPDFViewer: React$1.LazyExoticComponent<React$1.FC<SarakPDFVie
 type ChartDataItem = Record<string, unknown>;
 
 interface SarakChartEngineProps {
+    /** Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. */
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
+    /** Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. */
     data: ChartDataItem[];
+    /** Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. */
     config?: {
         xAxisKey?: string;
         dataKey?: string;
@@ -3297,9 +3359,13 @@ interface Message {
     timestamp: Date;
 }
 interface SarakChatEngineProps {
+    /** Histórico controlado pelo consumidor; obrigatório. O motor o renderiza como Markdown e rola para a última mensagem quando a lista muda. */
     messages: Message[];
+    /** Recebe o texto digitado; obrigatório. O consumidor precisa atualizar `messages` para que a resposta apareça. */
     onSendMessage: (text: string) => void;
+    /** Indica envio em andamento, mostra o indicador e bloqueia novo envio; omitida, vale `false`. */
     isLoading?: boolean;
+    /** Texto de orientação do campo de entrada; omitido, usa `Escreva sua mensagem...`. */
     placeholder?: string;
 }
 
@@ -3320,8 +3386,11 @@ declare const SarakChatEngine: React__default.FC<SarakChatEngineProps>;
 
 type ReactFlowProps = React__default.ComponentProps<typeof ReactFlow>;
 interface SarakFlowEngineProps {
+    /** Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. */
     nodes: NonNullable<ReactFlowProps['nodes']>;
+    /** Conexões existentes fornecidas ao React Flow; obrigatório, sem lista padrão. Use `[]` quando não houver conexões. */
     edges: NonNullable<ReactFlowProps['edges']>;
+    /** Recebe novas conexões criadas na tela; omitida, os nós e as conexões existentes continuam visíveis, mas não há callback do consumidor para persistir novas ligações. */
     onConnect?: ReactFlowProps['onConnect'];
 }
 

@@ -31,6 +31,10 @@ Cards.
 **Atenção ao gate:** subcomponente exposto por notação de ponto precisa chegar
 ao `barrel:check` e ao catálogo. Confira como o coletor enxerga as três peças
 **antes** de decidir onde os arquivos moram, e relate no resumo o que mediu.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** as três peças são opcionais e em qualquer ordem; o cartão
 respeita o raio, a sombra e a superfície do tema ativo; testes 1:1 cobrindo o
 cartão completo, só corpo, e a sobrescrita por `className`; `barrel:check` e

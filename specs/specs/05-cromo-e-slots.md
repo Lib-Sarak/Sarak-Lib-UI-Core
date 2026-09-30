@@ -269,10 +269,15 @@ caminho por classe.
 vencedor depender da ordem de iteração do mapa, não do autor do tema — é por isso que `navItemActiveColor`
 declara só `--sarak-nav-active-color`, e `--theme-primary` pertence a `primaryColor`.
 
-**O realce é visível em todo tema shippado, e isso é medido:** uma varredura do catálogo inteiro exige que
-o item ativo se distinga do inativo nas duas orientações, pelo fundo **ou** pelo texto, com distância
-perceptual (ΔE em Lab, acima do limiar de diferença perceptível) — não por desigualdade de valor nem por
-razão de luminância, que enganam em sentidos opostos. A legibilidade do texto ativo sobre o fundo efetivo
+**O realce é visível em todo tema shippado, e isso é medido — no ativo E no hover:** duas varreduras do
+catálogo inteiro (`SarakMenuItem.test.tsx`) exigem que o item **ativo** se distinga do inativo nas duas
+orientações, pelo fundo **ou** pelo texto, e que o **fundo de hover** se distinga do repouso nas duas
+orientações **e nos dois modos** — o nativo do tema e o oposto, como o Provider de fato o resolve. A régua
+é distância perceptual (ΔE em Lab, acima do limiar de diferença perceptível), não desigualdade de valor
+nem razão de luminância, que enganam em sentidos opostos. Cor não conversível (`hsl()`, `var()` não
+resolvido, gradiente) é **pulada com aviso**, nunca medida contra preto inventado. A varredura de hover tem
+lista de exclusão declarada — hoje **vazia** —, e um teste próprio impede que ela esvazie a varredura em
+silêncio. A legibilidade do texto ativo sobre o fundo efetivo
 é do `auditor_contraste`.
 
 > **`hidden` some com a região mesmo havendo conteúdo.** Quem decide sumir é o token, não a ausência do

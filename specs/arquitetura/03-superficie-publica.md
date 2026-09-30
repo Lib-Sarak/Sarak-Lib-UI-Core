@@ -228,6 +228,22 @@ formas, e as duas props são opcionais:
 Sem nenhuma das duas props, `SarakTable` e `SarakCardGrid` não buscam e não ficam presos em carregamento.
 A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridState`, `useSarakStatsData`).
 
+## 6.4 O contrato de valor dos átomos de escolha
+
+`SarakCheckbox` e `SarakRadio` seguem o contrato do React, e o seguem **inteiro**:
+
+- **quem passa `checked` governa** — pele, `aria-checked` e o `<input>` seguem esse valor, e o componente
+  não guarda estado próprio;
+- **sem `checked`**, o componente guarda o valor, semeado por `defaultChecked`;
+- **a pele visual é sempre o valor efetivo**, nos dois modos — nunca o estado interno isolado;
+- o `onChange` de quem chama é chamado nos dois modos.
+
+⚠️ **O `SarakSwitch` NÃO segue isso: ele é sempre controlado.** Não tem `defaultChecked` nem estado próprio,
+e sem `checked` fica em `false` e não muda ao clique. A divergência é dentro da mesma família de átomos de
+escolha, e é exatamente o tipo de coisa que o consumidor descobre do jeito difícil — por isso está escrita
+aqui, e não só no JSDoc de cada um.
+
+
 # 7. Fronteiras de bundle — a parte MEDIDA
 
 O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1%)**, medido em app mínimo. Três hipóteses foram investigadas, e **duas foram refutadas** — o que é a parte mais útil deste registro:

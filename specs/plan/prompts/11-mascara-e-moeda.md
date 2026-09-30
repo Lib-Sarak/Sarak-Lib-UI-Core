@@ -32,6 +32,10 @@ com presets nomeados para os documentos e telefones brasileiros; a moeda usa a
 formatação nativa do JavaScript, com moeda e idioma vindos de prop, e valor
 padrão coerente com o que a lib já usa para idioma. Nenhum texto fixo em
 português no componente.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** testes cobrindo digitar do zero, colar valor completo, apagar
 no meio, cursor depois de cada uma dessas operações, valor limpo entregue a quem
 chama, e moeda com zero, negativo e casas decimais; nenhum `<input>` cru; sem

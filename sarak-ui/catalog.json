@@ -450,31 +450,31 @@
           "name": "col",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória."
         },
         {
           "name": "placeholder",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`."
         },
         {
           "name": "filters",
           "type": "Record<string, string>",
           "optional": false,
-          "doc": ""
+          "doc": "Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe."
         },
         {
           "name": "onChange",
           "type": "(col: string, value: string) => void",
           "optional": false,
-          "doc": ""
+          "doc": "Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor."
         },
         {
           "name": "options",
           "type": "string[]",
           "optional": false,
-          "doc": ""
+          "doc": "Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia."
         }
       ]
     },
@@ -1226,73 +1226,73 @@
     },
     "SarakCatalogGrid": {
       "propsInterface": "SarakCatalogGridProps",
-      "source": "src/components/atomic/Templates/SarakCatalogGrid.tsx",
+      "source": "src/components/atomic/Templates/SarakCatalogGridProps.ts",
       "props": [
         {
           "name": "items",
           "type": "CatalogItem[]",
           "optional": false,
-          "doc": ""
+          "doc": "Itens filtrados e exibidos; obrigatória. Cada registro precisa de `id` e `display_name`; a busca ignora `description` e outros campos."
         },
         {
           "name": "loading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Exibe o indicador de carga no lugar de todo o catálogo; omitida, os itens são renderizados sem espera."
         },
         {
           "name": "title",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Título obrigatório do catálogo; não há valor padrão e ele também fica oculto enquanto `loading` for verdadeiro."
         },
         {
           "name": "subtitle",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto complementar do cabeçalho; omitido, a linha de subtítulo não aparece."
         },
         {
           "name": "categories",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Mapeia cada valor de `item.category` para o rótulo do filtro; omitida, oferece apenas `all: 'Todos'`. Inclua `all` para manter o botão de mostrar tudo."
         },
         {
           "name": "onSync",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Habilita o botão que chama a rotina de sincronização; omitida, o botão não aparece. Ele fica fixo no canto inferior direito."
         },
         {
           "name": "renderCard",
           "type": "(item: CatalogItem) => React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`."
         },
         {
           "name": "emptyMessage",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -1304,37 +1304,37 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -1346,19 +1346,19 @@
           "name": "type",
           "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot'",
           "optional": false,
-          "doc": ""
+          "doc": "Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha."
         },
         {
           "name": "data",
           "type": "ChartDataItem[]",
           "optional": false,
-          "doc": ""
+          "doc": "Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas."
         },
         {
           "name": "config",
           "type": "{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' | 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }",
           "optional": true,
-          "doc": ""
+          "doc": "Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação."
         }
       ]
     },
@@ -1370,37 +1370,37 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação."
         },
         {
           "name": "modelsEndpoint",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Nome exibido no cabeçalho; omitido, usa `AI Chat`."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -1412,25 +1412,25 @@
           "name": "messages",
           "type": "Message[]",
           "optional": false,
-          "doc": ""
+          "doc": "Histórico controlado pelo consumidor; obrigatório. O motor o renderiza como Markdown e rola para a última mensagem quando a lista muda."
         },
         {
           "name": "onSendMessage",
           "type": "(text: string) => void",
           "optional": false,
-          "doc": ""
+          "doc": "Recebe o texto digitado; obrigatório. O consumidor precisa atualizar `messages` para que a resposta apareça."
         },
         {
           "name": "isLoading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Indica envio em andamento, mostra o indicador e bloqueia novo envio; omitida, vale `false`."
         },
         {
           "name": "placeholder",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto de orientação do campo de entrada; omitido, usa `Escreva sua mensagem...`."
         }
       ]
     },
@@ -1906,19 +1906,19 @@
           "name": "nodes",
           "type": "NonNullable<ReactFlowProps['nodes']>",
           "optional": false,
-          "doc": ""
+          "doc": "Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós."
         },
         {
           "name": "edges",
           "type": "NonNullable<ReactFlowProps['edges']>",
           "optional": false,
-          "doc": ""
+          "doc": "Conexões existentes fornecidas ao React Flow; obrigatório, sem lista padrão. Use `[]` quando não houver conexões."
         },
         {
           "name": "onConnect",
           "type": "ReactFlowProps['onConnect']",
           "optional": true,
-          "doc": ""
+          "doc": "Recebe novas conexões criadas na tela; omitida, os nós e as conexões existentes continuam visíveis, mas não há callback do consumidor para persistir novas ligações."
         }
       ]
     },
@@ -2277,61 +2277,61 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos."
         },
         {
           "name": "groupBy",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`."
         },
         {
           "name": "ghostGroups",
           "type": "string[]",
           "optional": true,
-          "doc": ""
+          "doc": "Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados."
         },
         {
           "name": "mapping",
           "type": "{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }",
           "optional": false,
-          "doc": ""
+          "doc": "Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item."
         },
         {
           "name": "headerActions",
           "type": "{ label: string; action: string; }[]",
           "optional": true,
-          "doc": ""
+          "doc": "Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário."
         },
         {
           "name": "groupActions",
           "type": "{ label: string; icon?: 'plus' | 'settings'; action: string; }[]",
           "optional": true,
-          "doc": ""
+          "doc": "Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário."
         },
         {
           "name": "formMapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -3224,43 +3224,43 @@
           "name": "endpoint",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento."
         },
         {
           "name": "data",
           "type": "TData",
           "optional": true,
-          "doc": ""
+          "doc": "Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -3851,7 +3851,7 @@
           "name": "variant",
           "type": "'horizontal' | 'vertical'",
           "optional": true,
-          "doc": ""
+          "doc": "Posiciona o seletor na barra ou na lateral; omitida, usa `horizontal`. Com zero ou um idioma habilitado, nada é renderizado."
         }
       ]
     },
@@ -3863,13 +3863,13 @@
           "name": "variant",
           "type": "'bar' | 'icon'",
           "optional": true,
-          "doc": ""
+          "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
         },
         {
           "name": "onClick",
           "type": "() => void",
           "optional": false,
-          "doc": ""
+          "doc": "Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados."
         }
       ]
     },
@@ -3881,7 +3881,7 @@
           "name": "variant",
           "type": "'horizontal' | 'vertical' | 'mini'",
           "optional": true,
-          "doc": ""
+          "doc": "Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário."
         }
       ]
     },
@@ -3893,19 +3893,19 @@
           "name": "user",
           "type": "ShellUser",
           "optional": true,
-          "doc": ""
+          "doc": "Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário."
         },
         {
           "name": "logout",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado."
         },
         {
           "name": "variant",
           "type": "'horizontal' | 'vertical' | 'mini'",
           "optional": true,
-          "doc": ""
+          "doc": "Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos."
         }
       ]
     },
@@ -3917,37 +3917,37 @@
           "name": "provider",
           "type": "'google' | 'github'",
           "optional": false,
-          "doc": ""
+          "doc": "Escolhe o ícone e o rótulo padrão do provedor; obrigatória."
         },
         {
           "name": "variant",
           "type": "'glass' | 'sovereign'",
           "optional": false,
-          "doc": ""
+          "doc": "Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`."
         },
         {
           "name": "onClick",
           "type": "(provider: 'google' | 'github') => void",
           "optional": true,
-          "doc": ""
+          "doc": "Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor."
         },
         {
           "name": "hideLabel",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas."
         }
       ]
     }

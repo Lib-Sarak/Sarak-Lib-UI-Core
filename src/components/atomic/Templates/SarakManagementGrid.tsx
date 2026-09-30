@@ -22,9 +22,13 @@ import { ManagementGroupCard } from './components/ManagementGroupCard';
 import { useManagementGrid } from './hooks/useManagementGrid';
 
 export interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
+    /** Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. */
     endpoint: string;
+    /** Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. */
     groupBy: string;
+    /** Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. */
     ghostGroups?: string[];
+    /** Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. */
     mapping: {
         id: string;
         title: string;
@@ -33,18 +37,24 @@ export interface SarakManagementGridProps<TItem extends Record<string, unknown>>
         description?: string;
         error?: string;
     };
+    /** Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. */
     headerActions?: {
         label: string;
         action: string;
     }[];
+    /** Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. */
     groupActions?: {
         label: string;
         icon?: 'plus' | 'settings';
         action: string;
     }[];
+    /** Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. */
     formMapping?: Record<string, string>;
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 

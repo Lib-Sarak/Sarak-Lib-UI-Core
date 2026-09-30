@@ -10,6 +10,7 @@ import { SarakButton } from '../Buttons/SarakButton';
 import { SarakMenuItem } from './SarakMenuItem';
 
 export interface ShellLanguageSelectorProps {
+    /** Posiciona o seletor na barra ou na lateral; omitida, usa `horizontal`. Com zero ou um idioma habilitado, nada é renderizado. */
     variant?: 'horizontal' | 'vertical';
 }
 

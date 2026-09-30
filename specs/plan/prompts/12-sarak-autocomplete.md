@@ -32,6 +32,10 @@ busca, ele a chama com o que foi digitado, espera o resultado e mostra estado de
 carregando, de vazio e de erro. Espera entre a digitação e a chamada, com o
 intervalo vindo de prop. Digitação antiga que responde depois da nova é
 descartada.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** teclado completo (setas, Enter, Esc, Tab) e papéis acessíveis
 corretos; testes cobrindo lista fixa, busca assíncrona, resultado vazio, erro na
 busca, resposta fora de ordem descartada e seleção por teclado; nenhuma chamada

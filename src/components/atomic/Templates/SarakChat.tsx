@@ -7,11 +7,17 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface SarakChatProps {
+  /** Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. */
   endpoint: string;
+  /** Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. */
   modelsEndpoint?: string;
+  /** Nome exibido no cabeçalho; omitido, usa `AI Chat`. */
   label?: string;
+  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
   role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
   density?: 'compact' | 'standard' | 'spacious';
+  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
   importance?: 'hero' | 'base' | 'subtle';
 }
 

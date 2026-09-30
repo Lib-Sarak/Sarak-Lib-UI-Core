@@ -6,6 +6,7 @@ import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakMenuItem } from './SarakMenuItem';
 
 export interface ShellThemeToggleProps {
+    /** Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 

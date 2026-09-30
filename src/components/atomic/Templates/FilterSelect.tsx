@@ -2,10 +2,15 @@ import React from "react";
 import { SarakSelect } from "../Inputs/SarakSelect";
 
 export interface FilterSelectProps {
+    /** Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória. */
     col: string;
+    /** Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`. */
     placeholder?: string;
+    /** Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. */
     filters: Record<string, string>;
+    /** Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor. */
     onChange: (col: string, value: string) => void;
+    /** Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia. */
     options: string[];
 }
 

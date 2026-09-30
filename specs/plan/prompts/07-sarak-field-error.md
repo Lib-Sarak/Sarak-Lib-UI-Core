@@ -28,6 +28,10 @@ sentido, é tarefa seguinte. Criar token novo. Nada em `specs/`.
 anunciada por leitor de tela e associável ao campo) · como
 `src/components/atomic/Inputs/SarakInput.tsx` desenha hoje o texto de `error` —
 o componente novo tem de sair igual, e você diz no resumo se saiu.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** o componente aceita a mensagem e o id do campo que descreve,
 usa o papel acessível correto, não ocupa espaço quando não há erro; teste 1:1
 cobrindo com mensagem, sem mensagem e a associação com o campo; barril e

@@ -9,11 +9,17 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export interface SocialButtonProps {
+    /** Escolhe o ícone e o rótulo padrão do provedor; obrigatória. */
     provider: 'google' | 'github';
+    /** Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`. */
     variant: 'glass' | 'sovereign';
+    /** Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação. */
     onClick?: (provider: 'google' | 'github') => void;
+    /** Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor. */
     label?: string;
+    /** Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão. */
     hideLabel?: boolean;
+    /** Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas. */
     className?: string;
 }
 

@@ -25,6 +25,10 @@ desenham por conta própria. Nada em `specs/`.
 das categorias) · `src/components/atomic/Atoms/SarakTypography.tsx` e
 `src/components/atomic/Layouts/SarakFlex.tsx`, de onde sai o idioma de cada
 categoria.
+**Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
+dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
+publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
+documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
 **Pronto quando:** o avatar cai nas iniciais quando a imagem falha de verdade
 (teste com erro de carregamento, não só com `src` vazio) e tem texto
 alternativo; o separador funciona nas duas orientações e some do leitor de tela

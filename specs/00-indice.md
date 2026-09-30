@@ -42,12 +42,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-80-recalibracao-do-catalogo-de-temas](plan/plan-80-recalibracao-do-catalogo-de-temas.md) | Entregar um catálogo de temas elegantes e funcionais que, juntos, exercitem a capacidade da biblioteca, todos completos, com contraparte, hover e idiomas, e aprovados visualmente pelo dono | — | 🟢 Aprovada | specs/09-temas-e-presets.md · specs/05-cromo-e-slots.md |
-| 2 | [plan-83-caixa-de-selecao-e-botao-de-opcao](plan/plan-83-caixa-de-selecao-e-botao-de-opcao.md) | SarakCheckbox e SarakRadio funcionam controlados e não controlados, com a pele visual sempre igual ao valor efetivo, sem hardcode de cor e sem regressão na suíte | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 3 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
+| 1 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27.** O arquivo saiu; a verdade delas vive nas specs
+> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30.** O arquivo saiu; a verdade delas vive nas specs
 > fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/` a recupera. **Destino
 > demonstrado**, como a [[00-contexto]] §5 exige de toda remoção:
 >
@@ -56,6 +54,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | **85** | [[05-cromo-e-slots]] §2.4 e §2.4.1 — o respiro do conteúdo por token, nos quatro lados e nos dois modos · o escopo do gate em **dois** schemas, sem lista fechada · e a regra nova: **CSS global não é consumo do cromo** |
 > | | [[01-gates-e-baseline]] §2.2 e §2.2.1 — o `chrome-token-parity:check` entrou no catálogo e na tabela de onde cada gate roda, o que **fechou o item 2 do [[00-backlog]]** · **§9.6 (nova)** — os dois vãos que fecharam e os quatro limites que continuam declarados |
 > | **84** | [[05-cromo-e-slots]] **§5 reescrita** — a raiz do cromo tem altura de janela e contém o excedente · **§5.1 (nova)** — o contrato de rolagem: o documento não rola, o painel de conteúdo rola, o `<nav>` da barra lateral rola por dentro, e as faixas ficam no lugar |
+> | **83** | [[03-superficie-publica]] **§6.4 (nova)** — o contrato de valor dos átomos de escolha: `checked` de quem chama governa, `defaultChecked` semeia, a pele é o valor efetivo — e o `SarakSwitch` é a exceção, sempre controlado |
+> | **80** | [[09-temas-e-presets]] §2.1 (a isenção de `contraparte` acabou), §4.3 (id de tema que sumiu → referência do modo + um `warn`), §5.2 (a tabela 18→23 sai; fica a relação e a fonte viva) e §7 (o que um tema shippado exige) · [[05-cromo-e-slots]] §2.4 — **duas** varreduras de realce: ativo e hover, este nos dois modos |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
@@ -227,14 +227,11 @@ execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
 | # | Tarefa | O que entrega | Depende de |
 |---|---|---|---|
-| 1 | [03 — JSDoc, leva 1](plan/prompts/03-jsdoc-leva-1-entrada-de-dados.md) | documentação de prop nos sete componentes de entrada de dados | — |
-| 2 | [04 — JSDoc, leva 2](plan/prompts/04-jsdoc-leva-2-botoes-cartoes-estrutura.md) | idem, nos dez de botão, cartão e estrutura | — |
-| 3 | [05 — JSDoc, leva 3](plan/prompts/05-jsdoc-leva-3-templates-motores-cromo.md) | idem, nos catorze de template, motor e cromo | — |
-| 4 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
-| 5 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
-| 6 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
-| 7 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
-| 8 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
-| 9 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
-| 10 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
-| 11 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+| 1 | [06 — `SarakSpinner`](plan/prompts/06-sarak-spinner.md) | indicador de carregamento pontual, para dentro de botão e campo | — |
+| 2 | [07 — `SarakFieldError`](plan/prompts/07-sarak-field-error.md) | mensagem de erro de campo com forma única | — |
+| 3 | [08 — `SarakCard`](plan/prompts/08-sarak-card-composto.md) | cartão genérico com cabeçalho, corpo e rodapé por notação de ponto | — |
+| 4 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
+| 5 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
+| 6 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
+| 7 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 8 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |

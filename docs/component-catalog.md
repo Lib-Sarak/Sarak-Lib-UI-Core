@@ -117,11 +117,11 @@ Props (`FilterSelectProps` — `src/components/atomic/Templates/FilterSelect.tsx
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `col` | `string` | sim |  |
-| `placeholder` | `string` | não |  |
-| `filters` | `Record<string, string>` | sim |  |
-| `onChange` | `(col: string, value: string) => void` | sim |  |
-| `options` | `string[]` | sim |  |
+| `col` | `string` | sim | Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória. |
+| `placeholder` | `string` | não | Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`. |
+| `filters` | `Record<string, string>` | sim | Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. |
+| `onChange` | `(col: string, value: string) => void` | sim | Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor. |
+| `options` | `string[]` | sim | Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia. |
 
 ### HelpButton
 
@@ -325,21 +325,21 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 
 ### SarakCatalogGrid
 
-Props (`SarakCatalogGridProps` — `src/components/atomic/Templates/SarakCatalogGrid.tsx`):
+Props (`SarakCatalogGridProps` — `src/components/atomic/Templates/SarakCatalogGridProps.ts`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `items` | `CatalogItem[]` | sim |  |
-| `loading` | `boolean` | não |  |
-| `title` | `string` | sim |  |
-| `subtitle` | `string` | não |  |
-| `categories` | `Record<string, string>` | não |  |
-| `onSync` | `() => void` | não |  |
-| `renderCard` | `(item: CatalogItem) => React.ReactNode` | não |  |
-| `emptyMessage` | `string` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `items` | `CatalogItem[]` | sim | Itens filtrados e exibidos; obrigatória. Cada registro precisa de `id` e `display_name`; a busca ignora `description` e outros campos. |
+| `loading` | `boolean` | não | Exibe o indicador de carga no lugar de todo o catálogo; omitida, os itens são renderizados sem espera. |
+| `title` | `string` | sim | Título obrigatório do catálogo; não há valor padrão e ele também fica oculto enquanto `loading` for verdadeiro. |
+| `subtitle` | `string` | não | Texto complementar do cabeçalho; omitido, a linha de subtítulo não aparece. |
+| `categories` | `Record<string, string>` | não | Mapeia cada valor de `item.category` para o rótulo do filtro; omitida, oferece apenas `all: 'Todos'`. Inclua `all` para manter o botão de mostrar tudo. |
+| `onSync` | `() => void` | não | Habilita o botão que chama a rotina de sincronização; omitida, o botão não aparece. Ele fica fixo no canto inferior direito. |
+| `renderCard` | `(item: CatalogItem) => React.ReactNode` | não | Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`. |
+| `emptyMessage` | `string` | não | Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakChart
 
@@ -347,12 +347,12 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `label` | `string` | não |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `endpoint` | `string` | sim | Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido. |
+| `label` | `string` | não | Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão. |
+| `mapping` | `Record<string, string>` | não | Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakChartEngine
 
@@ -360,9 +360,9 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | sim |  |
-| `data` | `ChartDataItem[]` | sim |  |
-| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não |  |
+| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | sim | Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. |
+| `data` | `ChartDataItem[]` | sim | Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. |
+| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. |
 
 ### SarakChat
 
@@ -370,12 +370,12 @@ Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `modelsEndpoint` | `string` | não |  |
-| `label` | `string` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `endpoint` | `string` | sim | Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. |
+| `modelsEndpoint` | `string` | não | Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. |
+| `label` | `string` | não | Nome exibido no cabeçalho; omitido, usa `AI Chat`. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakChatEngine
 
@@ -383,10 +383,10 @@ Props (`SarakChatEngineProps` — `src/components/engines/chat/SarakChatEngine.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `messages` | `Message[]` | sim |  |
-| `onSendMessage` | `(text: string) => void` | sim |  |
-| `isLoading` | `boolean` | não |  |
-| `placeholder` | `string` | não |  |
+| `messages` | `Message[]` | sim | Histórico controlado pelo consumidor; obrigatório. O motor o renderiza como Markdown e rola para a última mensagem quando a lista muda. |
+| `onSendMessage` | `(text: string) => void` | sim | Recebe o texto digitado; obrigatório. O consumidor precisa atualizar `messages` para que a resposta apareça. |
+| `isLoading` | `boolean` | não | Indica envio em andamento, mostra o indicador e bloqueia novo envio; omitida, vale `false`. |
+| `placeholder` | `string` | não | Texto de orientação do campo de entrada; omitido, usa `Escreva sua mensagem...`. |
 
 ### SarakCheckbox
 
@@ -539,9 +539,9 @@ Props (`SarakFlowEngineProps` — `src/components/engines/flows/SarakFlowEngine.
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `nodes` | `NonNullable<ReactFlowProps['nodes']>` | sim |  |
-| `edges` | `NonNullable<ReactFlowProps['edges']>` | sim |  |
-| `onConnect` | `ReactFlowProps['onConnect']` | não |  |
+| `nodes` | `NonNullable<ReactFlowProps['nodes']>` | sim | Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. |
+| `edges` | `NonNullable<ReactFlowProps['edges']>` | sim | Conexões existentes fornecidas ao React Flow; obrigatório, sem lista padrão. Use `[]` quando não houver conexões. |
+| `onConnect` | `ReactFlowProps['onConnect']` | não | Recebe novas conexões criadas na tela; omitida, os nós e as conexões existentes continuam visíveis, mas não há callback do consumidor para persistir novas ligações. |
 
 ### SarakForm
 
@@ -676,16 +676,16 @@ Props (`SarakManagementGridProps` — `src/components/atomic/Templates/SarakMana
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `groupBy` | `string` | sim |  |
-| `ghostGroups` | `string[]` | não |  |
-| `mapping` | `{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }` | sim |  |
-| `headerActions` | `{ label: string; action: string; }[]` | não |  |
-| `groupActions` | `{ label: string; icon?: 'plus' \| 'settings'; action: string; }[]` | não |  |
-| `formMapping` | `Record<string, string>` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `endpoint` | `string` | sim | Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. |
+| `groupBy` | `string` | sim | Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. |
+| `ghostGroups` | `string[]` | não | Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. |
+| `mapping` | `{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }` | sim | Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. |
+| `headerActions` | `{ label: string; action: string; }[]` | não | Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. |
+| `groupActions` | `{ label: string; icon?: 'plus' \| 'settings'; action: string; }[]` | não | Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. |
+| `formMapping` | `Record<string, string>` | não | Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakMarkdownRenderer
 
@@ -964,13 +964,13 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não |  |
-| `data` | `TData` | não |  |
-| `label` | `string` | não |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `endpoint` | `string` | não | Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. |
+| `data` | `TData` | não | Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. |
+| `label` | `string` | não | Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. |
+| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakStepper
 
@@ -1137,7 +1137,7 @@ Props (`ShellLanguageSelectorProps` — `src/components/atomic/Navigation/ShellL
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'horizontal' \| 'vertical'` | não |  |
+| `variant` | `'horizontal' \| 'vertical'` | não | Posiciona o seletor na barra ou na lateral; omitida, usa `horizontal`. Com zero ou um idioma habilitado, nada é renderizado. |
 
 ### ShellSearchWidget
 
@@ -1145,8 +1145,8 @@ Props (`ShellSearchWidgetProps` — `src/components/atomic/Navigation/ShellSearc
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'bar' \| 'icon'` | não |  |
-| `onClick` | `() => void` | sim |  |
+| `variant` | `'bar' \| 'icon'` | não | Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. |
+| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. |
 
 ### ShellThemeToggle
 
@@ -1154,7 +1154,7 @@ Props (`ShellThemeToggleProps` — `src/components/atomic/Navigation/ShellThemeT
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não |  |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário. |
 
 ### ShellUserWidget
 
@@ -1162,9 +1162,9 @@ Props (`ShellUserWidgetProps` — `src/components/atomic/Navigation/ShellUserWid
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `user` | `ShellUser` | não |  |
-| `logout` | `() => void` | não |  |
-| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não |  |
+| `user` | `ShellUser` | não | Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. |
+| `logout` | `() => void` | não | Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. |
 
 ### SocialButton
 
@@ -1172,10 +1172,10 @@ Props (`SocialButtonProps` — `src/components/atomic/Buttons/SocialButton.tsx`)
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `provider` | `'google' \| 'github'` | sim |  |
-| `variant` | `'glass' \| 'sovereign'` | sim |  |
-| `onClick` | `(provider: 'google' \| 'github') => void` | não |  |
-| `label` | `string` | não |  |
-| `hideLabel` | `boolean` | não |  |
-| `className` | `string` | não |  |
+| `provider` | `'google' \| 'github'` | sim | Escolhe o ícone e o rótulo padrão do provedor; obrigatória. |
+| `variant` | `'glass' \| 'sovereign'` | sim | Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`. |
+| `onClick` | `(provider: 'google' \| 'github') => void` | não | Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação. |
+| `label` | `string` | não | Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor. |
+| `hideLabel` | `boolean` | não | Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão. |
+| `className` | `string` | não | Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas. |
 
