@@ -92,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (86)
+## Componentes públicos (90)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -308,6 +308,33 @@ Props (`SarakButtonProps` — `src/components/atomic/Buttons/SarakButton.tsx`):
 
 Estende: `ButtonHTMLAttributes<HTMLButtonElement>`
 
+### SarakCard
+
+Props (`SarakCardProps` — `src/components/atomic/Cards/SarakCard.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | não | Conteúdo composto do cartão; se omitido, a moldura temática permanece vazia. |
+| `className` | `string` | não | Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema. |
+
+### SarakCardBody
+
+Props (`SarakCardBodyProps` — `src/components/atomic/Cards/SarakCardBody.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | não | Conteúdo principal; se omitido, a área do corpo permanece vazia. |
+| `className` | `string` | não | Classes adicionais; se omitidas, nenhuma classe extra é aplicada. |
+
+### SarakCardFooter
+
+Props (`SarakCardFooterProps` — `src/components/atomic/Cards/SarakCardFooter.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | não | Conteúdo do rodapé; se omitido, o invólucro do rodapé permanece vazio. |
+| `className` | `string` | não | Classes adicionais; se omitidas, nenhuma classe extra é aplicada. |
+
 ### SarakCardGrid
 
 Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.tsx`):
@@ -323,6 +350,15 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 | `variant` | `'classic' \| 'title' \| 'action' \| 'search'` | não |  |
+
+### SarakCardHeader
+
+Props (`SarakCardHeaderProps` — `src/components/atomic/Cards/SarakCardHeader.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | não | Conteúdo do cabeçalho; se omitido, o invólucro do cabeçalho permanece vazio. |
+| `className` | `string` | não | Classes adicionais; se omitidas, nenhuma classe extra é aplicada. |
 
 ### SarakCatalogGrid
 

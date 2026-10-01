@@ -778,6 +778,60 @@
         }
       ]
     },
+    "SarakCard": {
+      "propsInterface": "SarakCardProps",
+      "source": "src/components/atomic/Cards/SarakCard.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo composto do cartão; se omitido, a moldura temática permanece vazia."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema."
+        }
+      ]
+    },
+    "SarakCardBody": {
+      "propsInterface": "SarakCardBodyProps",
+      "source": "src/components/atomic/Cards/SarakCardBody.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo principal; se omitido, a área do corpo permanece vazia."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
+        }
+      ]
+    },
+    "SarakCardFooter": {
+      "propsInterface": "SarakCardFooterProps",
+      "source": "src/components/atomic/Cards/SarakCardFooter.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo do rodapé; se omitido, o invólucro do rodapé permanece vazio."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
+        }
+      ]
+    },
     "SarakCardGrid": {
       "propsInterface": "SarakCardGridProps",
       "source": "src/components/atomic/Templates/SarakCardGrid.tsx",
@@ -835,6 +889,24 @@
           "type": "'classic' | 'title' | 'action' | 'search'",
           "optional": true,
           "doc": ""
+        }
+      ]
+    },
+    "SarakCardHeader": {
+      "propsInterface": "SarakCardHeaderProps",
+      "source": "src/components/atomic/Cards/SarakCardHeader.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo do cabeçalho; se omitido, o invólucro do cabeçalho permanece vazio."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
         }
       ]
     },

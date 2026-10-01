@@ -83,10 +83,7 @@ export { THEME_AXES, findMissingThemeAxes, warnOnIncompleteTheme } from './core/
 // `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
 export { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
-export * from './components/atomic/Cards/ExpandableCard';
-export * from './components/atomic/Cards/SarakActionCard';
-export * from './components/atomic/Cards/SarakSearchCard';
-export * from './components/atomic/Cards/SarakTitleCard';
+export * from './components/atomic/Cards';
 // API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
 // barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).
 // Exports NOMEADOS de propósito: a superfície de `Layouts/` é declarada componente a
@@ -170,4 +167,3 @@ export * from './core/Discovery/types';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export { useSarakRouter } from './shared/hooks/useSarakRouter';
 export type { SarakRouterState } from './shared/hooks/useSarakRouter';
-

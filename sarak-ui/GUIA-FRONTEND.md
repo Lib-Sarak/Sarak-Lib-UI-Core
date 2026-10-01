@@ -615,9 +615,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **307** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **315** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (92)
+### A.1 Componentes públicos (96)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -629,6 +629,10 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Buttons | **SocialButton** | `provider` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
 | Cards | **ExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
 | Cards | **SarakActionCard** | `item` · `mapping` · `className` · `onAction` · `design` · `label` · `actionLabel` |
+| Cards | **SarakCard** | `children` · `className` |
+| Cards | **SarakCardBody** | `children` · `className` |
+| Cards | **SarakCardFooter** | `children` · `className` |
+| Cards | **SarakCardHeader** | `children` · `className` |
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
 | Core | **DesignScope** | `design` · `children` · `className` · `style` |

@@ -82,7 +82,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 86,
+      "count": 90,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -99,7 +99,11 @@
         "SarakBadge",
         "SarakBreadcrumbs",
         "SarakButton",
+        "SarakCard",
+        "SarakCardBody",
+        "SarakCardFooter",
         "SarakCardGrid",
+        "SarakCardHeader",
         "SarakCatalogGrid",
         "SarakChart",
         "SarakChartEngine",
