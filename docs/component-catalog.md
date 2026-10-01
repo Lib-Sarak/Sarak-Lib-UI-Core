@@ -92,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (96)
+## Componentes públicos (95)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -280,31 +280,6 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
-
-### SarakAutocomplete
-
-Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocomplete.tsx`):
-
-| Prop | Tipo | Obrigatória | Descrição |
-| --- | --- | --- | --- |
-| `options` | `SarakAutocompleteOption[]` | não | Opções filtradas localmente quando `loadOptions` é omitida; sem opções, a lista começa vazia. |
-| `loadOptions` | `(query: string) => Promise<SarakAutocompleteOption[]>` | não | Busca sugestões a pedido do host; omitida, usa `options`. A função recebe o texto digitado e resolve com a lista. Se ambas forem fornecidas, ela prevalece; a biblioteca não chama a rede. |
-| `debounceMs` | `number` | não | Espera após cada digitação antes de chamar `loadOptions`; omitida, aguarda 300 ms. Valores negativos viram zero. |
-| `onSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou Enter; omitida, a seleção só atualiza o texto do campo. |
-| `label` | `string` | não | Nome visível do campo; omitido, use `aria-label` ou `aria-labelledby` para nomeá-lo. |
-
-Estende: `Omit<
-    SarakInputProps,
-    | 'value'
-    | 'defaultValue'
-    | 'onChange'
-    | 'type'
-    | 'role'
-    | 'aria-expanded'
-    | 'aria-controls'
-    | 'aria-activedescendant'
-    | 'aria-autocomplete'
->`
 
 ### SarakAvatar
 

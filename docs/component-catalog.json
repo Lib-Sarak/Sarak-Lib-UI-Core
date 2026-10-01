@@ -710,43 +710,6 @@
         }
       ]
     },
-    "SarakAutocomplete": {
-      "propsInterface": "SarakAutocompleteProps",
-      "source": "src/components/atomic/Inputs/SarakAutocomplete.tsx",
-      "extends": "Omit<\n    SarakInputProps,\n    | 'value'\n    | 'defaultValue'\n    | 'onChange'\n    | 'type'\n    | 'role'\n    | 'aria-expanded'\n    | 'aria-controls'\n    | 'aria-activedescendant'\n    | 'aria-autocomplete'\n>",
-      "props": [
-        {
-          "name": "options",
-          "type": "SarakAutocompleteOption[]",
-          "optional": true,
-          "doc": "Opções filtradas localmente quando `loadOptions` é omitida; sem opções, a lista começa vazia."
-        },
-        {
-          "name": "loadOptions",
-          "type": "(query: string) => Promise<SarakAutocompleteOption[]>",
-          "optional": true,
-          "doc": "Busca sugestões a pedido do host; omitida, usa `options`. A função recebe o texto digitado e resolve com a lista. Se ambas forem fornecidas, ela prevalece; a biblioteca não chama a rede."
-        },
-        {
-          "name": "debounceMs",
-          "type": "number",
-          "optional": true,
-          "doc": "Espera após cada digitação antes de chamar `loadOptions`; omitida, aguarda 300 ms. Valores negativos viram zero."
-        },
-        {
-          "name": "onSelect",
-          "type": "(option: SarakAutocompleteOption) => void",
-          "optional": true,
-          "doc": "Recebe a opção escolhida por clique ou Enter; omitida, a seleção só atualiza o texto do campo."
-        },
-        {
-          "name": "label",
-          "type": "string",
-          "optional": true,
-          "doc": "Nome visível do campo; omitido, use `aria-label` ou `aria-labelledby` para nomeá-lo."
-        }
-      ]
-    },
     "SarakAvatar": {
       "propsInterface": "SarakAvatarProps",
       "source": "src/components/atomic/Atoms/SarakAvatar.tsx",
