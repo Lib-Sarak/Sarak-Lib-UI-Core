@@ -130,6 +130,8 @@
     "SarakComponentProps",
     "SarakContextMenu",
     "SarakContextMenuProps",
+    "SarakCurrencyInput",
+    "SarakCurrencyInputProps",
     "SarakDataEmpty",
     "SarakDataEmptyProps",
     "SarakDataGrid",
@@ -182,6 +184,8 @@
     "SarakManagementGridProps",
     "SarakMarkdownRenderer",
     "SarakMarkdownRendererProps",
+    "SarakMaskedInput",
+    "SarakMaskedInputProps",
     "SarakMatrixManifest",
     "SarakMenuItem",
     "SarakMenuItemOrientation",
@@ -1667,6 +1671,55 @@
         }
       ]
     },
+    "SarakCurrencyInput": {
+      "propsInterface": "SarakCurrencyInputProps",
+      "source": "src/components/atomic/Inputs/SarakCurrencyInput.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>",
+      "props": [
+        {
+          "name": "value",
+          "type": "number | null",
+          "optional": true,
+          "doc": "Valor numérico controlado; `null` representa campo vazio. Omitido, usa `defaultValue`; o pai deve atualizar após `onChange`."
+        },
+        {
+          "name": "defaultValue",
+          "type": "number | null",
+          "optional": true,
+          "doc": "Valor numérico inicial. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado."
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "optional": true,
+          "doc": "Moeda ISO 4217 de `Intl.NumberFormat`. Omitida, usa BRL; o estilo monetário aparece ao sair do campo; código inválido gera `RangeError`."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "doc": "Locale dos separadores durante a edição e da formatação ao sair do campo. Omitida, acompanha o idioma do Provider; sem Provider, usa `pt-BR`. Textos colados devem segui-la."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível."
+        },
+        {
+          "name": "onChange",
+          "type": "(cleanValue: number | null) => void",
+          "optional": true,
+          "doc": "Emite número ou `null` para o campo vazio, nunca o texto formatado. Omitido, mudanças não são notificadas."
+        },
+        {
+          "name": "inputMode",
+          "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
+          "optional": true,
+          "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual."
+        }
+      ]
+    },
     "SarakDataEmpty": {
       "propsInterface": "SarakDataEmptyProps",
       "source": "src/components/atomic/Feedback/SarakDataEmpty.tsx",
@@ -2553,6 +2606,49 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        }
+      ]
+    },
+    "SarakMaskedInput": {
+      "propsInterface": "SarakMaskedInputProps",
+      "source": "src/components/atomic/Inputs/SarakMaskedInput.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>",
+      "props": [
+        {
+          "name": "mask",
+          "type": "string",
+          "optional": false,
+          "doc": "Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos. Um padrão sem `0` deixa o campo somente com os dígitos, sem pontuação."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": "Valor limpo controlado. Omitido, usa `defaultValue`; ao fornecê-lo, o pai deve atualizá-lo após `onChange`."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": "Valor inicial sem pontuação. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível."
+        },
+        {
+          "name": "onChange",
+          "type": "(cleanValue: string) => void",
+          "optional": true,
+          "doc": "Emite somente os dígitos aceitos pelo padrão. Omitido, mudanças não são notificadas por callback."
+        },
+        {
+          "name": "inputMode",
+          "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
+          "optional": true,
+          "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado numérico; isso não valida a entrada."
         }
       ]
     },

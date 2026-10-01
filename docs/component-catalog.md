@@ -92,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (93)
+## Componentes públicos (96)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -280,6 +280,31 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+
+### SarakAutocomplete
+
+Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocomplete.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `options` | `SarakAutocompleteOption[]` | não | Opções filtradas localmente quando `loadOptions` é omitida; sem opções, a lista começa vazia. |
+| `loadOptions` | `(query: string) => Promise<SarakAutocompleteOption[]>` | não | Busca sugestões a pedido do host; omitida, usa `options`. A função recebe o texto digitado e resolve com a lista. Se ambas forem fornecidas, ela prevalece; a biblioteca não chama a rede. |
+| `debounceMs` | `number` | não | Espera após cada digitação antes de chamar `loadOptions`; omitida, aguarda 300 ms. Valores negativos viram zero. |
+| `onSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou Enter; omitida, a seleção só atualiza o texto do campo. |
+| `label` | `string` | não | Nome visível do campo; omitido, use `aria-label` ou `aria-labelledby` para nomeá-lo. |
+
+Estende: `Omit<
+    SarakInputProps,
+    | 'value'
+    | 'defaultValue'
+    | 'onChange'
+    | 'type'
+    | 'role'
+    | 'aria-expanded'
+    | 'aria-controls'
+    | 'aria-activedescendant'
+    | 'aria-autocomplete'
+>`
 
 ### SarakAvatar
 
@@ -473,6 +498,22 @@ Props (`SarakContextMenuProps` — `src/components/atomic/UX/SarakContextMenu.ts
 | `onClose` | `() => void` | sim | Fecha o menu (clique fora / ESC / escolha de item). |
 | `children` | `React.ReactNode` | sim | Itens do menu (ex.: botões). |
 | `className` | `string` | não |  |
+
+### SarakCurrencyInput
+
+Props (`SarakCurrencyInputProps` — `src/components/atomic/Inputs/SarakCurrencyInput.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `value` | `number \| null` | não | Valor numérico controlado; `null` representa campo vazio. Omitido, usa `defaultValue`; o pai deve atualizar após `onChange`. |
+| `defaultValue` | `number \| null` | não | Valor numérico inicial. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado. |
+| `currency` | `string` | não | Moeda ISO 4217 de `Intl.NumberFormat`. Omitida, usa BRL; o estilo monetário aparece ao sair do campo; código inválido gera `RangeError`. |
+| `locale` | `string` | não | Locale dos separadores durante a edição e da formatação ao sair do campo. Omitida, acompanha o idioma do Provider; sem Provider, usa `pt-BR`. Textos colados devem segui-la. |
+| `label` | `string` | não | Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível. |
+| `onChange` | `(cleanValue: number \| null) => void` | não | Emite número ou `null` para o campo vazio, nunca o texto formatado. Omitido, mudanças não são notificadas. |
+| `inputMode` | `React.HTMLAttributes<HTMLInputElement>['inputMode']` | não | Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual. |
+
+Estende: `Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>`
 
 ### SarakDataEmpty
 
@@ -778,6 +819,21 @@ Props (`SarakMarkdownRendererProps` — `src/components/atomic/Media/SarakMarkdo
 | --- | --- | --- | --- |
 | `content` | `string` | sim | String de Markdown cru a renderizar. |
 | `className` | `string` | não |  |
+
+### SarakMaskedInput
+
+Props (`SarakMaskedInputProps` — `src/components/atomic/Inputs/SarakMaskedInput.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `mask` | `string` | sim | Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos. Um padrão sem `0` deixa o campo somente com os dígitos, sem pontuação. |
+| `value` | `string` | não | Valor limpo controlado. Omitido, usa `defaultValue`; ao fornecê-lo, o pai deve atualizá-lo após `onChange`. |
+| `defaultValue` | `string` | não | Valor inicial sem pontuação. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado. |
+| `label` | `string` | não | Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível. |
+| `onChange` | `(cleanValue: string) => void` | não | Emite somente os dígitos aceitos pelo padrão. Omitido, mudanças não são notificadas por callback. |
+| `inputMode` | `React.HTMLAttributes<HTMLInputElement>['inputMode']` | não | Teclado sugerido ao dispositivo. Omitido, solicita teclado numérico; isso não valida a entrada. |
+
+Estende: `Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>`
 
 ### SarakMenuItem
 

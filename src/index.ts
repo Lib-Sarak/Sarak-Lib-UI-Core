@@ -109,6 +109,10 @@ export * from './components/atomic/Navigation';
 // barril público React — mesma classe de lacuna do `SarakLink` (Spec 40, pré-req).
 export { SarakInput } from './components/atomic/Inputs/SarakInput';
 export type { SarakInputProps } from './components/atomic/Inputs/SarakInput';
+export { SarakMaskedInput } from './components/atomic/Inputs/SarakMaskedInput';
+export type { SarakMaskedInputProps } from './components/atomic/Inputs/SarakMaskedInput';
+export { SarakCurrencyInput } from './components/atomic/Inputs/SarakCurrencyInput';
+export type { SarakCurrencyInputProps } from './components/atomic/Inputs/SarakCurrencyInput';
 export { SarakSelect } from './components/atomic/Inputs/SarakSelect';
 export type { SarakSelectProps } from './components/atomic/Inputs/SarakSelect';
 export { SarakTextarea } from './components/atomic/Inputs/SarakTextarea';

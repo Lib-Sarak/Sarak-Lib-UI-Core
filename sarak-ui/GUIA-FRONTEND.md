@@ -615,9 +615,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **324** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **328** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (99)
+### A.1 Componentes públicos (101)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -659,8 +659,10 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Feedback | **SarakSpinner** | `size` · `label` · `className` |
 | Icon | **SarakIcon** | `name` · `size` · `className` · `color` · `style` · `onClick` |
 | Inputs | **SarakCheckbox** | `label` · `description` · `indeterminate` |
+| Inputs | **SarakCurrencyInput** | `value` · `defaultValue` · `currency` · `locale` · `label` · `onChange` · `inputMode` |
 | Inputs | **SarakDatePicker** | `label` · `mode` · `value` · `displayFormat` · `locale` · `weekStartsOn` · `placeholder` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakInput** | `label` · `icon` · `leftIcon` · `rightIcon` · `error` · `fullWidth` |
+| Inputs | **SarakMaskedInput** | `mask` · `value` · `defaultValue` · `label` · `onChange` · `inputMode` |
 | Inputs | **SarakMultiSelect** | `label` · `options` · `value` · `defaultValue` · `placeholder` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakRadio** | `label` · `description` |
 | Inputs | **SarakRangeSlider** | `label` · `min` · `max` · `step` · `value` · `defaultValue` · `disabled` · `error` · `hideTooltips` · `onChange` |

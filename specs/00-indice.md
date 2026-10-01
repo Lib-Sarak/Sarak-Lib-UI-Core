@@ -227,6 +227,5 @@ execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
 | # | Tarefa | O que entrega | Depende de |
 |---|---|---|---|
-| 1 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
-| 2 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
-| 3 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+| 1 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 2 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |

@@ -1,5 +1,7 @@
 export * from './SarakSearch';
 export * from './SarakInput';
+export * from './SarakMaskedInput';
+export * from './SarakCurrencyInput';
 export * from './SarakTextarea';
 export * from './SarakSelect';
 export * from './SarakCheckbox';
