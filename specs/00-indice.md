@@ -227,8 +227,7 @@ execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
 | # | Tarefa | O que entrega | Depende de |
 |---|---|---|---|
-| 1 | [09 — `SarakAlert`](plan/prompts/09-sarak-alert.md) | aviso fixo na página, nas quatro intenções | — |
-| 2 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
-| 3 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
-| 4 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
-| 5 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+| 1 | [10 — avatar e separador](plan/prompts/10-sarak-avatar-e-divider.md) | `SarakAvatar` e `SarakDivider` | — |
+| 2 | [11 — máscara e moeda](plan/prompts/11-mascara-e-moeda.md) | `SarakMaskedInput` e `SarakCurrencyInput`, sem dependência nova | — |
+| 3 | [12 — `SarakAutocomplete`](plan/prompts/12-sarak-autocomplete.md) | busca com sugestões, com a rede sempre a cargo do host | — |
+| 4 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |

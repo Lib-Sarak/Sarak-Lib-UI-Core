@@ -5,3 +5,4 @@ export * from './SarakSpinner';
 export * from './SarakDataEmpty';
 export * from './SarakToast';
 export * from './SarakFieldError';
+export * from './SarakAlert';

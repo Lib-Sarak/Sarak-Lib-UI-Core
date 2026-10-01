@@ -81,6 +81,9 @@
     "SarakAccordionProps",
     "SarakActionCard",
     "SarakActionCardProps",
+    "SarakAlert",
+    "SarakAlertProps",
+    "SarakAlertVariant",
     "SarakAnalyticalPage",
     "SarakAnalyticalPageProps",
     "SarakAppChrome",
@@ -625,6 +628,42 @@
           "type": "string",
           "optional": true,
           "doc": "Texto do botão de ação principal (default: \"Executar\")."
+        }
+      ]
+    },
+    "SarakAlert": {
+      "propsInterface": "SarakAlertProps",
+      "source": "src/components/atomic/Feedback/SarakAlert.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "SarakAlertVariant",
+          "optional": true,
+          "doc": "Define a intenção `info`, `success`, `warning` ou `error`; omitida, usa `info`. Só `error` recebe anúncio assertivo."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "doc": "Define o título visível e o nome acessível do aviso; é obrigatória e, se omitida em runtime, o aviso fica sem título."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "doc": "Define o texto simples do aviso; é obrigatório e, se omitido em runtime, nenhum texto será exibido."
+        },
+        {
+          "name": "action",
+          "type": "{ label: string; onClick: () => void; }",
+          "optional": true,
+          "doc": "Exibe uma ação com rótulo e callback; omitida, não há botão, e clicar nela não fecha o aviso automaticamente."
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Exibe o botão de fechar; omitida, não há botão, e o callback deve remover ou desmontar o aviso, pois ele não tem estado interno de fechamento."
         }
       ]
     },
