@@ -39,6 +39,13 @@ descartada.
 deve chegar ao barril nem ao catálogo. O `useInputCaret` também é o precedente de controlar o cursor sem
 `ref` — reaproveite em vez de reinventar, se precisar.
 
+⚠️ **Uma armadilha de tipo já medida (2026-10-01), para não custar uma rodada:** `SarakInputProps`
+estende `InputHTMLAttributes<HTMLInputElement>`, que **já declara `onSelect`** como
+`ReactEventHandler` (`@types/react`). Declarar `onSelect?: (option) => void` numa interface que estende
+`Omit<SarakInputProps, …>` sem omitir `'onSelect'` dá **TS2430 — incorrectly extends**, e o Anel 2 do
+`pre-commit` barra (produção fecha em zero). Saídas: omitir `'onSelect'` junto das outras chaves, ou dar
+outro nome à prop (`onOptionSelect`). Decida e diga no resumo qual escolheu.
+
 **Prop nova nasce documentada.** Toda prop pública deste componente leva JSDoc **em português**,
 dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
 publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
