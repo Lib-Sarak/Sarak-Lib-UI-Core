@@ -4,3 +4,4 @@ export * from './SarakFlex';
 export * from './SarakSplitPane';
 export * from './SarakAccordion';
 export * from './SarakScrim';
+export * from './SarakDivider';

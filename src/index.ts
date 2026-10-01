@@ -101,6 +101,8 @@ export { SarakFormGroup } from './components/atomic/Layouts/SarakFormGroup';
 export type { SarakFormGroupProps } from './components/atomic/Layouts/SarakFormGroup';
 export { SarakScrim } from './components/atomic/Layouts/SarakScrim';
 export type { SarakScrimProps } from './components/atomic/Layouts/SarakScrim';
+export { SarakDivider } from './components/atomic/Layouts/SarakDivider';
+export type { SarakDividerProps, SarakDividerOrientation } from './components/atomic/Layouts/SarakDivider';
 export * from './components/atomic/Navigation';
 // Entrada de dados BÁSICA (achado Spec 40 — Teste Real): existiam e já estavam no
 // Registry do motor de manifesto (`nativeComponents.ts`), mas nunca chegaram ao

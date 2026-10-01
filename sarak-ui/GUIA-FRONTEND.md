@@ -615,14 +615,15 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v6.3.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **318** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **324** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (97)
+### A.1 Componentes públicos (99)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
 | Categoria | Componente | Props |
 | --- | --- | --- |
+| Atoms | **SarakAvatar** | `name` · `src` · `alt` · `size` |
 | Atoms | **SarakTypography** | `variant` · `color` · `as` · `transform` · `content` · `children` |
 | Buttons | **SarakButton** | `variant` · `isLoading` · `leftIcon` · `rightIcon` · `fullWidth` · `size` |
 | Buttons | **SarakIconButton** | `variant` · `size` · `isLoading` · `icon` |
@@ -676,6 +677,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Layout | **SarakAppChromeMobile** | `children` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `widgets` · `className` · `rootStyle` |
 | Layout | **SarakHidden** | `children` · `on` |
 | Layouts | **SarakAccordion** | `title` · `children` · `defaultOpen` · `className` |
+| Layouts | **SarakDivider** | `orientation` · `label` · `decorative` |
 | Layouts | **SarakFlex** | `children` · `direction` · `justify` · `align` · `gap` · `wrap` · `as` |
 | Layouts | **SarakFormGroup** | `children` · `gap` |
 | Layouts | **SarakGrid** | `children` · `templateColumns` · `templateAreas` · `gap` · `as` |

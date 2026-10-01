@@ -92,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (91)
+## Componentes públicos (93)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -280,6 +280,19 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+
+### SarakAvatar
+
+Props (`SarakAvatarProps` — `src/components/atomic/Atoms/SarakAvatar.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `name` | `string` | sim | Nome da pessoa; obrigatório e usado como texto alternativo padrão e como origem das iniciais. Nome vazio (se a tipagem for contornada) exibe `?` no fallback. |
+| `src` | `string` | não | Endereço da foto. Omitido, o avatar mostra as iniciais; se a imagem falhar ao carregar, também volta às iniciais. Para tentar novamente a mesma URL, remonte o componente. |
+| `alt` | `string` | não | Texto alternativo da foto e nome acessível do fallback. Omitido, usa `name`; string vazia torna a imagem decorativa e deixa as iniciais sem nome acessível. |
+| `size` | `SarakAvatarSize` | não | Tamanho na escala `xs`/`sm`/`md`/`lg` dos átomos. Omitido, usa `md`; o tamanho acompanha o token de espaçamento médio do tema. |
+
+Estende: `Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'>`
 
 ### SarakBadge
 
@@ -531,6 +544,18 @@ Props (`SarakDatePickerProps` — `src/components/atomic/Inputs/SarakDatePicker.
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: DatePickerValue) => void` | não | Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). |
+
+### SarakDivider
+
+Props (`SarakDividerProps` — `src/components/atomic/Layouts/SarakDivider.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `orientation` | `SarakDividerOrientation` | não | Direção do traço. Omitida, usa `horizontal`; no modo vertical, o contêiner acompanha a altura disponível do pai. |
+| `label` | `string` | não | Texto exibido entre os traços e usado como nome acessível. Omitido, não há texto e o separador é decorativo por padrão. |
+| `decorative` | `boolean` | não | Oculta o componente da árvore acessível. Omitida, é decorativo quando `label` não existe e semântico quando existe; use `false` sem rótulo apenas se também fornecer `aria-label`. |
+
+Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
 
 ### SarakDrawer
 

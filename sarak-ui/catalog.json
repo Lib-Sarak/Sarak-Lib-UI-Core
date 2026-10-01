@@ -91,6 +91,9 @@
     "SarakAuthScreen",
     "SarakAuthScreenEvent",
     "SarakAuthScreenProps",
+    "SarakAvatar",
+    "SarakAvatarProps",
+    "SarakAvatarSize",
     "SarakBadge",
     "SarakBadgeProps",
     "SarakBrandingState",
@@ -139,6 +142,9 @@
     "SarakDatePickerProps",
     "SarakDesignState",
     "SarakDesignTokens",
+    "SarakDivider",
+    "SarakDividerOrientation",
+    "SarakDividerProps",
     "SarakDrawer",
     "SarakDrawerProps",
     "SarakEmptyState",
@@ -1111,6 +1117,37 @@
         }
       ]
     },
+    "SarakAvatar": {
+      "propsInterface": "SarakAvatarProps",
+      "source": "src/components/atomic/Atoms/SarakAvatar.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'>",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "doc": "Nome da pessoa; obrigatório e usado como texto alternativo padrão e como origem das iniciais. Nome vazio (se a tipagem for contornada) exibe `?` no fallback."
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "optional": true,
+          "doc": "Endereço da foto. Omitido, o avatar mostra as iniciais; se a imagem falhar ao carregar, também volta às iniciais. Para tentar novamente a mesma URL, remonte o componente."
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto alternativo da foto e nome acessível do fallback. Omitido, usa `name`; string vazia torna a imagem decorativa e deixa as iniciais sem nome acessível."
+        },
+        {
+          "name": "size",
+          "type": "SarakAvatarSize",
+          "optional": true,
+          "doc": "Tamanho na escala `xs`/`sm`/`md`/`lg` dos átomos. Omitido, usa `md`; o tamanho acompanha o token de espaçamento médio do tema."
+        }
+      ]
+    },
     "SarakBadge": {
       "propsInterface": "SarakBadgeProps",
       "source": "src/components/atomic/Feedback/SarakBadge.tsx",
@@ -1873,6 +1910,31 @@
           "type": "(value: DatePickerValue) => void",
           "optional": true,
           "doc": "Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`)."
+        }
+      ]
+    },
+    "SarakDivider": {
+      "propsInterface": "SarakDividerProps",
+      "source": "src/components/atomic/Layouts/SarakDivider.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "SarakDividerOrientation",
+          "optional": true,
+          "doc": "Direção do traço. Omitida, usa `horizontal`; no modo vertical, o contêiner acompanha a altura disponível do pai."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto exibido entre os traços e usado como nome acessível. Omitido, não há texto e o separador é decorativo por padrão."
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Oculta o componente da árvore acessível. Omitida, é decorativo quando `label` não existe e semântico quando existe; use `false` sem rótulo apenas se também fornecer `aria-label`."
         }
       ]
     },
