@@ -82,7 +82,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 85,
+      "count": 86,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -116,6 +116,7 @@
         "SarakDrawer",
         "SarakEmptyState",
         "SarakExpandableMatrix",
+        "SarakFieldError",
         "SarakFlex",
         "SarakFlowEngine",
         "SarakForm",

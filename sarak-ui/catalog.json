@@ -134,6 +134,8 @@
     "SarakEmptyStateProps",
     "SarakExpandableMatrix",
     "SarakExpandableMatrixProps",
+    "SarakFieldError",
+    "SarakFieldErrorProps",
     "SarakFlex",
     "SarakFlexProps",
     "SarakFlowEngine",
@@ -1848,6 +1850,24 @@
           "type": "SarakMatrixManifest",
           "optional": true,
           "doc": "Manifesto opcional de mapeamento recursivo para layout IAM/RBAC avançado"
+        }
+      ]
+    },
+    "SarakFieldError": {
+      "propsInterface": "SarakFieldErrorProps",
+      "source": "src/components/atomic/Feedback/SarakFieldError.tsx",
+      "props": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "doc": "Mensagem do erro. Omitida, vazia ou composta só por espaços, não renderiza elemento nem reserva espaço; espaços nas bordas não são removidos do texto exibido."
+        },
+        {
+          "name": "fieldId",
+          "type": "string",
+          "optional": false,
+          "doc": "`id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`."
         }
       ]
     },
