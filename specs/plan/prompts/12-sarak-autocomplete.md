@@ -50,6 +50,12 @@ outro nome à prop (`onOptionSelect`). Decida e diga no resumo qual escolheu.
 dizendo o que acontece quando ela é omitida e a armadilha dela, quando houver — é o texto que o catálogo
 publica ao consumidor. Prop sem `doc` no `docs/component-catalog.json` não está pronta: as levas 1 a 3
 documentaram a superfície que já existia, e componente novo entrando em branco desfaz isso.
+⚠️ **Nada de Git, em hipótese nenhuma** — nem `git add`, nem `commit`. Deixe tudo no worktree e entregue o
+resumo nesta conversa; o commit é do dono. *(Está na [[00-prompt-executor]], e vai repetido aqui porque uma
+tentativa anterior desta mesma tarefa indexou os próprios arquivos e travou dois commits do dono.)*
+**E leia este bloco inteiro antes de escrever a primeira linha:** ele ganhou três medições em 2026-10-01 que
+não existiam quando foi escrito.
+
 **Pronto quando:** teclado completo (setas, Enter, Esc, Tab) e papéis acessíveis
 corretos; testes cobrindo lista fixa, busca assíncrona, resultado vazio, erro na
 busca, resposta fora de ordem descartada e seleção por teclado; nenhuma chamada
