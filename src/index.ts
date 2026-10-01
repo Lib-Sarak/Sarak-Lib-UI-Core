@@ -127,6 +127,11 @@ export { SarakRadio } from './components/atomic/Inputs/SarakRadio';
 export type { SarakRadioProps } from './components/atomic/Inputs/SarakRadio';
 export { SarakSearch } from './components/atomic/Inputs/SarakSearch';
 export type { SarakSearchProps, SarakSearchItem } from './components/atomic/Inputs/SarakSearch';
+export { SarakAutocomplete } from './components/atomic/Inputs/SarakAutocomplete';
+export type {
+    SarakAutocompleteProps,
+    SarakAutocompleteOption,
+} from './components/atomic/Inputs/SarakAutocomplete';
 // Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
 export * from './components/atomic/Inputs/SarakRangeSlider';
 export * from './components/atomic/Inputs/SarakMultiSelect';

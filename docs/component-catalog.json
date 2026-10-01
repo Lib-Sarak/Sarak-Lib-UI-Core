@@ -710,6 +710,61 @@
         }
       ]
     },
+    "SarakAutocomplete": {
+      "propsInterface": "SarakAutocompleteProps",
+      "source": "src/components/atomic/Inputs/SarakAutocomplete.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>",
+      "props": [
+        {
+          "name": "options",
+          "type": "SarakAutocompleteOption[]",
+          "optional": true,
+          "doc": "Opções locais filtradas pelo rótulo. Omitida, a lista começa vazia; com `searchOptions`, os resultados remotos substituem esta lista."
+        },
+        {
+          "name": "searchOptions",
+          "type": "(query: string) => Promise<SarakAutocompleteOption[]>",
+          "optional": true,
+          "doc": "Busca fornecida pelo host para listas remotas. Omitida, `options` é filtrada localmente; definida, a biblioteca só chama esta função e não acessa a rede diretamente."
+        },
+        {
+          "name": "debounceMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Intervalo antes da busca remota, em milissegundos. Omitido, aguarda 300 ms; valores negativos são tratados como zero."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto digitado no modo controlado. Omitido, o componente guarda a busca internamente; quem controla deve atualizá-lo após a seleção."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto inicial no modo não controlado. Omitido, o campo começa vazio."
+        },
+        {
+          "name": "onChange",
+          "type": "React.ChangeEventHandler<HTMLInputElement>",
+          "optional": true,
+          "doc": "Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto de dica do campo. Omitido, usa \"Buscar...\"."
+        },
+        {
+          "name": "onOptionSelect",
+          "type": "(option: SarakAutocompleteOption) => void",
+          "optional": true,
+          "doc": "Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa."
+        }
+      ]
+    },
     "SarakAvatar": {
       "propsInterface": "SarakAvatarProps",
       "source": "src/components/atomic/Atoms/SarakAvatar.tsx",

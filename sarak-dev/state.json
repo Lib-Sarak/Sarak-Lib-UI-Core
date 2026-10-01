@@ -82,7 +82,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 95,
+      "count": 96,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -97,6 +97,7 @@
         "SarakAppChrome",
         "SarakAppChromeMobile",
         "SarakAuthScreen",
+        "SarakAutocomplete",
         "SarakAvatar",
         "SarakBadge",
         "SarakBreadcrumbs",

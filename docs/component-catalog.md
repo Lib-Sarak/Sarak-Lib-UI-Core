@@ -92,7 +92,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (95)
+## Componentes públicos (96)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -280,6 +280,23 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+
+### SarakAutocomplete
+
+Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocomplete.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `options` | `SarakAutocompleteOption[]` | não | Opções locais filtradas pelo rótulo. Omitida, a lista começa vazia; com `searchOptions`, os resultados remotos substituem esta lista. |
+| `searchOptions` | `(query: string) => Promise<SarakAutocompleteOption[]>` | não | Busca fornecida pelo host para listas remotas. Omitida, `options` é filtrada localmente; definida, a biblioteca só chama esta função e não acessa a rede diretamente. |
+| `debounceMs` | `number` | não | Intervalo antes da busca remota, em milissegundos. Omitido, aguarda 300 ms; valores negativos são tratados como zero. |
+| `value` | `string` | não | Texto digitado no modo controlado. Omitido, o componente guarda a busca internamente; quem controla deve atualizá-lo após a seleção. |
+| `defaultValue` | `string` | não | Texto inicial no modo não controlado. Omitido, o campo começa vazio. |
+| `onChange` | `React.ChangeEventHandler<HTMLInputElement>` | não | Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`. |
+| `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa "Buscar...". |
+| `onOptionSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa. |
+
+Estende: `Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>`
 
 ### SarakAvatar
 

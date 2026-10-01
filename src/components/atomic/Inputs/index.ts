@@ -1,4 +1,5 @@
 export * from './SarakSearch';
+export * from './SarakAutocomplete';
 export * from './SarakInput';
 export * from './SarakMaskedInput';
 export * from './SarakCurrencyInput';
