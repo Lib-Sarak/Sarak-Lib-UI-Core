@@ -42,10 +42,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🟢 Aprovada | specs/arquitetura/03-superficie-publica.md · specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30.** O arquivo saiu; a verdade delas vive nas specs
+> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30 A `plan-82` fechou a fila em 2026-10-02.** O arquivo saiu; a verdade delas vive nas specs
 > fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/` a recupera. **Destino
 > demonstrado**, como a [[00-contexto]] §5 exige de toda remoção:
 >
@@ -56,6 +55,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | **84** | [[05-cromo-e-slots]] **§5 reescrita** — a raiz do cromo tem altura de janela e contém o excedente · **§5.1 (nova)** — o contrato de rolagem: o documento não rola, o painel de conteúdo rola, o `<nav>` da barra lateral rola por dentro, e as faixas ficam no lugar |
 > | **83** | [[03-superficie-publica]] **§6.4 (nova)** — o contrato de valor dos átomos de escolha: `checked` de quem chama governa, `defaultChecked` semeia, a pele é o valor efetivo — e o `SarakSwitch` é a exceção, sempre controlado |
 > | **80** | [[09-temas-e-presets]] §2.1 (a isenção de `contraparte` acabou), §4.3 (id de tema que sumiu → referência do modo + um `warn`), §5.2 (a tabela 18→23 sai; fica a relação e a fonte viva) e §7 (o que um tema shippado exige) · [[05-cromo-e-slots]] §2.4 — **duas** varreduras de realce: ativo e hover, este nos dois modos |
+> | **82** | [[03-superficie-publica]] **§4.3 (nova)** — a convenção de prefixo por espécie de nome, a allowlist com motivo e autolimpeza, e os três limites do gate · [[00-regras-e-invariantes]] **R37** + a linha do inventário da §4.1 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (o `prefix:check` roda no `build`, não no `pre-commit`) e **§9.7 (nova)** — o vão de origem do dado |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
@@ -225,6 +225,6 @@ arquivo dela é removido: quem responde pelo resultado é o veredito do revisor,
 Origem: o relatório do agente que integra a lib no ERP Earendel, triado em 2026-09-19. A ordem é de
 execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
 
-| # | Tarefa | O que entrega | Depende de |
-|---|---|---|---|
-| 1 | [`plan-82`](plan/prompts/13-execucao-plan-82.md) | **é plan, não tarefa direta** — o arquivo guarda só o prompt de execução dela, e o estado vive na tabela da §1 | as onze acima |
+> ✅ **A fila zerou em 2026-10-02.** As doze tarefas diretas e a `plan-82` foram executadas,
+> revisadas e removidas; os arquivos de prompt saíram com elas, como esta seção manda. A tabela volta a
+> existir quando houver prompt guardado — e o `plan/prompts/` fica, vazio, porque é onde eles moram.

@@ -107,6 +107,40 @@ local — não é vocabulário do consumidor e fica fora, com motivo escrito em
 `gates/allowlists/publicTypeExclusions.mjs`. Mesma disciplina da allowlist da §4.1: sem categoria genérica
 de dispensa.
 
+## 4.3 A convenção de prefixo — e o gate que a cobra
+
+**Todo nome entregue pelo barril público carrega o prefixo da biblioteca.** Não é estética: o consumidor
+precisa distinguir, numa linha de `import`, o que é da lib do que é dele. Nomes genéricos (`Message`,
+`CatalogItem`, `FilterDescriptor`, `reorder`, `widthOf`) colidem com o vocabulário do projeto que importa, e
+foi o integrador do primeiro consumidor real quem reportou isso.
+
+A convenção é **por espécie do nome**, e cada espécie tem uma forma só:
+
+| Espécie | Convenção | Exemplo |
+| --- | --- | --- |
+| Componente, tipo, interface (PascalCase) | começa com `Sarak` | `SarakExpandableCard`, `SarakFlexDirection` |
+| Constante (SCREAMING_SNAKE) | começa com `SARAK_` | `SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS` |
+| Hook | começa com `use` | `useSarakDevice` — já conforme por construção |
+| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `getSarakModule` |
+
+O tipo de props acompanha o componente (`SarakFooProps`), que é o par que o `barrel:check` já cobra.
+
+**Quem cobra é o `prefix:check`** (`gates/scripts/contrato/check-public-prefix.mjs`), na cadeia do
+`npm run build`, **logo depois do `public-types:check`** — o ponto em que o `dist/` recém-construído já
+existe. Ele reprova nomeando **o nome e a espécie**, e a allowlist
+(`gates/allowlists/publicPrefixExclusions.mjs`) tem a mesma disciplina da do barril: exige **motivo escrito**
+por entrada e **se autolimpa** — entrada de nome que já está conforme, ou que não existe mais, derruba o gate
+como se fosse violação. **Ela nasceu vazia e segue vazia:** nenhum nome precisou de exceção.
+
+> **Quantos nomes a superfície publica não se escreve aqui** (achado **32**): o próprio
+> `npm run prefix:check` imprime o total conforme a cada build. O que esta spec afirma é a **relação** —
+> todo nome exportado segue a convenção da sua espécie, ou está na allowlist com motivo.
+
+**O que o gate não vê**, declarado no cabeçalho dele (R18): ele lê `dist/index.d.ts`, não a fonte — então
+`dist/` velho o faz medir o passado; classifica pelo **formato** do nome, sem consultar o tipo declarado nem
+julgar se o nome é bom; e lê só a última linha agrupada `export { … };` do `.d.ts`, de modo que mudança de
+formato do bundler exige mudar a análise junto.
+
 # 5. O catálogo gerado
 
 `npm run catalog` produz `docs/component-catalog.{json,md}` por AST, e `catalog:check` confere no build que o commitado bate com o gerado. Ele publica componentes, props reais, tokens de espaçamento semânticos e as CSS Variables públicas.

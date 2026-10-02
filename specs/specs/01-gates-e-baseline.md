@@ -79,6 +79,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
 | Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
+| Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
@@ -162,6 +163,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
+| `prefix` | — | ✅ *(via `build`)* | ✅ | — | ✅ | 
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
@@ -730,3 +732,20 @@ cima da própria violação que existe para pegar. CSS global saiu do escopo de 
 - **Token de layout declarado depois do marcador da seção de bordas** fica fora do recorte.
 - **Não distingue consumo de citação em comentário** — a mesma limitação do `auditor_ghostvars` (§4.3.c).
 - Não mede o **valor**: um consumo que lê o token e o ignora passa.
+
+## 9.7 O gate de prefixo — o que ele declara não ver
+
+**O vão é de ORIGEM DO DADO, e é deliberado:** o `prefix:check` lê `dist/index.d.ts`, o artefato
+**construído**, não a fonte. Um `dist/` velho o faz medir o passado — export novo ainda não construído passa
+sem ser visto. Por isso ele roda **na cadeia do `build`, depois do `public-types:check`**, e **não** no
+`pre-commit`: é o único ponto em que o `.d.ts` do commit existe. O mesmo raciocínio do `public-types:check`,
+que também mede o artefato.
+
+**Os outros dois limites, declarados no cabeçalho dele:** classifica pelo **formato** do nome (PascalCase,
+SCREAMING_SNAKE, `use`, camelCase) sem consultar o tipo declarado, e **não julga se o nome é bom** — só a
+convenção da espécie; e lê apenas a última linha agrupada `export { … };` do `.d.ts`, tratando o nome depois
+de `as` como o importável, de modo que mudança de formato do bundler exige mudar a análise junto.
+
+**O que ele fecha:** antes dele, a convenção vivia só na skill `ui-novo-componente` — metade da superfície
+nasceu antes dela e nada cobrava. Era o caso clássico de regra sem gate, que o §8 do [[00-contexto]]
+cataloga.

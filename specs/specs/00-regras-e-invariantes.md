@@ -1233,6 +1233,45 @@ motivo** ou de arquivo que **não existe mais**.
 
 ---
 
+## R37 — Todo nome do barril público carrega o prefixo da biblioteca
+
+**Estado:** ✅ **cobrada por gate**, com allowlist vazia.
+
+**Enunciado.** Nome entregue pelo barril público segue a convenção da sua espécie: PascalCase começa com
+`Sarak`; constante SCREAMING_SNAKE começa com `SARAK_`; hook começa com `use`; demais funções camelCase
+**contêm** `Sarak`. O tipo de props acompanha o componente (`SarakFooProps`). Exceção só com motivo escrito
+na allowlist.
+
+**Por quê.** O consumidor lê a linha de `import` e precisa saber o que é da lib. Nome genérico colide com o
+vocabulário do projeto que importa — foi o integrador do primeiro consumidor real quem reportou, e enquanto
+houver um consumidor só, quebrar a API é mais barato do que será depois. A convenção já existia na skill
+`ui-novo-componente`, mas valia pela metade: metade da superfície nasceu antes dela, e não havia gate. Regra
+sem gate não é cobrável.
+
+**Certo × Errado.**
+
+```
+ERRADO   export type { CatalogItem }              ← colide com o tipo local do consumidor
+ERRADO   export { reorder, widthOf }              ← nome genérico de função
+CERTO    export type { SarakCatalogItem }
+CERTO    export { sarakReorder, sarakWidthOf }
+CERTO    export { useSarakDevice, getSarakModule } ← hook e função que já contêm Sarak
+```
+
+**Cobrada por:** `check-public-prefix.mjs` (`npm run prefix:check`), na cadeia do `npm run build`, logo
+depois do `public-types:check`. A allowlist `gates/allowlists/publicPrefixExclusions.mjs` exige motivo por
+entrada e **se autolimpa**: entrada de nome já conforme ou inexistente derruba o gate. O gate nomeia o nome
+**e a espécie** ao reprovar.
+
+**O vão.**
+- **Lê o artefato, não a fonte.** `dist/index.d.ts` desatualizado faz o gate medir o passado — por isso ele
+  roda depois do `build`, nunca no `pre-commit`.
+- **Julga formato, não qualidade.** `SarakCoisa` passa; se o nome é bom, decide a revisão.
+- **Lê só a última linha agrupada `export { … };`** do `.d.ts`. Se o bundler mudar esse formato, a análise
+  textual precisa mudar junto.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1390,6 +1429,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verify_parity.ts` | R4 | `gates/scripts/audit/` | ✅ via `auditor_paridade.mjs` |
 | `verify_presets.ts` | R5 | `gates/scripts/audit/` | ✅ via `auditor_presets.mjs` |
 | `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `gates/scripts/contrato/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
+| `check-public-prefix.mjs` | **R37** | `gates/scripts/contrato/` | ✅ `prefix:check` (cadeia do `build`, depois do `public-types:check`) |
 | `check-package-contents.mjs` | **R19** | `gates/scripts/contrato/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
 | `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` — geram **e** conferem, por isso **não** migram | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
 | `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `gates/scripts/release/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
