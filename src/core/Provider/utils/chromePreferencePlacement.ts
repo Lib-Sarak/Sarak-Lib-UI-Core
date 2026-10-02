@@ -1,5 +1,5 @@
 import { PREFERENCE_IDS, isPreferenceOffered, getPreferencePosition } from '../preferencesTypes';
-import type { PreferenceId } from '../preferencesTypes';
+import type { SarakPreferenceId } from '../preferencesTypes';
 
 /**
  * Teto de código para as duas preferências que já eram widget antes desta
@@ -8,20 +8,20 @@ import type { PreferenceId } from '../preferencesTypes';
  * qualquer posição que o tema declare; as demais preferências não têm teto
  * de código, só a posição do tema decide.
  */
-export type ChromePreferenceCeilings = Partial<Record<PreferenceId, boolean>>;
+export type ChromePreferenceCeilings = Partial<Record<SarakPreferenceId, boolean>>;
 
 export interface ChromePreferencesPlacement {
     /** Oferecidas com posição `pinned` — controle direto na barra. */
-    pinned: PreferenceId[];
+    pinned: SarakPreferenceId[];
     /** TODAS as oferecidas (`pinned` ∪ `menu`), independente do ⚙ existir —
      *  quem não tem menu (o drawer do celular, Spec 05 §2.3) usa esta. */
-    offered: PreferenceId[];
+    offered: SarakPreferenceId[];
     /** Conteúdo do ⚙ "Preferências" — vazio (e portanto sem botão) quando
      *  NENHUMA preferência tem posição EXATAMENTE `menu`. Uma barra só com
      *  fixadas (o padrão de fábrica) não basta para o ⚙ nascer; quando ele
      *  nasce por causa de alguma `menu`, as fixadas entram aqui também —
      *  fixa na barra é "um controle direto, e também no menu". */
-    menu: PreferenceId[];
+    menu: SarakPreferenceId[];
 }
 
 /**
@@ -34,8 +34,8 @@ export const splitPreferencesByPlacement = (
     design: Record<string, unknown> | undefined,
     ceilings: ChromePreferenceCeilings = {},
 ): ChromePreferencesPlacement => {
-    const pinned: PreferenceId[] = [];
-    const offered: PreferenceId[] = [];
+    const pinned: SarakPreferenceId[] = [];
+    const offered: SarakPreferenceId[] = [];
     let hasMenuOnly = false;
     PREFERENCE_IDS.forEach((id) => {
         if (ceilings[id] === false) return;

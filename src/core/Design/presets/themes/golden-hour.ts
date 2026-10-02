@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const goldenHourTheme: ThemePreset = {
+export const goldenHourTheme: SarakThemePreset = {
     id: 'golden-hour',
     name: 'Golden Hour',
     description: 'Luxo editorial em dourado quente, sidebar à direita, textura de favo de mel — a contraparte inverte para uma noite âmbar.',

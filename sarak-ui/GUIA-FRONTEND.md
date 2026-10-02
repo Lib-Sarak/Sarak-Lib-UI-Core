@@ -627,19 +627,19 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Atoms | **SarakTypography** | `variant` · `color` · `as` · `transform` · `content` · `children` |
 | Buttons | **SarakButton** | `variant` · `isLoading` · `leftIcon` · `rightIcon` · `fullWidth` · `size` |
 | Buttons | **SarakIconButton** | `variant` · `size` · `isLoading` · `icon` |
-| Buttons | **SocialButton** | `provider` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
-| Cards | **ExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
+| Buttons | **SarakSocialButton** | `provider` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
 | Cards | **SarakActionCard** | `item` · `mapping` · `className` · `onAction` · `design` · `label` · `actionLabel` |
 | Cards | **SarakCard** | `children` · `className` |
 | Cards | **SarakCardBody** | `children` · `className` |
 | Cards | **SarakCardFooter** | `children` · `className` |
 | Cards | **SarakCardHeader** | `children` · `className` |
+| Cards | **SarakExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
-| Core | **DesignScope** | `design` · `children` · `className` · `style` |
-| Core | **DeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
-| Core | **DynamicRenderer** | `contracts` · `module` |
 | Core | **SarakComponent** | `children` |
+| Core | **SarakDesignScope** | `design` · `children` · `className` · `style` |
+| Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
+| Core | **SarakDynamicRenderer** | `contracts` · `module` |
 | Core | **SarakShell** | `children` · `brand` · `extraToolbarItems` · `user` · `logout` · `token` · `authApi` |
 | Core | **SarakUIProvider** | `children` · `discoveryEndpoints` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
@@ -695,29 +695,29 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakLink** | `href` · `external` · `children` |
 | Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `className` |
 | Navigation | **SarakPagination** | `current` · `total` · `maxVisible` · `onChange` · `className` |
+| Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
+| Navigation | **SarakShellSearchWidget** | `variant` · `onClick` |
+| Navigation | **SarakShellThemeToggle** | `variant` |
+| Navigation | **SarakShellUserWidget** | `user` · `logout` · `variant` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
-| Navigation | **ShellLanguageSelector** | `variant` |
-| Navigation | **ShellSearchWidget** | `variant` · `onClick` |
-| Navigation | **ShellThemeToggle** | `variant` |
-| Navigation | **ShellUserWidget** | `user` · `logout` · `variant` |
-| Outros | **DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
-| Outros | **HelpButton** | _ver arquivo do componente_ |
-| Outros | **MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |
+| Outros | **SARAK_DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
+| Outros | **SARAK_MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **SarakDataGridImpl** | _ver arquivo do componente_ |
 | Outros | **SarakDataTableImpl** | _ver arquivo do componente_ |
+| Outros | **SarakHelpButton** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
-| Templates | **FilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
-| Templates | **ImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakAuthScreen** | `branding` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `onMasterLogin` · `onChange` · `role` · `density` · `importance` |
 | Templates | **SarakCardGrid** | `endpoint` · `data` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
 | Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` · `role` · `density` · `importance` |
 | Templates | **SarakChart** | `endpoint` · `label` · `mapping` · `role` · `density` · `importance` |
 | Templates | **SarakChat** | `endpoint` · `modelsEndpoint` · `label` · `role` · `density` · `importance` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
+| Templates | **SarakFilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
 | Templates | **SarakForm** | `endpoint` · `label` · `mapping` · `mode` · `initialData` · `actions` · `onSuccess` · `role` · `density` · `importance` |
+| Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakManagementGrid** | `endpoint` · `groupBy` · `ghostGroups` · `mapping` · `headerActions` · `groupActions` · `formMapping` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
 | Templates | **SarakStats** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
@@ -734,7 +734,7 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 
 `SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakShell` · `SarakSplitPane` · `SarakTable`
 
-**Refino opcional por dispositivo** (`ResponsiveValue<T>` = `{ mob, tab, desk }`) — 2 props:
+**Refino opcional por dispositivo** (`SarakResponsiveValue<T>` = `{ mob, tab, desk }`) — 2 props:
 
 | Componente | Prop |
 | --- | --- |
@@ -766,7 +766,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 `--sarak-accent-color` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
-**Tokens de TEMA** (427 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 40 deles aceitam `ResponsiveValue`.
+**Tokens de TEMA** (427 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 40 deles aceitam `SarakResponsiveValue`.
 
 **Temas embutidos** (14): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol`
 

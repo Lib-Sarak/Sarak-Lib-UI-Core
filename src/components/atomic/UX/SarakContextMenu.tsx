@@ -13,7 +13,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 
-export interface ContextMenuPosition {
+export interface SarakContextMenuPosition {
     x: number;
     y: number;
 }
@@ -22,7 +22,7 @@ export interface SarakContextMenuProps {
     /** Controla a visibilidade. */
     isOpen: boolean;
     /** Coordenada (viewport) onde abrir — normalmente `{ x: e.clientX, y: e.clientY }`. */
-    position: ContextMenuPosition;
+    position: SarakContextMenuPosition;
     /** Fecha o menu (clique fora / ESC / escolha de item). */
     onClose: () => void;
     /** Itens do menu (ex.: botões). */
@@ -38,7 +38,7 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
     className = '',
 }) => {
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const [coords, setCoords] = useState<ContextMenuPosition>(position);
+    const [coords, setCoords] = useState<SarakContextMenuPosition>(position);
 
     // Fecha ao clicar fora ou pressionar ESC (Critério: some ao clicar em outro lugar).
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { DiscoveredModule } from '../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../core/Discovery/types';
 import { useSarakUI } from '../../core/Provider/SarakUIProvider';
-import { getRegisteredModules } from '../../core/Discovery/registry';
+import { sarakGetRegisteredModules } from '../../core/Discovery/registry';
 
 
 /**
@@ -18,8 +18,8 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
         if (!isHydrated) return [];
 
         // Soberania Total: Prioriza o Registry global para evitar race conditions
-        const all = getRegisteredModules();
-        const displayModules = (all.length > 0 ? all : registeredModules) as Partial<DiscoveredModule>[];
+        const all = sarakGetRegisteredModules();
+        const displayModules = (all.length > 0 ? all : registeredModules) as Partial<SarakDiscoveredModule>[];
 
         // O filtro de Blacklist agora deve vir do estado do Design (SystemSchema)
         // Por padrão, filtramos apenas se o modo for 'standard'
@@ -41,7 +41,7 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
                 endpoints: mod.endpoints || {},
                 component: mod.component,
                 visualContracts: mod.visualContracts || []
-            } as DiscoveredModule));
+            } as SarakDiscoveredModule));
     }, [registeredModules, isHydrated, design?.moduleBlacklist]);
 
     return {

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { SarakTreeView, type MatrixTreeNode } from '../SarakTreeView';
+import { SarakTreeView, type SarakMatrixTreeNode } from '../SarakTreeView';
 
 const renderTree = (props: React.ComponentProps<typeof SarakTreeView>) =>
     render(
@@ -20,7 +20,7 @@ describe('Spec 12 (Onda 9) — SarakTreeView: árvore hierárquica', () => {
     });
 
     it('suporta profundidade (N níveis): expandir um nó revela os filhos', () => {
-        const data: MatrixTreeNode[] = [
+        const data: SarakMatrixTreeNode[] = [
             { id: 'root', name: 'Root', children: [{ id: 'child', name: 'Filho' }] },
         ];
         renderTree({ data });
@@ -31,7 +31,7 @@ describe('Spec 12 (Onda 9) — SarakTreeView: árvore hierárquica', () => {
     });
 
     it('exibe o lazyLoadingIcon sob um nó com loading: true (ativável via JSON)', () => {
-        const data: MatrixTreeNode[] = [{ id: 'async', name: 'Assíncrono', loading: true }];
+        const data: SarakMatrixTreeNode[] = [{ id: 'async', name: 'Assíncrono', loading: true }];
         renderTree({
             data,
             manifest: { default: { hasExpand: true, defaultExpanded: true } },

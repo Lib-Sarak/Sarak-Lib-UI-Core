@@ -21,7 +21,7 @@ import { SarakCoreCard } from './components/SarakCoreCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 
-export interface FilterConfig {
+export interface SarakFilterConfig {
     id: string;
     label: string;
     type: 'TABS' | 'SELECT';
@@ -70,7 +70,7 @@ export interface SarakCardGridProps<TData extends Record<string, unknown> = Reco
         /** *literal*: texto do mesmo botão com o painel aberto (default `"Fechar"`). */
         collapse_label?: string;
     };
-    filters?: FilterConfig[]; // v6.4
+    filters?: SarakFilterConfig[]; // v6.4
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';

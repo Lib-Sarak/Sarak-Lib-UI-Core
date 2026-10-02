@@ -9,7 +9,7 @@
 export * from './SarakDataGrid';
 export * from './SarakDataTable';
 export { default as SarakSparkline } from './SarakSparkline';
-export type { SarakSparklineProps, SparklineVariant } from './SarakSparkline';
+export type { SarakSparklineProps, SarakSparklineVariant } from './SarakSparkline';
 export { SarakTreeView } from './SarakTreeView';
-export type { SarakTreeViewProps, MatrixTreeNode } from './SarakTreeView';
+export type { SarakTreeViewProps, SarakMatrixTreeNode } from './SarakTreeView';
 export * from './SarakKanban';

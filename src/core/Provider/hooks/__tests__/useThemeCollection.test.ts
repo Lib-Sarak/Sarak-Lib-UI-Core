@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useThemeCollection } from '../useThemeCollection';
-import { GLOBAL_THEMES } from '../../../Design/presets/themes/index';
+import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes/index';
 import type { SarakUIOptions } from '../../types';
 
 describe('useThemeCollection (ADR-011 — uma porta de escrita, sem porta de leitura/apagar)', () => {
@@ -9,7 +9,7 @@ describe('useThemeCollection (ADR-011 — uma porta de escrita, sem porta de lei
         const customTheme = { id: 'meu-custom', name: 'Meu Custom', design: {} };
         const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
 
-        expect(result.current.allThemes).toHaveLength(GLOBAL_THEMES.length + 1);
+        expect(result.current.allThemes).toHaveLength(SARAK_GLOBAL_THEMES.length + 1);
         expect(result.current.allThemes[result.current.allThemes.length - 1]).toEqual(customTheme);
     });
 
@@ -22,7 +22,7 @@ describe('useThemeCollection (ADR-011 — uma porta de escrita, sem porta de lei
         });
 
         const ids = result.current.allThemes.map((t) => t.id);
-        expect(ids).toEqual([...GLOBAL_THEMES.map((t) => t.id), 'meu-custom', 'meu-tema']);
+        expect(ids).toEqual([...SARAK_GLOBAL_THEMES.map((t) => t.id), 'meu-custom', 'meu-tema']);
     });
 
     it('salvar o mesmo id duas vezes SUBSTITUI, nunca duplica', async () => {

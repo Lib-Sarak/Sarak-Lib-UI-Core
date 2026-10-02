@@ -31,7 +31,7 @@ interface SarakRuntimeExtras {
 export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
 
 /** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
-export interface ThemeEntry {
+export interface SarakThemeEntry {
     id: string;
     /** Rótulo exibido nas listas de tema. Os embarcados já o têm via `ThemePreset`;
      *  um tema salvo em runtime (ADR-011) precisa dele para não cair no fallback. */
@@ -183,7 +183,7 @@ export interface SarakUIOptions {
          * inteiramente do consumidor. Não existe porta de leitura nem de apagar: a
          * leitura já é a prop `customThemes`, e apagar é decisão de quem guarda.
          */
-        onSave?: (theme: ThemeEntry) => Promise<void> | void;
+        onSave?: (theme: SarakThemeEntry) => Promise<void> | void;
     };
     preferences?: SarakPreferencesOptions; // Porta opcional de preferências do usuário
     /**
@@ -232,7 +232,7 @@ export interface SarakUIContextType {
     /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
      *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
      *  se configurado — sem a porta, não sobrevive a um reload. */
-    saveTheme: (theme: ThemeEntry) => Promise<void>;
+    saveTheme: (theme: SarakThemeEntry) => Promise<void>;
     activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
     resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru
     setResolvedThemeId?: (id: string | undefined) => void; // Quem aplica um preset novo anuncia o id aqui (plan-27)

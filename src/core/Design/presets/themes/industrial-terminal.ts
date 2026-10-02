@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const industrialTerminalTheme: ThemePreset = {
+export const industrialTerminalTheme: SarakThemePreset = {
     id: 'industrial-terminal',
     name: 'Industrial Terminal',
     description: 'Heavy machinery aesthetic. Amber CRT monitors, thick solid borders with sharp geometric cuts, intense warning stripes, and complete absence of shadows or glass.',

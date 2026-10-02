@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import * as ComponentModule from '../SarakAnalyticalPage';
 import { SarakAnalyticalPage } from '../SarakAnalyticalPage';
-import { DeviceProvider } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider } from '../../../core/Provider/DeviceProvider';
 import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
 
 describe('SarakAnalyticalPage', () => {
@@ -19,13 +19,13 @@ describe('SarakAnalyticalPage', () => {
     describe('drawers mobile (device=smartphone)', () => {
         const renderMobile = () =>
             render(
-                <DeviceProvider overrideDevice="smartphone">
+                <SarakDeviceProvider overrideDevice="smartphone">
                     <SarakAnalyticalPage
                         navBar={<div>Nav de verdade</div>}
                         sidePanel={<div>Painel de verdade</div>}
                         mainContent={<div>Conteúdo</div>}
                     />
-                </DeviceProvider>,
+                </SarakDeviceProvider>,
             );
 
         it('abre o drawer de navegação ao clicar no botão de menu', () => {
@@ -57,12 +57,12 @@ describe('SarakAnalyticalPage', () => {
     it('sai em inglês com `config.language: "en"`', () => {
         render(
             <SarakUIProvider config={{ language: 'en' }}>
-                <DeviceProvider overrideDevice="smartphone">
+                <SarakDeviceProvider overrideDevice="smartphone">
                     <SarakAnalyticalPage
                         navBar={<div>Real nav</div>}
                         mainContent={<div>Content</div>}
                     />
-                </DeviceProvider>
+                </SarakDeviceProvider>
             </SarakUIProvider>,
         );
         expect(screen.getByLabelText('Open navigation menu')).toBeInTheDocument();

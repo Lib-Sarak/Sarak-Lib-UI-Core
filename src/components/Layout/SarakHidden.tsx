@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
-import { useSarakDevice, DeviceType } from '../../core/Provider/DeviceProvider';
+import { useSarakDevice, SarakDeviceType } from '../../core/Provider/DeviceProvider';
 
 export interface SarakHiddenProps {
     children: ReactNode;
     /** Esconder quando o dispositivo ativo estiver nesta lista */
-    on: DeviceType | DeviceType[];
+    on: SarakDeviceType | SarakDeviceType[];
 }
 
 /**

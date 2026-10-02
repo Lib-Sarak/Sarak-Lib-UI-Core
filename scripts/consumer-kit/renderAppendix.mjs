@@ -57,7 +57,7 @@ const renderResponsive = (responsive) => [
     '',
     responsive.autoAdapting.map((name) => `\`${name}\``).join(' · ') || '_nenhum_',
     '',
-    `**Refino opcional por dispositivo** (\`ResponsiveValue<T>\` = \`{ mob, tab, desk }\`) — ${responsive.responsiveProps.length} props:`,
+    `**Refino opcional por dispositivo** (\`SarakResponsiveValue<T>\` = \`{ mob, tab, desk }\`) — ${responsive.responsiveProps.length} props:`,
     '',
     '| Componente | Prop |',
     '| --- | --- |',
@@ -89,7 +89,7 @@ const renderTokens = (catalog) => [
     '',
     `**Tokens de TEMA** (${catalog.designTokens.count} chaves válidas de \`design\` num tema JSON) — ` +
         'lista completa com tipo em `catalog.json` → `designTokens.ids`. ' +
-        `${catalog.designTokens.responsiveCapable.length} deles aceitam \`ResponsiveValue\`.`,
+        `${catalog.designTokens.responsiveCapable.length} deles aceitam \`SarakResponsiveValue\`.`,
     '',
     `**Temas embutidos** (${catalog.themes.presetIds.length}): ` +
         catalog.themes.presetIds.map((id) => `\`${id}\``).join(' · '),

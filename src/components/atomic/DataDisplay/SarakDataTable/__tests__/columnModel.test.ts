@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { reorder, computeOffsets, widthOf, nextTableSort, sortTableRows, pinnedStyle, type SarakColumn } from '../columnModel';
+import { sarakReorder, sarakComputeOffsets, sarakWidthOf, nextTableSort, sortTableRows, pinnedStyle, type SarakColumn } from '../columnModel';
 
 interface Row {
     name: string;
@@ -14,18 +14,18 @@ const cols: Array<SarakColumn<Row>> = [
 
 describe('Spec 12 (Onda 9) — columnModel', () => {
     it('reorder move a coluna de origem para a posição da coluna de destino', () => {
-        expect(reorder(['a', 'b', 'c'], 'c', 'a')).toEqual(['c', 'a', 'b']);
-        expect(reorder(['a', 'b', 'c'], 'a', 'a')).toEqual(['a', 'b', 'c']);
+        expect(sarakReorder(['a', 'b', 'c'], 'c', 'a')).toEqual(['c', 'a', 'b']);
+        expect(sarakReorder(['a', 'b', 'c'], 'a', 'a')).toEqual(['a', 'b', 'c']);
     });
 
     it('widthOf prioriza a largura controlada sobre o default da coluna', () => {
-        expect(widthOf(cols[0], {})).toBe(100);
-        expect(widthOf(cols[0], { a: 250 })).toBe(250);
-        expect(widthOf({ id: 'x', header: 'X' }, {})).toBe(160);
+        expect(sarakWidthOf(cols[0], {})).toBe(100);
+        expect(sarakWidthOf(cols[0], { a: 250 })).toBe(250);
+        expect(sarakWidthOf({ id: 'x', header: 'X' }, {})).toBe(160);
     });
 
     it('computeOffsets acumula sticky left/right e soma a largura total', () => {
-        const offsets = computeOffsets(cols, {});
+        const offsets = sarakComputeOffsets(cols, {});
         expect(offsets.left).toEqual({ a: 0 });
         expect(offsets.right).toEqual({ c: 0 });
         expect(offsets.total).toBe(380);
@@ -37,7 +37,7 @@ describe('Spec 12 (Onda 9) — columnModel', () => {
             { id: 'b', header: 'B', width: 120, pinned: 'left' },
             { id: 'c', header: 'C', width: 80 },
         ];
-        const offsets = computeOffsets(stacked, {});
+        const offsets = sarakComputeOffsets(stacked, {});
         expect(offsets.left).toEqual({ a: 0, b: 100 });
     });
 
@@ -63,7 +63,7 @@ describe('Spec 12 (Onda 9) — columnModel', () => {
     });
 
     it('pinnedStyle desloca a primeira coluna congelada após a coluna de seleção', () => {
-        expect(pinnedStyle(cols[0], computeOffsets(cols, {}), 'surface', 48).left).toBe(48);
-        expect(pinnedStyle(cols[2], computeOffsets(cols, {}), 'surface', 48).right).toBe(0);
+        expect(pinnedStyle(cols[0], sarakComputeOffsets(cols, {}), 'surface', 48).left).toBe(48);
+        expect(pinnedStyle(cols[2], sarakComputeOffsets(cols, {}), 'surface', 48).right).toBe(0);
     });
 });

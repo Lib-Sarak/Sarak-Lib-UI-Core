@@ -12,12 +12,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ZoomIn, ZoomOut, Download, ChevronLeft, ChevronRight } from 'lucide-react';
-import { usePdfDocument, type PdfSource } from './usePdfDocument';
+import { usePdfDocument, type SarakPdfSource } from './usePdfDocument';
 import { SarakIconButton } from '../../Buttons/SarakIconButton';
 
 export interface SarakPDFViewerProps {
     /** Origem do documento: URL, bytes ou ArrayBuffer. */
-    src: PdfSource;
+    src: SarakPdfSource;
     /** Página inicial (1-based, default: 1). */
     initialPage?: number;
     /** Escala inicial de zoom (default: 1.2). */
@@ -25,7 +25,7 @@ export interface SarakPDFViewerProps {
     /** URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. */
     workerSrc?: string;
     /** Disparado ao clicar em Download (recebe a `src` quando string). */
-    onDownload?: (src: PdfSource) => void;
+    onDownload?: (src: SarakPdfSource) => void;
     className?: string;
 }
 

@@ -9,7 +9,7 @@ import type { useEChartsTheme } from '../useEChartsTheme';
 export type ChartTheme = ReturnType<typeof useEChartsTheme>;
 
 /** Item de dado de série: dataset externo, lido por chave dinâmica. */
-export type ChartDataItem = Record<string, unknown>;
+export type SarakChartDataItem = Record<string, unknown>;
 
 /** Subset da config de chart lido pelos builders (chaves de leitura de série). */
 export interface ChartBuilderConfig {

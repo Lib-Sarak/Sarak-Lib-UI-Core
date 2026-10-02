@@ -4,21 +4,21 @@
  * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
  */
 
-export type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
+export type SarakTokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
 
-export type ResponsiveValue<T> = {
+export type SarakResponsiveValue<T> = {
     desk: T;
     tab: T;
     mob: T;
 };
 
 /** Espaço de valores que um token pode assumir (espelha SarakDesignTokens). */
-export type SarakTokenValue = string | number | boolean | ResponsiveValue<string | number>;
+export type SarakTokenValue = string | number | boolean | SarakResponsiveValue<string | number>;
 
-export interface DesignToken {
+export interface SarakDesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
-    type: TokenValueType;
+    type: SarakTokenValueType;
     isResponsive?: boolean;     // Indica se este token é físico/espacial e suporta o ResponsiveValue
     semanticRole?: 'bg' | 'text' | 'border' | 'primary';
     iconFamily?: 'lucide' | 'phosphor' | 'tabler';
@@ -57,7 +57,7 @@ export interface DesignToken {
 export interface ComponentSchema {
     id: string;
     label: string;
-    tokens: DesignToken[];
+    tokens: SarakDesignToken[];
 }
 
 export interface MasterDesignSchema {

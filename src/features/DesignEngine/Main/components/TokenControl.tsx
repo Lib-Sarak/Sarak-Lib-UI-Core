@@ -7,10 +7,10 @@ import {
     InputControl,
     MediaUploaderControl
 } from '../../components/DesignControls';
-import type { DesignToken, SarakTokenValue } from '../../../../core/Design/types';
+import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
 interface WidgetProps {
-    token: DesignToken;
+    token: SarakDesignToken;
     value: SarakTokenValue;
     onChange: (val: SarakTokenValue) => void;
 }
@@ -38,7 +38,7 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
     image: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
 };
 
-export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: DesignToken, value: SarakTokenValue, onChange: (val: SarakTokenValue) => void, previewDevice?: string }) => {
+export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: SarakDesignToken, value: SarakTokenValue, onChange: (val: SarakTokenValue) => void, previewDevice?: string }) => {
     const Widget = ControlRegistry[token.type];
     if (!Widget) return null;
 

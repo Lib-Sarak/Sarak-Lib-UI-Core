@@ -1,6 +1,6 @@
-import type { PreferenceId, PreferencePosition } from '../Design/schema/preferences';
+import type { SarakPreferenceId, SarakPreferencePosition } from '../Design/schema/preferences';
 
-export type { PreferenceId, PreferencePosition };
+export type { SarakPreferenceId, SarakPreferencePosition };
 export { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, isPreferenceOffered, getPreferencePosition } from '../Design/schema/preferences';
 
 export type SarakColorModePreference = 'light' | 'dark' | 'system';

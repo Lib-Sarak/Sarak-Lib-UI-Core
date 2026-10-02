@@ -4,17 +4,17 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
 import { PREFERENCE_POSITION_TOKEN_IDS } from '../../../core/Provider/preferencesTypes';
 
 const NAV = [{ label: 'Propostas', route: '/propostas' }];
 
 afterEach(() => localStorage.clear());
 
-const renderAtDevice = (device: DeviceType, config: Record<string, unknown>, ui: React.ReactElement) =>
+const renderAtDevice = (device: SarakDeviceType, config: Record<string, unknown>, ui: React.ReactElement) =>
     render(
         <SarakUIProvider config={{ mode: 'dark', ...config }}>
-            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+            <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
 
@@ -55,9 +55,9 @@ describe('SarakAppChrome — barra configurável pelo administrador', () => {
     it("widgets.themeToggle=false vence a posição do tema mesmo com colorMode='pinned' (teto do código)", () => {
         render(
             <SarakUIProvider config={{ mode: 'dark', [PREFERENCE_POSITION_TOKEN_IDS.colorMode]: 'pinned' }}>
-                <DeviceProvider overrideDevice="desktop">
+                <SarakDeviceProvider overrideDevice="desktop">
                     <SarakAppChrome nav={NAV} widgets={{ themeToggle: false }}><div>x</div></SarakAppChrome>
-                </DeviceProvider>
+                </SarakDeviceProvider>
             </SarakUIProvider>,
         );
         expect(screen.queryByText(/Mode$/)).toBeNull();

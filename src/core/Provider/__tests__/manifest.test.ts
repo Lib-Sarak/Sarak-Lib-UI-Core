@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { DESIGN_MANIFEST } from '../manifest';
+import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import * as colorEngine from '../utils/color-engine';
 import { vi } from 'vitest';
 import type { SarakTokenValue } from '../../Design/types';
@@ -11,13 +11,13 @@ vi.mock('../utils/color-engine', () => ({
 
 describe('DESIGN_MANIFEST', () => {
     it('should transform mode correctly', () => {
-        expect(DESIGN_MANIFEST.mode.transform?.('dark')).toBe('dark');
-        expect(DESIGN_MANIFEST.mode.transform?.('light')).toBe('light');
-        expect(DESIGN_MANIFEST.mode.transform?.('other')).toBe('light');
+        expect(SARAK_DESIGN_MANIFEST.mode.transform?.('dark')).toBe('dark');
+        expect(SARAK_DESIGN_MANIFEST.mode.transform?.('light')).toBe('light');
+        expect(SARAK_DESIGN_MANIFEST.mode.transform?.('other')).toBe('light');
     });
 
     it('should transform colorPalette correctly', () => {
-        expect(DESIGN_MANIFEST.colorPalette.transform?.('some-palette')).toBe('some-palette');
+        expect(SARAK_DESIGN_MANIFEST.colorPalette.transform?.('some-palette')).toBe('some-palette');
     });
 
     it('should transform colors using computeColorVariants', () => {
@@ -36,7 +36,7 @@ describe('DESIGN_MANIFEST', () => {
         ];
 
         colorProps.forEach(prop => {
-            const transform = DESIGN_MANIFEST[prop].transform;
+            const transform = SARAK_DESIGN_MANIFEST[prop].transform;
             expect(transform).toBeDefined();
             // Because we mocked it to return v || fallback
             expect(transform?.('custom-color')).toBe('custom-color');
@@ -45,10 +45,10 @@ describe('DESIGN_MANIFEST', () => {
     });
 
     it('should transform integers correctly', () => {
-        expect(DESIGN_MANIFEST.colorDepth.transform?.('2')).toBe(2);
-        expect(DESIGN_MANIFEST.colorDepth.transform?.('invalid')).toBe(1);
-        expect(DESIGN_MANIFEST.colorVariation.transform?.('3')).toBe(3);
-        expect(DESIGN_MANIFEST.colorVariation.transform?.('invalid')).toBe(1);
+        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('2')).toBe(2);
+        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('invalid')).toBe(1);
+        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('3')).toBe(3);
+        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('invalid')).toBe(1);
     });
 
     // `logoScale`/`hapticIntensity` saíram desta lista (plan-21, 2026-08-10):
@@ -58,16 +58,16 @@ describe('DESIGN_MANIFEST', () => {
     // `DESIGN_MANIFEST`) foi removida; `hapticIntensity` não tinha nenhum
     // consumidor, nem de CSS nem de JS, em lugar nenhum do código.
     it('should transform floats correctly', () => {
-        expect(DESIGN_MANIFEST.contrastCurve.transform?.('1.5')).toBe(1.5);
-        expect(DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
-        expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
-        expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
-        expect(DESIGN_MANIFEST.sidebarMinWidth.transform?.('300')).toBe(300);
-        expect(DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
-        expect(DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
-        expect(DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
-        expect(DESIGN_MANIFEST.noiseIntensity.transform?.('50')).toBe(0.5);
-        expect(DESIGN_MANIFEST.noiseIntensity.transform?.('invalid')).toBe(0);
+        expect(SARAK_DESIGN_MANIFEST.contrastCurve.transform?.('1.5')).toBe(1.5);
+        expect(SARAK_DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
+        expect(SARAK_DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
+        expect(SARAK_DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('300')).toBe(300);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
+        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('50')).toBe(0.5);
+        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('invalid')).toBe(0);
     });
 
     // `headingLetterSpacing`, `chartPalette`, `useTabularNums`, `scaleRatio`
@@ -82,7 +82,7 @@ describe('DESIGN_MANIFEST', () => {
     // removidas (fora do escopo desta plan).
 
     it('should transform layeredShadows correctly', () => {
-        const transform = DESIGN_MANIFEST.layeredShadows.transform!;
+        const transform = SARAK_DESIGN_MANIFEST.layeredShadows.transform!;
         const result = transform('2.0');
         expect(result).toContain('rgba(0,0,0,0.1)'); // 0.05 * 2.0 = 0.1
 
@@ -91,7 +91,7 @@ describe('DESIGN_MANIFEST', () => {
     });
 
     it('should transform fontScale correctly', () => {
-        const transform = DESIGN_MANIFEST.fontScale.transform!;
+        const transform = SARAK_DESIGN_MANIFEST.fontScale.transform!;
         expect(transform('pp')).toEqual({ px: '12px', factor: '0.75' });
         expect(transform('p')).toEqual({ px: '14px', factor: '0.85' });
         expect(transform('m')).toEqual({ px: '16px', factor: '1.0' });

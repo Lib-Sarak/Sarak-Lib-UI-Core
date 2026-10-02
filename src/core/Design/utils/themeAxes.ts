@@ -13,7 +13,7 @@
 import type { SarakDesignState } from '../../Provider/types';
 
 /** Eixo conceitual → tokens representativos (basta UM presente para o eixo contar). */
-export const THEME_AXES: Readonly<Record<string, readonly string[]>> = {
+export const SARAK_THEME_AXES: Readonly<Record<string, readonly string[]>> = {
     color: ['primaryColor', 'accentColor', 'textColorMaster', 'colorBgBody', 'surfaceColor'],
     font: ['bodyFont', 'headingFont', 'monoFont'],
     chrome: ['sidebarColor', 'topbarColor', 'sidebarWidth', 'topbarHeight'],
@@ -25,9 +25,9 @@ const hasValue = (design: Record<string, unknown>, key: string): boolean =>
     design[key] !== undefined && design[key] !== null && design[key] !== '';
 
 /** Eixos que o tema NÃO declara (nenhum token representativo presente). Vazio = completo. */
-export const findMissingThemeAxes = (design: SarakDesignState | Record<string, unknown>): string[] => {
+export const sarakFindMissingThemeAxes = (design: SarakDesignState | Record<string, unknown>): string[] => {
     const record = (design ?? {}) as Record<string, unknown>;
-    return Object.entries(THEME_AXES)
+    return Object.entries(SARAK_THEME_AXES)
         .filter(([, tokens]) => !tokens.some((token) => hasValue(record, token)))
         .map(([axis]) => axis);
 };
@@ -36,8 +36,8 @@ export const findMissingThemeAxes = (design: SarakDesignState | Record<string, u
  * Avisa (uma vez, `console.warn`) se o tema omite eixos inteiros. Não lança — apenas
  * sinaliza ao dev. Chame ao aplicar um tema custom para não ficar incompleto em silêncio.
  */
-export const warnOnIncompleteTheme = (design: SarakDesignState | Record<string, unknown>, label = 'tema'): string[] => {
-    const missing = findMissingThemeAxes(design);
+export const sarakWarnOnIncompleteTheme = (design: SarakDesignState | Record<string, unknown>, label = 'tema'): string[] => {
+    const missing = sarakFindMissingThemeAxes(design);
     if (missing.length > 0) {
         console.warn(
             `[Sarak:Design] O ${label} omite o(s) eixo(s): ${missing.join(', ')}. ` +

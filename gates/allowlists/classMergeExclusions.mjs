@@ -22,7 +22,7 @@ export const CLASS_MERGE_EXCLUSIONS = Object.freeze({
     'src/components/atomic/Layouts/SarakAccordion.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Layouts/SarakSplitPane.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Layouts/SarakFormGroup.tsx': AINDA_CONCATENA_CLASSNAME,
-    'src/components/atomic/Cards/ExpandableCard.tsx': AINDA_CONCATENA_CLASSNAME,
+    'src/components/atomic/Cards/SarakExpandableCard.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Cards/SarakActionCard.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Cards/SarakSearchCard.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Cards/SarakTitleCard.tsx': AINDA_CONCATENA_CLASSNAME,
@@ -42,6 +42,6 @@ export const CLASS_MERGE_EXCLUSIONS = Object.freeze({
     'src/components/atomic/Navigation/SarakBreadcrumbs.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Navigation/SarakStepper.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/UX/SarakContextMenu.tsx': AINDA_CONCATENA_CLASSNAME,
-    'src/components/atomic/Templates/ImageCard.tsx': AINDA_CONCATENA_CLASSNAME,
+    'src/components/atomic/Templates/SarakImageCard.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx': AINDA_CONCATENA_CLASSNAME,
 });

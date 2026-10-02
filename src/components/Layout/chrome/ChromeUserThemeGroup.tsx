@@ -1,12 +1,12 @@
 import React from 'react';
-import { ShellThemeToggle } from '../../atomic/Navigation/ShellThemeToggle';
-import { ShellUserWidget } from '../../atomic/Navigation/ShellUserWidget';
-import type { ShellUser } from '../../../core/Shell/Components/types';
+import { SarakShellThemeToggle } from '../../atomic/Navigation/SarakShellThemeToggle';
+import { SarakShellUserWidget } from '../../atomic/Navigation/SarakShellUserWidget';
+import type { SarakShellUser } from '../../../core/Shell/Components/types';
 
 export interface ChromeUserThemeGroupProps {
     showThemeToggle: boolean;
     showUser: boolean;
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     variant: 'horizontal' | 'vertical' | 'mini';
     className?: string;
@@ -25,8 +25,8 @@ export const ChromeUserThemeGroup: React.FC<ChromeUserThemeGroupProps> = ({
     if (!showThemeToggle && !showUser) return null;
     return (
         <div data-sarak-widget="user-theme" className={className}>
-            {showThemeToggle && <ShellThemeToggle variant={variant} />}
-            {showUser && <ShellUserWidget user={user} logout={logout} variant={variant} />}
+            {showThemeToggle && <SarakShellThemeToggle variant={variant} />}
+            {showUser && <SarakShellUserWidget user={user} logout={logout} variant={variant} />}
         </div>
     );
 };

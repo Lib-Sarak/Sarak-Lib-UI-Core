@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-    getRegisteredModules,
-    subscribeToRegistry,
-    registerLocalComponent,
+    sarakGetRegisteredModules,
+    sarakSubscribeToRegistry,
+    sarakRegisterLocalComponent,
     registerSarakModule,
     type SarakModule
 } from '../../Discovery/registry';
@@ -15,7 +15,7 @@ import { SarakUIOptions } from '../types';
  * e sincronização com o registro global da Sarak.
  */
 export const useRegistryManager = (options: SarakUIOptions) => {
-    const [registeredModules, setRegisteredModules] = useState<SarakModule[]>(() => getRegisteredModules());
+    const [registeredModules, setRegisteredModules] = useState<SarakModule[]>(() => sarakGetRegisteredModules());
     const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
@@ -32,14 +32,14 @@ export const useRegistryManager = (options: SarakUIOptions) => {
         }
 
         const updateModules = () => {
-            const current = getRegisteredModules();
+            const current = sarakGetRegisteredModules();
             setRegisteredModules([...current]);
         };
 
         updateModules();
         setIsHydrated(true);
 
-        const unsubscribe = subscribeToRegistry(updateModules);
+        const unsubscribe = sarakSubscribeToRegistry(updateModules);
         return () => {
             unsubscribe();
         };

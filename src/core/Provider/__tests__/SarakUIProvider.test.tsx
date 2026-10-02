@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvider';
 import { useDesignManager } from '../hooks/useDesignManager';
-import type { ThemeEntry } from '../types';
+import type { SarakThemeEntry } from '../types';
 
 // Mock dependências do SarakUIProvider
 vi.mock('../hooks/useRegistryManager', () => ({
@@ -45,7 +45,7 @@ vi.mock('../../../effects/NoiseOverlay', () => ({
 // ao detector de dispositivo — só o componente é substituído pelo stub.
 vi.mock('../DeviceProvider', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../DeviceProvider')>()),
-    DeviceProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="device-provider">{children}</div>
+    SarakDeviceProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="device-provider">{children}</div>
 }));
 
 // Componente para testar o contexto injectado
@@ -226,7 +226,7 @@ describe('SarakUIProvider', () => {
     describe('saveTheme — ADR-011 (uma porta de escrita, sem porta de leitura/apagar)', () => {
         const ThemeSaveConsumer = () => {
             const ui = useSarakUI();
-            const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+            const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
             return (
                 <div>
                     <span data-testid="theme-ids">{themeIds}</span>
@@ -302,7 +302,7 @@ describe('SarakUIProvider', () => {
 
             const RejectingConsumer = () => {
                 const ui = useSarakUI();
-                const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+                const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
                 return (
                     <div>
                         <span data-testid="theme-ids">{themeIds}</span>
@@ -352,7 +352,7 @@ describe('SarakUIProvider', () => {
 
             const HostileThemeConsumer = () => {
                 const ui = useSarakUI();
-                const saved = (ui.allThemes as ThemeEntry[]).find((t) => t.id === 'tema-hostil');
+                const saved = (ui.allThemes as SarakThemeEntry[]).find((t) => t.id === 'tema-hostil');
                 const savedDesign = saved?.design as Record<string, unknown> | undefined;
                 return (
                     <div>

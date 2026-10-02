@@ -9,23 +9,23 @@
  */
 
 import React, { useMemo } from 'react';
-import { RecursiveMatrixNode, type MatrixTreeNode } from '../Templates/components/RecursiveMatrixNode';
+import { RecursiveMatrixNode, type SarakMatrixTreeNode } from '../Templates/components/RecursiveMatrixNode';
 import type { SarakMatrixManifest } from '../Templates/SarakExpandableMatrix';
 
-export type { MatrixTreeNode } from '../Templates/components/RecursiveMatrixNode';
+export type { SarakMatrixTreeNode } from '../Templates/components/RecursiveMatrixNode';
 
 /** Pai sintético dos nós-raiz (a matriz usa `parentId` para o mapa de seleção). */
 const ROOT_ID = '__sarak_tree_root__';
 
 export interface SarakTreeViewProps {
     /** Floresta de nós; cada nó pode ter `children` (N níveis) e `loading`. */
-    data: MatrixTreeNode[];
+    data: SarakMatrixTreeNode[];
     /** Manifesto de layout por nível/tipo (default: variante limpa por profundidade). */
     manifest?: SarakMatrixManifest;
     /** Indicador exibido sob nós com `loading: true` (default: spinner tokenizado). */
     lazyLoadingIcon?: React.ReactNode;
     /** Disparado ao expandir/colapsar um nó — ponto de gancho para fetch assíncrono. */
-    onExpand?: (node: MatrixTreeNode, expanded: boolean) => void;
+    onExpand?: (node: SarakMatrixTreeNode, expanded: boolean) => void;
     /** IDs selecionados (habilita o toggle por nó quando combinado com `onSelect`). */
     selectedIds?: string[];
     /** Disparado ao alternar a seleção de um nó. */

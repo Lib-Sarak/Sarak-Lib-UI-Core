@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const nebulaSpaceTheme: ThemePreset = {
+export const nebulaSpaceTheme: SarakThemePreset = {
     id: 'nebula-space',
     name: 'Nebula Space',
     description: 'Imersivo & Cyberpunk: Imagem de fundo, transições de Zoom e Ícones Duotone com alto desfoque de vidro e componentes centralizados.',

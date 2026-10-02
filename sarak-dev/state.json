@@ -84,12 +84,8 @@
     "publicos": {
       "count": 96,
       "nomes": [
-        "DEFAULT_COLUMN_WIDTH",
-        "ExpandableCard",
-        "FilterSelect",
-        "HelpButton",
-        "ImageCard",
-        "MIN_COLUMN_WIDTH",
+        "SARAK_DEFAULT_COLUMN_WIDTH",
+        "SARAK_MIN_COLUMN_WIDTH",
         "SarakAccordion",
         "SarakActionCard",
         "SarakAlert",
@@ -124,16 +120,20 @@
         "SarakDivider",
         "SarakDrawer",
         "SarakEmptyState",
+        "SarakExpandableCard",
         "SarakExpandableMatrix",
         "SarakFieldError",
+        "SarakFilterSelect",
         "SarakFlex",
         "SarakFlowEngine",
         "SarakForm",
         "SarakFormGroup",
         "SarakGrid",
+        "SarakHelpButton",
         "SarakHidden",
         "SarakIcon",
         "SarakIconButton",
+        "SarakImageCard",
         "SarakInput",
         "SarakKanban",
         "SarakLightbox",
@@ -155,9 +155,14 @@
         "SarakSearch",
         "SarakSearchCard",
         "SarakSelect",
+        "SarakShellLanguageSelector",
         "SarakShellNav",
+        "SarakShellSearchWidget",
+        "SarakShellThemeToggle",
+        "SarakShellUserWidget",
         "SarakSkeleton",
         "SarakSlider",
+        "SarakSocialButton",
         "SarakSparkline",
         "SarakSpinner",
         "SarakSplitPane",
@@ -174,12 +179,7 @@
         "SarakTooltip",
         "SarakTreeView",
         "SarakTypography",
-        "SarakUploader",
-        "ShellLanguageSelector",
-        "ShellSearchWidget",
-        "ShellThemeToggle",
-        "ShellUserWidget",
-        "SocialButton"
+        "SarakUploader"
       ]
     }
   },
@@ -267,6 +267,10 @@
     {
       "nome": "npm run plan-index:check",
       "comando": "node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check"
+    },
+    {
+      "nome": "npm run prefix:check",
+      "comando": "node gates/scripts/contrato/check-public-prefix.mjs"
     },
     {
       "nome": "npm run public-types:check",

@@ -12,13 +12,13 @@ import { ComponentSchema } from '../types';
  */
 export const PREFERENCE_IDS = ['colorMode', 'fontSize', 'navigationStyle', 'navCollapsed', 'language'] as const;
 
-export type PreferenceId = typeof PREFERENCE_IDS[number];
+export type SarakPreferenceId = typeof PREFERENCE_IDS[number];
 
-export type PreferencePosition = 'off' | 'menu' | 'pinned';
+export type SarakPreferencePosition = 'off' | 'menu' | 'pinned';
 
 /** Token de tema — sob a paridade de três fontes (R4) — que guarda a posição
  *  de cada preferência. Fonte única: nunca compor o nome à mão fora daqui. */
-export const PREFERENCE_POSITION_TOKEN_IDS: Record<PreferenceId, string> = {
+export const PREFERENCE_POSITION_TOKEN_IDS: Record<SarakPreferenceId, string> = {
     colorMode: 'preferenceModePosition',
     fontSize: 'preferenceFontSizePosition',
     navigationStyle: 'preferenceNavigationStylePosition',
@@ -32,7 +32,7 @@ const POSITION_OPTIONS = [
     { value: 'pinned', label: 'Fixa na barra' },
 ];
 
-const buildPositionToken = (id: string, label: string, description: string, defaultValue: PreferencePosition) => ({
+const buildPositionToken = (id: string, label: string, description: string, defaultValue: SarakPreferencePosition) => ({
     id,
     label,
     type: 'select' as const,
@@ -86,8 +86,8 @@ export const PreferencesSchema: ComponentSchema = {
 /** Padrão de fábrica de cada token — fonte única para quando a chave está
  *  ausente do `design` (ex.: um modelo do painel que substitui o design
  *  inteiro por um do catálogo, sem as chaves novas). */
-const DEFAULT_POSITIONS: Record<string, PreferencePosition> = Object.fromEntries(
-    PreferencesSchema.tokens.map((token) => [token.id, token.defaultValue as PreferencePosition]),
+const DEFAULT_POSITIONS: Record<string, SarakPreferencePosition> = Object.fromEntries(
+    PreferencesSchema.tokens.map((token) => [token.id, token.defaultValue as SarakPreferencePosition]),
 );
 
 /**
@@ -97,7 +97,7 @@ const DEFAULT_POSITIONS: Record<string, PreferencePosition> = Object.fromEntries
  * um design sem as chaves novas (a barra de hoje) tem de continuar exibindo
  * só o que a fábrica já oferecia (modo e recolhimento), não tudo.
  */
-export const isPreferenceOffered = (design: Record<string, unknown> | undefined, id: PreferenceId): boolean => {
+export const isPreferenceOffered = (design: Record<string, unknown> | undefined, id: SarakPreferenceId): boolean => {
     const tokenId = PREFERENCE_POSITION_TOKEN_IDS[id];
     const value = design?.[tokenId] ?? DEFAULT_POSITIONS[tokenId];
     return value !== 'off';
@@ -110,7 +110,7 @@ export const isPreferenceOffered = (design: Record<string, unknown> | undefined,
  * "fixada ou no menu" (a barra configurável pelo administrador) lê por aqui,
  * nunca reconstrói a tabela de defaults em outro arquivo.
  */
-export const getPreferencePosition = (design: Record<string, unknown> | undefined, id: PreferenceId): PreferencePosition => {
+export const getPreferencePosition = (design: Record<string, unknown> | undefined, id: SarakPreferenceId): SarakPreferencePosition => {
     const tokenId = PREFERENCE_POSITION_TOKEN_IDS[id];
-    return (design?.[tokenId] as PreferencePosition | undefined) ?? DEFAULT_POSITIONS[tokenId];
+    return (design?.[tokenId] as SarakPreferencePosition | undefined) ?? DEFAULT_POSITIONS[tokenId];
 };

@@ -7,7 +7,7 @@
 
 import React, { useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { computeOffsets, reorder, widthOf, MIN_COLUMN_WIDTH, SELECTION_COLUMN_WIDTH } from './columnModel';
+import { sarakComputeOffsets, sarakReorder, sarakWidthOf, SARAK_MIN_COLUMN_WIDTH, SELECTION_COLUMN_WIDTH } from './columnModel';
 import type { SarakColumn, SarakTableSort } from './columnModel';
 import SarakDataCards from './SarakDataCards';
 import { SarakDataTableHeader } from './SarakDataTableHeader';
@@ -72,7 +72,7 @@ function SarakDataTableImpl<T>({
         () => order.map((id) => byId.get(id)).filter((column): column is SarakColumn<T> => Boolean(column)),
         [order, byId],
     );
-    const offsets = useMemo(() => computeOffsets(ordered, widths), [ordered, widths]);
+    const offsets = useMemo(() => sarakComputeOffsets(ordered, widths), [ordered, widths]);
     const interactions = useTableInteractions({
         rows,
         getRowKey,
@@ -96,8 +96,8 @@ function SarakDataTableImpl<T>({
         event.preventDefault();
         event.stopPropagation();
         const startX = event.clientX;
-        const startWidth = widthOf(column, widths);
-        const minimum = column.minWidth ?? MIN_COLUMN_WIDTH;
+        const startWidth = sarakWidthOf(column, widths);
+        const minimum = column.minWidth ?? SARAK_MIN_COLUMN_WIDTH;
         const move = (pointer: PointerEvent) => setWidths((previous) => ({
             ...previous,
             [column.id]: Math.max(minimum, startWidth + pointer.clientX - startX),
@@ -112,7 +112,7 @@ function SarakDataTableImpl<T>({
     };
     const onDrop = (toId: string) => {
         if (dragId && dragId !== toId) {
-            setOrder((previous) => reorder(previous, dragId, toId));
+            setOrder((previous) => sarakReorder(previous, dragId, toId));
             onColumnReorder?.(dragId, toId);
         }
         setDragId(null);

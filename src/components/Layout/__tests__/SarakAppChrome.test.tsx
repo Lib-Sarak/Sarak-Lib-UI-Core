@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
 
 const NAV = [
     { label: 'Propostas', route: '/propostas' },
@@ -179,10 +179,10 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
     it('os três modos de geometria herdam a regra de fundo COM mídia (nenhum ganha caso especial)', () => {
         const config = { globalBackgroundImageUrl: 'https://exemplo.com/bg.png' };
-        const renderWithMedia = (device: DeviceType, ui: React.ReactElement) =>
+        const renderWithMedia = (device: SarakDeviceType, ui: React.ReactElement) =>
             render(
                 <SarakUIProvider config={config}>
-                    <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+                    <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
                 </SarakUIProvider>,
             );
         const { container: side } = renderWithMedia('desktop', <SarakAppChrome navigationStyle="sidebar" nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
@@ -210,10 +210,10 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
 // `useSarakDevice` lê o DeviceContext; aninhar um DeviceProvider com override força o device
 // (o SarakUIProvider já monta o seu — o interno vence). SarakIcon (hambúrguer) exige o Provider.
-const renderAtDevice = (device: DeviceType, ui: React.ReactElement) =>
+const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement) =>
     render(
         <SarakUIProvider config={{ mode: 'dark' }}>
-            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+            <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
 

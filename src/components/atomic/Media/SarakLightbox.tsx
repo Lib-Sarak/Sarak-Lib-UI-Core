@@ -13,14 +13,14 @@ import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalS
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
-export interface LightboxImage {
+export interface SarakLightboxImage {
     src: string;
     alt?: string;
 }
 
 export interface SarakLightboxProps {
     /** Mídias da galeria, na ordem de exibição. */
-    images: LightboxImage[];
+    images: SarakLightboxImage[];
     /** Controla a visibilidade do overlay. */
     isOpen: boolean;
     /** Índice inicial ao abrir (default: 0). */

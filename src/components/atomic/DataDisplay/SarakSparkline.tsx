@@ -11,13 +11,13 @@
 
 import React, { useId } from 'react';
 
-export type SparklineVariant = 'line' | 'area' | 'bar';
+export type SarakSparklineVariant = 'line' | 'area' | 'bar';
 
 export interface SarakSparklineProps {
     /** Série de valores. Vazia ou com 1 ponto degrada para um traço plano/único. */
     data: number[];
     /** Forma do micro-gráfico (default: 'line'). */
-    variant?: SparklineVariant;
+    variant?: SarakSparklineVariant;
     /** Altura em px do desenho (default: 40). A largura preenche o contêiner. */
     height?: number;
     /** Espessura do traço (line/area) em px (default: 2). */

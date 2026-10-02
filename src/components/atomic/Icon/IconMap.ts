@@ -10,22 +10,22 @@ import type React from 'react';
 import { LUCIDE_ICONS } from './families/lucideIcons';
 import { PHOSPHOR_ICONS } from './families/phosphorIcons';
 import { TABLER_ICONS } from './families/tablerIcons';
-import { ICON_NAMES, type IconName } from './iconNames';
+import { SARAK_ICON_NAMES, type SarakIconName } from './iconNames';
 
-export { ICON_NAMES, ICONE_DESCONHECIDO, type IconName } from './iconNames';
+export { SARAK_ICON_NAMES, SARAK_ICONE_DESCONHECIDO, type SarakIconName } from './iconNames';
 
 /** Famílias de ícone suportadas pelo token `iconFamily`. */
-export type IconFamily = 'lucide' | 'phosphor' | 'tabler';
+export type SarakIconFamily = 'lucide' | 'phosphor' | 'tabler';
 
-export interface IconTriple {
+export interface SarakIconTriple {
     lucide: React.ElementType;
     phosphor: React.ElementType;
     tabler: React.ElementType;
 }
 
-export const IconMap: Record<IconName, IconTriple> = Object.fromEntries(
-    ICON_NAMES.map((nome) => [
+export const SarakIconMap: Record<SarakIconName, SarakIconTriple> = Object.fromEntries(
+    SARAK_ICON_NAMES.map((nome) => [
         nome,
         { lucide: LUCIDE_ICONS[nome], phosphor: PHOSPHOR_ICONS[nome], tabler: TABLER_ICONS[nome] },
     ])
-) as Record<IconName, IconTriple>;
+) as Record<SarakIconName, SarakIconTriple>;

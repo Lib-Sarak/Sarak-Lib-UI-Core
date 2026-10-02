@@ -5,14 +5,14 @@ import { SarakGrid } from '../SarakGrid';
 import { SarakFlex } from '../SarakFlex';
 import { SarakSplitPane } from '../SarakSplitPane';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../../core/Provider/DeviceProvider';
 
 // Força o dispositivo ativo (o SarakUIProvider monta um DeviceProvider próprio; o interno
 // aninhado sobrescreve o contexto de device, mantendo o resto do Provider intacto).
-const renderAt = (device: DeviceType, ui: React.ReactElement) =>
+const renderAt = (device: SarakDeviceType, ui: React.ReactElement) =>
     render(
         <SarakUIProvider>
-            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+            <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
 

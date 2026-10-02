@@ -23,9 +23,9 @@ import {
     Briefcase, Building, CreditCard, DollarSign, MapPin, Tag, Star, Play,
     Palette, Settings, Zap, Chrome, Github,
 } from 'lucide-react';
-import type { IconName } from '../iconNames';
+import type { SarakIconName } from '../iconNames';
 
-export const LUCIDE_ICONS: Record<IconName, React.ElementType> = {
+export const LUCIDE_ICONS: Record<SarakIconName, React.ElementType> = {
     AlertCircle, AlertTriangle, Check, CheckCircle2, X, Info, HelpCircle,
     Menu, Search, Bell, Filter, List, Grid, Layout, LayoutDashboard, Home,
     ChevronDown, ChevronLeft, ChevronRight, ChevronUp,

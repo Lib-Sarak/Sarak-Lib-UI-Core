@@ -1,10 +1,10 @@
 import { SarakDesignState } from '../types';
 import { PAYLOAD_EXTRA_KEYS } from '../payloadExtraKeys';
-import { getAllDesignTokens } from '../../Design/master-map';
-import { DESIGN_MANIFEST } from '../manifest';
+import { sarakGetAllDesignTokens } from '../../Design/master-map';
+import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import { isSafeCssString, isSafeMediaString } from './cssSafety';
 import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
-import type { DesignToken } from '../../Design/types';
+import type { SarakDesignToken } from '../../Design/types';
 
 /**
  * Sarak Design Validation (v12.0 — Spec 44 §2.3)
@@ -16,10 +16,10 @@ import type { DesignToken } from '../../Design/types';
  * `console.warn`, nunca injetado. É isto que torna localStorage e um JSON de
  * tema escrito à mão seguros por construção, independente de onde vieram.
  */
-let tokenIndexCache: Map<string, DesignToken> | null = null;
-const getTokenIndex = (): Map<string, DesignToken> => {
+let tokenIndexCache: Map<string, SarakDesignToken> | null = null;
+const getTokenIndex = (): Map<string, SarakDesignToken> => {
     if (!tokenIndexCache) {
-        tokenIndexCache = new Map(getAllDesignTokens().map((token) => [token.id, token]));
+        tokenIndexCache = new Map(sarakGetAllDesignTokens().map((token) => [token.id, token]));
     }
     return tokenIndexCache;
 };
@@ -32,7 +32,7 @@ const getTokenIndex = (): Map<string, DesignToken> => {
 // por enum/faixa numérica como os tokens do catálogo principal.
 const ALLOWED_EXTRA_KEYS = new Set<string>([
     ...(PAYLOAD_EXTRA_KEYS as readonly string[]),
-    ...Object.keys(DESIGN_MANIFEST)
+    ...Object.keys(SARAK_DESIGN_MANIFEST)
 ]);
 
 /** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)` e as
@@ -46,12 +46,12 @@ const isValidColor = (value: unknown): boolean =>
 const isFiniteNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);
 
-const getNumberBounds = (token: DesignToken): { min?: number; max?: number } => ({
+const getNumberBounds = (token: SarakDesignToken): { min?: number; max?: number } => ({
     min: token.min ?? token.constraints?.min,
     max: token.max ?? token.constraints?.max
 });
 
-const clampNumber = (value: number, token: DesignToken): number => {
+const clampNumber = (value: number, token: SarakDesignToken): number => {
     const { min, max } = getNumberBounds(token);
     let result = value;
     if (typeof min === 'number') result = Math.max(result, min);
@@ -59,7 +59,7 @@ const clampNumber = (value: number, token: DesignToken): number => {
     return result;
 };
 
-const getEnumOptions = (token: DesignToken): string[] | null => {
+const getEnumOptions = (token: SarakDesignToken): string[] | null => {
     const options = token.constraints?.options ?? token.options;
     if (!options || options.length === 0) return null;
     return options.map((opt) => String(opt.value ?? opt.id ?? '')).filter(Boolean);
@@ -80,7 +80,7 @@ const isSafeExtraValue = (value: unknown): boolean => {
 
 /** Valida um valor de RESPONSIVE (`{ desk, tab, mob }`) token a token, clampando
  * cada eixo dentro dos limites do token — nunca deixa passar um eixo fora do tipo. */
-const validateResponsiveValue = (token: DesignToken, value: Record<string, unknown>): Record<string, number> | null => {
+const validateResponsiveValue = (token: SarakDesignToken, value: Record<string, unknown>): Record<string, number> | null => {
     const axes: Array<'desk' | 'tab' | 'mob'> = ['desk', 'tab', 'mob'];
     const result: Record<string, number> = {};
     for (const axis of axes) {
@@ -93,7 +93,7 @@ const validateResponsiveValue = (token: DesignToken, value: Record<string, unkno
 
 /** Tipo-checa e (quando aplicável) clampa um valor contra o contrato do token.
  * Retorna `undefined` quando o valor está fora do contrato — o chamador descarta. */
-const coerceTokenValue = (token: DesignToken, value: unknown): unknown => {
+const coerceTokenValue = (token: SarakDesignToken, value: unknown): unknown => {
     const isResponsiveShape = value !== null && typeof value === 'object' && !Array.isArray(value) && 'desk' in (value as Record<string, unknown>);
 
     if (token.isResponsive && isResponsiveShape) {
@@ -136,7 +136,7 @@ export interface TokenContractDrift {
 }
 
 /** Descreve, para humano, por que `coerceTokenValue` rejeitou o valor. */
-const describeDriftReason = (token: DesignToken, value: unknown): string => {
+const describeDriftReason = (token: SarakDesignToken, value: unknown): string => {
     if (token.isResponsive && value !== null && typeof value === 'object' && !Array.isArray(value) && 'desk' in (value as Record<string, unknown>)) {
         return 'eixo responsivo não-numérico (tipo)';
     }

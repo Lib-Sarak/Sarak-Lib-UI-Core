@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
 
 // Os tokens de cromo do painel passam a ter efeito no SarakAppChrome.
 // Os testes por token, isolados, moram em `chrome/__tests__/ChromeSidebarBody` e
@@ -16,10 +16,10 @@ const NAV_ITEMS = [
     { id: 'relatorios', label: 'Relatórios', href: '/relatorios', category: 'Análise' },
 ];
 
-const renderAtDevice = (device: DeviceType, ui: React.ReactElement, design: Record<string, unknown> = {}) =>
+const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement, design: Record<string, unknown> = {}) =>
     render(
         <SarakUIProvider config={design}>
-            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+            <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
 

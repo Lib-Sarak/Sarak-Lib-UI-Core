@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SarakSpotlight, type NavigationItem } from '../SarakSpotlight';
+import { SarakSpotlight, type SarakNavigationItem } from '../SarakSpotlight';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
-const items: NavigationItem[] = [
+const items: SarakNavigationItem[] = [
     { id: 'home', label: 'Início', keywords: 'dashboard home' },
     { id: 'clients', label: 'Clientes' },
     { id: 'reports', label: 'Relatórios' },

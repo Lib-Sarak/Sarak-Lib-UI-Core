@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveStorageKey } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
-import { GLOBAL_THEMES } from '../../Design/presets/themes';
+import { SARAK_GLOBAL_THEMES } from '../../Design/presets/themes';
 import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
-import { getDefaultDesignState } from '../../Design/master-map';
+import { sarakGetDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
 import { useResolvedThemeId } from './useResolvedThemeId';
-import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
+import { SarakThemePayload, SarakUIOptions, SarakDesignState, SarakThemeEntry } from '../types';
 
 /**
  * useDesignManager (v11.0 — Spec 44, sem backend próprio)
@@ -23,7 +23,7 @@ export const useDesignManager = (props: {
     initialConfig: SarakThemePayload,
     options: SarakUIOptions,
     isHydrated: boolean,
-    allThemes?: ThemeEntry[],
+    allThemes?: SarakThemeEntry[],
     activeThemeId?: string,
     initialTheme?: string,
     onThemeChange?: (design: SarakThemePayload) => void
@@ -63,15 +63,15 @@ export const useDesignManager = (props: {
             return reference.id;
         }
         const defaultThemeId = optionsRef.current?.theme?.defaultTheme || 'classic';
-        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
+        const themeEntry = SARAK_GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? SARAK_GLOBAL_THEMES[0];
         return themeEntry?.id;
     }, [activeThemeId, initialTheme, allThemes]);
 
     // Initial seed logic (Sovereign Map v11.0)
     const getSeedConfig = useCallback(() => {
-        const masterDefaults = getDefaultDesignState();
+        const masterDefaults = sarakGetDefaultDesignState();
         const seedId = resolveSeedThemeId();
-        const themeEntry = allThemes?.find(t => t.id === seedId) ?? GLOBAL_THEMES.find(t => t.id === seedId);
+        const themeEntry = allThemes?.find(t => t.id === seedId) ?? SARAK_GLOBAL_THEMES.find(t => t.id === seedId);
         const themeDesignTokens = themeEntry?.design ?? {};
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado

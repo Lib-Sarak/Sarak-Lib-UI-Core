@@ -1,7 +1,7 @@
 import * as echarts from 'echarts';
-import type { ChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
+import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildScatterSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildScatterSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         data: data.map((item, i) => [i, item[config?.dataKey || 'value']]),
         type: 'scatter',
@@ -17,7 +17,7 @@ export const buildScatterSeries = (data: ChartDataItem[], config: ChartBuilderCo
     }]
 });
 
-export const buildCandlestickSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildCandlestickSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     xAxis: { data: data.map(item => item.name) },
     series: [{
         type: 'candlestick',
@@ -34,7 +34,7 @@ export const buildCandlestickSeries = (data: ChartDataItem[], config: ChartBuild
     }]
 });
 
-export const buildBoxPlotSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildBoxPlotSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'BoxPlot',
         type: 'boxplot',
@@ -51,7 +51,7 @@ export const buildBoxPlotSeries = (data: ChartDataItem[], config: ChartBuilderCo
     }]
 });
 
-export const buildHistogramSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildHistogramSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'Histogram',
         type: 'bar',

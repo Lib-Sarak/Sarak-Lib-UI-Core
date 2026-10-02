@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakAuthScreen, SarakCatalogGrid } from '../../../components/atomic/Templates';
-import { VisualContract, DiscoveredModule } from '../types';
+import { SarakVisualContract, SarakDiscoveredModule } from '../types';
 import LazyEngineWrapper from '../../../components/engines/LazyEngineWrapper';
 import { getSarakModule } from '../registry';
 import { SarakExpandableMatrixEngine } from './SarakExpandableMatrixEngine';
@@ -10,9 +10,9 @@ const SarakFlowEngine = lazy(() => import('../../../components/engines/flows/Sar
 const SarakChatEngine = lazy(() => import('../../../components/engines/chat/SarakChatEngine'));
 
 export const ContractRenderer: React.FC<{
-    contractsToRender: VisualContract[];
+    contractsToRender: SarakVisualContract[];
     resolveEndpoint: (endpointKey: string) => string;
-    module?: DiscoveredModule;
+    module?: SarakDiscoveredModule;
 }> = ({ contractsToRender, resolveEndpoint, module }) => {
     return (
         <div className="space-y-12">
@@ -95,7 +95,7 @@ export const ContractRenderer: React.FC<{
 
                     case 'AUTH_FLOW': {
                         // O contrato AUTH_FLOW é enriquecido em runtime com os props da tela de auth.
-                        const c = contract as VisualContract & React.ComponentProps<typeof SarakAuthScreen>;
+                        const c = contract as SarakVisualContract & React.ComponentProps<typeof SarakAuthScreen>;
                         return (
                             <SarakAuthScreen
                                 key={id}
@@ -127,7 +127,7 @@ export const ContractRenderer: React.FC<{
                         return <SarakExpandableMatrixEngine key={id} contract={contract} resolveEndpoint={resolveEndpoint} />;
 
                     case 'CATALOG_GRID': {
-                        const c = contract as VisualContract & React.ComponentProps<typeof SarakCatalogGrid>;
+                        const c = contract as SarakVisualContract & React.ComponentProps<typeof SarakCatalogGrid>;
                         return (
                             <SarakCatalogGrid
                                 key={id}

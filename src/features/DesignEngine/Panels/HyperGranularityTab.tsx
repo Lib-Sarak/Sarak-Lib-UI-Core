@@ -9,7 +9,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
+import { SarakTokenValue, SarakDesignToken } from '../../../core/Design/types';
 import { DynamicTokenControl } from '../components/DynamicTokenControl';
 import { CategoryLabel } from '../components/DesignControls';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -110,7 +110,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                             if (!acc[cat]) acc[cat] = [];
                             acc[cat].push(token);
                             return acc;
-                        }, {} as Record<string, DesignToken[]>);
+                        }, {} as Record<string, SarakDesignToken[]>);
 
                         return (
                             <div key={component.id} className="border-b border-white/5 last:border-0">

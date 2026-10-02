@@ -5,7 +5,7 @@ import { CategoryLabel, Section, InputControl, MediaUploaderControl } from '../.
 import { TokenControl } from './TokenControl';
 import { PreferencesSchema } from '../../../../core/Design/schema/preferences';
 import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
-import type { ComponentSchema, DesignToken, SarakTokenValue } from '../../../../core/Design/types';
+import type { ComponentSchema, SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
 interface ThemeGlobalSettingsProps {
     activePillarId: string | null;
@@ -70,11 +70,11 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                     onToggle={setActiveSectionId}
                                 >
                                     <div className="flex flex-col gap-4">
-                                        {globalComponent.tokens.map((token: DesignToken) => {
+                                        {globalComponent.tokens.map((token: SarakDesignToken) => {
                                             const meta = catalogMap.get(token.id);
                                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                             return (
-                                                <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                             );
                                         })}
                                     </div>
@@ -94,11 +94,11 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                 onToggle={setActiveSectionId}
                             >
                                 <div className="flex flex-col gap-4">
-                                    {PreferencesSchema.tokens.map((token: DesignToken) => {
+                                    {PreferencesSchema.tokens.map((token: SarakDesignToken) => {
                                         const meta = catalogMap.get(token.id);
                                         const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                         return (
-                                            <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                            <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                         );
                                     })}
                                 </div>

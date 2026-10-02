@@ -16,20 +16,20 @@ vi.mock('../IconRenderer', () => ({
     IconRenderer: () => <div data-testid="icon-renderer" />
 }));
 
-vi.mock('../../../../components/atomic/Navigation/ShellSearchWidget', () => ({
-    ShellSearchWidget: ({ onClick }: any) => <button data-testid="shell-search" onClick={onClick}>Search</button>
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({
+    SarakShellSearchWidget: ({ onClick }: any) => <button data-testid="shell-search" onClick={onClick}>Search</button>
 }));
 
-vi.mock('../../../../components/atomic/Navigation/ShellThemeToggle', () => ({
-    ShellThemeToggle: () => <div data-testid="shell-theme">Theme</div>
+vi.mock('../../../../components/atomic/Navigation/SarakShellThemeToggle', () => ({
+    SarakShellThemeToggle: () => <div data-testid="shell-theme">Theme</div>
 }));
 
-vi.mock('../../../../components/atomic/Navigation/ShellLanguageSelector', () => ({
-    ShellLanguageSelector: () => <div data-testid="shell-lang">Lang</div>
+vi.mock('../../../../components/atomic/Navigation/SarakShellLanguageSelector', () => ({
+    SarakShellLanguageSelector: () => <div data-testid="shell-lang">Lang</div>
 }));
 
-vi.mock('../../../../components/atomic/Navigation/ShellUserWidget', () => ({
-    ShellUserWidget: () => <div data-testid="shell-user" />
+vi.mock('../../../../components/atomic/Navigation/SarakShellUserWidget', () => ({
+    SarakShellUserWidget: () => <div data-testid="shell-user" />
 }));
 
 describe('TopbarNav', () => {

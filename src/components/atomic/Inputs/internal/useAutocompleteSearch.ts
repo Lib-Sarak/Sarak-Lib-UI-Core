@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 
 interface SearchOption {
     value: string;
     label: string;
 }
+
+type SearchOptionsCallback<TOption extends SearchOption> = (query: string) => Promise<TOption[]>;
 
 interface AutocompleteSearchState<TOption extends SearchOption> {
     options: TOption[];
@@ -31,15 +33,17 @@ const isSearchOptionList = <TOption extends SearchOption>(value: unknown): value
 
 interface SearchRequest<TOption extends SearchOption> {
     query: string;
-    searchOptions: (query: string) => Promise<TOption[]>;
+    searchOptionsRef: MutableRefObject<SearchOptionsCallback<TOption> | undefined>;
     requestId: number;
     latestRequestId: MutableRefObject<number>;
     setSearchState: Dispatch<SetStateAction<AutocompleteSearchState<TOption>>>;
 }
 
 const loadSearchOptions = async <TOption extends SearchOption>(request: SearchRequest<TOption>): Promise<void> => {
+    const searchOptions = request.searchOptionsRef.current;
+    if (!searchOptions) return;
     try {
-        const results: unknown = await request.searchOptions(request.query);
+        const results: unknown = await searchOptions(request.query);
         if (request.requestId !== request.latestRequestId.current) return;
         if (!isSearchOptionList<TOption>(results)) {
             request.setSearchState({ options: [], isLoading: false, hasError: true });
@@ -69,19 +73,25 @@ export const useAutocompleteSearch = <TOption extends SearchOption>(
     debounceMs: number,
 ): AutocompleteSearchState<TOption> => {
     const latestRequestId = useRef(0);
+    const searchOptionsRef = useRef(searchOptions);
+    const hasSearchOptions = searchOptions !== undefined;
     const [searchState, setSearchState] = useState<AutocompleteSearchState<TOption>>(
         createEmptySearchState<TOption>,
     );
 
+    useLayoutEffect(() => {
+        searchOptionsRef.current = searchOptions;
+    }, [searchOptions]);
+
     useEffect(() => {
-        if (!searchOptions || query.trim().length === 0) {
+        if (!hasSearchOptions || query.trim().length === 0) {
             latestRequestId.current += 1;
             setSearchState(createEmptySearchState<TOption>());
             return;
         }
         const request = {
             query,
-            searchOptions,
+            searchOptionsRef,
             requestId: ++latestRequestId.current,
             latestRequestId,
             setSearchState,
@@ -91,7 +101,7 @@ export const useAutocompleteSearch = <TOption extends SearchOption>(
             : DEFAULT_AUTOCOMPLETE_DEBOUNCE_MS;
         setSearchState({ options: [], isLoading: true, hasError: false });
         return scheduleSearch(request, safeDelay);
-    }, [debounceMs, query, searchOptions]);
+    }, [debounceMs, hasSearchOptions, query]);
 
     return searchState;
 };

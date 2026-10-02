@@ -1,6 +1,6 @@
 import React from 'react';
 import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
-import { pinnedStyle, widthOf, SELECTION_COLUMN_WIDTH, type PinnedOffsets, type SarakColumn } from './columnModel';
+import { pinnedStyle, sarakWidthOf, SELECTION_COLUMN_WIDTH, type SarakPinnedOffsets, type SarakColumn } from './columnModel';
 import type { TableInteractionEntry } from './useTableInteractions';
 
 export interface SarakDataTableVirtualRow<T> {
@@ -14,7 +14,7 @@ export interface SarakDataTableRowsProps<T> {
     columns: SarakColumn<T>[];
     rows: Array<SarakDataTableVirtualRow<T>>;
     widths: Record<string, number>;
-    offsets: PinnedOffsets;
+    offsets: SarakPinnedOffsets;
     containerWidth: number;
     headerHeight: number;
     rowHeight: number;
@@ -69,7 +69,7 @@ export function SarakDataTableRows<T>({
                     role="cell"
                     data-column-id={column.id}
                     style={{
-                        width: widthOf(column, widths),
+                        width: sarakWidthOf(column, widths),
                         flex: '0 0 auto',
                         display: 'flex',
                         alignItems: 'center',

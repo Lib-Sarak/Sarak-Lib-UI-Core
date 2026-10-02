@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { overlayPreferences, isLanguageEnabled } from '../overlayPreferences';
 import { useDesignVariables } from '../../../Design/hooks/useDesignVariables';
-import type { SarakDesignState, ThemeEntry } from '../../types';
+import type { SarakDesignState, SarakThemeEntry } from '../../types';
 
 // Contraparte AUTORADA mínima, no mesmo formato de um tema real (`GLOBAL_THEMES`)
 // — só os tokens que carregam modo, como a spec 09 §2.1 descreve (55 de 423).
-const temaComContraparte: ThemeEntry = {
+const temaComContraparte: SarakThemeEntry = {
     id: 'tema-de-teste',
     design: { mode: 'light', colorBgBody: '#f9f5f1', primaryColor: '#e11d48' },
     contraparte: { mode: 'dark', colorBgBody: '#0e0a06' } as Partial<SarakDesignState>,
@@ -107,7 +107,7 @@ describe('overlayPreferences', () => {
         });
 
         it('sem contraparte na entrada, também cai no fallback sintetizado', () => {
-            const temaSemContraparte: ThemeEntry = { id: 'legado', design: { mode: 'dark' } };
+            const temaSemContraparte: SarakThemeEntry = { id: 'legado', design: { mode: 'dark' } };
             const design = { mode: 'dark', textColorMaster: '#ffffff' } as unknown as SarakDesignState;
             const result = overlayPreferences(design, { colorMode: 'light' }, temaSemContraparte, 'light');
             expect(result.mode).toBe('light');

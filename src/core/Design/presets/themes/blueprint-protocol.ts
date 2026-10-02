@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const blueprintProtocolTheme: ThemePreset = {
+export const blueprintProtocolTheme: SarakThemePreset = {
     id: 'blueprint-protocol',
     name: 'Blueprint Protocol',
     description: 'Esquemático de engenharia: grade cianotipo, sidebar flutuante e botão wireframe angular — a contraparte inverte para o papel de blueprint.',

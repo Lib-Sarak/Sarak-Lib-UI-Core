@@ -1,7 +1,7 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
 import type { SarakTokenValue } from '../../Design/types';
-import type { SarakDesignState, ThemeEntry } from '../types';
+import type { SarakDesignState, SarakThemeEntry } from '../types';
 import type { SarakFontSizePreference, SarakUserPreferences } from '../preferencesTypes';
 
 /** As 5 opções de `bodySize` (`schema/global.ts`) — a base de comparação para
@@ -62,7 +62,7 @@ const pickKeys = (source: Record<string, unknown> | undefined, keys: string[]): 
 const applyColorMode = (
     result: SarakDesignState,
     targetMode: 'light' | 'dark',
-    theme: ThemeEntry | undefined,
+    theme: SarakThemeEntry | undefined,
 ): SarakDesignState => {
     if (targetMode === (result.mode || 'dark')) return result;
 
@@ -100,7 +100,7 @@ export const isLanguageEnabled = (design: SarakDesignState, language: string): b
 export const overlayPreferences = (
     design: SarakDesignState,
     preferences: SarakUserPreferences,
-    theme: ThemeEntry | undefined,
+    theme: SarakThemeEntry | undefined,
     systemColorScheme: 'light' | 'dark',
 ): SarakDesignState => {
     let result = design;

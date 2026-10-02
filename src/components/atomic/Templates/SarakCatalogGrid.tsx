@@ -16,7 +16,7 @@ import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { twMerge } from 'tailwind-merge';
 import type { SarakCatalogGridProps } from './SarakCatalogGridProps';
 
-export type { CatalogItem, SarakCatalogGridProps } from './SarakCatalogGridProps';
+export type { SarakCatalogItem, SarakCatalogGridProps } from './SarakCatalogGridProps';
 
 /**
  * SarakCatalogGrid (Industrial Template v9.5)

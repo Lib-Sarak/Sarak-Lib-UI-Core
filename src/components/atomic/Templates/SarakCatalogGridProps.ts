@@ -1,6 +1,6 @@
 import type * as React from 'react';
 
-export interface CatalogItem {
+export interface SarakCatalogItem {
     id: string;
     display_name: string;
     organization?: string;
@@ -11,7 +11,7 @@ export interface CatalogItem {
 
 export interface SarakCatalogGridProps {
     /** Itens filtrados e exibidos; obrigatória. Cada registro precisa de `id` e `display_name`; a busca ignora `description` e outros campos. */
-    items: CatalogItem[];
+    items: SarakCatalogItem[];
 
     /** Exibe o indicador de carga no lugar de todo o catálogo; omitida, os itens são renderizados sem espera. */
     loading?: boolean;
@@ -29,7 +29,7 @@ export interface SarakCatalogGridProps {
     onSync?: () => void;
 
     /** Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`. */
-    renderCard?: (item: CatalogItem) => React.ReactNode;
+    renderCard?: (item: SarakCatalogItem) => React.ReactNode;
 
     /** Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. */
     emptyMessage?: string;

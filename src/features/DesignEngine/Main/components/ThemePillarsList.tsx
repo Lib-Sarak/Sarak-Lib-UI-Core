@@ -4,7 +4,7 @@ import { Command } from 'lucide-react';
 import { CategoryLabel, Section } from '../../components/DesignControls';
 import { TokenControl } from './TokenControl';
 import type { SarakDesignState } from '../../../../core/Provider/types';
-import type { DesignToken, SarakTokenValue } from '../../../../core/Design/types';
+import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
 export interface ThemePillar {
     id: string;
@@ -19,7 +19,7 @@ interface ThemePillarsListProps {
     setActivePillarId: (id: string | null) => void;
     activeSectionId: string | null;
     setActiveSectionId: (id: string | null) => void;
-    groupedStructure: Record<string, Record<string, DesignToken[]>>;
+    groupedStructure: Record<string, Record<string, SarakDesignToken[]>>;
     isEssentialMode: boolean;
     dynamicEssentialTokens: Set<string>;
     isComponentDirty: (id: string) => boolean;
@@ -55,7 +55,7 @@ export const ThemePillarsList: React.FC<ThemePillarsListProps> = ({
             {pillars.map((pillar) => {
                 // Conta quantas subcategorias possuem pelo menos 1 token visível
                 const activeSubcategoriesCount = Object.values(groupedStructure[pillar.id] || {}).filter((tokens) => {
-                    return (tokens as DesignToken[]).some((token: DesignToken) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
+                    return (tokens as SarakDesignToken[]).some((token: SarakDesignToken) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
                 }).length;
 
                 return (
@@ -79,7 +79,7 @@ export const ThemePillarsList: React.FC<ThemePillarsListProps> = ({
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
                                     <div className="px-2 py-2 flex flex-col gap-1">
                                         {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, tokens]) => {
-                                            const visibleTokens = (tokens as DesignToken[]).filter((token: DesignToken) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
+                                            const visibleTokens = (tokens as SarakDesignToken[]).filter((token: SarakDesignToken) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
                                             if (visibleTokens.length === 0) return null;
                                             return (
                                                 <Section
@@ -87,7 +87,7 @@ export const ThemePillarsList: React.FC<ThemePillarsListProps> = ({
                                                     activeSection={activeSectionId} onToggle={setActiveSectionId}
                                                 >
                                                     <div className="flex flex-col gap-4">
-                                                        {visibleTokens.map((token: DesignToken) => {
+                                                        {visibleTokens.map((token: SarakDesignToken) => {
                                                             const meta = catalogMap.get(token.id);
                                                             const enhancedToken = {
                                                                 ...token,
@@ -95,7 +95,7 @@ export const ThemePillarsList: React.FC<ThemePillarsListProps> = ({
                                                                 description: meta?.description || token.description
                                                             };
                                                             return (
-                                                                <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                                             );
                                                         })}
                                                     </div>

@@ -17,7 +17,7 @@ import type { SarakDesignState } from '../../../Provider/types';
  * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
  * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
  */
-export const THEME_PRESET_IDS = [
+export const SARAK_THEME_PRESET_IDS = [
     'sarak-sovereign',
     'cyberpunk-neon',
     'industrial-terminal',
@@ -34,10 +34,10 @@ export const THEME_PRESET_IDS = [
     'blueprint-protocol',
 ] as const;
 
-export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+export type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];
 
-export interface ThemePreset {
-    id: ThemePresetId;
+export interface SarakThemePreset {
+    id: SarakThemePresetId;
     name: string;
     description: string;
     design: Record<string, unknown>;
@@ -67,7 +67,7 @@ import { goldenHourTheme } from './golden-hour';
 import { auroraVeilTheme } from './aurora-veil';
 import { blueprintProtocolTheme } from './blueprint-protocol';
 
-export const GLOBAL_THEMES: ThemePreset[] = [
+export const SARAK_GLOBAL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
     cyberpunkneonTheme,
     industrialTerminalTheme,

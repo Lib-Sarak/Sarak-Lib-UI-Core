@@ -5,19 +5,19 @@
  * isolada e reusada pelo componente no `drop`.
  */
 
-export interface KanbanCard {
+export interface SarakKanbanCard {
     id: string;
     title?: string;
     description?: string;
 }
 
-export interface KanbanColumn<C extends KanbanCard = KanbanCard> {
+export interface SarakKanbanColumn<C extends SarakKanbanCard = SarakKanbanCard> {
     id: string;
     title: string;
     cards: C[];
 }
 
-export interface CardMove {
+export interface SarakCardMove {
     cardId: string;
     fromColumn: string;
     toColumn: string;
@@ -29,13 +29,13 @@ export interface CardMove {
  * Move `cardId` de `fromColumn` para `toColumn` na posição `toIndex` (imutável).
  * Devolve as colunas inalteradas se o card/coluna não existirem.
  */
-export const moveCard = <C extends KanbanCard>(
-    columns: Array<KanbanColumn<C>>,
+export const sarakMoveCard = <C extends SarakKanbanCard>(
+    columns: Array<SarakKanbanColumn<C>>,
     cardId: string,
     fromColumn: string,
     toColumn: string,
     toIndex: number,
-): Array<KanbanColumn<C>> => {
+): Array<SarakKanbanColumn<C>> => {
     const source = columns.find((col) => col.id === fromColumn);
     const card = source?.cards.find((c) => c.id === cardId);
     if (!source || !card) return columns;

@@ -8,7 +8,7 @@ import { PREFERENCE_POSITION_TOKEN_IDS } from '../../../Provider/preferencesType
 
 vi.mock('../../../../components/atomic/Icon/SarakIcon', () => ({ SarakIcon: () => <div data-testid="sarak-icon" /> }));
 vi.mock('../IconRenderer', () => ({ IconRenderer: () => <div data-testid="icon-renderer" /> }));
-vi.mock('../../../../components/atomic/Navigation/ShellSearchWidget', () => ({ ShellSearchWidget: () => <div>Search</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({ SarakShellSearchWidget: () => <div>Search</div> }));
 
 const baseProps = {
     brand: { name: 'Brand' },

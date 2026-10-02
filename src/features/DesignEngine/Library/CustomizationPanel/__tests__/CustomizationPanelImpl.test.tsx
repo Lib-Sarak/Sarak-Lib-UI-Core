@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import * as ImplModule from '../CustomizationPanelImpl';
-import { CustomizationPanel } from '../index';
+import { SarakCustomizationPanel } from '../index';
 
 describe('CustomizationPanelImpl', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -18,12 +18,12 @@ describe('CustomizationPanel — fronteira lazy (plan-09)', () => {
         // `React.lazy` produz um objeto com `$$typeof` lazy e SEM `prototype`/corpo de função.
         // O contrato público continua sendo uma função-componente: quem renderiza o painel
         // não precisa declarar `Suspense`.
-        expect(typeof CustomizationPanel).toBe('function');
-        expect((CustomizationPanel as unknown as { $$typeof?: symbol }).$$typeof).toBeUndefined();
+        expect(typeof SarakCustomizationPanel).toBe('function');
+        expect((SarakCustomizationPanel as unknown as { $$typeof?: symbol }).$$typeof).toBeUndefined();
     });
 
     it('o elemento renderizado carrega a implementação atrás de uma fronteira lazy', () => {
-        const elemento = React.createElement(CustomizationPanel);
+        const elemento = React.createElement(SarakCustomizationPanel);
         expect(React.isValidElement(elemento)).toBe(true);
     });
 });

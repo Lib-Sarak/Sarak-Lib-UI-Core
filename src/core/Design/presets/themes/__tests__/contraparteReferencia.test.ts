@@ -3,14 +3,14 @@ import { describe, it, expect } from 'vitest';
 import { minimalistAiry } from '../minimalist-airy';
 import { sarakSovereignTheme } from '../sarak-sovereign';
 import { resolveThemeForMode, type ModeResolvableTheme } from '../color-engine';
-import { deriveThemeFromReference, type DerivedThemePreset } from '../reference';
-import type { ThemePreset } from '../index';
+import { sarakDeriveThemeFromReference, type SarakDerivedThemePreset } from '../reference';
+import type { SarakThemePreset } from '../index';
 import type { SarakTokenValue } from '../../../types';
 
 /** Mesmo cast que `PresetCard.tsx`/`useDesignSync.ts`/`ShellThemeToggle.tsx` já fazem
  *  para chamar `resolveThemeForMode` com um `ThemePreset`/`DerivedThemePreset` real —
  *  `design` é `Record<string, unknown>` por desenho (spec 09 §2.1 item 1). */
-const asResolvable = (theme: ThemePreset | DerivedThemePreset): ModeResolvableTheme => ({
+const asResolvable = (theme: SarakThemePreset | SarakDerivedThemePreset): ModeResolvableTheme => ({
     design: theme.design as Record<string, SarakTokenValue>,
     contraparte: theme.contraparte,
 });
@@ -68,7 +68,7 @@ describe('minimalist-airy e sarak-sovereign têm contraparte autorada', () => {
  */
 describe('deriveThemeFromReference', () => {
     it('devolve um tema com design E contraparte completos, não um subconjunto', () => {
-        const derivado = deriveThemeFromReference('minimalist-airy', {
+        const derivado = sarakDeriveThemeFromReference('minimalist-airy', {
             id: 'consumidor-azul',
             name: 'Consumidor Azul',
             design: { primaryColor: '#0044ff', accentColor: '#0044ff', btnPrimaryBg: '#0044ff' },
@@ -79,7 +79,7 @@ describe('deriveThemeFromReference', () => {
     });
 
     it('a sobreposição de cor de marca aparece nos DOIS modos — nativo e oposto', () => {
-        const derivado = deriveThemeFromReference('minimalist-airy', {
+        const derivado = sarakDeriveThemeFromReference('minimalist-airy', {
             id: 'consumidor-azul',
             name: 'Consumidor Azul',
             design: { primaryColor: '#0044ff' },
@@ -95,7 +95,7 @@ describe('deriveThemeFromReference', () => {
     });
 
     it('sobrepor uma chave que TAMBÉM existe na contraparte da referência espelha o valor nos dois modos', () => {
-        const derivado = deriveThemeFromReference('sarak-sovereign', {
+        const derivado = sarakDeriveThemeFromReference('sarak-sovereign', {
             id: 'consumidor-claro',
             name: 'Consumidor Claro',
             design: { textColorMaster: '#123456' },
@@ -106,7 +106,7 @@ describe('deriveThemeFromReference', () => {
     });
 
     it('a troca de modo do tema derivado continua reversível (a mesma garantia da referência)', () => {
-        const derivado = deriveThemeFromReference('sarak-sovereign', {
+        const derivado = sarakDeriveThemeFromReference('sarak-sovereign', {
             id: 'consumidor-claro',
             name: 'Consumidor Claro',
             design: { primaryColor: '#00aa88', accentColor: '#00aa88' },
@@ -122,7 +122,7 @@ describe('deriveThemeFromReference', () => {
 
     it('lança quando o id de referência não existe em GLOBAL_THEMES', () => {
         expect(() =>
-            deriveThemeFromReference('tema-inexistente' as never, { id: 'x', name: 'X', design: {} }),
+            sarakDeriveThemeFromReference('tema-inexistente' as never, { id: 'x', name: 'X', design: {} }),
         ).toThrow();
     });
 });

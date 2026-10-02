@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const neobrutalismTheme: ThemePreset = {
+export const neobrutalismTheme: SarakThemePreset = {
     id: 'neo-brutalism',
     name: 'Neo Brutalism',
     description: 'Aggressive contrast, thick white borders on near-black cards, solid shadows, flat geometry.',

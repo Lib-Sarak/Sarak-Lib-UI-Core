@@ -16,7 +16,7 @@
  * lib (phosphor ~2,35 KB + tabler ~0,28 KB — o lucide é `external`), então a
  * lista é curada de propósito, não exaustiva.
  */
-export const ICON_NAMES = [
+export const SARAK_ICON_NAMES = [
     // Núcleo de interface — estados, navegação e ações elementares.
     'AlertCircle', 'AlertTriangle', 'Check', 'CheckCircle2', 'X', 'Info', 'HelpCircle',
     'Menu', 'Search', 'Bell', 'Filter', 'List', 'Grid', 'Layout', 'LayoutDashboard', 'Home',
@@ -48,7 +48,7 @@ export const ICON_NAMES = [
 ] as const;
 
 /** Nome de ícone válido no contrato público. */
-export type IconName = (typeof ICON_NAMES)[number];
+export type SarakIconName = (typeof SARAK_ICON_NAMES)[number];
 
 /** Ícone usado quando o nome pedido não existe no contrato (degradação visível). */
-export const ICONE_DESCONHECIDO: IconName = 'AlertCircle';
+export const SARAK_ICONE_DESCONHECIDO: SarakIconName = 'AlertCircle';

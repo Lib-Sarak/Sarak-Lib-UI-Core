@@ -7,7 +7,7 @@
 // completude, mas por UM tema de cada vez, e nada o invoca em pipeline.
 // -------------------------------------------------------------------------
 import { getScaffold } from '../../../src/core/Design/master-map.ts';
-import { GLOBAL_THEMES } from '../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_GLOBAL_THEMES } from '../../../src/core/Design/presets/themes/index.ts';
 import { CARD_PRESETS } from '../../../src/core/Design/presets/components/cards.ts';
 import { BUTTON_PRESETS } from '../../../src/core/Design/presets/components/buttons.ts';
 import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs.ts';
@@ -47,7 +47,7 @@ export function findOrphanKeys(design: Record<string, unknown>, scaffold: Record
 
 export function collect(): AuditableItem[] {
     const items: AuditableItem[] = [];
-    GLOBAL_THEMES.forEach(t => items.push({ id: t.id, label: `Tema: ${t.name}`, design: t.design }));
+    SARAK_GLOBAL_THEMES.forEach(t => items.push({ id: t.id, label: `Tema: ${t.name}`, design: t.design }));
     CARD_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Card: ${p.name}`, design: p.design }));
     BUTTON_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Botão: ${p.name}`, design: p.design }));
     INPUT_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Input: ${p.name}`, design: p.design }));
@@ -75,7 +75,7 @@ function runAudit() {
         }
     });
 
-    console.log(`\nItens auditados: ${items.length} (${GLOBAL_THEMES.length} temas + ${items.length - GLOBAL_THEMES.length} presets de componente).`);
+    console.log(`\nItens auditados: ${items.length} (${SARAK_GLOBAL_THEMES.length} temas + ${items.length - SARAK_GLOBAL_THEMES.length} presets de componente).`);
 
     if (distinctOrphans.size === 0) {
         console.log('\n✅ Nenhuma chave órfã encontrada. Todos os Presets/Temas estão em paridade com o Gabarito Dinâmico.');

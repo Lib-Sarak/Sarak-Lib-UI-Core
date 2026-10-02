@@ -1,4 +1,4 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
 /**
  * Tema Gerado Automaticamente pela Skill Sarak-UI-criar-tema
@@ -6,7 +6,7 @@ import { ThemePreset } from './index';
  * Siga as instruções do workflow para preencher as variáveis abaixo.
  * NUNCA adicione propriedades que não estejam mapeadas no schema oficial.
  */
-export const cyberRetroWaveTheme: ThemePreset = {
+export const cyberRetroWaveTheme: SarakThemePreset = {
     id: 'cyber-retro-wave',
     name: 'Cyber Retro-Wave 2077',
     description: 'Uma imersão visual no estilo neon cyberpunk e retrowave dos anos 80, com alto contraste, cortes geométricos e brilho intenso.',

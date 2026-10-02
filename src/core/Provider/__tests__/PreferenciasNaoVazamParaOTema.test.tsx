@@ -15,7 +15,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
-import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 import { SarakAppChrome } from '../../../components/Layout/SarakAppChrome';
 
 describe('Preferências não vazam para a porta de persistência do tema', () => {
@@ -29,7 +29,7 @@ describe('Preferências não vazam para a porta de persistência do tema', () =>
         const onSave = vi.fn();
         render(
             <SarakUIProvider options={{ persistence: { onSave } }}>
-                <ShellThemeToggle variant="mini" />
+                <SarakShellThemeToggle variant="mini" />
             </SarakUIProvider>,
         );
 

@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const neumorphicMobile: ThemePreset = {
+export const neumorphicMobile: SarakThemePreset = {
     id: 'neumorphic-mobile',
     name: 'Neumorphic Mobile',
     description: 'Design de relevo e rebaixos (Soft UI) criando superfícies como silicone ou borracha contínua.',

@@ -26,7 +26,7 @@ vi.mock('../../../../core/Provider/SarakUIProvider', async (importOriginal) => {
 
 const capturedDesigns: unknown[] = [];
 vi.mock('../../../../core/Design/components/DesignScope', () => ({
-    DesignScope: ({ design, children }: { design: unknown; children: React.ReactNode }) => {
+    SarakDesignScope: ({ design, children }: { design: unknown; children: React.ReactNode }) => {
         capturedDesigns.push(design);
         return <div data-testid="design-scope-mock">{children}</div>;
     },

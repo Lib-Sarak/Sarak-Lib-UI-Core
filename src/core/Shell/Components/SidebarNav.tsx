@@ -3,13 +3,13 @@ import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 import { SidebarNavModuleItem } from './SidebarNavModuleItem';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUserWidget';
-import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSearchWidget';
-import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
-import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { SarakShellUser } from './types';
+import { SarakShellUserWidget } from '../../../components/atomic/Navigation/SarakShellUserWidget';
+import { SarakShellSearchWidget } from '../../../components/atomic/Navigation/SarakShellSearchWidget';
+import { SarakShellLanguageSelector } from '../../../components/atomic/Navigation/SarakShellLanguageSelector';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
 import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
@@ -21,13 +21,13 @@ import { useLibraryText } from '../../i18n/useLibraryText';
 interface SidebarNavProps {
     design: SarakDesignState;
     brand: { name?: string };
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     toggleNav: () => void;
     setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
-    groupedModules: Record<string, DiscoveredModule[]>;
+    groupedModules: Record<string, SarakDiscoveredModule[]>;
     setIsNavVisible: (visible: boolean) => void;
     startResizing: () => void;
     isMobileDrawer?: boolean;
@@ -71,7 +71,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         if (searchPos === 'hidden') return null;
         return (
             <div className="px-1 mb-2 shrink-0">
-                <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
+                <SarakShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
             </div>
         );
     };
@@ -180,8 +180,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
                 {/* Barra configurável pelo administrador (Spec 05 §2.2.1) — cada
                     controle só monta se a posição da preferência for `pinned`. */}
-                {showLanguage && <ShellLanguageSelector variant="vertical" />}
-                {showThemeToggle && <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />}
+                {showLanguage && <SarakShellLanguageSelector variant="vertical" />}
+                {showThemeToggle && <SarakShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />}
                 {!effectiveIsNavHidden && showFontSize && <div className="px-1"><ShellFontSizeControl /></div>}
                 {!effectiveIsNavHidden && showNavigationStyle && <div className="px-1"><ShellNavigationStyleControl /></div>}
 
@@ -208,7 +208,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </div>
 
             {/* 4. User Profile & Logout */}
-            <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
+            <SarakShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
             {/* RESIZE HANDLE (X-AXIS) */}
             {!isMobileDrawer && (

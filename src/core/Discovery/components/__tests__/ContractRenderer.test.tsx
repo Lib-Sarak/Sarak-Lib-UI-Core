@@ -48,10 +48,10 @@ vi.mock('../SarakExpandableMatrixEngine', async (importOriginal) => {
 });
 
 import { ContractRenderer } from '../ContractRenderer';
-import type { VisualContract } from '../../types';
+import type { SarakVisualContract } from '../../types';
 
 const renderType = (extra: Record<string, unknown>, module?: unknown) => {
-    const contract = { id: 'c1', label: 'My Card', endpoint: '/v1/data', ...extra } as unknown as VisualContract;
+    const contract = { id: 'c1', label: 'My Card', endpoint: '/v1/data', ...extra } as unknown as SarakVisualContract;
     render(
         <ContractRenderer
             contractsToRender={[contract]}

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { validateDesign } from '../validation';
-import { getAllDesignTokens } from '../../../Design/master-map';
+import { sarakGetAllDesignTokens } from '../../../Design/master-map';
 import { useDesignVariables } from '../../../Design/hooks/useDesignVariables';
 
 /**
@@ -55,7 +55,7 @@ const FIXTURES: Fixture[] = [
 
 /** As CSS vars que ESTE tokenId é responsável por emitir: o auto-var + os aliases declarados. */
 const cssVarsDoToken = (tokenId: string): string[] => {
-    const token = getAllDesignTokens().find((t) => t.id === tokenId);
+    const token = sarakGetAllDesignTokens().find((t) => t.id === tokenId);
     if (!token) throw new Error(`Fixture referencia token inexistente: "${tokenId}"`);
     const autoVar = `--sarak-${tokenId.replace(/[A-Z]/g, (l) => `-${l.toLowerCase()}`)}`;
     return [autoVar, ...(token.cssVars ?? [])];

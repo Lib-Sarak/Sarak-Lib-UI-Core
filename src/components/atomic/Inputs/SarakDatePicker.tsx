@@ -4,29 +4,29 @@ import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
-import { CalendarPanel, type WeekStart, type DateLocale } from './internal/CalendarPanel';
+import { CalendarPanel, type SarakWeekStart, type SarakDateLocale } from './internal/CalendarPanel';
 
 const ISO = 'yyyy-MM-dd';
 
 /** Valor: string ISO (single) ou par [início, fim] de ISOs (range). */
-export type DatePickerValue = string | [string, string];
+export type SarakDatePickerValue = string | [string, string];
 
 export interface SarakDatePickerProps {
     label?: string;
     mode?: 'single' | 'range';
-    value?: DatePickerValue;
+    value?: SarakDatePickerValue;
     /** Formato de exibição (i18n via JSON), ex.: `dd/MM/yyyy`. */
     displayFormat?: string;
     /** Locale do `date-fns` para nomes de mês/dia (i18n). */
-    locale?: DateLocale;
-    weekStartsOn?: WeekStart;
+    locale?: SarakDateLocale;
+    weekStartsOn?: SarakWeekStart;
     placeholder?: string;
     disabled?: boolean;
     error?: string;
     className?: string;
     style?: React.CSSProperties;
     /** Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). */
-    onChange?: (value: DatePickerValue) => void;
+    onChange?: (value: SarakDatePickerValue) => void;
 }
 
 const toDate = (iso?: string): Date | null => {
@@ -35,7 +35,7 @@ const toDate = (iso?: string): Date | null => {
     return isValid(parsed) ? parsed : null;
 };
 
-const readRange = (value: DatePickerValue | undefined): [Date | null, Date | null] => {
+const readRange = (value: SarakDatePickerValue | undefined): [Date | null, Date | null] => {
     if (Array.isArray(value)) return [toDate(value[0]), toDate(value[1])];
     return [toDate(value), null];
 };

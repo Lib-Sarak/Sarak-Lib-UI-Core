@@ -1,28 +1,28 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SarakPagination, buildPaginationRange } from '../SarakPagination';
+import { SarakPagination, sarakBuildPaginationRange } from '../SarakPagination';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('Spec 14 — buildPaginationRange (cortes precisos)', () => {
     it('sem reticências quando total ≤ maxVisible', () => {
-        expect(buildPaginationRange(1, 5, 7)).toEqual([1, 2, 3, 4, 5]);
+        expect(sarakBuildPaginationRange(1, 5, 7)).toEqual([1, 2, 3, 4, 5]);
     });
 
     it('compacta o miolo com reticências no centro', () => {
-        expect(buildPaginationRange(5, 10, 7)).toEqual([1, 'ellipsis', 4, 5, 6, 'ellipsis', 10]);
+        expect(sarakBuildPaginationRange(5, 10, 7)).toEqual([1, 'ellipsis', 4, 5, 6, 'ellipsis', 10]);
     });
 
     it('início: reticências só à direita', () => {
-        expect(buildPaginationRange(1, 10, 7)).toEqual([1, 2, 'ellipsis', 10]);
+        expect(sarakBuildPaginationRange(1, 10, 7)).toEqual([1, 2, 'ellipsis', 10]);
     });
 
     it('fim: reticências só à esquerda', () => {
-        expect(buildPaginationRange(10, 10, 7)).toEqual([1, 'ellipsis', 9, 10]);
+        expect(sarakBuildPaginationRange(10, 10, 7)).toEqual([1, 'ellipsis', 9, 10]);
     });
 
     it('total zero devolve lista vazia', () => {
-        expect(buildPaginationRange(1, 0)).toEqual([]);
+        expect(sarakBuildPaginationRange(1, 0)).toEqual([]);
     });
 });
 

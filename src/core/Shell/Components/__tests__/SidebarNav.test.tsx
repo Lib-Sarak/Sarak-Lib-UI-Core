@@ -12,10 +12,10 @@ vi.mock('framer-motion', async () => {
     return { ...actual as any, motion: { div: ({ children, ...props }: any) => <div {...props}>{children}</div> } };
 });
 
-vi.mock('../../../../components/atomic/Navigation/ShellSearchWidget', () => ({ ShellSearchWidget: () => <div data-testid="mock-search">Search</div> }));
-vi.mock('../../../../components/atomic/Navigation/ShellThemeToggle', () => ({ ShellThemeToggle: () => <div data-testid="mock-theme">Theme</div> }));
-vi.mock('../../../../components/atomic/Navigation/ShellLanguageSelector', () => ({ ShellLanguageSelector: () => <div data-testid="mock-lang">Lang</div> }));
-vi.mock('../../../../components/atomic/Navigation/ShellUserWidget', () => ({ ShellUserWidget: () => <div data-testid="mock-user">User</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({ SarakShellSearchWidget: () => <div data-testid="mock-search">Search</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellThemeToggle', () => ({ SarakShellThemeToggle: () => <div data-testid="mock-theme">Theme</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellLanguageSelector', () => ({ SarakShellLanguageSelector: () => <div data-testid="mock-lang">Lang</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellUserWidget', () => ({ SarakShellUserWidget: () => <div data-testid="mock-user">User</div> }));
 vi.mock('../IconRenderer', () => ({ IconRenderer: ({ name }: any) => <span>{name}</span> }));
 vi.mock('../../../../components/atomic/Icon/SarakIcon', () => ({ SarakIcon: ({ name }: any) => <span>{name}</span> }));
 

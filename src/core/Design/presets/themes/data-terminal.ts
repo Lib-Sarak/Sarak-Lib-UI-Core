@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const dataTerminal: ThemePreset = {
+export const dataTerminal: SarakThemePreset = {
     id: 'data-terminal',
     name: 'Data Terminal',
     description: 'Terminal claro e denso, monoespaçado, com acento verde vívido — a contraparte inverte para o terminal escuro clássico.',

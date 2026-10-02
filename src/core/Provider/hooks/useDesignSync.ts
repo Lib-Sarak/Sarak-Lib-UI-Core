@@ -3,12 +3,12 @@ import { validateDesign } from '../utils/validation';
 import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
 import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
 import type { SarakTokenValue } from '../../Design/types';
-import { ThemeEntry, SetDesign } from '../types';
+import { SarakThemeEntry, SetDesign } from '../types';
 
 export const useDesignSync = (
     isHydrated: boolean,
     activeThemeId: string | undefined,
-    allThemes: ThemeEntry[] | undefined,
+    allThemes: SarakThemeEntry[] | undefined,
     storageKey: string,
     hasHydratedRef: MutableRefObject<boolean>,
     setDesign: SetDesign

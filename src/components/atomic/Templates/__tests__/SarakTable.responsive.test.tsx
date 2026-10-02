@@ -17,15 +17,15 @@ vi.mock('../hooks/useSarakTableData', () => ({
 
 import { SarakTable } from '../SarakTable';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../../core/Provider/DeviceProvider';
 
 const MAPPING = { nome: 'Nome', ativo: 'Situação' };
-const renderAt = (device: DeviceType, responsive?: boolean, selectable = false) =>
+const renderAt = (device: SarakDeviceType, responsive?: boolean, selectable = false) =>
     render(
         <SarakUIProvider>
-            <DeviceProvider overrideDevice={device}>
+            <SarakDeviceProvider overrideDevice={device}>
                 <SarakTable endpoint="/x" mapping={MAPPING} responsive={responsive} selectable={selectable} />
-            </DeviceProvider>
+            </SarakDeviceProvider>
         </SarakUIProvider>,
     );
 

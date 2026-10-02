@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { addDays, addMonths, format, isSameDay, isSameMonth, isWithinInterval, startOfMonth } from 'date-fns';
-import { buildMonthMatrix, type WeekStart } from './calendarGrid';
+import { buildMonthMatrix, type SarakWeekStart } from './calendarGrid';
 import { SarakButton } from '../../Buttons/SarakButton';
 import { SarakIconButton } from '../../Buttons/SarakIconButton';
 
@@ -9,14 +9,14 @@ import { SarakIconButton } from '../../Buttons/SarakIconButton';
 // em vez do hook `useStructuralStyles` (que exige o provider).
 const WEEK_GRID_COLUMNS = 'repeat(7, minmax(0, 1fr))';
 
-export type { WeekStart };
+export type { SarakWeekStart };
 
 /**
  * Locale do `date-fns` passado adiante para `format`. Tipado de forma estrutural
  * (objeto opaco) porque o tipo nomeado `Locale` não resolve sob
  * `moduleResolution: node` — os locales reais (`ptBR`, etc.) são objetos atribuíveis.
  */
-export type DateLocale = object;
+export type SarakDateLocale = object;
 
 const ISO = 'yyyy-MM-dd';
 
@@ -24,8 +24,8 @@ export interface CalendarPanelProps {
     mode: 'single' | 'range';
     start: Date | null;
     end: Date | null;
-    locale?: DateLocale;
-    weekStartsOn?: WeekStart;
+    locale?: SarakDateLocale;
+    weekStartsOn?: SarakWeekStart;
     onSelectDay: (date: Date) => void;
 }
 

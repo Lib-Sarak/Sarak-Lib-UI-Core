@@ -2,22 +2,22 @@ import React from 'react';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Passo de um fluxo orientado (Spec 14, Regra 2). */
-export interface StepConfig {
+export interface SarakStepConfig {
     /** Rótulo do passo. */
     label: string;
     /** Descrição/legenda opcional. */
     description?: string;
 }
 
-export type StepperOrientation = 'horizontal' | 'vertical';
+export type SarakStepperOrientation = 'horizontal' | 'vertical';
 
 export interface SarakStepperProps {
     /** Passos na ordem do fluxo. */
-    steps: StepConfig[];
+    steps: SarakStepConfig[];
     /** Índice (0-based) do passo atual. */
     current: number;
     /** Disposição (default: horizontal). */
-    orientation?: StepperOrientation;
+    orientation?: SarakStepperOrientation;
     className?: string;
 }
 

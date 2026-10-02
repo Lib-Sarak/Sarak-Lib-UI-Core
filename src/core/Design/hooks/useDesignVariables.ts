@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getAllDesignTokens } from '../master-map';
+import { sarakGetAllDesignTokens } from '../master-map';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
@@ -56,7 +56,7 @@ export const useDesignVariables = (
         let responsiveCssRoot = '';
         let responsiveCssTab = '';
         let responsiveCssDesk = '';
-        const tokens = getAllDesignTokens();
+        const tokens = sarakGetAllDesignTokens();
         
         const isDark = targetMode === 'dark';
         const anchorColor = isDark ? '#000000' : '#ffffff';

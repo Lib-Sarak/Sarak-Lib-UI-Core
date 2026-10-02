@@ -1,7 +1,7 @@
 import * as echarts from 'echarts';
-import type { ChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
+import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildRadarConfig = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildRadarConfig = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     radar: {
         indicator: data.map(item => ({ name: item[config?.xAxisKey || 'name'], max: 1000 })),
         splitArea: { show: false },
@@ -25,7 +25,7 @@ export const buildRadarConfig = (data: ChartDataItem[], config: ChartBuilderConf
     }]
 });
 
-export const buildGaugeSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildGaugeSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         type: 'gauge',
         startAngle: 210,
@@ -60,7 +60,7 @@ export const buildGaugeSeries = (data: ChartDataItem[], config: ChartBuilderConf
     }]
 });
 
-export const buildHeatmapSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildHeatmapSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     visualMap: {
         min: 0,
         max: 1000,
@@ -84,7 +84,7 @@ export const buildHeatmapSeries = (data: ChartDataItem[], config: ChartBuilderCo
     }]
 });
 
-export const buildFunnelSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildFunnelSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'Funnel',
         type: 'funnel',
@@ -105,7 +105,7 @@ export const buildFunnelSeries = (data: ChartDataItem[], config: ChartBuilderCon
     }]
 });
 
-export const buildTreeMapSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildTreeMapSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'TreeMap',
         type: 'treemap',
@@ -117,7 +117,7 @@ export const buildTreeMapSeries = (data: ChartDataItem[], config: ChartBuilderCo
     }]
 });
 
-export const buildSunburstSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildSunburstSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         type: 'sunburst',
         data: [

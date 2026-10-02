@@ -2,8 +2,8 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render } from '@testing-library/react';
 import { SarakIcon } from '../SarakIcon';
-import { IconMap } from '../IconMap';
-import { ICON_NAMES, ICONE_DESCONHECIDO } from '../iconNames';
+import { SarakIconMap } from '../IconMap';
+import { SARAK_ICON_NAMES, SARAK_ICONE_DESCONHECIDO } from '../iconNames';
 import { LUCIDE_ICONS } from '../families/lucideIcons';
 import { PHOSPHOR_ICONS } from '../families/phosphorIcons';
 import { TABLER_ICONS } from '../families/tablerIcons';
@@ -17,13 +17,13 @@ describe('Contrato de ícones (Spec 41 §2.2/§2.3)', () => {
     describe('paridade 1:1:1 entre as famílias', () => {
         it('toda família cobre exatamente os nomes de ICON_NAMES', () => {
             for (const familia of [LUCIDE_ICONS, PHOSPHOR_ICONS, TABLER_ICONS]) {
-                expect(Object.keys(familia).sort()).toEqual([...ICON_NAMES].sort());
+                expect(Object.keys(familia).sort()).toEqual([...SARAK_ICON_NAMES].sort());
             }
         });
 
         it('o IconMap resolve os três componentes de cada nome', () => {
-            for (const nome of ICON_NAMES) {
-                const triple = IconMap[nome];
+            for (const nome of SARAK_ICON_NAMES) {
+                const triple = SarakIconMap[nome];
                 expect(triple, `IconMap["${nome}"] ausente`).toBeDefined();
                 expect(triple.lucide, `${nome}.lucide`).toBeTruthy();
                 expect(triple.phosphor, `${nome}.phosphor`).toBeTruthy();
@@ -32,7 +32,7 @@ describe('Contrato de ícones (Spec 41 §2.2/§2.3)', () => {
         });
 
         it('não há nome duplicado na lista pública', () => {
-            expect(new Set(ICON_NAMES).size).toBe(ICON_NAMES.length);
+            expect(new Set(SARAK_ICON_NAMES).size).toBe(SARAK_ICON_NAMES.length);
         });
     });
 
@@ -87,7 +87,7 @@ describe('Contrato de ícones (Spec 41 §2.2/§2.3)', () => {
             expect(container.querySelector('svg')).toBeTruthy();
             expect(avisosDeIcone()).toHaveLength(1);
             expect(avisosDeIcone()[0]).toContain('EsteIconeNaoExiste');
-            expect(avisosDeIcone()[0]).toContain(ICONE_DESCONHECIDO);
+            expect(avisosDeIcone()[0]).toContain(SARAK_ICONE_DESCONHECIDO);
         });
 
         it('avisa uma única vez por nome, mesmo em vários renders', () => {

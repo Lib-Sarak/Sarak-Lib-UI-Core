@@ -11,27 +11,27 @@
  * para que alternar entre eles mude visivelmente cor E fonte E cromo E raio — a prova
  * ampla do R5.
  */
-import { GLOBAL_THEMES, type ThemePreset, type ThemePresetId } from './index';
+import { SARAK_GLOBAL_THEMES, type SarakThemePreset, type SarakThemePresetId } from './index';
 import type { SarakDesignState } from '../../../Provider/types';
 
 /** Busca um preset completo do catálogo pelo id. */
-export const getThemePreset = (id: ThemePresetId): ThemePreset | undefined =>
-    GLOBAL_THEMES.find((theme) => theme.id === id);
+export const sarakGetThemePreset = (id: SarakThemePresetId): SarakThemePreset | undefined =>
+    SARAK_GLOBAL_THEMES.find((theme) => theme.id === id);
 
 /**
  * Par de referência recomendado: um CLARO (`minimalist-airy`, topbar, Inter) e um
  * ESCURO (`sarak-sovereign`, sidebar, Outfit). Ambos completos — ponto de partida para
  * o consumidor. Use direto em `customThemes` do `SarakUIProvider`, ou clone e ajuste.
  */
-export const SARAK_REFERENCE_THEMES: ThemePreset[] = [
-    getThemePreset('minimalist-airy'),
-    getThemePreset('sarak-sovereign'),
-].filter((theme): theme is ThemePreset => Boolean(theme));
+export const SARAK_REFERENCE_THEMES: SarakThemePreset[] = [
+    sarakGetThemePreset('minimalist-airy'),
+    sarakGetThemePreset('sarak-sovereign'),
+].filter((theme): theme is SarakThemePreset => Boolean(theme));
 
 /** O que `deriveThemeFromReference` recebe: identidade do tema derivado + as
  *  sobreposições de `design`. `id` não é `ThemePresetId` — um tema
  *  derivado é do CONSUMIDOR, fora da união fechada dos temas shippados. */
-export interface ThemeReferenceOverrides {
+export interface SarakThemeReferenceOverrides {
     id: string;
     name: string;
     description?: string;
@@ -41,7 +41,7 @@ export interface ThemeReferenceOverrides {
 /** O que `deriveThemeFromReference` devolve — mesma forma de `ThemeEntry` (Provider/types.ts),
  *  com `contraparte` a mais. Bate estruturalmente com `ModeResolvableTheme`
  *  (`color-engine.ts`), então segue direto para `resolveThemeForMode`. */
-export interface DerivedThemePreset {
+export interface SarakDerivedThemePreset {
     id: string;
     name: string;
     description?: string;
@@ -64,11 +64,11 @@ export interface DerivedThemePreset {
  * para essas, o merge em `design` já basta, e a identidade da marca atravessa
  * os dois modos porque nunca esteve na contraparte para começo de conversa.
  */
-export function deriveThemeFromReference(
-    referenceId: ThemePresetId,
-    overrides: ThemeReferenceOverrides,
-): DerivedThemePreset {
-    const reference = getThemePreset(referenceId);
+export function sarakDeriveThemeFromReference(
+    referenceId: SarakThemePresetId,
+    overrides: SarakThemeReferenceOverrides,
+): SarakDerivedThemePreset {
+    const reference = sarakGetThemePreset(referenceId);
     if (!reference) {
         throw new Error(`Tema de referência "${referenceId}" não encontrado em GLOBAL_THEMES.`);
     }

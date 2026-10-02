@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { SarakThemePayload } from '../../../../core/Provider/types';
 
-export interface ModalLayoutContext {
+export interface SarakModalLayoutContext {
     headerClass: string;
     footerClass: string;
     closeButtonClass: string;
@@ -23,7 +23,7 @@ const footerStylesMap: Record<string, string> = {
 /**
  * Hook Controlador Estrutural (Camada 6) - Modals
  */
-export const useModalLayoutStyles = (design: SarakThemePayload): ModalLayoutContext => {
+export const useModalLayoutStyles = (design: SarakThemePayload): SarakModalLayoutContext => {
     return useMemo(() => {
         const actionAlignment = design?.modalActionAlignment || 'right';
         const headerStyle = design?.modalHeaderStyle || 'inline';

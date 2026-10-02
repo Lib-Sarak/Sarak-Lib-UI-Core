@@ -23,7 +23,7 @@ const stripControlChars = (value: string): string =>
  * `mailto:`, `tel:`, caminhos relativos/âncora). Bloqueia `javascript:`, `data:`
  * e qualquer outro esquema executável — vetor clássico de XSS via link.
  */
-export const isSafeLinkHref = (href: string): boolean => {
+export const sarakIsSafeLinkHref = (href: string): boolean => {
     const trimmed = (href ?? '').trim();
     if (!trimmed) return false;
     if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./') || trimmed.startsWith('../') || trimmed.startsWith('?')) {
@@ -61,7 +61,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
     ...props
 }) => {
     const t = useLibraryText();
-    const safe = isSafeLinkHref(href);
+    const safe = sarakIsSafeLinkHref(href);
 
     if (!safe) {
         console.warn(`[Sarak:Link] href com esquema não permitido — descartado: "${href}"`);

@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { ICON_NAMES } from '../iconNames';
+import { SARAK_ICON_NAMES } from '../iconNames';
 
 /**
  * Gate de paridade nome↔catálogo (Spec 41 §2.3 / §4).
@@ -18,7 +18,7 @@ describe('Paridade nomes de ícone ↔ catálogo gerado', () => {
     ) as { tokens: { iconNames: string[] } };
 
     it('o catálogo publica exatamente os nomes de ICON_NAMES, na mesma ordem', () => {
-        expect(catalogo.tokens.iconNames).toEqual([...ICON_NAMES]);
+        expect(catalogo.tokens.iconNames).toEqual([...SARAK_ICON_NAMES]);
     });
 
     it('o catálogo não publica nome de ícone vazio ou repetido', () => {

@@ -1,4 +1,4 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
 /**
  * Tema Gerado Automaticamente pela Skill Sarak-UI-criar-tema
@@ -6,7 +6,7 @@ import { ThemePreset } from './index';
  * Siga as instruções do workflow para preencher as variáveis abaixo.
  * NUNCA adicione propriedades que não estejam mapeadas no schema oficial.
  */
-export const kineticFlowTheme: ThemePreset = {
+export const kineticFlowTheme: SarakThemePreset = {
     id: 'kinetic-flow',
     name: 'Kinetic Flow',
     description: 'Tema hiper-dinâmico com cortes assimétricos, scanlines e neon vibrante em rosa e ciano.',

@@ -1,12 +1,12 @@
 import React from 'react';
-import { SarakShellNav, type ShellNavItem } from '../../atomic/Navigation/SarakShellNav';
-import { ShellSearchWidget } from '../../atomic/Navigation/ShellSearchWidget';
-import { ShellLanguageSelector } from '../../atomic/Navigation/ShellLanguageSelector';
+import { SarakShellNav, type SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
+import { SarakShellSearchWidget } from '../../atomic/Navigation/SarakShellSearchWidget';
+import { SarakShellLanguageSelector } from '../../atomic/Navigation/SarakShellLanguageSelector';
 import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeControl';
 import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
-import type { ShellUser } from '../../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../../core/Shell/Components/types';
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
@@ -21,7 +21,7 @@ import type { SarakChromeWidgets } from './chromeWidgets';
 export interface ChromeTopbarBodyProps {
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
-    nav: ShellNavItem[];
+    nav: SarakShellNavItem[];
     activeRoute?: string;
     onNavigate?: (route: string) => void;
     topbarStart?: React.ReactNode;
@@ -31,7 +31,7 @@ export interface ChromeTopbarBodyProps {
     footer?: React.ReactNode;
     decoration?: React.ReactNode;
     /** Identidade exibida no widget de usuário default (fora do slot `topbarEnd`). */
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
     widgets?: SarakChromeWidgets;
@@ -52,7 +52,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
     const effectiveSearch = search ?? (w.showSearch
-        ? <ShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
+        ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
@@ -103,7 +103,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                             <ChromeTopbarSlot region="end">{endSlot}</ChromeTopbarSlot>
                             {showFontSize && <ShellFontSizeControl />}
                             {showNavigationStyle && <ShellNavigationStyleControl />}
-                            {showLanguage && <ShellLanguageSelector variant="horizontal" />}
+                            {showLanguage && <SarakShellLanguageSelector variant="horizontal" />}
                             <ChromeUserThemeGroup
                                 showThemeToggle={w.showThemeToggle}
                                 showUser={w.showUser}

@@ -1,13 +1,13 @@
 import React from 'react';
 import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
 import { SarakTableSortButton } from './SarakTableSortButton';
-import { pinnedStyle, widthOf, SELECTION_COLUMN_WIDTH, type PinnedOffsets, type SarakColumn, type SarakTableSort } from './columnModel';
+import { pinnedStyle, sarakWidthOf, SELECTION_COLUMN_WIDTH, type SarakPinnedOffsets, type SarakColumn, type SarakTableSort } from './columnModel';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 export interface SarakDataTableHeaderProps<T> {
     columns: SarakColumn<T>[];
     widths: Record<string, number>;
-    offsets: PinnedOffsets;
+    offsets: SarakPinnedOffsets;
     background: string;
     headerHeight: number;
     dragId: string | null;
@@ -75,7 +75,7 @@ export function SarakDataTableHeader<T>({
                     data-column-id={column.id}
                     data-pinned={column.pinned ?? undefined}
                     style={{
-                        width: widthOf(column, widths),
+                        width: sarakWidthOf(column, widths),
                         flex: '0 0 auto',
                         display: 'flex',
                         alignItems: 'center',

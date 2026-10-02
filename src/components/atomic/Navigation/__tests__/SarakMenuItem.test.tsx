@@ -3,10 +3,10 @@ import { render, screen, renderHook } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
-import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
-import { getDefaultDesignState } from '../../../../core/Design/master-map';
+import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
 
 describe('SarakMenuItem', () => {
@@ -258,10 +258,10 @@ function evaluateActiveDistinction(
  * no console — nunca medido contra o preto que `parseToRgba` devolveria.
  */
 describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredura, não amostra)', () => {
-    it.each(GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
+    it.each(SARAK_GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
         `tema "%s": o item ativo se distingue do inativo nas DUAS orientações (ΔE > ${JND_DELTA_E})`,
         (_id, theme) => {
-            const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+            const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
             const { result } = renderHook(() => useDesignVariables(design));
             const { variables } = result.current;
 
@@ -334,7 +334,7 @@ const TEMAS_AINDA_NAO_REAUTORADOS: readonly string[] = [];
  * nativo deixaria a metade da experiência real sem régua nenhuma.
  */
 describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado, nos dois modos', () => {
-    const temasReautorados = GLOBAL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
+    const temasReautorados = SARAK_GLOBAL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
 
     it('a lista de temas reautorados não está vazia (a varredura abaixo não pode virar no-op silencioso)', () => {
         expect(temasReautorados.length).toBeGreaterThan(0);
@@ -351,7 +351,7 @@ describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado,
                     { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
                     modo,
                 );
-                const design = { ...getDefaultDesignState(), ...(resolved as Record<string, unknown>) };
+                const design = { ...sarakGetDefaultDesignState(), ...(resolved as Record<string, unknown>) };
                 const { result: hookResult } = renderHook(() => useDesignVariables(design));
                 const { variables } = hookResult.current;
 

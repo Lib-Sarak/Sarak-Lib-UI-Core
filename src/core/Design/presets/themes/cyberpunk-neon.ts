@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const cyberpunkneonTheme: ThemePreset = {
+export const cyberpunkneonTheme: SarakThemePreset = {
     id: 'cyberpunk-neon',
     name: 'Cyberpunk Neon',
     description: 'Brutal hacker aesthetic. Neon green, zeroed corners, monospaced fonts and grid textures.',

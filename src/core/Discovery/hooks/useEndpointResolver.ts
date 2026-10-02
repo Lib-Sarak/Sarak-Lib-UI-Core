@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { DiscoveredModule } from '../types';
+import { SarakDiscoveredModule } from '../types';
 
-export function useEndpointResolver(module?: DiscoveredModule) {
+export function useEndpointResolver(module?: SarakDiscoveredModule) {
     return useCallback((endpointKey: string) => {
         if (!module) return endpointKey;
 

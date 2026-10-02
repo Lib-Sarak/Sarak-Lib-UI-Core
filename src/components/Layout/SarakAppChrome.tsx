@@ -1,9 +1,9 @@
 import React from 'react';
-import { type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
+import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
 import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
-import type { ShellUser } from '../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../core/Shell/Components/types';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
@@ -61,7 +61,7 @@ export interface SarakAppChromeProps {
      * Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo,
      * `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`.
      */
-    nav?: ShellNavItem[];
+    nav?: SarakShellNavItem[];
     /** Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`). */
     activeRoute?: string;
     /** Clique/teclado num item de navegação — o host decide como navegar. */
@@ -113,7 +113,7 @@ export interface SarakAppChromeProps {
      */
     decoration?: React.ReactNode;
     /** Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). */
-    user?: ShellUser;
+    user?: SarakShellUser;
     /** Encerra a sessão a partir do widget de usuário default. */
     logout?: () => void;
     /**
@@ -172,7 +172,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // reusando o mesmo renderizador de ícone (`SarakIcon`) + `aria-current` + foco por
     // teclado + agrupamento por categoria. A rota ativa vem do item marcado `active`;
     // sem `navItems`, cai no `nav`/`activeRoute`.
-    const effectiveNav: ShellNavItem[] = navItems
+    const effectiveNav: SarakShellNavItem[] = navItems
         ? navItems.map((item) => ({ label: item.label, route: item.href, icon: item.icon, category: item.category }))
         : nav;
     const effectiveActiveRoute = navItems

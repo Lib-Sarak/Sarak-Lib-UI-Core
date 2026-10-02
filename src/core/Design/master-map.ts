@@ -84,7 +84,7 @@ function computeAllDesignTokens() {
 /**
  * Helper para obter todos os tokens em uma lista plana.
  */
-export const getAllDesignTokens = () => {
+export const sarakGetAllDesignTokens = () => {
     if (!cachedAllDesignTokens) {
         cachedAllDesignTokens = computeAllDesignTokens();
     }
@@ -97,15 +97,15 @@ export const getAllDesignTokens = () => {
  * Fonte única e viva — nunca copiar esta lista para fora do código (spec 09).
  */
 export const getStructuralTokens = () => {
-    return getAllDesignTokens().filter(token => !!token.structuralConsumer && token.structuralConsumer.length > 0);
+    return sarakGetAllDesignTokens().filter(token => !!token.structuralConsumer && token.structuralConsumer.length > 0);
 };
 
 /**
  * Helper para obter os valores padrão de todos os tokens.
  */
-export const getDefaultDesignState = () => {
+export const sarakGetDefaultDesignState = () => {
     const state: Record<string, SarakTokenValue> = {};
-    getAllDesignTokens().forEach(token => {
+    sarakGetAllDesignTokens().forEach(token => {
         state[token.id] = token.defaultValue;
     });
     return state;
@@ -140,7 +140,7 @@ export const getDomainMap = () => {
  * cópia estática (ex: `masterTemplate` hardcoded).
  */
 export const getScaffold = (domain?: string): Record<string, SarakTokenValue> => {
-    const fullState = getDefaultDesignState();
+    const fullState = sarakGetDefaultDesignState();
     if (!domain) return fullState;
 
     const { bySchema, byColumn } = getDomainMap();
@@ -163,7 +163,7 @@ export const getScaffold = (domain?: string): Record<string, SarakTokenValue> =>
 // fora do nosso controle): fronteira dinâmica de verdade → `Record<string, unknown>`.
 export const upgradeThemePayload = (themePayload: Record<string, unknown>) => {
     const upgraded = { ...themePayload };
-    getAllDesignTokens().forEach(token => {
+    sarakGetAllDesignTokens().forEach(token => {
         // Se a chave não existe no payload
         if (upgraded[token.id] === undefined) {
             // Se o token possui um legacyValue definido (Zero Absoluto para temas antigos)

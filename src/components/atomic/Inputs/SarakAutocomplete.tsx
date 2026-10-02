@@ -20,9 +20,12 @@ export interface SarakAutocompleteProps extends Omit<SarakInputProps, 'defaultVa
      */
     options?: SarakAutocompleteOption[];
     /**
-     * Busca fornecida pelo host para listas remotas. Omitida, `options` é
-     * filtrada localmente; definida, a biblioteca só chama esta função e não
-     * acessa a rede diretamente.
+     * Busca fornecida pelo host para listas remotas; a biblioteca não acessa a
+     * rede diretamente. Omitida, a propriedade options é filtrada localmente.
+     *
+     * Recriar a função mantendo-a definida não reinicia a busca nem chama o
+     * host de novo. A próxima busca usa a função mais recente; uma chamada já
+     * iniciada continua com a função que a iniciou.
      */
     searchOptions?: (query: string) => Promise<SarakAutocompleteOption[]>;
     /**

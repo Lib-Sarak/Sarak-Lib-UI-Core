@@ -9,8 +9,8 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
  * espelha o contrato real da lib: `accept` = MIME → extensões; `FileRejection` =
  * arquivo + motivos. São aceitos pela assinatura de opções do `useDropzone`.
  */
-export type Accept = Record<string, string[]>;
-export interface FileRejection {
+export type SarakAccept = Record<string, string[]>;
+export interface SarakFileRejection {
     file: File;
     errors: Array<{ code: string; message: string }>;
 }
@@ -18,7 +18,7 @@ export interface FileRejection {
 export interface SarakUploaderProps {
     label?: string;
     /** Tipos aceitos no formato do react-dropzone (ex.: `{ 'image/*': [] }`). */
-    accept?: Accept;
+    accept?: SarakAccept;
     /** Tamanho máximo por arquivo, em bytes. */
     maxSize?: number;
     multiple?: boolean;
@@ -31,7 +31,7 @@ export interface SarakUploaderProps {
     /** Recebe os arquivos aceitos (Spec 32: `onChange(value)`). */
     onChange?: (files: File[]) => void;
     /** Recebe as rejeições (ex.: arquivo maior que `maxSize`). */
-    onReject?: (rejections: FileRejection[]) => void;
+    onReject?: (rejections: SarakFileRejection[]) => void;
 }
 
 /** Borda por estado, espelhando os tokens semânticos da Sarak (Spec 11, Regra 3). */
@@ -62,7 +62,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
 }) => {
     const t = useLibraryText();
     const onDrop = useCallback(
-        (accepted: File[], rejections: FileRejection[]): void => {
+        (accepted: File[], rejections: SarakFileRejection[]): void => {
             if (accepted.length > 0) onChange?.(accepted);
             if (rejections.length > 0) onReject?.(rejections);
         },

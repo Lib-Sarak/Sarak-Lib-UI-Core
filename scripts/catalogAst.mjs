@@ -137,7 +137,7 @@ export const collectSpacingTokens = () => {
 
 /**
  * Elementos string de um `const NOME = [...] as const` — a forma dos catálogos
- * fechados da lib (`ICON_NAMES`, `THEME_PRESET_IDS`). Fonte ÚNICA por construção.
+ * fechados da lib (`SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS`). Fonte ÚNICA por construção.
  */
 export const collectStringArrayConst = (relative, constName) => {
     const source = parse(relative);
@@ -158,9 +158,9 @@ export const collectStringArrayConst = (relative, constName) => {
     return values;
 };
 
-/** Nomes de ícone do contrato público (Spec 41 §2.3) — fonte ÚNICA: `ICON_NAMES`. */
+/** Nomes de ícone do contrato público (Spec 41 §2.3) — fonte ÚNICA: `SARAK_ICON_NAMES`. */
 export const collectIconNames = () =>
-    collectStringArrayConst('components/atomic/Icon/iconNames.ts', 'ICON_NAMES');
+    collectStringArrayConst('components/atomic/Icon/iconNames.ts', 'SARAK_ICON_NAMES');
 
 /** CSS Variables públicas reais (namespace `--sarak-*`) emitidas pelo DESIGN_MANIFEST (Spec 16). */
 export const collectPublicCssVars = () => {

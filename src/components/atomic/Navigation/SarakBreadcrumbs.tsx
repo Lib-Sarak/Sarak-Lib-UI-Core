@@ -2,7 +2,7 @@ import React from 'react';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Migalha do caminho de navegação (Spec 14, Regra 3). */
-export interface BreadcrumbItem {
+export interface SarakBreadcrumbItem {
     /** Rótulo exibido. */
     label: string;
     /** Destino opcional (acionado via `onNavigate`, não pela URL diretamente). */
@@ -13,7 +13,7 @@ export interface BreadcrumbItem {
 
 export interface SarakBreadcrumbsProps {
     /** Caminho do usuário, da raiz à folha. */
-    items: BreadcrumbItem[];
+    items: SarakBreadcrumbItem[];
     /** Separador entre migalhas (default: `/`). */
     separator?: React.ReactNode;
     /** Delega a navegação ao host (Spec 33, Regra 3) — não manipula a URL. */

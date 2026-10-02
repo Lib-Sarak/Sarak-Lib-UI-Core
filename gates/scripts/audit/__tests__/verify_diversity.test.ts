@@ -9,7 +9,7 @@ import {
     evaluateDistanceCriteria,
     type ThemeDiversityRow,
 } from '../verify_diversity.ts';
-import { GLOBAL_THEMES, type ThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 describe('hueFamily', () => {
     it('classifica ciano', () => expect(hueFamily(183, 100)).toBe('ciano'));
@@ -78,7 +78,7 @@ describe('measureTheme', () => {
                 cardBackdropBlur: 8,
                 layoutDensity: 'compact',
             },
-        } as unknown as ThemePreset;
+        } as unknown as SarakThemePreset;
 
         const row = measureTheme(tema);
         expect(row.mode).toBe('light');
@@ -99,7 +99,7 @@ describe('measureTheme', () => {
             name: 'x',
             description: 'x',
             design: { cardBorderRadius: { mob: 8, tab: 12, desk: 20 } },
-        } as unknown as ThemePreset;
+        } as unknown as SarakThemePreset;
         expect(measureTheme(tema).cardBorderRadius).toBe(20);
     });
 });
@@ -142,7 +142,7 @@ describe('aggregate', () => {
     });
 
     it('classifica neumorphic-mobile (real, GLOBAL_THEMES) como "neutro" — H cromático com S abaixo do limiar', () => {
-        const tema = GLOBAL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
+        const tema = SARAK_GLOBAL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
         const row = measureTheme(tema);
         expect(row.familia).toBe('neutro');
     });
@@ -259,7 +259,7 @@ describe('evaluateDistanceCriteria', () => {
     // shippado de verdade, nunca dos `novos`) — a mesma dispersão é
     // corretamente detectada.
     it('recalibragem: raio que cobre uma faixa bem maior que a do catálogo escapava de "baixo" com os limites antigos e agora é detectado', () => {
-        const existentesReais = GLOBAL_THEMES.map(measureTheme);
+        const existentesReais = SARAK_GLOBAL_THEMES.map(measureTheme);
         const novos = [0, 8, 16, 24, 32].map((radius, i) =>
             linha({ id: `novo-${i}`, cardBorderRadius: radius, cardBorderWidth: 1, cardBackdropBlur: 0, layoutDensity: 'comfortable' }),
         );

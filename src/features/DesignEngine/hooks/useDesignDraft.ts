@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
+import { MASTER_DESIGN_MAP, sarakGetAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
 import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
-import { SarakUIContextType, SarakDesignState, ThemeEntry } from '../../../core/Provider/types';
+import { SarakUIContextType, SarakDesignState, SarakThemeEntry } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
 
@@ -40,7 +40,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         if (draftState) return draftState;
         // Fallback para o design do sistema ou defaults totais se nada existir
         const base = sarak.systemDesign || {} as SarakDesignState;
-        const allTokens = getAllDesignTokens();
+        const allTokens = sarakGetAllDesignTokens();
         const resolved: Record<string, SarakTokenValue> = { ...(base as Record<string, SarakTokenValue>) };
         allTokens.forEach(token => {
             if (resolved[token.id] === undefined) {
@@ -124,7 +124,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         // fallback sobre o design corrente, como sempre.
         if (key === 'mode') {
             const targetMode = value as 'light' | 'dark';
-            const allThemes = sarak.allThemes as ThemeEntry[] | undefined;
+            const allThemes = sarak.allThemes as SarakThemeEntry[] | undefined;
             const activeTheme = allThemes?.find((t) => t.id === sarak.resolvedThemeId);
             const isReload = Boolean(activeTheme?.design) && draft.mode !== targetMode;
 

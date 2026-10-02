@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const sarakSovereignTheme: ThemePreset = {
+export const sarakSovereignTheme: SarakThemePreset = {
     id: 'sarak-sovereign',
     name: 'Sarak Sovereign',
     description: 'O padrão original da Sarak: Layout Sidebar industrial, foco em tipografia Inter e raio de bordas moderado.',

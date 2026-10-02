@@ -10,7 +10,7 @@ vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
     return { ...(actual as object), motion: { div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => <div {...props}>{children}</div> } };
 });
-vi.mock('../../../../components/atomic/Navigation/ShellSearchWidget', () => ({ ShellSearchWidget: () => <div>Search</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({ SarakShellSearchWidget: () => <div>Search</div> }));
 vi.mock('../IconRenderer', () => ({ IconRenderer: ({ name }: { name: string }) => <span>{name}</span> }));
 
 const renderSidebar = (design: Record<string, unknown>) =>

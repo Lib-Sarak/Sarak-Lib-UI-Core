@@ -5,6 +5,135 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
+
+**Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.
+
+**O que muda.** Componentes, tipos, interfaces, constantes e funções exportadas seguem a convenção de prefixo da biblioteca. Atualize os imports conforme a tabela:
+
+| Nome antigo | Nome novo |
+| --- | --- |
+| `Accept` | `SarakAccept` |
+| `BadgeSize` | `SarakBadgeSize` |
+| `BadgeVariant` | `SarakBadgeVariant` |
+| `BreadcrumbItem` | `SarakBreadcrumbItem` |
+| `CardMove` | `SarakCardMove` |
+| `CatalogItem` | `SarakCatalogItem` |
+| `ChartDataItem` | `SarakChartDataItem` |
+| `ContextMenuPosition` | `SarakContextMenuPosition` |
+| `CustomizationPanel` | `SarakCustomizationPanel` |
+| `DEFAULT_COLUMN_WIDTH` | `SARAK_DEFAULT_COLUMN_WIDTH` |
+| `DEFAULT_DEVICE_BREAKPOINTS` | `SARAK_DEFAULT_DEVICE_BREAKPOINTS` |
+| `DESIGN_MANIFEST` | `SARAK_DESIGN_MANIFEST` |
+| `DateLocale` | `SarakDateLocale` |
+| `DatePickerValue` | `SarakDatePickerValue` |
+| `DerivedThemePreset` | `SarakDerivedThemePreset` |
+| `DesignScope` | `SarakDesignScope` |
+| `DesignScopeProps` | `SarakDesignScopeProps` |
+| `DesignToken` | `SarakDesignToken` |
+| `DeviceBreakpoints` | `SarakDeviceBreakpoints` |
+| `DeviceProvider` | `SarakDeviceProvider` |
+| `DeviceProviderProps` | `SarakDeviceProviderProps` |
+| `DeviceType` | `SarakDeviceType` |
+| `DiscoveredModule` | `SarakDiscoveredModule` |
+| `DynamicRenderer` | `SarakDynamicRenderer` |
+| `DynamicRendererProps` | `SarakDynamicRendererProps` |
+| `ExpandableCard` | `SarakExpandableCard` |
+| `ExpandableCardProps` | `SarakExpandableCardProps` |
+| `FileRejection` | `SarakFileRejection` |
+| `FilterConfig` | `SarakFilterConfig` |
+| `FilterDescriptor` | `SarakFilterDescriptor` |
+| `FilterSelect` | `SarakFilterSelect` |
+| `FilterSelectProps` | `SarakFilterSelectProps` |
+| `FlexDirection` | `SarakFlexDirection` |
+| `GLOBAL_THEMES` | `SARAK_GLOBAL_THEMES` |
+| `HelpButton` | `SarakHelpButton` |
+| `ICONE_DESCONHECIDO` | `SARAK_ICONE_DESCONHECIDO` |
+| `ICON_NAMES` | `SARAK_ICON_NAMES` |
+| `IconFamily` | `SarakIconFamily` |
+| `IconMap` | `SarakIconMap` |
+| `IconName` | `SarakIconName` |
+| `IconTriple` | `SarakIconTriple` |
+| `ImageCard` | `SarakImageCard` |
+| `ImageCardProps` | `SarakImageCardProps` |
+| `KanbanCard` | `SarakKanbanCard` |
+| `KanbanColumn` | `SarakKanbanColumn` |
+| `LightboxImage` | `SarakLightboxImage` |
+| `MIN_COLUMN_WIDTH` | `SARAK_MIN_COLUMN_WIDTH` |
+| `MatrixNodeConfig` | `SarakMatrixNodeConfig` |
+| `MatrixParentData` | `SarakMatrixParentData` |
+| `MatrixTreeNode` | `SarakMatrixTreeNode` |
+| `Message` | `SarakMessage` |
+| `ModalLayoutContext` | `SarakModalLayoutContext` |
+| `ModuleManifest` | `SarakModuleManifest` |
+| `MultiSelectOption` | `SarakMultiSelectOption` |
+| `NavigationItem` | `SarakNavigationItem` |
+| `PaginationToken` | `SarakPaginationToken` |
+| `PdfSource` | `SarakPdfSource` |
+| `PinnedOffsets` | `SarakPinnedOffsets` |
+| `PreferenceId` | `SarakPreferenceId` |
+| `PreferencePosition` | `SarakPreferencePosition` |
+| `RangeValue` | `SarakRangeValue` |
+| `ResponsiveDevice` | `SarakResponsiveDevice` |
+| `ResponsiveValue` | `SarakResponsiveValue` |
+| `ShellLanguageSelector` | `SarakShellLanguageSelector` |
+| `ShellLanguageSelectorProps` | `SarakShellLanguageSelectorProps` |
+| `ShellNavItem` | `SarakShellNavItem` |
+| `ShellSearchWidget` | `SarakShellSearchWidget` |
+| `ShellSearchWidgetProps` | `SarakShellSearchWidgetProps` |
+| `ShellThemeToggle` | `SarakShellThemeToggle` |
+| `ShellThemeToggleProps` | `SarakShellThemeToggleProps` |
+| `ShellUser` | `SarakShellUser` |
+| `ShellUserWidget` | `SarakShellUserWidget` |
+| `ShellUserWidgetProps` | `SarakShellUserWidgetProps` |
+| `SkeletonShape` | `SarakSkeletonShape` |
+| `SocialButton` | `SarakSocialButton` |
+| `SocialButtonProps` | `SarakSocialButtonProps` |
+| `SparklineVariant` | `SarakSparklineVariant` |
+| `StepConfig` | `SarakStepConfig` |
+| `StepperOrientation` | `SarakStepperOrientation` |
+| `THEME_AXES` | `SARAK_THEME_AXES` |
+| `THEME_PRESET_IDS` | `SARAK_THEME_PRESET_IDS` |
+| `ThemeEntry` | `SarakThemeEntry` |
+| `ThemePreset` | `SarakThemePreset` |
+| `ThemePresetId` | `SarakThemePresetId` |
+| `ThemeReferenceOverrides` | `SarakThemeReferenceOverrides` |
+| `ToastController` | `SarakToastController` |
+| `ToastOptions` | `SarakToastOptions` |
+| `ToastVariant` | `SarakToastVariant` |
+| `TokenValueType` | `SarakTokenValueType` |
+| `TooltipPosition` | `SarakTooltipPosition` |
+| `VisualContract` | `SarakVisualContract` |
+| `VisualContractType` | `SarakVisualContractType` |
+| `WeekStart` | `SarakWeekStart` |
+| `buildPaginationRange` | `sarakBuildPaginationRange` |
+| `computeOffsets` | `sarakComputeOffsets` |
+| `deriveThemeFromReference` | `sarakDeriveThemeFromReference` |
+| `deviceForWidth` | `sarakDeviceForWidth` |
+| `findMissingThemeAxes` | `sarakFindMissingThemeAxes` |
+| `getAllDesignTokens` | `sarakGetAllDesignTokens` |
+| `getDefaultDesignState` | `sarakGetDefaultDesignState` |
+| `getLocalComponent` | `sarakGetLocalComponent` |
+| `getLocalComponentIds` | `sarakGetLocalComponentIds` |
+| `getRegisteredModules` | `sarakGetRegisteredModules` |
+| `getThemePreset` | `sarakGetThemePreset` |
+| `isResponsiveValue` | `sarakIsResponsiveValue` |
+| `isSafeLinkHref` | `sarakIsSafeLinkHref` |
+| `moveCard` | `sarakMoveCard` |
+| `registerLocalComponent` | `sarakRegisterLocalComponent` |
+| `reorder` | `sarakReorder` |
+| `resolveResponsiveValue` | `sarakResolveResponsiveValue` |
+| `sanitizeRichText` | `sarakSanitizeRichText` |
+| `subscribeToRegistry` | `sarakSubscribeToRegistry` |
+| `warnOnIncompleteTheme` | `sarakWarnOnIncompleteTheme` |
+| `widthOf` | `sarakWidthOf` |
+
+**Por quê.** O prefixo permite distinguir os identificadores da biblioteca dos nomes locais do consumidor.
+
+**Como migrar.** Substitua cada nome antigo pelo correspondente na coluna “Nome novo” dos imports e anotações de tipo.
+
+**O que não mudou.** Nenhum comportamento, prop ou assinatura foi alterado junto com os nomes.
+
 ## 7.0.0 — A rolagem do `SarakAppChrome` passa para o painel de conteúdo
 
 **Classificação: MAJOR** — páginas longas deixam de rolar no documento; a barra lateral e a barra superior passam a permanecer dentro da altura do cromo.

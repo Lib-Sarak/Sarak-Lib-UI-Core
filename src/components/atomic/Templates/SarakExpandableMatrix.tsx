@@ -5,9 +5,9 @@ import { SarakInput } from '../Inputs';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { RecursiveMatrixNode } from './components/RecursiveMatrixNode';
 
-import type { MatrixTreeNode } from './components/matrixTree';
+import type { SarakMatrixTreeNode } from './components/matrixTree';
 
-export interface MatrixNodeConfig<TNode = MatrixTreeNode> {
+export interface SarakMatrixNodeConfig<TNode = SarakMatrixTreeNode> {
     /** Variante visual de renderização do nó */
     variant?: 'card' | 'row' | 'badge' | 'switch' | 'clean';
     /** Se exibe checkbox/toggle para ativar/desativar */
@@ -31,25 +31,25 @@ export interface MatrixNodeConfig<TNode = MatrixTreeNode> {
 
 export interface SarakMatrixManifest {
     /** Mapeamento por nível de profundidade (0 para raiz, 1 para filhos, 2 para netos, etc.) */
-    levels?: Record<number, MatrixNodeConfig<MatrixTreeNode>>;
+    levels?: Record<number, SarakMatrixNodeConfig<SarakMatrixTreeNode>>;
     /** Mapeamento dinâmico pelo atributo `node.type` */
-    types?: Record<string, MatrixNodeConfig<MatrixTreeNode>>;
+    types?: Record<string, SarakMatrixNodeConfig<SarakMatrixTreeNode>>;
     /** Configurações fallback padrão */
-    default?: MatrixNodeConfig<MatrixTreeNode>;
+    default?: SarakMatrixNodeConfig<SarakMatrixTreeNode>;
 }
 
-export interface MatrixParentData {
+export interface SarakMatrixParentData {
     id: string;
     name?: string;
     description?: string;
     [key: string]: unknown;
 }
 
-export interface SarakExpandableMatrixProps<TData extends MatrixParentData> {
+export interface SarakExpandableMatrixProps<TData extends SarakMatrixParentData> {
     /** Itens principais (ex: Roles/Papéis) */
     data: TData[];
     /** Todos os sub-itens possíveis (ex: Todas as Permissões) */
-    subItems: MatrixTreeNode[];
+    subItems: SarakMatrixTreeNode[];
     /** Função para checar se um sub-item está ativo em um item pai */
     activeMapping: (parentId: string, subItemId: string) => boolean;
     /** Callback disparado ao clicar no toggle */
@@ -62,7 +62,7 @@ export interface SarakExpandableMatrixProps<TData extends MatrixParentData> {
 
 
 
-export const SarakExpandableMatrix = <TData extends MatrixParentData>({
+export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
     data,
     subItems,
     activeMapping,
@@ -83,14 +83,14 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
 
         const term = searchTerm.toLowerCase();
 
-        const filterTree = (nodes: MatrixTreeNode[]): MatrixTreeNode[] => {
+        const filterTree = (nodes: SarakMatrixTreeNode[]): SarakMatrixTreeNode[] => {
             return nodes.reduce((acc, node) => {
                 const matchesNode = 
                     node.name?.toLowerCase().includes(term) ||
                     node.description?.toLowerCase().includes(term) ||
                     node.id?.toLowerCase().includes(term);
 
-                let filteredChildren: MatrixTreeNode[] = [];
+                let filteredChildren: SarakMatrixTreeNode[] = [];
                 if (node.children && node.children.length > 0) {
                     filteredChildren = filterTree(node.children);
                 }
@@ -105,7 +105,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                 }
 
                 return acc;
-            }, [] as MatrixTreeNode[]);
+            }, [] as SarakMatrixTreeNode[]);
         };
 
         return filterTree(subItems);

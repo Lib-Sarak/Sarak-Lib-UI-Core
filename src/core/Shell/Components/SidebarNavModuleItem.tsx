@@ -2,11 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { useLibraryText } from '../../i18n/useLibraryText';
 
 export interface SidebarNavModuleItemProps {
-    mod: DiscoveredModule;
+    mod: SarakDiscoveredModule;
     isActive: boolean;
     effectiveIsNavHidden: boolean;
     onSelect: (id: string) => void;

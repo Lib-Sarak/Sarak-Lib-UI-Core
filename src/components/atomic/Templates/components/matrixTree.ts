@@ -8,19 +8,19 @@
 import React from 'react';
 import { SarakMatrixManifest } from '../SarakExpandableMatrix';
 
-export interface MatrixTreeNode {
+export interface SarakMatrixTreeNode {
     id: string;
     name?: string;
     description?: string;
     /** Discriminador opcional para o mapeamento `manifest.types`. */
     type?: string;
-    children?: MatrixTreeNode[];
+    children?: SarakMatrixTreeNode[];
     /** Carregamento assíncrono em andamento — renderiza o `lazyLoadingIcon`. */
     loading?: boolean;
 }
 
 export interface RecursiveMatrixNodeProps {
-    item: MatrixTreeNode;
+    item: SarakMatrixTreeNode;
     parentId: string;
     level: number;
     activeMapping: (parentId: string, subItemId: string) => boolean;
@@ -30,5 +30,5 @@ export interface RecursiveMatrixNodeProps {
     /** Indicador exibido sob um nó com `loading: true` (default: spinner tokenizado). */
     lazyLoadingIcon?: React.ReactNode;
     /** Notifica expansão/colapso do nó — habilita carregamento sob demanda. */
-    onExpandChange?: (node: MatrixTreeNode, expanded: boolean) => void;
+    onExpandChange?: (node: SarakMatrixTreeNode, expanded: boolean) => void;
 }

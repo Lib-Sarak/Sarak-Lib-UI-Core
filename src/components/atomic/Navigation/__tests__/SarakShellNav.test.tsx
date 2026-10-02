@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SarakShellNav, type ShellNavItem } from '../SarakShellNav';
+import { SarakShellNav, type SarakShellNavItem } from '../SarakShellNav';
 import { DesignOverrideContext, SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
-const ITEMS: ShellNavItem[] = [
+const ITEMS: SarakShellNavItem[] = [
     { label: 'Contratos', route: '/contratos' },
     { label: 'Relatórios', route: '/relatorios', category: 'Análise' },
     { label: 'Personalização', route: '/design', category: 'Sistema' },

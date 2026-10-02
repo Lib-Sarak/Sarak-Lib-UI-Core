@@ -1,15 +1,15 @@
 import React from 'react';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
-import { resolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
-import type { ResponsiveValue } from '../../../core/Design/types';
+import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
+import type { SarakResponsiveValue } from '../../../core/Design/types';
 
-export type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
+export type SarakFlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
 
 export interface SarakFlexProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;
     /** Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional). */
-    direction?: FlexDirection | ResponsiveValue<FlexDirection>;
+    direction?: SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>;
     justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | string;
     align?: 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | string;
     gap?: string;
@@ -45,7 +45,7 @@ export const SarakFlex: React.FC<SarakFlexProps> = ({
     const { getFlexStyles } = useStructuralStyles();
     const device = useSarakDevice();
 
-    const resolvedDirection = direction === undefined ? undefined : resolveResponsiveValue(direction, device);
+    const resolvedDirection = direction === undefined ? undefined : sarakResolveResponsiveValue(direction, device);
     const flexStyles = getFlexStyles(resolvedDirection, justify, align, gap);
 
     return (

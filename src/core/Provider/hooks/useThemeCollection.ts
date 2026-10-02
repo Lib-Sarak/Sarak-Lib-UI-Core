@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { validateDesign } from '../utils/validation';
-import { GLOBAL_THEMES } from '../../Design/presets/themes/index';
-import { SarakUIOptions, ThemeEntry } from '../types';
+import { SARAK_GLOBAL_THEMES } from '../../Design/presets/themes/index';
+import { SarakUIOptions, SarakThemeEntry } from '../types';
 
 /**
  * Lista unificada de temas + a porta de escrita de temas salvos em runtime
@@ -11,12 +11,12 @@ import { SarakUIOptions, ThemeEntry } from '../types';
  * arquivo abaixo do teto de 250 linhas do auditor de Clean Code (R9).
  */
 export const useThemeCollection = (customThemes: unknown[], options: SarakUIOptions) => {
-    const [savedThemes, setSavedThemes] = useState<ThemeEntry[]>([]);
+    const [savedThemes, setSavedThemes] = useState<SarakThemeEntry[]>([]);
 
     // savedThemes funde DEPOIS de customThemes para que um tema salvo agora
     // apareça sem reload.
-    const allThemes = useMemo<ThemeEntry[]>(() => {
-        return [...GLOBAL_THEMES, ...customThemes, ...savedThemes] as ThemeEntry[];
+    const allThemes = useMemo<SarakThemeEntry[]>(() => {
+        return [...SARAK_GLOBAL_THEMES, ...customThemes, ...savedThemes] as SarakThemeEntry[];
     }, [customThemes, savedThemes]);
 
     // `saveTheme` é a ÚNICA porta de escrita (ADR-011): valida o `design` na
@@ -27,8 +27,8 @@ export const useThemeCollection = (customThemes: unknown[], options: SarakUIOpti
     // propaga o erro para quem chamou (o painel mostra o toast), mas o tema
     // já está em `allThemes` e permanece lá. Salvar o mesmo `id` duas vezes
     // SUBSTITUI, nunca duplica.
-    const saveTheme = useCallback(async (theme: ThemeEntry): Promise<void> => {
-        const validatedTheme: ThemeEntry = {
+    const saveTheme = useCallback(async (theme: SarakThemeEntry): Promise<void> => {
+        const validatedTheme: SarakThemeEntry = {
             ...theme,
             design: validateDesign(theme.design) as unknown as Record<string, unknown>
         };

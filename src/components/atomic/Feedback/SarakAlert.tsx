@@ -2,12 +2,12 @@ import React, { useId } from 'react';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
-import type { IconName } from '../Icon/iconNames';
+import type { SarakIconName } from '../Icon/iconNames';
 
 export type SarakAlertVariant = 'success' | 'error' | 'warning' | 'info';
 
 interface AlertPresentation {
-    icon: IconName;
+    icon: SarakIconName;
     color: string;
     role: 'alert' | 'status';
 }

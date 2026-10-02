@@ -1,9 +1,9 @@
 import React from 'react';
-import type { PreferenceId } from '../../../core/Provider/preferencesTypes';
+import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
 import type { LibraryTextFn } from '../../../core/i18n/useLibraryText';
 import { SarakMenuItem } from './SarakMenuItem';
-import { ShellThemeToggle } from './ShellThemeToggle';
-import { ShellLanguageSelector } from './ShellLanguageSelector';
+import { SarakShellThemeToggle } from './SarakShellThemeToggle';
+import { SarakShellLanguageSelector } from './SarakShellLanguageSelector';
 import { ShellFontSizeControl } from './ShellFontSizeControl';
 import { ShellNavigationStyleControl } from './ShellNavigationStyleControl';
 
@@ -41,10 +41,10 @@ const PreferenceMenuRow: React.FC<{ label: string; children: React.ReactNode }> 
  * menu); `navCollapsed` ganha uma linha própria porque `ChromeCollapseToggle`
  * (o botão-ícone do `SarakAppChrome`) não tem variante de linha.
  */
-export const renderShellPreferenceRow = (id: PreferenceId, ctx: ShellPreferenceRowContext): React.ReactNode => {
+export const renderShellPreferenceRow = (id: SarakPreferenceId, ctx: ShellPreferenceRowContext): React.ReactNode => {
     switch (id) {
         case 'colorMode':
-            return <ShellThemeToggle key={id} variant="vertical" />;
+            return <SarakShellThemeToggle key={id} variant="vertical" />;
         case 'navCollapsed':
             return (
                 <SarakMenuItem
@@ -66,7 +66,7 @@ export const renderShellPreferenceRow = (id: PreferenceId, ctx: ShellPreferenceR
                 </PreferenceMenuRow>
             );
         case 'language':
-            return <ShellLanguageSelector key={id} variant="vertical" />;
+            return <SarakShellLanguageSelector key={id} variant="vertical" />;
         default:
             return null;
     }

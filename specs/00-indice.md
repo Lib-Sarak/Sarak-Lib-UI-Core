@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🔴 A executar | arquitetura/03-superficie-publica.md · specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md |
+| 1 | [plan-82-prefixo-sarak-em-toda-a-superficie-publica](plan/plan-82-prefixo-sarak-em-toda-a-superficie-publica.md) | Todo nome que o consumidor importa da lib carrega o prefixo da biblioteca, e um gate impede que um nome sem prefixo volte a entrar no barril | — | 🟢 Aprovada | specs/arquitetura/03-superficie-publica.md · specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30.** O arquivo saiu; a verdade delas vive nas specs

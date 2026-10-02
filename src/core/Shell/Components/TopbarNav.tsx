@@ -2,13 +2,13 @@ import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { ShellSearchWidget } from '../../../components/atomic/Navigation/ShellSearchWidget';
-import { ShellUserWidget } from '../../../components/atomic/Navigation/ShellUserWidget';
-import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
-import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { SarakShellUser } from './types';
+import { SarakShellSearchWidget } from '../../../components/atomic/Navigation/SarakShellSearchWidget';
+import { SarakShellUserWidget } from '../../../components/atomic/Navigation/SarakShellUserWidget';
+import { SarakShellLanguageSelector } from '../../../components/atomic/Navigation/SarakShellLanguageSelector';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
 import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
@@ -25,9 +25,9 @@ interface TopbarNavProps {
     setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
-    discoveredModules: DiscoveredModule[];
+    discoveredModules: SarakDiscoveredModule[];
     extraToolbarItems?: React.ReactNode;
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     startResizing: () => void;
 }
@@ -67,7 +67,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;
-        return <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
+        return <SarakShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
     };
 
     return (
@@ -188,11 +188,11 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     {searchPos === 'right' && renderSearch()}
 
                     <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
-                        {showLanguage && <ShellLanguageSelector variant="horizontal" />}
+                        {showLanguage && <SarakShellLanguageSelector variant="horizontal" />}
 
                         <div className="w-[var(--theme-border-width,1px)] h-4 bg-[var(--theme-border)] mx-1" />
 
-                        {showThemeToggle && <ShellThemeToggle variant="horizontal" />}
+                        {showThemeToggle && <SarakShellThemeToggle variant="horizontal" />}
                         {showFontSize && <ShellFontSizeControl />}
                         {showNavigationStyle && <ShellNavigationStyleControl />}
 
@@ -216,7 +216,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     </div>
 
                     {/* 4. User Widget */}
-                    <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'horizontal'} />
+                    <SarakShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'horizontal'} />
                 </div>
             </div>
 

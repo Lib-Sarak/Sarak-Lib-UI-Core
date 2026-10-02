@@ -2,8 +2,8 @@ import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SarakUIProvider } from '../../Provider/SarakUIProvider';
-import { ShellLanguageSelector } from '../../../components/atomic/Navigation/ShellLanguageSelector';
-import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { SarakShellLanguageSelector } from '../../../components/atomic/Navigation/SarakShellLanguageSelector';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 
 /**
  * A troca de idioma em runtime repinta os textos sem recarregar a página.
@@ -26,8 +26,8 @@ describe('Trocar o idioma pela preferência repinta o cromo sem recarga', () => 
 
         render(
             <SarakUIProvider config={{ enabledLanguages: ['pt', 'en'], preferenceLanguagePosition: 'menu' }}>
-                <ShellLanguageSelector variant="horizontal" />
-                <ShellThemeToggle variant="vertical" />
+                <SarakShellLanguageSelector variant="horizontal" />
+                <SarakShellThemeToggle variant="vertical" />
             </SarakUIProvider>,
         );
 

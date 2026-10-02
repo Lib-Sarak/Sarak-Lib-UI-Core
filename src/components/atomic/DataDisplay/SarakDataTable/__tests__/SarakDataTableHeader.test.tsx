@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { SarakDataTableHeader } from '../SarakDataTableHeader';
-import { computeOffsets, type SarakColumn } from '../columnModel';
+import { sarakComputeOffsets, type SarakColumn } from '../columnModel';
 
 interface Row {
     name: string;
@@ -17,7 +17,7 @@ describe('SarakDataTableHeader', () => {
             <SarakDataTableHeader
                 columns={columns}
                 widths={{}}
-                offsets={computeOffsets(columns, {})}
+                offsets={sarakComputeOffsets(columns, {})}
                 background="surface"
                 headerHeight={44}
                 dragId={null}

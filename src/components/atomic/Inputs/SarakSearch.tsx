@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, X, ArrowRight } from 'lucide-react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { getRegisteredModules } from '../../../core/Discovery/registry';
+import { sarakGetRegisteredModules } from '../../../core/Discovery/registry';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from './SarakInput';
 
@@ -38,7 +38,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
     const { searchStyle, systemName } = design || {};
-    const sourceItems: SarakSearchItem[] = items ?? getRegisteredModules();
+    const sourceItems: SarakSearchItem[] = items ?? sarakGetRegisteredModules();
 
     const [query, setQuery] = useState('');
 

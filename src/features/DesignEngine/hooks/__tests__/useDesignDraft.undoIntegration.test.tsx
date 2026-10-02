@@ -9,7 +9,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import { useDesignDraft } from '../useDesignDraft';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -60,7 +60,7 @@ describe('Desfazer — integração com o Provider real', () => {
 
     it('desfazer restaura também o TEMA anunciado (resolvedThemeId), e TODA chamada de onSave a partir dele recebe o par certo', async () => {
         const onSave = vi.fn().mockResolvedValue(undefined);
-        const temaClaro = GLOBAL_THEMES.find((t) => t.id === 'minimalist-airy')!;
+        const temaClaro = SARAK_GLOBAL_THEMES.find((t) => t.id === 'minimalist-airy')!;
 
         const Harness = () => {
             const sarak = useSarakUI();

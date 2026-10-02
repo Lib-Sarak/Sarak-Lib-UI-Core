@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { SarakDataTableRows } from '../SarakDataTableRows';
-import { computeOffsets, type SarakColumn } from '../columnModel';
+import { sarakComputeOffsets, type SarakColumn } from '../columnModel';
 import type { TableInteractionEntry } from '../useTableInteractions';
 
 interface Row {
@@ -20,7 +20,7 @@ describe('SarakDataTableRows', () => {
                 columns={columns}
                 rows={[{ entry, virtualIndex: 0, virtualKey: 0, start: 0 }]}
                 widths={{}}
-                offsets={computeOffsets(columns, {})}
+                offsets={sarakComputeOffsets(columns, {})}
                 containerWidth={208}
                 headerHeight={44}
                 rowHeight={44}

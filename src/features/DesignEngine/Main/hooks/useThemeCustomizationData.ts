@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles } from 'lucide-react';
-import { DesignToken, ComponentSchema } from '../../../../core/Design/types';
+import { SarakDesignToken, ComponentSchema } from '../../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
@@ -34,9 +34,9 @@ export function useThemeCustomizationData(searchQuery: string) {
     }, []);
 
     const catalogMap = useMemo(() => {
-        const map = new Map<string, DesignToken>();
+        const map = new Map<string, SarakDesignToken>();
         if (TokenCatalog) {
-            (TokenCatalog as unknown as { tokenId: string }[]).forEach((t) => map.set(t.tokenId, t as unknown as DesignToken));
+            (TokenCatalog as unknown as { tokenId: string }[]).forEach((t) => map.set(t.tokenId, t as unknown as SarakDesignToken));
         }
         return map;
     }, []);

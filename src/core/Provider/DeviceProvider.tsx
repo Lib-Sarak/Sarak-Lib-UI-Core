@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../Design/breakpoints';
 
-export type DeviceType = 'smartphone' | 'tablet' | 'desktop';
+export type SarakDeviceType = 'smartphone' | 'tablet' | 'desktop';
 
 /** Os dois limiares de responsividade em vigor, em px. */
-export interface DeviceBreakpoints {
+export interface SarakDeviceBreakpoints {
     tablet: number;
     desktop: number;
 }
 
 /** Limiares canônicos — o que vale quando o tema não declara os tokens. */
-export const DEFAULT_DEVICE_BREAKPOINTS: DeviceBreakpoints = {
+export const SARAK_DEFAULT_DEVICE_BREAKPOINTS: SarakDeviceBreakpoints = {
     tablet: BREAKPOINT_TABLET,
     desktop: BREAKPOINT_DESKTOP
 };
@@ -19,10 +19,10 @@ export const DEFAULT_DEVICE_BREAKPOINTS: DeviceBreakpoints = {
  * Traduz uma largura de viewport (px) no dispositivo correspondente (mobile-first),
  * segundo os limiares em vigor (default: os canônicos).
  */
-export const deviceForWidth = (
+export const sarakDeviceForWidth = (
     width: number,
-    breakpoints: DeviceBreakpoints = DEFAULT_DEVICE_BREAKPOINTS
-): DeviceType => {
+    breakpoints: SarakDeviceBreakpoints = SARAK_DEFAULT_DEVICE_BREAKPOINTS
+): SarakDeviceType => {
     if (width < breakpoints.tablet) return 'smartphone';
     if (width < breakpoints.desktop) return 'tablet';
     return 'desktop';
@@ -45,7 +45,7 @@ const currentWidth = (): number => (typeof window === 'undefined' ? BREAKPOINT_D
  * viewport direto), então vale mesmo que o contexto não atravesse fronteiras de bundle; o
  * contexto só transporta o override (usado em subárvores single-graph: preview e testes).
  */
-const DeviceOverrideContext = createContext<DeviceType | undefined>(undefined);
+const DeviceOverrideContext = createContext<SarakDeviceType | undefined>(undefined);
 
 /**
  * Limiares em vigor. O `SarakUIProvider` desce aqui os tokens `breakpointTablet` /
@@ -56,21 +56,21 @@ const DeviceOverrideContext = createContext<DeviceType | undefined>(undefined);
  * O default é o canônico, então a única forma de o contexto falhar (não atravessar uma
  * fronteira de bundle) é cair no comportamento que já existia — nunca em algo pior.
  */
-const DeviceBreakpointsContext = createContext<DeviceBreakpoints>(DEFAULT_DEVICE_BREAKPOINTS);
+const DeviceBreakpointsContext = createContext<SarakDeviceBreakpoints>(SARAK_DEFAULT_DEVICE_BREAKPOINTS);
 
 /**
  * Dispositivo ATIVO. Detecção REAL do viewport por padrão (estado inicial já vem da largura
  * atual — sem flash de `'desktop'`), reavaliada a cada `resize`. Um `overrideDevice` num
  * `DeviceProvider` ancestral (Gêmeo Digital/testes) sequestra o valor e desliga a escuta.
  */
-export const useSarakDevice = (): DeviceType => {
+export const useSarakDevice = (): SarakDeviceType => {
     const override = useContext(DeviceOverrideContext);
     const breakpoints = useContext(DeviceBreakpointsContext);
-    const [detected, setDetected] = useState<DeviceType>(() => deviceForWidth(currentWidth(), breakpoints));
+    const [detected, setDetected] = useState<SarakDeviceType>(() => sarakDeviceForWidth(currentWidth(), breakpoints));
 
     useEffect(() => {
         if (override) return undefined; // override fixa o dispositivo — não escuta o viewport
-        const sync = () => setDetected(deviceForWidth(window.innerWidth, breakpoints));
+        const sync = () => setDetected(sarakDeviceForWidth(window.innerWidth, breakpoints));
         window.addEventListener('resize', sync);
         sync(); // corrige na montagem e quando o tema move os limiares
         return () => window.removeEventListener('resize', sync);
@@ -79,12 +79,12 @@ export const useSarakDevice = (): DeviceType => {
     return override ?? detected;
 };
 
-export interface DeviceProviderProps {
+export interface SarakDeviceProviderProps {
     children: ReactNode;
     /** Se fornecido, sequestra o dispositivo (Gêmeo Digital / testes) e desliga a detecção real. */
-    overrideDevice?: DeviceType;
+    overrideDevice?: SarakDeviceType;
     /** Limiares do tema ativo. Omitidos, valem os canônicos. */
-    breakpoints?: DeviceBreakpoints;
+    breakpoints?: SarakDeviceBreakpoints;
 }
 
 /**
@@ -92,8 +92,8 @@ export interface DeviceProviderProps {
  * passthrough transparente quanto ao dispositivo: a detecção real (no hook) governa.
  * Mantido na API por compatibilidade e para o Gêmeo Digital forçar um dispositivo no preview.
  */
-export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children, overrideDevice, breakpoints }) => (
-    <DeviceBreakpointsContext.Provider value={breakpoints ?? DEFAULT_DEVICE_BREAKPOINTS}>
+export const SarakDeviceProvider: React.FC<SarakDeviceProviderProps> = ({ children, overrideDevice, breakpoints }) => (
+    <DeviceBreakpointsContext.Provider value={breakpoints ?? SARAK_DEFAULT_DEVICE_BREAKPOINTS}>
         <DeviceOverrideContext.Provider value={overrideDevice}>
             {children}
         </DeviceOverrideContext.Provider>

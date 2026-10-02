@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import * as HookModule from '../useDesignVariables';
 import { useDesignVariables } from '../useDesignVariables';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../breakpoints';
-import { getDefaultDesignState } from '../../master-map';
+import { sarakGetDefaultDesignState } from '../../master-map';
 import { sarakSovereignTheme } from '../../presets/themes/sarak-sovereign';
 import { MEDIA_PREDICATE_TABLE } from '../../../Provider/utils/__tests__/mediaPredicateTable';
 
@@ -43,7 +43,7 @@ describe('useDesignVariables — breakpoints como dado (F5)', () => {
  */
 describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito', () => {
     it('um tema no seu PRÓPRIO modo emite EXATAMENTE o valor que o autor escreveu', () => {
-        const merged = { ...getDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
+        const merged = { ...sarakGetDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
         const { result } = renderHook(() => useDesignVariables(merged));
         const { variables } = result.current;
 
@@ -54,7 +54,7 @@ describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito',
     });
 
     it('não muda nenhum outro valor de cor do tema no modo nativo (nada de shift de luminância)', () => {
-        const merged = { ...getDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
+        const merged = { ...sarakGetDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
         const { result } = renderHook(() => useDesignVariables(merged));
         const { variables } = result.current;
 

@@ -3,7 +3,7 @@ import { SarakInput } from '../Inputs/SarakInput';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Item navegável da Command Palette (Spec 14, Regra 1). */
-export interface NavigationItem {
+export interface SarakNavigationItem {
     /** Identificador único. */
     id: string;
     /** Rótulo exibido e base da busca. */
@@ -16,7 +16,7 @@ export interface NavigationItem {
 
 export interface SarakSpotlightProps {
     /** Itens disponíveis para navegação instantânea. */
-    items: NavigationItem[];
+    items: SarakNavigationItem[];
     /** Atalho de ativação global (default: `mod+k` = Ctrl/Cmd+K). */
     shortcut?: string;
     /** Modo controlado: estado de abertura. */
@@ -24,7 +24,7 @@ export interface SarakSpotlightProps {
     /** Notifica mudanças de abertura (abrir via atalho / fechar via Esc). */
     onOpenChange?: (open: boolean) => void;
     /** Acionado ao confirmar um item (Enter ou clique). */
-    onSelect: (item: NavigationItem) => void;
+    onSelect: (item: SarakNavigationItem) => void;
     /** Placeholder do input central. */
     placeholder?: string;
 }
@@ -52,7 +52,7 @@ const useGlobalShortcut = (combo: string, onTrigger: () => void): void => {
     }, [combo]);
 };
 
-const matches = (item: NavigationItem, query: string): boolean => {
+const matches = (item: SarakNavigationItem, query: string): boolean => {
     const haystack = `${item.label} ${item.keywords ?? ''}`.toLowerCase();
     return haystack.includes(query.toLowerCase());
 };
@@ -92,7 +92,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     if (!isOpen) return null;
 
-    const choose = (item: NavigationItem | undefined): void => {
+    const choose = (item: SarakNavigationItem | undefined): void => {
         if (!item) return;
         onSelect(item);
         setOpen(false);

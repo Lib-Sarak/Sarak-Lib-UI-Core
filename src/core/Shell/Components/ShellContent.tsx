@@ -2,20 +2,20 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
+import { SarakShellUser } from './types';
+import { SarakDynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface ShellContentProps {
-    activeModule: DiscoveredModule | undefined;
-    discoveredModules: DiscoveredModule[];
+    activeModule: SarakDiscoveredModule | undefined;
+    discoveredModules: SarakDiscoveredModule[];
     design: SarakDesignState;
-    user?: ShellUser;
+    user?: SarakShellUser;
     authApi?: unknown;
     setIsSearchOpen: (open: boolean) => void;
 }
@@ -73,7 +73,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                         }
 
                                         if (contracts && contracts.length > 0) {
-                                            return <DynamicRenderer contracts={contracts} module={activeModule} />;
+                                            return <SarakDynamicRenderer contracts={contracts} module={activeModule} />;
                                         }
 
                                         return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">{t('shellContentApiModeMessage')}</div>;

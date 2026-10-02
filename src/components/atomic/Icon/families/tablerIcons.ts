@@ -28,9 +28,9 @@ import {
     IconStar, IconPlayerPlay,
     IconPalette, IconSettings, IconBolt, IconBrandChrome, IconBrandGithub,
 } from '@tabler/icons-react';
-import type { IconName } from '../iconNames';
+import type { SarakIconName } from '../iconNames';
 
-export const TABLER_ICONS: Record<IconName, React.ElementType> = {
+export const TABLER_ICONS: Record<SarakIconName, React.ElementType> = {
     AlertCircle: IconAlertCircle, AlertTriangle: IconAlertTriangle, Check: IconCheck,
     CheckCircle2: IconCircleCheck, X: IconX, Info: IconInfoCircle, HelpCircle: IconHelpCircle,
     Menu: IconMenu2, Search: IconSearch, Bell: IconBell, Filter: IconFilter, List: IconList,

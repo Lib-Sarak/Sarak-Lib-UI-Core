@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
+import { SarakShellNav, type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
-import { ShellSearchWidget } from '../atomic/Navigation/ShellSearchWidget';
+import { SarakShellSearchWidget } from '../atomic/Navigation/SarakShellSearchWidget';
 import { SarakSearch } from '../atomic/Inputs/SarakSearch';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
-import type { ShellUser } from '../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../core/Shell/Components/types';
 import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
 import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';
@@ -41,7 +41,7 @@ export interface SarakAppChromeMobileProps {
     children: React.ReactNode;
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
-    nav: ShellNavItem[];
+    nav: SarakShellNavItem[];
     activeRoute?: string;
     onNavigate?: (route: string) => void;
     /** Slot `topbarEnd` (alias legado `topbarActions`) — fim da barra compacta. */
@@ -61,7 +61,7 @@ export interface SarakAppChromeMobileProps {
     /** Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). */
     decoration?: React.ReactNode;
     /** Identidade exibida no widget de usuário default, no rodapé do drawer. */
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     /** Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não
      * se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. */
@@ -99,7 +99,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
-    const effectiveSearch = search ?? (w.showSearch ? <ShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
+    const effectiveSearch = search ?? (w.showSearch ? <SarakShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
     // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
     // — não há distinção de "botão direto vs. dentro do ⚙" quando só existe uma barra.
     // `navCollapsed` fica de fora: o próprio hambúrguer já é o controle de colapso aqui.

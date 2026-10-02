@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const auroraVeilTheme: ThemePreset = {
+export const auroraVeilTheme: SarakThemePreset = {
     id: 'aurora-veil',
     name: 'Aurora Veil',
     description: 'Vidro fosco em lavanda pastel, com uma aurora suave no fundo — a contraparte inverte para uma noite de aurora profunda.',

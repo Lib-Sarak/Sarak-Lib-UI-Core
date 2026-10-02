@@ -1,4 +1,4 @@
-export * from './ExpandableCard';
+export * from './SarakExpandableCard';
 export * from './SarakActionCard';
 export * from './SarakCard';
 export * from './SarakCardBody';

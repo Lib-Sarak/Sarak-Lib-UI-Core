@@ -15,7 +15,7 @@ vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
 }));
 
 vi.mock('../../../../core/Discovery/registry', () => ({
-    getRegisteredModules: vi.fn(() => [])
+    sarakGetRegisteredModules: vi.fn(() => [])
 }));
 
 describe('AdvancedTab', () => {

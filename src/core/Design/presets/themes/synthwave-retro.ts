@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const synthwaveRetroTheme: ThemePreset = {
+export const synthwaveRetroTheme: SarakThemePreset = {
     id: 'synthwave-retro',
     name: 'Synthwave Retro',
     description: 'Pôr do sol outrun: sol laranja sobre céu de dusk em ameixa, grid retrô no horizonte, tipografia monoespaçada.',

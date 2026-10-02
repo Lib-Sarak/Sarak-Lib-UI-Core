@@ -1,6 +1,6 @@
-import { ThemePreset } from './index';
+import { SarakThemePreset } from './index';
 
-export const minimalistAiry: ThemePreset = {
+export const minimalistAiry: SarakThemePreset = {
     id: 'minimalist-airy',
     name: 'Minimalist Airy',
     description: 'Luxo minimalista com branco absoluto, tipografia imponente e limpeza cirúrgica.',

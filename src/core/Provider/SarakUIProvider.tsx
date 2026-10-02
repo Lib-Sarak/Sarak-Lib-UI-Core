@@ -11,7 +11,7 @@ import { SARAK_CSS } from './__sarakCss';
 injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, ThemeEntry } from './types';
+import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, SarakThemeEntry } from './types';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
@@ -27,14 +27,14 @@ import { resolveSarakUIMode } from './scope';
 import { useThemeCollection } from './hooks/useThemeCollection';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
-import { DeviceProvider, DEFAULT_DEVICE_BREAKPOINTS, DeviceBreakpoints } from './DeviceProvider';
+import { SarakDeviceProvider, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SarakDeviceBreakpoints } from './DeviceProvider';
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
 export { computeColorVariants } from './utils/color-engine';
-export { DESIGN_MANIFEST } from './manifest';
+export { SARAK_DESIGN_MANIFEST } from './manifest';
 
 // --- SARAK UI BRIDGE CONTEXT ---
 export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
@@ -47,7 +47,7 @@ export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | 
 // sem guard, já foi corrigida). Consumidores que passam `customThemes` inline
 // (`customThemes={[...]}` a cada render) continuam expostos ao padrão — por isso
 // o guard em `useDesignSync` é a correção definitiva; isto é só o default seguro.
-const EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
+const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
 
 // Porta PÚBLICA — código de aplicação. Lança fora do Provider de propósito: esquecer
 // o Provider é erro do consumidor. Peça interna da lib? Use `useSarakUIOptional`.
@@ -124,7 +124,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 2.6 Preferências do usuário — camada separada, nunca persistida no tema;
     //     `effectiveDesign` sobrepõe as OFERECIDAS pelo tema resolvido.
     const { preferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
-    const activeTheme = (allThemes as ThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
+    const activeTheme = (allThemes as SarakThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
 
     // 3. Gerenciamento de Rascunho (Live Preview) — sobre o design BRUTO: o
     //    painel edita e comita o tema, nunca o efetivo.
@@ -198,13 +198,13 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // interpola na media-query descem ao detector JS, senão CSS e JS discordam sobre o
     // que é "tablet" assim que alguém troca o token. Memoizado porque o hook de
     // dispositivo depende da identidade do objeto.
-    const deviceBreakpoints = useMemo<DeviceBreakpoints>(() => ({
-        tablet: typeof design?.breakpointTablet === 'number' ? design.breakpointTablet : DEFAULT_DEVICE_BREAKPOINTS.tablet,
-        desktop: typeof design?.breakpointDesktop === 'number' ? design.breakpointDesktop : DEFAULT_DEVICE_BREAKPOINTS.desktop
+    const deviceBreakpoints = useMemo<SarakDeviceBreakpoints>(() => ({
+        tablet: typeof design?.breakpointTablet === 'number' ? design.breakpointTablet : SARAK_DEFAULT_DEVICE_BREAKPOINTS.tablet,
+        desktop: typeof design?.breakpointDesktop === 'number' ? design.breakpointDesktop : SARAK_DEFAULT_DEVICE_BREAKPOINTS.desktop
     }), [design?.breakpointTablet, design?.breakpointDesktop]);
 
     return (
-        <DeviceProvider breakpoints={deviceBreakpoints}>
+        <SarakDeviceProvider breakpoints={deviceBreakpoints}>
             <UIContext.Provider value={uiContextValue}>
                 <SarakScopeRoot mode={mode} onScopeElement={setScopeElement}>
                     <DesignInjector
@@ -242,7 +242,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     ) : null}
                 </SarakScopeRoot>
             </UIContext.Provider>
-        </DeviceProvider>
+        </SarakDeviceProvider>
     );
 };
 

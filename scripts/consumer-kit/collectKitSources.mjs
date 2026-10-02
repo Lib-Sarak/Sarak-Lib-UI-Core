@@ -19,7 +19,7 @@ import { collectExportedNames, namesFromFileExports } from '../publicComponents.
 const TOKEN_IDS_FILE = 'core/Provider/generated/design-token-ids.ts';
 
 /**
- * Schema vivo dos tokens de TEMA (as chaves válidas de `design` num `ThemePreset`).
+ * Schema vivo dos tokens de TEMA (as chaves válidas de `design` num `SarakThemePreset`).
  * Fonte única: a interface `SarakDesignTokens` do arquivo GERADO a partir do
  * `MASTER_DESIGN_MAP` — por construção, sempre em dia com a paridade 1:1:1:1:1:1.
  */
@@ -34,7 +34,7 @@ export const collectDesignTokens = () => {
                 tokens.push({
                     id: member.name.getText(source),
                     type,
-                    responsive: type.includes('ResponsiveValue'),
+                    responsive: type.includes('SarakResponsiveValue'),
                 });
             }
         }
@@ -44,18 +44,18 @@ export const collectDesignTokens = () => {
     return tokens;
 };
 
-/** Ids dos temas embutidos (`THEME_PRESET_IDS`) — o catálogo de partida do consumidor. */
+/** Ids dos temas embutidos (`SARAK_THEME_PRESET_IDS`) — o catálogo de partida do consumidor. */
 export const collectThemePresetIds = () =>
-    collectStringArrayConst('core/Design/presets/themes/index.ts', 'THEME_PRESET_IDS');
+    collectStringArrayConst('core/Design/presets/themes/index.ts', 'SARAK_THEME_PRESET_IDS');
 
-/** O par recomendado (`SARAK_REFERENCE_THEMES`) — lido das chamadas `getThemePreset('id')`. */
+/** O par recomendado (`SARAK_REFERENCE_THEMES`) — lido das chamadas `sarakGetThemePreset('id')`. */
 export const collectReferenceThemeIds = () => {
     const source = parse('core/Design/presets/themes/reference.ts');
     const ids = [];
     const visit = (node) => {
         if (
             ts.isCallExpression(node) &&
-            node.expression.getText(source) === 'getThemePreset' &&
+            node.expression.getText(source) === 'sarakGetThemePreset' &&
             node.arguments.length === 1 &&
             ts.isStringLiteral(node.arguments[0])
         ) {
@@ -145,12 +145,12 @@ export const collectDeviceAwareComponents = (publicNames) => {
     return [...found].sort();
 };
 
-/** Props que aceitam valor POR DISPOSITIVO (`ResponsiveValue<T>`) — o refino opcional. */
+/** Props que aceitam valor POR DISPOSITIVO (`SarakResponsiveValue<T>`) — o refino opcional. */
 export const collectResponsiveProps = (components) => {
     const out = [];
     for (const [component, info] of Object.entries(components)) {
         for (const prop of info.props ?? []) {
-            if (prop.type.includes('ResponsiveValue')) {
+            if (prop.type.includes('SarakResponsiveValue')) {
                 out.push({ component, prop: prop.name, type: prop.type });
             }
         }

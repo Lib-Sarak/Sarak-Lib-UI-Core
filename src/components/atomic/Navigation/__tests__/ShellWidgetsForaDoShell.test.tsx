@@ -4,11 +4,11 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakAppChrome } from '../../../Layout/SarakAppChrome';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { DeviceProvider } from '../../../../core/Provider/DeviceProvider';
-import { ShellSearchWidget } from '../ShellSearchWidget';
-import { ShellThemeToggle } from '../ShellThemeToggle';
-import { ShellUserWidget } from '../ShellUserWidget';
-import { ShellLanguageSelector } from '../ShellLanguageSelector';
+import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
+import { SarakShellSearchWidget } from '../SarakShellSearchWidget';
+import { SarakShellThemeToggle } from '../SarakShellThemeToggle';
+import { SarakShellUserWidget } from '../SarakShellUserWidget';
+import { SarakShellLanguageSelector } from '../SarakShellLanguageSelector';
 
 /**
  * Os quatro widgets deixaram de ser internos ao `SarakShell` — este
@@ -31,18 +31,18 @@ const renderNoSlot = (
 ) =>
     render(
         <SarakUIProvider config={config}>
-            <DeviceProvider overrideDevice="desktop">
+            <SarakDeviceProvider overrideDevice="desktop">
                 <SarakAppChrome navigationStyle={navigationStyle} widgets={NO_DEFAULTS} {...{ [slotName]: slot }}>
                     <div>conteúdo do app</div>
                 </SarakAppChrome>
-            </DeviceProvider>
+            </SarakDeviceProvider>
         </SarakUIProvider>,
     );
 
 describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChrome', () => {
     it('ShellSearchWidget: funciona sem nenhum módulo registrado no Discovery', () => {
         const { container } = renderNoSlot(
-            <ShellSearchWidget variant="bar" onClick={vi.fn()} />,
+            <SarakShellSearchWidget variant="bar" onClick={vi.fn()} />,
             'topbarStart',
         );
         const input = screen.getByPlaceholderText('Busca inteligente…');
@@ -54,7 +54,7 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
     });
 
     it('ShellThemeToggle: alterna o tema sem SarakShell', () => {
-        const { container } = renderNoSlot(<ShellThemeToggle variant="horizontal" />, 'topbarEnd');
+        const { container } = renderNoSlot(<SarakShellThemeToggle variant="horizontal" />, 'topbarEnd');
         const btn = screen.getByRole('button');
         expect(container.querySelector('[data-sarak-slot="topbarEnd"]')).toContainElement(btn);
 
@@ -64,7 +64,7 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
     });
 
     it('ShellLanguageSelector: abre o dropdown sem SarakShell', () => {
-        renderNoSlot(<ShellLanguageSelector variant="horizontal" />, 'topbarEnd', 'topbar', { enabledLanguages: ['pt', 'en'] });
+        renderNoSlot(<SarakShellLanguageSelector variant="horizontal" />, 'topbarEnd', 'topbar', { enabledLanguages: ['pt', 'en'] });
         fireEvent.click(screen.getByRole('button'));
         expect(screen.getByText('English')).toBeInTheDocument();
     });
@@ -72,7 +72,7 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
     it('ShellUserWidget: exibe o usuário e aciona logout sem SarakShell', () => {
         const logout = vi.fn();
         renderNoSlot(
-            <ShellUserWidget user={{ username: 'visitante' }} logout={logout} variant="vertical" />,
+            <SarakShellUserWidget user={{ username: 'visitante' }} logout={logout} variant="vertical" />,
             'sidebarFooter',
             'sidebar',
         );

@@ -4,12 +4,12 @@ import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
-import type { PreferenceId } from '../../../core/Provider/preferencesTypes';
+import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
 import { renderShellPreferenceRow, type ShellPreferenceRowContext } from './shellPreferenceRow';
 
 export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContext, 't'> {
     /** TODAS as preferências oferecidas (fixadas inclusive). Vazio = não monta. */
-    menuIds: PreferenceId[];
+    menuIds: SarakPreferenceId[];
     /** Lado da tela em que a barra vive — decide para onde o menu abre. */
     align?: 'start' | 'end';
     className?: string;

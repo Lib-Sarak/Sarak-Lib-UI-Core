@@ -8,7 +8,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 
-export interface Message {
+export interface SarakMessage {
     id: string;
     role: 'user' | 'assistant' | 'system';
     content: string;
@@ -17,7 +17,7 @@ export interface Message {
 
 export interface SarakChatEngineProps {
     /** Histórico controlado pelo consumidor; obrigatório. O motor o renderiza como Markdown e rola para a última mensagem quando a lista muda. */
-    messages: Message[];
+    messages: SarakMessage[];
     /** Recebe o texto digitado; obrigatório. O consumidor precisa atualizar `messages` para que a resposta apareça. */
     onSendMessage: (text: string) => void;
     /** Indica envio em andamento, mostra o indicador e bloqueia novo envio; omitida, vale `false`. */

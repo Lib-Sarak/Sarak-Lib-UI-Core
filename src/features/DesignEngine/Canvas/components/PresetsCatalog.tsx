@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
+import { SARAK_GLOBAL_THEMES, SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
@@ -45,7 +45,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
 
     // `sarak.allThemes` já é GLOBAL_THEMES + custom_themes do banco (SarakUIProvider.tsx).
     // Sem `sarak`, cai para o import estático (uso isolado/testes).
-    const globalThemes = (sarak?.allThemes as ThemePreset[] | undefined) ?? GLOBAL_THEMES;
+    const globalThemes = (sarak?.allThemes as SarakThemePreset[] | undefined) ?? SARAK_GLOBAL_THEMES;
 
     return (
         <div className="w-full h-full flex flex-col relative bg-theme-bg">

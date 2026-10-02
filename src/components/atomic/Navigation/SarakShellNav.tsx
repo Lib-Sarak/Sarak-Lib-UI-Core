@@ -13,7 +13,7 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
  */
 
 /** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
-export interface ShellNavItem {
+export interface SarakShellNavItem {
     /** Rótulo exibido no menu. */
     label: string;
     /** Rota destino (comparada com `activeRoute` para o destaque). */
@@ -26,7 +26,7 @@ export interface ShellNavItem {
 
 export interface SarakShellNavProps {
     /** Módulos/rotas do sistema, na ordem de exibição. */
-    items: ShellNavItem[];
+    items: SarakShellNavItem[];
     /** Rota ativa (a do roteador do consumidor) — comparada com `items[].route`. */
     activeRoute?: string;
     /** Identidade exibida no topo do menu. */
@@ -47,8 +47,8 @@ export interface SarakShellNavProps {
 }
 
 /** Agrupa preservando a ordem de aparição das categorias ('' = grupo raiz). */
-const groupByCategory = (items: ShellNavItem[]): Map<string, ShellNavItem[]> => {
-    const groups = new Map<string, ShellNavItem[]>();
+const groupByCategory = (items: SarakShellNavItem[]): Map<string, SarakShellNavItem[]> => {
+    const groups = new Map<string, SarakShellNavItem[]>();
     for (const item of items) {
         const key = item.category ?? '';
         const bucket = groups.get(key);
@@ -62,7 +62,7 @@ const groupByCategory = (items: ShellNavItem[]): Map<string, ShellNavItem[]> => 
 };
 
 const NavEntry: React.FC<{
-    item: ShellNavItem;
+    item: SarakShellNavItem;
     isActive: boolean;
     horizontal: boolean;
     collapsed: boolean;

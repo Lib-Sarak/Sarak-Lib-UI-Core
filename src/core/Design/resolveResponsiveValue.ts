@@ -11,27 +11,27 @@
  * Testável isoladamente (Regra 3). Não lê contexto React — recebe o `device` já resolvido.
  */
 
-import type { ResponsiveValue } from './types';
+import type { SarakResponsiveValue } from './types';
 
 /** Dispositivo ativo — espelha `DeviceType` de `DeviceProvider` sem criar dependência de runtime. */
-export type ResponsiveDevice = 'smartphone' | 'tablet' | 'desktop';
+export type SarakResponsiveDevice = 'smartphone' | 'tablet' | 'desktop';
 
 /** Chave do `ResponsiveValue` correspondente a cada dispositivo (cascata mobile-first). */
-const DEVICE_KEY: Record<ResponsiveDevice, keyof ResponsiveValue<unknown>> = {
+const DEVICE_KEY: Record<SarakResponsiveDevice, keyof SarakResponsiveValue<unknown>> = {
     smartphone: 'mob',
     tablet: 'tab',
     desktop: 'desk',
 };
 
 /** True se `value` é um `ResponsiveValue<T>` (tem as três camadas `mob`/`tab`/`desk`). */
-export const isResponsiveValue = <T>(value: unknown): value is ResponsiveValue<T> =>
+export const sarakIsResponsiveValue = <T>(value: unknown): value is SarakResponsiveValue<T> =>
     typeof value === 'object' && value !== null && 'mob' in value && 'tab' in value && 'desk' in value;
 
 /**
  * Resolve `value` contra o dispositivo ativo. `ResponsiveValue<T>` → a camada do device;
  * `T` escalar → ele mesmo. Nunca lança; um objeto sem as três camadas não é `ResponsiveValue`.
  */
-export const resolveResponsiveValue = <T>(
-    value: T | ResponsiveValue<T>,
-    device: ResponsiveDevice,
-): T => (isResponsiveValue<T>(value) ? value[DEVICE_KEY[device]] : (value as T));
+export const sarakResolveResponsiveValue = <T>(
+    value: T | SarakResponsiveValue<T>,
+    device: SarakResponsiveDevice,
+): T => (sarakIsResponsiveValue<T>(value) ? value[DEVICE_KEY[device]] : (value as T));

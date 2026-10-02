@@ -7,8 +7,8 @@ import { GlobalSchema } from '../../Design/schema/global';
 import * as ComponentModule from '../SarakShell';
 import { SarakShell } from '../SarakShell';
 import { SarakUIProvider } from '../../Provider/SarakUIProvider';
-import { registerSarakModule, registerLocalComponent } from '../../Discovery/registry';
-import type { ThemeEntry } from '../../Provider/types';
+import { registerSarakModule, sarakRegisterLocalComponent } from '../../Discovery/registry';
+import type { SarakThemeEntry } from '../../Provider/types';
 
 // Achado da Spec 43 (§5.1), CORRIGIDO na Spec 44: `customThemes` tinha default
 // `= []` em `SarakUIProvider` (um NOVO array a cada render sem prop explícita) e
@@ -18,7 +18,7 @@ import type { ThemeEntry } from '../../Provider/types';
 // aplicado em `useDesignSync` (não depende mais da referência de `customThemes`
 // ser estável) — ver `useDesignSync.test.ts` para a regressão isolada. Esta
 // constante segue em uso aqui só por ser a prática recomendada, não workaround.
-const STABLE_EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
+const STABLE_EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
 
 // As animações spring/exit do framer-motion (usadas no `AnimatePresence` do
 // `ShellContent`) nunca convergem em jsdom (sem timing real de paint/rAF) e travam
@@ -141,7 +141,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     );
 
     it('registra um módulo/componente e o renderiza no SarakShell sob o SarakUIProvider', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         render(
@@ -156,7 +156,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     });
 
     it('é tematizado pela central: trocar o tema ativo muda o token que o módulo do importador consome', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         const { unmount } = render(
@@ -180,7 +180,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         clearRegistry();
         window.history.replaceState(null, '', `/${MODULE_ID}`);
 
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         render(
@@ -208,7 +208,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     });
 
     it('não entra em loop de render infinito com `activeThemeId` setado e `customThemes` INSTÁVEL (regressão real da Spec 43 §5.1, corrigida na Spec 44)', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         // O footgun exato do achado: uma prop `customThemes` com uma referência
@@ -245,7 +245,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     // não estava condicionada a `isNavVisible`, então o sensor de borda aparecia
     // mas a sidebar nunca saía do lugar.
     it('auto-hide: a sidebar some ao sair do hover e volta pelo sensor de borda', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         const { container } = render(
@@ -281,7 +281,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     });
 
     it('sem auto-hide, a sidebar continua sempre visível — comportamento de hoje', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         const { container } = render(
@@ -306,9 +306,9 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     // nenhum resultado navegava.
     it('a busca do Shell ativa o módulo escolhido e fecha o palette', async () => {
         const OTHER_ID = 'plan78-search-outro-modulo';
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
-        registerLocalComponent(OTHER_ID, () => <div data-testid="outro-modulo">Outro módulo</div>);
+        sarakRegisterLocalComponent(OTHER_ID, () => <div data-testid="outro-modulo">Outro módulo</div>);
         registerSarakModule({ id: OTHER_ID, label: 'Outro Módulo', icon: 'Box' });
 
         const { container } = render(
@@ -339,7 +339,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
 
     // os textos da própria lib seguem o idioma que vale (specs/10 §3.6).
     it('a busca do Shell sai em português por padrão, e em inglês com `config.language: "en"`', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         render(
@@ -361,7 +361,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
 
     it('a busca do Shell sai em inglês com `config.language: "en"`', async () => {
         const EN_MODULE_ID = 'plan79-idioma-en';
-        registerLocalComponent(EN_MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(EN_MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: EN_MODULE_ID, label: 'English Test Module', icon: 'Box' });
         window.history.replaceState(null, '', `/${EN_MODULE_ID}`);
 

@@ -10,7 +10,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import type { SarakUIOptions, SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
-import type { DesignToken } from '../../../core/Design/types';
+import type { SarakDesignToken } from '../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
@@ -127,7 +127,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const handleInspectComponent = useCallback((schemaId: string) => {
         const foundPillar = Object.keys(groupedStructure).find(p =>
             Object.values(groupedStructure[p]).some(comps =>
-                (comps as DesignToken[]).some(c => c.id === schemaId)
+                (comps as SarakDesignToken[]).some(c => c.id === schemaId)
             )
         );
         if (foundPillar) setActivePillarId(foundPillar);

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import SarakDataTableImpl from '../SarakDataTableImpl';
 import type { SarakColumn } from '../columnModel';
-import { DeviceProvider } from '../../../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider } from '../../../../../core/Provider/DeviceProvider';
 
 vi.mock('@tanstack/react-virtual', () => ({
     useVirtualizer: ({ count, estimateSize }: { count: number; estimateSize: () => number }) => {
@@ -138,9 +138,9 @@ describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mob
 
     it('no smartphone colapsa para CARDS empilhados (sem tabela colunar)', () => {
         const { container } = render(
-            <DeviceProvider overrideDevice="smartphone">
+            <SarakDeviceProvider overrideDevice="smartphone">
                 <SarakDataTableImpl columns={columns} rows={rows} height={300} />
-            </DeviceProvider>,
+            </SarakDeviceProvider>,
         );
         expect(container.querySelector('[data-sarak-datacards="true"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-datatable="true"]')).toBeNull();
@@ -148,9 +148,9 @@ describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mob
 
     it('no modo cartão, mantém os controles de ordenação e seleção', () => {
         const { container } = render(
-            <DeviceProvider overrideDevice="smartphone">
+            <SarakDeviceProvider overrideDevice="smartphone">
                 <SarakDataTableImpl columns={columns} rows={interactionRows} selectable />
-            </DeviceProvider>,
+            </SarakDeviceProvider>,
         );
 
         fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar linha 0' }));
@@ -164,9 +164,9 @@ describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mob
 
     it('o container de cards contém o scroll (overflow-x hidden + maxWidth 100%) — sem overflow da página', () => {
         const { container } = render(
-            <DeviceProvider overrideDevice="smartphone">
+            <SarakDeviceProvider overrideDevice="smartphone">
                 <SarakDataTableImpl columns={columns} rows={rows} height={300} />
-            </DeviceProvider>,
+            </SarakDeviceProvider>,
         );
         const cards = container.querySelector('[data-sarak-datacards="true"]') as HTMLElement;
         expect(cards.style.overflowX).toBe('hidden');
@@ -175,9 +175,9 @@ describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mob
 
     it('responsive={false} mantém a tabela colunar mesmo no smartphone (opt-out)', () => {
         const { container } = render(
-            <DeviceProvider overrideDevice="smartphone">
+            <SarakDeviceProvider overrideDevice="smartphone">
                 <SarakDataTableImpl columns={columns} rows={rows} height={300} responsive={false} />
-            </DeviceProvider>,
+            </SarakDeviceProvider>,
         );
         expect(container.querySelector('[data-sarak-datatable="true"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-datacards="true"]')).toBeNull();

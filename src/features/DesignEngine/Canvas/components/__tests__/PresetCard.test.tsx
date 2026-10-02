@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import * as ComponentModule from '../PresetCard';
 import { PresetCard } from '../PresetCard';
-import { ThemePreset } from '../../../../../core/Design/presets/themes';
+import { SarakThemePreset } from '../../../../../core/Design/presets/themes';
 
 describe('PresetCard', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -21,7 +21,7 @@ describe('PresetCard', () => {
             }
         };
         const { container } = render(
-            <PresetCard theme={dummyTheme as unknown as ThemePreset} currentMode="dark" onApply={() => {}} index={0} />
+            <PresetCard theme={dummyTheme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />
         );
         expect(container).toMatchSnapshot();
     });

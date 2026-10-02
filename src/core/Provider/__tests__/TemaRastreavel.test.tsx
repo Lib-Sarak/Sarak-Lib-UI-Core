@@ -17,7 +17,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
 import { useSarakUI } from '../SarakUIProvider';
-import { ShellThemeToggle } from '../../../components/atomic/Navigation/ShellThemeToggle';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 
 // O invariante das duas portas (§3.3) mora em
 // `src/features/DesignEngine/__tests__/DuasPortasModoTema.test.tsx` — ele
@@ -38,7 +38,7 @@ describe('Tema rastreável — a contraparte é encontrada pela porta `initialTh
     it('trocar de modo pelo ShellThemeToggle aplica a CONTRAPARTE AUTORADA de minimalist-airy, não a síntese', () => {
         render(
             <SarakUIProvider initialTheme="minimalist-airy">
-                <ShellThemeToggle variant="mini" />
+                <SarakShellThemeToggle variant="mini" />
                 <Probe />
             </SarakUIProvider>,
         );
