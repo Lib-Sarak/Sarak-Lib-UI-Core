@@ -171,7 +171,7 @@ verificou cada arquivo antes de nomeá-lo.
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
-    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx'],
+    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**'],
     pool: 'forks',
     execArgv: ['--max-old-space-size=8192'],
 }
@@ -184,7 +184,7 @@ verificou cada arquivo antes de nomeá-lo.
 | `environment: 'jsdom'` | é biblioteca de UI; quase todo teste monta DOM |
 | `globals: true` | `describe`/`it`/`expect` sem import em nenhum arquivo de teste |
 | `pool: 'forks'` + `execArgv` | ver o quadro abaixo |
-| `exclude` de `__e2e__` e `*.spec.*` | herança do aparato Playwright, **removido em 2026-08-18** (§7). Os padrões ficaram: hoje **não casam nada**, e removê-los sem necessidade seria mexer em config de teste sem motivo |
+| `exclude` de `*.spec.*` e `browser-tests/**` | é o que mantém a medição de navegador (§7.3) **fora** da suíte: `jsdom` não resolve cascata de stylesheet, então não pode nem deve coletar aqueles arquivos. `__e2e__` é herança do aparato removido em 2026-08-18 e hoje não casa nada |
 
 > ## ⚠️ As DUAS lições do OOM — nenhuma é sobre memória
 >
@@ -315,7 +315,7 @@ nenhum deles.
 | --- | --- | --- |
 | Não-vazamento do modo embarcado medido em **CSS renderizado** (R24) | **EmbeddedNoLeak.spec.tsx** | **conferência manual** |
 | Boot do painel do Design Engine pintado num browser | **Boot.spec.tsx** | sem equivalente |
-| `var()` **resolvendo** de fato no motor de CSS | **RealtimeInjection.spec.tsx** | sem equivalente |
+| `var()` **resolvendo** de fato no motor de CSS | **RealtimeInjection.spec.tsx** | **parcial** — a medição da §7.3 lê valor computado, com `var()` já resolvido, mas só do conjunto nomeado do cromo e dos elementos de prova; painel e átomos seguem sem equivalente |
 | Regressão visual de 8 componentes | **Spec21.spec.tsx** | sem equivalente |
 
 **O denominador comum:** nenhum deles era substituível por `jsdom`, que **não resolve `var()` nem aplica
@@ -325,27 +325,37 @@ cascata de stylesheet**. O que se perdeu foi a única prova de **CSS renderizado
 os dois provam **estrutura** (seletor e classe corretos) — nenhum prova que o CSS **não vaza de fato**. É por
 isso que o marcador dela é **⚠️** em [[00-regras-e-invariantes]], e não ✅.
 
-## 7.2 A perda transversal: não há como medir browser
+## 7.2 O que a base consegue medir em browser — e o que segue sem medição
 
-Remover `@playwright/test` tirou do repositório **a única ferramenta capaz de medir comportamento em CSS e
-`var()` resolvidos num navegador real**. Isso alcança qualquer plan futura cujo critério de aceite dependa
-disso — as classes `@min-[…]` de container query são a família mais provável, e a própria
+`@playwright/test` é **devDependency declarada** (`package.json`), instalada pelo `npm ci` como qualquer
+outra ferramenta de teste. Só o **binário do Chromium** vem sob demanda (`npx playwright install chromium`),
+e na CI apenas o job `cromo-css-real` paga esse custo ([[16-integracao-continua]] §4.2.1).
+
+**A ferramenta existe; a cobertura é estreita.** O único arquivo que a usa é
+`browser-tests/cromo-css-real.spec.ts` (§7.3). Fora do que ele mede, **nada** é conferido em navegador: as
+linhas *sem equivalente* e a *conferência manual* da §7.1 continuam valendo, e a suíte do job `gates` segue
+em `jsdom`, como a local ([[16-integracao-continua]] §5).
+
+**Quem precisar medir em browser acrescenta um caso a `browser-tests/`** — fixture em
+`browser-tests/fixtures/`, medição contra o `dist/` buildado — em vez de instalar ferramenta. As classes
+`@min-[…]` de container query são a família mais provável, e a própria
 [[07-responsividade-e-multidispositivo]] §6.1 avisa que *"o desenho se prova em navegador real"*.
 
-**Quem precisar medir em browser** reinstala a ferramenta pontualmente (`npm install --no-save
-@playwright/test` mais os browsers). **Não é regressão silenciosa** — está escrito aqui para ninguém descobrir
-no meio de um aceite.
-
-> ⚠️ **A CI existe desde 2026-08-18, e isso NÃO fecha esta lacuna.** *"Ou espera a CI"* era a saída prevista
-> quando esta seção foi escrita; o lugar de rodar passou a existir, mas **a suíte da CI roda em `jsdom`, como
-> a local** ([[16-integracao-continua]] §5). Ter onde rodar não é ter o que rodar — a ferramenta continua
-> desinstalada, e reabrir isso é decisão de plan própria, não consequência automática do pipeline.
+> ⚠️ **Ter a ferramenta não é ter o que rodar.** Critério de aceite que dependa de CSS renderizado fora do
+> conjunto da §7.3 continua sem prova até alguém escrever o caso — e caso novo nasce **ligado ao gatilho**
+> (`cromo-css-real:check`), pela razão que fecha a §7.3.
 
 ## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
 
-`browser-tests/cromo-css-real.spec.ts`, três testes (um por faixa de
-[[07-responsividade-e-multidispositivo]] §2), rodando por `npm run cromo-css-real:check` — que **builda
-antes**, sempre, porque o harness lê `dist/`.
+`browser-tests/cromo-css-real.spec.ts`, rodando por `npm run cromo-css-real:check` — que **builda antes**,
+sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
+(`grep -c "^test(" browser-tests/cromo-css-real.spec.ts`); o que eles cobrem cabe em cinco famílias:
+
+- a **métrica do item de navegação** nas três faixas de [[07-responsividade-e-multidispositivo]] §2;
+- o **contrato de altura e rolagem** do cromo ([[05-cromo-e-slots]] §5.1);
+- o **respiro do conteúdo** por token, nos quatro lados ([[05-cromo-e-slots]] §2.4);
+- a **classe utilitária vencendo o padrão de elemento** — e o padrão valendo quando não há classe;
+- o **fundo da raiz** do cromo, com e sem mídia global.
 
 **Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
 de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
@@ -355,9 +365,12 @@ a raiz do harness computa 0,875, não 16px) e mede exatamente a classe de regres
 elementos são alcançados por **âncora de contrato** (`getByRole` + nome acessível), nunca por estrutura
 interna.
 
-**O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18, seis itens): pixel · fonte carregada ·
-tema que não seja o default · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) · `src/`
-quando o `dist/` está velho · qualquer navegador que não seja Chromium headless.
+**O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18 — a lista completa é a de lá): pixel ·
+fonte carregada · tema que sobrescreva **token de cromo** (ela cobre o default e recortes **nomeados** de
+`config`, nunca uma varredura de temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
+`src/` quando o `dist/` está velho · qualquer navegador que não seja Chromium headless · `input`, `select` e
+`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `body` e o
+`transform !important` do botão ativo).
 
 ⚠️ **O quinto limite é o que morde na prática:** o harness carrega o artefato **publicado**. `dist/`
 desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que

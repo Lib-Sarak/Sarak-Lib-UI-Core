@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**36 regras: 33 verificáveis (§2) e 3 de conduta (§3).**
+**37 regras: 34 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -80,7 +80,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
+| ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
 | ⚠️ escopo menor que a regra | **11** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
@@ -90,8 +90,9 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > (escopo do gate, e o gate de R8.1). Medido o vão inteiro — não há **componente ou hook** fora do alcance
 > de `auditor_coverage.mjs` — e a linha `**Estado:**` de R8 foi alinhada a ✅. Os dois voltam a concordar.
 >
-> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **37**, não 36: a extra é a sub-regra **R8.1**, que não entra
-> na contagem das regras numeradas (§1.3 conta 36).
+> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **uma a mais** que a contagem acima: a extra é a sub-regra
+> **R8.1**, que não entra na contagem das regras numeradas. Quem confere a contagem usa
+> `grep -c "^## R"`, que conta só as numeradas.
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 

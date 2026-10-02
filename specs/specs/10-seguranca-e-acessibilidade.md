@@ -93,6 +93,15 @@ formato de mídia — e qualquer cauda anexada a um valor válido, porque o padr
 > relativo* — que só barra breakout, não esquema — e `javascript:` atravessa. Normalizar **uma vez**, na
 > entrada, fecha a classe inteira; testar caractere a caractere não fecha.
 >
+> **Limite declarado: só a BORDA é normalizada, não o meio do esquema.** O mesmo parser remove tab, LF e CR
+> de **qualquer** posição, então `java<TAB>script:` chega a ele como `javascript:` — e aqui o valor é aceito,
+> porque o tab quebra o padrão de esquema e ele cai no ramo de *caminho relativo*. **Nenhum destino atual
+> alcança isso:** o valor de um token de mídia só é usado como **fundo de página** (`DesignInjector`,
+> `SarakBackgroundRenderer`), onde uma URL é carregada como mídia, nunca navegada nem executada. O predicado
+> não promete cobrir o caso. **Quem levar um token de mídia a um destino que interprete URL como navegação
+> ou script (`href`, `src` de `iframe`, `window.open`) fecha este vão antes** — removendo os três caracteres
+> do valor inteiro, não só da borda.
+>
 > **Por que aceitar `;base64,` não afrouxa a garantia.** Os cinco caracteres de breakout **não pertencem ao
 > alfabeto base64**. Um payload que casa com o padrão é inerte por construção, não por confiança no autor
 > do tema. O único `;` aceito está no prefixo fixo do formato, em posição que não fecha declaração nenhuma.

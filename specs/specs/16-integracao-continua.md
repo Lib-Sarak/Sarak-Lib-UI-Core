@@ -121,7 +121,7 @@ Chromium** é o item caro (medido: **~310 MiB** de download), e o `gates` é o *
 só interessa a quem mexe no cromo. Ele herda o `on:` do topo do arquivo: nenhum gatilho novo a manter.
 
 `npm ci` → `npx playwright install --with-deps chromium` → `npm run cromo-css-real:check` (que **builda
-antes**, porque o harness lê `dist/`). O que ele mede, e os seis limites declarados, estão em
+antes**, porque o harness lê `dist/`). O que ele mede, e os limites declarados, estão em
 [[11-testes-e-cobertura]] §7.3.
 
 ## 4.3 O custo REAL — medido, não estimado
@@ -134,7 +134,7 @@ antes**, porque o harness lê `dist/`). O que ele mede, e os seis limites declar
 | `install-sha` (matriz, só em PR) | PR→main | **npm ~82-87 s · pnpm ~12-13 s · yarn ~22-27 s** — em paralelo entre si e com `gates`; quem governa o acréscimo é o mais lento (npm) |
 | `release-tag` (`needs: gates`) | push:main | **32 s** — soma ao `gates` porque depende dele |
 | `install-semver` | push de tag `v*` | ⚠️ **zero execuções** — ver §5.1 |
-| `cromo-css-real` | push:develop · push:main · PR→main | ⚠️ **ainda não medido em runner limpo.** Local, com o binário em cache: **~34 s** (build + 3 testes Playwright). Em runner limpo soma-se o download do Chromium, **~310 MiB** — ordem de grandeza, não medição. Roda **em paralelo** com `gates` e **não** bloqueia merge (§2.1) |
+| `cromo-css-real` | push:develop · push:main · PR→main | ⚠️ **ainda não medido em runner limpo.** Local, com o binário em cache: **~34 s** — medido quando o arquivo tinha **3 casos**; o conjunto cresceu desde então ([[11-testes-e-cobertura]] §7.3) e **o custo não foi remedido**. Em runner limpo soma-se o download do Chromium, **~310 MiB** — ordem de grandeza, não medição. Roda **em paralelo** com `gates` e **não** bloqueia merge (§2.1) |
 
 **Ponta a ponta, por tipo de evento:** push:develop **5 min 05 s** · PR→main **5 min 15 s** (`gates` e
 `install-sha` em paralelo) · push:main **5 min 47 s** (`gates` **+** `release-tag`, sequenciais).

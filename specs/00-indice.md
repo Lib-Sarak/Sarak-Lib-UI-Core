@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "86"
+proximo_numero_plan: "93"
 ---
 
 # 0. O que é este arquivo
@@ -42,7 +42,35 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
+| 1 | [plan-86-teto-de-paralelismo-nos-runners](plan/plan-86-teto-de-paralelismo-nos-runners.md) | Fazer a suíte Vitest e a medição de navegador fecharem verdes em execuções consecutivas nesta máquina, sem flag de linha de comando | — | 🔴 A executar | specs/11-testes-e-cobertura.md + specs/15-divida-conhecida.md + specs/16-integracao-continua.md |
+| 2 | [plan-87-processo-que-a-pratica-furou](plan/plan-87-processo-que-a-pratica-furou.md) | Fazer cada regra de processo que só existia em prosa ganhar um gatilho mecânico ou ser reescrita para o que a prática mostrou ser exequível | — | 🔴 A executar | specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md + specs/02-enforcement-por-commit.md + specs/17-contrato-de-operacao-git.md |
+| 3 | [plan-92-selo-de-build-em-runtime](plan/plan-92-selo-de-build-em-runtime.md) | Permitir responder em um olhar, na página do consumidor, qual build da lib o navegador está executando | — | 🔴 A executar | specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md |
+| 4 | [plan-88-vaos-de-gate-medidos](plan/plan-88-vaos-de-gate-medidos.md) | Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha | — | 🔴 A executar | specs/01-gates-e-baseline.md + specs/00-regras-e-invariantes.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 5 | [plan-89-tokens-de-cromo-ligados-e-medidos](plan/plan-89-tokens-de-cromo-ligados-e-medidos.md) | Fazer todo token de layout que o painel oferece ter efeito nos dois cromos, com a medição de navegador cobrindo tema que sobrescreve token de cromo | plan-86-teto-de-paralelismo-nos-runners | 🔴 A executar | specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md |
+| 6 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
+| 7 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado sete pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> 🔵 **O [[00-backlog]] zerou em 2026-10-02: os 34 itens foram conferidos contra o código e promovidos pelo
+> dono, agrupados por causa comum.** Nenhum deixou de valer. **Destino demonstrado** de cada linha removida
+> de lá, como a [[00-contexto]] §5 exige:
+>
+> | Itens do backlog | Para onde foram |
+> |---|---|
+> | 5 · 12 | `plan-86` — paralelismo sem teto nos dois runners |
+> | 1 · 9 · 10 · 11 · 31 · 32 · 35 | `plan-87` — regra de processo que só existia em prosa |
+> | 16 · 25 · 26 · 27 · 34 | `plan-88` — gate que mede menos que a regra |
+> | 7 · 13 · 24 · 30 | `plan-89` — token de cromo sem efeito ou sem medição |
+> | 3 · 4 · 6 · 20 · 28 · 29 | `plan-90` — CSS que o `jsdom` não vê |
+> | 18 · 19 · 21 · 22 · 23 · 36 · 37 | `plan-91` — a superfície promete e não entrega |
+> | 17 | `plan-92` — nada diz qual build o navegador executa |
+> | 15 | [[10-seguranca-e-acessibilidade]] §2.1 — limite declarado do predicado de mídia; não é defeito |
+> | 8 | [[15-divida-conhecida]] — achado **57** (o padrão sem fronteira de palavra, demanda do ecossistema) e achado **54** (o modo de leitura do Anel 0) |
+>
+> **A ordem da fila não é a do número:** a `plan-92` vem em terceiro porque a etapa seguinte do repositório
+> — validar a lib nos sistemas que a aplicam — começa pela pergunta que ela responde. **`plan-89` → `plan-90`
+> → `plan-91` são sequenciais** (as duas primeiras estendem os mesmos arquivos de `browser-tests/`; as duas
+> últimas tocam `SarakSelect.tsx`), e a `plan-89` espera a `plan-86`, que estabiliza o runner de navegador.
 
 > ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30 A `plan-82` fechou a fila em 2026-10-02.** O arquivo saiu; a verdade delas vive nas specs
 > fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/` a recupera. **Destino
