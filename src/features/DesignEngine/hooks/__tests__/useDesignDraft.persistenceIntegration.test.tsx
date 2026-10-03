@@ -14,13 +14,13 @@
  * estar desconectada).
  */
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useDesignDraft } from '../useDesignDraft';
 
-const Harness = () => {
+const Harness = (): React.ReactElement => {
     const sarak = useSarakUI();
     const { updateDraft, handleApplyToSystem } = useDesignDraft(sarak);
     return (
@@ -31,96 +31,102 @@ const Harness = () => {
     );
 };
 
+const AUTO_PERSIST_DEBOUNCE_MS = 1500;
+
+/**
+ * A persistência automática só roda 1500 ms após `design` mudar; afirmar que
+ * não chamou antes do prazo não detecta uma gravação atrasada. Timers falsos
+ * avançam além do limite sem esperar pelo relógio real.
+ */
+const advancePastAutoPersistDebounce = async (): Promise<void> => {
+    await act(() => vi.advanceTimersByTimeAsync(AUTO_PERSIST_DEBOUNCE_MS + 1));
+};
+
+/*
+ * O boot muda `design` e persiste uma vez, sem relação com o rascunho. Avançar
+ * o debounce e instalar/limpar o espião depois evita falso-positivo nos três testes.
+ */
+const verifyLocalStoragePort = async (): Promise<void> => {
+    render(
+        <SarakUIProvider>
+            <Harness />
+        </SarakUIProvider>
+    );
+
+    // A gravação de boot terminou antes de instalar o espião.
+    await advancePastAutoPersistDebounce();
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+
+    fireEvent.click(screen.getByTestId('btn-edit'));
+    await advancePastAutoPersistDebounce();
+    expect(setItemSpy).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('btn-apply'));
+    expect(setItemSpy).toHaveBeenCalled();
+    setItemSpy.mockRestore();
+};
+
+const verifyPersistenceOnSavePort = async (): Promise<void> => {
+    const onSave = vi.fn().mockResolvedValue(undefined);
+
+    render(
+        <SarakUIProvider options={{ persistence: { onSave } }}>
+            <Harness />
+        </SarakUIProvider>
+    );
+
+    // Zera a gravação de boot para medir só as mudanças do rascunho.
+    await advancePastAutoPersistDebounce();
+    onSave.mockClear();
+
+    fireEvent.click(screen.getByTestId('btn-edit'));
+    await advancePastAutoPersistDebounce();
+    expect(onSave).not.toHaveBeenCalled();
+
+    await act(async () => {
+        fireEvent.click(screen.getByTestId('btn-apply'));
+    });
+    expect(onSave).toHaveBeenCalled();
+};
+
+const verifyThemeChangePort = async (): Promise<void> => {
+    const onThemeChange = vi.fn();
+
+    render(
+        <SarakUIProvider onThemeChange={onThemeChange}>
+            <Harness />
+        </SarakUIProvider>
+    );
+
+    // Zera a gravação de boot para medir só as mudanças do rascunho.
+    await advancePastAutoPersistDebounce();
+    onThemeChange.mockClear();
+
+    fireEvent.click(screen.getByTestId('btn-edit'));
+    await advancePastAutoPersistDebounce();
+    expect(onThemeChange).not.toHaveBeenCalled();
+
+    await act(async () => {
+        fireEvent.click(screen.getByTestId('btn-apply'));
+    });
+    expect(onThemeChange).toHaveBeenCalled();
+};
+
 describe('Editar o rascunho não grava nem espalha — só "Aplicar" grava, pelas três portas', () => {
-    // Cada teste monta um Provider novo, mas o `localStorage` do jsdom sobrevive
-    // entre testes do mesmo arquivo — sem isto, o valor aplicado por um teste
-    // "vaza" para o boot do próximo, e o rascunho nasce igual ao sistema (sem
-    // divergência, `isDirty` falso, e "Aplicar" nem chega a gravar nada).
+    // O jsdom preserva `localStorage`; sem limpar, o valor aplicado vaza para o
+    // boot seguinte, iguala rascunho e sistema (`isDirty` falso) e "Aplicar" não grava.
     beforeEach(() => {
+        vi.useFakeTimers();
         localStorage.clear();
     });
 
-    // A gravação automática de `useDesignManager.ts:148-154` só dispara 1500ms
-    // depois de `design` mudar — conferir "não chama" ANTES desse prazo passar
-    // não prova nada: uma trava quebrada que gravasse o rascunho com atraso
-    // passaria por baixo. Os três testes esperam além do prazo antes de olhar.
-    //
-    // Ela também dispara UMA VEZ ao montar (o próprio boot muda `design` de
-    // "nada" para o valor semeado) — sem relação com o rascunho. Medido: sem
-    // isolar essa gravação de boot, os três testes acusavam falso-positivo
-    // ("chamou") mesmo sem nenhum clique em "Editar". Por isso cada teste espera
-    // o boot assentar e LIMPA o espião antes de editar — só assim "não chama"
-    // mede a EDIÇÃO, não o boot.
-    const AUTO_PERSIST_DEBOUNCE_MS = 1500;
-    const waitPastAutoPersistDebounce = async () => {
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, AUTO_PERSIST_DEBOUNCE_MS + 100));
-        });
-    };
-
-    it('localStorage: nenhuma escrita enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" grava', async () => {
-        render(
-            <SarakUIProvider>
-                <Harness />
-            </SarakUIProvider>
-        );
-
-        // Deixa a gravação de BOOT (dispara uma vez ao montar, sem relação com o
-        // rascunho) assentar, e limpa o espião — só depois disso "não chama" mede
-        // o efeito da edição, não o boot.
-        await waitPastAutoPersistDebounce();
-        const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
-
-        fireEvent.click(screen.getByTestId('btn-edit'));
-        await waitPastAutoPersistDebounce();
-        expect(setItemSpy).not.toHaveBeenCalled();
-
-        fireEvent.click(screen.getByTestId('btn-apply'));
-        expect(setItemSpy).toHaveBeenCalled();
-        setItemSpy.mockRestore();
+    afterEach(() => {
+        cleanup();
+        vi.restoreAllMocks();
+        vi.useRealTimers();
     });
 
-    it('persistence.onSave: não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', async () => {
-        const onSave = vi.fn().mockResolvedValue(undefined);
-
-        render(
-            <SarakUIProvider options={{ persistence: { onSave } }}>
-                <Harness />
-            </SarakUIProvider>
-        );
-
-        await waitPastAutoPersistDebounce();
-        onSave.mockClear();
-
-        fireEvent.click(screen.getByTestId('btn-edit'));
-        await waitPastAutoPersistDebounce();
-        expect(onSave).not.toHaveBeenCalled();
-
-        await act(async () => {
-            fireEvent.click(screen.getByTestId('btn-apply'));
-        });
-        expect(onSave).toHaveBeenCalled();
-    });
-
-    it('onThemeChange (a porta do tema): não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', async () => {
-        const onThemeChange = vi.fn();
-
-        render(
-            <SarakUIProvider onThemeChange={onThemeChange}>
-                <Harness />
-            </SarakUIProvider>
-        );
-
-        await waitPastAutoPersistDebounce();
-        onThemeChange.mockClear();
-
-        fireEvent.click(screen.getByTestId('btn-edit'));
-        await waitPastAutoPersistDebounce();
-        expect(onThemeChange).not.toHaveBeenCalled();
-
-        await act(async () => {
-            fireEvent.click(screen.getByTestId('btn-apply'));
-        });
-        expect(onThemeChange).toHaveBeenCalled();
-    });
+    it('localStorage: nenhuma escrita enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" grava', verifyLocalStoragePort);
+    it('persistence.onSave: não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', verifyPersistenceOnSavePort);
+    it('onThemeChange (a porta do tema): não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', verifyThemeChangePort);
 });
