@@ -6,11 +6,14 @@ import {
 } from 'recharts';
 import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import * as builders from './SubEngines/optionBuilders';
-import type { ChartDataItem } from './SubEngines/builders/types';
+import type { SarakChartDataItem } from './SubEngines/builders/types';
 
 export interface SarakChartEngineProps {
+    /** Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. */
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
-    data: ChartDataItem[];
+    /** Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. */
+    data: SarakChartDataItem[];
+    /** Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. */
     config?: {
         xAxisKey?: string;
         dataKey?: string;

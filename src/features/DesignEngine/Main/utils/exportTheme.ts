@@ -1,5 +1,5 @@
 import type { SarakDesignState } from '../../../../core/Provider/types';
-import { getDefaultDesignState } from '../../../../core/Design/master-map';
+import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 
 export interface ThemeExportPayload {
     id: string;
@@ -15,7 +15,7 @@ export interface ThemeExportPayload {
  * "esquece" um eixo (a causa-raiz de "fonte/cromo não mudam" do Teste Real).
  */
 const resolveCompleteDesign = (design: SarakDesignState): SarakDesignState => ({
-    ...getDefaultDesignState(),
+    ...sarakGetDefaultDesignState(),
     ...(design as Record<string, unknown>),
 } as SarakDesignState);
 

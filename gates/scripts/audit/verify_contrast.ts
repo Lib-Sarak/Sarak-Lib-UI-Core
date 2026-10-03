@@ -70,8 +70,8 @@
 //    CONSUMIDOR (fora do catálogo shippado) nunca é cobrado a ter
 //    `contraparte`; é dado de terceiro, mesma fronteira da R31 (§ acima).
 // -------------------------------------------------------------------------
-import { getDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { GLOBAL_THEMES, type ThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
+import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
 
 export interface Rgba {
@@ -242,8 +242,8 @@ export interface ThemeReport {
     pulados: Extract<PairResult, { pulado: true }>[];
 }
 
-export function auditTheme(theme: ThemePreset): ThemeReport {
-    const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+export function auditTheme(theme: SarakThemePreset): ThemeReport {
+    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
     const resultados = PAIRS.map((pair) => evaluatePair(pair, design));
     return {
         id: theme.id,
@@ -265,8 +265,8 @@ export function auditTheme(theme: ThemePreset): ThemeReport {
  * vez de sempre sintetizar com `syncThemeWithMode`. Só cai no sintetizado
  * para os temas SEM `contraparte` (os 18 legados, fallback deliberado).
  */
-export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
-    const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+export function auditThemeOppositeMode(theme: SarakThemePreset): ThemeReport {
+    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
     const nativeMode = (design.mode as 'light' | 'dark') || 'dark';
     const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
     const shifted = resolveThemeForMode({ design, contraparte: theme.contraparte }, oppositeMode);
@@ -280,31 +280,13 @@ export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
 }
 
 /**
- * Os 18 temas legados que a `plan-25` mediu como grupo de controle — a ÚNICA
- * lista de isenção da exigência de `contraparte` (plan-26 §2.4, decisão 2 do
- * dono). Ela SÓ PODE ENCOLHER: autorar contraparte para um destes é permitido
- * (e o retira da lista numa plan futura); crescer exigiria justificativa nova.
+ * Os temas legados sem `contraparte` autorada — a ÚNICA lista de isenção da
+ * exigência de `contraparte` (specs/specs/09-temas-e-presets.md §2.1). Ela SÓ PODE
+ * ENCOLHER: autorar contraparte para um destes é permitido (e o retira da
+ * lista); crescer exigiria justificativa nova. Tema removido do catálogo sai
+ * também daqui — entrada apontando para um id inexistente é dívida morta.
  */
-export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
-    'sarak-sovereign',
-    'crystal-glass',
-    'cyberpunk-neon',
-    'holographic-glass',
-    'industrial-terminal',
-    'nature-breeze',
-    'neo-brutalism',
-    'synthwave-retro',
-    'nebula-space',
-    'dot-matrix-elegant',
-    'stellar-nebula',
-    'kinetic-flow',
-    'cyber-retro-wave',
-    'minimalist-airy',
-    'data-terminal',
-    'neumorphic-mobile',
-    'industrial-dashboard',
-    'asymmetric-editorial',
-];
+export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [];
 
 export interface ContraparteAudit {
     isentos: string[];
@@ -317,7 +299,7 @@ export interface ContraparteAudit {
  * regressão que esta plan conserta reapareceria em silêncio no primeiro tema
  * novo que alguém esquecesse de autorar.
  */
-export function auditContraparteRequired(themes: ThemePreset[]): ContraparteAudit {
+export function auditContraparteRequired(themes: SarakThemePreset[]): ContraparteAudit {
     const isentos = themes.filter((t) => CONTRAPARTE_EXEMPTION_LIST.includes(t.id)).map((t) => t.id);
     const faltando = themes
         .filter((t) => !CONTRAPARTE_EXEMPTION_LIST.includes(t.id) && !t.contraparte)
@@ -375,11 +357,11 @@ function main() {
     console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
     console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
 
-    const nativo = printPass(GLOBAL_THEMES.map(auditTheme), 'MODO NATIVO');
-    const oposto = printPass(GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada — contraparte autorada quando existe, plan-26)');
+    const nativo = printPass(SARAK_GLOBAL_THEMES.map(auditTheme), 'MODO NATIVO');
+    const oposto = printPass(SARAK_GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada — contraparte autorada quando existe)');
     console.log(`\n${oposto.totalFalhas} par(es)-tema reprovado(s) no MODO OPOSTO.`);
 
-    const contraparteOk = printContraparteAudit(auditContraparteRequired(GLOBAL_THEMES), GLOBAL_THEMES.length);
+    const contraparteOk = printContraparteAudit(auditContraparteRequired(SARAK_GLOBAL_THEMES), SARAK_GLOBAL_THEMES.length);
 
     if (nativo.temasComFalha === 0 && oposto.temasComFalha === 0 && contraparteOk) {
         console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos, nos dois modos, e todo tema não isento tem contraparte.');

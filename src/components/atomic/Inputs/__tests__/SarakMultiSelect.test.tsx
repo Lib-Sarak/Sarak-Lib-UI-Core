@@ -2,9 +2,9 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { SarakMultiSelect, type MultiSelectOption } from '../SarakMultiSelect';
+import { SarakMultiSelect, type SarakMultiSelectOption } from '../SarakMultiSelect';
 
-const options: MultiSelectOption[] = [
+const options: SarakMultiSelectOption[] = [
     { value: 'rh', label: 'Recursos Humanos' },
     { value: 'fin', label: 'Financeiro' },
     { value: 'ti', label: 'Tecnologia' },

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -53,10 +53,24 @@ autoradas: **93 a 98% dos valores diferem** do que a síntese produziria, e elas
 claro → escuro` devolve faixa de faixa, não o original. Com contraparte são dois conjuntos fixos, e alternar
 é reversível por construção — provado chave a chave.
 
-> **Opcional no TIPO, obrigatória no GATE.** Obrigatória no tipo quebraria os 18 legados e todo tema de
-> consumidor (**R33**). Quem exige é o `auditor_contraste`, com uma lista de isenção declarada que nasce com
-> exatamente os 18 e **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
+> **Opcional no TIPO, obrigatória no GATE.** Obrigatória no tipo quebraria todo tema de
+> consumidor (**R33**). Quem exige é o `auditor_contraste`, com uma lista de isenção declarada que
+> **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
 > permissivo, gate estrito, exceção visível e contável.
+
+**Os dois temas de referência têm contraparte autorada** — `minimalist-airy` e `sarak-sovereign`, o par
+de `SARAK_REFERENCE_THEMES`. Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
+clona não tivesse contraparte, todo tema derivado dela herdaria o fallback que degrada, e a lib estaria
+recomendando exatamente o caminho que falha.
+
+✅ **A lista de isenção encolheu até o fim.** `CONTRAPARTE_EXEMPTION_LIST`
+(`gates/scripts/audit/verify_contrast.ts`) está **vazia**: nenhum tema shippado é isento, e todos têm
+`contraparte` autorada — a exceção deixou de existir em vez de ser tolerada. A lista continua declarada no
+código, e é isso que torna visível qualquer tentativa de reabri-la; quem confere é o `npm run audit`, a
+fonte viva. A contraparte autorada preserva a identidade do tema: fundos graduados em
+camadas distintas e a família de matiz da própria marca atravessando os dois modos, em vez de convergir
+para uma paleta neutra. A marca (`primaryColor` e afins) **não** entra na contraparte; o uso *funcional*
+de uma cor de marca que perderia contraste no modo oposto — como a cor do item de navegação ativo — sim.
 
 Quatro observações que importam mais que o formato:
 
@@ -126,6 +140,38 @@ de cor, e concluiu que "a lib não muda fonte nem cromo". A lib mudava — o **t
 esses eixos. O diagnóstico está registrado no cabeçalho de `reference.ts:1-8` e de
 `utils/themeAxes.ts:1-11`, escritos justamente para não deixar essa conclusão errada se repetir.
 
+### 4.1.1 Derivar é uma chamada, não uma cópia de campo
+
+Derivar um tema da referência é uma chamada, não uma cópia de campo: a porta devolve o tema **completo**,
+com `design` e `contraparte`, e aplica as sobreposições nos dois modos. Espalhar `...tema.design` copia só
+metade do tema — a contraparte fica para trás e a troca de modo passa a degradar, em silêncio.
+
+```ts
+import { deriveThemeFromReference } from '@sarak/lib-ui-core';
+
+const temaDaMarca = deriveThemeFromReference('minimalist-airy', {
+    id: 'minha-marca',
+    name: 'Minha Marca',
+    design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+});
+```
+
+`deriveThemeFromReference` (`reference.ts`) aplica a sobreposição em `design` e **espelha na
+`contraparte`** toda chave que também exista lá. Sem esse espelho, o modo oposto voltaria a mostrar o valor
+antigo da referência, e trocar de modo pareceria desfazer a customização. Chave de marca não está em
+contraparte autorada nenhuma, então para ela o merge em `design` basta — e a marca atravessa os dois modos.
+
+**As três formas de partir da referência, e o que cada uma entrega:**
+
+| Forma | `contraparte` | Sobreposição no modo oposto |
+| --- | --- | --- |
+| `{ id, name, design: { ...ref.design, … } }` | **perdida** — a troca de modo cai no fallback que degrada | — |
+| `{ ...ref, design: { ...ref.design, … } }` | preservada | só para chaves que a contraparte **não** carrega |
+| `deriveThemeFromReference(refId, { … })` | preservada | **sempre** — o caminho recomendado |
+
+O id devolvido é do consumidor, fora da união fechada `ThemePresetId`, e entra por `customThemes` como
+qualquer tema de consumidor (§2 observação 3).
+
 ## 4.2 Validar — a fronteira que trata tema como dado hostil
 
 Todo `design` passa por `validateDesign` (`src/core/Provider/utils/validation.ts:184-238`) antes de virar
@@ -157,6 +203,14 @@ ela impede que a incompletude seja silenciosa. A diferença é de projeto: forç
 motivo legítimo para um tema parcial.
 
 ## 4.3 Aplicar — `activeThemeId` × `initialTheme`
+
+> **Um id de tema que não existe mais não quebra nada — e não passa em silêncio.** Venha ele de
+> `activeThemeId`, de `initialTheme` ou da persistência do próprio consumidor, a lib **nunca fica sem tema e
+> nunca lança**: cai no tema de referência do **modo pedido** — o de `config.mode` quando há um explícito,
+> senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
+> o id que não encontrou. `getThemePreset` (`presets/themes/reference.ts:18`) devolve `undefined` para id
+> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `THEME_PRESET_IDS`
+> e `GLOBAL_THEMES`.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
@@ -218,7 +272,7 @@ modo do usuário**. Foi encontrado no consumidor real, não pela suíte.
 
 O fechamento veio em duas partes: a **`plan-26`** criou `resolveThemeForMode` — três casos (modo nativo →
 `design`; modo oposto **com** contraparte → merge autorado; **sem** contraparte → `syncThemeWithMode`, o
-fallback dos 18 legados) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
+fallback dos temas legados isentos) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
 `PresetsCatalog`, `ShellThemeToggle`, `useDesignSync`, `PresetCard` e o **token `mode`** do painel, que só
 trocava o rótulo.
 
@@ -324,6 +378,52 @@ armazenamento, e a lib não a intermedia.
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
 
+## 4.7 Preferência do usuário — sobreposta ao tema, nunca gravada nele
+
+O tema é do administrador e do sistema inteiro; a **preferência** é de cada usuário
+([[016-preferencias-do-usuario-separadas-do-tema]]). Os componentes recebem o **design efetivo** — o tema
+com as preferências oferecidas aplicadas por cima —, e **só o tema é persistido como tema**. O painel edita
+o tema, nunca o design efetivo de quem o está usando: a fonte grande que o administrador escolheu para si
+não entra no tema que ele salva.
+
+**O conjunto é fechado:**
+
+| Preferência | Valores | O que sobrepõe no tema |
+| --- | --- | --- |
+| modo | claro · escuro · sistema (acompanha a troca do sistema operacional) | o modo — só as chaves que carregam modo (abaixo) |
+| tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
+| navegação | topo · lateral | `navigationStyle` |
+| navegação recolhida | sim · não | `isNavHidden` |
+| idioma | um dos habilitados no tema | `language` — só se o tema oferece **e** habilita o idioma escolhido (abaixo) |
+
+**O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
+oferecida**, **no menu**, **fixa na barra**. É token, e não campo à parte, porque é o administrador quem o
+escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: modo e
+navegação recolhida **fixa na barra**; fonte, navegação e idioma **não oferecida**. **Chave ausente vale o
+padrão de fábrica**, nunca *oferecida* — um design aplicado por substituição, sem essas chaves, não abre nada
+que o administrador não abriu. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
+
+**A troca de modo mexe só nas chaves que carregam modo** — as que a contraparte declara (§2.1):
+1. pedir o modo em que o design já está **não muda nada**;
+2. mudando de modo, essas chaves vêm da contraparte no modo oposto ao nativo, e do próprio tema no nativo —
+   qualquer que seja o modo em que o tema foi salvo;
+3. todo o resto é o design atual do tema. Tema sem contraparte cai no fallback sintetizado (§2.1).
+
+**O idioma que vale é um só**, e é ele que a lib aplica, que o seletor mostra e que o host lê: a
+preferência do usuário, **se** o tema oferece a preferência de idioma **e** o idioma escolhido está em
+`enabledLanguages`; senão, o idioma do tema. Uma preferência salva para um idioma que o administrador
+desabilitou depois deixa de valer. **O host lê esse valor em `useSarakUI().design.language`** — nunca a
+preferência crua, que ignora as duas condições e, quando o usuário nunca escolheu, é vazia.
+
+**Persistência:** por usuário, no `localStorage`, com chave própria isolada por tenant (§4.4.1), gravada
+**no ato da escolha** — a navegação por recarga de página não pode perdê-la — e sincronizada entre abas. O
+host que quiser guardar no servidor usa a porta opcional `options.preferences` (`onSave`/`onLoad`); a lib
+não conhece o usuário, e quem associa a preferência a ele é o host, pela porta. Leitura e escrita pela
+aplicação: `useSarakPreferences()`.
+
+> **No `localStorage`, a preferência é por navegador, não por pessoa.** Num computador compartilhado, as
+> pessoas compartilham a preferência até o host usar a porta.
+
 # 5. O catálogo shippado — números DERIVADOS
 
 A contagem de temas, presets e chaves do gabarito **não é fixada aqui** — é a lição do achado **32**
@@ -335,25 +435,37 @@ Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts`
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
-## 5.1 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
+## 5.1 Todo fundo que a lib entrega funciona offline
 
-Cinco temas novos entraram — `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
-`forja-ultravioleta`, `grafite-puro`. **Nenhum é `SARAK_REFERENCE_THEMES`** *(decisão do dono)*: a referência
-segue `minimalist-airy` + `sarak-sovereign`, porque é dali que o consumidor clona (§4.1) e trocá-la mudaria a
-base de quem já integrou.
+Nenhuma atmosfera shippada busca recurso em servidor de terceiro. As de tela cheia — as que o painel
+oferece como "mídia" — são **geradas pelo motor de textura da própria lib** (`_atmosphere.css`), e cada uma
+grava `globalBackgroundImageUrl: ''` ao ser aplicada, para **limpar** uma URL herdada de um preset aplicado
+antes. As demais saem de `TEXTURE_OPTIONS` do schema, por paridade 1:1.
 
-**O que motivou os cinco.** Medido antes de criá-los, o catálogo de 18 morava num canto só:
+**Isto é contrato, não conveniência.** Uma lib que se instala e funciona sem configuração
+([[01-forma-do-produto-e-modos-de-consumo]]) não pode entregar uma opção que depende de um domínio que ela
+não controla: o link morre, o dono do domínio troca o arquivo, a rede do consumidor bloqueia o host — e o
+sintoma chega como *"escolhi o fundo e não aconteceu nada"*, indistinguível de um bug da lib. Fundo
+hospedado por terceiro é dívida com data de vencimento desconhecida.
 
-| Concentração | 18 | 23 |
-|---|---|---|
-| `mode: dark` | 15 | 18 |
-| Primária com saturação **100** (neon puro) | 10 | **10** — nenhum novo entrou no padrão |
-| Família ciano + magenta | 8 | **8** — nenhum novo |
-| Claro com primária saturada (S ≥ 60) | **0** | **1** |
-| Fundo de luminosidade média (25 ≤ L ≤ 75) | **0** | **1** |
+**Consequência para quem escreve tema ou preset:** um valor de `globalBackgroundImageUrl` apontando para
+fora da origem do consumidor não entra no catálogo shippado. O predicado de mídia
+([[10-seguranca-e-acessibilidade]] §2.1 c-bis) **aceita** `https://` — porque o consumidor tem todo direito
+de apontar para a mídia dele —, mas o que a **lib** entrega pronto sai do motor de textura ou de um ativo
+do próprio consumidor.
 
-**A biblioteca inteira morava em "escuro + neon + ciano/magenta"** — e isso aconteceu **sem** nunca ter havido
-gerador de paleta. Homogeneização não precisa de fórmula; basta ninguém medir.
+## 5.2 A diversidade do catálogo é MEDIDA, não afirmada
+
+**A referência não muda com o catálogo.** `SARAK_REFERENCE_THEMES` segue sendo `minimalist-airy` +
+`sarak-sovereign` *(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
+quem já integrou. O catálogo ao redor dela pode crescer, encolher ou ser reautorado — e já foi as três
+coisas.
+
+**O que a medição existe para impedir.** O catálogo já morou inteiro num canto só — escuro, primária neon,
+família ciano/magenta — e isso aconteceu **sem** nunca ter havido gerador de paleta. Homogeneização não
+precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se distribuem, não se escreve
+aqui:** é `THEME_PRESET_IDS`/`GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
+cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
 `navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
@@ -440,8 +552,9 @@ de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado cheg
 
 O critério de aceite desta spec, como procedimento:
 
-1. **Parta de uma referência completa** — clone um item de `SARAK_REFERENCE_THEMES` (ou exporte um tema
-   do painel, que já sai completo por §4.5). **Não** comece de `{}`.
+1. **Parta de uma referência completa** — derive com `deriveThemeFromReference` (§4.1.1), que devolve
+   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5. **Não** comece de
+   `{}`, e **não** espalhe `...ref.design`: a contraparte fica para trás.
 2. **Troque só os valores que você quer mudar.** Mantenha as chaves; um tema completo com 3 cores
    trocadas é um tema válido.
 3. **Use apenas ids que existem** — a régua é `getAllDesignTokens()`. Chave inventada é descartada com
@@ -453,7 +566,11 @@ O critério de aceite desta spec, como procedimento:
    trocar de tema não vai mudar a topbar — e alguém vai reportar isso como bug da lib.
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
    `THEME_PRESET_IDS` e importe em `GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
-   (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele).
+   (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
+   shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
+   navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não
+   declarado** ([[05-cromo-e-slots]] §2.4), `enabledLanguages` com os **seis** idiomas que a lib oferece,
+   nenhuma mídia de terceiro (§5.1) e as posições de preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
 
 Os passos 3-5 são exatamente o que os três gates da §6 cobram. Seguir o procedimento e passar nos gates
 são a mesma coisa dita de dois jeitos.
@@ -464,7 +581,7 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 
 | # | Item | Origem | Situação |
 | --- | --- | --- | --- |
-| 1 | **Expansão/hospedagem de mídias de atmosfera** — biblioteca de texturas/imagens de fundo além das embutidas, e a decisão de onde elas ficam hospedadas | plano antigo de mídias de atmosfera *(removido; git)* | nunca executado |
+| 1 | **Expansão do catálogo de atmosferas** — mais texturas além das embutidas | plano antigo de mídias de atmosfera *(removido; git)* | aberto. A parte de **hospedagem** saiu deste item: está decidida e é contrato (§5.1) — toda atmosfera shippada é gerada pela lib, nada vem de terceiro |
 | 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation` | spec antiga de presets *(removida; git)* | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
 
 > ⚠️ **Correção de estado registrada:** a spec antiga de presets carregava
@@ -496,6 +613,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | Nenhum valor shippado fora do contrato do próprio token | `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` |
 | Boot de todos os temas shippados sem aviso de contrato | `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` |
 | `validateDesign` descarta chave/valor fora do domínio | `src/core/Provider/utils/__tests__/validation.test.ts` |
+| Nenhuma atmosfera shippada depende de servidor de terceiro | `src/core/Design/presets/components/__tests__/atmosphere.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |
 

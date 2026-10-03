@@ -26,8 +26,8 @@
 //    acusaria falso positivo (um azul escuro perto de um azul claro não é o
 //    "mesmo espaço" que a regra protege).
 // -------------------------------------------------------------------------
-import { getDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { GLOBAL_THEMES, type ThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
+import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { parseColor } from './verify_contrast.ts';
 import { rgbToHsl } from '../../../src/core/Provider/utils/color-engine.ts';
 
@@ -103,8 +103,8 @@ export interface ThemeDiversityRow {
 }
 
 /** Mede UM tema já mesclado com os defaults — mesma convenção de `auditTheme` (verify_contrast.ts). */
-export function measureTheme(theme: ThemePreset): ThemeDiversityRow {
-    const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+export function measureTheme(theme: SarakThemePreset): ThemeDiversityRow {
+    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
     const primary = parseColor(design.primaryColor);
     const [h, s] = primary ? rgbToHsl(primary.r, primary.g, primary.b) : [null, null];
     const bg = parseColor(design.colorBgBody);
@@ -299,7 +299,7 @@ function parseArgs(argv: string[]): { newIds: string[] | null } {
 function main(): void {
     console.log('--- Medidor de Diversidade de Temas (plan-25) ---');
     const { newIds } = parseArgs(process.argv.slice(2));
-    const rows = GLOBAL_THEMES.map(measureTheme);
+    const rows = SARAK_GLOBAL_THEMES.map(measureTheme);
     printTable(rows);
     printAggregate(aggregate(rows), 'TODOS OS TEMAS');
 

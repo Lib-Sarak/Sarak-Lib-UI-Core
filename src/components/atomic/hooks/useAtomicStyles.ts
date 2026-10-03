@@ -156,5 +156,55 @@ export const useAtomicStyles = () => {
         return { trackStyle, thumbStyle };
     };
 
-    return { getButtonStyles, getInputStyles, getSwitchStyles };
+    // Cor da marca (check, traço, ponto) que assenta sobre o fundo ativo do controle.
+    const getChoiceMarkColor = (): string => 'var(--sarak-switch-thumb, #ffffff)';
+
+    // Anel de foco dos controles de escolha: cor do foco de input, largura do token de foco.
+    const getChoiceFocusRing = (focused: boolean): string =>
+        focused
+            ? '0 0 0 var(--sarak-focus-width, 2px) var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))'
+            : 'none';
+
+    const getCheckboxStyles = (
+        design: SarakThemePayload | undefined,
+        checked: boolean,
+        indeterminate: boolean = false,
+        focused: boolean = false
+    ): React.CSSProperties => {
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #3b82f6))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color, #334155))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))';
+
+        const dynamicStyle: React.CSSProperties = {
+            backgroundColor: checked || indeterminate ? activeBg : 'transparent',
+            borderColor: checked || indeterminate ? activeBorderColor : borderColor,
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            boxShadow: getChoiceFocusRing(focused),
+        };
+
+        return dynamicStyle;
+    };
+
+    const getRadioStyles = (
+        design: SarakThemePayload | undefined,
+        checked: boolean,
+        focused: boolean = false
+    ): React.CSSProperties => {
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #3b82f6))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color, #334155))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))';
+
+        const dynamicStyle: React.CSSProperties = {
+            backgroundColor: checked ? activeBg : 'transparent',
+            borderColor: checked ? activeBorderColor : borderColor,
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            boxShadow: getChoiceFocusRing(focused),
+        };
+
+        return dynamicStyle;
+    };
+
+    return { getButtonStyles, getInputStyles, getSwitchStyles, getCheckboxStyles, getRadioStyles, getChoiceMarkColor };
 };

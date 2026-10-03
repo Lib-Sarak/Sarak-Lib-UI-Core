@@ -96,7 +96,6 @@
     "statusGlowBlur",
     "globalBackgroundImageUrl",
     "globalBackgroundBlur",
-    "globalBackgroundBlendMode",
     "globalBackgroundOpacity"
   ],
   "typography": [
@@ -446,6 +445,11 @@
     "formLabelPosition",
     "formFieldDensity",
     "switchLabelPosition",
-    "splitPaneMinWidth"
+    "splitPaneMinWidth",
+    "preferenceModePosition",
+    "preferenceFontSizePosition",
+    "preferenceNavigationStylePosition",
+    "preferenceNavCollapsePosition",
+    "preferenceLanguagePosition"
   ]
 }

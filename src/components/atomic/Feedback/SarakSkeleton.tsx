@@ -9,11 +9,11 @@
 import React from 'react';
 
 /** Forma do esqueleto. */
-export type SkeletonShape = 'text' | 'circle' | 'rect';
+export type SarakSkeletonShape = 'text' | 'circle' | 'rect';
 
 export interface SarakSkeletonProps {
     /** Forma do placeholder (default: `text`). */
-    shape?: SkeletonShape;
+    shape?: SarakSkeletonShape;
     /** Número de linhas-fantasma quando `shape="text"` (default: 3). */
     rows?: number;
     /** Altura de cada linha/bloco (default: `1rem`). */

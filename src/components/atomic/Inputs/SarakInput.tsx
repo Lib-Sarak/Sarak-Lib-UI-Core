@@ -5,11 +5,37 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 
 export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    /**
+     * Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado).
+     * Sem ele, não há rótulo visível; forneça outro nome acessível se necessário.
+     */
     label?: string;
+    /**
+     * Ícone do campo; sua posição vem do layout do tema. Quando definido,
+     * prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone.
+     */
     icon?: React.ReactNode;
+    /**
+     * Ícone de compatibilidade usado somente quando `icon` não é fornecido.
+     * Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não
+     * fixa o lado visual.
+     */
     leftIcon?: React.ReactNode;
+    /**
+     * Ícone de compatibilidade usado quando `icon` e `leftIcon` não são
+     * fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo
+     * fica sem decoração.
+     */
     rightIcon?: React.ReactNode;
+    /**
+     * Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca
+     * `aria-invalid`. Sem a prop, não há mensagem nem estado inválido.
+     */
     error?: string;
+    /**
+     * Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`,
+     * a largura fica a cargo do layout pai.
+     */
     fullWidth?: boolean;
 }
 

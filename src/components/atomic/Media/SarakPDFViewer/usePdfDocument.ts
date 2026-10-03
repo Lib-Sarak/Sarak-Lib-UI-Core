@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 
 /** Fonte do documento: URL, bytes ou ArrayBuffer. */
-export type PdfSource = string | Uint8Array | ArrayBuffer;
+export type SarakPdfSource = string | Uint8Array | ArrayBuffer;
 
 export interface PdfDocumentState {
     doc: PDFDocumentProxy | null;
@@ -21,7 +21,7 @@ export interface PdfDocumentState {
 /** Resolve o worker default a partir do próprio pacote (bundlers modernos). */
 const defaultWorkerSrc = (): string => new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
-export const usePdfDocument = (src: PdfSource, workerSrc?: string): PdfDocumentState => {
+export const usePdfDocument = (src: SarakPdfSource, workerSrc?: string): PdfDocumentState => {
     const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
     const [error, setError] = useState<string | null>(null);
 

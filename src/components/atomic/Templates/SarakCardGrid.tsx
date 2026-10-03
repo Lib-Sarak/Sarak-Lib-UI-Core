@@ -19,8 +19,9 @@ import { SarakInput, SarakSelect } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { SarakCoreCard } from './components/SarakCoreCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 
-export interface FilterConfig {
+export interface SarakFilterConfig {
     id: string;
     label: string;
     type: 'TABS' | 'SELECT';
@@ -29,8 +30,11 @@ export interface FilterConfig {
     dynamic?: boolean;
 }
 
-export interface SarakCardGridProps {
-    endpoint: string;
+export interface SarakCardGridProps<TData extends Record<string, unknown> = Record<string, unknown>> {
+    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
+    endpoint?: string;
+    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
+    data?: TData[];
     label?: string;
     /**
      * Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os
@@ -66,7 +70,7 @@ export interface SarakCardGridProps {
         /** *literal*: texto do mesmo botão com o painel aberto (default `"Fechar"`). */
         collapse_label?: string;
     };
-    filters?: FilterConfig[]; // v6.4
+    filters?: SarakFilterConfig[]; // v6.4
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
@@ -79,11 +83,12 @@ export interface SarakCardGridProps {
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint, label, mapping, filters = [], variant }: SarakCardGridProps) => {
+export const SarakCardGrid = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, filters = [], variant }: SarakCardGridProps<TData>) => {
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
-    const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint);
-    const { getFlexStyles, getResponsiveStackStyles, getGridStyles } = useStructuralStyles();
+    const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint, initialData);
+    const { getFlexStyles, getGridStyles } = useStructuralStyles();
+    const { getResponsiveStackStyles } = useResponsiveStyles();
     const outerStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)');
     const headerBlockStack = getFlexStyles('column', undefined, undefined, 'var(--sarak-layout-gap-md,16px)');
     const headerRow = getResponsiveStackStyles('md', 'var(--sarak-layout-gap-md,16px)');

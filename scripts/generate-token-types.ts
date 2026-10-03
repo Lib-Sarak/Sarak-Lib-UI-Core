@@ -5,7 +5,7 @@
  * 1:1:1:1:1) e emite:
  *   - `SarakDesignTokens`: interface tipada por token, com o tipo TS derivado
  *     de `token.type` (color/string/… → string; number/slider → number;
- *     boolean → boolean; isResponsive → `T | ResponsiveValue<T>`).
+ *     boolean → boolean; isResponsive → `T | SarakResponsiveValue<T>`).
  *   - `DesignTokenId = keyof SarakDesignTokens`: a união de ids preservada (a
  *     paridade depende deste export), agora sempre em sincronia com a interface.
  *
@@ -18,13 +18,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { MASTER_DESIGN_MAP } from '../src/core/Design/master-map.ts';
-import type { DesignToken } from '../src/core/Design/types.ts';
+import type { SarakDesignToken } from '../src/core/Design/types.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 
 /** Traduz o `token.type` (semântico) para o tipo TS base. */
-const baseTsType = (token: DesignToken): string => {
+const baseTsType = (token: SarakDesignToken): string => {
     switch (token.type) {
         case 'number':
         case 'slider':
@@ -39,16 +39,16 @@ const baseTsType = (token: DesignToken): string => {
 };
 
 /** Tokens responsivos aceitam o escalar OU o objeto {desk,tab,mob}. */
-const tsType = (token: DesignToken): string => {
+const tsType = (token: SarakDesignToken): string => {
     const base = baseTsType(token);
-    return token.isResponsive ? `${base} | ResponsiveValue<${base}>` : base;
+    return token.isResponsive ? `${base} | SarakResponsiveValue<${base}>` : base;
 };
 
 /** Cita a chave só quando ela não é um identificador TS válido. */
 const propKey = (id: string): string => (/^[A-Za-z_$][\w$]*$/.test(id) ? id : `'${id}'`);
 
 // Coleta os tokens (id único; first-wins, mesma regra do map plano de hoje).
-const seen = new Map<string, DesignToken>();
+const seen = new Map<string, SarakDesignToken>();
 MASTER_DESIGN_MAP.components.forEach((component) => {
     component.tokens.forEach((token) => {
         if (!seen.has(token.id)) seen.set(token.id, token);
@@ -64,7 +64,7 @@ const header = [
     '// Regenerar: npx tsx scripts/generate-token-types.ts',
     '// ============================================================================',
     '',
-    "import type { ResponsiveValue } from '../../Design/types';",
+    "import type { SarakResponsiveValue } from '../../Design/types';",
     '',
     '',
 ].join('\n');

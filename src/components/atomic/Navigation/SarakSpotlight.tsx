@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SarakInput } from '../Inputs/SarakInput';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Item navegável da Command Palette (Spec 14, Regra 1). */
-export interface NavigationItem {
+export interface SarakNavigationItem {
     /** Identificador único. */
     id: string;
     /** Rótulo exibido e base da busca. */
@@ -15,7 +16,7 @@ export interface NavigationItem {
 
 export interface SarakSpotlightProps {
     /** Itens disponíveis para navegação instantânea. */
-    items: NavigationItem[];
+    items: SarakNavigationItem[];
     /** Atalho de ativação global (default: `mod+k` = Ctrl/Cmd+K). */
     shortcut?: string;
     /** Modo controlado: estado de abertura. */
@@ -23,7 +24,7 @@ export interface SarakSpotlightProps {
     /** Notifica mudanças de abertura (abrir via atalho / fechar via Esc). */
     onOpenChange?: (open: boolean) => void;
     /** Acionado ao confirmar um item (Enter ou clique). */
-    onSelect: (item: NavigationItem) => void;
+    onSelect: (item: SarakNavigationItem) => void;
     /** Placeholder do input central. */
     placeholder?: string;
 }
@@ -51,7 +52,7 @@ const useGlobalShortcut = (combo: string, onTrigger: () => void): void => {
     }, [combo]);
 };
 
-const matches = (item: NavigationItem, query: string): boolean => {
+const matches = (item: SarakNavigationItem, query: string): boolean => {
     const haystack = `${item.label} ${item.keywords ?? ''}`.toLowerCase();
     return haystack.includes(query.toLowerCase());
 };
@@ -66,8 +67,10 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
     open,
     onOpenChange,
     onSelect,
-    placeholder = 'Buscar…',
+    placeholder,
 }) => {
+    const t = useLibraryText();
+    const effectivePlaceholder = placeholder ?? t('genericSearchLabel');
     const [internalOpen, setInternalOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
@@ -89,7 +92,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     if (!isOpen) return null;
 
-    const choose = (item: NavigationItem | undefined): void => {
+    const choose = (item: SarakNavigationItem | undefined): void => {
         if (!item) return;
         onSelect(item);
         setOpen(false);
@@ -124,7 +127,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
             <div
                 role="dialog"
                 aria-modal="true"
-                aria-label="Command Palette"
+                aria-label={t('spotlightAriaLabel')}
                 className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] shadow-2xl"
                 onClick={(event) => event.stopPropagation()}
             >
@@ -143,13 +146,13 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     autoFocus
                     type="text"
                     value={query}
-                    placeholder={placeholder}
+                    placeholder={effectivePlaceholder}
                     onChange={(event) => {
                         setQuery(event.target.value);
                         setActiveIndex(0);
                     }}
                     onKeyDown={onKeyDown}
-                    aria-label="Campo de busca"
+                    aria-label={t('searchFieldAriaLabel')}
                     fullWidth
                     className="text-[var(--sarak-text-main,#ffffff)]"
                     style={{
@@ -179,7 +182,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     ))}
                     {results.length === 0 && (
                         <li className="text-center text-sm text-[var(--text-muted,#94a3b8)]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                            Nenhum resultado
+                            {t('spotlightNoResults')}
                         </li>
                     )}
                 </ul>

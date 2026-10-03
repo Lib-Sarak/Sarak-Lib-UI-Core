@@ -9,12 +9,19 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { SarakThemePayload } from '../../../core/Provider/types';
 
 export interface SarakSearchCardProps<TItem extends Record<string, unknown>> {
+    /** Registro genérico exigido pela assinatura; a implementação atual não o consulta, então ele não altera o conteúdo visível. */
     item: TItem;
+    /** Caminhos de campos previstos para o registro; a implementação atual não lê o mapa, então fornecê-lo não altera o cartão. */
     mapping?: Record<string, string>;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Recebe o texto a cada edição da busca; sem callback, a busca ainda muda localmente, mas nenhum valor é enviado ao consumidor. */
     onSearchChange?: (text: string) => void;
+    /** Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local. */
     onToggleCapability?: (cap: string, active: boolean) => void;
+    /** Substitui o tema do provider para este cartão; omitida, usa o tema global. */
     design?: SarakThemePayload;
+    /** Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho. */
     label?: string;
 }
 

@@ -6,6 +6,11 @@
    de classe invalida, citado em duas plans, virou uma media query invalida e derrubou
    build:css:scoped). O @source explicito abaixo continua sendo a UNICA fonte de
    conteudo - nada muda para o glob ja existente. */
+/* Ordem de camadas do CSS publicado: preflight (`base`) -> padroes de ELEMENTO da lib
+   (`components.sarak-elements`) -> utilitarias (`utilities`) -> classes proprias da lib
+   (`sarak-lib`). Num elemento com classe utilitaria, a classe decide; sem classe, vale o
+   padrao da lib. O porque de ser subcamada de `components` esta em `_elements.css`. */
+@import "./_elements.css" layer(components.sarak-elements);
 @import "./_theme.css" layer(sarak-lib);
 @import "./_colors.css" layer(sarak-lib);
 @import "./_base.css" layer(sarak-lib);

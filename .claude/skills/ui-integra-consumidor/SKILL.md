@@ -55,7 +55,7 @@ cromo apresentacional + central de tema. Serve às 4 topologias (monolito, monor
 microsserviço):
 
 ```tsx
-import { SarakUIProvider, SarakAppChrome, CustomizationPanel } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel } from '@sarak/lib-ui-core';
 
 <SarakUIProvider customThemes={TEMAS} initialTheme={TEMAS[0].id}>
   <SarakAppChrome brand={{ name: 'Meu Sistema' }} navItems={NAV} onNavigate={navegar}>
@@ -68,10 +68,10 @@ import { SarakUIProvider, SarakAppChrome, CustomizationPanel } from '@sarak/lib-
 registrados. Só faz sentido quando o sistema é **um** app hospedando vários módulos:
 
 ```tsx
-import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
 import { MeuModuloDeNegocio } from './modulos/MeuModulo';
 
-registerLocalComponent('meu-modulo', MeuModuloDeNegocio);
+sarakRegisterLocalComponent('meu-modulo', MeuModuloDeNegocio);
 registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 
 <SarakUIProvider>
@@ -80,11 +80,10 @@ registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 ```
 
 - `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera
-  navegação e roteamento sozinha. `registerLocalComponent(id, Component)` liga o React ao `id`
+  navegação e roteamento sozinha. `sarakRegisterLocalComponent(id, Component)` liga o React ao `id`
   (alternativa: `component` direto no objeto de registro). Use um guard `safeRegister` contra
   `undefined` — é o que o `init` já gera.
-- **Não existe mais motor de renderização por manifesto.** O modelo é 100% React; telas em JSON foram
-  removidas (o `SarakManifestRenderer` não existe). Nunca oriente o consumidor a "programar em JSON".
+- A biblioteca não converte manifestos JSON em telas; os módulos são componentes React. Nunca oriente o consumidor a "programar em JSON".
 - O importador **pode criar o que precisar** — módulo, componente, tela. A única regra é a de tokens,
   logo abaixo.
 
@@ -95,17 +94,41 @@ funciona hoje e fica **fora da central para sempre**. A lista real de CSS Variab
 `catalog.json` → `tokens.cssVars`; nome fora dela não existe e não pinta nada.
 
 **Temas em JSON (sem backend):** um tema é `{ id, name, description, design }`, com `design` = mapa
-`tokenId → valor`. Passe via `customThemes`. **Parta de um tema COMPLETO** (`SARAK_REFERENCE_THEMES`)
-e troque poucos valores — montar do zero com um punhado de chaves de cor produz o sintoma clássico
-"troquei o tema e a fonte continuou igual" (eixos omitidos não mudam). Três controles, não confunda:
+`tokenId → valor`. Passe via `customThemes`. **Derive de um tema de referência, não monte do zero:**
+montar com um punhado de chaves de cor produz o sintoma clássico "troquei o tema e a fonte continuou
+igual" (eixos omitidos não mudam). A derivação é **uma chamada**, não uma cópia de campo:
+
+```tsx
+import { sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
+
+const MEU_TEMA = sarakDeriveThemeFromReference('minimalist-airy', {
+  id: 'minha-marca', name: 'Minha Marca',
+  design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+});
+```
+
+Ela devolve o tema **completo** — `design` e `contraparte` — e aplica a sua customização nos dois modos.
+Espalhar `{ ...ref.design, … }` perde a contraparte; `{ ...ref, design: { ...ref.design, … } }` a mantém,
+mas uma customização de cor de modo não chega ao modo oposto. Três controles, não confunda:
 
 - **`activeThemeId`** — CONTROLADO: sempre vence e reaplica a cada mudança. Use quando o app decide.
 - **`initialTheme`** — SEMENTE, não-controlado: só semeia o primeiro carregamento; o usuário troca
   depois sem ser forçado de volta. É a opção segura.
 - Nenhum dos dois: cai em `options.theme.defaultTheme` ou no primeiro tema global.
 
-A seleção do usuário persiste em `localStorage` sozinha. Para sincronizar no backend **do
-consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`. Para a troca de
+A seleção do tema persiste em `localStorage` sozinha. Para sincronizar no backend **do
+consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`.
+
+**Tema × preferência — duas camadas.** O **tema** é do administrador e vale para o sistema inteiro; o painel
+(`/design`) o edita — **proteja essa rota**: a lib não autentica ninguém. A **preferência** é de cada usuário
+— modo, tamanho da fonte, barra no topo ou na lateral, navegação recolhida, idioma —, aplicada por cima do
+tema e **nunca gravada nele**. O administrador escolhe no painel o que a barra oferece; o usuário usa. Ela
+persiste por navegador (`localStorage`); para guardar por usuário no seu servidor, use
+`options.preferences.onSave`/`onLoad`. Ler e escrever pela aplicação: `useSarakPreferences()`.
+
+**Idioma:** a lib entrega a escolha, não o texto traduzido. Traduza as suas telas lendo **o idioma que
+vale**, `useSarakUI().design.language` — nunca a preferência crua, que ignora o que o administrador
+ofereceu e habilitou. Para a troca de
 tema atravessar apps de **mesma origem**, use a mesma `options.persistence.storageKey` em todos
 (`crossTabSync` é `true` por padrão).
 
@@ -114,7 +137,7 @@ load contra o schema de tokens. Chave desconhecida ou valor de tipo errado → `
 descartado, nunca CSS cru. Se um ajuste "não pegou", o console diz por quê. As chaves válidas estão
 no `catalog.json` → `designTokens.ids`.
 
-**Exportar um tema pela UI:** o `CustomizationPanel` (a central) tem **"Exportar" → "Exportar JSON"**,
+**Exportar um tema pela UI:** o `SarakCustomizationPanel` (a central) tem **"Exportar" → "Exportar JSON"**,
 que baixa o tema **completo** — cole num arquivo do repositório e adicione a `customThemes`. Não
 existe "salvar tema no banco": a central não tem servidor, e salvar **é** exportar.
 

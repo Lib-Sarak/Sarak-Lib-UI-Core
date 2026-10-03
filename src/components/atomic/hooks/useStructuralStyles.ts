@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, GRID_LAYOUT_STRATEGIES, resolveAutoFitTemplateColumns, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
+import { RESPONSIVE_GRID_PRESETS, GRID_LAYOUT_STRATEGIES, resolveAutoFitTemplateColumns, type ResponsiveGridPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
 
 /**
@@ -50,12 +50,6 @@ export const useStructuralStyles = () => {
         };
     };
 
-    const getResponsiveSpacingStyles = (preset: ResponsiveSpacingPreset) => {
-        return {
-            className: RESPONSIVE_SPACING_PRESETS[preset]
-        };
-    };
-
     const getFlexStyles = (
         direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse' | string,
         justify?: string,
@@ -71,25 +65,6 @@ export const useStructuralStyles = () => {
                 alignItems: align,
                 gap
             } as React.CSSProperties
-        };
-    };
-
-    // Empilha em coluna no mobile e vira linha a partir do breakpoint informado. Mapa de
-    // classes LITERAIS, não de números (plan-39) — os dois valores entram mesmo que só `md`
-    // tenha consumidor hoje.
-    const stackBreakpointClasses: Record<'md' | 'lg', string> = {
-        md: 'flex flex-col @min-[768px]:flex-row',
-        lg: 'flex flex-col @min-[1024px]:flex-row'
-    };
-
-    const getResponsiveStackStyles = (
-        breakpoint: 'md' | 'lg' = 'md',
-        gapOverride?: string
-    ) => {
-        const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakStack');
-        return {
-            className: stackBreakpointClasses[breakpoint],
-            style: { gap } as React.CSSProperties
         };
     };
 
@@ -169,7 +144,7 @@ export const useStructuralStyles = () => {
     // ==========================================
     const getSwitchLayoutStyles = () => {
         const switchPos = (design?.switchLabelPosition as string) || 'right';
-        
+
         const switchStrategies: Record<string, string> = {
             'left': 'flex items-center cursor-pointer flex-row-reverse justify-end',
             'space-between': 'flex items-center cursor-pointer justify-between w-full',
@@ -180,6 +155,22 @@ export const useStructuralStyles = () => {
             containerClass: switchStrategies[switchPos] || switchStrategies['right'],
             textContainerClass: 'flex flex-col',
             style: { gap: 'var(--sarak-layout-gap-sm, 8px)' }
+        };
+    };
+
+    const getCheckboxLayoutStyles = () => {
+        return {
+            containerClass: 'flex items-start',
+            textContainerClass: 'flex flex-col',
+            style: { gap: 'var(--sarak-layout-gap-sm, 12px)' }
+        };
+    };
+
+    const getRadioLayoutStyles = () => {
+        return {
+            containerClass: 'flex items-start',
+            textContainerClass: 'flex flex-col',
+            style: { gap: 'var(--sarak-layout-gap-sm, 12px)' }
         };
     };
 
@@ -233,12 +224,12 @@ export const useStructuralStyles = () => {
     return {
         getGridStyles,
         getFlexStyles,
-        getResponsiveStackStyles,
-        getResponsiveSpacingStyles,
         getFormGroupStyles,
         getCardStyles,
         getInputIconStyles,
         getSwitchLayoutStyles,
+        getCheckboxLayoutStyles,
+        getRadioLayoutStyles,
         getContainerStyles,
         getHeaderStyles
     };

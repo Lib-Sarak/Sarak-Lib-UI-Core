@@ -9,7 +9,7 @@
  * mudam — o sintoma é "troquei o tema e a fonte continuou igual". Parta de um tema
  * COMPLETO e sobrescreva poucos valores.
  */
-import { SARAK_REFERENCE_THEMES, type ThemePreset } from '@sarak/lib-ui-core';
+import { SARAK_REFERENCE_THEMES, type SarakThemePreset } from '@sarak/lib-ui-core';
 
 /**
  * As chaves de `design` válidas estão em `sarak-ui/catalog.json` → `designTokens.ids`
@@ -27,16 +27,16 @@ const MARCA = {
  * (claro/escuro), cromo (topbar/sidebar) e fonte — trocar entre os dois prova que a
  * central alcança a aplicação inteira.
  */
-export const TEMAS: ThemePreset[] = SARAK_REFERENCE_THEMES.map((tema) => ({
+export const TEMAS: SarakThemePreset[] = SARAK_REFERENCE_THEMES.map((tema) => ({
     ...tema,
     design: { ...tema.design, ...MARCA },
 }));
 
 /**
  * Quer partir de outro ponto? `catalog.json` → `themes.presetIds` lista os temas
- * embutidos; `getThemePreset(id)` devolve o preset completo de qualquer um deles.
+ * embutidos; `sarakGetThemePreset(id)` devolve o preset completo de qualquer um deles.
  *
- * Quer ajustar visualmente? Abra o `CustomizationPanel`, mexa nos controles e use
+ * Quer ajustar visualmente? Abra o `SarakCustomizationPanel`, mexa nos controles e use
  * "Exportar JSON": o arquivo baixado nasce COMPLETO, pronto para colar aqui. Não
  * existe "salvar tema no banco" — salvar É exportar para o seu repositório.
  */

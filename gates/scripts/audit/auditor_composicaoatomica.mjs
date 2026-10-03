@@ -26,9 +26,9 @@
 //    abaixo. É MAIS ESTRITO que a exclusão por pasta, não menos: a pasta
 //    isentava 18 arquivos (e todo arquivo FUTURO que entrasse nela) sem
 //    revisão nenhuma; o marcador isenta arquivo por arquivo, com razão
-//    escrita e visível no diff. Hoje só 5 arquivos o carregam (SarakButton,
-//    SarakIconButton, SarakInput, SarakScrim, SocialButton — os
-//    encapsulamentos reais); os outros que viviam nas pastas excluídas são
+//    escrita e visível no diff. Hoje só 6 arquivos o carregam (SarakButton,
+//    SarakIconButton, SarakInput, SarakScrim, SocialButton, SarakNavItem —
+//    os encapsulamentos reais); os outros que viviam nas pastas excluídas são
 //    COMPOSTOS (SarakDatePicker, SarakMultiSelect, SarakRichText,
 //    SarakUploader e afins) e, se contiverem elemento nativo cru, passam a
 //    ser acusados — dívida que a pasta escondia, medida e declarada no

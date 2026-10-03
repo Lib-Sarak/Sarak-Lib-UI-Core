@@ -15,12 +15,12 @@ import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalS
 import { motion, AnimatePresence } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
 
-export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
+export type SarakTooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
 export interface SarakTooltipProps {
     children: React.ReactNode;
     content: React.ReactNode;
-    position?: TooltipPosition;
+    position?: SarakTooltipPosition;
     delay?: number;
     className?: string;
     /** Se true, desativa o tooltip */
@@ -30,7 +30,7 @@ export interface SarakTooltipProps {
 interface Coords {
     top: number;
     left: number;
-    placement: TooltipPosition;
+    placement: SarakTooltipPosition;
 }
 
 const GAP = 8;
@@ -39,19 +39,19 @@ const GAP = 8;
 const computeCoords = (
     trigger: DOMRect,
     tip: DOMRect,
-    preferred: TooltipPosition,
+    preferred: SarakTooltipPosition,
 ): Coords => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    const fits: Record<TooltipPosition, boolean> = {
+    const fits: Record<SarakTooltipPosition, boolean> = {
         top: trigger.top - tip.height - GAP >= 0,
         bottom: trigger.bottom + tip.height + GAP <= vh,
         left: trigger.left - tip.width - GAP >= 0,
         right: trigger.right + tip.width + GAP <= vw,
     };
     // Espelha para o lado oposto se o preferido não couber.
-    const opposite: Record<TooltipPosition, TooltipPosition> = {
+    const opposite: Record<SarakTooltipPosition, SarakTooltipPosition> = {
         top: 'bottom',
         bottom: 'top',
         left: 'right',

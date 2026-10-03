@@ -1,16 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../../../../shared/services/api';
 
-export const useCardGridState = <T extends Record<string, unknown>>(endpoint: string) => {
+export const useCardGridState = <T extends Record<string, unknown>>(endpoint?: string, initialData?: T[]) => {
     const [state, setState] = useState({
-        data: [] as T[],
-        loading: true,
+        data: initialData || ([] as T[]),
+        loading: !initialData && Boolean(endpoint),
         error: null as string | null,
         search: '',
         activeFilters: {} as Record<string, string>
     });
 
     const fetchData = useCallback(async () => {
+        if (!endpoint) return;
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
             const response = await api.get(endpoint);
@@ -24,8 +25,19 @@ export const useCardGridState = <T extends Record<string, unknown>>(endpoint: st
     }, [endpoint]);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        // Dado pronto vence endpoint (mesmo contrato de `useSarakStatsData`): com
+        // `data`, nunca há chamada de rede — nem para revalidar, nem no mount.
+        if (initialData) {
+            setState(prev => {
+                if (JSON.stringify(prev.data) === JSON.stringify(initialData)) return prev;
+                return { ...prev, data: initialData, loading: false };
+            });
+            return;
+        }
+        if (endpoint) {
+            fetchData();
+        }
+    }, [fetchData, initialData, endpoint]);
 
     const setSearch = useCallback((search: string) => {
         setState(prev => ({ ...prev, search }));

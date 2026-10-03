@@ -1,10 +1,15 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+    /** Define a largura e a altura quadradas do botão; sem a prop, usa `md` (40 × 40 px). */
     size?: 'xs' | 'sm' | 'md' | 'lg';
+    /** Troca o ícone pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. */
     isLoading?: boolean;
+    /** Elemento exibido dentro do botão; é obrigatório, e sem ele o botão não mostra um glifo; `isLoading` o substitui pelo indicador. */
     icon: React.ReactNode;
 }
 
@@ -124,7 +129,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
 
     return (
         <button
-            className={`${baseClasses} ${tailwindClasses} ${disabledClass} ${className}`}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}

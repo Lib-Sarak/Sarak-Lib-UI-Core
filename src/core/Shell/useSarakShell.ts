@@ -2,11 +2,13 @@ import { useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
 import { useSarakRouter } from '../../shared/hooks/useSarakRouter';
-import { DiscoveredModule } from '../Discovery/types';
+import { SarakDiscoveredModule } from '../Discovery/types';
 import { useSarakShellUI } from './hooks/useSarakShellUI';
+import { useLibraryText } from '../i18n/useLibraryText';
 
 export const useSarakShell = (loggedIn: boolean) => {
     const { design, options } = useSarakUI();
+    const t = useLibraryText();
     const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
     const { segments, navigate } = useSarakRouter();
     const { state: uiState, updateState, toggleNav, startResizingSidebar, startResizingTopbar } = useSarakShellUI();
@@ -24,7 +26,7 @@ export const useSarakShell = (loggedIn: boolean) => {
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
             const defaultId = options?.theme?.defaultModuleId;
-            const targetMod = defaultId ? discoveredModules.find((m: DiscoveredModule) => m.id === defaultId) : null;
+            const targetMod = defaultId ? discoveredModules.find((m: SarakDiscoveredModule) => m.id === defaultId) : null;
 
             navigate(`/${targetMod ? targetMod.id : discoveredModules[0].id}`, true);
         }
@@ -35,16 +37,16 @@ export const useSarakShell = (loggedIn: boolean) => {
         updateState({ isMobileNavOpen: false });
     }, [activeModuleId, updateState]);
 
-    const activeModule = useMemo(() => discoveredModules.find((m: DiscoveredModule) => m.id === activeModuleId), [discoveredModules, activeModuleId]);
+    const activeModule = useMemo(() => discoveredModules.find((m: SarakDiscoveredModule) => m.id === activeModuleId), [discoveredModules, activeModuleId]);
     
     const groupedModules = useMemo(() => {
-        return discoveredModules.reduce((acc: Record<string, DiscoveredModule[]>, mod: DiscoveredModule) => {
-            const cat = mod.category || 'System Modules';
+        return discoveredModules.reduce((acc: Record<string, SarakDiscoveredModule[]>, mod: SarakDiscoveredModule) => {
+            const cat = mod.category || t('shellDefaultModuleCategory');
             if (!acc[cat]) acc[cat] = [];
             acc[cat].push(mod);
             return acc;
-        }, {} as Record<string, DiscoveredModule[]>);
-    }, [discoveredModules]);
+        }, {} as Record<string, SarakDiscoveredModule[]>);
+    }, [discoveredModules, t]);
 
     return {
         design,

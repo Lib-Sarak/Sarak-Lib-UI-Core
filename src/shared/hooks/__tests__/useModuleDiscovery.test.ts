@@ -12,10 +12,10 @@ import { renderHook } from '@testing-library/react';
  */
 
 const useSarakUI = vi.fn();
-const getRegisteredModules = vi.fn();
+const sarakGetRegisteredModules = vi.fn();
 
 vi.mock('../../../core/Provider/SarakUIProvider', () => ({ useSarakUI: () => useSarakUI() }));
-vi.mock('../../../core/Discovery/registry', () => ({ getRegisteredModules: () => getRegisteredModules() }));
+vi.mock('../../../core/Discovery/registry', () => ({ sarakGetRegisteredModules: () => sarakGetRegisteredModules() }));
 
 const { useModuleDiscovery } = await import('../useModuleDiscovery');
 
@@ -23,13 +23,13 @@ type Estado = { registeredModules?: unknown[]; isHydrated?: boolean; design?: Re
 
 const montar = (estado: Estado, doRegistry: unknown[] = []) => {
     useSarakUI.mockReturnValue({ registeredModules: [], isHydrated: true, design: {}, ...estado });
-    getRegisteredModules.mockReturnValue(doRegistry);
+    sarakGetRegisteredModules.mockReturnValue(doRegistry);
     return renderHook(() => useModuleDiscovery()).result;
 };
 
 beforeEach(() => {
     useSarakUI.mockReset();
-    getRegisteredModules.mockReset();
+    sarakGetRegisteredModules.mockReset();
 });
 
 describe('useModuleDiscovery', () => {

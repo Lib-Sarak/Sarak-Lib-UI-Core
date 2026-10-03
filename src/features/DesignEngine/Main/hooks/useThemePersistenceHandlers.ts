@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { buildThemeExportPayload, downloadThemeJson } from '../utils/exportTheme';
 
-import type { SarakDesignState, ThemeEntry } from '../../../../core/Provider/types';
+import type { SarakDesignState, SarakThemeEntry } from '../../../../core/Provider/types';
 
 export interface UseThemePersistenceHandlersProps {
     draft: SarakDesignState;
@@ -15,7 +15,7 @@ export interface UseThemePersistenceHandlersProps {
     showToast: (type: 'success' | 'warning', message: string) => void;
     handleApplyToSystem: () => void;
     /** Porta ÚNICA de "salvar em runtime" (ADR-011) — `sarak.saveTheme`. */
-    saveTheme: (theme: ThemeEntry) => Promise<void>;
+    saveTheme: (theme: SarakThemeEntry) => Promise<void>;
 }
 
 /**

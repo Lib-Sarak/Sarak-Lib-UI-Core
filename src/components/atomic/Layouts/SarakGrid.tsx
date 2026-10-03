@@ -1,8 +1,8 @@
 import React from 'react';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
-import { resolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
-import type { ResponsiveValue } from '../../../core/Design/types';
+import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
+import type { SarakResponsiveValue } from '../../../core/Design/types';
 
 export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;
@@ -10,10 +10,10 @@ export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement
      * Colunas do grid. Aceita:
      * - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1
      *   coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop.
-     * - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
+     * - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
      * Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular).
      */
-    templateColumns?: string | ResponsiveValue<string>;
+    templateColumns?: string | SarakResponsiveValue<string>;
     templateAreas?: string;
     gap?: string;
     as?: React.ElementType;
@@ -50,7 +50,7 @@ export const SarakGrid: React.FC<SarakGridProps> = ({
         ? undefined
         : device === 'smartphone' && typeof templateColumns === 'string'
             ? '1fr'
-            : resolveResponsiveValue(templateColumns, device);
+            : sarakResolveResponsiveValue(templateColumns, device);
 
     const structuralStyles = getGridStyles(resolvedColumns, templateAreas, gap);
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import { DesignToken } from '../../../core/Design/types';
+import { SarakDesignToken } from '../../../core/Design/types';
 import { SliderControl, ColorControl, SwitchControl, SelectControl } from './DesignControls';
 
 import type { SarakDesignState } from '../../../core/Provider/types';
 import type { SarakTokenValue } from '../../../core/Design/types';
 
 interface DynamicTokenControlProps {
-    token: DesignToken;
+    token: SarakDesignToken;
     draft: SarakDesignState;
     updateDraft: (key: string, value: SarakTokenValue) => void;
 }

@@ -1,0 +1,120 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { describe, expect, it } from 'vitest';
+import { ChromeTopbarBody } from '../ChromeTopbarBody';
+import SarakUIProvider from '../../../../core/Provider/SarakUIProvider';
+
+const NAV = [{ label: 'Propostas', route: '/propostas' }];
+
+const renderBody = (design: Record<string, unknown>, props: Partial<React.ComponentProps<typeof ChromeTopbarBody>> = {}) =>
+    render(
+        <SarakUIProvider config={design}>
+            <ChromeTopbarBody nav={NAV} className="" rootStyle={{}} {...props}>
+                <div>conteúdo</div>
+            </ChromeTopbarBody>
+        </SarakUIProvider>,
+    );
+
+describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
+    it('layoutPadding chega aos quatro lados do conteúdo por token', () => {
+        const { container } = renderBody({});
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
+    });
+
+    it('navbarLayout="hidden": a topbar some da tela (o token controla, não um bug)', () => {
+        const { container } = renderBody({ navbarLayout: 'hidden' });
+        expect(container.querySelector('header')!.className).toContain('hidden');
+    });
+
+    it('navbarLayout="sticky" (default): a topbar fica fixa no topo — comportamento de hoje', () => {
+        const { container } = renderBody({});
+        expect(container.querySelector('header')!.className).toContain('sticky');
+    });
+
+    it('navbarLayout="inline": a topbar rola com o conteúdo (relative)', () => {
+        const { container } = renderBody({ navbarLayout: 'inline' });
+        expect(container.querySelector('header')!.className).toContain('relative');
+    });
+
+    it('contentAlignment="center": o conteúdo ganha largura máxima centralizada', () => {
+        const { container } = renderBody({ contentAlignment: 'center' });
+        expect(container.querySelector('main')!.className).toContain('max-w-7xl');
+    });
+
+    it('isNavHidden: a topbar usa a altura RECOLHIDA em vez da altura cheia', () => {
+        const { container } = renderBody({ isNavHidden: true });
+        const style = container.querySelector('header')!.getAttribute('style') ?? '';
+        expect(style).toContain('var(--sarak-topbar-collapsed-height');
+        expect(style).not.toContain('var(--sarak-topbar-height, 64px)');
+    });
+
+    it('isAutoHideEnabled: a topbar começa oculta e um sensor de borda aparece', () => {
+        const { container } = renderBody({ isAutoHideEnabled: true });
+        expect(container.querySelector('header')).toBeNull();
+        expect(container.querySelector('.fixed.left-0.top-0')).not.toBeNull();
+    });
+
+    it('tabSectionMargin chega à margem da topbar por token', () => {
+        const { container } = renderBody({});
+        expect(container.querySelector('header')!.getAttribute('style')).toContain('var(--sarak-tab-section-margin');
+    });
+});
+
+describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
+    it('"center": a busca aparece centralizada na topbar', () => {
+        const { container } = renderBody({ searchPositionTopbar: 'center' }, { search: <div>buscar</div> });
+        const slot = container.querySelector('[data-sarak-slot="search"]');
+        expect(slot).not.toBeNull();
+        expect(slot?.className).toContain('mx-auto');
+    });
+
+    it('"right": a busca aparece agrupada com o topbarEnd', () => {
+        const { container } = renderBody(
+            { searchPositionTopbar: 'right' },
+            { search: <div>buscar</div>, endSlot: <div>ações</div> },
+        );
+        const slot = container.querySelector('[data-sarak-slot="search"]')!;
+        const end = container.querySelector('[data-sarak-slot="topbarEnd"]')!;
+        expect(slot.parentElement).toBe(end.parentElement);
+    });
+
+    it('"hidden": a busca NÃO aparece mesmo com conteúdo passado', () => {
+        const { container } = renderBody({ searchPositionTopbar: 'hidden' }, { search: <div>buscar</div> });
+        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+    });
+});
+
+describe('ChromeTopbarBody — widgets default (busca/tema/usuário/colapso)', () => {
+    it('sem `widgets`, os quatro defaults montam', () => {
+        const { container } = renderBody({});
+        expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
+    });
+
+    it('`widgets` desliga cada default isoladamente', () => {
+        const { container } = renderBody({}, { widgets: { search: false, collapse: false, themeToggle: false, user: false } });
+        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="user-theme"]')).toBeNull();
+    });
+});
+
+// Spec 05 §2.4 — token que faltava nos dois cromos.
+describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
+    it('a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+        const { container } = renderBody({});
+        const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+        expect(noiseLayer).not.toBeNull();
+        expect(noiseLayer!.style.opacity).toBe('var(--sarak-topbar-noise-opacity, 0)');
+    });
+
+    it('a marcação do item ativo (navActiveMarkerColor/Glow) também existe na topbar (horizontal)', () => {
+        const { container } = renderBody({}, { activeRoute: '/propostas' });
+        const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
+        expect(marker).not.toBeNull();
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+    });
+});

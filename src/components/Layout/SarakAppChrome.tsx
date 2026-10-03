@@ -1,14 +1,19 @@
 import React from 'react';
-import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
+import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
+import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
+import type { SarakShellUser } from '../../core/Shell/Components/types';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
-import { ChromeFrame } from './chrome/ChromeFrame';
-import { ChromeBrand, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
+import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
 import type { SarakNavItem } from './chrome/navItem';
+import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /** Contrato de navegação estruturada com ícone first-class (Spec 40.2 — L1). */
 export type { SarakNavItem } from './chrome/navItem';
+/** Opt-out dos widgets do cromo que nascem montados por padrão. */
+export type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /**
  * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
@@ -47,7 +52,7 @@ export interface SarakAppChromeProps {
     brand?: { name?: string; logoUrl?: string };
     /**
      * Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza
-     * ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado
+     * ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado
      * ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado
      * para o cromo por-app; tem precedência sobre `nav` quando ambos são passados.
      */
@@ -56,7 +61,7 @@ export interface SarakAppChromeProps {
      * Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo,
      * `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`.
      */
-    nav?: ShellNavItem[];
+    nav?: SarakShellNavItem[];
     /** Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`). */
     activeRoute?: string;
     /** Clique/teclado num item de navegação — o host decide como navegar. */
@@ -85,6 +90,14 @@ export interface SarakAppChromeProps {
      * No modo sidebar degrada para o rodapé da sidebar (comportamento atual).
      */
     topbarEnd?: React.ReactNode;
+    /**
+     * Slot `search`: conteúdo de busca do consumidor (tipicamente um
+     * `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar`
+     * (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar`
+     * (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com
+     * conteúdo — é o token, não a ausência de `search`, quem decide sumir.
+     */
+    search?: React.ReactNode;
     /** Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. */
     sidebarHeader?: React.ReactNode;
     /** Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. */
@@ -99,6 +112,17 @@ export interface SarakAppChromeProps {
      * COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui.
      */
     decoration?: React.ReactNode;
+    /** Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). */
+    user?: SarakShellUser;
+    /** Encerra a sessão a partir do widget de usuário default. */
+    logout?: () => void;
+    /**
+     * O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget
+     * de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop
+     * mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais.
+     * Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente.
+     */
+    widgets?: SarakChromeWidgets;
     className?: string;
     style?: React.CSSProperties;
 }
@@ -119,11 +143,15 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     logo,
     topbarStart,
     topbarEnd,
+    search,
     sidebarHeader,
     sidebarFooter,
     banner,
     footer,
     decoration,
+    user,
+    logout,
+    widgets,
     className = '',
     style,
 }) => {
@@ -140,11 +168,12 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         device === 'smartphone' ? 'mobile' : device === 'tablet' ? 'topbar' : resolved;
 
     // `navItems` (Spec 40.2 — L1) tem precedência: mapeia o modelo estruturado
-    // (id/href/active + ícone) para o contrato do `SarakShellNav`, reusando o mesmo
-    // renderizador de ícone (`SarakIcon`) + `aria-current` + foco por teclado. A rota
-    // ativa vem do item marcado `active`; sem `navItems`, cai no `nav`/`activeRoute`.
-    const effectiveNav: ShellNavItem[] = navItems
-        ? navItems.map((item) => ({ label: item.label, route: item.href, icon: item.icon }))
+    // (id/href/active + ícone + `category`) para o contrato do `SarakShellNav`,
+    // reusando o mesmo renderizador de ícone (`SarakIcon`) + `aria-current` + foco por
+    // teclado + agrupamento por categoria. A rota ativa vem do item marcado `active`;
+    // sem `navItems`, cai no `nav`/`activeRoute`.
+    const effectiveNav: SarakShellNavItem[] = navItems
+        ? navItems.map((item) => ({ label: item.label, route: item.href, icon: item.icon, category: item.category }))
         : nav;
     const effectiveActiveRoute = navItems
         ? navItems.find((item) => item.active)?.href ?? activeRoute
@@ -154,38 +183,39 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // mesma semântica. Preservado sem breaking change; `topbarEnd` tem precedência.
     const endSlot = topbarEnd ?? topbarActions;
 
-    // Altura própria do cromo (Spec 40.2 R2 — bug de browser): o cromo é a casca do app,
+    // Altura própria do cromo: o cromo é a casca do app,
     // então NÃO pode depender do host setar `html/body/#root { height:100% }`. Sem uma
     // altura definida, o `h-full` colapsa (percentual sobre ancestral indefinido) e a
     // sidebar/topbar somem (a nav tem `overflow` → é recortada) enquanto o `children`
     // (flex-1) ainda aparece — exatamente o sintoma reportado. `100dvh` dá ao cromo uma
-    // altura de viewport própria; o `style` do consumidor sobrescreve (uso embarcado).
+    // altura de viewport própria; a rolagem fica nos painéis internos. O `style` do
+    // consumidor sobrescreve ambos (uso embarcado).
     const rootStyle: React.CSSProperties = {
-        minHeight: '100dvh',
-        background: 'var(--bg-body, var(--theme-body, transparent))',
+        height: '100dvh',
+        overflow: 'hidden',
+        background: useHasGlobalBackgroundMedia() ? 'transparent' : 'var(--bg-body, var(--theme-body, transparent))',
         ...style,
     };
-
-    const contentArea = (
-        <main className="relative flex-1 min-w-0 min-h-0 overflow-auto" style={{ color: 'var(--text-main, var(--color-theme-title, inherit))' }}>
-            {children}
-        </main>
-    );
 
     if (mode === 'mobile') {
         return (
             <SarakAppChromeMobile
-                brand={<ChromeBrand brand={brand} logo={logo} horizontal />}
+                brand={brand}
+                logo={logo}
                 nav={effectiveNav}
                 activeRoute={effectiveActiveRoute}
                 onNavigate={onNavigate}
                 topbarActions={endSlot}
                 topbarStart={topbarStart}
+                search={search}
                 sidebarHeader={sidebarHeader}
                 sidebarFooter={sidebarFooter}
                 banner={banner}
                 footer={footer}
                 decoration={decoration}
+                user={user}
+                logout={logout}
+                widgets={widgets}
                 className={className}
                 rootStyle={rootStyle}
             >
@@ -194,55 +224,18 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         );
     }
 
-    if (mode === 'topbar') {
-        return (
-            <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
-                <header
-                    className="relative flex items-center gap-4 px-4 shrink-0 border-b"
-                    style={{
-                        height: 'var(--sarak-topbar-height, 64px)',
-                        background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
-                    }}
-                >
-                    <ChromeBrand brand={brand} logo={logo} horizontal />
-                    <ChromeTopbarSlot region="start">{topbarStart}</ChromeTopbarSlot>
-                    {effectiveNav.length > 0 && (
-                        <SarakShellNav items={effectiveNav} activeRoute={effectiveActiveRoute} onNavigate={onNavigate} orientation="horizontal" className="flex-1 min-w-0" />
-                    )}
-                    <ChromeTopbarSlot region="end" className="ml-auto">{endSlot}</ChromeTopbarSlot>
-                </header>
-                {contentArea}
-            </ChromeFrame>
-        );
-    }
+    // Os corpos de sidebar/topbar foram extraídos para
+    // `chrome/ChromeSidebarBody`/`ChromeTopbarBody` para este arquivo caber no teto de
+    // 250 linhas (R9) depois de ganhar o consumo dos tokens de cromo que faltavam.
+    const shared = {
+        brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
+        topbarStart, endSlot, search, banner, footer, decoration, user, logout, widgets, className, rootStyle,
+    };
 
-    return (
-        <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
-            <div className="relative flex flex-1 min-w-0 min-h-0">
-                <aside
-                    className="flex flex-col shrink-0 border-r overflow-y-auto"
-                    style={{
-                        width: 'var(--sarak-sidebar-width, 240px)',
-                        background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
-                    }}
-                >
-                    <ChromeBrand brand={brand} logo={logo} />
-                    {/* Sem barra superior, `topbarStart`/`topbarEnd` degradam para topo/rodapé da sidebar. */}
-                    <ChromeTopbarSlot region="start" className="px-2">{topbarStart}</ChromeTopbarSlot>
-                    <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
-                    {effectiveNav.length > 0 && (
-                        <SarakShellNav items={effectiveNav} activeRoute={effectiveActiveRoute} onNavigate={onNavigate} orientation="vertical" className="flex-1" />
-                    )}
-                    {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
-                    {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
-                    <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
-                </aside>
-                {contentArea}
-            </div>
-        </ChromeFrame>
-    );
+    if (mode === 'topbar') {
+        return <ChromeTopbarBody {...shared}>{children}</ChromeTopbarBody>;
+    }
+    return <ChromeSidebarBody {...shared} sidebarHeader={sidebarHeader} sidebarFooter={sidebarFooter}>{children}</ChromeSidebarBody>;
 };
 
 export default SarakAppChrome;

@@ -1,6 +1,6 @@
 # 💠 Sarak-Lib-UI-Core (Design Engine & Módulos-Plugin)
 
-O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele combina um **Design Engine Data-Driven** (temas/tokens em JSON, sem backend) com um **modelo de consumo por módulos-plugin 100% React** (`SarakUIProvider` + `SarakShell` + `registerSarakModule`/`registerLocalComponent`) — o consumidor escreve suas telas como componentes React comuns usando os átomos e os tokens públicos (`var(--sarak-*)`), sem manifesto JSON. *(O antigo motor de renderização de páginas por manifesto foi removido; o porquê está em [`specs/adr/002-remocao-motor-manifesto.md`](specs/adr/002-remocao-motor-manifesto.md).)*
+O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele combina um **Design Engine Data-Driven** (temas/tokens em JSON, sem backend) com um **modelo de consumo por módulos-plugin 100% React** (`SarakUIProvider` + `SarakShell` + `registerSarakModule`/`sarakRegisterLocalComponent`) — o consumidor escreve suas telas como componentes React comuns usando os átomos e os tokens públicos (`var(--sarak-*)`), sem manifesto JSON. *(O antigo motor de renderização de páginas por manifesto foi removido; o porquê está em [`specs/adr/002-remocao-motor-manifesto.md`](specs/adr/002-remocao-motor-manifesto.md).)*
 
 ---
 
@@ -56,7 +56,7 @@ Responsável por orquestrar a estética do sistema de maneira unificada e reativ
 - Os componentes físicos e o Tailwind CSS (`@theme`) consomem essas variáveis passivamente, gerando mudanças globais instantâneas sem a necessidade de re-renderizações onerosas no React.
 
 ### 2. O modelo de módulos-plugin (modelo oficial — [`adr/005`](specs/adr/005-modelo-modulos-plugin-e-apps-separados.md))
-Aplicações hosts registram cada módulo de negócio via `registerSarakModule({ id, label, icon, ... })` + `registerLocalComponent(id, Component)` — componentes React comuns, escritos livremente, usando os átomos da biblioteca (`SarakButton`, `SarakCardGrid`, `SarakTable`, etc.) e os tokens públicos (`var(--sarak-*)`) para responderem à troca de tema.
+Aplicações hosts registram cada módulo de negócio via `registerSarakModule({ id, label, icon, ... })` + `sarakRegisterLocalComponent(id, Component)` — componentes React comuns, escritos livremente, usando os átomos da biblioteca (`SarakButton`, `SarakCardGrid`, `SarakTable`, etc.) e os tokens públicos (`var(--sarak-*)`) para responderem à troca de tema.
 `SarakShell`, sob `SarakUIProvider`, resolve a navegação (Sidebar/Topbar/Dock, conforme o tema) e o roteamento entre os módulos registrados, sem rota declarada à mão. Ver `docs/component-catalog.md` para o catálogo gerado de componentes/props/tokens.
 
 ---
@@ -75,10 +75,10 @@ Aplicações hosts registram cada módulo de negócio via `registerSarakModule({
 ### Consumindo na Aplicação Host (módulos-plugin)
 ```tsx
 import ReactDOM from 'react-dom/client';
-import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
 import { MeuModulo } from './modules/MeuModulo';
 
-registerLocalComponent('meu-modulo', MeuModulo);
+sarakRegisterLocalComponent('meu-modulo', MeuModulo);
 registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

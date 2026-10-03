@@ -31,4 +31,13 @@ describe('SarakIconButton', () => {
         // borda com a cor real de glow prova que o valor REAL do tema chegou.
         expect(button.style.border).toContain('rgba(0, 242, 255, 0.4)');
     });
+
+    it('a className do chamador VENCE o rounded-btn default do átomo — merge, não concatenação', () => {
+        render(<SarakIconButton icon={<span>x</span>} aria-label="ação" className="rounded-full" />);
+        const button = screen.getByRole('button', { name: 'ação' });
+        const classes = button.className.split(' ');
+
+        expect(classes).toContain('rounded-full');
+        expect(classes).not.toContain('rounded-btn');
+    });
 });

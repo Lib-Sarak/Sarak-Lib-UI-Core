@@ -5,7 +5,7 @@
 import type { SarakComponent } from './registry';
 
 /** Descritor de filtro de um contrato (espelha estruturalmente o FilterConfig do CardGrid; core fica sem dependência de `components/`). */
-export interface FilterDescriptor {
+export interface SarakFilterDescriptor {
     id: string;
     label: string;
     type: 'TABS' | 'SELECT';
@@ -14,7 +14,7 @@ export interface FilterDescriptor {
     dynamic?: boolean;
 }
 
-export type VisualContractType =
+export type SarakVisualContractType =
     | 'TABLE' 
     | 'STATS' 
     | 'CARD_GRID' 
@@ -30,14 +30,14 @@ export type VisualContractType =
     | 'AUTH_FLOW'
     | 'EXPANDABLE_MATRIX';
 
-export interface VisualContract {
+export interface SarakVisualContract {
     id: string;
-    type: VisualContractType;
+    type: SarakVisualContractType;
     label: string;
     endpoint: string;
     tab?: string;
     mapping?: Record<string, string>;
-    filters?: FilterDescriptor[];
+    filters?: SarakFilterDescriptor[];
     actions?: Array<{
         label: string;
         endpoint: string;
@@ -56,7 +56,7 @@ export interface VisualContract {
     config?: Record<string, unknown>;
 }
 
-export interface ModuleManifest {
+export interface SarakModuleManifest {
     id: string;
     label: string;
     icon: string;
@@ -64,10 +64,10 @@ export interface ModuleManifest {
     version?: string;
     priority: number;
     endpoints?: Record<string, string>;
-    visualContracts?: VisualContract[];
+    visualContracts?: SarakVisualContract[];
 }
 
-export interface DiscoveredModule extends ModuleManifest {
+export interface SarakDiscoveredModule extends SarakModuleManifest {
     status: 'online' | 'offline';
     baseUrl?: string;
     component?: SarakComponent;

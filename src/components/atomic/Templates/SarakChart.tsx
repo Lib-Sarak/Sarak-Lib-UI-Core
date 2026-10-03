@@ -7,11 +7,17 @@ import { twMerge } from 'tailwind-merge';
 import { useChartData } from './hooks/useChartData';
 
 export interface SarakChartProps {
+    /** Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido. */
     endpoint: string;
+    /** Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão. */
     label?: string;
+    /** Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`. */
     mapping?: Record<string, string>; // { value_key: "Label", date_key: "Label" }
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 

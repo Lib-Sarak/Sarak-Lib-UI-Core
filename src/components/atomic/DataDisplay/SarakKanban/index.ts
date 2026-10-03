@@ -5,5 +5,5 @@
 
 export { default as SarakKanban } from './SarakKanbanImpl';
 export type { SarakKanbanProps } from './SarakKanbanImpl';
-export type { KanbanCard, KanbanColumn, CardMove } from './kanbanModel';
-export { moveCard } from './kanbanModel';
+export type { SarakKanbanCard, SarakKanbanColumn, SarakCardMove } from './kanbanModel';
+export { sarakMoveCard } from './kanbanModel';

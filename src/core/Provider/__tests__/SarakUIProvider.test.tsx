@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvider';
 import { useDesignManager } from '../hooks/useDesignManager';
-import type { ThemeEntry } from '../types';
+import type { SarakThemeEntry } from '../types';
 
 // Mock dependências do SarakUIProvider
 vi.mock('../hooks/useRegistryManager', () => ({
@@ -32,7 +32,9 @@ vi.mock('../components/SovereignThemeInjector', () => ({
 }));
 
 vi.mock('../../Design/components/SarakBackgroundRenderer', () => ({
-    SarakBackgroundRenderer: () => <div data-testid="sarak-background-renderer" />
+    SarakBackgroundRenderer: (props: { imageUrl?: string; mode?: string }) => (
+        <div data-testid="sarak-background-renderer" data-image-url={props.imageUrl} data-mode={props.mode} />
+    )
 }));
 
 vi.mock('../../../effects/NoiseOverlay', () => ({
@@ -43,7 +45,7 @@ vi.mock('../../../effects/NoiseOverlay', () => ({
 // ao detector de dispositivo — só o componente é substituído pelo stub.
 vi.mock('../DeviceProvider', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../DeviceProvider')>()),
-    DeviceProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="device-provider">{children}</div>
+    SarakDeviceProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="device-provider">{children}</div>
 }));
 
 // Componente para testar o contexto injectado
@@ -224,7 +226,7 @@ describe('SarakUIProvider', () => {
     describe('saveTheme — ADR-011 (uma porta de escrita, sem porta de leitura/apagar)', () => {
         const ThemeSaveConsumer = () => {
             const ui = useSarakUI();
-            const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+            const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
             return (
                 <div>
                     <span data-testid="theme-ids">{themeIds}</span>
@@ -300,7 +302,7 @@ describe('SarakUIProvider', () => {
 
             const RejectingConsumer = () => {
                 const ui = useSarakUI();
-                const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+                const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
                 return (
                     <div>
                         <span data-testid="theme-ids">{themeIds}</span>
@@ -350,7 +352,7 @@ describe('SarakUIProvider', () => {
 
             const HostileThemeConsumer = () => {
                 const ui = useSarakUI();
-                const saved = (ui.allThemes as ThemeEntry[]).find((t) => t.id === 'tema-hostil');
+                const saved = (ui.allThemes as SarakThemeEntry[]).find((t) => t.id === 'tema-hostil');
                 const savedDesign = saved?.design as Record<string, unknown> | undefined;
                 return (
                     <div>
@@ -380,6 +382,91 @@ describe('SarakUIProvider', () => {
             expect(screen.getByTestId('chave-invalida-presente')).toHaveTextContent('false');
             expect(warn).toHaveBeenCalled();
             warn.mockRestore();
+        });
+    });
+
+    // Enquanto o painel está aberto e o rascunho diverge, a TELA REAL (o `design`
+    // efetivo que `DesignInjector` injeta) mostra o rascunho por cima do sistema —
+    // sem gravar nem espalhar nada (specs/06-painel-de-customizacao-e-preview §4).
+    describe('o rascunho aparece na tela real, sem gravar nem espalhar', () => {
+        const LiveDesignConsumer = () => {
+            const ui = useSarakUI();
+            return (
+                <div>
+                    <span data-testid="live-mode">{ui.design?.mode}</span>
+                    <span data-testid="is-drafting">{ui.isDrafting ? 'true' : 'false'}</span>
+                    <button data-testid="btn-start-drafting" onClick={() => ui.setIsDrafting(true)}>Start</button>
+                    <button data-testid="btn-set-draft" onClick={() => ui.setDraftDesign({ mode: 'dark', systemName: 'Rascunho' } as any)}>Set Draft</button>
+                    <button data-testid="btn-set-draft-bg" onClick={() => ui.setDraftDesign({ mode: 'light', globalBackgroundImageUrl: 'https://exemplo.com/rascunho.png' } as any)}>Set Draft (fundo)</button>
+                    <button data-testid="btn-clear-draft" onClick={() => ui.setDraftDesign(null)}>Clear Draft</button>
+                </div>
+            );
+        };
+
+        it('com o painel aberto e o rascunho definido, a tela real mostra o rascunho — sem chamar localStorage.setItem por causa disso', () => {
+            render(
+                <SarakUIProvider>
+                    <LiveDesignConsumer />
+                </SarakUIProvider>
+            );
+
+            expect(screen.getByTestId('live-mode')).toHaveTextContent('light');
+
+            // O spy entra DEPOIS do boot (que grava a semente de preferências uma vez,
+            // sem relação com o rascunho) — a partir daqui, nada mais pode escrever.
+            const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+
+            fireEvent.click(screen.getByTestId('btn-start-drafting'));
+            fireEvent.click(screen.getByTestId('btn-set-draft'));
+
+            expect(screen.getByTestId('live-mode')).toHaveTextContent('dark');
+            expect(setItemSpy).not.toHaveBeenCalled();
+            setItemSpy.mockRestore();
+        });
+
+        it('sem o painel aberto (isDrafting=false), a tela real IGNORA o rascunho — mostra sempre o sistema', () => {
+            render(
+                <SarakUIProvider>
+                    <LiveDesignConsumer />
+                </SarakUIProvider>
+            );
+
+            fireEvent.click(screen.getByTestId('btn-set-draft'));
+
+            expect(screen.getByTestId('is-drafting')).toHaveTextContent('false');
+            expect(screen.getByTestId('live-mode')).toHaveTextContent('light');
+        });
+
+        it('"Descartar" (setDraftDesign(null)) devolve a tela EXATAMENTE ao estado do sistema', () => {
+            render(
+                <SarakUIProvider>
+                    <LiveDesignConsumer />
+                </SarakUIProvider>
+            );
+
+            fireEvent.click(screen.getByTestId('btn-start-drafting'));
+            fireEvent.click(screen.getByTestId('btn-set-draft'));
+            expect(screen.getByTestId('live-mode')).toHaveTextContent('dark');
+
+            fireEvent.click(screen.getByTestId('btn-clear-draft'));
+
+            expect(screen.getByTestId('live-mode')).toHaveTextContent('light');
+        });
+
+        it('o FUNDO GLOBAL também mostra o rascunho — não fica preso ao design bruto do sistema', () => {
+            render(
+                <SarakUIProvider>
+                    <LiveDesignConsumer />
+                </SarakUIProvider>
+            );
+
+            expect(screen.getByTestId('sarak-background-renderer')).not.toHaveAttribute('data-image-url', 'https://exemplo.com/rascunho.png');
+
+            fireEvent.click(screen.getByTestId('btn-start-drafting'));
+            fireEvent.click(screen.getByTestId('btn-set-draft-bg'));
+
+            expect(screen.getByTestId('sarak-background-renderer')).toHaveAttribute('data-image-url', 'https://exemplo.com/rascunho.png');
+            expect(screen.getByTestId('sarak-background-renderer')).toHaveAttribute('data-mode', 'light');
         });
     });
 });

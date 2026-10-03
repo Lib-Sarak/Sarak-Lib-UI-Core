@@ -74,7 +74,7 @@ export const buildKitCatalog = () => {
         tokens: catalog.tokens,
         designTokens: {
             note:
-                'Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é ' +
+                'Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é ' +
                 'descartado com console.warn pelo Design Engine — nunca vira CSS cru.',
             count: designTokens.length,
             responsiveCapable: designTokens.filter((token) => token.responsive).map((token) => token.id),

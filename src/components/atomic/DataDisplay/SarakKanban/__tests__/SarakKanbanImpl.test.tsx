@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import SarakKanbanImpl from '../SarakKanbanImpl';
-import type { KanbanColumn } from '../kanbanModel';
+import type { SarakKanbanColumn } from '../kanbanModel';
 
-const columns: KanbanColumn[] = [
+const columns: SarakKanbanColumn[] = [
     { id: 'todo', title: 'To Do', cards: [{ id: 'a', title: 'Tarefa A' }] },
     { id: 'done', title: 'Done', cards: [] },
 ];

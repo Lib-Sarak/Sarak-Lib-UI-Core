@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DesignScope } from '../DesignScope';
+import { SarakDesignScope } from '../DesignScope';
 import { useDesignVariables } from '../../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../../Provider/SarakUIProvider';
 import type { SarakDesignState } from '../../../Provider/types';
@@ -13,13 +13,12 @@ vi.mock('../../hooks/useDesignVariables', () => ({
 }));
 
 vi.mock('../SarakBackgroundRenderer', () => ({
-    SarakBackgroundRenderer: ({ imageUrl, opacity, blur, blendMode, mode }: any) => (
-        <div 
+    SarakBackgroundRenderer: ({ imageUrl, opacity, blur, mode }: any) => (
+        <div
             data-testid="background-renderer"
             data-image={imageUrl}
             data-opacity={opacity}
             data-blur={blur}
-            data-blend={blendMode}
             data-mode={mode}
         />
     )
@@ -44,9 +43,9 @@ describe('DesignScope', () => {
 
     it('renderiza os filhos (children) corretamente', () => {
         render(
-            <DesignScope design={{ mode: 'dark' }}>
+            <SarakDesignScope design={{ mode: 'dark' }}>
                 <div data-testid="child-element">Hello World</div>
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         expect(screen.getByTestId('child-element')).toBeInTheDocument();
@@ -55,9 +54,9 @@ describe('DesignScope', () => {
 
     it('injeta variáveis CSS e atributos retornados por useDesignVariables', () => {
         const { container } = render(
-            <DesignScope design={{ mode: 'dark' }}>
+            <SarakDesignScope design={{ mode: 'dark' }}>
                 <div />
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         const scopeDiv = container.firstChild as HTMLElement;
@@ -67,9 +66,9 @@ describe('DesignScope', () => {
 
     it('injeta o bloco de estilo responsivo', () => {
         const { container } = render(
-            <DesignScope design={{ mode: 'dark' }}>
+            <SarakDesignScope design={{ mode: 'dark' }}>
                 <div />
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         const styleElement = container.querySelector('style');
@@ -82,21 +81,19 @@ describe('DesignScope', () => {
             mode: 'light',
             globalBackgroundImageUrl: 'image.png',
             globalBackgroundOpacity: 0.5,
-            globalBackgroundBlur: '10px',
-            globalBackgroundBlendMode: 'multiply'
+            globalBackgroundBlur: '10px'
         };
 
         render(
-            <DesignScope design={mockDesign as unknown as SarakDesignState}>
+            <SarakDesignScope design={mockDesign as unknown as SarakDesignState}>
                 <div />
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         const bgRenderer = screen.getByTestId('background-renderer');
         expect(bgRenderer).toHaveAttribute('data-image', 'image.png');
         expect(bgRenderer).toHaveAttribute('data-opacity', '0.5');
         expect(bgRenderer).toHaveAttribute('data-blur', '10px');
-        expect(bgRenderer).toHaveAttribute('data-blend', 'multiply');
         expect(bgRenderer).toHaveAttribute('data-mode', 'light');
     });
 
@@ -104,9 +101,9 @@ describe('DesignScope', () => {
         const mockDesign = { mode: 'dark', id: 'theme-1' };
 
         render(
-            <DesignScope design={mockDesign}>
+            <SarakDesignScope design={mockDesign}>
                 <ContextTester />
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         const tester = screen.getByTestId('context-tester');
@@ -115,9 +112,9 @@ describe('DesignScope', () => {
 
     it('appends extra dom safe props and custom className to the wrapper div', () => {
         const { container } = render(
-            <DesignScope design={{ mode: 'dark' }} className="my-custom-class" data-test="custom">
+            <SarakDesignScope design={{ mode: 'dark' }} className="my-custom-class" data-test="custom">
                 <div />
-            </DesignScope>
+            </SarakDesignScope>
         );
 
         const scopeDiv = container.firstChild as HTMLElement;

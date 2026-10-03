@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { DiscoveredModule } from '../../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../../core/Discovery/types';
 
 export const useMockModules = () => {
     const appIds = ['dashboard', 'forms', 'documentos', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'tabela', 'caixas-texto', 'graficos', 'kitchen-sink'];
 
-    const mockDiscoveredModules = useMemo<DiscoveredModule[]>(() => {
+    const mockDiscoveredModules = useMemo<SarakDiscoveredModule[]>(() => {
         return appIds.map((id, index) => ({
             id,
             label: id === 'dashboard' ? 'Dashboard'
@@ -42,7 +42,7 @@ export const useMockModules = () => {
     }, [appIds]);
 
     const mockGroupedModules = useMemo(() => {
-        return mockDiscoveredModules.reduce((acc: Record<string, DiscoveredModule[]>, mod) => {
+        return mockDiscoveredModules.reduce((acc: Record<string, SarakDiscoveredModule[]>, mod) => {
             const cat = mod.category || 'System Modules';
             if (!acc[cat]) acc[cat] = [];
             acc[cat].push(mod);

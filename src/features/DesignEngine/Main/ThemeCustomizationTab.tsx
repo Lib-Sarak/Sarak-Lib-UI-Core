@@ -10,7 +10,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import type { SarakUIOptions, SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
-import type { DesignToken } from '../../../core/Design/types';
+import type { SarakDesignToken } from '../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
@@ -73,7 +73,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         isDirty,
         toast,
         showToast,
-        handleThemePreview
+        handleThemePreview,
+        canUndoLastApply,
+        undoLastApply
     } = useDesignDraft(sarak);
 
     const handleApplyToSystemWrapper = useCallback(() => {
@@ -89,24 +91,21 @@ export const ThemeCustomizationTab: React.FC = () => {
         saveTheme: sarak.saveTheme
     });
 
-    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
+    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }, themeId?: string) => {
         setCurrentThemeName(design.systemName || 'Novo Tema');
 
-        // Joga o design inteiro pro draft (Sandbox) para refletir no Preview.
+        // Escolher um tema no catálogo alimenta só o rascunho, como qualquer outro
+        // token: o preview repinta na hora porque lê o rascunho, não o sistema. O
+        // design da aplicação e o armazenamento só mudam pela confirmação explícita
+        // do usuário (`handleApplyToSystemWrapper`), o mesmo caminho que qualquer
+        // outro token já usa — sem essa simetria, experimentar um tema seria
+        // irreversível sempre que a conversão de modo claro/escuro não for exata.
+        // `themeId` acompanha o rascunho — só vira `resolvedThemeId` do Provider
+        // quando `handleApplyToSystemWrapper` comitar.
         if (handleThemePreview) {
-            handleThemePreview(design);
+            handleThemePreview(design, undefined, themeId);
         }
-
-        // L4 (Spec 40.1): aplicar um TEMA COMPLETO pelo catálogo (PresetsCatalog) deve
-        // refletir no sistema IMEDIATAMENTE e PERSISTIR — igual ao TemplatesTab — não
-        // ficar só no preview (era essa a divergência de wiring do v5: o catálogo previa,
-        // mas nunca comitava, então "0 chaves no localStorage" e sem repintar ao vivo).
-        // Usa o commit RAW porque o `/design` roda sob modo rascunho: o `applyFullConfig`
-        // "smart" apenas atualizaria o draft. O RAW escreve no design do sistema →
-        // DesignInjector repinta na hora; `persistDesign` grava no localStorage/onSave.
-        sarak.applyFullConfigRaw?.(design);
-        sarak.persistDesign?.(design);
-    }, [handleThemePreview, setCurrentThemeName, sarak]);
+    }, [handleThemePreview, setCurrentThemeName]);
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
@@ -128,7 +127,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const handleInspectComponent = useCallback((schemaId: string) => {
         const foundPillar = Object.keys(groupedStructure).find(p =>
             Object.values(groupedStructure[p]).some(comps =>
-                (comps as DesignToken[]).some(c => c.id === schemaId)
+                (comps as SarakDesignToken[]).some(c => c.id === schemaId)
             )
         );
         if (foundPillar) setActivePillarId(foundPillar);
@@ -165,6 +164,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isPreviewStacked={isPreviewStacked}
                     setIsPreviewStacked={setIsPreviewStacked}
                     handleApplyGlobalChanges={handleApplyGlobalChanges}
+                    canUndoLastApply={canUndoLastApply}
+                    onUndoLastApply={undoLastApply}
                 />
 
                 {/* Área de Conteúdo (Scrollable) */}

@@ -1,15 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { VisualContract, DiscoveredModule } from '../../core/Discovery/types';
+import { SarakVisualContract, SarakDiscoveredModule } from '../../core/Discovery/types';
 import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
 import { useEndpointResolver } from './hooks/useEndpointResolver';
 import { ContractRenderer } from './components/ContractRenderer';
 import { SarakButton } from '../../components/atomic/Buttons/SarakButton';
 
-export interface DynamicRendererProps {
-    contracts: VisualContract[];
-    module?: DiscoveredModule; // Optional module context injection (v6.8)
+export interface SarakDynamicRendererProps {
+    contracts: SarakVisualContract[];
+    module?: SarakDiscoveredModule; // Optional module context injection (v6.8)
 }
 
 /**
@@ -20,7 +20,7 @@ export interface DynamicRendererProps {
  * of the module's specifics.
  */
 
-export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, module }) => {
+export const SarakDynamicRenderer: React.FC<SarakDynamicRendererProps> = ({ contracts, module }) => {
     
     // 1. Root Component Sovereignty (v9.3)
     // Buscamos o componente físico pelo ID do módulo se ele não estiver no objeto.
@@ -32,7 +32,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 
     // Group contracts by tabs (v6.1)
     const tabs = React.useMemo(() => {
-        const groups: Record<string, VisualContract[]> = {};
+        const groups: Record<string, SarakVisualContract[]> = {};
         let hasTabs = false;
 
         contracts?.forEach(c => {
@@ -123,5 +123,5 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
     );
 };
 
-export default DynamicRenderer;
+export default SarakDynamicRenderer;
 

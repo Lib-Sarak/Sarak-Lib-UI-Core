@@ -32,7 +32,7 @@ Object.entries(PILLAR_TO_CATEGORIES).forEach(([pillarId, cats]) => {
     cats.forEach(c => CATEGORY_TO_PILLAR[c] = pillarId);
 });
 
-import type { ComponentSchema, DesignToken } from '../../../core/Design/types';
+import type { ComponentSchema, SarakDesignToken } from '../../../core/Design/types';
 
 /**
  * Constrói grupos lógicos ("Colors", "Typography", "Inputs") a partir do catálogo global e da estrutura de schemas mestre.
@@ -51,14 +51,14 @@ export const buildDynamicGroups = (masterTokens: ComponentSchema[], catalogJSON:
     });
 
     // 2. Estrutura base
-    const groups: Record<string, Record<string, DesignToken[]>> = {};
+    const groups: Record<string, Record<string, SarakDesignToken[]>> = {};
     Object.keys(PILLAR_TO_CATEGORIES).forEach(p => groups[p] = {});
 
     // 3. Cruzamento
     masterTokens.forEach(masterToken => {
         if (masterToken.id === 'global') return; // Global é tratado separado na UI
 
-        masterToken.tokens.forEach((t: DesignToken) => {
+        masterToken.tokens.forEach((t: SarakDesignToken) => {
             let foundInCatalog: { tokenId?: string, categories?: string[] } | undefined;
             const myCategories = tokenCategoriesMap[t.id] || ['Especializado'];
             

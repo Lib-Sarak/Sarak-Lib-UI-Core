@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Esquemas de URL aceitos (allow-list — mais seguro que bloquear caso a caso). */
 const SAFE_LINK_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
@@ -22,7 +23,7 @@ const stripControlChars = (value: string): string =>
  * `mailto:`, `tel:`, caminhos relativos/âncora). Bloqueia `javascript:`, `data:`
  * e qualquer outro esquema executável — vetor clássico de XSS via link.
  */
-export const isSafeLinkHref = (href: string): boolean => {
+export const sarakIsSafeLinkHref = (href: string): boolean => {
     const trimmed = (href ?? '').trim();
     if (!trimmed) return false;
     if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./') || trimmed.startsWith('../') || trimmed.startsWith('?')) {
@@ -59,7 +60,8 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
     style,
     ...props
 }) => {
-    const safe = isSafeLinkHref(href);
+    const t = useLibraryText();
+    const safe = sarakIsSafeLinkHref(href);
 
     if (!safe) {
         console.warn(`[Sarak:Link] href com esquema não permitido — descartado: "${href}"`);
@@ -86,7 +88,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
             {external && (
                 <>
                     <ExternalLink size={12} aria-hidden="true" className="shrink-0" />
-                    <span className="sr-only"> (abre em nova aba)</span>
+                    <span className="sr-only">{t('linkExternalHint')}</span>
                 </>
             )}
         </a>

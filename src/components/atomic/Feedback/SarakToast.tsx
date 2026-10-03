@@ -26,33 +26,33 @@ import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalS
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 /** Variantes semânticas, mapeadas 1:1 ao Status Schema. */
-export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
+export type SarakToastVariant = 'success' | 'error' | 'warning' | 'info';
 
 /** Opções de um disparo de toast (interface estável consumida pelo Dispatcher). */
-export interface ToastOptions {
+export interface SarakToastOptions {
     /** Texto exibido. */
     message: string;
     /** Variante semântica (default: `info`). */
-    variant?: ToastVariant;
+    variant?: SarakToastVariant;
     /** Duração até o auto-dismiss em ms (default: 3000). */
     duration?: number;
 }
 
 /** Controller público do sistema de toasts. */
-export interface ToastController {
+export interface SarakToastController {
     /** Empilha um toast; devolve seu id (para dismiss manual). */
-    notify(options: ToastOptions): string;
+    notify(options: SarakToastOptions): string;
     /** Remove um toast pelo id. */
     dismiss(id: string): void;
 }
 
-interface ToastEntry extends Required<Omit<ToastOptions, 'duration'>> {
+interface ToastEntry extends Required<Omit<SarakToastOptions, 'duration'>> {
     id: string;
     duration: number;
 }
 
 /** Var CSS de cor por variante (Status Schema — Zero Hardcode). */
-const VARIANT_COLOR: Readonly<Record<ToastVariant, string>> = {
+const VARIANT_COLOR: Readonly<Record<SarakToastVariant, string>> = {
     success: 'var(--sarak-status-success-color, var(--theme-success, #10b981))',
     error: 'var(--sarak-status-error-color, var(--theme-error, #ef4444))',
     warning: 'var(--sarak-status-warning-color, var(--theme-warning, #f59e0b))',
@@ -61,7 +61,7 @@ const VARIANT_COLOR: Readonly<Record<ToastVariant, string>> = {
 
 const DEFAULT_DURATION = 3000;
 
-const ToastContext = createContext<ToastController | null>(null);
+const ToastContext = createContext<SarakToastController | null>(null);
 
 /** Toast individual (apresentação). */
 const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void }> = ({
@@ -122,7 +122,7 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }, []);
 
     const notify = useCallback(
-        (options: ToastOptions): string => {
+        (options: SarakToastOptions): string => {
             seq.current += 1;
             const id = `toast-${seq.current}`;
             const entry: ToastEntry = {
@@ -150,7 +150,7 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         };
     }, []);
 
-    const controller = useMemo<ToastController>(() => ({ notify, dismiss }), [notify, dismiss]);
+    const controller = useMemo<SarakToastController>(() => ({ notify, dismiss }), [notify, dismiss]);
 
     const stack =
         typeof document !== 'undefined'
@@ -189,10 +189,10 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
  * Acessa o controller de toasts. Fora de um `SarakToastProvider`, devolve um
  * controller no-op (loga um aviso) para que o Dispatcher degrade sem quebrar a árvore.
  */
-export const useToast = (): ToastController => {
+export const useToast = (): SarakToastController => {
     const ctx = useContext(ToastContext);
     // `useMemo` é sempre chamado (regras de hooks); só usado se não houver Provider.
-    const noop = useMemo<ToastController>(
+    const noop = useMemo<SarakToastController>(
         () => ({
             notify: (): string => {
                 console.warn('[Sarak:Toast] useToast() sem SarakToastProvider; toast ignorado.');

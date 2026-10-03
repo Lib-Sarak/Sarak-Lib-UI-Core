@@ -5,6 +5,857 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
+
+**Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.
+
+**O que muda.** Componentes, tipos, interfaces, constantes e funções exportadas seguem a convenção de prefixo da biblioteca. Atualize os imports conforme a tabela:
+
+| Nome antigo | Nome novo |
+| --- | --- |
+| `Accept` | `SarakAccept` |
+| `BadgeSize` | `SarakBadgeSize` |
+| `BadgeVariant` | `SarakBadgeVariant` |
+| `BreadcrumbItem` | `SarakBreadcrumbItem` |
+| `CardMove` | `SarakCardMove` |
+| `CatalogItem` | `SarakCatalogItem` |
+| `ChartDataItem` | `SarakChartDataItem` |
+| `ContextMenuPosition` | `SarakContextMenuPosition` |
+| `CustomizationPanel` | `SarakCustomizationPanel` |
+| `DEFAULT_COLUMN_WIDTH` | `SARAK_DEFAULT_COLUMN_WIDTH` |
+| `DEFAULT_DEVICE_BREAKPOINTS` | `SARAK_DEFAULT_DEVICE_BREAKPOINTS` |
+| `DESIGN_MANIFEST` | `SARAK_DESIGN_MANIFEST` |
+| `DateLocale` | `SarakDateLocale` |
+| `DatePickerValue` | `SarakDatePickerValue` |
+| `DerivedThemePreset` | `SarakDerivedThemePreset` |
+| `DesignScope` | `SarakDesignScope` |
+| `DesignScopeProps` | `SarakDesignScopeProps` |
+| `DesignToken` | `SarakDesignToken` |
+| `DeviceBreakpoints` | `SarakDeviceBreakpoints` |
+| `DeviceProvider` | `SarakDeviceProvider` |
+| `DeviceProviderProps` | `SarakDeviceProviderProps` |
+| `DeviceType` | `SarakDeviceType` |
+| `DiscoveredModule` | `SarakDiscoveredModule` |
+| `DynamicRenderer` | `SarakDynamicRenderer` |
+| `DynamicRendererProps` | `SarakDynamicRendererProps` |
+| `ExpandableCard` | `SarakExpandableCard` |
+| `ExpandableCardProps` | `SarakExpandableCardProps` |
+| `FileRejection` | `SarakFileRejection` |
+| `FilterConfig` | `SarakFilterConfig` |
+| `FilterDescriptor` | `SarakFilterDescriptor` |
+| `FilterSelect` | `SarakFilterSelect` |
+| `FilterSelectProps` | `SarakFilterSelectProps` |
+| `FlexDirection` | `SarakFlexDirection` |
+| `GLOBAL_THEMES` | `SARAK_GLOBAL_THEMES` |
+| `HelpButton` | `SarakHelpButton` |
+| `ICONE_DESCONHECIDO` | `SARAK_ICONE_DESCONHECIDO` |
+| `ICON_NAMES` | `SARAK_ICON_NAMES` |
+| `IconFamily` | `SarakIconFamily` |
+| `IconMap` | `SarakIconMap` |
+| `IconName` | `SarakIconName` |
+| `IconTriple` | `SarakIconTriple` |
+| `ImageCard` | `SarakImageCard` |
+| `ImageCardProps` | `SarakImageCardProps` |
+| `KanbanCard` | `SarakKanbanCard` |
+| `KanbanColumn` | `SarakKanbanColumn` |
+| `LightboxImage` | `SarakLightboxImage` |
+| `MIN_COLUMN_WIDTH` | `SARAK_MIN_COLUMN_WIDTH` |
+| `MatrixNodeConfig` | `SarakMatrixNodeConfig` |
+| `MatrixParentData` | `SarakMatrixParentData` |
+| `MatrixTreeNode` | `SarakMatrixTreeNode` |
+| `Message` | `SarakMessage` |
+| `ModalLayoutContext` | `SarakModalLayoutContext` |
+| `ModuleManifest` | `SarakModuleManifest` |
+| `MultiSelectOption` | `SarakMultiSelectOption` |
+| `NavigationItem` | `SarakNavigationItem` |
+| `PaginationToken` | `SarakPaginationToken` |
+| `PdfSource` | `SarakPdfSource` |
+| `PinnedOffsets` | `SarakPinnedOffsets` |
+| `PreferenceId` | `SarakPreferenceId` |
+| `PreferencePosition` | `SarakPreferencePosition` |
+| `RangeValue` | `SarakRangeValue` |
+| `ResponsiveDevice` | `SarakResponsiveDevice` |
+| `ResponsiveValue` | `SarakResponsiveValue` |
+| `ShellLanguageSelector` | `SarakShellLanguageSelector` |
+| `ShellLanguageSelectorProps` | `SarakShellLanguageSelectorProps` |
+| `ShellNavItem` | `SarakShellNavItem` |
+| `ShellSearchWidget` | `SarakShellSearchWidget` |
+| `ShellSearchWidgetProps` | `SarakShellSearchWidgetProps` |
+| `ShellThemeToggle` | `SarakShellThemeToggle` |
+| `ShellThemeToggleProps` | `SarakShellThemeToggleProps` |
+| `ShellUser` | `SarakShellUser` |
+| `ShellUserWidget` | `SarakShellUserWidget` |
+| `ShellUserWidgetProps` | `SarakShellUserWidgetProps` |
+| `SkeletonShape` | `SarakSkeletonShape` |
+| `SocialButton` | `SarakSocialButton` |
+| `SocialButtonProps` | `SarakSocialButtonProps` |
+| `SparklineVariant` | `SarakSparklineVariant` |
+| `StepConfig` | `SarakStepConfig` |
+| `StepperOrientation` | `SarakStepperOrientation` |
+| `THEME_AXES` | `SARAK_THEME_AXES` |
+| `THEME_PRESET_IDS` | `SARAK_THEME_PRESET_IDS` |
+| `ThemeEntry` | `SarakThemeEntry` |
+| `ThemePreset` | `SarakThemePreset` |
+| `ThemePresetId` | `SarakThemePresetId` |
+| `ThemeReferenceOverrides` | `SarakThemeReferenceOverrides` |
+| `ToastController` | `SarakToastController` |
+| `ToastOptions` | `SarakToastOptions` |
+| `ToastVariant` | `SarakToastVariant` |
+| `TokenValueType` | `SarakTokenValueType` |
+| `TooltipPosition` | `SarakTooltipPosition` |
+| `VisualContract` | `SarakVisualContract` |
+| `VisualContractType` | `SarakVisualContractType` |
+| `WeekStart` | `SarakWeekStart` |
+| `buildPaginationRange` | `sarakBuildPaginationRange` |
+| `computeOffsets` | `sarakComputeOffsets` |
+| `deriveThemeFromReference` | `sarakDeriveThemeFromReference` |
+| `deviceForWidth` | `sarakDeviceForWidth` |
+| `findMissingThemeAxes` | `sarakFindMissingThemeAxes` |
+| `getAllDesignTokens` | `sarakGetAllDesignTokens` |
+| `getDefaultDesignState` | `sarakGetDefaultDesignState` |
+| `getLocalComponent` | `sarakGetLocalComponent` |
+| `getLocalComponentIds` | `sarakGetLocalComponentIds` |
+| `getRegisteredModules` | `sarakGetRegisteredModules` |
+| `getThemePreset` | `sarakGetThemePreset` |
+| `isResponsiveValue` | `sarakIsResponsiveValue` |
+| `isSafeLinkHref` | `sarakIsSafeLinkHref` |
+| `moveCard` | `sarakMoveCard` |
+| `registerLocalComponent` | `sarakRegisterLocalComponent` |
+| `reorder` | `sarakReorder` |
+| `resolveResponsiveValue` | `sarakResolveResponsiveValue` |
+| `sanitizeRichText` | `sarakSanitizeRichText` |
+| `subscribeToRegistry` | `sarakSubscribeToRegistry` |
+| `warnOnIncompleteTheme` | `sarakWarnOnIncompleteTheme` |
+| `widthOf` | `sarakWidthOf` |
+
+**Por quê.** O prefixo permite distinguir os identificadores da biblioteca dos nomes locais do consumidor.
+
+**Como migrar.** Substitua cada nome antigo pelo correspondente na coluna “Nome novo” dos imports e anotações de tipo.
+
+**O que não mudou.** Nenhum comportamento, prop ou assinatura foi alterado junto com os nomes.
+
+## 7.0.0 — A rolagem do `SarakAppChrome` passa para o painel de conteúdo
+
+**Classificação: MAJOR** — páginas longas deixam de rolar no documento; a barra lateral e a barra superior passam a permanecer dentro da altura do cromo.
+
+**O que muda.** A raiz do `SarakAppChrome` ocupa a viewport e contém o excedente. O painel marcado por `data-sarak-content` passa a ser a região rolável; a barra lateral só rola quando sua própria navegação não cabe. Isso mantém a navegação visível em telas longas e vale também para o modo de barra superior.
+
+**Como migrar.** Mova usos de `window.scrollTo`, âncoras e integrações que dependiam da rolagem do documento para o painel de conteúdo. Em uso embarcado, preserve o comportamento anterior ou defina outra altura passando `style` ao `SarakAppChrome`; esse estilo continua sobrescrevendo a altura padrão da viewport.
+
+---
+
+## 7.0.0 — O conteúdo do cromo passa a respeitar o respiro do tema
+
+**Classificação: MAJOR** — telas que já compensavam manualmente a distância até as bordas terão o layout deslocado.
+
+**O que muda.** O conteúdo do `SarakAppChrome` agora recebe, nos quatro lados e nos três dispositivos, o valor de `layoutPadding` do tema. O mesmo token passa a governar também o respiro vertical do `SarakShell`; antes, esse espaço era parcialmente fixo e o modo ui-kit não tinha respiro próprio.
+
+**Como migrar.** Remova a compensação de padding que sua tela tenha adicionado apenas para afastar o conteúdo das bordas. Para preservar o comportamento sem respiro, configure `layoutPadding` como `{ mob: 0, tab: 0, desk: 0 }` no tema.
+
+---
+
+## 7.0.0 — A classe utilitária passa a vencer o estilo padrão que a lib dá a botão, campo, título e texto (plan-77)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda, mas a aparência muda sem o consumidor tocar
+em nada: o mesmo critério das demais entradas da 7.0.0.
+
+**O que estava errado.** O CSS da lib publica as camadas nesta ordem: `theme, base, components, utilities,
+sarak-lib`. Os padrões que a lib dá a **elemento** — raio e hover de `<button>`, raio de `<input>`/`<select>`/
+`<textarea>`, família/cor/tamanho de `h1`–`h6`, família de `span`/`p`/`div`, o estilo de borda de todo
+elemento com classe de borda — moravam em `sarak-lib`, a **última** camada. Entre camadas quem decide é a
+posição, não a especificidade: essas regras venciam **toda** classe utilitária do Tailwind no mesmo
+elemento — da lib e a **sua**. Um `<button className="rounded-full">` do seu app saía com o raio do tema;
+um `<h2 className="text-sm">` saía com o tamanho de título do tema; `hover:bg-*` em botão não aparecia.
+
+**O que muda.** Esses padrões passam para uma camada entre o preflight e as utilitárias
+(`components.sarak-elements`). A ordem publicada fica: preflight → **padrões de elemento da lib** →
+utilitárias → classes próprias da lib (`rounded-btn`, `bg-theme-card`, `border-theme`…). Num elemento
+com classe utilitária, **a classe decide**; sem classe, **vale o padrão da lib**, como antes. Vale nos dois
+modos (`sarak.css` e `sarak-scoped.css`) e também para quem compila o `sarak-base.css` cru no próprio
+Tailwind — a subcamada fica antes de `utilities` qualquer que seja a ordem em que os dois CSS carregam.
+
+**O que você pode ver de diferente** — sempre algo que o seu código (ou o da lib) já declarava e não
+recebia:
+
+| Onde | Antes | Depois |
+| --- | --- | --- |
+| `<button>` com `rounded-*` | raio do tema (`btnBorderRadius`) | o raio da classe — é assim que a **pílula** do item de navegação da topbar passa a aparecer |
+| `<button>` com `hover:bg-*` / `active:bg-*` / `focus-visible:*` | fundo de hover/ativo e anel de foco do tema | o que a classe diz |
+| `<input>`/`<select>`/`<textarea>` com `rounded-*` | raio do token de campo | o raio da classe |
+| Título (`h1`–`h6`) com `text-*`, `font-*` ou cor por classe | tamanho, peso, família e cor de título do tema | os da classe. Componentes da lib que põem classe de tamanho no próprio título passam a renderizar nesse tamanho |
+| `span`/`p`/`div` com `font-*` (ex.: `font-mono`) | família de texto do tema | a família da classe |
+| Elemento com `border-dashed`/`border-dotted` | o estilo de borda do tema (`borderStyle`) | o estilo da classe |
+| Item de navegação sob o ponteiro | o hover primário de botão | o fundo do token `topbarHoverColor`/`sidebarHoverColor`, cujo default é `transparent` — **temas sem esses tokens ficam sem fundo de hover no item**, só com a troca de cor do texto |
+
+**O que NÃO muda.** Sem classe, o padrão continua exatamente igual. O token `borderStyle` continua
+chegando a todo elemento com `border`/`border-2`/`border-t`… — a ponte passou a alimentar também a variável
+que essas utilitárias leem. Os quatro cantos do botão (`btnRadiusTL/TR/BR/BL`) continuam chegando ao
+`SarakButton`/`SarakIconButton`: a classe `rounded-btn` passou a compô-los, com o raio mestre como reserva —
+um tema com canto diferente do mestre (o `minimalist-airy`, por exemplo) segue com a mesma forma.
+
+**Ainda NÃO cede à classe** (continua na última camada, por motivo):
+- o `body` (tamanho, peso e entrelinha) — outra regra da lib também escreve `line-height` no `body`, e só a
+  ordem atual garante que o token de entrelinha vença;
+- o `transform` do botão pressionado (`:active`), que é `!important` — `active:scale-*`/`translate-*`
+  continuam compondo, porque escrevem `scale`/`translate`, não `transform`.
+
+**Como migrar.** Nada obrigatório. Onde a mudança for indesejada:
+- **Uma classe sua que "não fazia nada" e agora aparece** — a classe estava errada e o padrão a escondia.
+  Remova-a: sem classe, o padrão da lib volta.
+- **Um título ou botão de componente da lib mudou** — a `className` que você passa ao átomo continua
+  vencendo a dele (R35); passe a classe que quiser.
+- **Hover do item de navegação sumiu no seu tema** — defina `topbarHoverColor`/`sidebarHoverColor` no tema.
+
+### `globalBackgroundBlendMode` sai do schema (plan-78)
+
+**Classificação: MAJOR** — remove um token do schema, do tipo público (`SarakDesignState`) e das
+chaves aceitas por `validateDesign`.
+
+**O que estava errado.** O token oferecia cinco modos de mesclagem (Overlay/Multiply/Screen/Soft
+Light/Color Dodge) entre a imagem de fundo global e as cores do tema, mas `SarakBackgroundRenderer`
+sempre renderizava em `'normal'` — regra do dono: qualquer outro modo produz resultado oposto entre
+claro e escuro (o container alterna entre branco e preto). As outras quatro opções nunca tiveram
+efeito visível; a descrição do próprio token já registrava a pendência.
+
+**O que muda.** `globalBackgroundBlendMode` sai de `src/core/Design/schema/media.ts`, do tipo
+`SarakDesignState`, de `PAYLOAD_EXTRA_KEYS`, do roteamento de persistência e do catálogo — e dos 15
+temas embarcados que declaravam a chave. `SarakBackgroundRenderer` deixa de aceitar a prop
+`blendMode`; a mesclagem `'normal'` continua fixa no código, como sempre foi na prática.
+
+**Como migrar.** Nada obrigatório. Um tema (seu ou persistido em `localStorage`) que ainda carregue
+`globalBackgroundBlendMode` tem a chave descartada por `validateDesign`, com um único
+`console.warn` por sessão — não a cada render. Remova a chave do seu tema para não vê-lo mais.
+
+### 12 temas saem do catálogo shippado — recalibração da vitrine (plan-80)
+
+**Classificação: MAJOR** — encolhe a união pública `ThemePresetId` e `GLOBAL_THEMES`/`THEME_PRESET_IDS`
+perdem 12 entradas.
+
+**O que muda.** Decisão do dono: o catálogo de 23 temas concentrava demais num só canto (escuro + neon +
+ciano/magenta, medido em `specs/09-temas-e-presets.md` §5.2) e parte dele não representava bem a
+capacidade da biblioteca. Saem do catálogo:
+
+`crystal-glass`, `holographic-glass`, `nature-breeze`, `dot-matrix-elegant`, `asymmetric-editorial`,
+`stellar-nebula`, `industrial-dashboard`, `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
+`forja-ultravioleta`, `grafite-puro`.
+
+Os dois temas de referência (`SARAK_REFERENCE_THEMES` — `minimalist-airy` claro, `sarak-sovereign` escuro)
+**continuam existindo com os mesmos ids**, inalterados nesta entrada. O conteúdo dos 11 que ficam mudou em
+seguida, na mesma versão — ver a entrada "Catálogo recalibrado" mais abaixo.
+
+**O que acontece com quem já tem um dos 12 ids salvo** (`activeThemeId`, `initialTheme`, ou um id restaurado
+de persistência própria do consumidor e re-passado numa dessas duas props): a lib nunca fica sem tema e
+nunca lança. Ela cai no tema de referência do **modo pedido** — o de `config.mode`, se você passar um
+explícito, senão o modo atual do design (para quem já tinha um tema no ar e muda de id em runtime), senão
+escuro (o default do schema) — e emite **um** `console.warn` nomeando o id que não foi encontrado.
+
+**Como migrar.** Troque o id salvo por um dos 11 que continuam no catálogo (`GLOBAL_THEMES`/
+`THEME_PRESET_IDS` são a fonte viva), ou por um tema seu via `customThemes`. Não fazer nada não quebra a
+tela — o consumidor cai na referência do próprio modo, com o aviso no console apontando a causa.
+
+### `SarakBadge` `muted` deixa de usar o token de borda como fundo (plan-81)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda, mas a variante `muted` (o default quando
+`soft`) muda de cor sem o consumidor tocar em nada.
+
+**O que estava errado.** O fundo da variante soft usava `--theme-border` — o token de `cardBorderColor`,
+cujo contrato é "borda sutil, baixa opacidade", não fundo. Num tema de borda opaca (`neo-brutalism`, borda
+branca sólida), o badge saía branco sobre branco — contraste ~1:1, medido na tela.
+
+**O que muda.** O fundo passa a usar `--theme-surface` (`cardBackgroundColor` — contrato de fundo de
+superfície). O par texto×fundo resultante (`textColorMuted`/`cardBackgroundColor`) já é um dos pares que o
+`auditor_contraste` (R31) mede, e passa 4,5:1 em todo tema shippado, nos dois modos.
+
+**Como migrar.** Nada obrigatório. Se você mirava `--theme-border` por CSS externo para customizar o fundo
+deste badge, mire `--theme-surface`.
+
+### Catálogo recalibrado: 3 temas novos e 11 que mudam o que o usuário vê (plan-80)
+
+**Classificação: MAJOR** — nenhum export, prop ou token muda de forma, mas temas que **mantêm o id** passam a
+renderizar diferente sem o consumidor tocar em nada: o mesmo critério das demais entradas da 7.0.0. Vale para
+quem aplica um tema shippado por `initialTheme`/`activeThemeId`, ou o tem salvo no design do sistema.
+
+**O que entra.** Três ids novos em `THEME_PRESET_IDS` e `GLOBAL_THEMES` (o catálogo passa de 11 para 14):
+`golden-hour` (claro, dourado, sidebar à direita), `aurora-veil` (claro, lavanda, vidro fosco, topbar) e
+`blueprint-protocol` (escuro, azul, sidebar flutuante, botão wireframe). A união `ThemePresetId` cresce —
+código seu que faz `switch` exaustivo sobre ela precisa de três casos a mais.
+
+**O que muda para quem já tinha um dos ids abaixo aplicado**, cada um com o que era e o que passa a ser:
+
+| Tema (id mantido) | Antes | Depois |
+| --- | --- | --- |
+| `data-terminal` | **escuro** nativo, ciano sobre preto, com partes claras misturadas (cabeçalho de card branco sobre corpo preto) | **claro** nativo, verde vívido sobre quase-branco, monoespaçado, sidebar. Quem o tinha aplicado abre a tela clara |
+| `synthwave-retro` | magenta/ciano neon sobre roxo quase preto | laranja sobre céu de dusk em ameixa (fundo de luminosidade média); continua escuro nativo, com grid retrô |
+| `neo-brutalism` | acentos ciano (item ativo, botão de ação do card) num tema vermelho/preto | os mesmos acentos em vermelho, a cor do próprio tema |
+| `neumorphic-mobile` | acentos azul genérico (item ativo, botão de ação, switch) | os mesmos acentos no rosa pastel do próprio tema |
+| `nebula-space` | imagem de fundo hospedada em terceiro | sem imagem de fundo (`globalBackgroundImageUrl: ''`) |
+| `kinetic-flow` | vídeo de fundo hospedado em terceiro, e `description` que o prometia | sem vídeo de fundo; `description` reescrita |
+
+**O que muda em todos os 11 que já existiam:**
+
+- **Hover do item de navegação.** Os que tinham o fundo de hover `transparent` (só a cor do texto trocava)
+  ganham um fundo perceptível, nas duas orientações. A varredura de realce do `SarakMenuItem` agora mede o
+  fundo de hover de todo tema, nos dois modos.
+- **Idiomas.** Todo tema shippado declara `enabledLanguages` com os seis idiomas da lib (`pt`, `en`, `es`,
+  `fr`, `de`, `it`). Pela regra de montagem do seletor (entrada "O seletor de idioma passa a gravar
+  preferência…", abaixo), quem **oferece** `language` no painel passa a ver o seletor com os seis; quem não
+  oferece continua sem ele.
+- **Contraparte autorada em todos.** Antes, só 2 dos 11 tinham (`sarak-sovereign` e `minimalist-airy`); o
+  modo oposto dos outros nove vinha do fallback sintetizado (`syncThemeWithMode`). Agora todo tema tem o bloco autorado, e a lista de isenção do
+  `auditor_contraste` terminou vazia. Quem alternava para o modo oposto num destes vê um resultado
+  **diferente** do sintetizado — de propósito.
+
+**Como migrar.** Nada obrigatório: a tela nunca fica sem tema e nada lança. Onde a mudança for indesejada:
+
+- **`data-terminal` claro demais para o seu app** — peça o modo escuro (`updatePreferences({ colorMode:
+  'dark' })`, a mesma porta do alternador de tema): a contraparte é um terminal escuro verde sobre preto. **O
+  visual escuro ciano de antes não existe mais no catálogo**; para mantê-lo, copie os valores da versão
+  anterior da lib (histórico do Git da tag) para um tema seu em `customThemes`.
+- **Qualquer outro** — o mesmo caminho: um tema seu em `customThemes`, ou `deriveThemeFromReference` a partir
+  de `minimalist-airy`/`sarak-sovereign`, que continuam com os mesmos ids e o mesmo papel de referência.
+- **Mídia de fundo que você quer de volta** (`nebula-space`, `kinetic-flow`) — aponte o
+  `globalBackgroundImageUrl` do **seu** tema para um ativo **seu**; a lib não hospeda nem referencia mídia de
+  terceiro.
+
+---
+
+## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
+
+**Classificação: aditiva, não MAJOR.** O token de posição de cada preferência (`preference*Position`,
+schema `preferences.ts`) já existia; esta entrada só cobre a UI nova que o lê — o widget ⚙ "Preferências",
+os controles fixados na barra e a seção do painel que os configura. **O padrão de fábrica não muda a barra**
+de nenhum consumidor: `colorMode` e `navCollapsed` continuam `pinned` (exatamente os widgets que já existiam
+— ADR-014 no `SarakAppChrome`, sempre-ligados no `SarakShell`); `fontSize`, `navigationStyle` e `language`
+continuam `off` — e nenhum tema shippado ou de consumidor declara essas três chaves hoje.
+
+**O que passa a existir**, nos dois cromos (`SarakAppChrome` e `SarakShell`) e no drawer mobile:
+
+- Para cada uma das 5 preferências, o administrador escolhe no painel (nova seção "Barra de Preferências do
+  Usuário") uma de três posições: **não oferecida** (nada), **no menu** (item dentro do ⚙ "Preferências") ou
+  **fixa na barra** (controle direto — e também dentro do ⚙, quando ele existe).
+- **O ⚙ só nasce quando pelo menos uma preferência está em `menu`.** Uma barra só com fixadas (o padrão de
+  fábrica) não o faz aparecer — não existe botão que abre um painel vazio, e por isso o padrão de fábrica
+  fica idêntico ao de hoje.
+- Duas preferências novas ganham controle: **tamanho da fonte** (P/M/G, `ShellFontSizeControl`) e
+  **navegação topo/lateral** (`ShellNavigationStyleControl`). O seletor de idioma (plan-75) e a alternância
+  de tema/colapso (plan-73/ADR-014) reusam os componentes que já existiam.
+- **No celular, tudo o que é oferecido vai para o drawer**, fixado ou não — não há ⚙ separado ali (Spec 05
+  §2.3, "nada some"); a exceção é `navCollapsed`, que nunca ganha linha própria no drawer porque o próprio
+  hambúrguer já é o controle de colapso.
+- **O `widgets` do `SarakAppChrome` continua sendo o teto do código** (`themeToggle`/`collapse`): o que o
+  desenvolvedor desligou ali não volta pela configuração do tema. O `SarakShell` não tem essa camada — só a
+  posição do tema decide.
+
+**Quem quiser o comportamento novo** não precisa fazer nada além de abrir o painel e mudar a posição de uma
+preferência — a barra de todo mundo que não tocar nisso continua exatamente como está.
+
+**A única exceção — o seletor de idioma do `SarakShell`.** Antes deste par de plans (74 + 75), o Shell
+renderizava o seletor de idioma **sem condição nenhuma**; o `SarakAppChrome` nunca o teve. Com o padrão de
+fábrica desta plan (`language` = `off`), o Shell passa a escondê-lo também — é o único dos cinco widgets em
+que "o padrão de fábrica não muda a barra" não se aplica, porque só o Shell tinha esse widget sempre ligado,
+sem teto de `widgets` (que só o `SarakAppChrome` tem). Quem quiser o seletor de volta no Shell **oferece
+`language` no painel** (`pinned` ou `menu`) — e, com a plan-75 no mesmo release, também precisa de
+`enabledLanguages` com dois ou mais códigos no tema (ver a entrada abaixo).
+
+---
+
+## O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
+
+**Classificação: MAJOR** — mesmo critério das entradas anteriores desta lista: mudar o default é MAJOR
+mesmo sem tocar em export, prop ou token. `ShellLanguageSelector` deixava a escolha morrer num
+`useState` local (`pt-BR`/`en-US` fixos, sempre visíveis); agora ele lista os idiomas que o **tema**
+habilita (`design.enabledLanguages`) e grava a escolha como **preferência** do usuário
+(`updatePreferences({ language })`, a mesma camada do plan-73 — nunca no tema).
+
+**O que muda.**
+
+- **A lista vem do tema, não é mais fixa.** Sem `enabledLanguages` no `design` (o caso de todo tema
+  shippado hoje, e de qualquer tema de consumidor que nunca declarou o eixo), o seletor **não tem o que
+  listar**. Com um idioma só, também não há escolha possível.
+- **Consequência direta — regra de montagem (ADR-014, "só monta quando tem com o que funcionar"):** o
+  seletor deixa de renderizar sempre. Ele só aparece com **dois ou mais** idiomas em
+  `design.enabledLanguages`. Um host que já usava o painel (`LanguageTab`) para habilitar mais de um
+  idioma não percebe diferença; um host que nunca configurou o eixo deixa de ver o seletor onde antes via
+  o par fixo `pt-BR`/`English`. **No `SarakShell`, há uma segunda condição, que vem de outra entrada desta
+  lista (plan-74):** o `enabledLanguages` deixou de ser suficiente sozinho — o Shell só monta o seletor
+  quando `language` também está **oferecido** no painel (`pinned` ou `menu`; o padrão de fábrica é `off`).
+  O `SarakAppChrome` nunca teve o seletor por padrão, então essa segunda condição não é novidade para ele.
+- **A escolha sobrevive a recarregamento e não vaza para o sistema.** Antes, trocar de idioma no seletor
+  não persistia nada (estado local, morria no F5) e não alcançava lugar nenhum. Agora persiste por
+  usuário, sincroniza entre abas e chega à porta opcional `options.preferences.onSave` — a mesma porta e o
+  mesmo `useSarakPreferences().updatePreferences()` do plan-73, generalizados para a quinta preferência
+  (`language`). **Só para GRAVAR** — para LER o idioma que vale, ver abaixo: não é o mesmo canal.
+- **O caminho de substituição pelo host** (`getLocalComponent('shell-language-selector')` /
+  `window.__SARAK_OVERRIDES__`) **continua funcionando, sem mudança** — inclusive sem depender da regra de
+  montagem acima, porque quem decide o que aparece ali passa a ser o host.
+
+**O que a lib continua NÃO fazendo.** Ela entrega a **escolha**, não o **texto traduzido**: não há motor de
+tradução nesta biblioteca, e os textos da própria lib não são afetados por esta mudança. Traduzir as telas
+da aplicação é do host — é exatamente o que a porta abaixo existe para viabilizar.
+
+**Como o host lê a escolha e traduz a própria aplicação.** Pelo `design` público de `useSarakUI()` — o
+estado EFETIVO (tema com as preferências oferecidas sobrepostas), nunca `useSarakPreferences().preferences`
+direto: a preferência crua não é o idioma que vale. `design.language` já resolve os três casos —
+preferência ausente (cai no idioma do tema), preferência para uma posição que o administrador desligou no
+painel (`preferenceLanguagePosition: 'off'`, o padrão de fábrica — cai no idioma do tema) e preferência para
+um idioma que o administrador **desabilitou** depois de salva (`enabledLanguages` não contém mais aquele
+código — cai no idioma do tema). Ler a preferência crua reabre os três: aplica um idioma desligado, ignora
+que o administrador nunca ofereceu a troca, ou aplica um idioma que o tema não habilita mais.
+
+É reativo (React re-renderiza sozinho a cada troca; não há polling nem callback novo a assinar) e a mesma
+leitura já funciona entre abas, porque a camada de preferências sincroniza pelo `storage` event. Exemplo com
+`i18next` (qualquer outra biblioteca de i18n do host se encaixa do mesmo jeito — a lib não sabe qual o host
+usa):
+
+```tsx
+import { useEffect } from 'react';
+import i18n from 'i18next';
+import { useSarakUI } from '@sarak/lib-ui-core';
+
+function AppI18nBridge() {
+    const { design } = useSarakUI();
+
+    useEffect(() => {
+        if (design.language) {
+            i18n.changeLanguage(design.language);
+        }
+    }, [design.language]);
+
+    return null;
+}
+```
+
+**Como migrar.** Quem quer o seletor visível declara `enabledLanguages` com dois ou mais códigos no tema
+(painel → aba de Idioma, ou o campo direto no JSON do tema) — e, no `SarakShell`, também oferece `language`
+na seção "Barra de Preferências do Usuário" do painel (plan-74), já que lá ele deixou de vir sempre ligado.
+Quem quer manter o par fixo de antes, independente do tema, monta o próprio componente pelo caminho de substituição
+(`window.__SARAK_OVERRIDES__['shell-language-selector']`), que não mudou. Quem já lia
+`design.language`/`design.enabledLanguages` diretamente continua funcionando sem alteração — só a
+**escolha do usuário final**, que antes não ia a lugar nenhum, agora tem onde pousar.
+
+---
+
+## O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
+
+**Classificação: MAJOR** — `ShellThemeToggle` (usado pelos dois cromos, `SarakAppChrome` e `SarakShell`) e o
+toggle de recolher (`ChromeCollapseToggle` no modo ui-kit, o hambúrguer/chevron do `SarakShell` no modo
+módulos-plugin) deixam de escrever no `design` do sistema. Antes, o clique de **um** usuário final —
+alternar claro/escuro, recolher a navegação — reescrevia o tema de **todos**, porque a única gravação que
+existia era a do tema (`persistDesign`, `localStorage` + `persistence.onSave`, debounce de 1,5s).
+
+**O que muda.** Existe uma camada nova de **preferências do usuário**, separada do tema: sobreposta ao
+design ao renderizar, guardada por usuário, e nunca gravada como tema. As duas ações acima passam a gravar
+ali — hook público `useSarakPreferences()`, campo `preferences` + `updatePreferences` em `useSarakUI()`, e a
+porta opcional `options.preferences` (`storageKey`, `onSave`, `onLoad`) para quem quer guardar por usuário
+no servidor. O conjunto é fechado: `colorMode` (`'light' | 'dark' | 'system'`), `fontSize`
+(`'sm' | 'md' | 'lg'`, escala relativa à base do tema — degrau a degrau sobre `bodySize`, o token que de
+fato emite `--theme-font-size-base`), `navigationStyle` (`'topbar' | 'sidebar'`), `navCollapsed` (boolean)
+e `language` (string, só como dado — a tradução funcional fica para um passo seguinte).
+
+**Cinco tokens novos no `design`, um por preferência** — `preferenceModePosition`,
+`preferenceFontSizePosition`, `preferenceNavigationStylePosition`, `preferenceNavCollapsePosition`,
+`preferenceLanguagePosition` — cada um `'off' | 'menu' | 'pinned'`. É o administrador, no tema, quem
+decide se cada preferência aparece e onde; a posição vive no `design` (persiste com o resto do tema, no
+mesmo `PUT`) e nunca em um campo fora dele. **Padrão de fábrica — a barra de hoje, sem nenhuma mudança
+visível:** modo e recolhimento nascem `'pinned'`; fonte, navegação e idioma nascem `'off'`.
+
+**Por quê.** O tema é do administrador, e continua sendo — a preferência é do usuário final, e não deveria
+existir só uma gaveta (`design`) para os dois guardarem. Medido no consumidor real: o tema salvo no servidor
+carregava `navigationStyle`/`sidebarPosition`/`navbarLayout`/`contentAlignment` dos testes do dono no
+painel, porque o painel e o alternador de tema escreviam no mesmo lugar.
+
+**A troca de modo preserva a customização do administrador.** Escolher claro/escuro só troca os tokens que
+a contraparte autorada do tema declara (specs/09 §2.1) — cor de marca, navegação, imagem de fundo e
+qualquer outro token fora da contraparte continuam exatamente como o administrador configurou. Sem
+contraparte, o fallback sintetizado de sempre (`syncThemeWithMode`) continua valendo.
+
+**Como migrar.** Quem lia `design.mode`/`design.isNavHidden` para saber o estado atual continua funcionando
+sem mudar nada — `useSarakUI().design` (e `activeDesign`) já é o **efetivo**: tema com as preferências
+oferecidas sobrepostas. Quem editava o **tema** pelo painel administrativo também não muda: o painel lê e
+grava `sarak.systemDesign` (o persistido puro), nunca o efetivo. Quem já implementava a própria alternância
+de tema/colapso chamando `applyConfig`/`applyFullConfigRaw` diretamente **deve migrar para
+`updatePreferences`**, senão volta a reescrever o tema do sistema. Quem quer voltar ao comportamento antigo
+(alternador de tema grava o tema, para todos) grava direto em `applyFullConfigRaw`/`persistDesign`, como
+antes — a porta continua pública, só deixou de ser o caminho dos dois widgets default.
+
+---
+
+## Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
+
+**Classificação: MAJOR** — comportamento default muda de novo, sem opt-in, para quem usa
+`navigationStyle: 'topbar'` (o mesmo critério que já classificou majors anteriores desta lista: mudar o
+default é MAJOR mesmo sem tocar em export, prop ou token).
+
+**Encadeamento com a entrada abaixo.** Esta entrada revisa **parte** do que
+"`SarakNavItem` — átomo próprio para item de navegação do cromo" (mais abaixo nesta lista) descreveu:
+aquela introduziu, no ramo `horizontal`, `uppercase`/`tracking-widest`/corpo em `text-2xs` — paridade
+deliberada com o `TopbarNav` do Shell, fixada como decisão na ADR-013. O dono decidiu reverter a caixa alta
+em 2026-09-09; o **núcleo** da ADR-013 — item de navegação é átomo próprio, com métrica de navegação e não
+de botão de ação — continua vigente. Só o valor tipográfico do ramo `horizontal` muda.
+
+**O que muda**, só no ramo `horizontal` de `SarakMenuItem` (e em tudo que o compõe — `SarakShellNav`,
+`SarakAppChrome*`, `TopbarNav` do Shell), medido em navegador real sobre o `dist/` publicado:
+
+| Propriedade computada | Antes | Depois |
+| --- | --- | --- |
+| `text-transform` | `uppercase` | `none` |
+| `letter-spacing` | largo (`tracking-widest`) | `normal` (`tracking-normal`) |
+| `font-size` | `text-2xs` (10px) | `text-sm` — corpo legível de navegação |
+
+**O que NÃO muda.** A pílula (`rounded-full`), o peso do item ativo, o truncamento e o ramo `vertical`
+(sidebar/drawer) — todos inalterados. Nenhum export, prop ou token novo.
+
+**Como migrar.** Nada obrigatório. Quem já escrevia a própria `className` para reverter a caixa alta — a
+saída que a entrada anterior já descrevia, via R35 (a `className` do chamador vence o default do átomo) —
+pode remover essa `className` agora: o default passou a fazer isso sozinho.
+
+**Achado corrigido junto, sem efeito de superfície pública.** `useButtonLayoutStyles` (o Hook Controlador
+que `SarakButton` usa para largura) só deixava de emitir o piso `min-w-fit` quando a largura cheia vinha
+pela prop `fullWidth` ou pelo tema (`buttonWidthStrategy: 'full'`); quem pedia largura cheia só pela
+`className` (`<SarakButton className="w-full">`) continuava com o piso de `min-width` do conteúdo preso,
+porque `min-w-fit` e `w-full` são grupos de propriedade diferentes e o merge não os resolve um contra o
+outro. Agora a `className` também conta.
+
+---
+
+## 7.0.0 — O cromo do modo ui-kit nasce com busca, alternância de tema, widget de usuário e colapso da navegação por padrão (plan-67)
+
+**Classificação: MAJOR** — `SarakAppChrome` (e o colapso mobile, `SarakAppChromeMobile`) passam a montar, sem o
+consumidor escrever uma linha: busca (com atalho Ctrl/Cmd+K), alternância de tema, widget de usuário e o
+toggle de colapso da navegação. Antes, o cromo do modo ui-kit não montava nenhum dos quatro — eles já eram
+componentes públicos (`ShellSearchWidget`, `ShellThemeToggle`, `ShellUserWidget`), mas o consumidor tinha
+que importar e encaixar cada um manualmente num slot.
+
+**Por quê.** O cromo do modo módulos-plugin (`SarakShell`) sempre entregou os quatro prontos; o do modo
+ui-kit (`SarakAppChrome`) não entregava nenhum — não por decisão, mas porque nasceu para fechar um sintoma
+pontual (*"topbar e sidebar não aparecem"*), como o mínimo para o cromo existir. A base já resolveu essa
+pergunta duas vezes no mesmo sentido — layout multidispositivo é zero-config
+([[07-responsividade-e-multidispositivo]] §1), e os hosts de toast/overlay já nascem montados — então exigir
+trabalho do consumidor para o cromo completo era bug da lib, não característica.
+
+**O que mudou.**
+
+| Prop nova em `SarakAppChromeProps` | Contrato |
+| --- | --- |
+| `widgets?: { search?, themeToggle?, user?, collapse? }` | Opt-out por widget. **Omitir a prop liga os quatro**; `false` num campo desliga só aquele — os demais continuam. |
+| `user?: ShellUser` / `logout?: () => void` | Alimentam o widget de usuário default. **Sem `user`, o widget não monta** — a lib não inventa uma identidade "User" genérica. Sem `logout`, o widget monta mas sem o botão de sair (é assim também em `ShellUserWidget` chamado direto, fora do cromo). |
+| `SarakSearchProps.items?` / `.onSelect?` (aditivo, retrocompatível) | O `SarakSearch` (o command palette que o atalho abre) aceita uma lista de itens e um seletor próprios. O cromo alimenta os dois com a mesma navegação (`navItems`/`nav`) e o mesmo `onNavigate` que já recebe — por isso a busca default do modo ui-kit **lista e navega**, em vez de responder sempre "No results". Omitidos, o `SarakSearch` continua pelo registro do Discovery, como sempre — o `SarakShell` não muda. |
+
+**Como migrar.** Quem quer o cromo vazio de antes:
+
+```tsx
+<SarakAppChrome widgets={{ search: false, themeToggle: false, user: false, collapse: false }}>
+    {children}
+</SarakAppChrome>
+```
+
+**Atenção a quem já monta um dos widgets à mão.** A busca continua no slot `search` — quem já a preenche
+não vê nada em dobro, porque o conteúdo do slot sempre venceu, e continua vencendo, o default
+([[05-cromo-e-slots]] §2.2). **Tema e usuário são diferentes: não têm slot.** Se você já monta
+`ShellThemeToggle`/`ShellUserWidget` à mão dentro de `topbarEnd`/`sidebarFooter` (ou de qualquer outro
+slot), a partir desta versão vai ver **os dois exemplares** — o seu e o default, que nasce numa região
+própria (`data-sarak-widget`, fora dos 8 slots documentados, então não compete com nenhum deles). Desligue
+o default correspondente:
+
+```tsx
+<SarakAppChrome widgets={{ themeToggle: false, user: false }} topbarEnd={<MeuThemeEUsuario />}>
+    {children}
+</SarakAppChrome>
+```
+
+**O que NÃO mudou.** Os oito slots do contrato (`logo`, `topbarStart`, `topbarEnd`, `sidebarHeader`,
+`sidebarFooter`, `banner`, `footer`, `decoration`) continuam exatamente como eram — ausente = não
+renderiza. Seletor de idioma (`ShellLanguageSelector`), redimensionamento por arraste e auto-hide **não**
+entram no conjunto padrão — ficam fora dele por decisão explícita, disponíveis por slot/prop/token como já
+eram. O atalho Ctrl/Cmd+K só escuta quando a busca default está realmente em uso — desligada por opt-out,
+sem `SarakUIProvider`, ou com o slot `search` preenchido pelo consumidor, o atalho fica livre para o
+navegador (e, com `search` preenchido, para o que o consumidor montou ali). `SarakShell` não muda.
+
+---
+
+## 7.0.0 — As quatro mídias de atmosfera hospedadas por terceiro viram atmosfera gerada em CSS (plan-69)
+
+**Classificação: MAJOR** — os quatro presets de "Mídia Base" do painel (`bg-kinetic-flow`,
+`bg-stellar-nebula`, `bg-cyber-grid-img`, `bg-dark-cinematic`) deixam de apontar para
+`test-videos.co.uk`/`images.unsplash.com` e passam a aplicar uma atmosfera gerada 100% em CSS pelo
+mesmo motor das 40 texturas (`src/styles/_atmosphere.css`). Os quatro `id` **continuam existindo** —
+não é remoção de preset — mas o `design` que cada um aplica mudou.
+
+**Por quê.** Uma biblioteca plug-and-play não pode ter uma aba do catálogo que depende de rede, de
+CSP permissiva ou de uma URL de terceiro continuar respondendo — e hospedar os arquivos originais
+(~2,9 MB) traria licença de redistribuição (Unsplash License + CC-BY do vídeo *Big Buck Bunny*) que
+uma lib zero-marca não tem onde carimbar. Ver [[adr/006-zero-marca-soberania-host]] e
+[[09-temas-e-presets]] §8 (item 1 do backlog, fechado por esta plan).
+
+**O que mudou.**
+
+| Preset (`id`) | Antes | Depois |
+| --- | --- | --- |
+| `bg-kinetic-flow` | `globalBackgroundImageUrl` → vídeo MP4 em `test-videos.co.uk` | `texture: 'aurora'`, `textureOpacity: 0.35` |
+| `bg-stellar-nebula` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'nebula'`, `textureOpacity: 0.4` |
+| `bg-cyber-grid-img` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'blueprint-pro'`, `textureOpacity: 0.3` |
+| `bg-dark-cinematic` | `globalBackgroundImageUrl` → foto em `images.unsplash.com` | `texture: 'grain'`, `textureOpacity: 0.18`, `vignetteOpacity: 0.55` |
+
+Todos os quatro passam a gravar `globalBackgroundImageUrl: ''` — para limpar, ao reaplicar o preset,
+uma URL de mídia que uma versão anterior dele possa ter deixado no seu tema.
+
+**Afeta você se** clicou em um destes quatro presets pelo painel e salvou o resultado (`localStorage`,
+`customThemes`, ou exportou o tema). Nesse caso, o valor persistido é o **dado literal** que o clique
+gravou naquele momento — `globalBackgroundImageUrl` com a URL antiga —, não uma referência ao `id` do
+preset. **Nada muda sozinho na sua tela:** `globalBackgroundImageUrl` continua existindo com a mesma
+assinatura, e `SarakBackgroundRenderer` continua servindo a URL exatamente como antes, contanto que
+ela ainda resolva na rede do seu usuário. Reabrir o painel e clicar de novo no mesmo preset agora
+aplica a atmosfera nova (CSS, sem URL) por cima do que estava salvo.
+
+**O que NÃO mudou.** `globalBackgroundImageUrl`, `globalBackgroundBlur`, `globalBackgroundOpacity` e
+`globalBackgroundBlendMode` continuam com a mesma assinatura — é a porta de foto/vídeo do **seu**
+ativo, por upload no painel ou por URL própria. `TEXTURE_PRESETS` e as 40 texturas não mudaram. Quem
+nunca usou os quatro presets de mídia não vê diferença nenhuma.
+
+---
+
+## Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
+
+**Classificação: MINOR** — capacidade nova, aditiva. `minimalist-airy` e `sarak-sovereign` (os dois
+de `SARAK_REFERENCE_THEMES`) ganharam `contraparte` autorada; nenhum export existente mudou de
+forma, e o comportamento de quem nunca troca de modo é idêntico ao de antes.
+
+**O que estava quebrado.** Só 5 dos 23 temas embarcados tinham `contraparte` — os dois de
+referência não. Sem ela, `resolveThemeForMode` caía no fallback `syncThemeWithMode`
+([[09-temas-e-presets]] §2.1), que satura nos dois sentidos e não é reversível: `escuro → claro →
+escuro` devolvia faixa de faixa, não o original. Como o resultado convertido é **gravado** no
+design do sistema (decisão D, `plan-24-1`), cada ida e volta afastava mais.
+
+**O que passa a existir.** Os dois ganharam `contraparte` medida pelo `auditor_contraste` (R31) em
+**0 reprovados nas duas passadas**, preservando a temperatura de cada tema (a mesma família de
+matiz da própria marca — a navy de `minimalist-airy`, o slate-azul dos cards de `sarak-sovereign`)
+em vez de convergir para uma paleta neutra. E uma porta nova, `deriveThemeFromReference`, para
+quem parte de uma referência:
+
+```ts
+import { deriveThemeFromReference, SarakUIProvider } from '@sarak/lib-ui-core';
+
+const meuTema = deriveThemeFromReference('minimalist-airy', {
+  id: 'erp-theme',
+  name: 'ERP',
+  design: { primaryColor: ERP_BLUE, accentColor: ERP_BLUE, btnPrimaryBg: ERP_BLUE },
+});
+
+<SarakUIProvider customThemes={[meuTema]} initialTheme="erp-theme">…</SarakUIProvider>
+```
+
+`meuTema` já sai **completo** — `design` **e** `contraparte` — com a sobreposição de marca coerente
+nos dois modos.
+
+**Afeta você se** hoje monta um tema de consumidor assim:
+
+```ts
+// ANTES — copia só METADE do tema; a contraparte fica para trás.
+const meuTema = { id: 'erp-theme', name: 'ERP', design: { ...REF.design, primaryColor: ERP_BLUE } };
+```
+
+Espalhar `...REF.design` (onde `REF` vem de `SARAK_REFERENCE_THEMES`, ou de `getThemePreset`) nunca
+copiou `contraparte` — o campo nem é mencionado na desestruturação. Resultado: seu tema derivado
+nasce **sem** contraparte, cai no mesmo fallback saturante que os 18 legados, e trocar de modo
+degrada em silêncio, exatamente como cair no fallback fazia antes desta plan para os dois temas de
+referência. **Troque para `deriveThemeFromReference`** (exemplo acima) — ela aplica a sobreposição
+em `design` e espelha, nos casos em que a chave também exista na `contraparte` da referência, para
+que o valor apareça igual nos dois modos.
+
+**O que NÃO mudou.** Os outros 16 temas isentos continuam isentos — esta plan encolheu a
+`CONTRAPARTE_EXEMPTION_LIST` em dois, não a esvaziou. `SARAK_REFERENCE_THEMES` continua sendo o
+mesmo par de ids (`minimalist-airy`, `sarak-sovereign`) — só o conteúdo interno ganhou a
+contraparte.
+
+---
+
+## Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
+
+**Classificação: MINOR** — capacidade nova, aditiva: nenhum export existente mudou de forma, e o
+comportamento dentro do `SarakShell` é idêntico ao de antes (os três renderizadores do Shell —
+`SidebarNav`/`TopbarNav`/`DockNav` — passaram a importar do novo caminho, sem mudar o que
+compõem). Só ficou possível o que antes não era: montar cada widget por conta própria, fora do
+Shell.
+
+**O que estava faltando.** `ShellSearchWidget`, `ShellThemeToggle`, `ShellUserWidget` e
+`ShellLanguageSelector` moravam em `src/core/Shell/Components/` — fora das raízes que
+`scripts/publicComponents.mjs` varre (`components/atomic/`, `components/engines/`,
+`components/Layout/`). Não estavam no barril público, não apareciam no catálogo, e nenhum dos 8
+slots do `SarakAppChrome` tinha com o que ser preenchido por eles: quem usa o modo ui-kit (sem
+`SarakShell`) simplesmente não podia importar busca, alternância de tema, widget de usuário nem
+seletor de idioma — tinha de escrevê-los do zero.
+
+**O que passa a existir.** Os quatro foram realocados para `src/components/atomic/Navigation/` —
+a categoria que já hospeda os átomos de cromo (`SarakMenuItem`, `SarakShellNav`) — com os tipos de
+props (`ShellSearchWidgetProps`, `ShellThemeToggleProps`, `ShellUserWidgetProps`,
+`ShellLanguageSelectorProps`) exportados junto. Cada um já funcionava sem pressupor o `SarakShell`
+— lê só props, o `SarakUIProvider` e, opcionalmente, o registro do Discovery (que, sem nenhum
+módulo registrado, devolve lista vazia em vez de quebrar).
+
+```tsx
+import { SarakUIProvider, SarakAppChrome, ShellThemeToggle, ShellUserWidget } from '@sarak/lib-ui-core';
+
+<SarakUIProvider>
+  <SarakAppChrome
+    topbarEnd={<ShellThemeToggle variant="horizontal" />}
+    sidebarFooter={<ShellUserWidget user={user} logout={logout} variant="vertical" />}
+  >
+    {children}
+  </SarakAppChrome>
+</SarakUIProvider>
+```
+
+**Correção incluída, sem efeito visual hoje:** o ramo `horizontal` do `ShellLanguageSelector`
+mantinha um `font-black` herdado do default do `SarakButton` que a `className` passada nunca
+neutralizava (só `normal-case`/`tracking-normal`, nunca o peso) — resíduo do mesmo padrão que a
+ADR-013 já havia corrigido nos itens de lista. Ganhou `font-normal` ao lado. Sem efeito visual
+porque o texto interno (`text-3xs font-black`) já define o próprio peso.
+
+**Afeta você se** montava um destes quatro por deep import interno (fora do contrato — nunca
+suportado) apontando para `core/Shell/Components/*`: o caminho não existe mais, importe pelo nome
+público (`import { ShellUserWidget } from '@sarak/lib-ui-core'`).
+
+**O que NÃO mudou.** `SarakAppChrome` continua sem montar nenhum widget por padrão — publicá-los
+é o que esta entrada faz; decidir o que ocupa cada slot por padrão é decisão de produto separada.
+`SarakShell` renderiza os mesmos quatro, com o mesmo comportamento.
+
+---
+
+## Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
+
+**Classificação: correção, não quebra.** O átomo descrito na entrada logo abaixo ("`SarakNavItem` — átomo
+próprio para item de navegação do cromo") **nunca esteve alcançável pelo barril público**, então renomeá-lo
+não retira capacidade de ninguém — não há tag publicada em que `import { SarakNavItem }` alguma vez tenha
+devolvido o componente.
+
+**O defeito.** `src/index.ts` já exportava `SarakNavItem` como **tipo** (`export type { …, SarakNavItem }
+from './components/Layout/SarakAppChrome'` — a forma do dado da prop `navItems`). Quando o átomo de
+navegação entrou em `components/atomic/Navigation/` com o mesmo nome, o barril de categoria o expôs por
+`export *`, mas em ES/TS um **export explícito sombreia `export *`** — então o nome `SarakNavItem` no barril
+público continuou resolvendo só para o tipo. `import { SarakNavItem } from '@sarak/lib-ui-core'` sempre
+devolveu a interface `{ id, label, icon?, href, active? }`, nunca o componente, mesmo com `SarakNavItemProps`
+publicado ao lado. Medido pela API do compilador TypeScript sobre `src/index.ts`
+(`getExportsOfModule`/`getAliasedSymbol`), 2026-09-08.
+
+**A correção.** O componente e os tipos dele foram renomeados — sem sinônimo, sem alias:
+
+| Antes (nunca alcançável) | Depois |
+| --- | --- |
+| `SarakNavItem` (componente) | `SarakMenuItem` |
+| `SarakNavItemProps` | `SarakMenuItemProps` |
+| `SarakNavItemOrientation` | `SarakMenuItemOrientation` |
+
+**O que NÃO mudou.** `SarakNavItem` (o **tipo**, `{ id, label, icon?, href, active? }`, a forma da prop
+`navItems` de `SarakAppChrome`) continua exportado exatamente como antes — ele não faz parte desta correção
+e não pode ser renomeado sem quebrar quem já usa `navItems`. A métrica, os estados (ativo/inativo/
+desabilitado/colapsado) e a orientação (`vertical`/`horizontal`) do átomo também não mudaram — só o nome.
+
+**Como migrar.** Se você compunha a própria navegação importando o átomo diretamente pelo nome antigo —
+o que só era possível por deep import, proibido por contrato, já que o barril público nunca resolveu o nome
+para o valor — troque para `SarakMenuItem`/`SarakMenuItemProps`/`SarakMenuItemOrientation`. Quem consome o
+cromo pronto (`SarakShell`, `SarakAppChrome*`, `SarakShellNav`) não muda nada: a troca é interna aos
+renderizadores de navegação do cromo.
+
+---
+
+## `SarakNavItem` — átomo próprio para item de navegação do cromo
+
+**Classificação: MAJOR** — a superfície é aditiva (novo componente, novo tipo), mas o **comportamento
+default muda sem opt-in**: o cromo de todo consumidor troca de métrica de navegação — o mesmo critério que
+já classificou majors anteriores desta lista (*"mudar o que é default é MAJOR, mesmo mantendo a
+capacidade — quem dependia do default vê comportamento diferente sem alterar uma linha"*). Precedente da
+base: a `5.0.0` foi MAJOR sendo correção de bug, com o mesmo motivo — comportamento default, zero export
+tocado.
+
+**O que estava faltando.** Os itens de navegação do cromo (sidebar, topbar, drawer) compunham
+`SarakButton`/`SarakIconButton` — o átomo de **botão de ação**. Sem um átomo próprio para
+**item de lista de navegação**, nenhum chamador disputava a métrica default do botão
+(`py-4 px-6`, `font-black uppercase tracking-widest`), e o item de menu herdava geometria de
+ação: recuo e altura de botão de formulário, em vez de recuo e altura de item de menu.
+
+**O que passa a existir.** `SarakNavItem` — item de navegação com métrica própria, e a métrica **difere por
+orientação** (é a distinção que existe para não devolver a métrica de botão de ação): `vertical` (linha de
+lista — recuo, peso e caixa de menu, largura cheia resolvida na origem, rótulo trunca em vez de transbordar)
+e `horizontal` (aba/pílula compacta — caixa alta, peso forte, `rounded-full`). Cobre os estados que o cromo
+já usa: ativo, inativo, desabilitado/offline, colapsado (só ícone). Compõe `className` por
+`mergeSarakClasses` — a classe do chamador vence o default do átomo (R35).
+
+**Afeta você se** consome o cromo pronto (`SarakShell`, `SarakAppChrome*`) ou compõe `SarakShellNav`
+diretamente — e o efeito **muda de sinal por orientação**:
+
+| Orientação | Antes | Depois |
+| --- | --- | --- |
+| `vertical` (sidebar, drawer) | Item de menu herdava `uppercase`, `tracking-widest`, `font-black` e a métrica de botão de ação (`py-4 px-6`) do `SarakButton` | **Perde** as três: rótulo em caixa normal, peso normal, recuo de lista (`px-3 py-2.5`) |
+| `horizontal` (topbar) | `SidebarNav`/`TopbarNav` já pintavam aba em pílula/caixa alta; `SarakShellNav` neutralizava por `style` inline e renderizava como lista horizontal (caixa normal, peso 400/500) | **Passa a aplicar** `uppercase`, `tracking-widest`, `font-bold` — geometria de aba, igual à do `TopbarNav`. Quem usa `SarakShellNav` com `navigationStyle: 'topbar'` vê o rótulo virar caixa alta sem mudar uma linha |
+
+**Como migrar.** Nada obrigatório para quem já usa `SarakShell`/`SarakAppChrome*` prontos — é o cromo que
+muda de aparência. Quem quer o rótulo do `SarakShellNav` horizontal de volta em caixa normal escreve a
+própria `className` (ela vence o default do átomo, R35). Quem monta a própria navegação por fora pode
+importar `SarakNavItem` diretamente (`icon`, `label`, `active`, `collapsed`, `orientation`).
+
+**O que NÃO mudou.** Nenhum export, prop ou token existente; `SarakButton`/`SarakIconButton` continuam com
+a métrica de botão de ação, inalterada.
+
+---
+
+## A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
+
+**Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
+default e visível**, sem opt-in — o mesmo critério que já classificou majors anteriores desta lista
+(*"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia do default vê
+comportamento diferente sem alterar uma linha"*).
+
+**O que estava quebrado.** `SarakButton` e `SarakIconButton` **concatenavam** a `className` recebida com as
+classes Tailwind do próprio átomo (`` `${base} ${className}` ``). Em Tailwind, duas utilitárias que escrevem
+a mesma propriedade CSS têm a mesma especificidade — quem vence é a que aparece **depois no stylesheet
+publicado**, não a que aparece depois no atributo `class`. Concatenar não sobrescrevia nada: só empilhava, e
+o resultado ficava a cargo da ordem em que o Tailwind emitiu as duas regras — acidental, não decidido.
+
+Medido no `dist/sarak.css` publicado (offset de byte da primeira ocorrência de cada seletor):
+
+| Par em conflito | Vencia (antes) |
+| --- | --- |
+| `.normal-case` × `.uppercase` | o átomo (`.uppercase`) |
+| `.tracking-normal` × `.tracking-widest` | o átomo (`.tracking-widest`) |
+| `.w-full` × `.w-max` | o átomo (`.w-max`) |
+| `.justify-center` × `.justify-start` | o chamador |
+| `.text-xs` × `.text-2xs` | o chamador |
+| `.rounded-btn` × `.rounded-full` | o chamador |
+
+Três dos seis já resolviam a favor do chamador, por acaso — e o acaso muda a cada versão do Tailwind que
+reordene a emissão do stylesheet.
+
+**O que passa a acontecer.** Os dois átomos compõem a classe por **merge** (`tailwind-merge`, configurado
+para reconhecer as utilitárias próprias desta base — `text-2xs`, `text-3xs`, `rounded-btn`, `font-tab`), com
+a `className` do chamador sempre entrando por último. Agora ela **sempre** vence o default do átomo para a
+mesma propriedade — não importa a ordem de emissão do Tailwind.
+
+**Afeta você se** já passa `className` para um `SarakButton`/`SarakIconButton` esperando sobrescrever
+`text-transform`, `letter-spacing`, `border-radius`, tamanho de fonte ou largura do átomo, e hoje o resultado
+"perde" para o default (ex.: pediu `normal-case` e a tela continuou em maiúsculas). A partir desta versão,
+sua classe **vence** — a tela muda para o que você sempre pediu.
+
+**Um segundo defeito relacionado, corrigido junto:** `fullWidth` em `SarakButton` não produzia largura cheia
+de fato. A estratégia default de largura emite `w-max min-w-fit` — `min-w-fit` é uma propriedade diferente de
+`width` e não conflitava com o `w-full` do `fullWidth`, então sobrevivia aos dois: o botão ficava com um piso
+de largura igual ao conteúdo e podia transbordar do container com um rótulo longo. Agora, com `fullWidth` (ou
+`buttonWidthStrategy: 'full'` no tema), a estratégia deixa de emitir `min-w-fit` — o botão encolhe até a
+largura do container normalmente.
+
+**Como migrar.** Se você compensava algum destes defeitos por fora (estilo inline, `!important`, ou
+simplesmente aceitou o resultado), **remova a compensação** — a partir desta versão a classe que você já
+escreve funciona sozinha, e a compensação duplicada pode brigar com o novo resultado.
+
+**O que NÃO mudou.** Nenhum export, prop ou token; o `style` inline devolvido pelo motor de design não foi
+tocado (merge é de classe, não de estilo); `sizeClasses` (`py-*`/`px-*`/`text-*` por `size`) não mudou.
+
+**Gate anti-regressão:** `npm run class-merge:check`
+(`gates/scripts/contrato/check-class-merge.mjs`) — cobra que nenhum átomo componha `className` por
+concatenação de template literal; a allowlist declara, com motivo, os átomos que ainda concatenam e serão
+convertidos em plans futuras.
+
+---
+
 ## 6.0.0 — `layoutGridTemplate: 'col-12'` passa a funcionar — filho sem span ganha um default (plan-49)
 
 **Esta é a âncora da `6.0.0` — três quebras saíram juntas nesta tag.** Medido (`git log v5.0.0..v6.0.0 --

@@ -2,13 +2,13 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { Search } from 'lucide-react';
 
 interface DockNavProps {
     design: SarakDesignState;
-    discoveredModules: DiscoveredModule[];
+    discoveredModules: SarakDiscoveredModule[];
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
     setIsSearchOpen: (open: boolean) => void;

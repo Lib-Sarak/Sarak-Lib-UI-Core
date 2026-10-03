@@ -200,4 +200,138 @@ describe('useDesignDraft', () => {
             expect(result.current.toast).toBeNull();
         });
     });
+
+    // Pré-visualizar um tema no catálogo não pode anunciar o id ao Provider — só
+    // aplicar ao sistema anuncia (06-painel-de-customizacao-e-preview.md §4;
+    // JSDoc de useResolvedThemeId.ts).
+    describe('handleThemePreview(..., themeId) + handleApplyToSystem — o id só é anunciado ao APLICAR', () => {
+        it('pré-visualizar NÃO chama setResolvedThemeId', () => {
+            const setResolvedThemeId = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw: vi.fn(),
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.handleThemePreview({ mode: 'light' }, undefined, 'tema-escolhido');
+            });
+
+            expect(result.current.draft.mode).toBe('light');
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+        });
+
+        it('aplicar ao sistema DEPOIS de pré-visualizar anuncia o id pendente', () => {
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfigRaw = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.handleThemePreview({ mode: 'light' }, undefined, 'tema-escolhido');
+            });
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalled();
+            expect(setResolvedThemeId).toHaveBeenCalledWith('tema-escolhido');
+        });
+
+        it('sem themeId (preview de preset comum), aplicar NÃO chama setResolvedThemeId', () => {
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfigRaw = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                setResolvedThemeId,
+                applyFullConfigRaw,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.updateDraft('mode', 'light');
+            });
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalled();
+            expect(setResolvedThemeId).not.toHaveBeenCalled();
+        });
+    });
+
+    // Desfazer a última aplicação — um nível, pelo mesmo caminho do Aplicar.
+    describe('canUndoLastApply / undoLastApply', () => {
+        it('sem nenhuma aplicação, não há o que desfazer', () => {
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            expect(result.current.canUndoLastApply).toBe(false);
+        });
+
+        it('aplicar → desfazer volta ao design anterior, E a persistência recebe o valor restaurado', () => {
+            const applyFullConfigRaw = vi.fn();
+            const persistDesign = vi.fn();
+            const sarak = {
+                draftDesign: null,
+                systemDesign: { mode: 'dark', primaryColor: '#111' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                applyFullConfigRaw,
+                persistDesign,
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => {
+                result.current.updateDraft('primaryColor', '#222');
+            });
+            expect(result.current.isDirty).toBe(true);
+
+            act(() => {
+                result.current.handleApplyToSystem();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#222' }));
+            expect(result.current.canUndoLastApply).toBe(true);
+
+            act(() => {
+                result.current.undoLastApply();
+            });
+
+            expect(applyFullConfigRaw).toHaveBeenLastCalledWith({ mode: 'dark', primaryColor: '#111' });
+            expect(persistDesign).toHaveBeenLastCalledWith({ mode: 'dark', primaryColor: '#111' });
+            expect(result.current.canUndoLastApply).toBe(false);
+        });
+    });
 });

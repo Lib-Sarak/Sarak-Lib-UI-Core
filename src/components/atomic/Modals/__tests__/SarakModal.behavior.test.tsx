@@ -81,3 +81,24 @@ describe('Spec 13 — SarakModal (Regra 2 + Plano de Testes)', () => {
         expect(onComplete).toHaveBeenCalled();
     });
 });
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakModal — idioma que vale', () => {
+    it('o wizard e o botão de fechar saem em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakModal
+                    isOpen
+                    onClose={() => undefined}
+                    title="Setup"
+                    steps={[<div key="a">Step A</div>]}
+                    onComplete={() => undefined}
+                >
+                    {null}
+                </SarakModal>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Finish')).toBeInTheDocument();
+        expect(screen.getByLabelText('Close modal')).toBeInTheDocument();
+    });
+});

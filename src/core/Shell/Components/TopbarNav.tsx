@@ -1,16 +1,22 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { ShellSearchWidget } from './ShellSearchWidget';
-import { ShellUserWidget } from './ShellUserWidget';
-import { ShellLanguageSelector } from './ShellLanguageSelector';
-import { ShellThemeToggle } from './ShellThemeToggle';
+import { SarakShellUser } from './types';
+import { SarakShellSearchWidget } from '../../../components/atomic/Navigation/SarakShellSearchWidget';
+import { SarakShellUserWidget } from '../../../components/atomic/Navigation/SarakShellUserWidget';
+import { SarakShellLanguageSelector } from '../../../components/atomic/Navigation/SarakShellLanguageSelector';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
+import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
+import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface TopbarNavProps {
     design: SarakDesignState;
@@ -19,9 +25,9 @@ interface TopbarNavProps {
     setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
-    discoveredModules: DiscoveredModule[];
+    discoveredModules: SarakDiscoveredModule[];
     extraToolbarItems?: React.ReactNode;
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     startResizing: () => void;
 }
@@ -29,6 +35,7 @@ interface TopbarNavProps {
 export const TopbarNav: React.FC<TopbarNavProps> = ({
     design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems, user, logout, startResizing
 }) => {
+    const t = useLibraryText();
     const [isHovered, setIsHovered] = React.useState(false);
     const {
         mode, navigationStyle, isNavHidden, systemName, logoUrl, logoDarkUrl, logoScale,
@@ -40,6 +47,16 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
     const isTopbar = navigationStyle === 'topbar';
 
+    // Barra configurável pelo administrador (Spec 05 §2.2.1) — Shell não tem
+    // `widgets` de código (não é apps-separados) — só a posição do tema decide.
+    const placement = splitPreferencesByPlacement(design as unknown as Record<string, unknown>);
+    const showThemeToggle = placement.pinned.includes('colorMode');
+    const showLanguage = placement.pinned.includes('language');
+    const showFontSize = placement.pinned.includes('fontSize');
+    const showNavigationStyle = placement.pinned.includes('navigationStyle');
+    const showCollapseToggle = placement.pinned.includes('navCollapsed');
+    const hasPreferencesMenu = placement.menu.length > 0;
+
     // Sovereign Logic: Parity with Sidebar Hover
     const effectiveIsNavHidden = isNavHidden && !isHovered;
 
@@ -50,7 +67,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;
-        return <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
+        return <SarakShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
     };
 
     return (
@@ -69,17 +86,22 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         >
             {/* Background isolado para evitar o bug de clip-path do backdrop-filter no Chromium */}
             <div className="absolute inset-0 backdrop-blur-2xl pointer-events-none" style={{ borderRadius: `inherit` }} />
-            
+            {/* `topbarNoiseOpacity` (Spec 05 §2.4) — grão sobreposto ao fundo, 0 por
+                default (imperceptível). */}
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={{ ...chromeNoiseLayerStyle('--sarak-topbar-noise-opacity'), borderRadius: 'inherit' }} />
+
             <div className="flex items-center justify-between w-full h-full relative z-10 !overflow-visible">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <SarakIconButton
-                            onClick={toggleNav}
-                            variant="secondary"
-                            size="sm"
-                            className="shrink-0"
-                            icon={<SarakIcon name="Menu" size={16} />}
-                        />
+                        {showCollapseToggle && (
+                            <SarakIconButton
+                                onClick={toggleNav}
+                                variant="secondary"
+                                size="sm"
+                                className="shrink-0"
+                                icon={<SarakIcon name="Menu" size={16} />}
+                            />
+                        )}
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
@@ -103,7 +125,14 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             ) : (
                                 <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-2xs' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
                             )}
-                            {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[var(--sarak-topbar-label-max-width,150px)]">{systemName || brand.name}</span>}
+                            {!effectiveIsNavHidden && (
+                                <span
+                                    className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[var(--sarak-topbar-label-max-width,150px)]"
+                                    style={{ color: 'var(--sarak-topbar-title-color, #ffffff)' }}
+                                >
+                                    {systemName || brand.name}
+                                </span>
+                            )}
                         </div>
                         {searchPos === 'left' && renderSearch()}
                     </div>
@@ -119,25 +148,31 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                 justifyContent: discoveredModules.length > 6 ? 'flex-start' : 'center',
                             }}
                         >
-                            {discoveredModules.filter(m => m.status === 'online').map(mod => (
-                                <SarakButton
-                                    key={mod.id}
-                                    variant="ghost"
-                                    size="xs"
-                                    onClick={() => setActiveModuleId(mod.id)}
-                                    title={mod.label}
-                                    className={`whitespace-nowrap font-tab shrink-0
-                                        ${effectiveIsNavHidden
-                                            ? `w-8 h-8 !p-0 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                            : `rounded-full text-2xs ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                        }
-                                    `}
-                                >
-                                    {effectiveIsNavHidden ? (
-                                        <div className="scale-75"><IconRenderer name={mod.icon} /></div>
-                                    ) : mod.label}
-                                </SarakButton>
-                            ))}
+                            {discoveredModules.filter(m => m.status === 'online').map(mod => {
+                                const isActive = activeModuleId === mod.id;
+                                return (
+                                    <SarakMenuItem
+                                        key={mod.id}
+                                        orientation="horizontal"
+                                        collapsed={effectiveIsNavHidden}
+                                        active={isActive}
+                                        onClick={() => setActiveModuleId(mod.id)}
+                                        title={mod.label}
+                                        icon={effectiveIsNavHidden ? <div className="scale-75"><IconRenderer name={mod.icon} /></div> : undefined}
+                                        label={mod.label}
+                                        className={`whitespace-nowrap font-tab ${
+                                            isActive
+                                                ? effectiveIsNavHidden
+                                                    // Recolhida: mesma cor de texto que o SarakAppChrome usa para o
+                                                    // item ativo (`navItemActiveColor`) — os dois cromos coerentes
+                                                    // no mesmo token, em vez da cor de marca genérica.
+                                                    ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--sarak-nav-active-color,var(--theme-primary))]'
+                                                    : 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--sarak-nav-active-color,var(--theme-primary))] shadow-lg shadow-[var(--theme-primary)]/30 scale-105'
+                                                : ''
+                                        }`}
+                                    />
+                                );
+                            })}
                         </nav>
                     )}
                     
@@ -153,11 +188,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     {searchPos === 'right' && renderSearch()}
 
                     <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
-                        <ShellLanguageSelector variant="horizontal" />
+                        {showLanguage && <SarakShellLanguageSelector variant="horizontal" />}
 
                         <div className="w-[var(--theme-border-width,1px)] h-4 bg-[var(--theme-border)] mx-1" />
 
-                        <ShellThemeToggle variant="horizontal" />
+                        {showThemeToggle && <SarakShellThemeToggle variant="horizontal" />}
+                        {showFontSize && <ShellFontSizeControl />}
+                        {showNavigationStyle && <ShellNavigationStyleControl />}
 
                         <SarakIconButton
                             variant="ghost"
@@ -169,10 +206,17 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             </>}
                         />
                         {extraToolbarItems}
+                        {hasPreferencesMenu && (
+                            <ShellPreferencesMenu
+                                menuIds={placement.menu}
+                                isNavHidden={Boolean(isNavHidden)}
+                                onToggleNavCollapsed={toggleNav}
+                            />
+                        )}
                     </div>
 
                     {/* 4. User Widget */}
-                    <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'horizontal'} />
+                    <SarakShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'horizontal'} />
                 </div>
             </div>
 
@@ -181,7 +225,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                 <div
                     onMouseDown={startResizing}
                     className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                    title="Arraste para ajustar a altura"
+                    title={t('topbarResizeHint')}
                 />
             )}
         </header>

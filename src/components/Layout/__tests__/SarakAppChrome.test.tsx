@@ -1,15 +1,20 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
-import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
 
 const NAV = [
     { label: 'Propostas', route: '/propostas' },
     { label: 'Projetos', route: '/projetos' },
 ];
+
+// A escrita de preferência (toggle de recolher/tema) é imediata — sem isto um
+// clique num teste anterior sobrevive, via `localStorage`, ao Provider novo
+// do teste seguinte.
+afterEach(() => localStorage.clear());
 
 describe('SarakAppChrome (Spec 40.1 — L2, cromo apresentacional temável)', () => {
     it('renderiza sidebar por padrão com brand, nav e conteúdo', () => {
@@ -129,16 +134,63 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
     it('o cromo tem altura de viewport PRÓPRIA (não depende do host setar height no #root)', () => {
         // Bug de browser (Spec 40.2): sem altura própria, `h-full` colapsa e a sidebar/topbar
-        // somem. O root do cromo deve trazer `min-height: 100dvh` em ambas as orientações.
+        // somem. O root do cromo deve trazer `height: 100dvh` em ambas as orientações.
         const { container: side } = render(<SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         const { container: top } = render(<SarakAppChrome navigationStyle="topbar" nav={NAV}><div>x</div></SarakAppChrome>);
-        expect((side.firstChild as HTMLElement).style.minHeight).toBe('100dvh');
-        expect((top.firstChild as HTMLElement).style.minHeight).toBe('100dvh');
+        expect((side.firstChild as HTMLElement).style.height).toBe('100dvh');
+        expect((top.firstChild as HTMLElement).style.height).toBe('100dvh');
     });
 
     it('o consumidor pode sobrescrever a altura via style (uso embarcado)', () => {
-        const { container } = render(<SarakAppChrome nav={NAV} style={{ minHeight: 0 }}><div>x</div></SarakAppChrome>);
-        expect((container.firstChild as HTMLElement).style.minHeight).toBe('0px');
+        const { container } = render(<SarakAppChrome nav={NAV} style={{ height: 0 }}><div>x</div></SarakAppChrome>);
+        expect((container.firstChild as HTMLElement).style.height).toBe('0px');
+    });
+
+    // Sob `SarakUIProvider`, a raiz do cromo NÃO é `container.firstChild` — o Provider
+    // (Modo App) intercala `NoiseOverlay`/`SovereignThemeInjector`/`SarakBackgroundRenderer`
+    // como irmãos ANTES de `children` (`SarakUIProvider.tsx:218-229`), sem nó de wrapper
+    // (`SarakScopeRoot` só materializa `<div>` no Modo Embarcado). Por isso a raiz é
+    // localizada pelo `className` que o próprio `SarakAppChrome` publica como prop pública.
+    const CHROME_ROOT_CLASS = 'chrome-bg-test';
+    const chromeRootOf = (container: HTMLElement) => container.querySelector(`.${CHROME_ROOT_CLASS}`) as HTMLElement;
+
+    it('SEM mídia global, o fundo da raiz é idêntico ao de hoje (token com fallback)', () => {
+        const { container } = render(<SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        expect(chromeRootOf(container).style.background).toBe('var(--bg-body, var(--theme-body, transparent))');
+    });
+
+    it('COM mídia global (globalBackgroundImageUrl), a raiz do cromo NÃO pinta fundo opaco', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ globalBackgroundImageUrl: 'https://exemplo.com/bg.png' }}>
+                <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>
+            </SarakUIProvider>,
+        );
+        expect(chromeRootOf(container).style.background).toBe('transparent');
+    });
+
+    it('o `style` do consumidor sobrescreve o fundo mesmo COM mídia global', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ globalBackgroundImageUrl: 'https://exemplo.com/bg.png' }}>
+                <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS} style={{ background: 'red' }}><div>x</div></SarakAppChrome>
+            </SarakUIProvider>,
+        );
+        expect(chromeRootOf(container).style.background).toBe('red');
+    });
+
+    it('os três modos de geometria herdam a regra de fundo COM mídia (nenhum ganha caso especial)', () => {
+        const config = { globalBackgroundImageUrl: 'https://exemplo.com/bg.png' };
+        const renderWithMedia = (device: SarakDeviceType, ui: React.ReactElement) =>
+            render(
+                <SarakUIProvider config={config}>
+                    <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
+                </SarakUIProvider>,
+            );
+        const { container: side } = renderWithMedia('desktop', <SarakAppChrome navigationStyle="sidebar" nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        const { container: top } = renderWithMedia('desktop', <SarakAppChrome navigationStyle="topbar" nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        const { container: mobile } = renderWithMedia('smartphone', <SarakAppChrome nav={NAV} className={CHROME_ROOT_CLASS}><div>x</div></SarakAppChrome>);
+        expect(chromeRootOf(side).style.background).toBe('transparent');
+        expect(chromeRootOf(top).style.background).toBe('transparent');
+        expect(chromeRootOf(mobile).style.background).toBe('transparent');
     });
 
     it('a matriz completa de tokens de cromo está referenciada (cobertura explícita)', () => {
@@ -158,10 +210,10 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
 // `useSarakDevice` lê o DeviceContext; aninhar um DeviceProvider com override força o device
 // (o SarakUIProvider já monta o seu — o interno vence). SarakIcon (hambúrguer) exige o Provider.
-const renderAtDevice = (device: DeviceType, ui: React.ReactElement) =>
+const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement) =>
     render(
         <SarakUIProvider config={{ mode: 'dark' }}>
-            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+            <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
 
@@ -354,6 +406,172 @@ describe('SarakAppChrome (Spec 48 — L1, slots opcionais por região)', () => {
         expect(ambos.queryByText('legado')).toBeNull();
     });
 
+});
+
+// ---------------------------------------------------------------------------
+// Widgets do cromo por padrão, com opt-out — busca (+ atalho), alternância de tema,
+// widget de usuário e colapso da navegação nascem montados sem o consumidor escrever
+// nada; cada um desliga isolado por `widgets`, e um slot preenchido pelo consumidor
+// sempre vence o default correspondente.
+// ---------------------------------------------------------------------------
+
+// O widget de usuário default só liga com identidade de verdade — os testes que o
+// exercitam passam `user`/`logout` explicitamente.
+const HOST_USER = { username: 'ana' };
+const freshLogout = () => vi.fn();
+
+describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso)', () => {
+    it('DEFAULT: omitir `widgets`, com `user`/`logout`, monta os quatro no modo sidebar', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('DEFAULT: omitir `widgets`, com `user`/`logout`, monta os quatro no modo topbar', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="topbar" nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('DEFAULT sem `user`: busca/tema/colapso montam, o widget de usuário NÃO', () => {
+        renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
+        expect(screen.queryByText('User')).toBeNull();
+    });
+
+    it('opt-out isolado: search=false remove só a busca', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ search: false }}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('opt-out isolado: search=false TAMBÉM desarma o atalho — não fica engolindo Ctrl/Cmd+K à toa', () => {
+        renderAtDevice('desktop', <SarakAppChrome nav={NAV} widgets={{ search: false }}><div>x</div></SarakAppChrome>);
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
+    });
+
+    it('opt-out isolado: themeToggle=false remove só a alternância de tema', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ themeToggle: false }}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.queryByText(/^Modo /)).toBeNull();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('opt-out isolado: user=false remove o widget de usuário mesmo com `user` dado', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ user: false }}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.queryByTitle('Sair')).toBeNull();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+    });
+
+    it('opt-out isolado: collapse=false remove só o toggle de colapso', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ collapse: false }}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.queryByLabelText('Recolher navegação')).toBeNull();
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('o colapso alterna design.isNavHidden ao clicar (sidebar encolhe)', () => {
+        const { container } = renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        fireEvent.click(screen.getByLabelText('Recolher navegação'));
+        expect(screen.getByLabelText('Expandir navegação')).toBeInTheDocument();
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('var(--sarak-sidebar-collapsed-width');
+    });
+
+    it('slot `search` do consumidor vence o default de busca', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} search={<div data-testid="busca-custom">minha busca</div>}><div>x</div></SarakAppChrome>,
+        );
+        expect(screen.getByTestId('busca-custom')).toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
+    });
+
+    it('com `search` do consumidor, o atalho NÃO abre o palette da lib por cima', () => {
+        renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} search={<div data-testid="busca-custom">minha busca</div>}><div>x</div></SarakAppChrome>,
+        );
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
+    });
+
+    it('atalho Ctrl/Cmd+K abre o command palette (SarakSearch) sem SarakShell', () => {
+        renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
+    });
+
+    it('o palette alimentado pela busca lista a própria navegação e seleciona por onNavigate', () => {
+        const onNavigate = vi.fn();
+        renderAtDevice('desktop', <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(screen.getAllByText('Projetos').length).toBeGreaterThan(0);
+        fireEvent.click(screen.getAllByText('Projetos')[0].closest('button')!);
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
+    });
+
+    it('sem SarakUIProvider, nenhum default monta e o atalho não é escutado (degradação, não regra nova)', () => {
+        render(<SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
+        expect(screen.queryByLabelText('Recolher navegação')).toBeNull();
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
+    });
+});
+
+describe('SarakAppChrome — widgets por padrão no celular (nada some)', () => {
+    it('alternância de tema e widget de usuário aparecem dentro do drawer', () => {
+        const { container } = renderAtDevice('smartphone',
+            <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
+        );
+        fireEvent.click(toggleOf(container)!);
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('sem `user`, o widget de usuário não aparece no drawer — tema continua aparecendo', () => {
+        const { container } = renderAtDevice('smartphone', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        fireEvent.click(toggleOf(container)!);
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
+    });
+
+    it('a busca default aparece no drawer, e o atalho de teclado também funciona no celular', () => {
+        const { container } = renderAtDevice('smartphone', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
+        fireEvent.click(toggleOf(container)!);
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        fireEvent.keyDown(window, { key: 'k', metaKey: true });
+        expect(screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
+    });
+});
+
+describe('SarakAppChrome (Spec 48 — L1, slots opcionais por região)', () => {
     it('os slots NÃO tiram a nav nem o conteúdo do ar (cromo segue funcional)', () => {
         const onNavigate = vi.fn();
         renderAtDevice('desktop',

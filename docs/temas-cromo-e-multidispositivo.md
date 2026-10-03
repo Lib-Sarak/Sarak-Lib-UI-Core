@@ -12,13 +12,19 @@ valores; **não monte um tema do zero** (é como o `ERP_THEMES` do 1º teste nas
 cor, e por isso "fonte/cromo não mudavam").
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
-// Customização mínima: clona o par completo e troca só a cor da marca.
-const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
-  ...t,
-  design: { ...t.design, primaryColor: '#2563eb', accentColor: '#38bdf8' },
-}));
+// Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
+const MEUS_TEMAS = [
+  sarakDeriveThemeFromReference('minimalist-airy', {
+    id: 'marca-claro', name: 'Marca (claro)',
+    design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+  }),
+  sarakDeriveThemeFromReference('sarak-sovereign', {
+    id: 'marca-escuro', name: 'Marca (escuro)',
+    design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
+  }),
+];
 
 <SarakUIProvider customThemes={MEUS_TEMAS} initialTheme={MEUS_TEMAS[0].id}>
   <App />
@@ -26,17 +32,19 @@ const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
 ```
 
 APIs relacionadas:
-- `GLOBAL_THEMES: ThemePreset[]` — catálogo completo (18 temas) para escolher o ponto de partida.
+- `SARAK_GLOBAL_THEMES: SarakThemePreset[]` — o catálogo completo, para escolher o ponto de partida.
+- `sarakDeriveThemeFromReference(id, { id, name, design })` — deriva um tema completo, com `contraparte`, a partir
+  de qualquer tema do catálogo. Espalhar `.design` perde a contraparte.
 - `SARAK_REFERENCE_THEMES` — o par recomendado (`minimalist-airy` claro + `sarak-sovereign` escuro), que difere em modo, cromo e fonte de propósito.
-- `getThemePreset(id)` — busca um preset por id.
-- `getDefaultDesignState()` / `getAllDesignTokens()` — o **schema vivo** de tokens (fonte da verdade; cada `token.id` é uma chave válida de `design`).
-- `findMissingThemeAxes(design)` / `warnOnIncompleteTheme(design)` — avisam se um tema custom omite um eixo inteiro (para não ficar incompleto em silêncio).
+- `sarakGetThemePreset(id)` — busca um preset por id.
+- `sarakGetDefaultDesignState()` / `sarakGetAllDesignTokens()` — o **schema vivo** de tokens (fonte da verdade; cada `token.id` é uma chave válida de `design`).
+- `sarakFindMissingThemeAxes(design)` / `sarakWarnOnIncompleteTheme(design)` — avisam se um tema custom omite um eixo inteiro (para não ficar incompleto em silêncio).
 
 ### Schema de tema
 
-Um `ThemePreset` é `{ id, name, description, design }`. O `design` é um mapa
+Um `SarakThemePreset` é `{ id, name, description, design }`. O `design` é um mapa
 `Record<tokenId, valor>`. A lista COMPLETA de `tokenId`s válidos é **derivada do código**
-(`getAllDesignTokens()`), então nunca desatualiza — cada token tem `id`, `type`
+(`sarakGetAllDesignTokens()`), então nunca desatualiza — cada token tem `id`, `type`
 (`color` / `font` / `slider` / `select` / `boolean` / …), `defaultValue` e `cssVars`.
 Eixos e tokens representativos:
 
@@ -48,7 +56,7 @@ Eixos e tokens representativos:
 | raio | `borderRadius`, `cardBorderRadius`, `btnBorderRadius` |
 | espaçamento | `layoutGap`, `layoutPadding`, `cardPaddingMd` |
 
-O **CustomizationPanel** ("Exportar JSON") sempre exporta o conjunto **completo** de
+O **SarakCustomizationPanel** ("Exportar JSON") sempre exporta o conjunto **completo** de
 tokens — o JSON exportado nasce completo, pronto para colar em `customThemes`.
 
 ## 2. Cromo apresentacional (L2) — `SarakAppChrome`
@@ -59,7 +67,7 @@ renderiza o seu, isolado; a navegação é DADO e a seleção sai por callback.
 ### Navegação estruturada com ícone first-class (Spec 40.2 — L1)
 
 Prefira `navItems` (contrato `SarakNavItem`): cada item traz **ícone** (resolvido pelo
-`SarakIcon`/`IconMap` curado) + label, com estado ativo acessível (`aria-current`, foco por
+`SarakIcon`/`SarakIconMap` curado) + label, com estado ativo acessível (`aria-current`, foco por
 teclado) — o cromo deixa de ser text-only. É o modelo recomendado para o cromo **por-app**:
 defina os itens **uma vez** (código compartilhado) e todo app renderiza o mesmo menu.
 
@@ -122,9 +130,9 @@ o consumidor escrever CSS** (isso seria gambiarra). A lib degrada graciosamente 
 > `SarakTable` (Spec 40.3).
 
 ```tsx
-import { DeviceProvider, useSarakDevice, SarakHidden, type ResponsiveValue } from '@sarak/lib-ui-core';
+import { SarakDeviceProvider, useSarakDevice, SarakHidden, type SarakResponsiveValue } from '@sarak/lib-ui-core';
 
-// 1) Envolva a árvore (o SarakUIProvider já monta um DeviceProvider; use este só para
+// 1) Envolva a árvore (o SarakUIProvider já monta um SarakDeviceProvider; use este só para
 //    forçar/observar em subárvores específicas, ex. o Gêmeo Digital do preview).
 // 2) Leia o dispositivo atual:
 const device = useSarakDevice();           // 'smartphone' | 'tablet' | 'desktop'
@@ -134,9 +142,9 @@ const device = useSarakDevice();           // 'smartphone' | 'tablet' | 'desktop
   <ColunaLateralPesada />
 </SarakHidden>
 
-// 4) Tokens responsivos: qualquer token físico aceita ResponsiveValue<T> (mob/tab/desk),
+// 4) Tokens responsivos: qualquer token físico aceita SarakResponsiveValue<T> (mob/tab/desk),
 //    resolvido por breakpoint via media query pelo Design Engine.
-const largura: ResponsiveValue<number> = { mob: 200, tab: 220, desk: 240 };
+const largura: SarakResponsiveValue<number> = { mob: 200, tab: 220, desk: 240 };
 ```
 
 Breakpoints são tokens do tema (`breakpointTablet`/`breakpointDesktop`) — o consumidor
@@ -147,14 +155,14 @@ não hardcoda largura de tela.
 **Layout multidispositivo é por padrão (zero-config).** O consumidor **não escreve CSS nem
 media query** para as telas adaptarem a celular/tablet/desktop — o cromo e as primitivas
 consomem `useSarakDevice` sozinhos. Onde quiser um layout específico, refine passando
-`ResponsiveValue<T>` (nunca é obrigatório). Breakpoints: **celular** `< 768px`, **tablet**
+`SarakResponsiveValue<T>` (nunca é obrigatório). Breakpoints: **celular** `< 768px`, **tablet**
 `768–1023px`, **desktop** `≥ 1024px`.
 
 ### O que adapta automaticamente
 
 | Componente | Celular | Tablet | Desktop | Refino opcional |
 | --- | --- | --- | --- | --- |
-| **`SarakAppChrome`** (cromo) | barra compacta + **hambúrguer → drawer** (nav não come a tela, acessível: `aria-expanded`/foco/ESC) | **topbar compacta** | sidebar **ou** topbar (por `navigationStyle`) | tokens de cromo (`--sarak-sidebar-*`/`--sarak-topbar-*`) aceitam `ResponsiveValue` |
+| **`SarakAppChrome`** (cromo) | barra compacta + **hambúrguer → drawer** (nav não come a tela, acessível: `aria-expanded`/foco/ESC) | **topbar compacta** | sidebar **ou** topbar (por `navigationStyle`) | tokens de cromo (`--sarak-sidebar-*`/`--sarak-topbar-*`) aceitam `SarakResponsiveValue` |
 | **`SarakGrid`** | **1 coluna** (um `templateColumns` fixo colapsa; nunca estoura) | valor cheio | valor cheio | `templateColumns={{ mob, tab, desk }}` |
 | **`SarakFlex`** | **quebra em linhas** (`wrap` on) | idem | idem | `wrap={false}`; `direction={{ mob, tab, desk }}` |
 | **`SarakSplitPane`** | **empilha** em coluna full-width (sem divisória) | split redimensionável | split redimensionável | — |
@@ -166,13 +174,13 @@ consomem `useSarakDevice` sozinhos. Onde quiser um layout específico, refine pa
 ### Regras do contrato
 
 - **Nenhum `grid-template-columns` fixo estoura no celular** — a lib colapsa para 1 coluna por
-  padrão; passe `ResponsiveValue` para controlar por dispositivo.
+  padrão; passe `SarakResponsiveValue` para controlar por dispositivo.
 - **A adaptação é do componente, não do host** — funciona em qualquer deploy (monólito,
   modular, microfrontend). O cromo é por-app (cada app renderiza o seu `SarakAppChrome`).
-- **Zero-config com controle opcional** — defaults mobile-first sensatos; `ResponsiveValue<T>`
+- **Zero-config com controle opcional** — defaults mobile-first sensatos; `SarakResponsiveValue<T>`
   é sempre opcional, nunca exigido.
 - **Fora do contrato desta rodada** (registrado, não corrigido): colapso mobile de
   `SarakManagementGrid` e `SarakDataGrid` (o ERP não os usa) — spec dedicada quando exigidos.
 - Para forçar/observar o dispositivo numa subárvore (ex.: preview/Gêmeo Digital), use
-  `DeviceProvider overrideDevice`; o `SarakUIProvider` já monta um `DeviceProvider` que segue
+  `SarakDeviceProvider overrideDevice`; o `SarakUIProvider` já monta um `SarakDeviceProvider` que segue
   o viewport real.

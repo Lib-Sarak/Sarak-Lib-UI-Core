@@ -1,7 +1,8 @@
 import React from 'react';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Migalha do caminho de navegação (Spec 14, Regra 3). */
-export interface BreadcrumbItem {
+export interface SarakBreadcrumbItem {
     /** Rótulo exibido. */
     label: string;
     /** Destino opcional (acionado via `onNavigate`, não pela URL diretamente). */
@@ -12,7 +13,7 @@ export interface BreadcrumbItem {
 
 export interface SarakBreadcrumbsProps {
     /** Caminho do usuário, da raiz à folha. */
-    items: BreadcrumbItem[];
+    items: SarakBreadcrumbItem[];
     /** Separador entre migalhas (default: `/`). */
     separator?: React.ReactNode;
     /** Delega a navegação ao host (Spec 33, Regra 3) — não manipula a URL. */
@@ -26,8 +27,10 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
     separator = '/',
     onNavigate,
     className = '',
-}) => (
-    <nav className={`flex items-center flex-wrap text-sm ${className}`} style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} aria-label="Trilha de navegação">
+}) => {
+    const t = useLibraryText();
+    return (
+    <nav className={`flex items-center flex-wrap text-sm ${className}`} style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} aria-label={t('breadcrumbsAriaLabel')}>
         {items.map((item, index) => {
             const isLast = index === items.length - 1;
             const interactive = !isLast && Boolean(item.href);
@@ -68,4 +71,5 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
             );
         })}
     </nav>
-);
+    );
+};

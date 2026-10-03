@@ -12,10 +12,10 @@ vi.mock('framer-motion', async () => {
     return { ...actual as any, motion: { div: ({ children, ...props }: any) => <div {...props}>{children}</div> } };
 });
 
-vi.mock('../ShellSearchWidget', () => ({ ShellSearchWidget: () => <div data-testid="mock-search">Search</div> }));
-vi.mock('../ShellThemeToggle', () => ({ ShellThemeToggle: () => <div data-testid="mock-theme">Theme</div> }));
-vi.mock('../ShellLanguageSelector', () => ({ ShellLanguageSelector: () => <div data-testid="mock-lang">Lang</div> }));
-vi.mock('../ShellUserWidget', () => ({ ShellUserWidget: () => <div data-testid="mock-user">User</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({ SarakShellSearchWidget: () => <div data-testid="mock-search">Search</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellThemeToggle', () => ({ SarakShellThemeToggle: () => <div data-testid="mock-theme">Theme</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellLanguageSelector', () => ({ SarakShellLanguageSelector: () => <div data-testid="mock-lang">Lang</div> }));
+vi.mock('../../../../components/atomic/Navigation/SarakShellUserWidget', () => ({ SarakShellUserWidget: () => <div data-testid="mock-user">User</div> }));
 vi.mock('../IconRenderer', () => ({ IconRenderer: ({ name }: any) => <span>{name}</span> }));
 vi.mock('../../../../components/atomic/Icon/SarakIcon', () => ({ SarakIcon: ({ name }: any) => <span>{name}</span> }));
 
@@ -48,5 +48,68 @@ describe('SidebarNav', () => {
         const btn = screen.getByRole('button', { name: /Module 1/i });
         fireEvent.click(btn);
         expect(defaultProps.setActiveModuleId).toHaveBeenCalledWith('m1');
+    });
+
+    // Spec 05 §2.4.
+    describe('cor do item ativo, marcador, ruído, blur e sombra', () => {
+        it('o item ativo NÃO carrega mais --theme-primary no texto — vence o `tone` do SarakMenuItem (--sarak-nav-active-color)', () => {
+            renderWithProvider(<SidebarNav {...defaultProps} />);
+            const activeBtn = screen.getByRole('button', { name: /Module 1/i });
+            expect(activeBtn.className).not.toContain('text-[var(--theme-primary)]');
+        });
+
+        it('navActiveMarkerColor/navActiveMarkerGlow: o marcador do item ativo usa os tokens dedicados', () => {
+            const { container } = renderWithProvider(<SidebarNav {...defaultProps} />);
+            const marker = container.querySelector('[style*="nav-marker-color"]') as HTMLElement | null;
+            expect(marker).not.toBeNull();
+            expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+        });
+
+        it('sidebarNoiseOpacity: a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+            const { container } = renderWithProvider(<SidebarNav {...defaultProps} />);
+            const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+            expect(noiseLayer).not.toBeNull();
+            expect(noiseLayer!.style.opacity).toBe('var(--sarak-sidebar-noise-opacity, 0)');
+        });
+
+        it('sidebarBlur/sidebarShadow chegam à sidebar por token, no lugar do shadow-2xl fixo', () => {
+            const { container } = renderWithProvider(<SidebarNav {...defaultProps} />);
+            const aside = container.querySelector('aside')!;
+            expect(aside.getAttribute('style')).toContain('var(--sarak-sidebar-blur, 0px)');
+            expect(aside.getAttribute('style')).toContain('var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))');
+            expect(aside.className).not.toContain('shadow-2xl');
+        });
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    describe('idioma que vale', () => {
+        const offlineProps = {
+            ...defaultProps,
+            groupedModules: {
+                Core: [{ id: 'm1', label: 'Module 1', icon: 'Home', status: 'offline' }] as any,
+            },
+        };
+
+        it('módulo offline: título e badge saem em português por padrão', () => {
+            renderWithProvider(<SidebarNav {...offlineProps} />);
+            expect(screen.getByText('Módulo offline')).toBeInTheDocument();
+            expect(screen.getByTitle('Módulo offline: Erro de conexão')).toBeInTheDocument();
+        });
+
+        it('módulo offline: título e badge saem em inglês com `config.language: "en"`', () => {
+            render(
+                <SarakUIProvider config={{ language: 'en' }}>
+                    <SidebarNav {...offlineProps} />
+                </SarakUIProvider>,
+            );
+            expect(screen.getByText('Module offline')).toBeInTheDocument();
+            expect(screen.getByTitle('Offline module: Connection error')).toBeInTheDocument();
+        });
+
+        it('o rótulo de notificações e a dica de redimensionar saem em português por padrão', () => {
+            renderWithProvider(<SidebarNav {...defaultProps} />);
+            expect(screen.getByText('Notificações')).toBeInTheDocument();
+            expect(screen.getByTitle('Arraste para redimensionar')).toBeInTheDocument();
+        });
     });
 });

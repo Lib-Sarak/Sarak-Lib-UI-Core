@@ -87,7 +87,25 @@ uma spec aprovada com snapshot vermelho fora da pasta olhada** ([[01-gates-e-bas
 
 ## 3.5 O que "suíte verde" significa — e o limite medido
 
-**A suíte fecha verde e não foi provada determinística.** Em 2026-08-13 e 2026-08-14 ela falhou duas vezes,
+**"Suíte verde" é `npx vitest run`, sem flag nenhuma.** O teto de workers mora na configuração (§5), e todo
+script, hook e job o herda. A intermitência que esta seção cataloga tinha causa, e ela foi medida:
+**contenção entre workers** — sem teto, o Vitest abria um worker por thread da máquina (16), e sob essa
+carga apareciam timeouts e **falhas de asserção** que nunca se reproduziam isoladas (a pior amostra: 13 falhas
+em 10 arquivos numa rodada; 22/22 verdes isolados). Com o teto, a suíte fechou verde em **15 execuções
+seguidas** sem flag (10 do executor, 5 do revisor, 2026-10-02), e a etapa `coverage:check` do `gates:full`,
+que abortava por timeout, chegou à comparação com o piso em 3/3.
+
+> ⚠️ **O limite dessa medição, medido depois (2026-10-03):** as 15 execuções foram numa máquina de **16
+> threads**. O runner da CI (`ubuntu-latest`, 4 vCPU) falhou uma vez com o teto já em vigor — 3 testes de
+> **um** arquivo (`useDesignDraft.persistenceIntegration.test.tsx`), que dorme 1600 ms de relógio real duas
+> vezes sob o limite de 5 s. A suíte inteira com cobertura presa a 4 núcleos **não reproduziu** (405/405), então
+> o teto de 4 **não** é a explicação medida; o que ficou provado é a fragilidade do teste sob carga. Registro e
+> destino em [[15-divida-conhecida]] achado **58**.
+
+> O que segue abaixo é o registro da investigação **anterior à causa**, mantido porque o procedimento de
+> captura continua valendo para qualquer intermitência futura.
+
+**A suíte fechava verde e não tinha sido provada determinística.** Em 2026-08-13 e 2026-08-14 ela falhou duas vezes,
 sempre com a mesma assinatura — **1 arquivo, 2 testes** —, e as execuções seguintes passaram. **Os testes
 nunca foram nomeados**, porque a falha não voltou a se reproduzir sob medição controlada:
 
@@ -171,8 +189,9 @@ verificou cada arquivo antes de nomeá-lo.
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
-    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx'],
+    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**', '**/.claude/**'],
     pool: 'forks',
+    maxWorkers: 4,
     execArgv: ['--max-old-space-size=8192'],
 }
 ```
@@ -184,7 +203,9 @@ verificou cada arquivo antes de nomeá-lo.
 | `environment: 'jsdom'` | é biblioteca de UI; quase todo teste monta DOM |
 | `globals: true` | `describe`/`it`/`expect` sem import em nenhum arquivo de teste |
 | `pool: 'forks'` + `execArgv` | ver o quadro abaixo |
-| `exclude` de `__e2e__` e `*.spec.*` | herança do aparato Playwright, **removido em 2026-08-18** (§7). Os padrões ficaram: hoje **não casam nada**, e removê-los sem necessidade seria mexer em config de teste sem motivo |
+| `maxWorkers: 4` | **o teto de contenção** (§3.5). Sem ele, um worker por thread: 16 nesta máquina, e a suíte caía por timeout e por asserção sob carga. O valor é o maior **medido** que fechou a suíte e respeitou o próprio teto — 8 foi testado e descartado porque a fotografia dos processos mostrou **9** workers. É configuração, não flag: `coverage:check`, hook e CI herdam |
+| `exclude` de `.claude/**` | `.claude/skills` é symlink de `.agents/skills`, mas o git rastreia os arquivos sob os dois prefixos; sem a exclusão a suíte coletava e rodava os dois arquivos de teste de lá **em dobro** (407 → 405 arquivos; 2.121 → 2.115 testes) |
+| `exclude` de `*.spec.*` e `browser-tests/**` | é o que mantém a medição de navegador (§7.3) **fora** da suíte: `jsdom` não resolve cascata de stylesheet, então não pode nem deve coletar aqueles arquivos. `__e2e__` é herança do aparato removido em 2026-08-18 e hoje não casa nada |
 
 > ## ⚠️ As DUAS lições do OOM — nenhuma é sobre memória
 >
@@ -288,10 +309,16 @@ lib não injeta `Authorization`", [[10-seguranca-e-acessibilidade]] §3.1).
 **Estado hoje:** `auditor_coverage` cobre as seis raízes e reporta **0 órfãos**, de verdade — não mais
 "0 órfãos dentro de um recorte que deixava três arquivos de fora".
 
-# 7. E2E e regressão visual — NÃO EXISTEM nesta base
+# 7. E2E e regressão visual — o que existe, e o que segue ausente
 
-> **Não há teste de ponta a ponta nem de regressão visual neste repositório.** Não é lacuna a descobrir: é
+> **Não há teste de ponta a ponta de jornada, nem regressão visual por pixel.** Não é lacuna a descobrir: é
 > estado declarado.
+>
+> ✅ **O que passou a existir:** **uma** medição de **CSS renderizado** em navegador real — `browser-tests/`,
+> Chromium via Playwright, ligada ao job `cromo-css-real` da CI. Ela mede **valor computado**
+> (`getComputedStyle`) de um conjunto **nomeado** de elementos do cromo, nas três faixas de dispositivo,
+> contra o artefato **`dist/` buildado** — não o `src/`. Não é E2E de jornada e **não é comparação de
+> pixel**: as duas coisas continuam fora, por decisão. Contrato e limites em §7.3.
 
 O aparato Playwright CT foi **removido em 2026-08-18** (decisão do dono, tomada duas vezes — 2026-08-10 e
 2026-08-11) por produzir **verde falso**: cobertura que existia no repositório e **não rodava em pipeline
@@ -309,7 +336,7 @@ nenhum deles.
 | --- | --- | --- |
 | Não-vazamento do modo embarcado medido em **CSS renderizado** (R24) | **EmbeddedNoLeak.spec.tsx** | **conferência manual** |
 | Boot do painel do Design Engine pintado num browser | **Boot.spec.tsx** | sem equivalente |
-| `var()` **resolvendo** de fato no motor de CSS | **RealtimeInjection.spec.tsx** | sem equivalente |
+| `var()` **resolvendo** de fato no motor de CSS | **RealtimeInjection.spec.tsx** | **parcial** — a medição da §7.3 lê valor computado, com `var()` já resolvido, mas só do conjunto nomeado do cromo e dos elementos de prova; painel e átomos seguem sem equivalente |
 | Regressão visual de 8 componentes | **Spec21.spec.tsx** | sem equivalente |
 
 **O denominador comum:** nenhum deles era substituível por `jsdom`, que **não resolve `var()` nem aplica
@@ -319,21 +346,67 @@ cascata de stylesheet**. O que se perdeu foi a única prova de **CSS renderizado
 os dois provam **estrutura** (seletor e classe corretos) — nenhum prova que o CSS **não vaza de fato**. É por
 isso que o marcador dela é **⚠️** em [[00-regras-e-invariantes]], e não ✅.
 
-## 7.2 A perda transversal: não há como medir browser
+## 7.2 O que a base consegue medir em browser — e o que segue sem medição
 
-Remover `@playwright/test` tirou do repositório **a única ferramenta capaz de medir comportamento em CSS e
-`var()` resolvidos num navegador real**. Isso alcança qualquer plan futura cujo critério de aceite dependa
-disso — as classes `@min-[…]` de container query são a família mais provável, e a própria
+`@playwright/test` é **devDependency declarada** (`package.json`), instalada pelo `npm ci` como qualquer
+outra ferramenta de teste. Só o **binário do Chromium** vem sob demanda (`npx playwright install chromium`),
+e na CI apenas o job `cromo-css-real` paga esse custo ([[16-integracao-continua]] §4.2.1).
+
+**A ferramenta existe; a cobertura é estreita.** O único arquivo que a usa é
+`browser-tests/cromo-css-real.spec.ts` (§7.3). Fora do que ele mede, **nada** é conferido em navegador: as
+linhas *sem equivalente* e a *conferência manual* da §7.1 continuam valendo, e a suíte do job `gates` segue
+em `jsdom`, como a local ([[16-integracao-continua]] §5).
+
+**Quem precisar medir em browser acrescenta um caso a `browser-tests/`** — fixture em
+`browser-tests/fixtures/`, medição contra o `dist/` buildado — em vez de instalar ferramenta. As classes
+`@min-[…]` de container query são a família mais provável, e a própria
 [[07-responsividade-e-multidispositivo]] §6.1 avisa que *"o desenho se prova em navegador real"*.
 
-**Quem precisar medir em browser** reinstala a ferramenta pontualmente (`npm install --no-save
-@playwright/test` mais os browsers). **Não é regressão silenciosa** — está escrito aqui para ninguém descobrir
-no meio de um aceite.
+> ⚠️ **Ter a ferramenta não é ter o que rodar.** Critério de aceite que dependa de CSS renderizado fora do
+> conjunto da §7.3 continua sem prova até alguém escrever o caso — e caso novo nasce **ligado ao gatilho**
+> (`cromo-css-real:check`), pela razão que fecha a §7.3.
 
-> ⚠️ **A CI existe desde 2026-08-18, e isso NÃO fecha esta lacuna.** *"Ou espera a CI"* era a saída prevista
-> quando esta seção foi escrita; o lugar de rodar passou a existir, mas **a suíte da CI roda em `jsdom`, como
-> a local** ([[16-integracao-continua]] §5). Ter onde rodar não é ter o que rodar — a ferramenta continua
-> desinstalada, e reabrir isso é decisão de plan própria, não consequência automática do pipeline.
+## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
+
+`browser-tests/cromo-css-real.spec.ts`, rodando por `npm run cromo-css-real:check` — que **builda antes**,
+sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
+(`grep -c "^test(" browser-tests/cromo-css-real.spec.ts`); o que eles cobrem cabe em cinco famílias:
+
+- a **métrica do item de navegação** nas três faixas de [[07-responsividade-e-multidispositivo]] §2;
+- o **contrato de altura e rolagem** do cromo ([[05-cromo-e-slots]] §5.1);
+- o **respiro do conteúdo** por token, nos quatro lados ([[05-cromo-e-slots]] §2.4);
+- a **classe utilitária vencendo o padrão de elemento** — e o padrão valendo quando não há classe;
+- o **fundo da raiz** do cromo, com e sem mídia global.
+
+**Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
+de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
+ficar sistematicamente abaixo do botão em recuo e peso. Isso sobrevive a mudança legítima de escala (medido:
+a raiz do harness computa 0,875, não 16px) e mede exatamente a classe de regressão do
+[[013-item-de-navegacao-como-atomo-proprio]]: *item de menu herdando a métrica do botão de ação*. Os
+elementos são alcançados por **âncora de contrato** (`getByRole` + nome acessível), nunca por estrutura
+interna.
+
+**O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18 — a lista completa é a de lá): pixel ·
+fonte carregada · tema que sobrescreva **token de cromo** (ela cobre o default e recortes **nomeados** de
+`config`, nunca uma varredura de temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
+`src/` quando o `dist/` está velho · qualquer navegador que não seja Chromium headless · `input`, `select` e
+`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `body` e o
+`transform !important` do botão ativo).
+
+⚠️ **O quinto limite é o que morde na prática:** o harness carrega o artefato **publicado**. `dist/`
+desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que
+`cromo-css-real:check` embute o build como primeiro passo — e é a mesma armadilha que §7.1 registra para
+qualquer medição sobre artefato publicado.
+
+**O harness é buildado uma vez por execução**, no `globalSetup` do Playwright (`browser-tests/global-setup.mjs`),
+fora do tempo de qualquer caso; a URL chega aos casos por variável de ambiente, e o teardown apaga o diretório
+temporário. A suíte roda com **um worker** (`browser-tests/playwright.config.ts`) — com `fullyParallel` e sem
+teto, cada worker buildava o próprio harness dentro do `beforeAll`, e a passada a frio estourava o timeout do
+primeiro caso sem nenhuma asserção ter rodado.
+
+**Por que ela não repete o erro de 2026-08-18:** ela **nasceu ligada ao gatilho**. O job existe no mesmo
+commit em que o arquivo existe; não houve etapa em que a cobertura estivesse no disco esperando alguém
+plugá-la. Detalhe do job e do custo em [[16-integracao-continua]] §4.
 
 # 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 

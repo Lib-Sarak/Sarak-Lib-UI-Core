@@ -11,6 +11,6 @@
 export { SarakMarkdownRenderer } from './SarakMarkdownRenderer';
 export type { SarakMarkdownRendererProps } from './SarakMarkdownRenderer';
 export { SarakLightbox } from './SarakLightbox';
-export type { LightboxImage, SarakLightboxProps } from './SarakLightbox';
+export type { SarakLightboxImage, SarakLightboxProps } from './SarakLightbox';
 export { SarakPDFViewer } from './SarakPDFViewer';
 export type { SarakPDFViewerProps } from './SarakPDFViewer';

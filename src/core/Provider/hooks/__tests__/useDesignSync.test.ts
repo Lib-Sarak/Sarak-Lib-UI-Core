@@ -1,16 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useDesignSync } from '../useDesignSync';
-import type { ThemeEntry } from '../../types';
+import type { SarakThemeEntry } from '../../types';
 
 describe('useDesignSync', () => {
     it('aplica o tema ativo uma única vez, mesmo que `allThemes` mude de referência a cada render (regressão do loop infinito — Spec 43 §5.1)', () => {
         const setDesign = vi.fn();
         const hasHydratedRef = { current: false };
-        const theme: ThemeEntry = { id: 'dark-neon', design: { primaryColor: '#000000' } };
+        const theme: SarakThemeEntry = { id: 'dark-neon', design: { primaryColor: '#000000' } };
 
         const { rerender } = renderHook(
-            ({ allThemes }: { allThemes: ThemeEntry[] }) =>
+            ({ allThemes }: { allThemes: SarakThemeEntry[] }) =>
                 useDesignSync(true, 'dark-neon', allThemes, 'test-key', hasHydratedRef, setDesign),
             { initialProps: { allThemes: [theme] } }
         );
@@ -33,8 +33,8 @@ describe('useDesignSync', () => {
     it('reaplica quando o `activeThemeId` muda de fato para outro tema', () => {
         const setDesign = vi.fn();
         const hasHydratedRef = { current: false };
-        const themeA: ThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
-        const themeB: ThemeEntry = { id: 'b', design: { primaryColor: '#ffffff' } };
+        const themeA: SarakThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
+        const themeB: SarakThemeEntry = { id: 'b', design: { primaryColor: '#ffffff' } };
         const allThemes = [themeA, themeB];
 
         const { rerender } = renderHook(
@@ -56,7 +56,7 @@ describe('useDesignSync', () => {
         const setDesign = vi.fn();
         const hasHydratedRef = { current: false };
         // Tema nativamente ESCURO, sem `contraparte` — é o caso dos 18 legados (fallback).
-        const darkTheme: ThemeEntry = { id: 'dark-theme', design: { mode: 'dark', colorBgBody: '#050505', textColorMaster: '#ffffff' } };
+        const darkTheme: SarakThemeEntry = { id: 'dark-theme', design: { mode: 'dark', colorBgBody: '#050505', textColorMaster: '#ffffff' } };
 
         renderHook(() => useDesignSync(true, 'dark-theme', [darkTheme], 'test-key', hasHydratedRef, setDesign));
         expect(setDesign).toHaveBeenCalledTimes(1);
@@ -74,10 +74,33 @@ describe('useDesignSync', () => {
     it('não chama setDesign quando não hidratado', () => {
         const setDesign = vi.fn();
         const hasHydratedRef = { current: false };
-        const theme: ThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
+        const theme: SarakThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
 
         renderHook(() => useDesignSync(false, 'a', [theme], 'test-key', hasHydratedRef, setDesign));
 
         expect(setDesign).not.toHaveBeenCalled();
+    });
+
+    it('`activeThemeId` sem tema correspondente (removido do catálogo) cai na referência do MODO ATUAL, com aviso — nunca lança, nunca fica sem tema (R33)', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const setDesign = vi.fn();
+        const hasHydratedRef = { current: false };
+        const themeA: SarakThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
+
+        expect(() =>
+            renderHook(() => useDesignSync(true, 'tema-removido-do-catalogo', [themeA], 'test-key', hasHydratedRef, setDesign)),
+        ).not.toThrow();
+
+        expect(setDesign).toHaveBeenCalledTimes(1);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        expect(warnSpy.mock.calls[0][0]).toContain('tema-removido-do-catalogo');
+
+        const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
+        // O usuário estava no modo ESCURO — a referência aplicada tem de ser a
+        // do mesmo modo, não a que calhar de vir primeiro em `SARAK_REFERENCE_THEMES`.
+        const result = updater({ mode: 'dark' });
+        expect(result.mode).toBe('dark');
+
+        warnSpy.mockRestore();
     });
 });

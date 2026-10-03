@@ -11,7 +11,7 @@ import type { SarakTokenValue } from '../Design/types';
  * O Manifesto é a única fonte de verdade para como os tokens de design
  * são mapeados para variáveis CSS, Atributos de DOM e Classes.
  */
-export const DESIGN_MANIFEST: Record<string, {
+export const SARAK_DESIGN_MANIFEST: Record<string, {
     vars?: string[],
     unit?: string,
     transform?: (v: SarakTokenValue) => string | number | Record<string, string | number>,

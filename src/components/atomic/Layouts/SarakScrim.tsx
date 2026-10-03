@@ -11,8 +11,9 @@ export interface SarakScrimProps {
      * `ariaLabel`. Não é passthrough genérico de props — evita colidir com os tipos de
      * evento do `motion.button` (que redefine `onDrag` e afins com assinatura própria). */
     testId?: string;
-    /** Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a
-     * cor do overlay de um token de design próprio antes de migrar para este átomo. */
+    /** Sobrepõe o fundo padrão (`--sarak-modal-overlay`, do token `modalOverlayColor`) —
+     * para consumidores que já liam a cor do overlay de um token de design próprio antes
+     * de migrar para este átomo. */
     style?: React.CSSProperties;
     /** Ativa a transição de opacidade na entrada/saída. Default `false` — o comportamento
      * de sempre, sem animação (plan-19/20/22 pararam exatamente por causa disto: dar
@@ -60,7 +61,7 @@ export const SarakScrim: React.FC<SarakScrimProps> = ({
         'data-testid': testId,
         onClick: onClose,
         className: `fixed inset-0 z-40 border-0 cursor-default ${className}`.trim(),
-        style: { background: 'var(--sarak-overlay-bg, rgba(0,0,0,0.5))', ...style },
+        style: { background: 'var(--sarak-modal-overlay, rgba(0,0,0,0.5))', ...style },
     };
 
     if (!animate) return <button {...sharedProps} />;

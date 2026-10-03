@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { SarakToastProvider, useToast, type ToastController } from '../SarakToast';
+import { SarakToastProvider, useToast, type SarakToastController } from '../SarakToast';
 
-const Harness: React.FC<{ onReady: (c: ToastController) => void }> = ({ onReady }) => {
+const Harness: React.FC<{ onReady: (c: SarakToastController) => void }> = ({ onReady }) => {
     const controller = useToast();
     React.useEffect(() => {
         onReady(controller);
@@ -20,7 +20,7 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
     });
 
     it('deve montar e desmontar o toast após o timeout parametrizado', () => {
-        let api!: ToastController;
+        let api!: SarakToastController;
         render(
             <SarakToastProvider>
                 <Harness onReady={(c) => (api = c)} />
@@ -39,7 +39,7 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
     });
 
     it('deve empilhar 5 toasts sucessivos', () => {
-        let api!: ToastController;
+        let api!: SarakToastController;
         render(
             <SarakToastProvider>
                 <Harness onReady={(c) => (api = c)} />
@@ -53,7 +53,7 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
     });
 
     it('o botão de fechar (×) dispensa o toast antes do timeout (R10 — lote 10)', () => {
-        let api!: ToastController;
+        let api!: SarakToastController;
         render(
             <SarakToastProvider>
                 <Harness onReady={(c) => (api = c)} />
@@ -69,7 +69,7 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
 
     it('useToast() sem Provider degrada para no-op (não quebra a árvore)', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-        let api!: ToastController;
+        let api!: SarakToastController;
         render(<Harness onReady={(c) => (api = c)} />);
         act(() => {
             expect(api.notify({ message: 'x' })).toBe('');
@@ -78,7 +78,7 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
     });
 
     it('as declarações de background e color têm parênteses balanceados, com fundo e texto próprios (achado 37)', () => {
-        let api!: ToastController;
+        let api!: SarakToastController;
         render(
             <SarakToastProvider>
                 <Harness onReady={(c) => (api = c)} />

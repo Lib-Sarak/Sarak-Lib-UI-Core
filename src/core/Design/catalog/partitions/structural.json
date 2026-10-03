@@ -378,5 +378,168 @@
       "step": 10
     },
     "relatedTokens": []
+  },
+  {
+    "tokenId": "preferenceModePosition",
+    "name": "Preferência: Modo Claro/Escuro — Posição",
+    "description": "Onde a escolha de modo (claro/escuro/sistema) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "string",
+    "importance": 60,
+    "categories": [
+      "estrutura",
+      "preferencias"
+    ],
+    "tags": [
+      "preferencias",
+      "modo",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-mode-position"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceFontSizePosition",
+      "preferenceNavigationStylePosition",
+      "preferenceNavCollapsePosition",
+      "preferenceLanguagePosition"
+    ]
+  },
+  {
+    "tokenId": "preferenceFontSizePosition",
+    "name": "Preferência: Tamanho da Fonte — Posição",
+    "description": "Onde a escolha de tamanho de fonte (P/M/G) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "string",
+    "importance": 55,
+    "categories": [
+      "estrutura",
+      "preferencias"
+    ],
+    "tags": [
+      "preferencias",
+      "fonte",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-font-size-position"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceModePosition"
+    ]
+  },
+  {
+    "tokenId": "preferenceNavigationStylePosition",
+    "name": "Preferência: Navegação Topo/Lateral — Posição",
+    "description": "Onde a escolha de orientação da navegação (topo/lateral) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "string",
+    "importance": 55,
+    "categories": [
+      "estrutura",
+      "preferencias"
+    ],
+    "tags": [
+      "preferencias",
+      "navegacao",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-navigation-style-position"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceModePosition"
+    ]
+  },
+  {
+    "tokenId": "preferenceNavCollapsePosition",
+    "name": "Preferência: Navegação Recolhida — Posição",
+    "description": "Onde o controle de recolher a navegação do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "string",
+    "importance": 60,
+    "categories": [
+      "estrutura",
+      "preferencias"
+    ],
+    "tags": [
+      "preferencias",
+      "colapso",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-nav-collapse-position"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceModePosition"
+    ]
+  },
+  {
+    "tokenId": "preferenceLanguagePosition",
+    "name": "Preferência: Idioma — Posição",
+    "description": "Onde a escolha de idioma do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "string",
+    "importance": 50,
+    "categories": [
+      "estrutura",
+      "preferencias"
+    ],
+    "tags": [
+      "preferencias",
+      "idioma",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-language-position"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceModePosition"
+    ]
   }
 ]

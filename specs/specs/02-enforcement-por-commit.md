@@ -63,6 +63,8 @@ Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `check-container-query.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
 | `check-container-query-boundary.mjs` | — *(`plan-41`)* — todo `@min-[…]` tem ancestral `container-type` *(entrou em 2026-08-18, `plan-52`)* |
 | `check-persistence-doc.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
+| `check-class-merge.mjs` | R35 — a classe do chamador vence a do átomo *(entrou em 2026-09-08)* |
+| `check-trail-citation.mjs --staged` | R36 — o código não cita o rastro de execução. Lê só as linhas **adicionadas** do staged; é o único gate do Anel 1 que não roda também na CI, pela mesma razão do Anel 0 (§9) *(entrou em 2026-09-13)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
 
@@ -372,7 +374,7 @@ CI mudou **para os anéis locais**, que é o assunto desta spec.
 | `build` e `package:check` em **ambiente limpo** | São as duas peças que nunca vão para hook (§4.1) porque mutam a árvore. No runner a árvore é descartável, e a objeção deixa de existir |
 | Ambiente **determinístico** | Achou, no primeiro dia, um `package-lock.json` incompleto que **nenhum hook local podia ver** — o defeito que dependia de estado da máquina |
 | Cobrar quem usou `--no-verify` | O escape da §7 deixa de ser invisível: o job roda a união dos anéis, sem consultar o que foi ou não pulado localmente |
-| Os 5 `*:check` que ficavam de fora | `plan-index` (a metade que o hook não roda), `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc` |
+| Os 6 `*:check` que ficavam de fora | `plan-index` (a metade que o hook não roda), `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc`, `class-merge` |
 
 **Custo real: ~5 min por run.**
 

@@ -826,8 +826,7 @@
       "DesignInjector"
     ],
     "cssVariables": [
-      "--sarak-nav-active-color",
-      "--theme-primary"
+      "--sarak-nav-active-color"
     ],
     "allowedValues": null,
     "relatedTokens": [

@@ -3,9 +3,13 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 
 export interface SarakAccordionProps {
+    /** Título obrigatório do botão que abre e fecha o painel; sem conteúdo, o controle fica sem título visível. */
     title: React.ReactNode;
+    /** Conteúdo obrigatório do painel, mantido no DOM mesmo quando recolhido; se omitido, o painel fica vazio. */
     children: React.ReactNode;
+    /** Define o estado inicial do painel; sem a prop, começa recolhido e mudanças posteriores não o controlam. */
     defaultOpen?: boolean;
+    /** Acrescenta classes à raiz do acordeão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
 }
 

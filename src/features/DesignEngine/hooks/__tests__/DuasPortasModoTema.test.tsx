@@ -14,13 +14,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { ShellThemeToggle } from '../../../../core/Shell/Components/ShellThemeToggle';
-import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SarakShellThemeToggle } from '../../../../components/atomic/Navigation/SarakShellThemeToggle';
+import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import { useDesignDraft } from '../useDesignDraft';
 
 describe('O invariante das duas portas (§3.3) — toggle do cromo × seletor "Tema do Sistema" do painel', () => {
     it('produzem design IDÊNTICO, chave a chave, para o mesmo tema e o mesmo modo alvo', () => {
-        const tema = GLOBAL_THEMES.find((t) => t.id === 'ardosia-ao-entardecer')!;
+        const tema = SARAK_GLOBAL_THEMES.find((t) => t.id === 'sarak-sovereign')!;
         const chavesDaContraparte = Object.keys(tema.contraparte ?? {});
         expect(chavesDaContraparte.length).toBeGreaterThan(0); // salvaguarda: o teste não vale nada sobre um tema sem contraparte
 
@@ -32,8 +32,8 @@ describe('O invariante das duas portas (§3.3) — toggle do cromo × seletor "T
             return null;
         };
         render(
-            <SarakUIProvider initialTheme="ardosia-ao-entardecer">
-                <ShellThemeToggle variant="mini" />
+            <SarakUIProvider initialTheme="sarak-sovereign">
+                <SarakShellThemeToggle variant="mini" />
                 <ProbeSistema />
             </SarakUIProvider>,
         );
@@ -52,7 +52,7 @@ describe('O invariante das duas portas (§3.3) — toggle do cromo × seletor "T
             );
         };
         render(
-            <SarakUIProvider initialTheme="ardosia-ao-entardecer">
+            <SarakUIProvider initialTheme="sarak-sovereign">
                 <HarnessPainel />
             </SarakUIProvider>,
         );

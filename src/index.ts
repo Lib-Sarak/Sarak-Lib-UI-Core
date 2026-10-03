@@ -15,72 +15,82 @@ export type { SarakUIMode } from './core/Provider/types';
 export type {
     SarakThemePayload,
     SarakDesignState,
-    ThemeEntry,
+    SarakThemeEntry,
     SarakUIOptions,
     SarakUIContextType,
     SarakBrandingState,
 } from './core/Provider/types';
 export type { SarakUIProviderProps } from './core/Provider/providerProps';
+// Preferências do usuário como camada separada do tema — sobreposta ao
+// renderizar, nunca gravada nele.
+export { useSarakPreferences } from './core/Provider/hooks/useSarakPreferences';
+export type { SarakPreferencesHook } from './core/Provider/hooks/useSarakPreferences';
+export type {
+    SarakUserPreferences,
+    SarakPreferencesOptions,
+    SarakColorModePreference,
+    SarakFontSizePreference,
+    SarakNavigationStylePreference,
+} from './core/Provider/preferencesTypes';
+export type { SarakPreferenceId, SarakPreferencePosition } from './core/Design/schema/preferences';
 export type { SarakDesignTokens } from './core/Provider/generated/design-token-ids';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
-export { DesignScope } from './core/Design/components/DesignScope';
-export type { DesignScopeProps } from './core/Design/components/DesignScope'; // plan-45
+export { SarakDesignScope } from './core/Design/components/DesignScope';
+export type { SarakDesignScopeProps } from './core/Design/components/DesignScope';
 export * from './components/atomic/Buttons/SarakButton';
 export * from './components/atomic/Buttons/SarakIconButton';
-export * from './components/atomic/Buttons/SocialButton';
+export * from './components/atomic/Buttons/SarakSocialButton';
 
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
-export type { SarakShellProps, ShellUser } from './core/Shell/Components/types'; // plan-45
+export type { SarakShellProps, SarakShellUser } from './core/Shell/Components/types';
 // Multi-dispositivo (Spec 10/16 — L3 da Spec 40.1): DeviceProvider + useSarakDevice
 // (device atual) + SarakHidden (oculta por dispositivo) + o tipo ResponsiveValue<T>
 // (valor por breakpoint mob/tab/desk) que os tokens responsivos usam. API pública
 // e documentada para o consumidor compor multi-dispositivo sem CSS próprio.
 export * from './core/Provider/DeviceProvider';
-export type { ResponsiveValue } from './core/Design/types';
+export type { SarakResponsiveValue } from './core/Design/types';
 // plan-45: descritor de token (retorno de `getAllDesignTokens`, exportado abaixo) e o
 // espaço de valores que um token pode assumir — apareciam em assinatura pública e
 // não podiam ser importados pelo nome.
-export type { TokenValueType, SarakTokenValue, DesignToken } from './core/Design/types';
+export type { SarakTokenValueType, SarakTokenValue, SarakDesignToken } from './core/Design/types';
 // Resolvedor puro `ResponsiveValue<T>` → device ativo (Spec 40.3 — L2): as primitivas de
 // layout o usam para aceitar valores por dispositivo; exposto para o consumidor resolver
 // valores responsivos no próprio código, sem duplicar a cascata mobile-first.
-export { resolveResponsiveValue, isResponsiveValue } from './core/Design/resolveResponsiveValue';
-export type { ResponsiveDevice } from './core/Design/resolveResponsiveValue';
+export { sarakResolveResponsiveValue, sarakIsResponsiveValue } from './core/Design/resolveResponsiveValue';
+export type { SarakResponsiveDevice } from './core/Design/resolveResponsiveValue';
 export * from './components/Layout/SarakAnalyticalPage';
 export * from './components/Layout/SarakHidden';
 // Cromo apresentacional temável topbar/sidebar (Spec 40.1 — L2), sem host/registro.
 // Navegação estruturada com ícone first-class via `SarakNavItem` (Spec 40.2 — L1).
 export { SarakAppChrome } from './components/Layout/SarakAppChrome';
-export type { SarakAppChromeProps, SarakNavItem } from './components/Layout/SarakAppChrome';
+export type { SarakAppChromeProps, SarakNavItem, SarakChromeWidgets } from './components/Layout/SarakAppChrome';
 export * from './components/atomic/Icon/SarakIcon';
 export * from './components/atomic/Icon/IconMap';
 export { useDesignDraft } from './features/DesignEngine/hooks/useDesignDraft';
-export { DESIGN_MANIFEST } from './core/Provider/manifest';
+export { SARAK_DESIGN_MANIFEST } from './core/Provider/manifest';
 // Temas COMPLETOS de referência (Spec 40.1 — L6): o consumidor parte destes e customiza
 // poucos valores, mantendo TODOS os eixos (cor+fonte+cromo+raio+espaçamento). Inclui os
 // helpers de completude (defaults totais + aviso de eixo omitido) e o tipo `ThemePreset`.
-export { GLOBAL_THEMES, THEME_PRESET_IDS } from './core/Design/presets/themes';
-export type { ThemePreset, ThemePresetId } from './core/Design/presets/themes';
-export { SARAK_REFERENCE_THEMES, getThemePreset } from './core/Design/presets/themes/reference';
-export { getDefaultDesignState, getAllDesignTokens } from './core/Design/master-map';
-export { THEME_AXES, findMissingThemeAxes, warnOnIncompleteTheme } from './core/Design/utils/themeAxes';
+export { SARAK_GLOBAL_THEMES, SARAK_THEME_PRESET_IDS } from './core/Design/presets/themes';
+export type { SarakThemePreset, SarakThemePresetId } from './core/Design/presets/themes';
+export { SARAK_REFERENCE_THEMES, sarakGetThemePreset, sarakDeriveThemeFromReference } from './core/Design/presets/themes/reference';
+export type { SarakThemeReferenceOverrides, SarakDerivedThemePreset } from './core/Design/presets/themes/reference';
+export { sarakGetDefaultDesignState, sarakGetAllDesignTokens } from './core/Design/master-map';
+export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o
 // `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
-export { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
+export { SarakCustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
-export * from './components/atomic/Cards/ExpandableCard';
-export * from './components/atomic/Cards/SarakActionCard';
-export * from './components/atomic/Cards/SarakSearchCard';
-export * from './components/atomic/Cards/SarakTitleCard';
+export * from './components/atomic/Cards';
 // API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
 // barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).
 // Exports NOMEADOS de propósito: a superfície de `Layouts/` é declarada componente a
 // componente aqui, não herdada do barril de categoria. Trocar por `export *` faria a
 // superfície pública passar a depender do que `Layouts/index.ts` acrescentar no futuro.
 export { SarakFlex } from './components/atomic/Layouts/SarakFlex';
-export type { SarakFlexProps, FlexDirection } from './components/atomic/Layouts/SarakFlex'; // FlexDirection: plan-45
+export type { SarakFlexProps, SarakFlexDirection } from './components/atomic/Layouts/SarakFlex';
 export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 export { SarakSplitPane } from './components/atomic/Layouts/SarakSplitPane';
@@ -91,12 +101,18 @@ export { SarakFormGroup } from './components/atomic/Layouts/SarakFormGroup';
 export type { SarakFormGroupProps } from './components/atomic/Layouts/SarakFormGroup';
 export { SarakScrim } from './components/atomic/Layouts/SarakScrim';
 export type { SarakScrimProps } from './components/atomic/Layouts/SarakScrim';
+export { SarakDivider } from './components/atomic/Layouts/SarakDivider';
+export type { SarakDividerProps, SarakDividerOrientation } from './components/atomic/Layouts/SarakDivider';
 export * from './components/atomic/Navigation';
 // Entrada de dados BÁSICA (achado Spec 40 — Teste Real): existiam e já estavam no
 // Registry do motor de manifesto (`nativeComponents.ts`), mas nunca chegaram ao
 // barril público React — mesma classe de lacuna do `SarakLink` (Spec 40, pré-req).
 export { SarakInput } from './components/atomic/Inputs/SarakInput';
 export type { SarakInputProps } from './components/atomic/Inputs/SarakInput';
+export { SarakMaskedInput } from './components/atomic/Inputs/SarakMaskedInput';
+export type { SarakMaskedInputProps } from './components/atomic/Inputs/SarakMaskedInput';
+export { SarakCurrencyInput } from './components/atomic/Inputs/SarakCurrencyInput';
+export type { SarakCurrencyInputProps } from './components/atomic/Inputs/SarakCurrencyInput';
 export { SarakSelect } from './components/atomic/Inputs/SarakSelect';
 export type { SarakSelectProps } from './components/atomic/Inputs/SarakSelect';
 export { SarakTextarea } from './components/atomic/Inputs/SarakTextarea';
@@ -105,8 +121,17 @@ export { SarakSlider } from './components/atomic/Inputs/SarakSlider';
 export type { SarakSliderProps } from './components/atomic/Inputs/SarakSlider';
 export { SarakSwitch } from './components/atomic/Inputs/SarakSwitch';
 export type { SarakSwitchProps } from './components/atomic/Inputs/SarakSwitch';
+export { SarakCheckbox } from './components/atomic/Inputs/SarakCheckbox';
+export type { SarakCheckboxProps } from './components/atomic/Inputs/SarakCheckbox';
+export { SarakRadio } from './components/atomic/Inputs/SarakRadio';
+export type { SarakRadioProps } from './components/atomic/Inputs/SarakRadio';
 export { SarakSearch } from './components/atomic/Inputs/SarakSearch';
-export type { SarakSearchProps } from './components/atomic/Inputs/SarakSearch';
+export type { SarakSearchProps, SarakSearchItem } from './components/atomic/Inputs/SarakSearch';
+export { SarakAutocomplete } from './components/atomic/Inputs/SarakAutocomplete';
+export type {
+    SarakAutocompleteProps,
+    SarakAutocompleteOption,
+} from './components/atomic/Inputs/SarakAutocomplete';
 // Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
 export * from './components/atomic/Inputs/SarakRangeSlider';
 export * from './components/atomic/Inputs/SarakMultiSelect';
@@ -115,22 +140,24 @@ export * from './components/atomic/Inputs/SarakDatePicker';
 export * from './components/atomic/Inputs/SarakTimePicker';
 // plan-45: DatePicker/TimePicker aceitam locale e primeiro-dia-da-semana, mas os
 // tipos viviam em módulo interno e nunca chegaram ao barril.
-export type { DateLocale } from './components/atomic/Inputs/internal/CalendarPanel';
-export type { WeekStart } from './components/atomic/Inputs/internal/calendarGrid';
-export type { Accept } from './components/atomic/Inputs/SarakUploader'; // plan-45
+export type { SarakDateLocale } from './components/atomic/Inputs/internal/CalendarPanel';
+export type { SarakWeekStart } from './components/atomic/Inputs/internal/calendarGrid';
+export type { SarakAccept } from './components/atomic/Inputs/SarakUploader';
 // RichText WYSIWYG blindado (Spec 11 / Onda 10) — contentEditable + sanitizeHtml.
 export * from './components/atomic/Inputs/SarakRichText';
 export * from './components/atomic/Templates';
 export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
+export { SarakAlert } from './components/atomic/Feedback/SarakAlert';
+export type { SarakAlertProps, SarakAlertVariant } from './components/atomic/Feedback/SarakAlert';
 export * from './components/atomic/UX';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
 export * from './components/atomic/DataDisplay';
-export type { PinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel'; // plan-45
+export type { SarakPinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
-export type { PdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument'; // plan-45
+export type { SarakPdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument';
 // Motores de visualização, todos atrás de fronteira lazy (Spec 41 §2.4 / P26): as
 // libs pesadas (echarts/zrender/recharts, reactflow, react-syntax-highlighter) ficam
 // fora do grafo estático — quem não desenha gráfico, fluxo ou chat não paga por elas.
@@ -142,15 +169,14 @@ export { SarakChatEngine, type SarakChatEngineProps } from './components/engines
 export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines/flows';
 // plan-45: apareciam na assinatura de SarakChartEngineProps/SarakChatEngineProps
 // (ambos já públicos) e não podiam ser importados pelo nome.
-export type { ChartDataItem } from './components/engines/charts/SubEngines/builders/types';
-export type { Message } from './components/engines/chat/SarakChatEngine';
+export type { SarakChartDataItem } from './components/engines/charts/SubEngines/builders/types';
+export type { SarakMessage } from './components/engines/chat/SarakChatEngine';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
-export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
-export type { DynamicRendererProps } from './core/Discovery/DynamicRenderer'; // plan-45
+export { default as SarakDynamicRenderer } from './core/Discovery/DynamicRenderer';
+export type { SarakDynamicRendererProps } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';
 export * from './core/Discovery/types';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export { useSarakRouter } from './shared/hooks/useSarakRouter';
 export type { SarakRouterState } from './shared/hooks/useSarakRouter';
-

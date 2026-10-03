@@ -1,4 +1,4 @@
-import type { FilterDescriptor } from '../core/Discovery/types';
+import type { SarakFilterDescriptor } from '../core/Discovery/types';
 import type { SarakComponent } from '../core/Discovery/registry';
 
 /**
@@ -19,7 +19,7 @@ export interface VisualContract {
     endpoint: string;
     tab?: string; // Propriedade para agrupar contratos em abas (v6.1)
     mapping?: Record<string, string>;
-    filters?: FilterDescriptor[]; // Configurações de filtro (v6.4)
+    filters?: SarakFilterDescriptor[]; // Configurações de filtro (v6.4)
     actions?: Array<{
         label: string;
         endpoint: string;

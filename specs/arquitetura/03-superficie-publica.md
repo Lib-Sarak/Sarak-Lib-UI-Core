@@ -4,7 +4,7 @@ titulo: "Superfície pública — o barril, os gates e as fronteiras de bundle"
 dominio: "Arquitetura / Contrato público / Empacotamento"
 status: "🟢 Vigente"
 tags: ["arquitetura", "barril", "contrato-publico", "catalogo", "bundle", "lazy", "taxonomia"]
-relacionados: ["[[00-mapa-do-modulo]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
 ---
 
 # 1. Propósito
@@ -22,7 +22,7 @@ Aqui está a regra de **exposição**. As regras de estilo e de hardcode moram n
 
 **Deep imports são proibidos por contrato.** Um consumidor que escreva `import X from '@sarak/lib-ui-core/dist/components/...'` está fora do contrato, e nada garante que o caminho exista na próxima versão. A única porta é a raiz do pacote.
 
-Hoje o barril exporta **253 nomes** (valores e tipos). A organização é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino.
+O barril é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino. **Quantos nomes ele exporta, e quantos componentes o gate registra, não se afirma aqui** — são cifras derivadas, e o lugar delas é a fonte que as produz: `npm run barrel:check` para os componentes, `dist/index.d.ts` e `docs/component-catalog.json` para os nomes. Cifra em prosa acerta por um dia e mente pelo resto ([[15-divida-conhecida]], achado 32).
 
 ## 2.1 Duas particularidades do barril que você precisa conhecer
 
@@ -46,11 +46,32 @@ O escopo são **duas raízes organizadas por categoria** — `src/components/ato
 
 > ⚠️ **Limitação conhecida, escrita no próprio código (`:167-172`): categoria SEM barril só tem a RAIZ varrida.** Um componente colocado em subpasta **escapa do gate** e do catálogo. Isso é usado deliberadamente em alguns casos — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril — mas é uma faca de dois lados: um componente público esquecido numa subpasta passa em silêncio.
 
+## 3.1 Onde o componente MORA decide o que os gates enxergam
+
+A consequência de a superfície ser derivada por varredura de raízes é forte e vale explicitar: **um
+componente fora dessas raízes é invisível para os gates, mesmo que seja exportado.** Não aparece no
+`barrel:check`, não entra no catálogo gerado, não é medido pelo detector **estrutural** de
+`auditor_hardcoded` — cujo escopo é `src/components/atomic/**`.
+
+Isso corta nos dois sentidos, e os dois já aconteceram:
+
+- **Componente que devia ser público e não era.** Os quatro widgets do cromo — busca, alternância de tema,
+  widget de usuário e seletor de idioma — moravam em `src/core/Shell/Components/`. Eram alcançáveis só de
+  dentro do `SarakShell`, e o consumidor do modo ui-kit não tinha como montá-los nos slots do cromo.
+  Hoje vivem em `src/components/atomic/Navigation/`, com as interfaces de props exportadas, e chegam ao
+  barril pelo `export *` da categoria — nenhuma linha nomeada foi preciso acrescentar em `src/index.ts`.
+- **Regra violada sem ninguém ver.** Ao entrarem na raiz varrida, os mesmos quatro expuseram hardcode
+  estrutural que ninguém media enquanto estavam fora dela. É o padrão que [[01-gates-e-baseline]] cataloga:
+  **escopo do gate menor que o alcance da regra** — verde no gate, regra violada no código.
+
+**A regra prática, para quem for publicar um componente:** mover para a raiz varrida **é** o ato de
+publicar. Exportar de onde ele está hoje cria um nome público que nenhum gate cobre.
+
 # 4. O gate `barrel:check`
 
 ```
 $ npm run barrel:check
-[barrel:check] 80 componentes registrados; barril em dia (0 faltas).
+[barrel:check] <N> componentes registrados; barril em dia (0 faltas).
 ```
 
 `gates/scripts/contrato/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
@@ -85,6 +106,40 @@ que só existe como **detalhe de composição interna** de outro tipo público �
 local — não é vocabulário do consumidor e fica fora, com motivo escrito em
 `gates/allowlists/publicTypeExclusions.mjs`. Mesma disciplina da allowlist da §4.1: sem categoria genérica
 de dispensa.
+
+## 4.3 A convenção de prefixo — e o gate que a cobra
+
+**Todo nome entregue pelo barril público carrega o prefixo da biblioteca.** Não é estética: o consumidor
+precisa distinguir, numa linha de `import`, o que é da lib do que é dele. Nomes genéricos (`Message`,
+`CatalogItem`, `FilterDescriptor`, `reorder`, `widthOf`) colidem com o vocabulário do projeto que importa, e
+foi o integrador do primeiro consumidor real quem reportou isso.
+
+A convenção é **por espécie do nome**, e cada espécie tem uma forma só:
+
+| Espécie | Convenção | Exemplo |
+| --- | --- | --- |
+| Componente, tipo, interface (PascalCase) | começa com `Sarak` | `SarakExpandableCard`, `SarakFlexDirection` |
+| Constante (SCREAMING_SNAKE) | começa com `SARAK_` | `SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS` |
+| Hook | começa com `use` | `useSarakDevice` — já conforme por construção |
+| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `getSarakModule` |
+
+O tipo de props acompanha o componente (`SarakFooProps`), que é o par que o `barrel:check` já cobra.
+
+**Quem cobra é o `prefix:check`** (`gates/scripts/contrato/check-public-prefix.mjs`), na cadeia do
+`npm run build`, **logo depois do `public-types:check`** — o ponto em que o `dist/` recém-construído já
+existe. Ele reprova nomeando **o nome e a espécie**, e a allowlist
+(`gates/allowlists/publicPrefixExclusions.mjs`) tem a mesma disciplina da do barril: exige **motivo escrito**
+por entrada e **se autolimpa** — entrada de nome que já está conforme, ou que não existe mais, derruba o gate
+como se fosse violação. **Ela nasceu vazia e segue vazia:** nenhum nome precisou de exceção.
+
+> **Quantos nomes a superfície publica não se escreve aqui** (achado **32**): o próprio
+> `npm run prefix:check` imprime o total conforme a cada build. O que esta spec afirma é a **relação** —
+> todo nome exportado segue a convenção da sua espécie, ou está na allowlist com motivo.
+
+**O que o gate não vê**, declarado no cabeçalho dele (R18): ele lê `dist/index.d.ts`, não a fonte — então
+`dist/` velho o faz medir o passado; classifica pelo **formato** do nome, sem consultar o tipo declarado nem
+julgar se o nome é bom; e lê só a última linha agrupada `export { … };` do `.d.ts`, de modo que mudança de
+formato do bundler exige mudar a análise junto.
 
 # 5. O catálogo gerado
 
@@ -141,7 +196,7 @@ Os 6, com onde moram:
 | `Layouts` | Primitivas estruturais — flex, grid, split pane, acordeão, grupo de formulário |
 | `Media` | Renderização de mídia — markdown, lightbox, PDF |
 | `Modals` | Diálogos e modais |
-| `Navigation` | Navegação — breadcrumbs, stepper, paginação, spotlight, nav de casca |
+| `Navigation` | Navegação — breadcrumbs, stepper, paginação, spotlight, nav de casca, item de menu e os **widgets do cromo** (busca, alternância de tema, usuário, idioma) |
 | `Tables` | Tabela clássica e seu colapso mobile |
 | `Templates` | Moldes de composição de tela, sem lógica de negócio |
 | `UX` | Componentes de experiência — inclui o `SarakTabs` público |
@@ -159,11 +214,69 @@ A lista componente-por-componente **não está aqui de propósito** — está no
 
 O motivo não é estético: HTML nativo cru causa **vazamento de especificidade**. O elemento fica preso na variável global do preflight e ignora a paridade atômica — deixa de responder ao token do componente que deveria governá-lo. O próprio painel do Design Engine obedece a esta regra (*dogfooding*).
 
+**Substituir o elemento cru é metade da regra; a outra metade é escolher o átomo do PAPEL certo.** Item de
+navegação tem átomo próprio, `SarakMenuItem` — usar `SarakButton` para um item de menu cumpre a letra da
+composição atômica e entrega a métrica de botão de ação onde deveria haver métrica de lista
+([[013-item-de-navegacao-como-atomo-proprio]]).
+
+### 6.1.1 O `className` do chamador vence o default do átomo
+
+Quem passa `className` a um átomo Sarak está **sobrescrevendo**, não somando: para a mesma propriedade CSS,
+a classe do chamador **substitui** a do átomo. Vale hoje para `SarakButton` e `SarakIconButton`; os demais
+átomos estão declarados, com motivo, em `gates/allowlists/classMergeExclusions.mjs`.
+
+O mecanismo é `mergeSarakClasses` (`src/components/atomic/hooks/mergeSarakClasses.ts`) — **porta única** de
+configuração do `tailwind-merge` nesta base, e a `className` recebida entra sempre como último argumento.
+Nenhum átomo configura o merge por conta própria. A regra, o gate e o vão dele estão em
+[[00-regras-e-invariantes]] **R35**.
+
+**As utilitárias próprias desta base são reconhecidas pelo merge** — `text-2xs`, `text-3xs` (`font-size`),
+`rounded-btn` (`rounded`) e `font-tab` (`font-family`). Elas não vêm do Tailwind puro e precisam estar
+registradas ali: classe própria que nascer depois e **não** for registrada não conflita com nada — ela
+**coexiste** com a concorrente em vez de substituí-la.
+
+**Dois limites que o consumidor sente:**
+
+- **Merge é de classe, não de estilo.** O `style` inline que o Design Engine devolve não passa pelo merge e
+  não é sobrescrito por `className`.
+- **Propriedades de grupos diferentes não conflitam.** `min-w-fit` (grupo `min-width`) sobrevive a um
+  `w-full` (grupo `width`) e mantém o piso de largura no conteúdo. Por isso `fullWidth` em `SarakButton`
+  resolve a largura **na origem** — `useButtonLayoutStyles` deixa de emitir o piso —, e não pelo merge.
+
 ## 6.2 Contrato de nomes de ícone
 
 `IconMap` (`src/components/atomic/Icon/IconMap.ts:26-31`) é construído a partir de `ICON_NAMES` — **100 nomes** curados, cobrindo três famílias de ícone. Nome fora do mapa emite `console.warn` (`SarakIcon.tsx:25-29`, chamado em `:38`), com deduplicação por `Set` para não poluir o console a cada render.
 
 O contrato é **fechado**: passar um nome que não está no mapa não quebra a tela — não desenha ícone. Confira o catálogo.
+
+## 6.3 Templates de dado: `data` vence `endpoint`
+
+`SarakTable`, `SarakCardGrid` e `SarakStats` (`src/components/atomic/Templates/`) aceitam o dado de duas
+formas, e as duas props são opcionais:
+
+- **com `data`**, renderizam o dado recebido e **não fazem nenhuma chamada de rede**, nem no mount nem
+  para revalidar;
+- **sem `data`**, buscam por `endpoint`.
+
+`SarakTable` e `SarakCardGrid` recebem `data` como lista de itens; `SarakStats`, como um objeto de métricas.
+Sem nenhuma das duas props, `SarakTable` e `SarakCardGrid` não buscam e não ficam presos em carregamento.
+A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridState`, `useSarakStatsData`).
+
+## 6.4 O contrato de valor dos átomos de escolha
+
+`SarakCheckbox` e `SarakRadio` seguem o contrato do React, e o seguem **inteiro**:
+
+- **quem passa `checked` governa** — pele, `aria-checked` e o `<input>` seguem esse valor, e o componente
+  não guarda estado próprio;
+- **sem `checked`**, o componente guarda o valor, semeado por `defaultChecked`;
+- **a pele visual é sempre o valor efetivo**, nos dois modos — nunca o estado interno isolado;
+- o `onChange` de quem chama é chamado nos dois modos.
+
+⚠️ **O `SarakSwitch` NÃO segue isso: ele é sempre controlado.** Não tem `defaultChecked` nem estado próprio,
+e sem `checked` fica em `false` e não muda ao clique. A divergência é dentro da mesma família de átomos de
+escolha, e é exatamente o tipo de coisa que o consumidor descobre do jeito difícil — por isso está escrita
+aqui, e não só no JSDoc de cada um.
+
 
 # 7. Fronteiras de bundle — a parte MEDIDA
 

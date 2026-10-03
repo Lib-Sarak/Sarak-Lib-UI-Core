@@ -191,3 +191,46 @@ A função é SSR-safe, idempotente pelo `id` da tag, e **no-op quando o documen
 E em desenvolvimento ele diagnostica: verifica por uma custom property se o CSS **certo** carregou, e emite `console.error` distinto para cada modo, apontando a correção — o import manual no app, o `sarak-scoped.css` no embarcado.
 
 O lado do build (placeholder, geração da variante escopada, o que permanece global) está em [[05-build-e-distribuicao]] §5.
+
+## 9.1 A ordem de camadas do CSS publicado — a classe vence o padrão de elemento
+
+`src/styles/sarak-base.css` monta o CSS publicado em camadas, e a posição de cada camada decide quem vence.
+Entre camadas, a posição conta mais que a especificidade:
+
+```
+base (preflight do Tailwind)  →  components.sarak-elements  →  utilities  →  sarak-lib
+                                 padrões de ELEMENTO da lib     classes do     classes PRÓPRIAS
+                                 (_elements.css)                 Tailwind       da lib
+```
+
+**Num elemento com classe utilitária, a classe decide; sem classe, vale o padrão da lib.** Os padrões que
+miram **elemento ou atributo solto** moram em `_elements.css`, na subcamada `components.sarak-elements`: raio,
+hover, estado ativo e foco de `<button>`; raio de campo; família, cor, tamanho e peso de título; família de
+texto; e a ponte do token `borderStyle`. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
+`bg-theme-card`, `border-theme`, `[data-surface]` e as texturas. Vale igual nos dois artefatos, `dist/sarak.css` e
+`dist/sarak-scoped.css`: o escopado herda a ordem do mesmo `sarak-base.css`.
+
+**Quatro regras que a ordem impõe:**
+- **Subcamada de `components`, e nunca uma camada de topo nova.** Todo documento com Tailwind v4 já declara
+  `theme, base, components, utilities`. Se o CSS do consumidor carrega antes do da lib, uma camada de topo
+  nova entra no **fim** da ordem, depois de `utilities`, e volta a vencer toda classe. A subcamada fica antes
+  de `utilities` qualquer que seja a ordem de carregamento.
+- **Regra que mira elemento nunca vai para `sarak-lib`.** Ali ela venceria toda classe de todo elemento, da lib
+  e do consumidor.
+- **`!important` fica na camada final.** Para declarações importantes a ordem das camadas se inverte: um
+  `!important` na subcamada venceria até a utilitária `!important`; na camada final, ela ainda o vence. É o
+  caso do `transform` do botão pressionado.
+- **O token que a classe utilitária também escreve é entregue pela variável que ela lê.** As utilitárias de
+  borda (`border`, `border-2`, `border-t`…) escrevem `border-style` por `var(--tw-border-style)`, e por isso a
+  ponte do `borderStyle` alimenta essa variável. O raio do botão chega por `.rounded-btn`, que compõe os quatro
+  cantos (`btnRadiusTL/TR/BR/BL`) com o raio mestre como reserva de cada um.
+
+**O que ainda não cede à classe:**
+- **o `body`** (tamanho, peso e entrelinha), porque a entrelinha literal de `_base.css` só perde para o token por
+  ordem de arquivo dentro da camada final;
+- **o `transform` do botão pressionado**, que é `!important`.
+
+**A prova é de navegador, não de `jsdom`:** `npm run cromo-css-real:check` (job de CI) mede, em Chromium real
+contra o `dist/`, que a classe vence o padrão em raio, hover, família e estilo de borda, e que o padrão continua
+sem classe. Os casos "continua sem classe" usam um valor que importa: cantos diferentes do mestre, e o token de
+borda fora do default.

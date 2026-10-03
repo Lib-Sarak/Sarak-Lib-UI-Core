@@ -62,8 +62,7 @@ via normal.
 
 | # | Achado | Origem | Registrado em | Peso |
 |---|---|---|---|---|
-| 1 | `§N.M` como ponteiro cross-documento é frágil por construção: [[00-prompt-executor]] §7 e [[00-prompt-revisor]] §9 são listas numeradas citadas por número de fora, e o `section-pointers:check` ignora referência cross-documento (não enxerga a quebra) | plan-55 | 2026-09-02 | médio |
-| 2 | `specs/adr/README.md` — a tabela "Os ADRs desta base" não lista o `adr/012-escrita-git-sob-autorizacao-do-dono.md` (criado pela plan-55); índice de navegação defasado, o ADR em si é válido | plan-55 | 2026-09-02 | baixo |
+| 1 | `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx:61` mocka `core/Design/master-map` sem `sarakGetDefaultDesignState`, que `Main/utils/exportTheme.ts:18` importa; o stderr da CI acusa `No "sarakGetDefaultDesignState" export is defined` e o teste "exporta o tema como JSON" passa mesmo assim — talvez sem provar o que promete (resíduo do rename `965bc44`) | ritual (log da CI do `80785e5`) | 2026-10-03 | médio |
 
 ---
 

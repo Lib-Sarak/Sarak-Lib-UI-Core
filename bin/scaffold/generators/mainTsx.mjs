@@ -1,9 +1,9 @@
 /**
  * `src/main.tsx` — starter padrão (Spec 45): modelo módulos-plugin, o mesmo
  * padrão do `Sarak-MyService` — `SarakUIProvider` + `SarakShell`, um módulo de
- * exemplo registrado via `registerSarakModule`/`registerLocalComponent` (o
+ * exemplo registrado via `registerSarakModule`/`sarakRegisterLocalComponent` (o
  * `safeRegister` espelha `Sarak-MyService/src/main.tsx`). Sem
- * `SarakManifestRenderer`, sem manifesto JSON, sem backend — tema persiste em
+ * sem renderer de manifesto, sem manifesto JSON, sem backend — tema persiste em
  * localStorage (embutido no Provider). Modo Embarcado (Spec 24) troca o CSS
  * automático pela variante escopada e monta o Provider com
  * `options={{ mode: 'embedded' }}`.
@@ -30,7 +30,7 @@ ${cssImport}import {
     SarakUIProvider,
     SarakShell,
     registerSarakModule,
-    registerLocalComponent,
+    sarakRegisterLocalComponent,
 } from '@sarak/lib-ui-core';
 import { ExampleModule } from './modules/ExampleModule';
 
@@ -43,7 +43,7 @@ function safeRegister(id: string, component: React.ComponentType | undefined) {
         console.warn(\`[Sarak] Componente '\${id}' é undefined. Verifique o import.\`);
         return;
     }
-    registerLocalComponent(id, component);
+    sarakRegisterLocalComponent(id, component);
 }
 
 // Módulo de EXEMPLO — apague e registre os seus próprios módulos de negócio do

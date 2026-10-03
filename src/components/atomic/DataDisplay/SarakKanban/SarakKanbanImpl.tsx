@@ -8,13 +8,13 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { KanbanCard, KanbanColumn, CardMove, moveCard } from './kanbanModel';
+import { SarakKanbanCard, SarakKanbanColumn, SarakCardMove, sarakMoveCard } from './kanbanModel';
 
-export interface SarakKanbanProps<C extends KanbanCard = KanbanCard> {
+export interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     /** Colunas e seus cards (a ordem do array é a ordem visual). */
-    columns: Array<KanbanColumn<C>>;
+    columns: Array<SarakKanbanColumn<C>>;
     /** Disparado ao soltar um card numa coluna (origem → destino). */
-    onCardMove?: (move: CardMove) => void;
+    onCardMove?: (move: SarakCardMove) => void;
     /** Render customizado do card (default: título + descrição). */
     renderCard?: (card: C, columnId: string) => React.ReactNode;
     className?: string;
@@ -28,14 +28,14 @@ interface DragState {
 
 const IDLE: DragState = { drag: null, over: null };
 
-function SarakKanbanImpl<C extends KanbanCard>({
+function SarakKanbanImpl<C extends SarakKanbanCard>({
     columns,
     onCardMove,
     renderCard,
     className,
 }: SarakKanbanProps<C>) {
     // Espelho local para mover o card no ato do drop (sem esperar o consumidor).
-    const [board, setBoard] = useState<Array<KanbanColumn<C>>>(columns);
+    const [board, setBoard] = useState<Array<SarakKanbanColumn<C>>>(columns);
     const [io, setIo] = useState<DragState>(IDLE);
 
     // Ressincroniza quando o consumidor troca as colunas (fonte de verdade externa).
@@ -47,7 +47,7 @@ function SarakKanbanImpl<C extends KanbanCard>({
         if (!drag) return;
         const target = board.find((col) => col.id === toColumn);
         const toIndex = target ? target.cards.length : 0;
-        setBoard((prev) => moveCard(prev, drag.cardId, drag.fromColumn, toColumn, toIndex));
+        setBoard((prev) => sarakMoveCard(prev, drag.cardId, drag.fromColumn, toColumn, toIndex));
         if (drag.fromColumn !== toColumn) {
             onCardMove?.({ cardId: drag.cardId, fromColumn: drag.fromColumn, toColumn, toIndex });
         }

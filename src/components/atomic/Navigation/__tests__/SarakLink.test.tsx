@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { SarakLink, isSafeLinkHref } from '../SarakLink';
+import { SarakLink, sarakIsSafeLinkHref } from '../SarakLink';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('SarakLink (átomo de link acessível)', () => {
     let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -56,20 +57,34 @@ describe('SarakLink (átomo de link acessível)', () => {
     });
 
     it('aceita `mailto:`/`tel:`/âncora/relativo como esquemas seguros', () => {
-        expect(isSafeLinkHref('mailto:contato@sarak.dev')).toBe(true);
-        expect(isSafeLinkHref('tel:+5511999999999')).toBe(true);
-        expect(isSafeLinkHref('#secao')).toBe(true);
-        expect(isSafeLinkHref('/rota/interna')).toBe(true);
-        expect(isSafeLinkHref('./relativo')).toBe(true);
-        expect(isSafeLinkHref('https://exemplo.com/caminho?x=1')).toBe(true);
+        expect(sarakIsSafeLinkHref('mailto:contato@sarak.dev')).toBe(true);
+        expect(sarakIsSafeLinkHref('tel:+5511999999999')).toBe(true);
+        expect(sarakIsSafeLinkHref('#secao')).toBe(true);
+        expect(sarakIsSafeLinkHref('/rota/interna')).toBe(true);
+        expect(sarakIsSafeLinkHref('./relativo')).toBe(true);
+        expect(sarakIsSafeLinkHref('https://exemplo.com/caminho?x=1')).toBe(true);
     });
 
     it('bloqueia esquemas de ofuscação com caracteres de controle (`java\\tscript:`)', () => {
-        expect(isSafeLinkHref('java\tscript:alert(1)')).toBe(false);
+        expect(sarakIsSafeLinkHref('java\tscript:alert(1)')).toBe(false);
     });
 
     it('rejeita href vazio', () => {
-        expect(isSafeLinkHref('')).toBe(false);
-        expect(isSafeLinkHref('   ')).toBe(false);
+        expect(sarakIsSafeLinkHref('')).toBe(false);
+        expect(sarakIsSafeLinkHref('   ')).toBe(false);
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakLink — idioma que vale', () => {
+    it('a dica de link externo sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakLink href="https://exemplo.com" external>
+                    External site
+                </SarakLink>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('(opens in a new tab)', { exact: false })).toBeInTheDocument();
     });
 });

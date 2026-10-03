@@ -24,9 +24,9 @@ import {
     Briefcase, Buildings, CreditCard, CurrencyDollar, MapPin, Tag, Star, Play,
     Palette, Gear, Lightning, GoogleChromeLogo, GithubLogo,
 } from '@phosphor-icons/react';
-import type { IconName } from '../iconNames';
+import type { SarakIconName } from '../iconNames';
 
-export const PHOSPHOR_ICONS: Record<IconName, React.ElementType> = {
+export const PHOSPHOR_ICONS: Record<SarakIconName, React.ElementType> = {
     AlertCircle: WarningCircle, AlertTriangle: Warning, Check, CheckCircle2: CheckCircle,
     X, Info, HelpCircle: Question,
     Menu: ListBullets, Search: MagnifyingGlass, Bell, Filter: Funnel, List,

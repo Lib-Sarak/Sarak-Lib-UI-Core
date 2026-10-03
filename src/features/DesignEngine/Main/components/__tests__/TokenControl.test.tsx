@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TokenControl } from '../TokenControl';
-import type { DesignToken } from '../../../../../core/Design/types';
+import type { SarakDesignToken } from '../../../../../core/Design/types';
 
 vi.mock('../../../components/DesignControls', () => {
     type MockControlProps = { value?: string | number | boolean; onChange: (v: unknown) => void; label?: string };
@@ -59,32 +59,32 @@ describe('TokenControl', () => {
 
     it('renderiza fallback caso o tipo do token não conste no registro', () => {
         const tokenMock = { id: 'test-token', type: 'unknown_type', label: 'Unknown Token', isResponsive: false, defaultValue: '' };
-        const { container } = render(<TokenControl token={tokenMock as unknown as DesignToken} value="teste" onChange={mockOnChange} />);
+        const { container } = render(<TokenControl token={tokenMock as unknown as SarakDesignToken} value="teste" onChange={mockOnChange} />);
         expect(container.firstChild).toBeNull();
     });
 
     it('renderiza o controle correto com base no tipo', () => {
         const { rerender } = render(
-            <TokenControl token={{ type: 'color', label: 'Cor' } as unknown as DesignToken} value="#000" onChange={mockOnChange} />
+            <TokenControl token={{ type: 'color', label: 'Cor' } as unknown as SarakDesignToken} value="#000" onChange={mockOnChange} />
         );
         expect(screen.getByTestId('color-control')).toBeInTheDocument();
 
-        rerender(<TokenControl token={{ type: 'slider', label: 'Slider' } as unknown as DesignToken} value={10} onChange={mockOnChange} />);
+        rerender(<TokenControl token={{ type: 'slider', label: 'Slider' } as unknown as SarakDesignToken} value={10} onChange={mockOnChange} />);
         expect(screen.getByTestId('slider-control')).toBeInTheDocument();
 
-        rerender(<TokenControl token={{ type: 'switch', label: 'Switch' } as unknown as DesignToken} value={true} onChange={mockOnChange} />);
+        rerender(<TokenControl token={{ type: 'switch', label: 'Switch' } as unknown as SarakDesignToken} value={true} onChange={mockOnChange} />);
         expect(screen.getByTestId('switch-control')).toBeInTheDocument();
     });
 
     it('repassa a alteração de valor de forma simples se isResponsive for falso', () => {
-        render(<TokenControl token={{ type: 'input', label: 'Texto' } as unknown as DesignToken} value="old" onChange={mockOnChange} />);
+        render(<TokenControl token={{ type: 'input', label: 'Texto' } as unknown as SarakDesignToken} value="old" onChange={mockOnChange} />);
         
         fireEvent.change(screen.getByTestId('input-input'), { target: { value: 'new' } });
         expect(mockOnChange).toHaveBeenCalledWith('new');
     });
 
     it('atualiza apenas a chave correspondente do dispositivo em tokens responsivos (objeto existente)', () => {
-        const tokenResponsive = { type: 'text', label: 'Título Responsivo', isResponsive: true } as unknown as DesignToken;
+        const tokenResponsive = { type: 'text', label: 'Título Responsivo', isResponsive: true } as unknown as SarakDesignToken;
         const responsiveValue = { desk: '#fff', tab: '#ccc', mob: '#000' };
 
         // Testa com previewDevice = 'desktop'
@@ -105,7 +105,7 @@ describe('TokenControl', () => {
     });
 
     it('cria estrutura responsiva caso o valor ainda não seja objeto (migração)', () => {
-        const tokenResponsive = { type: 'number', label: 'Number Resp', isResponsive: true } as unknown as DesignToken;
+        const tokenResponsive = { type: 'number', label: 'Number Resp', isResponsive: true } as unknown as SarakDesignToken;
         const flatValue = 16; 
 
         render(

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CARD_PRESETS, CARD_TEXTURE_PRESETS, ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { DesignScope } from '../../../../core/Design/components/DesignScope';
+import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 import { Sparkles, Grid } from 'lucide-react';
 
@@ -67,7 +67,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                     variáveis diretamente. Sobrescrever a propriedade final perde a briga de
                     especificidade; escopar a variável que a regra já lê, não.
                 */}
-                <DesignScope
+                <SarakDesignScope
                     design={{ mode: 'dark', ...preset.design } as SarakDesignState}
                     className="sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
                     style={{ width: '100%', height: 'var(--sarak-preset-mini-card-height,128px)', maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}
@@ -91,7 +91,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                             <div className="h-1.5 w-1/4 bg-white/20 rounded-full" />
                         </div>
                     </div>
-                </DesignScope>
+                </SarakDesignScope>
             </div>
 
             <div className="p-4 bg-theme-sidebar">

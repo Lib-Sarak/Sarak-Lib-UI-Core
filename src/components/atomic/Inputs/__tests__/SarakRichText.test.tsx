@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SarakRichText, sanitizeRichText } from '../SarakRichText';
+import { SarakRichText, sarakSanitizeRichText } from '../SarakRichText';
 
 describe('Spec 11 (Onda 10) — SarakRichText: saída blindada', () => {
     it('neutraliza script/style/handlers/javascript: preservando marcação semântica', () => {
-        expect(sanitizeRichText('<b>oi</b><script>alert(1)</script>')).not.toMatch(/script|alert/i);
-        expect(sanitizeRichText('<b>oi</b><script>x</script>')).toContain('<b>oi</b>');
-        expect(sanitizeRichText('<img src=x onerror=alert(1)>')).not.toMatch(/onerror|alert/i);
-        expect(sanitizeRichText('<a href="javascript:alert(1)">x</a>')).not.toMatch(/javascript:/i);
-        expect(sanitizeRichText('<style>body{color:red}</style>texto')).not.toMatch(/<style/i);
+        expect(sarakSanitizeRichText('<b>oi</b><script>alert(1)</script>')).not.toMatch(/script|alert/i);
+        expect(sarakSanitizeRichText('<b>oi</b><script>x</script>')).toContain('<b>oi</b>');
+        expect(sarakSanitizeRichText('<img src=x onerror=alert(1)>')).not.toMatch(/onerror|alert/i);
+        expect(sarakSanitizeRichText('<a href="javascript:alert(1)">x</a>')).not.toMatch(/javascript:/i);
+        expect(sarakSanitizeRichText('<style>body{color:red}</style>texto')).not.toMatch(/<style/i);
     });
 
     it('emite o HTML JÁ sanitizado no onChange (digitação)', () => {

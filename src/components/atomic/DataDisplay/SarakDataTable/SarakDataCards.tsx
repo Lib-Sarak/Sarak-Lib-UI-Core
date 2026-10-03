@@ -18,7 +18,9 @@
 
 import React, { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { SarakColumn } from './columnModel';
+import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
+import { SarakTableSortButton } from './SarakTableSortButton';
+import type { SarakColumn, SarakTableSort } from './columnModel';
 
 export interface SarakDataCardsProps<T> {
     /** Mesmas colunas da tabela — reaproveitadas como pares rótulo/valor. */
@@ -33,6 +35,16 @@ export interface SarakDataCardsProps<T> {
     overscan?: number;
     /** Chave estável da linha (default: índice). */
     getRowKey?: (row: T, index: number) => React.Key;
+    rowKeys?: React.Key[];
+    rowIndexes?: number[];
+    sort?: SarakTableSort | null;
+    onSort?: (columnId: string) => void;
+    selectable?: boolean;
+    selectedKeys?: Set<React.Key>;
+    allVisibleSelected?: boolean;
+    partiallySelected?: boolean;
+    onToggleRow?: (key: React.Key, checked: boolean) => void;
+    onToggleAll?: (checked: boolean) => void;
     className?: string;
 }
 
@@ -51,6 +63,16 @@ function SarakDataCards<T>({
     estimatedCardHeight,
     overscan = 6,
     getRowKey,
+    rowKeys,
+    rowIndexes,
+    sort = null,
+    onSort,
+    selectable = false,
+    selectedKeys = new Set<React.Key>(),
+    allVisibleSelected = false,
+    partiallySelected = false,
+    onToggleRow,
+    onToggleAll,
     className,
 }: SarakDataCardsProps<T>) {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -67,17 +89,44 @@ function SarakDataCards<T>({
         <div
             ref={scrollRef}
             data-sarak-datacards="true"
-            role="list"
             className={className}
             // `maxWidth: 100%` + `overflowX: hidden` garantem que a PÁGINA nunca transborda.
             style={{ height, maxWidth: '100%', overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}
         >
+            {selectable && (
+                <div role="group" aria-label="Seleção das linhas visíveis">
+                    <SarakCheckbox
+                        aria-label="Selecionar todas as linhas visíveis"
+                        checked={allVisibleSelected}
+                        indeterminate={partiallySelected}
+                        disabled={rows.length === 0}
+                        onChange={(event) => onToggleAll?.(event.currentTarget.checked)}
+                    />
+                </div>
+            )}
+            {columns.some((column) => column.sortable) && (
+                <div role="group" aria-label="Ordenação por coluna" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                    {columns.filter((column) => column.sortable).map((column) => (
+                        <SarakTableSortButton
+                            key={column.id}
+                            columnId={column.id}
+                            label={column.header}
+                            sort={sort}
+                            onSort={(columnId) => onSort?.(columnId)}
+                        />
+                    ))}
+                </div>
+            )}
             <div style={{ height: virtualizer.getTotalSize(), position: 'relative', width: '100%' }}>
+                <div role="list">
                 {virtualizer.getVirtualItems().map((virtualRow) => {
                     const row = rows[virtualRow.index];
+                    const rowKey = rowKeys?.[virtualRow.index]
+                        ?? (getRowKey ? getRowKey(row, rowIndexes?.[virtualRow.index] ?? virtualRow.index) : virtualRow.key);
+                    const rowIndex = rowIndexes?.[virtualRow.index] ?? virtualRow.index;
                     return (
                         <div
-                            key={getRowKey ? getRowKey(row, virtualRow.index) : virtualRow.key}
+                            key={rowKey}
                             role="listitem"
                             data-index={virtualRow.index}
                             ref={virtualizer.measureElement}
@@ -99,6 +148,13 @@ function SarakDataCards<T>({
                                 boxSizing: 'border-box',
                             }}
                         >
+                            {selectable && (
+                                <SarakCheckbox
+                                    aria-label={`Selecionar linha ${String(rowKey)}`}
+                                    checked={selectedKeys.has(rowKey)}
+                                    onChange={(event) => onToggleRow?.(rowKey, event.currentTarget.checked)}
+                                />
+                            )}
                             {columns.map((column) => (
                                 <div
                                     key={column.id}
@@ -113,13 +169,14 @@ function SarakDataCards<T>({
                                         {column.header}
                                     </span>
                                     <span className="text-sm break-words min-w-0">
-                                        {cellValue(column, row, virtualRow.index)}
+                                        {cellValue(column, row, rowIndex)}
                                     </span>
                                 </div>
                             ))}
                         </div>
                     );
                 })}
+                </div>
             </div>
         </div>
     );

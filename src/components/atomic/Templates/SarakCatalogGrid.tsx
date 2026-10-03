@@ -12,30 +12,11 @@ import {
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { twMerge } from 'tailwind-merge';
+import type { SarakCatalogGridProps } from './SarakCatalogGridProps';
 
-export interface CatalogItem {
-    id: string;
-    display_name: string;
-    organization?: string;
-    category?: string;
-    description?: string;
-    [key: string]: unknown;
-}
-
-export interface SarakCatalogGridProps {
-    items: CatalogItem[];
-    loading?: boolean;
-    title: string;
-    subtitle?: string;
-    categories?: Record<string, string>;
-    onSync?: () => void;
-    renderCard?: (item: CatalogItem) => React.ReactNode;
-    emptyMessage?: string;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
-}
+export type { SarakCatalogItem, SarakCatalogGridProps } from './SarakCatalogGridProps';
 
 /**
  * SarakCatalogGrid (Industrial Template v9.5)
@@ -56,7 +37,8 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
-    const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles, getResponsiveStackStyles } = useStructuralStyles();
+    const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles } = useStructuralStyles();
+    const { getResponsiveStackStyles } = useResponsiveStyles();
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
     const gridLayout = getGridStyles(undefined, undefined, undefined, 'catalogStandard');

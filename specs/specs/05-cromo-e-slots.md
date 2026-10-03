@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[02-design-engine]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-shell-e-discovery]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
 ---
 
 # 1. Por que ele existe — a lacuna que o criou
@@ -30,7 +30,8 @@ do **modo de consumo #3** ([[005-modelo-modulos-plugin-e-apps-separados]]).
 
 # 2. O contrato
 
-`SarakAppChromeProps` (`SarakAppChrome.tsx:44-107`) — **18 props**, publicadas no catálogo gerado.
+`SarakAppChromeProps` — as props do cromo, **publicadas no catálogo gerado** (`docs/component-catalog.json`).
+A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invariantes]] **R17**).
 
 ## 2.1 Estrutura e navegação
 
@@ -42,11 +43,14 @@ do **modo de consumo #3** ([[005-modelo-modulos-plugin-e-apps-separados]]).
 | `nav?: ShellNavItem[]` + `activeRoute?` | modelo declarativo legado (`route`/`activeRoute`), mantido por compatibilidade |
 | `onNavigate?: (route) => void` | **o host decide COMO navegar** — redirect de página inteira, router local, o que for |
 | `navigationStyle?: 'sidebar' \| 'topbar' \| 'auto'` | `'auto'` (default) segue `design.navigationStyle` |
+| `widgets?: { search?, themeToggle?, user?, collapse? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele |
+| `user?: ShellUser` · `logout?: () => void` | identidade e sessão **do host**: alimentam o widget de usuário default, que só monta com `user` |
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |
 
 `SarakNavItem` (`src/components/Layout/chrome/navItem.ts:20-31`):
-`{ id, label, icon?, href, active? }` — `id` estável para chave de render, `href` é o destino, e o
-**consumidor marca qual item está ativo**. O `icon` é resolvido pelo `SarakIcon`/`IconMap` curado — o mesmo
+`{ id, label, icon?, href, active?, category? }` — `id` estável para chave de render, `href` é o destino, e o
+**consumidor marca qual item está ativo**. `category` agrupa visualmente (mesmo campo do `ShellNavItem`);
+item sem categoria fica no grupo raiz. O `icon` é resolvido pelo `SarakIcon`/`IconMap` curado — o mesmo
 motor do Shell.
 
 **A resolução de precedência, explícita** (`SarakAppChrome.tsx:143-149`): com `navItems`, o cromo mapeia
@@ -57,26 +61,74 @@ fallback); sem `navItems`, usa `nav` + `activeRoute`.
 qualquer outra coisa → sidebar. **Consequência que vale destacar: trocar o TEMA troca a orientação do
 cromo.** O cromo é parte do design, não configuração de código.
 
-## 2.2 Os 8 slots
+### 2.1.1 O item de navegação tem átomo próprio, e a métrica difere por orientação
+
+> ⚠️ **Dois nomes parecidos, e eles NÃO são a mesma coisa:**
+>
+> | Nome | O que é |
+> | --- | --- |
+> | `SarakNavItem` **(tipo)** | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active? }`, de `Layout/chrome/navItem.ts` |
+> | `SarakMenuItem` **(componente)** | o **átomo** que desenha um item de menu, de `atomic/Navigation/SarakMenuItem.tsx` |
+>
+> O consumidor **declara** `SarakNavItem[]` e a lib **desenha** com `SarakMenuItem`. Os dois são
+> exportados pelo barril, cada um no seu espaço — tipo e valor.
+
+O átomo que desenha o item de menu do cromo é o `SarakMenuItem` — não um `SarakButton`. São átomos de
+papéis diferentes: um é **navegação**, o outro é **ação**, e o item de menu nunca carrega a métrica de
+botão de ação ([[013-item-de-navegacao-como-atomo-proprio]]).
+
+A métrica **difere por orientação**, e a diferença é contrato, não acidente:
+
+| `orientation` | Onde | Métrica |
+| --- | --- | --- |
+| `vertical` | sidebar, drawer | linha de lista — recuo e peso de menu, caixa normal, largura cheia resolvida **na origem** (nunca emite piso de `min-width`), rótulo **trunca** em vez de transbordar |
+| `horizontal` | topbar | aba compacta — pílula, **caixa normal**, corpo legível, peso forte, rótulo **trunca** ([[015-metrica-do-item-de-navegacao-horizontal]]) |
+
+`SarakShellNav` — o renderizador que o `SarakAppChrome` usa para `navItems`/`nav` — compõe o átomo e segue
+a orientação resolvida pelo `navigationStyle`. **Consequência direta da §2.1:** como trocar o tema troca a
+orientação do cromo, ele **também** troca a métrica do item de menu, de lista para aba.
+
+**A pílula chega à tela porque o padrão de raio de `<button>` cede à classe.** O raio que a lib dá a todo botão
+mora numa camada anterior às utilitárias ([[02-design-engine]] §9.1), então o `rounded-*` do item de menu
+vence nas três orientações. A medição de navegador compara o raio computado do item horizontal com o do botão
+de ação.
+
+**Largura cheia nunca carrega piso de largura no conteúdo**, venha ela da prop `fullWidth`, do tema ou da
+`className` do chamador — o `min-w-fit` é de outro grupo de propriedade que `width` e sobreviveria ao merge,
+impedindo o elemento de encolher.
+
+**O consumidor tem a última palavra:** a `className` que ele passa vence o default do átomo
+([[00-regras-e-invariantes]] **R35**) — é assim que se pede um rótulo em caixa normal numa topbar, sem
+prop nova.
+
+## 2.2 Os slots
 
 | Slot | Região | Ausente = |
 | --- | --- | --- |
 | `logo` | identidade; **precedência sobre `brand.logoUrl`**, e o `brand.name` continua ao lado | cai em `brand.logoUrl` |
 | `topbarStart` | início da barra superior, após a marca | região não renderiza |
 | `topbarEnd` | fim da barra superior — **alias de `topbarActions`**, e **vence** quando os dois vêm (`:151`) | idem |
+| `search` | busca do consumidor — **posicionada por token**, não por região fixa (§2.4); substitui a busca default inteira — gatilho, palette e atalho | a busca default da lib (§2.2.1) |
 | `sidebarHeader` | topo da sidebar, abaixo da marca | idem |
 | `sidebarFooter` | rodapé da sidebar | idem |
 | `banner` | faixa **full-width**, primeira do cromo | idem |
 | `footer` | faixa **full-width**, última do cromo | idem |
 | `decoration` | camada decorativa **atrás** do conteúdo do cromo | idem |
 
-**Verificado no gate:** `npm run catalog:check` verde e os **8/8 slots presentes** nas props publicadas de
-`SarakAppChrome` em `docs/component-catalog.json` (+ `topbarActions`, o alias). O contrato está publicado,
-não só implementado.
+**Verificado no gate:** `npm run catalog:check` verde, com **todos** os slots presentes nas props publicadas
+de `SarakAppChrome` em `docs/component-catalog.json` (+ `topbarActions`, o alias). O contrato está
+publicado, não só implementado.
 
 ### O princípio
 
 > **A lib dá a REGIÃO; o consumidor dá o CONTEÚDO.**
+
+**E o conteúdo pode vir da própria biblioteca.** Busca, alternância de tema, widget de usuário e seletor de
+idioma são **componentes públicos** — montam sob o `SarakUIProvider`, dentro de qualquer slot, sem
+`SarakShell`, sem Discovery e sem registro. O princípio não muda: quem decide o que vai em cada região
+continua sendo o consumidor. O que deixou de existir é a situação em que ele precisava reescrever do zero o
+que a lib já tinha pronto, porque os quatro moravam fora das raízes que a superfície pública varre
+([[arquitetura/03-superficie-publica]]).
 
 Todo slot é `ReactNode` puro e o invólucro é mínimo — a lib **não presume** o que vai dentro (imagem,
 vídeo, animação, faixa promocional, widget). `ChromeSlots.tsx:1-12` declara isso, e cada bloco
@@ -106,20 +158,162 @@ quem não usa o slot.
 `decoration` é **ornamento por contrato** (`ChromeSlots.tsx:59-67`): `aria-hidden="true"` +
 `pointer-events: none`. Sai da árvore de acessibilidade e **nunca rouba foco ou toque** da navegação.
 
+### 2.2.1 Os widgets que nascem montados
+
+O cromo nasce com o conjunto de widgets do modo host — busca com atalho, alternância de tema, widget de
+usuário e colapso da navegação — e o consumidor desliga o que não quiser
+([[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]). Idioma, redimensionamento por arraste e auto-hide
+continuam disponíveis e fora do default.
+
+**Um widget default só monta quando tem com o que funcionar:**
+
+| Widget | Monta quando | Como funciona |
+| --- | --- | --- |
+| busca | há `SarakUIProvider`, não foi desligada e o slot `search` está vazio | o palette lista a **própria navegação** do cromo e seleciona pelo mesmo `onNavigate` da navegação; o Ctrl/Cmd+K só é escutado nessas condições — fora delas, fica livre para o navegador e para o consumidor |
+| alternância de tema | há `SarakUIProvider` e não foi desligada | grava a **preferência** de modo de quem clicou — nunca o tema do sistema ([[09-temas-e-presets]] §4.7) |
+| usuário | há `SarakUIProvider`, não foi desligado **e o host entregou `user`** | sem `user` não monta — a lib não inventa identidade; o botão de sair só existe com `logout` |
+| colapso | há `SarakUIProvider` e não foi desligado | grava a **preferência** de navegação recolhida de quem clicou — nunca o tema; o Shell faz o mesmo |
+
+**Onde cada um mora.** A busca ocupa o slot `search`. Tema e usuário **não têm slot**: nascem numa região
+própria, marcada `data-sarak-widget` — e não `data-sarak-slot`, porque não são conteúdo do consumidor. Por
+isso o conteúdo que o consumidor põe em `topbarEnd`/`sidebarFooter` **não** os substitui: quem já monta
+tema/usuário à mão desliga o default correspondente. A alternativa — dar precedência a esses slots —
+apagaria tema e usuário sempre que qualquer botão fosse posto ali.
+
+### 2.2.2 A barra configurada pelo administrador
+
+Cada uma das cinco preferências do usuário ([[09-temas-e-presets]] §4.7) tem, no tema, uma de três
+posições — escolhida pelo administrador no painel, na seção *Barra de Preferências do Usuário*:
+
+| Posição | O que o usuário final vê |
+| --- | --- |
+| **não oferecida** | nada — vale o valor do tema |
+| **no menu** | um item dentro do ⚙ *Preferências* |
+| **fixa na barra** | um controle direto na barra — e também dentro do ⚙, quando ele existe |
+
+**Regras que fecham o comportamento:**
+- **O ⚙ só nasce quando pelo menos uma preferência está *no menu*.** Uma barra só com fixadas não o faz
+  aparecer — não há botão que abre painel vazio. É o que mantém o padrão de fábrica igual à barra que já
+  existia: modo e navegação recolhida **fixas**; fonte, navegação topo/lateral e idioma **não oferecidas**.
+- **Sidebar recolhida:** o ⚙ continua — é um ícone e cabe — e recebe o que é fixado e não tem ícone
+  próprio. Recolher a navegação nunca tira do usuário o acesso a uma preferência oferecida.
+- **Celular:** tudo o que é oferecido vai para o drawer, fixado ou não, sem ⚙ separado; a navegação
+  recolhida não ganha linha, porque o hambúrguer já é o colapso. Nada some (§2.3).
+- **Duas camadas de controle:** a prop `widgets` do `SarakAppChrome` é do **código** e é o teto — o que o
+  desenvolvedor desligou não volta pelo painel. A posição é do **tema** e escolhe dentro desse teto. O
+  `SarakShell` não tem essa camada de código: nele, só a posição decide.
+- A prévia do painel mostra a barra que o usuário vai ver, porque monta os cromos reais.
+
+**O seletor de idioma** só monta com **dois ou mais** idiomas habilitados no tema, e, fora do caminho de
+substituição pelo host, também precisa estar oferecido. Ele mostra o **idioma que vale**
+([[09-temas-e-presets]] §4.7) e grava a preferência; o host pode substituí-lo inteiro pelo registro de
+componentes locais, e esse caminho não depende das duas condições.
+
+Existe **um** seletor de idioma na lib, o `ShellLanguageSelector`. Trocar o idioma repinta os textos do
+cromo e dos widgets na hora, **sem recarregar a página** ([[10-seguranca-e-acessibilidade]] §3.6).
+
 ## 2.3 A regra de degradação — nada some
 
 | Modo | O que acontece com os slots |
 | --- | --- |
 | **sidebar** (sem barra superior) | `topbarStart` → topo da sidebar; `topbarEnd` → **rodapé** da sidebar (`SarakAppChrome.tsx:236-241`) |
 | **topbar** | todos na barra superior, como declarados |
-| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx:134,136`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer, `:109-110`); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand` |
+| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx:134,136`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer, `:109-110`); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand`; busca, tema e usuário default vão **para o drawer** e o colapso é o próprio hambúrguer do drawer — selecionar um resultado da busca navega e fecha o drawer |
 
-**Nenhum slot é descartado em nenhum modo.** É por isso que o consumidor pode declarar os 8 e confiar —
+**Nenhum slot nem widget é descartado em nenhum modo.** É por isso que o consumidor pode declarar todos e confiar —
 sem escrever media query nem condicional por dispositivo.
 
 Nota de contrato interno: `SarakAppChromeMobile` recebe `brand` como **`ReactNode` já montado**
 (`ChromeBrand`, com o `logo` dentro) e `topbarActions` como o slot de fim já resolvido — por isso as props
 dele no catálogo não repetem `logo`/`topbarEnd`. A tradução acontece em `SarakAppChrome.tsx:171-188`.
+
+## 2.4 Um token de cromo vale nos DOIS modos de consumo, ou não existe
+
+O `SarakAppChrome` (modo ui-kit) e o `SarakShell` (modo módulos-plugin) pintam o **mesmo** cromo a partir
+dos **mesmos** tokens: o `schema/navigation.ts` inteiro e os tokens de layout do `schema/system.ts` que
+governam o cromo. Um token oferecido no schema e no catálogo é contrato com
+o usuário final ([[09-temas-e-presets]] §4.4.3): **ou ele produz efeito nos dois modos, ou sai do schema.**
+Não existe token que funciona "só no Shell" — para quem clica no painel, isso é indistinguível de defeito.
+
+O cromo do modo ui-kit lê esses tokens por um hook único e os traduz em classe estrutural:
+
+| Token | Efeito no cromo |
+| --- | --- |
+| `sidebarPosition` | lado da sidebar — `left`, `right` (inverte a direção do corpo) ou `floating` (destacada, com raio e sombra) |
+| `navbarLayout` | `sticky`, `inline` ou `hidden` para a barra superior |
+| `contentAlignment` | `stretch` ou `center` — largura máxima centralizada para o conteúdo |
+| `isNavHidden` | colapsa a navegação: sidebar estreita só com ícone, topbar com altura reduzida |
+| `isAutoHideEnabled` | a nav só existe no ar sob o ponteiro; uma faixa sensível na borda a traz de volta |
+| `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |
+| `searchPositionSidebar` | `top`, `bottom` ou `hidden` para o slot `search` na sidebar/drawer |
+| `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
+| `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
+| `navItemActiveColor` | **texto e ícone** do item ativo, nas duas orientações e nos dois cromos — é o token que carrega o sinal visível |
+| `sidebarHoverColor` · `topbarHoverColor` | fundo do item sob o ponteiro, cada orientação o seu; o texto também muda, de `--text-muted` para `--sarak-text-main` |
+| `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo, nos dois cromos (no ui-kit, o marcador é desenhado pelo `SarakShellNav`) |
+| `sidebarNoiseOpacity` · `topbarNoiseOpacity` | camada de ruído sobre cada barra (`chrome/noiseTexture.ts`, compartilhado pelos dois cromos) |
+| `sidebarBlur` · `sidebarShadow` | desfoque de fundo e sombra da sidebar; a sombra do modo `floating` também vem do token |
+| `sidebarMinWidth` · `sidebarMaxWidth` · `sidebarLabelMaxWidth` · `topbarLabelMaxWidth` | limites de largura da sidebar e do rótulo da marca, por orientação |
+| `shellBrandLogoSize` · `brandLogoSizeCollapsed` | altura do logo com a navegação expandida e recolhida |
+| `topbarTitleColor` | cor do nome do sistema na topbar |
+| `searchDropdownGap` · `searchDropdownWidth` | distância e largura máxima do painel de busca (o palette do `SarakSearch`) |
+| `layoutPadding` | **respiro do conteúdo** em relação às bordas, nos quatro lados e com valor por dispositivo (`--sarak-layout-padding`, faixa de 0 a 80). É do **conteúdo**: `banner`, `footer` e as barras não o recebem |
+
+**O respiro do conteúdo vem do token nos dois modos, inclusive no `SarakShell`** — nenhuma classe fixa
+participa dele, nos quatro lados, e o refluxo do celular usa o mesmo valor. O invólucro de conteúdo de cada
+cromo carrega `data-sarak-content`, que é por onde a medição em navegador real o encontra
+([[11-testes-e-cobertura]] §7). Quem quer o conteúdo encostado na borda põe o token em zero — não existe
+caminho por classe.
+
+**Cada variável CSS tem um único token de origem.** Dois tokens declarando a mesma variável fazem o
+vencedor depender da ordem de iteração do mapa, não do autor do tema — é por isso que `navItemActiveColor`
+declara só `--sarak-nav-active-color`, e `--theme-primary` pertence a `primaryColor`.
+
+**O realce é visível em todo tema shippado, e isso é medido — no ativo E no hover:** duas varreduras do
+catálogo inteiro (`SarakMenuItem.test.tsx`) exigem que o item **ativo** se distinga do inativo nas duas
+orientações, pelo fundo **ou** pelo texto, e que o **fundo de hover** se distinga do repouso nas duas
+orientações **e nos dois modos** — o nativo do tema e o oposto, como o Provider de fato o resolve. A régua
+é distância perceptual (ΔE em Lab, acima do limiar de diferença perceptível), não desigualdade de valor
+nem razão de luminância, que enganam em sentidos opostos. Cor não conversível (`hsl()`, `var()` não
+resolvido, gradiente) é **pulada com aviso**, nunca medida contra preto inventado. A varredura de hover tem
+lista de exclusão declarada — hoje **vazia** —, e um teste próprio impede que ela esvazie a varredura em
+silêncio. A legibilidade do texto ativo sobre o fundo efetivo
+é do `auditor_contraste`.
+
+> **`hidden` some com a região mesmo havendo conteúdo.** Quem decide sumir é o token, não a ausência do
+> slot — é assim que o dono do tema desliga a busca sem o consumidor mudar código.
+
+**A regra estrutural, para quem for estender:** a tradução token → classe vive num mapa de **literais**,
+nunca em string interpolada. O scanner do Tailwind lê o arquivo como texto; uma classe montada por
+concatenação não existe no CSS publicado ([[07-responsividade-e-multidispositivo]] §6.1).
+
+### 2.4.1 O gate que impede a lacuna de voltar
+
+`npm run chrome-token-parity:check` cobra a metade que nenhum outro auditor cobrava: **não o valor do
+token, a existência do consumidor**. Para cada token da lista, o gate exige uma referência ao `id` ou a uma
+das variáveis CSS declaradas, **de cada lado** — `src/core/Shell/**` e `src/components/Layout/**`, mais os
+átomos compartilhados que cada cromo usa para pintar o item de menu. Ausência de qualquer lado é bloqueio,
+e ele roda no `pre-commit`.
+
+**O escopo são dois schemas, e nenhum deles por lista fechada:** todo token de `schema/navigation.ts` e a
+seção de layout de `schema/system.ts`, recortada no marcador da seção de bordas. Token novo dentro desse
+recorte entra na varredura sem editar o gate — token de layout declarado **depois** daquele marcador fica
+fora, e é limite declarado, não descuido.
+
+**A contagem é fonte viva: o próprio comando a imprime.** O que esta spec fixa é a *relação* — todo token
+coberto tem consumidor nos dois lados, e o que não tem está em `ORPHAN_TOKENS`, cada um com origem
+`arquivo:linha` e o modo faltante. A dívida declarada hoje são tokens de layout que o painel oferece e o
+cromo não lê.
+
+`SarakMenuItem` e `SarakSearch` contam para os dois lados, porque os dois cromos os compõem;
+`SarakShellNav` conta só para o ui-kit. **CSS global não conta:** mapear uma variável em `src/styles/` não é
+consumo do cromo — se contasse, o gate aprovaria um cromo que nunca lê o token, que é exatamente a lacuna
+que ele existe para fechar.
+
+**Limites que o próprio gate declara** ([[00-regras-e-invariantes]] **R18**): a checagem é **textual**, não
+por AST — prova que existe referência, não que o consumo produz efeito visual, e não distingue consumo de
+menção em comentário. A prova de efeito é o teste de componente e, para CSS renderizado,
+`cromo-css-real:check`.
 
 # 3. Os dois níveis de "adicionar imagem/animação"
 
@@ -138,6 +332,23 @@ global por tema (`SarakBackgroundRenderer`), que **continua sendo o caminho de f
 Regra prática: **atmosfera é do tema; ornamento localizado é do slot.** Quem quer um fundo que muda com o
 tema usa (a). Quem quer um banner de campanha na topbar usa (b).
 
+## 3.1 O fundo global alcança os DOIS cromos
+
+`SarakShell` e `SarakAppChrome` **deixam de pintar fundo próprio quando há mídia global** — a raiz de cada
+um emite fundo transparente em vez do token de fundo, para que o `SarakBackgroundRenderer` do Provider
+(montado com `position: fixed`, atrás de tudo) apareça sob o cromo inteiro. Sem mídia, cada um pinta o
+próprio token, como sempre.
+
+No cromo apresentacional a regra vale igual nos **três modos de geometria** — sidebar, topbar e celular —,
+porque o estilo de raiz é montado uma vez e repassado aos três ramos: nenhum ganha caso especial. O `style`
+do consumidor continua sobrescrevendo nos dois estados.
+
+> **Por que isto merece uma seção.** A assimetria entre os dois cromos foi invisível por construção: o
+> token aplicava, o renderizador montava, a mídia carregava — e a raiz opaca do cromo a cobria inteira. O
+> sintoma que chega é *"escolher imagem de fundo não faz nada"*, e nada no caminho do tema está errado.
+> Diferença de fundo de raiz não se prova em `jsdom`, que não resolve cascata: prova-se lendo o valor
+> **computado** em navegador (§9).
+
 # 4. Acessibilidade do colapso mobile
 
 `SarakAppChromeMobile` (`src/components/Layout/SarakAppChromeMobile.tsx`) não é um cromo "menor" — é um
@@ -155,17 +366,18 @@ padrão diferente, com obrigações próprias:
 O detalhe do `useFocusTrap` (por que `onClose` fica atrás de ref) está em
 [[10-seguranca-e-acessibilidade]] §2.4a.
 
-# 5. ⚠️ A altura própria (`minHeight: 100dvh`) e o bug de browser que a originou
+# 5. ⚠️ A altura própria do cromo, a rolagem interna, e o bug de browser que originou a altura
 
 ```ts
 const rootStyle: React.CSSProperties = {
-    minHeight: '100dvh',
+    height: '100dvh',
+    overflow: 'hidden',
     background: 'var(--bg-body, var(--theme-body, transparent))',
     ...style,
 };
 ```
 
-`SarakAppChrome.tsx:153-165` — com o motivo escrito no código, e **vale documentar porque é a classe de
+`SarakAppChrome.tsx:186-198` — com o motivo escrito no código, e **vale documentar porque é a classe de
 bug que volta**:
 
 O cromo é a casca do app, e **não pode depender de o host ter setado `html/body/#root { height: 100% }`**.
@@ -181,6 +393,38 @@ container de altura fixa.
 **Por que registrar:** o sintoma parece bug de componente (a sidebar!), a causa está no CSS do **host**, e
 a correção mora numa terceira camada (a raiz do cromo). Sem isto escrito, o diagnóstico se refaz do zero
 a cada ocorrência.
+
+## 5.1 A altura é fixa, e quem rola é o painel de conteúdo
+
+A raiz tem **altura de janela, não piso**, e **contém** o excedente (`overflow: hidden`), o mesmo valendo
+para a moldura (`ChromeFrame.tsx:50`). A consequência é o contrato de rolagem do cromo:
+
+| Região | Rola? |
+| --- | --- |
+| O documento | **não** — a raiz do cromo não cresce com o conteúdo |
+| O painel de conteúdo (`data-sarak-content`) | **sim** — é a região rolável da página |
+| A navegação lateral (o `<nav>` dentro da `<aside>`) | **sim, por dentro**, e só quando os itens não cabem |
+| `banner`, `footer`, barra lateral e barra superior | **não** — são faixas do cromo e permanecem no lugar |
+
+**Quem rola a navegação é o `<nav>`, não a `<aside>`.** O `SarakShellNav` vertical já nasce com
+`h-full min-h-0 overflow-y-auto` (`SarakShellNav.tsx:128`); o que fecha a cadeia é o chamador declarar
+`min-h-0` nele (`ChromeSidebarBody.tsx:111`), sem o qual o flex não o deixa encolher e os itens **saem
+recortados** pela raiz — a §2.3 ao contrário. A `<aside>` guarda a moldura e a geometria; o `<nav>` guarda
+a rolagem.
+
+**A margem da barra lateral é compensada na altura.** `tabSectionMargin` vale nos quatro lados (§2.4), e
+por isso a altura da `<aside>` é `calc(100% - (margem * 2))` (`ChromeSidebarBody.tsx:87-88`) — é o que
+impede a barra de exceder a janela sem quebrar a paridade do token, e é a mesma técnica que o Shell usa
+(`SidebarNav.tsx:94,96`), ali com `100vh` porque não há moldura acima.
+
+**Consequência para quem já consome:** a rolagem da página deixou de ser a do documento, então
+`window.scrollTo`, âncoras e `scrollIntoView` sobre o documento mudam de alvo — e quem precisa do
+comportamento antigo passa outra altura por `style`. A nota está em `docs/migracoes.md` (7.0.0).
+
+**Onde isso se mede:** em navegador real (`browser-tests/`, [[11-testes-e-cobertura]] §7), que é o único
+lugar onde altura e posição se verificam de verdade. Teste de componente prova a declaração; só o
+navegador prova a caixa.
+
 
 # 6. Zero hardcode
 
@@ -230,7 +474,21 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | Colapso por dispositivo (desktop/tablet/celular) via `overrideDevice` | `src/components/Layout/__tests__/SarakAppChrome.viewport.test.tsx` | ✅ suíte |
 | Drawer mobile: `aria-expanded`, ESC, foco, fechar ao selecionar | `src/components/Layout/__tests__/SarakAppChromeMobile.test.tsx` | ✅ suíte |
 | Moldura comum (ordem banner/corpo/footer, isolamento com `decoration`) | `src/components/Layout/chrome/__tests__/` | ✅ suíte |
-| Contrato publicado (os 8 slots no catálogo) | `npm run catalog:check` | ✅ gate |
+| Contrato publicado (todos os slots no catálogo) | `npm run catalog:check` | ✅ gate |
+| Cada token de cromo produz a classe estrutural esperada nos dois corpos | `src/components/Layout/chrome/__tests__/ChromeTopbarBody.test.tsx` · `ChromeSidebarBody.test.tsx` | ✅ suíte |
+| O hook de leitura dos tokens cai no default correto quando o design não os traz | `src/components/Layout/chrome/__tests__/useChromeDesignTokens.test.ts` | ✅ suíte |
+| Auto-hide: some sob ausência de ponteiro, volta pelo sensor de borda | `src/components/Layout/chrome/__tests__/useChromeAutoHide.test.ts` | ✅ suíte |
+| Todo token de cromo tem consumidor nos DOIS modos | `npm run chrome-token-parity:check` | ✅ gate (`pre-commit`) |
+| O item ativo se distingue do inativo em **todo** tema shippado, nas duas orientações (ΔE) | `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` | ✅ suíte |
+| Widgets default: conjunto completo, cada opt-out isolado, slot `search` vencendo o default, atalho e suas três travas, celular | `src/components/Layout/__tests__/SarakAppChrome.test.tsx` · `SarakAppChromeMobile.test.tsx` · `chrome/__tests__/useChromeDefaultWidgets.test.ts` | ✅ suíte |
+| O palette busca itens dados e seleciona por clique e teclado; sem itens, segue pelo registro | `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` | ✅ suíte |
+| Posição de cada preferência: as três posições, ⚙ só com item no menu, teto de `widgets`, sidebar recolhida | `src/core/Provider/utils/__tests__/chromePreferencePlacement.test.ts` · `src/components/Layout/__tests__/SarakAppChrome.preferencesBar.test.tsx` · `src/core/Shell/Components/__tests__/SidebarNav.preferencesBar.test.tsx` · `TopbarNav.preferencesBar.test.tsx` | ✅ suíte |
+| O ⚙ como overlay: abre por teclado, ESC fecha, o foco volta ao ⚙; não monta vazio | `src/components/atomic/Navigation/__tests__/ShellPreferencesMenu.test.tsx` | ✅ suíte |
+| O seletor de idioma: lista o que o tema habilita, grava preferência, não monta com um idioma, mostra o idioma que vale | `src/components/atomic/Navigation/__tests__/ShellLanguageSelector.test.tsx` | ✅ suíte |
+| Item horizontal em caixa normal e corpo legível, medido em navegador real | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| Os quatro widgets do cromo montados dentro de slots, sem Shell e sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 
 ⚠️ **Ressalva metodológica herdada** ([[07-responsividade-e-multidispositivo]] §7): teste que usa
 `overrideDevice` **não exercita a detecção real** de viewport. A cobertura de colapso acima prova o

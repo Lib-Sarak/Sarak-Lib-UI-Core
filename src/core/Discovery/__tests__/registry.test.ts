@@ -2,11 +2,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { 
     registerSarakModule, 
-    getRegisteredModules, 
+    sarakGetRegisteredModules,
     getSarakModule,
-    registerLocalComponent,
-    getLocalComponent,
-    subscribeToRegistry
+    sarakRegisterLocalComponent,
+    sarakGetLocalComponent,
+    sarakSubscribeToRegistry
 } from '../registry';
 
 describe('Discovery Registry', () => {
@@ -19,13 +19,13 @@ describe('Discovery Registry', () => {
 
     it('registra e recupera um componente local', () => {
         const MockComponent = () => null;
-        registerLocalComponent('test-mod', MockComponent as any);
-        expect(getLocalComponent('test-mod')).toBe(MockComponent);
+        sarakRegisterLocalComponent('test-mod', MockComponent as any);
+        expect(sarakGetLocalComponent('test-mod')).toBe(MockComponent);
     });
 
     it('registra um módulo e o recupera com o componente local resolvido', () => {
         const MockComponent = () => null;
-        registerLocalComponent('app1', MockComponent as any);
+        sarakRegisterLocalComponent('app1', MockComponent as any);
         
         const manifest = {
             id: 'app1',
@@ -38,7 +38,7 @@ describe('Discovery Registry', () => {
         expect(mod).toBeDefined();
         expect(mod?.label).toBe('My App');
 
-        const allMods = getRegisteredModules();
+        const allMods = sarakGetRegisteredModules();
         const resolvedMod = allMods.find(m => m.id === 'app1');
         expect(resolvedMod?.component).toBe(MockComponent);
     });
@@ -52,13 +52,13 @@ describe('Discovery Registry', () => {
 
     it('assina e notifica ouvintes', () => {
         const listener = vi.fn();
-        const unsubscribe = subscribeToRegistry(listener);
+        const unsubscribe = sarakSubscribeToRegistry(listener);
         
-        registerLocalComponent('trigger', (() => null) as any);
+        sarakRegisterLocalComponent('trigger', (() => null) as any);
         expect(listener).toHaveBeenCalled();
         
         unsubscribe();
-        registerLocalComponent('trigger2', (() => null) as any);
+        sarakRegisterLocalComponent('trigger2', (() => null) as any);
         expect(listener).toHaveBeenCalledTimes(1);
     });
 });

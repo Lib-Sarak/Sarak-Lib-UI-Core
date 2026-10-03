@@ -1,5 +1,5 @@
 import { resolveToken } from '../../../core/Design/resolveToken';
-import type { ResponsiveValue } from '../../../core/Design/types';
+import type { SarakResponsiveValue } from '../../../core/Design/types';
 
 /**
  * Valor aceito como medida de `gap`. Inclui `ResponsiveValue<number>` porque os
@@ -7,7 +7,7 @@ import type { ResponsiveValue } from '../../../core/Design/types';
  * `fallback` recebe o valor cru de `design.layoutGap`/`globalSectionGap` — que pode
  * chegar como objeto por breakpoint, não só como escalar.
  */
-export type GapValue = string | number | ResponsiveValue<number>;
+export type GapValue = string | number | SarakResponsiveValue<number>;
 
 /**
  * Resolve a medida de `gap` vinda de prop (token semântico ou CSS já válido) para

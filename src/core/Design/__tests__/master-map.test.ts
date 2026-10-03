@@ -1,19 +1,19 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { getDefaultDesignState, getAllDesignTokens, MASTER_DESIGN_MAP } from '../master-map';
+import { sarakGetDefaultDesignState, sarakGetAllDesignTokens, MASTER_DESIGN_MAP } from '../master-map';
 
 describe('getAllDesignTokens — cache module-level (plan-36)', () => {
     it('MEDIÇÃO: chamadas sucessivas devolvem a MESMA referência de array — antes desta plan, `flatMap` recomputava (novo array) em toda chamada', () => {
-        const first = getAllDesignTokens();
-        const second = getAllDesignTokens();
-        const third = getAllDesignTokens();
+        const first = sarakGetAllDesignTokens();
+        const second = sarakGetAllDesignTokens();
+        const third = sarakGetAllDesignTokens();
 
         expect(second).toBe(first);
         expect(third).toBe(first);
     });
 
     it('o conteúdo continua batendo com o achatamento de MASTER_DESIGN_MAP — cache não perde nem duplica token', () => {
-        const cached = getAllDesignTokens();
+        const cached = sarakGetAllDesignTokens();
         const freshFlatten = MASTER_DESIGN_MAP.components.flatMap((c) => c.tokens);
 
         expect(cached).toHaveLength(freshFlatten.length);
@@ -46,7 +46,7 @@ const IDS_ANTES_DUPLICADOS = [
 ] as const;
 
 describe('getDefaultDesignState — caracterização dos 7 ids antes duplicados', () => {
-    const estado = getDefaultDesignState() as Record<string, unknown>;
+    const estado = sarakGetDefaultDesignState() as Record<string, unknown>;
 
     it('todos os 7 ids continuam presentes no estado default', () => {
         for (const id of IDS_ANTES_DUPLICADOS) {

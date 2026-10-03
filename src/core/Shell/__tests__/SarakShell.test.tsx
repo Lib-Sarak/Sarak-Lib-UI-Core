@@ -2,13 +2,13 @@ import React from 'react';
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { GlobalSchema } from '../../Design/schema/global';
 import * as ComponentModule from '../SarakShell';
 import { SarakShell } from '../SarakShell';
 import { SarakUIProvider } from '../../Provider/SarakUIProvider';
-import { registerSarakModule, registerLocalComponent } from '../../Discovery/registry';
-import type { ThemeEntry } from '../../Provider/types';
+import { registerSarakModule, sarakRegisterLocalComponent } from '../../Discovery/registry';
+import type { SarakThemeEntry } from '../../Provider/types';
 
 // Achado da Spec 43 (§5.1), CORRIGIDO na Spec 44: `customThemes` tinha default
 // `= []` em `SarakUIProvider` (um NOVO array a cada render sem prop explícita) e
@@ -18,7 +18,7 @@ import type { ThemeEntry } from '../../Provider/types';
 // aplicado em `useDesignSync` (não depende mais da referência de `customThemes`
 // ser estável) — ver `useDesignSync.test.ts` para a regressão isolada. Esta
 // constante segue em uso aqui só por ser a prática recomendada, não workaround.
-const STABLE_EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
+const STABLE_EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
 
 // As animações spring/exit do framer-motion (usadas no `AnimatePresence` do
 // `ShellContent`) nunca convergem em jsdom (sem timing real de paint/rAF) e travam
@@ -141,7 +141,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     );
 
     it('registra um módulo/componente e o renderiza no SarakShell sob o SarakUIProvider', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         render(
@@ -156,7 +156,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     });
 
     it('é tematizado pela central: trocar o tema ativo muda o token que o módulo do importador consome', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         const { unmount } = render(
@@ -180,13 +180,13 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         clearRegistry();
         window.history.replaceState(null, '', `/${MODULE_ID}`);
 
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         render(
             <SarakUIProvider
                 options={{ persistence: { storageKey: 'spec43-test-c' } }}
-                activeThemeId="nature-breeze"
+                activeThemeId="sarak-sovereign"
                 customThemes={STABLE_EMPTY_CUSTOM_THEMES}
             >
                 <SarakShell />
@@ -208,7 +208,7 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
     });
 
     it('não entra em loop de render infinito com `activeThemeId` setado e `customThemes` INSTÁVEL (regressão real da Spec 43 §5.1, corrigida na Spec 44)', async () => {
-        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
         registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
 
         // O footgun exato do achado: uma prop `customThemes` com uma referência
@@ -239,5 +239,147 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         // só uma segunda confirmação de que o tema efetivamente aplicou.
         expect(document.documentElement.style.getPropertyValue('--sarak-primary-color')).toBeTruthy();
         expect(renderCount).toBeGreaterThan(0);
+    });
+
+    // Spec 05 §5.2 — paridade com o cromo apresentacional: a SidebarNav do Shell
+    // não estava condicionada a `isNavVisible`, então o sensor de borda aparecia
+    // mas a sidebar nunca saía do lugar.
+    it('auto-hide: a sidebar some ao sair do hover e volta pelo sensor de borda', async () => {
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+
+        const { container } = render(
+            <SarakUIProvider
+                config={{ isAutoHideEnabled: true }}
+                options={{ persistence: { storageKey: 'plan78-autohide' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        // `isNavVisible` nasce `true` (useSarakShellUI) — mesma referência de
+        // comportamento do DockNav: visível de início, some ao sair do hover.
+        expect(container.querySelector('aside')).not.toBeNull();
+
+        const aside = container.querySelector('aside')!;
+        fireEvent.mouseLeave(aside);
+
+        await waitFor(() => {
+            expect(container.querySelector('aside')).toBeNull();
+        });
+        expect(container.querySelector('.fixed.left-0.top-0')).not.toBeNull();
+
+        fireEvent.mouseEnter(container.querySelector('.fixed.left-0.top-0')!);
+        await waitFor(() => {
+            expect(container.querySelector('aside')).not.toBeNull();
+        });
+    });
+
+    it('sem auto-hide, a sidebar continua sempre visível — comportamento de hoje', async () => {
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+
+        const { container } = render(
+            <SarakUIProvider
+                options={{ persistence: { storageKey: 'plan78-sem-autohide' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        const aside = container.querySelector('aside')!;
+        fireEvent.mouseLeave(aside);
+        expect(container.querySelector('aside')).not.toBeNull();
+    });
+
+    // Spec 05 §5.2 — sem `onSelect`, o SarakSearch listava os módulos e
+    // nenhum resultado navegava.
+    it('a busca do Shell ativa o módulo escolhido e fecha o palette', async () => {
+        const OTHER_ID = 'plan78-search-outro-modulo';
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+        sarakRegisterLocalComponent(OTHER_ID, () => <div data-testid="outro-modulo">Outro módulo</div>);
+        registerSarakModule({ id: OTHER_ID, label: 'Outro Módulo', icon: 'Box' });
+
+        const { container } = render(
+            <SarakUIProvider
+                options={{ persistence: { storageKey: 'plan78-search-select' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        // "Outro Módulo" também existe como item da SidebarNav — escopar a busca
+        // ao overlay do palette (`z-[600]`) para pegar SÓ o resultado da busca.
+        const overlay = await waitFor(() => container.querySelector('[class*="z-[600]"]') as HTMLElement);
+        const resultado = within(overlay).getByText('Outro Módulo');
+        fireEvent.click(resultado.closest('button')!);
+
+        await waitFor(() => {
+            expect(screen.getByTestId('outro-modulo')).toBeInTheDocument();
+        });
+        expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).not.toBeInTheDocument();
+    });
+
+    // os textos da própria lib seguem o idioma que vale (specs/10 §3.6).
+    it('a busca do Shell sai em português por padrão, e em inglês com `config.language: "en"`', async () => {
+        sarakRegisterLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+
+        render(
+            <SarakUIProvider
+                options={{ persistence: { storageKey: 'plan79-idioma-pt' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(await screen.findByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeInTheDocument();
+    });
+
+    it('a busca do Shell sai em inglês com `config.language: "en"`', async () => {
+        const EN_MODULE_ID = 'plan79-idioma-en';
+        sarakRegisterLocalComponent(EN_MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: EN_MODULE_ID, label: 'English Test Module', icon: 'Box' });
+        window.history.replaceState(null, '', `/${EN_MODULE_ID}`);
+
+        render(
+            <SarakUIProvider
+                config={{ language: 'en' }}
+                options={{ persistence: { storageKey: 'plan79-idioma-en' } }}
+                customThemes={STABLE_EMPTY_CUSTOM_THEMES}
+            >
+                <SarakShell />
+            </SarakUIProvider>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+        expect(await screen.findByPlaceholderText('Search tool, record or configuration…')).toBeInTheDocument();
     });
 });

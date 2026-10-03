@@ -5,10 +5,10 @@ import { ChevronDown } from 'lucide-react';
 import { PremiumSwitch } from './PremiumSwitch';
 import { PremiumCheckbox } from './PremiumCheckbox';
 import { resolveConfig } from './resolveConfig';
-import type { MatrixTreeNode, RecursiveMatrixNodeProps } from './matrixTree';
+import type { SarakMatrixTreeNode, RecursiveMatrixNodeProps } from './matrixTree';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
-export type { MatrixTreeNode, RecursiveMatrixNodeProps } from './matrixTree';
+export type { SarakMatrixTreeNode, RecursiveMatrixNodeProps } from './matrixTree';
 
 /** Spinner padrão (sem dependência nova) quando o consumidor não fornece um ícone. */
 const DefaultLazyIcon: React.FC = () => <span role="status" aria-live="polite" className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] animate-pulse">Carregando…</span>;

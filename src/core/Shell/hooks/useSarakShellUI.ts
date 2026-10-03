@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
+import { useSearchShortcut } from '../../../shared/hooks/useSearchShortcut';
 
 export const useSarakShellUI = () => {
-    const { design, applyConfig } = useSarakUI();
+    const { design, applyConfig, updatePreferences } = useSarakUI();
 
     const [state, setState] = useState({
         isSearchOpen: false,
@@ -20,9 +21,11 @@ export const useSarakShellUI = () => {
     const topbarMinHeight = 40;
     const topbarMaxHeight = 120;
 
+    // Grava PREFERÊNCIA de recolhimento, nunca o tema — `design` já é o
+    // EFETIVO (tema + preferência sobreposta).
     const toggleNav = useCallback(() => {
-        applyConfig({ isNavHidden: !design?.isNavHidden });
-    }, [applyConfig, design?.isNavHidden]);
+        updatePreferences({ navCollapsed: !design?.isNavHidden });
+    }, [updatePreferences, design?.isNavHidden]);
 
     const setSidebarWidth = useCallback((w: number) => {
         applyConfig({ sidebarWidth: w });
@@ -39,14 +42,12 @@ export const useSarakShellUI = () => {
                 e.preventDefault();
                 toggleNav();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                updateState({ isSearchOpen: true });
-            }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [toggleNav, updateState]);
+    }, [toggleNav]);
+
+    useSearchShortcut(useCallback(() => updateState({ isSearchOpen: true }), [updateState]));
 
     // --- Unified Resize Engine (v10.3) ---
     const startResizingSidebar = useCallback(() => updateState({ resizeType: 'sidebar' }), [updateState]);

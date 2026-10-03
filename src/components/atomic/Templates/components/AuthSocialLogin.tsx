@@ -1,5 +1,5 @@
 import React from 'react';
-import { SocialButton } from '../../Buttons/SocialButton';
+import { SarakSocialButton } from '../../Buttons/SarakSocialButton';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface AuthSocialLoginProps {
@@ -30,9 +30,9 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
 
             <div className={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').className} style={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').style}>
                 {socialConfig.providers.map((p) => (
-                    <SocialButton 
+                    <SarakSocialButton
                         key={p.id} 
-                        provider={p.id as React.ComponentProps<typeof SocialButton>['provider']} 
+                        provider={p.id as React.ComponentProps<typeof SarakSocialButton>['provider']}
                         variant={p.variant} 
                         hideLabel={socialConfig.display === 'compact'}
                         onClick={() => onSocialLogin?.(p.id)} 

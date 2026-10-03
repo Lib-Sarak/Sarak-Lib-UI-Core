@@ -11,12 +11,19 @@ import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface SarakStatsProps<TData extends Record<string, unknown>> {
+    /** Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. */
     endpoint?: string;
+    /** Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. */
     data?: TData;
+    /** Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. */
     label?: string;
+    /** Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. */
     mapping?: Record<string, string>; // { key_in_json: "Label do Contador" }
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 

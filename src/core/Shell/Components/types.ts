@@ -1,7 +1,7 @@
 import React from 'react';
 
 /** Identidade do usuário exibida no Shell (vinda do app consumidor). */
-export interface ShellUser {
+export interface SarakShellUser {
     username?: string;
     email?: string;
     level?: number;
@@ -15,7 +15,7 @@ export interface SarakShellProps {
         logo?: string;
     };
     extraToolbarItems?: React.ReactNode;
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     token?: string;
     authApi?: unknown;

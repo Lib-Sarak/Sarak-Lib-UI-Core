@@ -10,8 +10,11 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 type ReactFlowProps = React.ComponentProps<typeof ReactFlow>;
 
 export interface SarakFlowEngineProps {
+    /** Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. */
     nodes: NonNullable<ReactFlowProps['nodes']>;
+    /** Conexões existentes fornecidas ao React Flow; obrigatório, sem lista padrão. Use `[]` quando não houver conexões. */
     edges: NonNullable<ReactFlowProps['edges']>;
+    /** Recebe novas conexões criadas na tela; omitida, os nós e as conexões existentes continuam visíveis, mas não há callback do consumidor para persistir novas ligações. */
     onConnect?: ReactFlowProps['onConnect'];
 }
 

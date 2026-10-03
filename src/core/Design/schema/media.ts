@@ -30,25 +30,6 @@ export const MediaSchema: ComponentSchema = {
             cssVars: ['--sarak-global-bg-blur']
         },
         {
-            id: 'globalBackgroundBlendMode',
-            label: 'Blend Mode (Mistura)',
-            type: 'select',
-            description: 'Modo de mesclagem CSS entre a imagem de fundo global e as camadas de cor sobrepostas. Normal não mistura; Overlay/Multiply/Screen/Soft Light combinam a imagem com as cores do tema para efeitos mais integrados. Nota: atualmente sobrescrito para \'normal\' no código-fonte de `SarakBackgroundRenderer.tsx` — as demais opções não têm efeito visível até essa pendência de wiring (ver backlog de cobertura, spec 01) ser resolvida.',
-            axis: 'texture',
-            constraints: {
-                options: [
-                    { id: 'normal', value: 'normal', label: 'Normal' },
-                    { id: 'overlay', value: 'overlay', label: 'Overlay' },
-                    { id: 'multiply', value: 'multiply', label: 'Multiply' },
-                    { id: 'screen', value: 'screen', label: 'Screen' },
-                    { id: 'soft-light', value: 'soft-light', label: 'Soft Light' },
-                    { id: 'color-dodge', value: 'color-dodge', label: 'Color Dodge (Neon)' }
-                ]
-            },
-            defaultValue: 'normal',
-            cssVars: ['--sarak-global-bg-blend-mode']
-        },
-        {
             id: 'globalBackgroundOpacity',
             label: 'Opacidade da Imagem Global',
             type: 'slider',

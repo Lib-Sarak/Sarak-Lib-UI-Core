@@ -1957,41 +1957,6 @@
     ]
   },
   {
-    "tokenId": "globalBackgroundBlendMode",
-    "name": "Blend Mode (Mistura)",
-    "description": "Modo de mesclagem da imagem de fundo com as cores sólidas base.",
-    "type": "select",
-    "importance": 60,
-    "categories": [
-      "efeitos",
-      "media",
-      "colors-and-atmosphere"
-    ],
-    "tags": [
-      "blend-mode",
-      "background",
-      "mix"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "media.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-global-bg-blend-mode"
-    ],
-    "allowedValues": [
-      "normal",
-      "overlay",
-      "multiply",
-      "screen",
-      "soft-light"
-    ],
-    "relatedTokens": [
-      "globalBackgroundImageUrl"
-    ]
-  },
-  {
     "tokenId": "globalBackgroundOpacity",
     "name": "Opacidade da Imagem Global",
     "description": "Nível de transparência da imagem de fundo principal.",

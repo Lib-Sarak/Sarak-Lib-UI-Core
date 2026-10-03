@@ -1,19 +1,20 @@
 import React from 'react';
 import { SarakButton } from '../Buttons/SarakButton';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Token de paginação: número de página ou marcador de reticências. */
-export type PaginationToken = number | 'ellipsis';
+export type SarakPaginationToken = number | 'ellipsis';
 
 /**
  * Gera a lista de renderização numérica (Spec 14, Regra 4): início, miolo em torno
  * da página atual e final, inserindo `ellipsis` quando há corte. Função PURA —
  * testável isoladamente, sem DOM.
  */
-export const buildPaginationRange = (
+export const sarakBuildPaginationRange = (
     current: number,
     total: number,
     maxVisible = 7,
-): PaginationToken[] => {
+): SarakPaginationToken[] => {
     if (total <= 0) return [];
     const clamped = Math.min(Math.max(current, 1), total);
     if (total <= maxVisible) {
@@ -25,7 +26,7 @@ export const buildPaginationRange = (
     const start = Math.max(clamped - siblings, first + 1);
     const end = Math.min(clamped + siblings, last - 1);
 
-    const tokens: PaginationToken[] = [first];
+    const tokens: SarakPaginationToken[] = [first];
     if (start > first + 1) tokens.push('ellipsis');
     for (let page = start; page <= end; page += 1) tokens.push(page);
     if (end < last - 1) tokens.push('ellipsis');
@@ -71,20 +72,21 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
     onChange,
     className = '',
 }) => {
-    const tokens = buildPaginationRange(current, total, maxVisible);
+    const t = useLibraryText();
+    const tokens = sarakBuildPaginationRange(current, total, maxVisible);
     const go = (page: number) => {
         if (page >= 1 && page <= total && page !== current) onChange(page);
     };
 
     return (
-        <nav className={`flex items-center ${className}`} style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }} aria-label="Paginação">
+        <nav className={`flex items-center ${className}`} style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }} aria-label={t('paginationAriaLabel')}>
             <SarakButton
                 variant="ghost"
                 className={`${baseBtn} text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]`}
                 style={pageBtnStyle}
                 onClick={() => go(current - 1)}
                 disabled={current <= 1}
-                aria-label="Página anterior"
+                aria-label={t('paginationPrevAriaLabel')}
             >
                 ‹
             </SarakButton>
@@ -122,7 +124,7 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
                 style={pageBtnStyle}
                 onClick={() => go(current + 1)}
                 disabled={current >= total}
-                aria-label="Próxima página"
+                aria-label={t('paginationNextAriaLabel')}
             >
                 ›
             </SarakButton>

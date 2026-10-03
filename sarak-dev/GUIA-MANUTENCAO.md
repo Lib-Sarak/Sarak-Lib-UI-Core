@@ -87,7 +87,7 @@ existe na paridade e não move nada — a mesma classe de defeito de uma variáv
 **(a) Sete ids duplicados.** O `theme_table_mapping.json` tem **416 entradas brutas para 409 ids
 únicos**: sete ids aparecem em duas colunas. Quatro são ambiguidade real (colunas diferentes) e
 três são redundância literal (mesma coluna). Consertar muda **qual definição vence** em
-`getDefaultDesignState()`, então exige caracterização antes. Está roteado para a Campanha 2.
+`sarakGetDefaultDesignState()`, então exige caracterização antes. Está roteado para a Campanha 2.
 
 **(b) `src/core/Provider/generated/design-token-ids.ts` está DEFASADO.** Ele é gerado por
 `scripts/generate-token-types.ts` a partir do `MASTER_DESIGN_MAP`, e o gerador **não está
@@ -293,16 +293,16 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ### B.1 Design — as fontes que a paridade cruza
 
-`MASTER_DESIGN_MAP` v13.0.0 · **28 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
+`MASTER_DESIGN_MAP` v13.0.0 · **29 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
 
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 423 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **423** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 427 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **427** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 423 |
-| `SarakDesignTokens` (tipo público) | ids | 423 |
+| `catalog/partitions/` | tokens | 427 |
+| `SarakDesignTokens` (tipo público) | ids | 427 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -313,9 +313,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 77** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 96** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (23)
+### B.3 Gates registrados (28)
 
 | Comando | O que roda |
 | --- | --- |
@@ -323,10 +323,13 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
+| `npm run chrome-token-parity:check` | `node gates/scripts/contrato/check-chrome-token-parity.mjs` |
+| `npm run class-merge:check` | `node gates/scripts/contrato/check-class-merge.mjs` |
 | `npm run composicao-atomica:check` | `node gates/scripts/audit/auditor_composicaoatomica.mjs` |
 | `npm run container-query-boundary:check` | `node gates/scripts/contrato/check-container-query-boundary.mjs` |
 | `npm run container-query:check` | `node gates/scripts/contrato/check-container-query-literal.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
+| `npm run cromo-css-real:check` | `npm run build && playwright test --config=browser-tests/playwright.config.ts` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
@@ -337,10 +340,12 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
 | `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |
 | `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
+| `npm run prefix:check` | `node gates/scripts/contrato/check-public-prefix.mjs` |
 | `npm run public-types:check` | `node gates/scripts/contrato/check-public-types-parity.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
+| `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
 **Auditores agregados por `run_audit.mjs` (12):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs` · `auditor_contraste.mjs`
@@ -374,7 +379,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (12)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md`
+**ADR (16)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

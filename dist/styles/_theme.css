@@ -83,7 +83,15 @@
 
 /* Utilitários Globais de Sincronização */
 .rounded-sarak { border-radius: var(--radius-sarak); }
-.rounded-btn { border-radius: var(--radius-btn); }
+/* Os quatro cantos do botão (`btnRadiusTL/TR/BR/BL`), com o raio mestre como reserva de
+   cada um. Esta classe vence o padrão de raio de `<button>` (que cede à classe), então é
+   ela que tem de entregar os cantos — senão um tema assimétrico perde a forma. */
+.rounded-btn {
+    border-radius: var(--sarak-btn-radius-tl, var(--radius-btn))
+                   var(--sarak-btn-radius-tr, var(--radius-btn))
+                   var(--sarak-btn-radius-br, var(--radius-btn))
+                   var(--sarak-btn-radius-bl, var(--radius-btn));
+}
 .rounded-input { border-radius: var(--radius-input); }
 .bg-theme-card { 
     background-color: var(--color-theme-card); 

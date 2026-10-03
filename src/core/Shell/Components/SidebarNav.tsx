@@ -1,28 +1,33 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
-import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakMenuItem } from '../../../components/atomic/Navigation/SarakMenuItem';
+import { SidebarNavModuleItem } from './SidebarNavModuleItem';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { ShellUserWidget } from './ShellUserWidget';
-import { ShellSearchWidget } from './ShellSearchWidget';
-import { ShellLanguageSelector } from './ShellLanguageSelector';
-import { ShellThemeToggle } from './ShellThemeToggle';
+import { SarakShellUser } from './types';
+import { SarakShellUserWidget } from '../../../components/atomic/Navigation/SarakShellUserWidget';
+import { SarakShellSearchWidget } from '../../../components/atomic/Navigation/SarakShellSearchWidget';
+import { SarakShellLanguageSelector } from '../../../components/atomic/Navigation/SarakShellLanguageSelector';
+import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
+import { ShellFontSizeControl } from '../../../components/atomic/Navigation/ShellFontSizeControl';
+import { ShellNavigationStyleControl } from '../../../components/atomic/Navigation/ShellNavigationStyleControl';
+import { ShellPreferencesMenu } from '../../../components/atomic/Navigation/ShellPreferencesMenu';
+import { splitPreferencesByPlacement } from '../../Provider/utils/chromePreferencePlacement';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { chromeNoiseLayerStyle } from '../../../components/Layout/chrome/noiseTexture';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface SidebarNavProps {
     design: SarakDesignState;
     brand: { name?: string };
-    user?: ShellUser;
+    user?: SarakShellUser;
     logout?: () => void;
     toggleNav: () => void;
     setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
-    groupedModules: Record<string, DiscoveredModule[]>;
+    groupedModules: Record<string, SarakDiscoveredModule[]>;
     setIsNavVisible: (visible: boolean) => void;
     startResizing: () => void;
     isMobileDrawer?: boolean;
@@ -31,20 +36,34 @@ interface SidebarNavProps {
 export const SidebarNav: React.FC<SidebarNavProps> = ({
     design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing, isMobileDrawer
 }) => {
+    const t = useLibraryText();
     const [isHovered, setIsHovered] = React.useState(false);
     const {
         mode, animationSpeed, sidebarWidth, isNavHidden, isAutoHideEnabled,
         tabSectionMargin, borderRadius, borderWidth, borderStyle,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition, tabGap
     } = design || {};
-    
     const { sidebarClass } = useShellLayoutStyles(design);
 
     // Sovereign Logic: Effective state for hover expansion
     const effectiveIsNavHidden = isNavHidden && !isHovered;
 
-    const searchPos = design?.searchPositionSidebar || 'top';
+    // Barra configurável pelo administrador (Spec 05 §2.2.1): Shell não tem
+    // `widgets` de código (não é apps-separados) — só a posição do tema decide.
+    const placement = splitPreferencesByPlacement(design as unknown as Record<string, unknown>);
+    const showThemeToggle = placement.pinned.includes('colorMode');
+    const showLanguage = placement.pinned.includes('language');
+    const showFontSize = placement.pinned.includes('fontSize');
+    const showNavigationStyle = placement.pinned.includes('navigationStyle');
+    const showCollapseToggle = placement.pinned.includes('navCollapsed');
+    // Sidebar recolhida (ícone-only) não tem coluna para fonte/navegação com
+    // rótulo — mas seguem oferecidas (Spec 05 §2.3, "nada some"), então o ⚙
+    // as recebe, mesmo quando nenhuma preferência está em posição `menu`.
+    const collapsedExtras = placement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed' && id !== 'language');
+    const menuIdsToShow = effectiveIsNavHidden && placement.menu.length === 0 ? collapsedExtras : placement.menu;
+    const hasPreferencesMenu = menuIdsToShow.length > 0;
 
+    const searchPos = design?.searchPositionSidebar || 'top';
     const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
     const isVideo = (url?: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
 
@@ -52,7 +71,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         if (searchPos === 'hidden') return null;
         return (
             <div className="px-1 mb-2 shrink-0">
-                <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
+                <SarakShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
             </div>
         );
     };
@@ -78,10 +97,16 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 borderWidth: isMobileDrawer ? '0' : `${borderWidth ?? 1}px`,
                 borderStyle: borderStyle || 'solid',
                 backgroundColor: 'var(--theme-sidebar-bg, var(--theme-sidebar))',
-                borderColor: 'var(--theme-border)'
+                borderColor: 'var(--theme-border)',
+                // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl fixo.
+                backdropFilter: 'blur(var(--sarak-sidebar-blur, 0px))',
+                // sarak-allow-hardcode: fallback multi-valor = defaultValue do próprio token.
+                boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))'
             }}
-            className={`sarak-shell-sidebar ${sidebarClass} flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden`}
+            className={`sarak-shell-sidebar ${sidebarClass} flex flex-col shrink-0 relative z-[100] overflow-hidden`}
         >
+            {/* `sidebarNoiseOpacity` (Spec 05 §2.4) — grão sobreposto ao fundo, 0 por default. */}
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity')} />
             <div className={`h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 ${effectiveIsNavHidden ? 'justify-center' : 'justify-between'}`}>
                 {!effectiveIsNavHidden && (
                     <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
@@ -116,7 +141,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     </div>
                 )}
 
-                {!effectiveIsNavHidden && logoPosition !== 'center' && (
+                {!effectiveIsNavHidden && logoPosition !== 'center' && showCollapseToggle && (
                     <SarakIconButton
                         onClick={toggleNav}
                         variant="ghost"
@@ -134,39 +159,16 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
                         {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[var(--sarak-tracking-tight,0.2em)] mb-3 px-3">{category}</h4>}
                         <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                            {mods.map(mod => {
-                                const isOffline = mod.status === 'offline';
-                                return (
-                                    <SarakButton
-                                        key={mod.id}
-                                        variant="ghost"
-                                        fullWidth
-                                        onClick={() => !isOffline && setActiveModuleId(mod.id)}
-                                        disabled={isOffline}
-                                        title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
-                                        leftIcon={
-                                            <div className={`shrink-0 ${effectiveIsNavHidden ? 'mx-auto' : ''}`}>
-                                                <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
-                                            </div>
-                                        }
-                                        className={`relative group justify-start normal-case font-tab tracking-normal
-                                            ${activeModuleId === mod.id
-                                                ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
-                                                : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'}
-                                            ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-[var(--theme-border)]' : ''}
-                                        `}
-                                    >
-                                        {!effectiveIsNavHidden && (
-                                            <div className="flex flex-col items-start overflow-hidden">
-                                                <span className="text-sm truncate">{mod.label}</span>
-                                                {isOffline && <span className="text-3xs text-[var(--theme-error)] font-bold uppercase tracking-wider">Service Offline</span>}
-                                            </div>
-                                        )}
-                                        {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
-                                        {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
-                                    </SarakButton>
-                                );
-                            })}
+                            {mods.map(mod => (
+                                <SidebarNavModuleItem
+                                    key={mod.id}
+                                    mod={mod}
+                                    isActive={activeModuleId === mod.id}
+                                    effectiveIsNavHidden={Boolean(effectiveIsNavHidden)}
+                                    onSelect={setActiveModuleId}
+                                    t={t}
+                                />
+                            ))}
                         </div>
                     </div>
                 ))}
@@ -176,39 +178,46 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 {/* Search - BOTTOM */}
                 {searchPos === 'bottom' && renderSearch()}
 
-                {/* 2. Language Selector */}
-                <ShellLanguageSelector variant="vertical" />
-
-                {/* Theme Toggle */}
-                <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
+                {/* Barra configurável pelo administrador (Spec 05 §2.2.1) — cada
+                    controle só monta se a posição da preferência for `pinned`. */}
+                {showLanguage && <SarakShellLanguageSelector variant="vertical" />}
+                {showThemeToggle && <SarakShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />}
+                {!effectiveIsNavHidden && showFontSize && <div className="px-1"><ShellFontSizeControl /></div>}
+                {!effectiveIsNavHidden && showNavigationStyle && <div className="px-1"><ShellNavigationStyleControl /></div>}
 
                 {/* 3. Notifications */}
-                <SarakButton
-                    variant="ghost"
-                    fullWidth
-                    leftIcon={<SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
-                    className={`text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal ${effectiveIsNavHidden ? 'justify-center' : 'justify-start'}`}
+                <SarakMenuItem
+                    collapsed={effectiveIsNavHidden}
+                    icon={<SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                    label={t('sidebarNotificationsLabel')}
+                    className="group font-tab"
                 >
-                    <div className="flex items-center w-full">
-                        {!effectiveIsNavHidden && <span className="text-sm font-tab flex-1 text-left">Notifications</span>}
-                        <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
+                    <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
+                </SarakMenuItem>
+
+                {hasPreferencesMenu && (
+                    <div className="px-1">
+                        <ShellPreferencesMenu
+                            menuIds={menuIdsToShow}
+                            isNavHidden={Boolean(isNavHidden)}
+                            onToggleNavCollapsed={toggleNav}
+                            align="start"
+                        />
                     </div>
-                </SarakButton>
+                )}
             </div>
 
             {/* 4. User Profile & Logout */}
-            <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
+            <SarakShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
             {/* RESIZE HANDLE (X-AXIS) */}
             {!isMobileDrawer && (
                 <div
                     onMouseDown={startResizing}
                     className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                    title="Arraste para redimensionar"
+                    title={t('sidebarResizeHint')}
                 />
             )}
         </aside>
     );
 };
-;
-

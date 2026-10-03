@@ -60,7 +60,7 @@ const notifyListeners = () => {
 /**
  * Subscribes to registry changes (v9.0 Passive Discovery).
  */
-export const subscribeToRegistry = (listener: () => void) => {
+export const sarakSubscribeToRegistry = (listener: () => void) => {
     listeners.add(listener);
     return () => listeners.delete(listener);
 };
@@ -68,7 +68,7 @@ export const subscribeToRegistry = (listener: () => void) => {
 /**
  * Registers a local component linked to a system ID (v6.5).
  */
-export const registerLocalComponent = <P extends object>(id: string, component: React.ComponentType<P>) => {
+export const sarakRegisterLocalComponent = <P extends object>(id: string, component: React.ComponentType<P>) => {
     localComponents.set(id, toSarakComponent(component));
     notifyListeners();
 };
@@ -76,7 +76,7 @@ export const registerLocalComponent = <P extends object>(id: string, component: 
 /**
  * Returns the component associated with an ID, if it exists.
  */
-export const getLocalComponent = (id: string): SarakComponent | undefined => {
+export const sarakGetLocalComponent = (id: string): SarakComponent | undefined => {
     return localComponents.get(id);
 };
 
@@ -84,7 +84,7 @@ export const getLocalComponent = (id: string): SarakComponent | undefined => {
  * Lista os IDs de componentes locais registrados. Usado pelo gate de paridade
  * (RegistryParity) para cobrar equivalente manifestável de cada id legado da lib.
  */
-export const getLocalComponentIds = (): string[] => {
+export const sarakGetLocalComponentIds = (): string[] => {
     return Array.from(localComponents.keys());
 };
 
@@ -132,7 +132,7 @@ export const registerSarakModule = (manifest: SarakModule) => {
 /**
  * Returns the list of registered modules with resolved components (v9.1).
  */
-export const getRegisteredModules = (): SarakModule[] => {
+export const sarakGetRegisteredModules = (): SarakModule[] => {
     return Array.from(registeredModules.values()).map(mod => {
         // Resolução Estrita (v9.2): ID do Módulo === Chave do Componente
         const resolvedComponent = mod.component || localComponents.get(mod.id);

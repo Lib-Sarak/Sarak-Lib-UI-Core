@@ -2,19 +2,20 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { ShellUser } from './types';
-import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
+import { SarakShellUser } from './types';
+import { SarakDynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { useLibraryText } from '../../i18n/useLibraryText';
 
 interface ShellContentProps {
-    activeModule: DiscoveredModule | undefined;
-    discoveredModules: DiscoveredModule[];
+    activeModule: SarakDiscoveredModule | undefined;
+    discoveredModules: SarakDiscoveredModule[];
     design: SarakDesignState;
-    user?: ShellUser;
+    user?: SarakShellUser;
     authApi?: unknown;
     setIsSearchOpen: (open: boolean) => void;
 }
@@ -24,6 +25,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
 }) => {
     const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId } = design || {};
     const { mainContentClass } = useShellLayoutStyles(design);
+    const t = useLibraryText();
 
     const transitionEffect = {
         initial: { opacity: 0 },
@@ -34,22 +36,21 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     return (
         <main className={`${mainContentClass} custom-scrollbar isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
 
-            {/* sarak-allow-hardcode: breakpoint de container query do Tailwind (plan-39, mesmo valor de BREAKPOINT_DESKTOP), não valor de tema — o scanner do Tailwind v4 lê o arquivo como texto e exige o número literal na classe */}
-            <div className="flex-1 flex flex-col relative w-full pt-8 @min-[1024px]:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
+            <div className="flex-1 flex flex-col relative w-full z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">
                     {activeModule ? (
                         <motion.div 
                             key={activeModule.id} 
                             {...transitionEffect}
-                            className="pb-12 flex flex-col min-h-full" 
-                            style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}
+                            className="flex flex-col min-h-full"
+                            style={{ padding: 'var(--sarak-layout-padding, 16px)' }}
                         >
                             
                             <header className="mb-10 flex items-end justify-between border-b border-[var(--theme-border)]/50 pb-8 shrink-0">
                                 <div>
                                     <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
                                         <div className="p-2 rounded-[var(--radius-theme)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
-                                        <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
+                                        <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || t('genericModuleLabel')}</span>
                                     </div>
                                     {/* sarak-allow-hardcode: breakpoint de container query do Tailwind (plan-39), não valor de tema */}
                                     <h1 className="text-4xl @min-[1024px]:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
@@ -72,16 +73,16 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                         }
 
                                         if (contracts && contracts.length > 0) {
-                                            return <DynamicRenderer contracts={contracts} module={activeModule} />;
+                                            return <SarakDynamicRenderer contracts={contracts} module={activeModule} />;
                                         }
 
-                                        return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Module in API Mode (No Local Interface)</div>;
+                                        return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">{t('shellContentApiModeMessage')}</div>;
                                     })()}
                                 {isSplitViewEnabled && secondaryModuleId && (
                                     <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">
                                         {(() => {
                                             const SecMod = discoveredModules.find(m => m.id === secondaryModuleId)?.component;
-                                            return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">Select a secondary module</div>;
+                                            return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">{t('shellContentSelectSecondaryModule')}</div>;
                                         })()}
                                     </div>
                                 )}

@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveStorageKey } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
-import { GLOBAL_THEMES } from '../../Design/presets/themes';
-import { getDefaultDesignState } from '../../Design/master-map';
+import { SARAK_GLOBAL_THEMES } from '../../Design/presets/themes';
+import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
+import { sarakGetDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
 import { useResolvedThemeId } from './useResolvedThemeId';
-import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
+import { SarakThemePayload, SarakUIOptions, SarakDesignState, SarakThemeEntry } from '../types';
 
 /**
  * useDesignManager (v11.0 — Spec 44, sem backend próprio)
@@ -22,7 +23,7 @@ export const useDesignManager = (props: {
     initialConfig: SarakThemePayload,
     options: SarakUIOptions,
     isHydrated: boolean,
-    allThemes?: ThemeEntry[],
+    allThemes?: SarakThemeEntry[],
     activeThemeId?: string,
     initialTheme?: string,
     onThemeChange?: (design: SarakThemePayload) => void
@@ -46,20 +47,31 @@ export const useDesignManager = (props: {
      * `allThemes` para achar o id pedido), cai no tema padrão do sistema. É a
      * MESMA lógica que `getSeedConfig` usa para os tokens — extraída para que
      * `resolvedThemeId` (abaixo) nasça consistente com o design semeado.
+     *
+     * Um id EXPLICITAMENTE pedido (`activeThemeId`/`initialTheme`) que não bate
+     * com nenhum tema conhecido — removido do catálogo, ou nunca existiu — nunca
+     * deixa a semente sem tema: cai na referência do modo pedido (`config.mode`
+     * explícito, se houver; senão escuro, o default do schema), com um aviso.
      */
     const resolveSeedThemeId = useCallback((): string | undefined => {
         const seedThemeId = activeThemeId || initialTheme;
-        if (seedThemeId && allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
+        if (seedThemeId) {
+            if (allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
+            const requestedMode: 'light' | 'dark' = (configRef.current?.mode as 'light' | 'dark') || 'dark';
+            const reference = SARAK_REFERENCE_THEMES.find((t) => (t.design.mode ?? 'dark') === requestedMode) ?? SARAK_REFERENCE_THEMES[0];
+            console.warn(`[SarakUIProvider] tema "${seedThemeId}" não existe (removido do catálogo ou nunca existiu) — semeando com a referência "${reference.id}" (modo "${requestedMode}").`);
+            return reference.id;
+        }
         const defaultThemeId = optionsRef.current?.theme?.defaultTheme || 'classic';
-        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
+        const themeEntry = SARAK_GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? SARAK_GLOBAL_THEMES[0];
         return themeEntry?.id;
     }, [activeThemeId, initialTheme, allThemes]);
 
     // Initial seed logic (Sovereign Map v11.0)
     const getSeedConfig = useCallback(() => {
-        const masterDefaults = getDefaultDesignState();
+        const masterDefaults = sarakGetDefaultDesignState();
         const seedId = resolveSeedThemeId();
-        const themeEntry = allThemes?.find(t => t.id === seedId) ?? GLOBAL_THEMES.find(t => t.id === seedId);
+        const themeEntry = allThemes?.find(t => t.id === seedId) ?? SARAK_GLOBAL_THEMES.find(t => t.id === seedId);
         const themeDesignTokens = themeEntry?.design ?? {};
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado

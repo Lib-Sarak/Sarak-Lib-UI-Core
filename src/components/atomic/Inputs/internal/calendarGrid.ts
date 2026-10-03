@@ -12,10 +12,10 @@ export interface CalendarCell {
     outside: boolean;
 }
 
-export type WeekStart = 0 | 1;
+export type SarakWeekStart = 0 | 1;
 
 /** Constrói a matriz de semanas (cada uma com 7 células) que cobre o mês de `month`. */
-export const buildMonthMatrix = (month: Date, weekStartsOn: WeekStart = 0): CalendarCell[][] => {
+export const buildMonthMatrix = (month: Date, weekStartsOn: SarakWeekStart = 0): CalendarCell[][] => {
     const monthIndex = month.getMonth();
     const gridStart = startOfWeek(startOfMonth(month), { weekStartsOn });
     const gridEnd = endOfWeek(endOfMonth(month), { weekStartsOn });

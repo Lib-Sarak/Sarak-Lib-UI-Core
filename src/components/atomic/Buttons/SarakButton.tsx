@@ -1,14 +1,21 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useButtonLayoutStyles } from './hooks/useButtonLayoutStyles';
 
 export interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
+    /** Troca os ícones pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado. */
     isLoading?: boolean;
+    /** Exibe um elemento antes do conteúdo; omitida, não há ícone à esquerda, e durante o carregamento é substituída pelo indicador. */
     leftIcon?: React.ReactNode;
+    /** Exibe um elemento depois do conteúdo; omitida, não há ícone à direita, e durante o carregamento fica oculta. */
     rightIcon?: React.ReactNode;
+    /** Faz o botão ocupar a largura disponível; omitida, a largura acompanha o conteúdo. */
     fullWidth?: boolean;
+    /** Define a escala de altura, espaçamento e texto; sem a prop, usa `md`. */
     size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
@@ -35,7 +42,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
     // Átomo: tolera montar sem SarakUIProvider (Spec 18 — R10 §2.3), usa o default abaixo.
     const design = useSarakUIOptional()?.design;
     const { getButtonStyles } = useAtomicStyles();
-    const { containerClass, iconOrderClass } = useButtonLayoutStyles(design);
+    const { containerClass, iconOrderClass } = useButtonLayoutStyles(design, fullWidth, className);
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';
@@ -67,7 +74,6 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
 
     const tailwindClasses = getTailwindClasses(variant, styleType);
 
-    const widthClass = fullWidth ? 'w-full' : '';
     const disabledClass = disabled || isLoading ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     const dynamicStyle: React.CSSProperties = { 
@@ -77,7 +83,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
     
     return (
         <button
-            className={`${baseClasses} ${tailwindClasses} ${widthClass} ${disabledClass} ${className}`}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}

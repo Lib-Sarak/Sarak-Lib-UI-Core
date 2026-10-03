@@ -8,7 +8,7 @@ import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
 import { SarakDesignState } from '../../../core/Provider/types';
-import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
+import { SarakTokenValue, SarakDesignToken } from '../../../core/Design/types';
 
 export interface MasterControlPanelProps {
     draft: SarakDesignState;
@@ -36,7 +36,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
 
     // 1. Processamento de Dados (Planilha)
     const allTokens = useMemo(() => {
-        const tokens: (DesignToken & { pilarName: string, pilarId: string })[] = [];
+        const tokens: (SarakDesignToken & { pilarName: string, pilarId: string })[] = [];
         MASTER_DESIGN_MAP.components.forEach(comp => {
             comp.tokens.forEach(token => {
                 tokens.push({

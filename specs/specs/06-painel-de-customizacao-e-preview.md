@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Autoria"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "design-engine", "painel", "preview", "gemeo-digital", "folksonomia"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]"]
 ---
 
 # 1. O que é, e por que vive em `features/`
@@ -103,7 +103,7 @@ tokens uma obrigação de produto, não um comentário.
 
 | Estado | Onde vive | Efeito |
 | --- | --- | --- |
-| **Rascunho** (`draft`) | `useDesignDraft` (`hooks/useDesignDraft.ts`) | reflete **instantaneamente** no preview escopado; não toca o sistema |
+| **Rascunho** (`draft`) | `useDesignDraft` (`hooks/useDesignDraft.ts`) | reflete **instantaneamente** no preview escopado **e na tela real de quem edita**, enquanto o painel está aberto; não grava nada nem chega a outra aba |
 | **Sistema** | `design` do Provider | o que a aplicação inteira usa |
 | **Persistido** | `localStorage` (via `persistDesign`) | sobrevive ao reload |
 
@@ -116,14 +116,39 @@ Duas decisões de projeto do rascunho, ambas com o motivo no código:
   sujo por diferença de identidade de objeto em valor estruturalmente igual (o caso dos valores
   responsivos `{desk,tab,mob}`).
 
-**A gravação é explícita.** Mas há uma exceção deliberada e documentada: aplicar um **tema completo** pelo
-catálogo (`handleApplyFullTheme`, `Main/ThemeCustomizationTab.tsx:91-108`) **comita e persiste na hora** —
-via `applyFullConfigRaw` + `persistDesign`. O comentário (`:99-105`) explica por quê: o `/design` roda sob
-modo rascunho, então o `applyFullConfig` "smart" só atualizaria o draft; era essa a divergência de wiring
-que produzia *"0 chaves no localStorage e sem repintar ao vivo"* ao escolher um tema no catálogo.
+**A gravação é explícita, e não tem exceção.** Um token ou um tema inteiro: **toda escolha no painel é
+rascunho**. `handleApplyFullTheme` (`Main/ThemeCustomizationTab.tsx:92-106`) alimenta **só** o rascunho; o
+design da aplicação e o armazenamento mudam por uma porta única — a confirmação explícita do usuário, em
+`handleApplyToSystem` (`hooks/useDesignDraft.ts:196-204`), que é o mesmo caminho de qualquer outro token e
+só age com o rascunho sujo (`isDirty`, `:95-99`).
 
-Ou seja: **mexer num token é rascunho; escolher um tema inteiro é aplicação.** A assimetria é intencional —
-o usuário que clica num tema do catálogo espera que ele valha, não que fique pendente.
+**O tema escolhido acompanha o rascunho.** Pré-visualizar um tema do catálogo guarda o id dele junto do
+rascunho (`pendingThemeId`, `useDesignDraft.ts`); o tema só é **anunciado** como o tema no ar
+(`setResolvedThemeId`) dentro de `handleApplyToSystem`. Pré-visualizar não anuncia nada.
+
+**A tela real mostra o rascunho, sem gravar.** Enquanto o painel está aberto (`isDrafting`) e há rascunho,
+o design efetivo do Provider é o **sistema com o rascunho por cima**, e as preferências do usuário
+continuam por cima de tudo ([[016-preferencias-do-usuario-separadas-do-tema]]):
+`SarakUIProvider.tsx` monta `liveDesign` e passa `overlayPreferences` sobre ele. Esse design efetivo chega
+a `DesignInjector`, `SovereignThemeInjector` e ao fundo global (`SarakBackgroundRenderer`). As regras,
+cada uma com teste de integração pelo Provider real:
+
+- **Nada é gravado:** nem `localStorage`, nem `persistence.onSave`, nem `onThemeChange`, nem depois do
+  prazo da gravação automática (`useDesignDraft.persistenceIntegration.test.tsx`). A sobreposição é só de
+  leitura, recalculada a cada render.
+- **Nada é espalhado:** a sincronização entre abas nasce só de uma escrita no `localStorage` (evento
+  `storage`, `useDesignStorageSync.ts`), e essa escrita não acontece.
+- **"Aplicar" é a única porta de gravação**, pelo caminho descrito acima.
+- **Descartar volta exato:** sem rascunho (limpo, ou o painel fechado, que zera `isDrafting` e o rascunho
+  ao desmontar), o design efetivo volta a ser exatamente o sistema com as preferências.
+
+Mostrar o rascunho na tela real é seguro porque o modo claro/escuro é sobreposto a cada render **a partir
+do tema salvo** e nunca gravado nele (`overlayPreferences.ts`): experimentar não acumula conversão de
+paleta.
+
+**A restrição que qualquer alteração neste caminho tem de respeitar:** o preview repinta porque lê o
+**rascunho**, nunca o sistema. Quem mexer no handler mantém o rascunho alimentado — sem isso, o painel
+mostra o tema anterior e a escolha parece não ter efeito.
 
 O mecanismo de drafting no motor está em [[02-design-engine]].
 
@@ -140,6 +165,23 @@ estruturais — não são otimização pontual:
 
 > ⚠️ **Aninhar `DesignScope` duplica o custo.** Dois `DesignScope` na mesma árvore recomputam e reinjetam
 > o CSS duas vezes por mudança. É o padrão a não repetir — um escopo por árvore de preview.
+
+## 4.2 Desfazer a última aplicação
+
+Depois de "Aplicar Alterações Globais", o painel oferece **"Desfazer última aplicação"**
+(`ThemeSidebarHeader.tsx`), servido por `useLastAppliedSnapshot.ts`:
+
+- **O que é guardado:** imediatamente antes de cada "Aplicar", o design do sistema **e** o tema anunciado
+  (`resolvedThemeId`) daquele instante.
+- **O que o desfazer faz:** devolve o design ao sistema (`applyFullConfigRaw`), anuncia de volta o tema
+  guardado, e grava pelo `persistDesign` num efeito, **depois** do render que atualiza o tema anunciado.
+  Por isso toda gravação que ele dispara, inclusive a porta `persistence.onSave`, recebe o par restaurado:
+  o design e o tema de antes. Ele também limpa o rascunho do painel, senão o rascunho com o valor desfeito
+  continuaria por cima da tela real (§4).
+- **Um nível só:** usado, o controle some; uma nova aplicação substitui o que está guardado; recarregar a
+  página descarta (estado local, nunca persistido). Não há histórico nem refazer.
+- **Alcance:** só "Aplicar Alterações Globais". A aplicação granular por componente
+  (`handleApplyComponent`) não entra no desfazer.
 
 # 5. Exportar JSON — o substituto do "salvar no banco"
 
@@ -246,6 +288,15 @@ bloco monolítico que só testaria o token de superfície.
 > `PresetsCatalog`) estão em `src/features/DesignEngine/Canvas/components/`. O que de fato ficou
 > pendente dela é só o enriquecimento de presets de tabela/navegação — registrado como backlog em
 > [[09-temas-e-presets]] §8.
+
+## 6.5 A mídia global no preview
+
+O fundo global do tema (`globalBackgroundImageUrl`) aparece **dentro** do preview. `PreviewCanvas` tira a
+chave só do `DesignScope` **externo**, que envolve o próprio painel, para não pintar fundo atrás do cromo
+do painel. O `DesignScope` interno de `PreviewSystemRenderer` a preserva, e com mídia a raiz do cromo
+simulado deixa de pintar fundo opaco (`PreviewSystemRenderer.tsx`). Provado em jsdom
+(`PreviewSystemRenderer.test.tsx`) e em navegador real (`browser-tests/cromo-css-real.spec.ts`, caso
+*"COM mídia global"*).
 
 # 7. Dogfooding
 

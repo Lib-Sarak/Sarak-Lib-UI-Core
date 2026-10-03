@@ -1,6 +1,12 @@
 export const DEFAULT_STORAGE_KEY = 'sarak-ui-design-v9.0';
 
-/** Chave de `localStorage` do idioma escolhido no `LanguageSelector`. */
+/**
+ * Legado: chave de `localStorage` que o `LanguageSelector` duplicado
+ * (`atomic/Inputs/Controls.tsx`, removido) gravava direto, fora da camada de
+ * preferências. Segue na lista do reset (`utils/storage.ts`) só para limpar o
+ * resíduo de quem já a tinha salva — o seletor que fica é o `ShellLanguageSelector`,
+ * que grava a preferência de idioma pelo caminho normal (`updatePreferences`).
+ */
 export const LANGUAGE_STORAGE_KEY = 'sarak_lang';
 
 export const BEZIER_CURVES = {

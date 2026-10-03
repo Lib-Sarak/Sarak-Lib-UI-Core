@@ -17,96 +17,69 @@ import type { SarakDesignState } from '../../../Provider/types';
  * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
  * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
  */
-export const THEME_PRESET_IDS = [
+export const SARAK_THEME_PRESET_IDS = [
     'sarak-sovereign',
-    'crystal-glass',
     'cyberpunk-neon',
-    'holographic-glass',
     'industrial-terminal',
-    'nature-breeze',
     'neo-brutalism',
     'synthwave-retro',
     'nebula-space',
-    'dot-matrix-elegant',
-    'stellar-nebula',
     'kinetic-flow',
     'cyber-retro-wave',
     'minimalist-airy',
     'data-terminal',
     'neumorphic-mobile',
-    'industrial-dashboard',
-    'asymmetric-editorial',
-    'terracota-solar',
-    'musgo-do-vale',
-    'ardosia-ao-entardecer',
-    'forja-ultravioleta',
-    'grafite-puro',
+    'golden-hour',
+    'aurora-veil',
+    'blueprint-protocol',
 ] as const;
 
-export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+export type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];
 
-export interface ThemePreset {
-    id: ThemePresetId;
+export interface SarakThemePreset {
+    id: SarakThemePresetId;
     name: string;
     description: string;
     design: Record<string, unknown>;
     /**
      * Bloco PARCIAL, autorado, com os tokens que mudam para o modo OPOSTO ao
-     * nativo (`design.mode`) — plan-26. OPCIONAL no tipo de propósito: torná-lo
-     * obrigatório quebraria os 18 temas legados e todo tema de consumidor
-     * (R33). `resolveThemeForMode` (abaixo) é quem decide o que aplicar; o
-     * gate de contraste (`auditor_contraste`) é quem EXIGE presença, com uma
-     * lista de isenção que nasce com exatamente os 18 legados.
+     * nativo (`design.mode`) — specs/specs/09-temas-e-presets.md §2.1. OPCIONAL
+     * no tipo de propósito: torná-lo obrigatório quebraria todo tema de
+     * consumidor (R33). `resolveThemeForMode` (abaixo) é quem decide o que
+     * aplicar; o gate de contraste (`auditor_contraste`) é quem EXIGE presença
+     * de todo tema shippado — a lista de isenção terminou vazia.
      */
     contraparte?: Partial<SarakDesignState>;
 }
 
 import { sarakSovereignTheme } from './sarak-sovereign';
-import { crystalGlassTheme } from './crystal-glass';
 import { cyberpunkneonTheme } from './cyberpunk-neon';
-import { holographicGlassTheme } from './holographic-glass';
 import { industrialTerminalTheme } from './industrial-terminal';
-import { naturebreezeTheme } from './nature-breeze';
 import { neobrutalismTheme } from './neo-brutalism';
 import { synthwaveRetroTheme } from './synthwave-retro';
 import { nebulaSpaceTheme } from './nebula-space';
-import { dotMatrixElegantTheme } from './dot-matrix-elegant';
-import { stellarNebulaTheme } from './stellar-nebula';
 import { kineticFlowTheme } from './kinetic-flow';
 import { cyberRetroWaveTheme } from './cyber-retro-wave';
 import { minimalistAiry } from './minimalist-airy';
 import { dataTerminal } from './data-terminal';
 import { neumorphicMobile } from './neumorphic-mobile';
-import { industrialDashboard } from './industrial-dashboard';
-import { asymmetricEditorial } from './asymmetric-editorial';
-import { terracotaSolarTheme } from './terracota-solar';
-import { musgoDoValeTheme } from './musgo-do-vale';
-import { ardosiaAoEntardecerTheme } from './ardosia-ao-entardecer';
-import { forjaUltravioletaTheme } from './forja-ultravioleta';
-import { grafitePuroTheme } from './grafite-puro';
+import { goldenHourTheme } from './golden-hour';
+import { auroraVeilTheme } from './aurora-veil';
+import { blueprintProtocolTheme } from './blueprint-protocol';
 
-export const GLOBAL_THEMES: ThemePreset[] = [
+export const SARAK_GLOBAL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
-    crystalGlassTheme,
     cyberpunkneonTheme,
-    holographicGlassTheme,
     industrialTerminalTheme,
-    naturebreezeTheme,
     neobrutalismTheme,
     synthwaveRetroTheme,
     nebulaSpaceTheme,
-    dotMatrixElegantTheme,
-    stellarNebulaTheme,
     kineticFlowTheme,
     cyberRetroWaveTheme,
     minimalistAiry,
     dataTerminal,
     neumorphicMobile,
-    industrialDashboard,
-    asymmetricEditorial,
-    terracotaSolarTheme,
-    musgoDoValeTheme,
-    ardosiaAoEntardecerTheme,
-    forjaUltravioletaTheme,
-    grafitePuroTheme
+    goldenHourTheme,
+    auroraVeilTheme,
+    blueprintProtocolTheme,
 ];

@@ -59,13 +59,62 @@ cor passa pelo `COLOR_PATTERN`. Fora do contrato → `undefined` → o chamador 
 const CSS_BREAKOUT_PATTERN = /[<>{};]/;
 ```
 
-`validation.ts:37-41`. Nenhum valor de tema pode conter `<`, `>`, `{`, `}` ou `;`. Esses cinco caracteres
-são exatamente os que permitiriam **sair de uma declaração `--x: VALOR;`** (via `;`) ou **fechar a tag
+`src/core/Provider/utils/cssSafety.ts`. Nenhum valor de tema pode conter `<`, `>`, `{`, `}` ou `;` —
+**exceto os tipos `image`/`file`, que têm predicado próprio (c-bis)**. Esses cinco caracteres são
+exatamente os que permitiriam **sair de uma declaração `--x: VALOR;`** (via `;`) ou **fechar a tag
 `<style>`** que carrega as variáveis (via `<`/`>`). Sem eles, um valor de tema é inerte: o pior que pode
 fazer é ser um valor CSS feio.
 
-A checagem é **recursiva** para os campos fora do catálogo tipado (`isSafeExtraValue`, `:76-84`) — array,
-objeto aninhado, qualquer profundidade. Não há nível de aninhamento por onde passar HTML cru.
+A checagem é **recursiva** para os campos fora do catálogo tipado (`isSafeExtraValue`) — array, objeto
+aninhado, qualquer profundidade. Não há nível de aninhamento por onde passar HTML cru.
+
+### c-bis) `isSafeMediaString` — o predicado dos tokens de mídia
+
+Os tipos `image` e `file` não passam pela trava geral: toda mídia embutida carrega `;base64,`, e o `;` a
+reprovaria inteira. `isSafeMediaString` (`cssSafety.ts`) julga esses tokens sozinho.
+
+**O conjunto aceito**, e o motivo de cada entrada — cada uma é um valor real de consumidor, não hipótese:
+
+| Forma | Por que entra |
+| --- | --- |
+| **string vazia** | é o próprio *"sem mídia"* — o `defaultValue`/`legacyValue` de `globalBackgroundImageUrl` e o preset "Nenhuma (Sem Mídia)" são `''`. É a config de boot de **todo** consumidor que ainda não escolheu fundo |
+| **`https://…`** | ainda sob a trava geral de breakout |
+| **`http://…`** | **mesma classe de risco** que `https://`: quem busca o recurso é o browser do usuário final, não esta lib — ela não faz fetch servidor-a-servidor (§3.2). Intranet e ambiente local servem mídia sem TLS |
+| **mídia embutida bem-formada** | esquema `data:`, MIME de **imagem ou vídeo**, `base64` **declarado**, payload restrito ao alfabeto base64 |
+| **caminho relativo do consumidor** | sem esquema de URI (`/assets/bg.png`, `bg.png`) — ativo do próprio host, resolvido pelo browser contra a origem da página, nunca por esta lib; segue sob a trava de breakout |
+| **qualquer um dos acima envolto em `url(...)`** | herança de valor de CSS cru; é desembrulhado antes do julgamento |
+
+**Recusa todo o resto:** qualquer *outro* esquema de URI — `javascript:`, `vbscript:`, um `data:` fora do
+formato de mídia — e qualquer cauda anexada a um valor válido, porque o padrão é ancorado nas duas pontas.
+
+> **A borda esquerda é normalizada ANTES de qualquer ramo.** O parser de URL do browser apara espaço em
+> branco e controles C0 antes de resolver o esquema (WHATWG URL Standard); um predicado que não faz o mesmo
+> tem a âncora `^` quebrada por um único caractere de ruído, o valor escorre para o ramo de *caminho
+> relativo* — que só barra breakout, não esquema — e `javascript:` atravessa. Normalizar **uma vez**, na
+> entrada, fecha a classe inteira; testar caractere a caractere não fecha.
+>
+> **Limite declarado: só a BORDA é normalizada, não o meio do esquema.** O mesmo parser remove tab, LF e CR
+> de **qualquer** posição, então `java<TAB>script:` chega a ele como `javascript:` — e aqui o valor é aceito,
+> porque o tab quebra o padrão de esquema e ele cai no ramo de *caminho relativo*. **Nenhum destino atual
+> alcança isso:** o valor de um token de mídia só é usado como **fundo de página** (`DesignInjector`,
+> `SarakBackgroundRenderer`), onde uma URL é carregada como mídia, nunca navegada nem executada. O predicado
+> não promete cobrir o caso. **Quem levar um token de mídia a um destino que interprete URL como navegação
+> ou script (`href`, `src` de `iframe`, `window.open`) fecha este vão antes** — removendo os três caracteres
+> do valor inteiro, não só da borda.
+>
+> **Por que aceitar `;base64,` não afrouxa a garantia.** Os cinco caracteres de breakout **não pertencem ao
+> alfabeto base64**. Um payload que casa com o padrão é inerte por construção, não por confiança no autor
+> do tema. O único `;` aceito está no prefixo fixo do formato, em posição que não fecha declaração nenhuma.
+
+**Um valor legítimo recusado é um defeito de segurança, não um excesso de zelo.** Um predicado estreito
+demais não deixa o sistema mais seguro: ele enche o console de aviso falso a cada render, e aviso falso
+constante é o que treina o mantenedor a ignorar o aviso verdadeiro. O conjunto aceito é medido contra
+valores reais de consumidor por isso.
+
+**O predicado tem fonte única, e isso é o que fecha a segunda barreira.** `useDesignVariables` — a trava
+que existe para o caso de alguém chamar `applyConfig`/`setDesign` sem passar por `validateDesign` —
+**importa** o mesmo predicado em vez de reimplementá-lo. As duas barreiras aceitam e recusam o mesmo
+conjunto por construção, não por teste espelhado.
 
 ### d) `COLOR_PATTERN` rejeita `url()`
 
@@ -185,7 +234,7 @@ sem motivo validado. O schema que o hospeda chama-se, literalmente, "Acessibilid
 | Onde o anel é desenhado | Respeita o token? |
 | --- | --- |
 | `SarakLink` (`src/components/atomic/Navigation/SarakLink.tsx:72`) | ✅ `outlineWidth: 'var(--sarak-focus-width, 2px)'` |
-| Regra global de botão (`src/styles/_utilities.css:58`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
+| Regra global de botão (`src/styles/_elements.css:92`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
 
 **Fechado.** A regra global de foco passou a ler o token, junto com o anel de link. Teste dedicado em
 `src/styles/__tests__/focusRing.test.ts` (3 casos).
@@ -287,6 +336,35 @@ Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2) e, no modo app, `<l
 sincroniza com servidor nenhum** — o default é `localStorage`, e sincronizar com backend é código do
 consumidor, chamado pelo callback dele.
 
+A **preferência do usuário** tem porta própria, `options.preferences` (`onSave`/`onLoad`), e o mesmo
+contrato: a lib grava no `localStorage` e, se houver porta, chama o host. **Associar a preferência a uma
+pessoa é do host** — a lib não conhece o usuário ([[016-preferencias-do-usuario-separadas-do-tema]]). A
+preferência lida do `localStorage` ou da porta é **dado hostil como o tema** (§2.1): domínio fechado, valor
+fora do domínio descartado com aviso único.
+
+## 3.6 Tradução
+
+**A lib entrega a escolha do idioma, não o texto traduzido.** Ela não tem motor de tradução. O que ela
+garante: um seletor que lista os idiomas habilitados no tema, grava a escolha como preferência do usuário,
+e um valor público com **o idioma que vale** — `useSarakUI().design.language`, reativo à troca e à
+sincronização entre abas ([[09-temas-e-presets]] §4.7).
+
+**Traduzir as telas da aplicação é do host**, com a biblioteca de i18n que ele escolher — a lib não sabe
+qual é, e não precisa saber:
+
+```tsx
+const { design } = useSarakUI();
+useEffect(() => {
+    if (design.language) i18n.changeLanguage(design.language);
+}, [design.language]);
+```
+
+**Os textos da própria lib seguem o idioma que vale.** Cromo, widgets, palette e rótulos padrão de átomo
+saem de um catálogo com os seis idiomas oferecidos (`src/core/i18n/`, lido por `useLibraryText`), e
+repintam na troca, sem recarga. Sem Provider, ou fora dos seis, saem em português. O painel de design é
+ferramenta do administrador e não entra nessa promessa. Texto passado pelo consumidor por prop é dele, e a
+lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
+
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
 
 1. **Todo dado externo que virar CSS passa por `validateDesign`.** Um caminho novo que aplique design sem
@@ -308,7 +386,7 @@ consumidor, chamado pelo callback dele.
 | **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
 | **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
-| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_utilities.css:58` |
+| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:92` |
 | **5.7** | **E2E de isolamento não roda em automação** — `EmbeddedNoLeak.spec.tsx` exige build e execução manual | a garantia mais difícil de manter (não-vazamento) é a menos exercitada | [[01-gates-e-baseline]] §2.6 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas
@@ -329,6 +407,9 @@ que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dad
 | Verificação | Onde | Roda em automação? |
 | --- | --- | --- |
 | `validateDesign` descarta chave/valor fora do contrato | `src/core/Provider/utils/__tests__/validation.test.ts` | ✅ suíte |
+| As DUAS barreiras aceitam e recusam o mesmo conjunto de mídia | `src/core/Provider/utils/__tests__/mediaPredicateTable.ts` (tabela única, consumida pelos dois lados) | ✅ suíte |
+| `isSafeMediaString`: forma aceita × forma recusada, incluindo ruído de borda | `src/core/Provider/utils/__tests__/cssSafety.test.ts` | ✅ suíte |
+| Boot com a config default não emite aviso de mídia | `src/core/Provider/__tests__/mediaBootConsoleClean.test.tsx` | ✅ suíte |
 | Nenhum valor shippado fora do contrato | `…/__tests__/tokenContractParity.test.ts` | ✅ suíte |
 | `sanitizeHtml` neutraliza `<script>`/`on*`/`javascript:` | `src/core/Security/__tests__/sanitizeHtml.test.ts` | ✅ suíte |
 | Modo embarcado não escreve fora do container | `src/core/Provider/__tests__/EmbeddedMode.test.tsx` | ✅ suíte |

@@ -3,7 +3,7 @@ import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PresetsCatalog } from './components/PresetsCatalog';
 import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
 
-import { DesignScope } from '../../../core/Design/components/DesignScope';
+import { SarakDesignScope } from '../../../core/Design/components/DesignScope';
 import { useResizable } from '../hooks/useResizable';
 import { useMockModules } from './hooks/useMockModules';
 import { usePreviewApps } from './hooks/usePreviewApps';
@@ -34,7 +34,7 @@ interface PreviewCanvasProps {
     customThemes?: Record<string, Partial<SarakDesignState>>[];
     sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
-    onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
+    onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -141,7 +141,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const { targetWidth, getDeviceFrameStyles, getDeviceHeightClass } = useDeviceStyles(previewDevice, isPreviewStacked);
 
     return (
-        <DesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
+        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
                 {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
                     (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não
@@ -217,6 +217,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     opacity: var(--sarak-scroll-thumb-hover-opacity, 0.8);
                 }
             `}} />
-        </DesignScope>
+        </SarakDesignScope>
     );
 };

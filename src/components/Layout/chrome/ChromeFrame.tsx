@@ -47,7 +47,7 @@ export const ChromeFrame: React.FC<ChromeFrameProps> = ({
         : rootStyle;
 
     return (
-        <div className={`flex flex-col w-full h-full min-h-0 ${className}`} style={style}>
+        <div className={`flex flex-col w-full h-full min-h-0 overflow-hidden ${className}`} style={style}>
             <ChromeDecoration>{decoration}</ChromeDecoration>
             <ChromeStrip region="banner">{banner}</ChromeStrip>
             {children}

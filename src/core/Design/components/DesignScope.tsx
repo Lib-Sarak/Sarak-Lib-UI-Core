@@ -4,7 +4,7 @@ import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
 import type { SarakDesignState } from '../../Provider/types';
 
-export interface DesignScopeProps {
+export interface SarakDesignScopeProps {
     design: SarakDesignState;
     children: React.ReactNode;
     className?: string;
@@ -18,7 +18,7 @@ export interface DesignScopeProps {
  * Agora injeta também um DesignOverrideContext para que componentes que usam
  * useSarakUI() dentro deste escopo consumam o design correto (rascunho).
  */
-export const DesignScope: React.FC<DesignScopeProps & Record<string, unknown>> = ({
+export const SarakDesignScope: React.FC<SarakDesignScopeProps & Record<string, unknown>> = ({
     design, 
     children, 
     className = '', 
@@ -54,11 +54,10 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, unknown>> =
                     <style dangerouslySetInnerHTML={{ __html: responsiveCSS }} />
                 )}
 
-                <SarakBackgroundRenderer 
+                <SarakBackgroundRenderer
                     imageUrl={design?.globalBackgroundImageUrl}
                     opacity={design?.globalBackgroundOpacity}
                     blur={design?.globalBackgroundBlur}
-                    blendMode={design?.globalBackgroundBlendMode}
                     mode={design?.mode as 'light' | 'dark' | undefined}
                 />
                 {children}

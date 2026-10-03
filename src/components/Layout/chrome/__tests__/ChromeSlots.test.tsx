@@ -79,4 +79,33 @@ describe('ChromeSlots (Spec 48 — L1, regiões de slot do cromo)', () => {
         const { container } = render(<ChromeBrand logo={<span>◆</span>} />);
         expect(container.querySelector('[data-sarak-slot="logo"]')).not.toBeNull();
     });
+
+    // Spec 05 §2.4 — tokens que só faltavam no SarakAppChrome.
+    describe('ChromeBrand — sidebarLabelMaxWidth/topbarLabelMaxWidth (duas direções: vertical × horizontal)', () => {
+        it('vertical (sidebar): o título trunca por `sidebarLabelMaxWidth`', () => {
+            const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} />);
+            expect(container.querySelector('span[style]')?.getAttribute('style')).toContain('var(--sarak-sidebar-label-max-width, 120px)');
+        });
+
+        it('horizontal (topbar): o título trunca por `topbarLabelMaxWidth` — largura DIFERENTE da vertical', () => {
+            const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} horizontal />);
+            const style = container.querySelector('span[style]')?.getAttribute('style') ?? '';
+            expect(style).toContain('var(--sarak-topbar-label-max-width, 150px)');
+            expect(style).not.toContain('sidebar-label-max-width');
+        });
+    });
+
+    describe('ChromeBrand — shellBrandLogoSize/brandLogoSizeCollapsed (duas direções: expandido × colapsado)', () => {
+        it('expandido (compact ausente): a altura do logo vem de `shellBrandLogoSize`', () => {
+            const { container } = render(<ChromeBrand brand={{ logoUrl: '/logo.png' }} />);
+            expect(container.querySelector('img')?.getAttribute('style')).toContain('var(--sarak-shell-brand-logo-size, 32px)');
+        });
+
+        it('colapsado (compact): a altura vem de `brandLogoSizeCollapsed` — valor DIFERENTE do expandido', () => {
+            const { container } = render(<ChromeBrand brand={{ logoUrl: '/logo.png' }} compact />);
+            const style = container.querySelector('img')?.getAttribute('style') ?? '';
+            expect(style).toContain('var(--sarak-brand-logo-size-collapsed, 20px)');
+            expect(style).not.toContain('shell-brand-logo-size');
+        });
+    });
 });

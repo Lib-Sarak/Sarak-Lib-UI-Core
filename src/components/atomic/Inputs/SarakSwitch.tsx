@@ -4,7 +4,16 @@ import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    /**
+     * Conteúdo visível ao lado do controle e clicável como parte do rótulo.
+     * Sem `label` e `description`, nenhum texto é mostrado; nesse caso, dê um
+     * nome acessível ao controle.
+     */
     label?: React.ReactNode;
+    /**
+     * Texto auxiliar exibido junto ao rótulo e ligado ao controle por
+     * `aria-describedby`. Sem a prop, não há descrição adicional.
+     */
     description?: React.ReactNode;
 }
 

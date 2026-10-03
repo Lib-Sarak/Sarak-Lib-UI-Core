@@ -2,12 +2,12 @@ import React from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export type BadgeVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'muted';
-export type BadgeSize = 'sm' | 'md' | 'lg';
+export type SarakBadgeVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'muted';
+export type SarakBadgeSize = 'sm' | 'md' | 'lg';
 
 export interface SarakBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-    variant?: BadgeVariant;
-    size?: BadgeSize;
+    variant?: SarakBadgeVariant;
+    size?: SarakBadgeSize;
     /** Se true, o badge terá bordas mais arredondadas (estilo pill) */
     pill?: boolean;
     /** Se true, o fundo será translúcido/suave em vez de sólido */
@@ -68,7 +68,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
             : "bg-blue-500 text-white border border-transparent",
             
         muted: soft
-            ? "bg-[var(--theme-border)] text-[var(--theme-muted)] border border-transparent"
+            ? "bg-[var(--theme-surface)] text-[var(--theme-muted)] border border-transparent"
             : "bg-[var(--theme-muted)] text-[var(--theme-surface)] border border-transparent",
     };
 

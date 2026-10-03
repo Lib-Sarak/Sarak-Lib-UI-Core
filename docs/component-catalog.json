@@ -2,151 +2,13 @@
   "$comment": "GERADO por scripts/generate-component-catalog.mjs — NÃO edite à mão. Regenerar: npm run catalog.",
   "schemaVersion": 2,
   "components": {
-    "DEFAULT_COLUMN_WIDTH": {
+    "SARAK_DEFAULT_COLUMN_WIDTH": {
       "propsInterface": null,
       "source": null,
       "props": [],
       "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
     },
-    "ExpandableCard": {
-      "propsInterface": "ExpandableCardProps",
-      "source": "src/components/atomic/Cards/ExpandableCard.tsx",
-      "props": [
-        {
-          "name": "title",
-          "type": "string",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "iconContent",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "helpButton",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "children",
-          "type": "React.ReactNode",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "contentClassName",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "baseHeight",
-          "type": "number",
-          "optional": true,
-          "doc": ""
-        }
-      ]
-    },
-    "FilterSelect": {
-      "propsInterface": "FilterSelectProps",
-      "source": "src/components/atomic/Templates/FilterSelect.tsx",
-      "props": [
-        {
-          "name": "col",
-          "type": "string",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "placeholder",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "filters",
-          "type": "Record<string, string>",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "onChange",
-          "type": "(col: string, value: string) => void",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "options",
-          "type": "string[]",
-          "optional": false,
-          "doc": ""
-        }
-      ]
-    },
-    "HelpButton": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
-    "ImageCard": {
-      "propsInterface": "ImageCardProps",
-      "source": "src/components/atomic/Templates/ImageCard.tsx",
-      "props": [
-        {
-          "name": "src",
-          "type": "string",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "alt",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "subtitle",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "children",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "onClick",
-          "type": "() => void",
-          "optional": true,
-          "doc": ""
-        }
-      ]
-    },
-    "MIN_COLUMN_WIDTH": {
+    "SARAK_MIN_COLUMN_WIDTH": {
       "propsInterface": null,
       "source": null,
       "props": [],
@@ -160,25 +22,25 @@
           "name": "title",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Título obrigatório do botão que abre e fecha o painel; sem conteúdo, o controle fica sem título visível."
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Conteúdo obrigatório do painel, mantido no DOM mesmo quando recolhido; se omitido, o painel fica vazio."
         },
         {
           "name": "defaultOpen",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Define o estado inicial do painel; sem a prop, começa recolhido e mudanças posteriores não o controlam."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes à raiz do acordeão; omitida, nenhuma classe adicional é aplicada."
         }
       ]
     },
@@ -227,6 +89,42 @@
           "type": "string",
           "optional": true,
           "doc": "Texto do botão de ação principal (default: \"Executar\")."
+        }
+      ]
+    },
+    "SarakAlert": {
+      "propsInterface": "SarakAlertProps",
+      "source": "src/components/atomic/Feedback/SarakAlert.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "SarakAlertVariant",
+          "optional": true,
+          "doc": "Define a intenção `info`, `success`, `warning` ou `error`; omitida, usa `info`. Só `error` recebe anúncio assertivo."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "doc": "Define o título visível e o nome acessível do aviso; é obrigatória e, se omitida em runtime, o aviso fica sem título."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "doc": "Define o texto simples do aviso; é obrigatório e, se omitido em runtime, nenhum texto será exibido."
+        },
+        {
+          "name": "action",
+          "type": "{ label: string; onClick: () => void; }",
+          "optional": true,
+          "doc": "Exibe uma ação com rótulo e callback; omitida, não há botão, e clicar nela não fecha o aviso automaticamente."
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Exibe o botão de fechar; omitida, não há botão, e o callback deve remover ou desmontar o aviso, pois ele não tem estado interno de fechamento."
         }
       ]
     },
@@ -286,11 +184,11 @@
           "name": "navItems",
           "type": "SarakNavItem[]",
           "optional": true,
-          "doc": "Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados."
+          "doc": "Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados."
         },
         {
           "name": "nav",
-          "type": "ShellNavItem[]",
+          "type": "SarakShellNavItem[]",
           "optional": true,
           "doc": "Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`."
         },
@@ -337,6 +235,12 @@
           "doc": "Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual)."
         },
         {
+          "name": "search",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
+        },
+        {
           "name": "sidebarHeader",
           "type": "React.ReactNode",
           "optional": true,
@@ -367,6 +271,24 @@
           "doc": "Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui."
         },
         {
+          "name": "user",
+          "type": "SarakShellUser",
+          "optional": true,
+          "doc": "Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo)."
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Encerra a sessão a partir do widget de usuário default."
+        },
+        {
+          "name": "widgets",
+          "type": "SarakChromeWidgets",
+          "optional": true,
+          "doc": "O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
@@ -392,13 +314,19 @@
         },
         {
           "name": "brand",
+          "type": "{ name?: string; logoUrl?: string }",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "logo",
           "type": "React.ReactNode",
           "optional": true,
           "doc": ""
         },
         {
           "name": "nav",
-          "type": "ShellNavItem[]",
+          "type": "SarakShellNavItem[]",
           "optional": false,
           "doc": ""
         },
@@ -425,6 +353,12 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Slot `topbarStart` — início da barra compacta, logo após a marca."
+        },
+        {
+          "name": "search",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `search` — posicionado por `searchPositionSidebar` (é onde a sidebar existe no celular: o drawer)."
         },
         {
           "name": "sidebarHeader",
@@ -455,6 +389,24 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque)."
+        },
+        {
+          "name": "user",
+          "type": "SarakShellUser",
+          "optional": true,
+          "doc": "Identidade exibida no widget de usuário default, no rodapé do drawer."
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "widgets",
+          "type": "SarakChromeWidgets",
+          "optional": true,
+          "doc": "Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav."
         },
         {
           "name": "className",
@@ -620,6 +572,92 @@
         }
       ]
     },
+    "SarakAutocomplete": {
+      "propsInterface": "SarakAutocompleteProps",
+      "source": "src/components/atomic/Inputs/SarakAutocomplete.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>",
+      "props": [
+        {
+          "name": "options",
+          "type": "SarakAutocompleteOption[]",
+          "optional": true,
+          "doc": "Opções locais filtradas pelo rótulo. Omitida, a lista começa vazia; com `searchOptions`, os resultados remotos substituem esta lista."
+        },
+        {
+          "name": "searchOptions",
+          "type": "(query: string) => Promise<SarakAutocompleteOption[]>",
+          "optional": true,
+          "doc": "Busca fornecida pelo host para listas remotas; a biblioteca não acessa a rede diretamente. Omitida, a propriedade options é filtrada localmente. Recriar a função mantendo-a definida não reinicia a busca nem chama o host de novo. A próxima busca usa a função mais recente; uma chamada já iniciada continua com a função que a iniciou."
+        },
+        {
+          "name": "debounceMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Intervalo antes da busca remota, em milissegundos. Omitido, aguarda 300 ms; valores negativos são tratados como zero."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto digitado no modo controlado. Omitido, o componente guarda a busca internamente; quem controla deve atualizá-lo após a seleção."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto inicial no modo não controlado. Omitido, o campo começa vazio."
+        },
+        {
+          "name": "onChange",
+          "type": "React.ChangeEventHandler<HTMLInputElement>",
+          "optional": true,
+          "doc": "Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto de dica do campo. Omitido, usa \"Buscar...\"."
+        },
+        {
+          "name": "onOptionSelect",
+          "type": "(option: SarakAutocompleteOption) => void",
+          "optional": true,
+          "doc": "Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa."
+        }
+      ]
+    },
+    "SarakAvatar": {
+      "propsInterface": "SarakAvatarProps",
+      "source": "src/components/atomic/Atoms/SarakAvatar.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'>",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "doc": "Nome da pessoa; obrigatório e usado como texto alternativo padrão e como origem das iniciais. Nome vazio (se a tipagem for contornada) exibe `?` no fallback."
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "optional": true,
+          "doc": "Endereço da foto. Omitido, o avatar mostra as iniciais; se a imagem falhar ao carregar, também volta às iniciais. Para tentar novamente a mesma URL, remonte o componente."
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto alternativo da foto e nome acessível do fallback. Omitido, usa `name`; string vazia torna a imagem decorativa e deixa as iniciais sem nome acessível."
+        },
+        {
+          "name": "size",
+          "type": "SarakAvatarSize",
+          "optional": true,
+          "doc": "Tamanho na escala `xs`/`sm`/`md`/`lg` dos átomos. Omitido, usa `md`; o tamanho acompanha o token de espaçamento médio do tema."
+        }
+      ]
+    },
     "SarakBadge": {
       "propsInterface": "SarakBadgeProps",
       "source": "src/components/atomic/Feedback/SarakBadge.tsx",
@@ -627,13 +665,13 @@
       "props": [
         {
           "name": "variant",
-          "type": "BadgeVariant",
+          "type": "SarakBadgeVariant",
           "optional": true,
           "doc": ""
         },
         {
           "name": "size",
-          "type": "BadgeSize",
+          "type": "SarakBadgeSize",
           "optional": true,
           "doc": ""
         },
@@ -657,7 +695,7 @@
       "props": [
         {
           "name": "items",
-          "type": "BreadcrumbItem[]",
+          "type": "SarakBreadcrumbItem[]",
           "optional": false,
           "doc": "Caminho do usuário, da raiz à folha."
         },
@@ -690,37 +728,91 @@
           "name": "variant",
           "type": "'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline'",
           "optional": true,
-          "doc": ""
+          "doc": "Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`."
         },
         {
           "name": "isLoading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Troca os ícones pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado."
         },
         {
           "name": "leftIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Exibe um elemento antes do conteúdo; omitida, não há ícone à esquerda, e durante o carregamento é substituída pelo indicador."
         },
         {
           "name": "rightIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Exibe um elemento depois do conteúdo; omitida, não há ícone à direita, e durante o carregamento fica oculta."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o botão ocupar a largura disponível; omitida, a largura acompanha o conteúdo."
         },
         {
           "name": "size",
           "type": "'xs' | 'sm' | 'md' | 'lg'",
           "optional": true,
-          "doc": ""
+          "doc": "Define a escala de altura, espaçamento e texto; sem a prop, usa `md`."
+        }
+      ]
+    },
+    "SarakCard": {
+      "propsInterface": "SarakCardProps",
+      "source": "src/components/atomic/Cards/SarakCard.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo composto do cartão; se omitido, a moldura temática permanece vazia."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema."
+        }
+      ]
+    },
+    "SarakCardBody": {
+      "propsInterface": "SarakCardBodyProps",
+      "source": "src/components/atomic/Cards/SarakCardBody.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo principal; se omitido, a área do corpo permanece vazia."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
+        }
+      ]
+    },
+    "SarakCardFooter": {
+      "propsInterface": "SarakCardFooterProps",
+      "source": "src/components/atomic/Cards/SarakCardFooter.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo do rodapé; se omitido, o invólucro do rodapé permanece vazio."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
         }
       ]
     },
@@ -731,8 +823,14 @@
         {
           "name": "endpoint",
           "type": "string",
-          "optional": false,
-          "doc": ""
+          "optional": true,
+          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
+        },
+        {
+          "name": "data",
+          "type": "TData[]",
+          "optional": true,
+          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
         },
         {
           "name": "label",
@@ -748,7 +846,7 @@
         },
         {
           "name": "filters",
-          "type": "FilterConfig[]",
+          "type": "SarakFilterConfig[]",
           "optional": true,
           "doc": ""
         },
@@ -778,75 +876,93 @@
         }
       ]
     },
+    "SarakCardHeader": {
+      "propsInterface": "SarakCardHeaderProps",
+      "source": "src/components/atomic/Cards/SarakCardHeader.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Conteúdo do cabeçalho; se omitido, o invólucro do cabeçalho permanece vazio."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classes adicionais; se omitidas, nenhuma classe extra é aplicada."
+        }
+      ]
+    },
     "SarakCatalogGrid": {
       "propsInterface": "SarakCatalogGridProps",
-      "source": "src/components/atomic/Templates/SarakCatalogGrid.tsx",
+      "source": "src/components/atomic/Templates/SarakCatalogGridProps.ts",
       "props": [
         {
           "name": "items",
-          "type": "CatalogItem[]",
+          "type": "SarakCatalogItem[]",
           "optional": false,
-          "doc": ""
+          "doc": "Itens filtrados e exibidos; obrigatória. Cada registro precisa de `id` e `display_name`; a busca ignora `description` e outros campos."
         },
         {
           "name": "loading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Exibe o indicador de carga no lugar de todo o catálogo; omitida, os itens são renderizados sem espera."
         },
         {
           "name": "title",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Título obrigatório do catálogo; não há valor padrão e ele também fica oculto enquanto `loading` for verdadeiro."
         },
         {
           "name": "subtitle",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto complementar do cabeçalho; omitido, a linha de subtítulo não aparece."
         },
         {
           "name": "categories",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Mapeia cada valor de `item.category` para o rótulo do filtro; omitida, oferece apenas `all: 'Todos'`. Inclua `all` para manter o botão de mostrar tudo."
         },
         {
           "name": "onSync",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Habilita o botão que chama a rotina de sincronização; omitida, o botão não aparece. Ele fica fixo no canto inferior direito."
         },
         {
           "name": "renderCard",
-          "type": "(item: CatalogItem) => React.ReactNode",
+          "type": "(item: SarakCatalogItem) => React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`."
         },
         {
           "name": "emptyMessage",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -858,37 +974,37 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -900,19 +1016,19 @@
           "name": "type",
           "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot'",
           "optional": false,
-          "doc": ""
+          "doc": "Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha."
         },
         {
           "name": "data",
-          "type": "ChartDataItem[]",
+          "type": "SarakChartDataItem[]",
           "optional": false,
-          "doc": ""
+          "doc": "Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas."
         },
         {
           "name": "config",
           "type": "{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' | 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }",
           "optional": true,
-          "doc": ""
+          "doc": "Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação."
         }
       ]
     },
@@ -924,37 +1040,37 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação."
         },
         {
           "name": "modelsEndpoint",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Nome exibido no cabeçalho; omitido, usa `AI Chat`."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -964,25 +1080,50 @@
       "props": [
         {
           "name": "messages",
-          "type": "Message[]",
+          "type": "SarakMessage[]",
           "optional": false,
-          "doc": ""
+          "doc": "Histórico controlado pelo consumidor; obrigatório. O motor o renderiza como Markdown e rola para a última mensagem quando a lista muda."
         },
         {
           "name": "onSendMessage",
           "type": "(text: string) => void",
           "optional": false,
-          "doc": ""
+          "doc": "Recebe o texto digitado; obrigatório. O consumidor precisa atualizar `messages` para que a resposta apareça."
         },
         {
           "name": "isLoading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Indica envio em andamento, mostra o indicador e bloqueia novo envio; omitida, vale `false`."
         },
         {
           "name": "placeholder",
           "type": "string",
+          "optional": true,
+          "doc": "Texto de orientação do campo de entrada; omitido, usa `Escreva sua mensagem...`."
+        }
+      ]
+    },
+    "SarakCheckbox": {
+      "propsInterface": "SarakCheckboxProps",
+      "source": "src/components/atomic/Inputs/SarakCheckbox.tsx",
+      "extends": "Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
           "optional": true,
           "doc": ""
         }
@@ -1000,7 +1141,7 @@
         },
         {
           "name": "position",
-          "type": "ContextMenuPosition",
+          "type": "SarakContextMenuPosition",
           "optional": false,
           "doc": "Coordenada (viewport) onde abrir — normalmente `{ x: e.clientX, y: e.clientY }`."
         },
@@ -1021,6 +1162,55 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        }
+      ]
+    },
+    "SarakCurrencyInput": {
+      "propsInterface": "SarakCurrencyInputProps",
+      "source": "src/components/atomic/Inputs/SarakCurrencyInput.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>",
+      "props": [
+        {
+          "name": "value",
+          "type": "number | null",
+          "optional": true,
+          "doc": "Valor numérico controlado; `null` representa campo vazio. Omitido, usa `defaultValue`; o pai deve atualizar após `onChange`."
+        },
+        {
+          "name": "defaultValue",
+          "type": "number | null",
+          "optional": true,
+          "doc": "Valor numérico inicial. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado."
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "optional": true,
+          "doc": "Moeda ISO 4217 de `Intl.NumberFormat`. Omitida, usa BRL; o estilo monetário aparece ao sair do campo; código inválido gera `RangeError`."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "doc": "Locale dos separadores durante a edição e da formatação ao sair do campo. Omitida, acompanha o idioma do Provider; sem Provider, usa `pt-BR`. Textos colados devem segui-la."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível."
+        },
+        {
+          "name": "onChange",
+          "type": "(cleanValue: number | null) => void",
+          "optional": true,
+          "doc": "Emite número ou `null` para o campo vazio, nunca o texto formatado. Omitido, mudanças não são notificadas."
+        },
+        {
+          "name": "inputMode",
+          "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
+          "optional": true,
+          "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual."
         }
       ]
     },
@@ -1104,43 +1294,73 @@
           "name": "rowHeight",
           "type": "number",
           "optional": true,
-          "doc": "Altura de cada linha em px (default: 44)."
+          "doc": ""
         },
         {
           "name": "headerHeight",
           "type": "number",
           "optional": true,
-          "doc": "Altura do cabeçalho em px (default: 44)."
+          "doc": ""
         },
         {
           "name": "height",
           "type": "number | string",
           "optional": true,
-          "doc": "Altura da janela de scroll (default: 100% do contêiner pai)."
+          "doc": ""
         },
         {
           "name": "overscan",
           "type": "number",
           "optional": true,
-          "doc": "Linhas extra montadas fora da viewport (default: 8)."
+          "doc": ""
         },
         {
           "name": "getRowKey",
           "type": "(row: T, index: number) => React.Key",
           "optional": true,
-          "doc": "Chave estável da linha (default: índice)."
+          "doc": "Chave estável da linha para seleção; por padrão, usa row.id ou o índice original."
+        },
+        {
+          "name": "sort",
+          "type": "SarakTableSort | null",
+          "optional": true,
+          "doc": "Omitido, ordena localmente; passe null para controlar o estado sem ordenação."
+        },
+        {
+          "name": "onSortChange",
+          "type": "(sort: SarakTableSort | null) => void",
+          "optional": true,
+          "doc": "Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas."
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Habilita a seleção de linhas e a caixa das linhas visíveis."
+        },
+        {
+          "name": "selectedKeys",
+          "type": "React.Key[]",
+          "optional": true,
+          "doc": "Chaves selecionadas controladas; omitido, a tabela gerencia a seleção."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(selectedKeys: React.Key[]) => void",
+          "optional": true,
+          "doc": "Recebe as chaves selecionadas atualizadas."
         },
         {
           "name": "onColumnResize",
           "type": "(columnId: string, width: number) => void",
           "optional": true,
-          "doc": "Notifica nova largura ao soltar o handle de resize."
+          "doc": ""
         },
         {
           "name": "onColumnReorder",
           "type": "(fromId: string, toId: string) => void",
           "optional": true,
-          "doc": "Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho."
+          "doc": ""
         },
         {
           "name": "responsive",
@@ -1180,7 +1400,7 @@
         },
         {
           "name": "value",
-          "type": "DatePickerValue",
+          "type": "SarakDatePickerValue",
           "optional": true,
           "doc": ""
         },
@@ -1192,13 +1412,13 @@
         },
         {
           "name": "locale",
-          "type": "DateLocale",
+          "type": "SarakDateLocale",
           "optional": true,
           "doc": "Locale do `date-fns` para nomes de mês/dia (i18n)."
         },
         {
           "name": "weekStartsOn",
-          "type": "WeekStart",
+          "type": "SarakWeekStart",
           "optional": true,
           "doc": ""
         },
@@ -1234,9 +1454,34 @@
         },
         {
           "name": "onChange",
-          "type": "(value: DatePickerValue) => void",
+          "type": "(value: SarakDatePickerValue) => void",
           "optional": true,
           "doc": "Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`)."
+        }
+      ]
+    },
+    "SarakDivider": {
+      "propsInterface": "SarakDividerProps",
+      "source": "src/components/atomic/Layouts/SarakDivider.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "SarakDividerOrientation",
+          "optional": true,
+          "doc": "Direção do traço. Omitida, usa `horizontal`; no modo vertical, o contêiner acompanha a altura disponível do pai."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto exibido entre os traços e usado como nome acessível. Omitido, não há texto e o separador é decorativo por padrão."
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Oculta o componente da árvore acessível. Omitida, é decorativo quando `label` não existe e semântico quando existe; use `false` sem rótulo apenas se também fornecer `aria-label`."
         }
       ]
     },
@@ -1248,37 +1493,37 @@
           "name": "isOpen",
           "type": "boolean",
           "optional": false,
-          "doc": ""
+          "doc": "Controla a abertura do painel. `true` mostra o diálogo; `false` mantém a estrutura durante a saída animada e depois a desmonta. Obrigatória, sem estado padrão."
         },
         {
           "name": "onClose",
           "type": "() => void",
           "optional": false,
-          "doc": ""
+          "doc": "Callback chamado ao clicar no scrim ou pressionar `Escape`. É obrigatório; sem ele, a integração não compila nem pode solicitar o fechamento."
         },
         {
           "name": "direction",
           "type": "'left' | 'right' | 'top' | 'bottom'",
           "optional": true,
-          "doc": ""
+          "doc": "Borda pela qual o painel entra; o padrão é `right`. `left`/`right` usam `size` como largura, enquanto `top`/`bottom` usam como altura."
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Conteúdo renderizado dentro do diálogo. Obrigatório; não há conteúdo padrão."
         },
         {
           "name": "size",
           "type": "string | number",
           "optional": true,
-          "doc": ""
+          "doc": "Largura para direções laterais ou altura para direções verticais; aceita número (pixels) ou valor CSS com unidade. O padrão é `320`, limitado à área da tela."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Classes adicionais aplicadas ao elemento do diálogo, que já mantém rolagem vertical. Sem a prop, usa apenas as classes internas."
         }
       ]
     },
@@ -1290,7 +1535,55 @@
           "name": "type",
           "type": "'minimal' | 'abstract' | 'geometric'",
           "optional": true,
-          "doc": ""
+          "doc": "Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`."
+        }
+      ]
+    },
+    "SarakExpandableCard": {
+      "propsInterface": "SarakExpandableCardProps",
+      "source": "src/components/atomic/Cards/SarakExpandableCard.tsx",
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "doc": "Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio."
+        },
+        {
+          "name": "iconContent",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Elemento ao lado do título; omitido, o cabeçalho não reserva um ícone."
+        },
+        {
+          "name": "helpButton",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Ação ou conteúdo auxiliar no cabeçalho; omitido, essa área não é renderizada."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Conteúdo obrigatório das visualizações compacta e expandida; se omitido ou vazio, deixa o corpo sem conteúdo."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada."
+        },
+        {
+          "name": "contentClassName",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes à área do conteúdo; omitida, a área usa apenas as classes internas do cartão."
+        },
+        {
+          "name": "baseHeight",
+          "type": "number",
+          "optional": true,
+          "doc": "Altura mínima compacta em pixels, ajustada pelo fator tipográfico do tema; sem a prop, usa 300 px."
         }
       ]
     },
@@ -1306,7 +1599,7 @@
         },
         {
           "name": "subItems",
-          "type": "MatrixTreeNode[]",
+          "type": "SarakMatrixTreeNode[]",
           "optional": false,
           "doc": "Todos os sub-itens possíveis (ex: Todas as Permissões)"
         },
@@ -1336,6 +1629,60 @@
         }
       ]
     },
+    "SarakFieldError": {
+      "propsInterface": "SarakFieldErrorProps",
+      "source": "src/components/atomic/Feedback/SarakFieldError.tsx",
+      "props": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "doc": "Mensagem do erro. Omitida, vazia ou composta só por espaços, não renderiza elemento nem reserva espaço; espaços nas bordas não são removidos do texto exibido."
+        },
+        {
+          "name": "fieldId",
+          "type": "string",
+          "optional": false,
+          "doc": "`id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`."
+        }
+      ]
+    },
+    "SarakFilterSelect": {
+      "propsInterface": "SarakFilterSelectProps",
+      "source": "src/components/atomic/Templates/SarakFilterSelect.tsx",
+      "props": [
+        {
+          "name": "col",
+          "type": "string",
+          "optional": false,
+          "doc": "Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "doc": "Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`."
+        },
+        {
+          "name": "filters",
+          "type": "Record<string, string>",
+          "optional": false,
+          "doc": "Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe."
+        },
+        {
+          "name": "onChange",
+          "type": "(col: string, value: string) => void",
+          "optional": false,
+          "doc": "Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor."
+        },
+        {
+          "name": "options",
+          "type": "string[]",
+          "optional": false,
+          "doc": "Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia."
+        }
+      ]
+    },
     "SarakFlex": {
       "propsInterface": "SarakFlexProps",
       "source": "src/components/atomic/Layouts/SarakFlex.tsx",
@@ -1349,9 +1696,9 @@
         },
         {
           "name": "direction",
-          "type": "FlexDirection | ResponsiveValue<FlexDirection>",
+          "type": "SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>",
           "optional": true,
-          "doc": "Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional)."
+          "doc": "Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional)."
         },
         {
           "name": "justify",
@@ -1393,19 +1740,19 @@
           "name": "nodes",
           "type": "NonNullable<ReactFlowProps['nodes']>",
           "optional": false,
-          "doc": ""
+          "doc": "Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós."
         },
         {
           "name": "edges",
           "type": "NonNullable<ReactFlowProps['edges']>",
           "optional": false,
-          "doc": ""
+          "doc": "Conexões existentes fornecidas ao React Flow; obrigatório, sem lista padrão. Use `[]` quando não houver conexões."
         },
         {
           "name": "onConnect",
           "type": "ReactFlowProps['onConnect']",
           "optional": true,
-          "doc": ""
+          "doc": "Recebe novas conexões criadas na tela; omitida, os nós e as conexões existentes continuam visíveis, mas não há callback do consumidor para persistir novas ligações."
         }
       ]
     },
@@ -1417,61 +1764,61 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio."
         },
         {
           "name": "mode",
           "type": "'create' | 'edit'",
           "optional": true,
-          "doc": ""
+          "doc": "Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`."
         },
         {
           "name": "initialData",
           "type": "TData",
           "optional": true,
-          "doc": ""
+          "doc": "Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário."
         },
         {
           "name": "actions",
           "type": "Array<{ label: string; endpoint: string; method: 'POST' | 'PATCH' | 'DELETE'; }>",
           "optional": true,
-          "doc": ""
+          "doc": "Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo."
         },
         {
           "name": "onSuccess",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual."
         }
       ]
     },
@@ -1507,9 +1854,9 @@
         },
         {
           "name": "templateColumns",
-          "type": "string | ResponsiveValue<string>",
+          "type": "string | SarakResponsiveValue<string>",
           "optional": true,
-          "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
+          "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
         },
         {
           "name": "templateAreas",
@@ -1531,6 +1878,12 @@
         }
       ]
     },
+    "SarakHelpButton": {
+      "propsInterface": null,
+      "source": null,
+      "props": [],
+      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
+    },
     "SarakHidden": {
       "propsInterface": "SarakHiddenProps",
       "source": "src/components/Layout/SarakHidden.tsx",
@@ -1543,7 +1896,7 @@
         },
         {
           "name": "on",
-          "type": "DeviceType | DeviceType[]",
+          "type": "SarakDeviceType | SarakDeviceType[]",
           "optional": false,
           "doc": "Esconder quando o dispositivo ativo estiver nesta lista"
         }
@@ -1555,39 +1908,39 @@
       "props": [
         {
           "name": "name",
-          "type": "IconName | string",
+          "type": "SarakIconName | string",
           "optional": false,
-          "doc": ""
+          "doc": "Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback."
         },
         {
           "name": "size",
           "type": "number | string",
           "optional": true,
-          "doc": ""
+          "doc": "Define a dimensão SVG; sem a prop, usa 24 px."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada."
         },
         {
           "name": "color",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente."
         },
         {
           "name": "style",
           "type": "React.CSSProperties",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados."
         },
         {
           "name": "onClick",
           "type": "() => void",
           "optional": true,
-          "doc": ""
+          "doc": "Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado."
         }
       ]
     },
@@ -1600,25 +1953,73 @@
           "name": "variant",
           "type": "'primary' | 'secondary' | 'ghost' | 'danger'",
           "optional": true,
-          "doc": ""
+          "doc": "Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`."
         },
         {
           "name": "size",
           "type": "'xs' | 'sm' | 'md' | 'lg'",
           "optional": true,
-          "doc": ""
+          "doc": "Define a largura e a altura quadradas do botão; sem a prop, usa `md` (40 × 40 px)."
         },
         {
           "name": "isLoading",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Troca o ícone pelo indicador de carregamento e desabilita o botão enquanto ativa; omitida, mantém o botão habilitado."
         },
         {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Elemento exibido dentro do botão; é obrigatório, e sem ele o botão não mostra um glifo; `isLoading` o substitui pelo indicador."
+        }
+      ]
+    },
+    "SarakImageCard": {
+      "propsInterface": "SarakImageCardProps",
+      "source": "src/components/atomic/Templates/SarakImageCard.tsx",
+      "props": [
+        {
+          "name": "src",
+          "type": "string",
+          "optional": false,
+          "doc": "Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia."
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto alternativo da imagem; sem a prop, usa o texto genérico `Image Card`, então informe uma descrição para imagens informativas."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "doc": "Título sobreposto à imagem; omitido, o título não aparece."
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto secundário sob o título; omitido, o subtítulo não aparece."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Conteúdo adicional sob os textos; omitido, não há conteúdo extra."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada."
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Executa uma ação quando o cartão recebe clique; omitida, não há ação, e a raiz continua sem semântica de botão nem suporte de teclado."
         }
       ]
     },
@@ -1631,37 +2032,37 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário."
         },
         {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone do campo; sua posição vem do layout do tema. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone."
         },
         {
           "name": "leftIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone de compatibilidade usado somente quando `icon` não é fornecido. Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não fixa o lado visual."
         },
         {
           "name": "rightIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Ícone de compatibilidade usado quando `icon` e `leftIcon` não são fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo fica sem decoração."
         },
         {
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai."
         }
       ]
     },
@@ -1671,13 +2072,13 @@
       "props": [
         {
           "name": "columns",
-          "type": "Array<KanbanColumn<C>>",
+          "type": "Array<SarakKanbanColumn<C>>",
           "optional": false,
           "doc": "Colunas e seus cards (a ordem do array é a ordem visual)."
         },
         {
           "name": "onCardMove",
-          "type": "(move: CardMove) => void",
+          "type": "(move: SarakCardMove) => void",
           "optional": true,
           "doc": "Disparado ao soltar um card numa coluna (origem → destino)."
         },
@@ -1701,7 +2102,7 @@
       "props": [
         {
           "name": "images",
-          "type": "LightboxImage[]",
+          "type": "SarakLightboxImage[]",
           "optional": false,
           "doc": "Mídias da galeria, na ordem de exibição."
         },
@@ -1764,61 +2165,61 @@
           "name": "endpoint",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos."
         },
         {
           "name": "groupBy",
           "type": "string",
           "optional": false,
-          "doc": ""
+          "doc": "Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`."
         },
         {
           "name": "ghostGroups",
           "type": "string[]",
           "optional": true,
-          "doc": ""
+          "doc": "Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados."
         },
         {
           "name": "mapping",
           "type": "{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }",
           "optional": false,
-          "doc": ""
+          "doc": "Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item."
         },
         {
           "name": "headerActions",
           "type": "{ label: string; action: string; }[]",
           "optional": true,
-          "doc": ""
+          "doc": "Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário."
         },
         {
           "name": "groupActions",
           "type": "{ label: string; icon?: 'plus' | 'settings'; action: string; }[]",
           "optional": true,
-          "doc": ""
+          "doc": "Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário."
         },
         {
           "name": "formMapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -1831,6 +2232,98 @@
           "type": "string",
           "optional": false,
           "doc": "String de Markdown cru a renderizar."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakMaskedInput": {
+      "propsInterface": "SarakMaskedInputProps",
+      "source": "src/components/atomic/Inputs/SarakMaskedInput.tsx",
+      "extends": "Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>",
+      "props": [
+        {
+          "name": "mask",
+          "type": "string",
+          "optional": false,
+          "doc": "Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos. Um padrão sem `0` deixa o campo somente com os dígitos, sem pontuação."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": "Valor limpo controlado. Omitido, usa `defaultValue`; ao fornecê-lo, o pai deve atualizá-lo após `onChange`."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": "Valor inicial sem pontuação. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível."
+        },
+        {
+          "name": "onChange",
+          "type": "(cleanValue: string) => void",
+          "optional": true,
+          "doc": "Emite somente os dígitos aceitos pelo padrão. Omitido, mudanças não são notificadas por callback."
+        },
+        {
+          "name": "inputMode",
+          "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
+          "optional": true,
+          "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado numérico; isso não valida a entrada."
+        }
+      ]
+    },
+    "SarakMenuItem": {
+      "propsInterface": "SarakMenuItemProps",
+      "source": "src/components/atomic/Navigation/SarakMenuItem.tsx",
+      "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>",
+      "props": [
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`)."
+        },
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Rótulo do item; trunca em vez de transbordar (orientação vertical)."
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Item corresponde à rota/seção corrente."
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita)."
+        },
+        {
+          "name": "orientation",
+          "type": "SarakMenuItemOrientation",
+          "optional": true,
+          "doc": "`vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "doc": "Tooltip nativo; cai para o texto do rótulo quando `label` é string."
         },
         {
           "name": "className",
@@ -1918,7 +2411,7 @@
         },
         {
           "name": "options",
-          "type": "MultiSelectOption[]",
+          "type": "SarakMultiSelectOption[]",
           "optional": false,
           "doc": ""
         },
@@ -1984,7 +2477,7 @@
       "props": [
         {
           "name": "src",
-          "type": "PdfSource",
+          "type": "SarakPdfSource",
           "optional": false,
           "doc": "Origem do documento: URL, bytes ou ArrayBuffer."
         },
@@ -2008,7 +2501,7 @@
         },
         {
           "name": "onDownload",
-          "type": "(src: PdfSource) => void",
+          "type": "(src: SarakPdfSource) => void",
           "optional": true,
           "doc": "Disparado ao clicar em Download (recebe a `src` quando string)."
         },
@@ -2074,6 +2567,25 @@
         }
       ]
     },
+    "SarakRadio": {
+      "propsInterface": "SarakRadioProps",
+      "source": "src/components/atomic/Inputs/SarakRadio.tsx",
+      "extends": "Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakRangeSlider": {
       "propsInterface": "SarakRangeSliderProps",
       "source": "src/components/atomic/Inputs/SarakRangeSlider.tsx",
@@ -2105,13 +2617,13 @@
         },
         {
           "name": "value",
-          "type": "RangeValue",
+          "type": "SarakRangeValue",
           "optional": true,
           "doc": "Controlado: par [início, fim]."
         },
         {
           "name": "defaultValue",
-          "type": "RangeValue",
+          "type": "SarakRangeValue",
           "optional": true,
           "doc": "Não-controlado: valor inicial."
         },
@@ -2135,7 +2647,7 @@
         },
         {
           "name": "onChange",
-          "type": "(value: RangeValue) => void",
+          "type": "(value: SarakRangeValue) => void",
           "optional": true,
           "doc": "Recebe o novo par já clampado/ordenado (Spec 32: `onChange(value)`)."
         }
@@ -2221,7 +2733,7 @@
           "name": "style",
           "type": "React.CSSProperties",
           "optional": true,
-          "doc": "Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
+          "doc": "Sobrepõe o fundo padrão (`--sarak-modal-overlay`, do token `modalOverlayColor`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
         },
         {
           "name": "animate",
@@ -2258,6 +2770,18 @@
           "type": "() => void",
           "optional": false,
           "doc": ""
+        },
+        {
+          "name": "items",
+          "type": "SarakSearchItem[]",
+          "optional": true,
+          "doc": "Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`."
+        },
+        {
+          "name": "onSelect",
+          "type": "(id: string) => void",
+          "optional": true,
+          "doc": "Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre."
         }
       ]
     },
@@ -2269,43 +2793,43 @@
           "name": "item",
           "type": "TItem",
           "optional": false,
-          "doc": ""
+          "doc": "Registro genérico exigido pela assinatura; a implementação atual não o consulta, então ele não altera o conteúdo visível."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Caminhos de campos previstos para o registro; a implementação atual não lê o mapa, então fornecê-lo não altera o cartão."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada."
         },
         {
           "name": "onSearchChange",
           "type": "(text: string) => void",
           "optional": true,
-          "doc": ""
+          "doc": "Recebe o texto a cada edição da busca; sem callback, a busca ainda muda localmente, mas nenhum valor é enviado ao consumidor."
         },
         {
           "name": "onToggleCapability",
           "type": "(cap: string, active: boolean) => void",
           "optional": true,
-          "doc": ""
+          "doc": "Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local."
         },
         {
           "name": "design",
           "type": "SarakThemePayload",
           "optional": true,
-          "doc": ""
+          "doc": "Substitui o tema do provider para este cartão; omitida, usa o tema global."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho."
         }
       ]
     },
@@ -2318,13 +2842,25 @@
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<select>` por `aria-describedby`."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai."
+        }
+      ]
+    },
+    "SarakShellLanguageSelector": {
+      "propsInterface": "SarakShellLanguageSelectorProps",
+      "source": "src/components/atomic/Navigation/SarakShellLanguageSelector.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical'",
+          "optional": true,
+          "doc": "Posiciona o seletor na barra ou na lateral; omitida, usa `horizontal`. Com zero ou um idioma habilitado, nada é renderizado."
         }
       ]
     },
@@ -2334,7 +2870,7 @@
       "props": [
         {
           "name": "items",
-          "type": "ShellNavItem[]",
+          "type": "SarakShellNavItem[]",
           "optional": false,
           "doc": "Módulos/rotas do sistema, na ordem de exibição."
         },
@@ -2369,10 +2905,70 @@
           "doc": "Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical)."
         },
         {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
           "doc": ""
+        }
+      ]
+    },
+    "SarakShellSearchWidget": {
+      "propsInterface": "SarakShellSearchWidgetProps",
+      "source": "src/components/atomic/Navigation/SarakShellSearchWidget.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'bar' | 'icon'",
+          "optional": true,
+          "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": false,
+          "doc": "Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados."
+        }
+      ]
+    },
+    "SarakShellThemeToggle": {
+      "propsInterface": "SarakShellThemeToggleProps",
+      "source": "src/components/atomic/Navigation/SarakShellThemeToggle.tsx",
+      "props": [
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical' | 'mini'",
+          "optional": true,
+          "doc": "Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário."
+        }
+      ]
+    },
+    "SarakShellUserWidget": {
+      "propsInterface": "SarakShellUserWidgetProps",
+      "source": "src/components/atomic/Navigation/SarakShellUserWidget.tsx",
+      "props": [
+        {
+          "name": "user",
+          "type": "SarakShellUser",
+          "optional": true,
+          "doc": "Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário."
+        },
+        {
+          "name": "logout",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado."
+        },
+        {
+          "name": "variant",
+          "type": "'horizontal' | 'vertical' | 'mini'",
+          "optional": true,
+          "doc": "Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos."
         }
       ]
     },
@@ -2382,7 +2978,7 @@
       "props": [
         {
           "name": "shape",
-          "type": "SkeletonShape",
+          "type": "SarakSkeletonShape",
           "optional": true,
           "doc": "Forma do placeholder (default: `text`)."
         },
@@ -2421,13 +3017,55 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto mostrado acima do controle e usado como nome acessível quando `aria-label` não é informado. Sem `label`, forneça `aria-label`."
         },
         {
           "name": "valueLabel",
           "type": "string | number",
           "optional": true,
-          "doc": ""
+          "doc": "Texto apresentado ao lado do rótulo e exposto como `aria-valuetext`; não altera o valor numérico. Sem a prop, o navegador anuncia o valor nativo."
+        }
+      ]
+    },
+    "SarakSocialButton": {
+      "propsInterface": "SarakSocialButtonProps",
+      "source": "src/components/atomic/Buttons/SarakSocialButton.tsx",
+      "props": [
+        {
+          "name": "provider",
+          "type": "'google' | 'github'",
+          "optional": false,
+          "doc": "Escolhe o ícone e o rótulo padrão do provedor; obrigatória."
+        },
+        {
+          "name": "variant",
+          "type": "'glass' | 'sovereign'",
+          "optional": false,
+          "doc": "Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`."
+        },
+        {
+          "name": "onClick",
+          "type": "(provider: 'google' | 'github') => void",
+          "optional": true,
+          "doc": "Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas."
         }
       ]
     },
@@ -2443,7 +3081,7 @@
         },
         {
           "name": "variant",
-          "type": "SparklineVariant",
+          "type": "SarakSparklineVariant",
           "optional": true,
           "doc": "Forma do micro-gráfico (default: 'line')."
         },
@@ -2485,6 +3123,30 @@
         }
       ]
     },
+    "SarakSpinner": {
+      "propsInterface": "SarakSpinnerProps",
+      "source": "src/components/atomic/Feedback/SarakSpinner.tsx",
+      "props": [
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "optional": true,
+          "doc": "Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido."
+        }
+      ]
+    },
     "SarakSplitPane": {
       "propsInterface": "SarakSplitPaneProps",
       "source": "src/components/atomic/Layouts/SarakSplitPane.tsx",
@@ -2493,37 +3155,37 @@
           "name": "leftPane",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Conteúdo obrigatório do painel esquerdo; em celulares, aparece antes do painel direito."
         },
         {
           "name": "rightPane",
           "type": "React.ReactNode",
           "optional": false,
-          "doc": ""
+          "doc": "Conteúdo obrigatório do painel direito; em celulares, aparece depois do painel esquerdo."
         },
         {
           "name": "minLeftWidth",
           "type": "number",
           "optional": true,
-          "doc": ""
+          "doc": "Limite inferior, em pixels, ao arrastar com mouse; sem a prop, usa 200 px, não se aplica no celular e não é ajustável por toque em tablet."
         },
         {
           "name": "maxLeftWidth",
           "type": "number",
           "optional": true,
-          "doc": ""
+          "doc": "Limite superior, em pixels, ao arrastar com mouse; sem a prop, usa 800 px, não se aplica no celular e não é ajustável por toque em tablet."
         },
         {
           "name": "defaultLeftWidth",
           "type": "number",
           "optional": true,
-          "doc": ""
+          "doc": "Largura inicial do painel esquerdo, em pixels; sem a prop, usa 300 px, sem ajustar esse valor aos limites até o primeiro arraste."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes ao contêiner; omitida, nenhuma classe adicional é aplicada."
         }
       ]
     },
@@ -2533,7 +3195,7 @@
       "props": [
         {
           "name": "items",
-          "type": "NavigationItem[]",
+          "type": "SarakNavigationItem[]",
           "optional": false,
           "doc": "Itens disponíveis para navegação instantânea."
         },
@@ -2557,7 +3219,7 @@
         },
         {
           "name": "onSelect",
-          "type": "(item: NavigationItem) => void",
+          "type": "(item: SarakNavigationItem) => void",
           "optional": false,
           "doc": "Acionado ao confirmar um item (Enter ou clique)."
         },
@@ -2577,43 +3239,43 @@
           "name": "endpoint",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento."
         },
         {
           "name": "data",
           "type": "TData",
           "optional": true,
-          "doc": ""
+          "doc": "Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": ""
+          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -2623,7 +3285,7 @@
       "props": [
         {
           "name": "steps",
-          "type": "StepConfig[]",
+          "type": "SarakStepConfig[]",
           "optional": false,
           "doc": "Passos na ordem do fluxo."
         },
@@ -2635,7 +3297,7 @@
         },
         {
           "name": "orientation",
-          "type": "StepperOrientation",
+          "type": "SarakStepperOrientation",
           "optional": true,
           "doc": "Disposição (default: horizontal)."
         },
@@ -2656,31 +3318,31 @@
           "name": "label",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Conteúdo visível ao lado do controle e clicável como parte do rótulo. Sem `label` e `description`, nenhum texto é mostrado; nesse caso, dê um nome acessível ao controle."
         },
         {
           "name": "description",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Texto auxiliar exibido junto ao rótulo e ligado ao controle por `aria-describedby`. Sem a prop, não há descrição adicional."
         }
       ]
     },
     "SarakTable": {
       "propsInterface": "SarakTableProps",
-      "source": "src/components/atomic/Templates/SarakTable.tsx",
+      "source": "src/components/atomic/Templates/SarakTableProps.ts",
       "props": [
         {
           "name": "endpoint",
           "type": "string",
-          "optional": false,
-          "doc": ""
+          "optional": true,
+          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
         },
         {
           "name": "data",
           "type": "TData[]",
           "optional": true,
-          "doc": ""
+          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
         },
         {
           "name": "label",
@@ -2693,6 +3355,42 @@
           "type": "Record<string, string>",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "getRowKey",
+          "type": "(row: TData, index: number) => Key",
+          "optional": true,
+          "doc": "Chave estável da linha para seleção; por padrão, usa row.id ou o índice original."
+        },
+        {
+          "name": "sort",
+          "type": "SarakTableSort | null",
+          "optional": true,
+          "doc": "Omitido, ordena localmente; passe null para controlar o estado sem ordenação."
+        },
+        {
+          "name": "onSortChange",
+          "type": "(sort: SarakTableSort | null) => void",
+          "optional": true,
+          "doc": "Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas."
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Habilita a seleção de linhas e a caixa das linhas visíveis."
+        },
+        {
+          "name": "selectedKeys",
+          "type": "Key[]",
+          "optional": true,
+          "doc": "Chaves selecionadas controladas; omitido, a tabela gerencia a seleção."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(selectedKeys: Key[]) => void",
+          "optional": true,
+          "doc": "Recebe as chaves selecionadas atualizadas."
         },
         {
           "name": "role",
@@ -2777,13 +3475,13 @@
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<textarea>` por `aria-describedby`."
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": ""
+          "doc": "Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai."
         }
       ]
     },
@@ -2849,31 +3547,31 @@
           "name": "item",
           "type": "TItem",
           "optional": false,
-          "doc": ""
+          "doc": "Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": ""
+          "doc": "Associa esses campos a caminhos do registro; aceita caminhos pontuados e, sem a prop, não há valores mapeados (o subtítulo usa `Modelo`)."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada."
         },
         {
           "name": "design",
           "type": "SarakThemePayload",
           "optional": true,
-          "doc": ""
+          "doc": "Substitui o tema do provider para este cartão; omitida, usa o tema global."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": ""
+          "doc": "Texto do selo de rascunho; sem a prop, usa `Card de Título`, e o selo só aparece durante a composição de rascunho."
         }
       ]
     },
@@ -2901,7 +3599,7 @@
         },
         {
           "name": "position",
-          "type": "TooltipPosition",
+          "type": "SarakTooltipPosition",
           "optional": true,
           "doc": ""
         },
@@ -2931,7 +3629,7 @@
       "props": [
         {
           "name": "data",
-          "type": "MatrixTreeNode[]",
+          "type": "SarakMatrixTreeNode[]",
           "optional": false,
           "doc": "Floresta de nós; cada nó pode ter `children` (N níveis) e `loading`."
         },
@@ -2949,7 +3647,7 @@
         },
         {
           "name": "onExpand",
-          "type": "(node: MatrixTreeNode, expanded: boolean) => void",
+          "type": "(node: SarakMatrixTreeNode, expanded: boolean) => void",
           "optional": true,
           "doc": "Disparado ao expandir/colapsar um nó — ponto de gancho para fetch assíncrono."
         },
@@ -3028,7 +3726,7 @@
         },
         {
           "name": "accept",
-          "type": "Accept",
+          "type": "SarakAccept",
           "optional": true,
           "doc": "Tipos aceitos no formato do react-dropzone (ex.: `{ 'image/*': [] }`)."
         },
@@ -3082,51 +3780,9 @@
         },
         {
           "name": "onReject",
-          "type": "(rejections: FileRejection[]) => void",
+          "type": "(rejections: SarakFileRejection[]) => void",
           "optional": true,
           "doc": "Recebe as rejeições (ex.: arquivo maior que `maxSize`)."
-        }
-      ]
-    },
-    "SocialButton": {
-      "propsInterface": "SocialButtonProps",
-      "source": "src/components/atomic/Buttons/SocialButton.tsx",
-      "props": [
-        {
-          "name": "provider",
-          "type": "'google' | 'github'",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "variant",
-          "type": "'glass' | 'sovereign'",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "onClick",
-          "type": "(provider: 'google' | 'github') => void",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "label",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "hideLabel",
-          "type": "boolean",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "optional": true,
-          "doc": ""
         }
       ]
     }
@@ -3511,12 +4167,71 @@
         ]
       },
       {
+        "component": "SarakShellLanguageSelector",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      {
         "component": "SarakShellNav",
         "prop": "orientation",
         "values": [
           "vertical",
           "horizontal",
           "auto"
+        ]
+      },
+      {
+        "component": "SarakShellSearchWidget",
+        "prop": "variant",
+        "values": [
+          "bar",
+          "icon"
+        ]
+      },
+      {
+        "component": "SarakShellThemeToggle",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical",
+          "mini"
+        ]
+      },
+      {
+        "component": "SarakShellUserWidget",
+        "prop": "variant",
+        "values": [
+          "horizontal",
+          "vertical",
+          "mini"
+        ]
+      },
+      {
+        "component": "SarakSocialButton",
+        "prop": "provider",
+        "values": [
+          "google",
+          "github"
+        ]
+      },
+      {
+        "component": "SarakSocialButton",
+        "prop": "variant",
+        "values": [
+          "glass",
+          "sovereign"
+        ]
+      },
+      {
+        "component": "SarakSpinner",
+        "prop": "size",
+        "values": [
+          "sm",
+          "md",
+          "lg"
         ]
       },
       {
@@ -3591,22 +4306,6 @@
           "none",
           "uppercase",
           "capitalize"
-        ]
-      },
-      {
-        "component": "SocialButton",
-        "prop": "provider",
-        "values": [
-          "google",
-          "github"
-        ]
-      },
-      {
-        "component": "SocialButton",
-        "prop": "variant",
-        "values": [
-          "glass",
-          "sovereign"
         ]
       }
     ],

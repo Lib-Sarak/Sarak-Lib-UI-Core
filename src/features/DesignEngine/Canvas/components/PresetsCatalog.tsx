@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
+import { SARAK_GLOBAL_THEMES, SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
@@ -16,7 +16,9 @@ import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/
 
 interface PresetsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
-    onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
+    /** `themeId`: qual tema do catálogo gerou este payload — o rascunho o acompanha,
+     * e só é anunciado ao sistema (`resolvedThemeId`) quando o rascunho é aplicado. */
+    onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     currentMode: string;
     /** Contexto do Provider — usado para ler `allThemes` (GLOBAL_THEMES + custom_themes do banco). */
     sarak?: SarakUIContextType;
@@ -43,7 +45,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
 
     // `sarak.allThemes` já é GLOBAL_THEMES + custom_themes do banco (SarakUIProvider.tsx).
     // Sem `sarak`, cai para o import estático (uso isolado/testes).
-    const globalThemes = (sarak?.allThemes as ThemePreset[] | undefined) ?? GLOBAL_THEMES;
+    const globalThemes = (sarak?.allThemes as SarakThemePreset[] | undefined) ?? SARAK_GLOBAL_THEMES;
 
     return (
         <div className="w-full h-full flex flex-col relative bg-theme-bg">
@@ -97,13 +99,13 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                                         currentMode as 'light' | 'dark',
                                     );
                                     const payload = upgradeThemePayload(resolved);
-                                    // plan-27: anuncia QUAL tema ficou no ar — sem isto,
-                                    // `resolvedThemeId` continuaria apontando pro tema anterior
-                                    // (ou pra semente) e a próxima troca de modo não acharia a
-                                    // contraparte deste tema recém-aplicado.
-                                    sarak?.setResolvedThemeId?.(theme.id);
+                                    // Só PRÉ-VISUALIZA — o id viaja com o payload para o
+                                    // rascunho, e só é anunciado como `resolvedThemeId` quando o
+                                    // usuário aplicar (`handleApplyToSystem`). Antes, o clique aqui
+                                    // já anunciava o id ao Provider, mesmo sem nada ter sido
+                                    // aplicado (06-painel-de-customizacao-e-preview.md §4).
                                     if (onApplyFullTheme) {
-                                        onApplyFullTheme(payload);
+                                        onApplyFullTheme(payload, theme.id);
                                     } else {
                                         onApplyPreset(payload);
                                     }

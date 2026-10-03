@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateDesign } from '../validation';
-import { getDefaultDesignState } from '../../../Design/master-map';
-import { GLOBAL_THEMES } from '../../../Design/presets/themes';
+import { sarakGetDefaultDesignState } from '../../../Design/master-map';
+import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes';
 import { minimalistAiry } from '../../../Design/presets/themes/minimalist-airy';
 
 /**
@@ -22,10 +22,10 @@ describe('Console limpo ao carregar os temas shippados (Spec 40.4 L4)', () => {
         warnSpy.mockRestore();
     });
 
-    it.each(GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
+    it.each(SARAK_GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
         'tema "%s": validateDesign(defaults + tema) não emite aviso "fora do contrato"',
         (_id, theme) => {
-            const merged = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+            const merged = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
             validateDesign(merged);
 
             const contractWarnings = warnSpy.mock.calls.filter((call: unknown[]) =>
@@ -44,7 +44,7 @@ describe('Console limpo ao carregar os temas shippados (Spec 40.4 L4)', () => {
  */
 describe('Caracterização — minimalist-airy antes/depois da reconciliação (Spec 40.4 L4)', () => {
     it('os 9 tokens antes descartados agora aplicam com um valor válido do próprio contrato', () => {
-        const merged = { ...getDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
+        const merged = { ...sarakGetDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
         const result = validateDesign(merged);
 
         expect(result.easeOut).toBe('cubic-bezier(0, 0, 0.2, 1)');
@@ -59,7 +59,7 @@ describe('Caracterização — minimalist-airy antes/depois da reconciliação (
     });
 
     it('preserva os demais eixos do tema (cor/tipografia/cromo) fora dos 9 tokens corrigidos', () => {
-        const merged = { ...getDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
+        const merged = { ...sarakGetDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
         const result = validateDesign(merged);
 
         expect(result.mode).toBe('light');

@@ -19,7 +19,7 @@ const ALLOWED_TAGS = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'ul', 'ol',
 const ALLOWED_ATTR = ['href'];
 
 /** Sanitiza o HTML do editor pela allowlist restrita. Exportado para teste isolado. */
-export const sanitizeRichText = (html: string): string =>
+export const sarakSanitizeRichText = (html: string): string =>
     sanitizeHtml(html, { allowedTags: ALLOWED_TAGS, allowedAttributes: ALLOWED_ATTR });
 
 export interface SarakRichTextProps {
@@ -66,12 +66,12 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
         if (!el) return;
         const incoming = value ?? defaultValue ?? '';
         if (incoming !== el.innerHTML) {
-            el.innerHTML = sanitizeRichText(incoming);
+            el.innerHTML = sarakSanitizeRichText(incoming);
         }
     }, [value]);
 
     const emit = () => {
-        if (ref.current) onChange?.(sanitizeRichText(ref.current.innerHTML));
+        if (ref.current) onChange?.(sarakSanitizeRichText(ref.current.innerHTML));
     };
 
     const exec = (cmd: string) => {
@@ -95,7 +95,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
     const onPaste = (e: React.ClipboardEvent) => {
         e.preventDefault();
         const raw = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
-        const clean = sanitizeRichText(raw);
+        const clean = sarakSanitizeRichText(raw);
         document.execCommand('insertHTML', false, clean);
         emit();
     };

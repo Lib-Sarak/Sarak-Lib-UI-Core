@@ -10,7 +10,7 @@ usuário vai para `localStorage`, e ponto. A lib nunca fala com um backend próp
 endpoint, não tem driver de banco, não pergunta nada a ninguém (ADR-003).
 
 Este documento existe porque, quando **você** decide que o seu sistema precisa sincronizar tema
-entre dispositivos ou guardar num banco seu, os tipos públicos (`SarakThemePayload`, `ThemeEntry`,
+entre dispositivos ou guardar num banco seu, os tipos públicos (`SarakThemePayload`, `SarakThemeEntry`,
 `SarakUIOptions`) dizem o **formato**, mas não dizem **o que fazer com ele**. Isto é a receita — um
 ponto de partida que você copia inteiro, adapta, ou ignora. Quem guardar em arquivo, Mongo ou S3
 não deve nada a ninguém: o schema em `docs/schema/` é **descritivo, nunca normativo**. Se algum dia
@@ -48,11 +48,11 @@ nunca pede identidade de usuário, porque não tem esse conceito (§4).
 Quando o usuário clica **"Salvar"** no painel para nomear e guardar um tema novo (ADR-011):
 
 ```ts
-onSave?: (theme: ThemeEntry) => Promise<void> | void
+onSave?: (theme: SarakThemeEntry) => Promise<void> | void
 ```
 
 ```ts
-interface ThemeEntry {
+interface SarakThemeEntry {
   id: string;              // livre, definido no momento do salvamento (slug do nome)
   name?: string;           // rótulo exibido nas listas
   design?: Record<string, unknown>;
@@ -95,7 +95,7 @@ usuário final. **A sua tabela nunca guarda os originais.**
 "Alterar" um tema da lib, na prática, significa **criar um tema novo, derivado**, com um `id` livre
 diferente — o painel parte de `SARAK_REFERENCE_THEMES` (ou de qualquer tema embarcado) e o usuário
 ajusta valores; ao salvar, o que chega em `theme.onSave` já é essa cópia derivada, com identidade
-própria. Não existe operação "editar tema embarcado" — o resultado sempre nasce como um `ThemeEntry`
+própria. Não existe operação "editar tema embarcado" — o resultado sempre nasce como um `SarakThemeEntry`
 novo, do seu lado.
 
 ## 4. O escopo é do sistema, não do usuário
@@ -116,7 +116,7 @@ dela muda. Até lá, o tema aplicado é uma propriedade do sistema (ou do tenant
 import { SarakUIProvider } from '@sarak/lib-ui-core';
 
 function App({ temasSalvos, estadoAplicado }: {
-  temasSalvos: ThemeEntry[];          // devolvidos do SEU backend, ver §1.2
+  temasSalvos: SarakThemeEntry[];          // devolvidos do SEU backend, ver §1.2
   estadoAplicado: SarakThemePayload | undefined; // devolvido do SEU backend, ver §1.1
 }) {
   return (
@@ -148,7 +148,7 @@ function App({ temasSalvos, estadoAplicado }: {
           onSave: async (theme) => {
             await fetch('/api/tema/definicoes', {
               method: 'PUT',
-              body: JSON.stringify(theme), // §1.2 — o ThemeEntry inteiro, byte a byte
+              body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
             });
           },
         },

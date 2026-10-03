@@ -3,6 +3,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import ts from 'typescript';
 import { runInit } from '../runInit.mjs';
 
 let tmpDir;
@@ -19,6 +21,41 @@ const STARTER_ANSWERS = {
     mode: 'app',
     frontendPort: 5173,
 };
+const BARREL_TYPES_PATH = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../../../dist/index.d.ts',
+);
+
+function getPackageNamedImports(sourceText, packageName) {
+    const sourceFile = ts.createSourceFile('main.tsx', sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const importedNames = [];
+
+    for (const statement of sourceFile.statements) {
+        if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+        if (statement.moduleSpecifier.text !== packageName) continue;
+        const importClause = statement.importClause;
+        if (importClause?.name) importedNames.push('default');
+        const bindings = importClause?.namedBindings;
+        if (!bindings || !ts.isNamedImports(bindings)) continue;
+        importedNames.push(...bindings.elements.map((element) => element.propertyName?.text ?? element.name.text));
+    }
+
+    return importedNames;
+}
+
+function getBarrelExportNames(sourceText) {
+    const sourceFile = ts.createSourceFile('index.d.ts', sourceText, ts.ScriptTarget.Latest, true);
+    const exportNames = new Set();
+
+    for (const statement of sourceFile.statements) {
+        if (ts.isExportAssignment(statement)) exportNames.add('default');
+        if (!ts.isExportDeclaration(statement) || !statement.exportClause) continue;
+        if (!ts.isNamedExports(statement.exportClause)) continue;
+        for (const element of statement.exportClause.elements) exportNames.add(element.name.text);
+    }
+
+    return exportNames;
+}
 
 describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 45)', () => {
     it('gera a estrutura completa do starter na 1ª execução', async () => {
@@ -49,9 +86,20 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         expect(mainTsx).toContain('SarakUIProvider');
         expect(mainTsx).toContain('SarakShell');
         expect(mainTsx).toContain('registerSarakModule');
-        expect(mainTsx).toContain('registerLocalComponent');
-        expect(mainTsx).not.toContain('SarakManifestRenderer');
         expect(mainTsx).not.toContain('app.manifest.json');
+    });
+
+    it('main.tsx importa somente identificadores exportados pelo barril público', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
+        const barrelTypes = fs.readFileSync(BARREL_TYPES_PATH, 'utf8');
+        const importedNames = getPackageNamedImports(mainTsx, '@sarak/lib-ui-core');
+        const publicExports = getBarrelExportNames(barrelTypes);
+        const missingNames = importedNames.filter((name) => !publicExports.has(name));
+
+        expect(importedNames.length).toBeGreaterThan(0);
+        expect(missingNames).toEqual([]);
     });
 
     it('main.tsx define o módulo de exemplo como defaultModuleId (achado real: sem isso, o Shell abre no Design Engine por padrão — prioridade 9999)', async () => {

@@ -50,8 +50,24 @@ alcançável por ninguém.
 
 ```bash
 npm run audit           # inclui auditor_presets (CHAVE ÓRFÃ) e auditor_contraste (R31, WCAG AA)
-npx vitest run          # a suíte INTEIRA
+npx vitest run          # a suíte INTEIRA (a varredura de hover do SarakMenuItem roda aqui)
+npm run themes:diversity                  # o quadro de diversidade do catálogo
+npm run build && npm run themes:showcase  # a vitrine — ver abaixo
 ```
+
+**A vitrine** (`npm run themes:showcase`, precisa do `dist/` — rode o `build` antes) gera uma captura por
+**tema × modo × orientação** em `browser-tests/showcase-output/` (fora do versionamento) e um
+`index.html` que reúne todas lado a lado. Cada captura mostra o cromo com um item ativo e outro em hover,
+mais card e tabela com dados, botões, campos, tipografia e o `SarakBadge` em todas as variantes. **Olhe o
+badge `muted` de todo tema de borda forte** — a captura é o que pega texto ilegível que o gate de contraste
+não mede. A vitrine mede o `dist/` direto, sem passar pelo consumidor (e pelas duas camadas de cache de
+`specs/specs/13-instalacao-e-atualizacao.md` §9.1).
+
+**A varredura de hover** (`SarakMenuItem.test.tsx`) mede, em todo tema shippado, o **fundo** de hover
+(`sidebarHoverColor`/`topbarHoverColor`) contra o fundo da barra, nas duas orientações e nos dois modos
+(o nativo e o oposto, com a contraparte aplicada), por distância perceptual. Ela mede **só o fundo**: o
+texto do item troca de cor no hover em todo tema, então contá-lo deixaria passar um hover `transparent`.
+Tema sem hover perceptível reprova nomeando o tema e a orientação.
 
 Para medir **completude** (quais eixos o tema deixou vazios), use o utilitário público
 `findMissingThemeAxes` / `warnOnIncompleteTheme` (`src/core/Design/utils/themeAxes.ts`). Ele
@@ -73,11 +89,33 @@ resolvido" exige uma decisão sua (ver `references/liberdade-e-restricao.md` §1
 
 Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md`, nunca com zero.
 
-### 5.5. Contraparte de modo (obrigatória para tema NOVO — plan-26)
-Sem `contraparte`, escolher este tema troca o MODO do usuário (a regressão que a plan-26 consertou). Escreva
+### 5.5. Contraparte de modo (obrigatória para tema NOVO)
+O modo é **preferência do usuário** (`specs/specs/09-temas-e-presets.md` §4.7): o tema é escrito para um modo,
+e quem pede o oposto recebe a `contraparte`. Sem ela, recebe o fallback sintetizado — que satura e **não
+volta ao original** numa ida e volta (`specs/specs/09-temas-e-presets.md` §2.1). Escreva
 `contraparte: { ... }` no `ThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
-o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** presença fora da
-lista de isenção (os 18 temas legados, que ficam no fallback sintetizado).
+o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** a contraparte de
+**todo** tema shippado — a lista de isenção terminou vazia. **Sobreponha o fundo do modal
+(`colorBgModal`) e o de toda superfície** que o modo oposto inverte: o que a contraparte não declara fica
+com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o defeito mais comum.
+
+### 5.6. O que o gerador preenche e você precisa conferir
+
+- **Realce do item de navegação.** O fundo do item ativo (`sidebarActiveColor`/`topbarActiveColor`) e o do
+  item sob o ponteiro (`sidebarHoverColor`/`topbarHoverColor`) **nascem `transparent`**; o texto do item
+  ativo é `navItemActiveColor`. Sem preencher os de hover, o tema fica sem fundo de hover na navegação — o
+  realce passa a ser só de texto. Os papéis estão em `specs/specs/05-cromo-e-slots.md` §2.4.
+- **Idiomas.** `enabledLanguages` com os seis idiomas que a lib oferece (`pt`, `en`, `es`, `fr`, `de`,
+  `it`). É chave do payload, fora do gabarito visual — o `auditor_presets` a conhece pela lista de chaves
+  extras do payload, então não a acusa como órfã.
+- **Valor enumerado.** Token de `select` só aceita as opções do schema (`bodySize` é `12/14/16/18/20px`;
+  `easeMain` tem sete curvas). Valor fora da lista é descartado em runtime com aviso — a suíte acusa
+  (`tokenContractParity`).
+- **Mídia de fundo.** Tema shippado **nunca** aponta `globalBackgroundImageUrl` para servidor de terceiro:
+  use as atmosferas geradas pela lib ou deixe vazio (`specs/specs/09-temas-e-presets.md` §5.1).
+- **Posição das preferências do usuário** (`preference*Position`). O gerador as escreve com o **padrão de
+  fábrica** — mantenha. Quem decide o que a barra oferece é o administrador de cada instalação, no painel;
+  mudar isso num tema shippado muda a barra dos usuários de todo consumidor.
 
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do
@@ -101,13 +139,19 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] O solucionador rodou e o relatório foi colado? Todo par "não resolvido" tem decisão registrada?
 - [ ] `npm run audit` fecha sem regressão no auditor de contraste (R31)?
 - [ ] Tema NOVO: `contraparte` foi autorada (bloco parcial) e o gate deixou de acusar isenção faltando?
+- [ ] Hover do item de navegação preenchido nas duas orientações, e a varredura de hover verde nos dois
+      modos? Nenhuma mídia de terceiro? Posições de preferência no padrão de fábrica? `enabledLanguages` com
+      os seis idiomas?
+- [ ] A vitrine (`npm run build && npm run themes:showcase`) foi gerada e o tema foi olhado nos dois modos e
+      nas duas orientações, badge `muted` inclusive?
+- [ ] Tema NOVO: `npm run themes:diversity -- --new <id,...>` passa nos nove critérios contra o catálogo?
 
 ## Referências (Camada 3)
 
 **Gerador — esta skill invoca:**
 - `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` — gera o arquivo do tema
   pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
-- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador (plan-24-1). Mede
+- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador. Mede
   contraste com o gate da R31 e corrige **só a luminosidade** do texto que reprovar, preservando matiz e
   saturação. Devolve tema + relatório; **não escreve arquivo sozinho** — você aplica o valor corrigido.
 - `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` — o mapa de onde há restrição
@@ -117,7 +161,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - `gates/scripts/audit/verify_contrast.ts` (`auditor_contraste.mjs`) — **tem gate**, dentro de
   `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado (nativo E o
   modo oposto, via `resolveThemeForMode`); é o que o solucionador (acima) consulta para saber o que
-  corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`, plan-26).
+  corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`).
 - `src/core/Design/presets/themes/color-engine.ts` (`resolveThemeForMode`) — a função que decide o que
   aplicar ao trocar de tema/modo: nativo → `design`; oposto com `contraparte` → o bloco autorado; oposto
   sem `contraparte` → `syncThemeWithMode` (fallback dos legados). Todo caminho de aplicar tema passa por ela.

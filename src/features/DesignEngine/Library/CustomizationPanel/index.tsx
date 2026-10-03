@@ -15,10 +15,10 @@ import LazyEngineWrapper from '../../../../components/engines/LazyEngineWrapper'
 
 const CustomizationPanelImpl = lazy(() => import('./CustomizationPanelImpl'));
 
-export const CustomizationPanel: React.FC = () => (
+export const SarakCustomizationPanel: React.FC = () => (
     <LazyEngineWrapper>
         <CustomizationPanelImpl />
     </LazyEngineWrapper>
 );
 
-export default CustomizationPanel;
+export default SarakCustomizationPanel;

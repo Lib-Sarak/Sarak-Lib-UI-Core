@@ -1,7 +1,7 @@
 import * as echarts from 'echarts';
-import type { ChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
+import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildBarSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildBarSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         data: data.map(item => item[config?.dataKey || 'value']),
         type: 'bar',
@@ -26,7 +26,7 @@ export const buildBarSeries = (data: ChartDataItem[], config: ChartBuilderConfig
     }]
 });
 
-export const buildLineSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme, isArea: boolean): ChartOptionFragment => ({
+export const buildLineSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme, isArea: boolean): ChartOptionFragment => ({
     series: [{
         data: data.map(item => item[config?.dataKey || 'value']),
         type: 'line',
@@ -64,7 +64,7 @@ export const buildLineSeries = (data: ChartDataItem[], config: ChartBuilderConfi
     }]
 });
 
-export const buildPieSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildPieSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'Distribuição',
         type: 'pie',

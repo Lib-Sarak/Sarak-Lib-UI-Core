@@ -3,29 +3,30 @@ import { format, isValid, parseISO } from 'date-fns';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
-import { CalendarPanel, type WeekStart, type DateLocale } from './internal/CalendarPanel';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { CalendarPanel, type SarakWeekStart, type SarakDateLocale } from './internal/CalendarPanel';
 
 const ISO = 'yyyy-MM-dd';
 
 /** Valor: string ISO (single) ou par [início, fim] de ISOs (range). */
-export type DatePickerValue = string | [string, string];
+export type SarakDatePickerValue = string | [string, string];
 
 export interface SarakDatePickerProps {
     label?: string;
     mode?: 'single' | 'range';
-    value?: DatePickerValue;
+    value?: SarakDatePickerValue;
     /** Formato de exibição (i18n via JSON), ex.: `dd/MM/yyyy`. */
     displayFormat?: string;
     /** Locale do `date-fns` para nomes de mês/dia (i18n). */
-    locale?: DateLocale;
-    weekStartsOn?: WeekStart;
+    locale?: SarakDateLocale;
+    weekStartsOn?: SarakWeekStart;
     placeholder?: string;
     disabled?: boolean;
     error?: string;
     className?: string;
     style?: React.CSSProperties;
     /** Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). */
-    onChange?: (value: DatePickerValue) => void;
+    onChange?: (value: SarakDatePickerValue) => void;
 }
 
 const toDate = (iso?: string): Date | null => {
@@ -34,7 +35,7 @@ const toDate = (iso?: string): Date | null => {
     return isValid(parsed) ? parsed : null;
 };
 
-const readRange = (value: DatePickerValue | undefined): [Date | null, Date | null] => {
+const readRange = (value: SarakDatePickerValue | undefined): [Date | null, Date | null] => {
     if (Array.isArray(value)) return [toDate(value[0]), toDate(value[1])];
     return [toDate(value), null];
 };
@@ -51,7 +52,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     displayFormat = 'dd/MM/yyyy',
     locale,
     weekStartsOn = 0,
-    placeholder = 'Selecione...',
+    placeholder,
     disabled,
     error,
     className = '',
@@ -62,15 +63,17 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     const errorId = `${reactId}-error`;
     const [open, setOpen] = useState(false);
     const { containerRef, handleTrap } = useFocusTrap(open, () => setOpen(false));
+    const t = useLibraryText();
+    const effectivePlaceholder = placeholder ?? t('datePickerPlaceholder');
 
     const [start, end] = useMemo(() => readRange(value), [value]);
 
     const display = useMemo(() => {
-        if (!start) return placeholder;
+        if (!start) return effectivePlaceholder;
         const head = format(start, displayFormat, { locale });
         if (mode === 'single' || !end) return head;
-        return `${head} — ${format(end, displayFormat, { locale })}`;
-    }, [start, end, mode, displayFormat, locale, placeholder]);
+        return `${head}${t('datePickerRangeSeparator')}${format(end, displayFormat, { locale })}`;
+    }, [start, end, mode, displayFormat, locale, effectivePlaceholder, t]);
 
     const emit = (next: [Date | null, Date | null]): void => {
         if (mode === 'single') {
@@ -106,7 +109,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                 <SarakButton
                     type="button"
                     disabled={disabled}
-                    aria-label={label ?? 'Selecionar data'}
+                    aria-label={label ?? t('datePickerAriaLabel')}
                     aria-haspopup="dialog"
                     aria-expanded={open}
                     aria-invalid={error ? true : undefined}
@@ -144,7 +147,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     <div
                         ref={containerRef}
                         role="dialog"
-                        aria-label={label ?? 'Calendário'}
+                        aria-label={label ?? t('datePickerCalendarAriaLabel')}
                         onKeyDown={handleTrap}
                         className="absolute z-30 rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-xl"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}

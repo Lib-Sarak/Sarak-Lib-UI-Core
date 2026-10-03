@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ThemePreset } from '../../../../core/Design/presets/themes';
+import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { Layout, ArrowRight } from 'lucide-react';
 
-export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset, currentMode: string, onApply: () => void, index: number }) => {
+export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: SarakThemePreset, currentMode: string, onApply: () => void, index: number }) => {
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
     // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
     // sintetizado para os temas legados sem contraparte.

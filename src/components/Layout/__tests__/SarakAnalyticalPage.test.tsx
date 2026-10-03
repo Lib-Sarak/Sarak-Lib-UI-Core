@@ -4,7 +4,8 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import * as ComponentModule from '../SarakAnalyticalPage';
 import { SarakAnalyticalPage } from '../SarakAnalyticalPage';
-import { DeviceProvider } from '../../../core/Provider/DeviceProvider';
+import { SarakDeviceProvider } from '../../../core/Provider/DeviceProvider';
+import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
 
 describe('SarakAnalyticalPage', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -18,13 +19,13 @@ describe('SarakAnalyticalPage', () => {
     describe('drawers mobile (device=smartphone)', () => {
         const renderMobile = () =>
             render(
-                <DeviceProvider overrideDevice="smartphone">
+                <SarakDeviceProvider overrideDevice="smartphone">
                     <SarakAnalyticalPage
                         navBar={<div>Nav de verdade</div>}
                         sidePanel={<div>Painel de verdade</div>}
                         mainContent={<div>Conteúdo</div>}
                     />
-                </DeviceProvider>,
+                </SarakDeviceProvider>,
             );
 
         it('abre o drawer de navegação ao clicar no botão de menu', () => {
@@ -50,5 +51,20 @@ describe('SarakAnalyticalPage', () => {
             fireEvent.click(screen.getByLabelText('Fechar painel lateral'));
             expect(screen.queryByText('Painel de verdade')).not.toBeInTheDocument();
         });
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakDeviceProvider overrideDevice="smartphone">
+                    <SarakAnalyticalPage
+                        navBar={<div>Real nav</div>}
+                        mainContent={<div>Content</div>}
+                    />
+                </SarakDeviceProvider>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Open navigation menu')).toBeInTheDocument();
     });
 });

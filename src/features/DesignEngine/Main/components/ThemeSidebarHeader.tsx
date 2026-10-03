@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson, Command } from 'lucide-react';
+import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson, Command, Undo2 } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 
@@ -24,6 +24,8 @@ interface ThemeSidebarHeaderProps {
     isPreviewStacked: boolean;
     setIsPreviewStacked: (stacked: boolean) => void;
     handleApplyGlobalChanges: () => void;
+    canUndoLastApply: boolean;
+    onUndoLastApply: () => void;
 }
 
 export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
@@ -33,7 +35,8 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
     searchQuery, setSearchQuery,
     isEssentialMode, setIsEssentialMode,
     isPreviewStacked, setIsPreviewStacked,
-    handleApplyGlobalChanges
+    handleApplyGlobalChanges,
+    canUndoLastApply, onUndoLastApply
 }) => {
     return (
         <div className="p-5 pb-4 shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)]">
@@ -152,6 +155,19 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
             >
                 Aplicar Alterações Globais
             </SarakButton>
+
+            {canUndoLastApply && (
+                <SarakButton
+                    onClick={onUndoLastApply}
+                    variant="ghost"
+                    fullWidth
+                    size="sm"
+                    leftIcon={<Undo2 size={12} />}
+                    className="mt-2"
+                >
+                    Desfazer última aplicação
+                </SarakButton>
+            )}
         </div>
     );
 };

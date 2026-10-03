@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
+import { SarakShellNav, type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
+import { SarakShellSearchWidget } from '../atomic/Navigation/SarakShellSearchWidget';
+import { SarakSearch } from '../atomic/Inputs/SarakSearch';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
+import type { SarakShellUser } from '../../core/Shell/Components/types';
+import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
+import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';
-import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
+import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
+import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralStyles';
+import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
+import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
+import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /**
  * SarakAppChromeMobile — colapso do cromo no celular (Spec 40.3 — L1).
@@ -29,14 +39,17 @@ import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
  */
 export interface SarakAppChromeMobileProps {
     children: React.ReactNode;
-    brand?: React.ReactNode;
-    nav: ShellNavItem[];
+    brand?: { name?: string; logoUrl?: string };
+    logo?: React.ReactNode;
+    nav: SarakShellNavItem[];
     activeRoute?: string;
     onNavigate?: (route: string) => void;
     /** Slot `topbarEnd` (alias legado `topbarActions`) — fim da barra compacta. */
     topbarActions?: React.ReactNode;
     /** Slot `topbarStart` — início da barra compacta, logo após a marca. */
     topbarStart?: React.ReactNode;
+    /** Slot `search` — posicionado por `searchPositionSidebar` (é onde a sidebar existe no celular: o drawer). */
+    search?: React.ReactNode;
     /** Slot `sidebarHeader` — migra para o topo do drawer (a sidebar do celular). */
     sidebarHeader?: React.ReactNode;
     /** Slot `sidebarFooter` — migra para o rodapé do drawer. */
@@ -47,6 +60,12 @@ export interface SarakAppChromeMobileProps {
     footer?: React.ReactNode;
     /** Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). */
     decoration?: React.ReactNode;
+    /** Identidade exibida no widget de usuário default, no rodapé do drawer. */
+    user?: SarakShellUser;
+    logout?: () => void;
+    /** Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não
+     * se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. */
+    widgets?: SarakChromeWidgets;
     className?: string;
     rootStyle: React.CSSProperties;
 }
@@ -56,22 +75,39 @@ const DRAWER_ID = 'sarak-chrome-drawer';
 export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     children,
     brand,
+    logo,
     nav,
     activeRoute,
     onNavigate,
     topbarActions,
     topbarStart,
+    search,
     sidebarHeader,
     sidebarFooter,
     banner,
     footer,
     decoration,
+    user,
+    logout,
+    widgets,
     className = '',
     rootStyle,
 }) => {
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
+    const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
+    const t = useLibraryText();
+    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
+    const effectiveSearch = search ?? (w.showSearch ? <SarakShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
+    // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
+    // — não há distinção de "botão direto vs. dentro do ⚙" quando só existe uma barra.
+    // `navCollapsed` fica de fora: o próprio hambúrguer já é o controle de colapso aqui.
+    const mobileShowThemeToggle = w.preferencePlacement.offered.includes('colorMode');
+    const extraPreferenceRows = w.preferencePlacement.offered.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
+    // A marca aparece na barra compacta E no topo do drawer (mesma variante
+    // horizontal nos dois — sempre foi assim).
+    const brandNode = <ChromeBrand brand={brand} logo={logo} horizontal />;
 
     // Trava o scroll do corpo enquanto o drawer está aberto (não vaza rolagem por baixo).
     useEffect(() => {
@@ -102,19 +138,19 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     onClick={() => setOpen((v) => !v)}
                     aria-expanded={open}
                     aria-controls={DRAWER_ID}
-                    aria-label={open ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+                    aria-label={open ? t('mobileMenuCloseAriaLabel') : t('mobileMenuOpenAriaLabel')}
                     className="shrink-0 rounded-[var(--sarak-card-radius,8px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.06))]"
                     style={{ width: 'var(--sarak-topbar-height, 44px)', height: 'var(--sarak-topbar-height, 44px)' }}
                     icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
                 />
-                {brand}
+                {brandNode}
                 <ChromeTopbarSlot region="start" className="overflow-hidden">{topbarStart}</ChromeTopbarSlot>
                 {topbarActions && <div data-sarak-slot="topbarEnd" className="flex items-center gap-2 shrink-0 ml-auto">{topbarActions}</div>}
             </header>
 
             {open && (
                 <React.Fragment>
-                    <SarakScrim onClose={close} ariaLabel="Fechar menu de navegação" />
+                    <SarakScrim onClose={close} ariaLabel={t('mobileMenuCloseAriaLabel')} />
                     <aside
                         id={DRAWER_ID}
                         ref={containerRef}
@@ -126,17 +162,44 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                         }}
                     >
-                        {brand && <div className="px-2 py-3">{brand}</div>}
+                        {brand && <div className="px-2 py-3">{brandNode}</div>}
+                        {/* É onde a sidebar existe no celular — segue `searchPositionSidebar`. */}
+                        {searchPositionSidebar === 'top' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={handleSelect} orientation="vertical" className="flex-1" />
+                        {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        <ChromeUserThemeGroup
+                            showThemeToggle={mobileShowThemeToggle}
+                            showUser={w.showUser}
+                            user={user}
+                            logout={logout}
+                            variant="vertical"
+                        />
+                        {extraPreferenceRows.map((id) => renderShellPreferenceRow(id, {
+                            isNavHidden: false,
+                            onToggleNavCollapsed: w.toggleNavHidden,
+                            t,
+                        }))}
                     </aside>
                 </React.Fragment>
             )}
 
-            <main className="relative flex-1 min-w-0 min-h-0 overflow-auto" style={{ color: 'var(--text-main, var(--color-theme-title, inherit))' }}>
+            <main
+                data-sarak-content
+                className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
+                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+            >
                 {children}
             </main>
+            {w.showSearch && (
+                <SarakSearch
+                    isOpen={w.isSearchOpen}
+                    onClose={w.closeSearch}
+                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
+                    onSelect={handleSelect}
+                />
+            )}
         </ChromeFrame>
     );
 };

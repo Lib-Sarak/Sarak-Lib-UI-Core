@@ -46,3 +46,15 @@ describe('SarakUploader', () => {
         expect(screen.getByText('Arquivo muito grande')).toBeInTheDocument();
     });
 });
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakUploader — idioma que vale', () => {
+    it('sai em inglês com `config.language: "en"`', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakUploader />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Drag files here or click to select')).toBeInTheDocument();
+    });
+});

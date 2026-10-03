@@ -3,7 +3,15 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 
 export interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    /**
+     * Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto
+     * não é associado automaticamente ao `<select>` por `aria-describedby`.
+     */
     error?: string;
+    /**
+     * Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou
+     * `false`, a largura depende do layout pai.
+     */
     fullWidth?: boolean;
 }
 

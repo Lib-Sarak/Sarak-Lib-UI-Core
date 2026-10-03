@@ -99,7 +99,7 @@ viola sem perceber:
 > Cada item aponta para a spec fixa em `arquitetura/` que o detalha. Esta seção é o índice, não o tratado.
 
 **Stack:** TypeScript + React `>=18` (peer) · Tailwind CSS `>=4` · build `tsup` (ESM + CJS + DTS) ·
-testes `vitest` — **não há E2E nem regressão visual** ([[specs/11-testes-e-cobertura]] §7) · gerenciador
+testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, mas **com** uma medição de CSS renderizado em navegador real (`browser-tests/`, job `cromo-css-real`) ([[specs/11-testes-e-cobertura]] §7) · gerenciador
 **npm** · distribuída por **git com tag**, sem registry
 ([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). A versão vive em
 `package.json`; a linha publicada é `git tag`; e o **motivo de cada MAJOR** está em
@@ -399,10 +399,13 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 
 - **Os 5 `dangerouslySetInnerHTML` de `src/` são a forma como a engine injeta CSS, e são legítimos.**
   Auditados um a um em 2026-08-01: `DesignScope.tsx:54`, `DesignInjector.tsx:173` e
-  `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`, o
-  qual bloqueia breakout `[<>{};]` (R6). `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais
-  estáticos**, sem interpolação. **Nenhum recebe HTML de origem não confiável.**
-- **`chromeSlots` publica 9 entradas para 8 regiões, e está certo assim.** `topbarActions` é alias legado de
+  `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`
+  (R6). A trava geral bloqueia breakout `[<>{};]`; os tokens de **mídia** (`image`/`file`) têm predicado
+  próprio, com conjunto aceito medido contra valores reais de consumidor — e que recusa todo esquema de URI
+  fora dele, inclusive com ruído antes do esquema. Detalhe em [`specs/10-seguranca-e-acessibilidade.md`](specs/10-seguranca-e-acessibilidade.md) §2.1.
+  `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais estáticos**, sem interpolação.
+  **Nenhum recebe HTML de origem não confiável.**
+- **`chromeSlots` publica uma entrada a mais do que há regiões, e está certo assim.** `topbarActions` é alias legado de
   `topbarEnd`; o coletor deriva por **tipo** (`ReactNode` opcional), não por semântica, e o `doc` do próprio
   slot avisa o consumidor de que é alias. Consertar o coletor custa mais que declarar a imprecisão.
 - **O token de breakpoint alcança o CSS, não as classes utilitárias.** `useDesignVariables.ts:58` lê

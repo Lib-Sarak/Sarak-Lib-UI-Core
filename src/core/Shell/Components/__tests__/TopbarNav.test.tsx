@@ -16,20 +16,20 @@ vi.mock('../IconRenderer', () => ({
     IconRenderer: () => <div data-testid="icon-renderer" />
 }));
 
-vi.mock('../ShellSearchWidget', () => ({
-    ShellSearchWidget: ({ onClick }: any) => <button data-testid="shell-search" onClick={onClick}>Search</button>
+vi.mock('../../../../components/atomic/Navigation/SarakShellSearchWidget', () => ({
+    SarakShellSearchWidget: ({ onClick }: any) => <button data-testid="shell-search" onClick={onClick}>Search</button>
 }));
 
-vi.mock('../ShellThemeToggle', () => ({
-    ShellThemeToggle: () => <div data-testid="shell-theme">Theme</div>
+vi.mock('../../../../components/atomic/Navigation/SarakShellThemeToggle', () => ({
+    SarakShellThemeToggle: () => <div data-testid="shell-theme">Theme</div>
 }));
 
-vi.mock('../ShellLanguageSelector', () => ({
-    ShellLanguageSelector: () => <div data-testid="shell-lang">Lang</div>
+vi.mock('../../../../components/atomic/Navigation/SarakShellLanguageSelector', () => ({
+    SarakShellLanguageSelector: () => <div data-testid="shell-lang">Lang</div>
 }));
 
-vi.mock('../ShellUserWidget', () => ({
-    ShellUserWidget: () => <div data-testid="shell-user" />
+vi.mock('../../../../components/atomic/Navigation/SarakShellUserWidget', () => ({
+    SarakShellUserWidget: () => <div data-testid="shell-user" />
 }));
 
 describe('TopbarNav', () => {
@@ -90,5 +90,47 @@ describe('TopbarNav', () => {
         const nav = container.querySelector('nav');
         expect(nav).not.toBeNull();
         expect(nav?.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:flex`);
+    });
+
+    it('item ativo recolhido: texto usa --sarak-nav-active-color, coerente com o SarakAppChrome', () => {
+        renderWithProvider(<TopbarNav {...mockProps} design={{ ...mockProps.design, isNavHidden: true }} />);
+        const activeItem = screen.getByRole('button', { name: 'Mod 1' });
+        expect(activeItem.className).toContain('var(--sarak-nav-active-color');
+    });
+
+    it('item ativo expandido (estado padrão): texto também usa --sarak-nav-active-color', () => {
+        renderWithProvider(<TopbarNav {...mockProps} />);
+        const activeItem = screen.getByRole('button', { name: 'Mod 1' });
+        expect(activeItem.className).toContain('var(--sarak-nav-active-color');
+    });
+
+    // Spec 05 §2.4 — tokens que faltavam só no Shell.
+    it('topbarTitleColor: o título do sistema pinta pelo token', () => {
+        renderWithProvider(<TopbarNav {...mockProps} />);
+        expect(screen.getByText('Sarak Test').getAttribute('style')).toContain('var(--sarak-topbar-title-color, #ffffff)');
+    });
+
+    it('topbarNoiseOpacity: a camada de ruído existe e, sem valor no tema, cai no default (0) — "não muda nada"', () => {
+        const { container } = renderWithProvider(<TopbarNav {...mockProps} />);
+        const noiseLayer = container.querySelector('.mix-blend-overlay') as HTMLElement | null;
+        expect(noiseLayer).not.toBeNull();
+        expect(noiseLayer!.style.opacity).toBe('var(--sarak-topbar-noise-opacity, 0)');
+    });
+
+    // os textos da própria lib seguem o idioma que vale.
+    describe('idioma que vale', () => {
+        it('a dica de redimensionar sai em português por padrão', () => {
+            renderWithProvider(<TopbarNav {...mockProps} />);
+            expect(screen.getByTitle('Arraste para ajustar a altura')).toBeInTheDocument();
+        });
+
+        it('a dica de redimensionar sai em inglês com `config.language: "en"`', () => {
+            render(
+                <SarakUIProvider config={{ language: 'en' }}>
+                    <TopbarNav {...mockProps} />
+                </SarakUIProvider>,
+            );
+            expect(screen.getByTitle('Drag to adjust the height')).toBeInTheDocument();
+        });
     });
 });

@@ -2,7 +2,7 @@ import React, { HTMLAttributes, useId, useMemo, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 
 /** Par ordenado [início, fim] de um intervalo contínuo. */
-export type RangeValue = [number, number];
+export type SarakRangeValue = [number, number];
 
 export interface SarakRangeSliderProps
     extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
@@ -11,15 +11,15 @@ export interface SarakRangeSliderProps
     max?: number;
     step?: number;
     /** Controlado: par [início, fim]. */
-    value?: RangeValue;
+    value?: SarakRangeValue;
     /** Não-controlado: valor inicial. */
-    defaultValue?: RangeValue;
+    defaultValue?: SarakRangeValue;
     disabled?: boolean;
     error?: string;
     /** Esconde as tooltips de valor sobre os thumbs. */
     hideTooltips?: boolean;
     /** Recebe o novo par já clampado/ordenado (Spec 32: `onChange(value)`). */
-    onChange?: (value: RangeValue) => void;
+    onChange?: (value: SarakRangeValue) => void;
 }
 
 const ACTIVE = 'var(--color-theme-primary, #00f2ff)))';
@@ -56,15 +56,15 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
 }) => {
     const reactId = useId();
     const errorId = `${reactId}-error`;
-    const [internal, setInternal] = useState<RangeValue>(defaultValue ?? [min, max]);
+    const [internal, setInternal] = useState<SarakRangeValue>(defaultValue ?? [min, max]);
     const current = value ?? internal;
-    const [low, high] = useMemo<RangeValue>(
+    const [low, high] = useMemo<SarakRangeValue>(
         () => [clamp(Math.min(...current), min, max), clamp(Math.max(...current), min, max)],
         [current, min, max],
     );
 
-    const commit = (next: RangeValue): void => {
-        const ordered: RangeValue = [Math.min(next[0], next[1]), Math.max(next[0], next[1])];
+    const commit = (next: SarakRangeValue): void => {
+        const ordered: SarakRangeValue = [Math.min(next[0], next[1]), Math.max(next[0], next[1])];
         if (value === undefined) setInternal(ordered);
         onChange?.(ordered);
     };

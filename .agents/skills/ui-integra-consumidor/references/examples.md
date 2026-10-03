@@ -19,7 +19,7 @@ npm install                      # o init só grava package.json; quem baixa é 
 // src/main.tsx
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { SarakUIProvider, SarakAppChrome, CustomizationPanel, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
 
 const TEMAS = SARAK_REFERENCE_THEMES;   // par COMPLETO — parta daqui, nunca de um tema do zero
 
@@ -36,7 +36,7 @@ function App() {
                 navItems={[{ id: 'inicio', label: 'Início', icon: 'Home', href: '/' }]}
                 onNavigate={(href) => { window.history.pushState({}, '', href); setRota(href); }}
             >
-                {rota.startsWith('/design') ? <CustomizationPanel /> : <MinhaTela />}
+                {rota.startsWith('/design') ? <SarakCustomizationPanel /> : <MinhaTela />}
             </SarakAppChrome>
         </SarakUIProvider>
     );
@@ -56,7 +56,7 @@ automática falhou (bundler removendo o side-effect); só nesse caso importe `@s
 ```tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
 import { ClientesModule } from './modules/ClientesModule';
 
 function safeRegister(id: string, component: React.ComponentType | undefined) {
@@ -64,7 +64,7 @@ function safeRegister(id: string, component: React.ComponentType | undefined) {
         console.warn(`[Sarak] Componente '${id}' é undefined. Verifique o import.`);
         return;
     }
-    registerLocalComponent(id, component);
+    sarakRegisterLocalComponent(id, component);
 }
 
 safeRegister('clientes', ClientesModule);
@@ -125,15 +125,19 @@ do consumidor.
 ## Exemplo Ruim — montar a interface em JSON
 
 ```tsx
-import { SarakUIProvider, SarakManifestRendererDefault } from '@sarak/lib-ui-core';
+import { SarakUIProvider } from '@sarak/lib-ui-core';
 import appManifest from './manifests/app.manifest.json';
 
-<SarakUIProvider>
-    <SarakManifestRendererDefault payload={appManifest} />   // ❌ não existe mais
-</SarakUIProvider>
+function App() {
+    return (
+        <SarakUIProvider>
+            {JSON.stringify(appManifest)}
+        </SarakUIProvider>
+    );
+}
 ```
 
-**Por que é ruim:** o motor de renderização por manifesto **foi REMOVIDO**. Esse import nem resolve.
+**Por que é ruim:** o JSON é só dado; a biblioteca não o converte em tela. Construa os módulos como componentes React.
 O modelo é 100% React: componentes e módulos escritos em TSX. Se algum material antigo mandar
 "montar telas em JSON", ele está desatualizado — confira no `catalog.json`.
 

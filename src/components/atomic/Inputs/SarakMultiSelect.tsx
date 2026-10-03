@@ -2,14 +2,14 @@ import React, { useId, useMemo, useRef, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
-export interface MultiSelectOption {
+export interface SarakMultiSelectOption {
     value: string;
     label: string;
 }
 
 export interface SarakMultiSelectProps {
     label?: string;
-    options: MultiSelectOption[];
+    options: SarakMultiSelectOption[];
     /** Controlado: lista de values selecionados. */
     value?: string[];
     /** Não-controlado: seleção inicial. */

@@ -62,7 +62,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 | Gate | Comando | Garante | Cobra | Custo |
 | --- | --- | --- | --- | --- |
-| Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril, com o `<Nome>Props` | R14 | ~1,3 s |
+| Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril **e o nome RESOLVE para o componente** (type checker, não presença sintática), com o `<Nome>Props` | R14 | ~5,6 s |
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
 | Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib como texto em componente consumidor-facing | R12 | ~1,3 s |
 | Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
@@ -76,6 +76,11 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
+| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
+| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
+
+| Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -156,6 +161,10 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `dev-kit` | **união dos 2 gatilhos** (§2.2.1 da [[02-enforcement-por-commit]]) | ✅ 1º | ✅ | — | ✅ |
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
+| `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
+| `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
+| `prefix` | — | ✅ *(via `build`)* | ✅ | — | ✅ | 
+| `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
@@ -262,7 +271,7 @@ depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cob
 | ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
 | ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto**, 23 temas · **18 isentos** de contraparte (os legados) · **25 pares-tema pulados**, que não são aprovação. Nasceu em 188 |
-| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **77 componentes, 0 faltas** |
+| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **0 faltas**, e todo nome **resolve** para o valor do componente. *(A contagem de componentes é fonte viva: o próprio comando a imprime — publicá-la aqui é o padrão que o achado **32** cataloga.)* |
 | `catalog:check` **(R17·R29)** | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **363 arquivos varridos, 0 violações** — o número que importa é o de violações |
 | `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
@@ -580,9 +589,9 @@ Três coisas são **proibidas**, sem exceção:
 
 - [x] Rodar os comandos deste documento reproduz exatamente a tabela da §3. As duas exceções que existiam foram fechadas: §3.1 (teste não-hermético, 2026-07-28) e §3.2 (subprojeto carona, 2026-07-29).
 - [x] Todo item de dívida tem `arquivo:linha` e a coluna "visível em gate".
-- [x] Todos os auditores (a lista viva está no array de `run_audit.mjs`, §2.1) e os 5 scripts de check foram lidos um por um antes de descritos.
+- [x] Todos os auditores (a lista viva está no array de `run_audit.mjs`, §2.1) e os scripts de check da §2.2 foram lidos um por um antes de descritos.
 - [x] Nenhum item do baseline foi corrigido nesta entrega.
-- [x] **Todo gate cita o número da regra que cobra** — incluindo os três que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22) e o Playwright, que declara **não** cobrar regra nenhuma *(2026-08-02, `plan-13`)*.
+- [x] **Todo gate cita o número da regra que cobra** — incluindo os que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22). O aparato de Playwright que existia em 2026-08-02 foi removido (§2.6); a medição de navegador de hoje é o `cromo-css-real:check` ([[11-testes-e-cobertura]] §7).
 
 # 8. Plano de testes (Quality Gate)
 
@@ -704,3 +713,39 @@ não só do `textColorMuted` mais apagado, e `minimalist-airy` (um dos dois `SAR
 eles. O dono decidiu a fronteira (36 pares reais, 4,5:1 sem relaxamento, alfa composto), o gate
 `auditor_contraste.mjs` nasceu vermelho por desenho e fechou na `plan-24-1` (2026-08-11) — baseline
 corrente **0 e 0** (§3). Detalhe em [[00-regras-e-invariantes]] R31.
+
+## 9.6 O gate de paridade de cromo — o vão que fechou e o que continua fora
+
+**O vão fechado:** o `chrome-token-parity:check` lia **um schema só** (`navigation.ts`), então todo token de
+cromo declarado fora dele ficava sem paridade cobrada — a regra de [[05-cromo-e-slots]] §2.4 valia para o
+schema inteiro e o gate valia para um arquivo. O escopo passou a incluir a seção de layout de
+`schema/system.ts`, lida por recorte de seção e não por lista de `id`.
+
+**O segundo vão, da mesma família, fechado junto:** um mapeamento de variável em `src/styles/` contava como
+consumo do cromo. Contava um cromo que **nunca lê o token** como consumidor dele — o gate ficava verde por
+cima da própria violação que existe para pegar. CSS global saiu do escopo de arquivo dos dois grupos.
+
+**O que ele continua sem ver, e está declarado no cabeçalho dele (R18):**
+
+- É **textual, não por AST**: prova que existe referência ao `id` ou a uma `cssVar`, não que o consumo
+  produz efeito. A prova de efeito é o teste de componente e, para CSS renderizado, o `cromo-css-real:check`.
+- **Token de layout declarado depois do marcador da seção de bordas** fica fora do recorte.
+- **Não distingue consumo de citação em comentário** — a mesma limitação do `auditor_ghostvars` (§4.3.c).
+- Não mede o **valor**: um consumo que lê o token e o ignora passa.
+
+## 9.7 O gate de prefixo — o que ele declara não ver
+
+**O vão é de ORIGEM DO DADO, e é deliberado:** o `prefix:check` lê `dist/index.d.ts`, o artefato
+**construído**, não a fonte. Um `dist/` velho o faz medir o passado — export novo ainda não construído passa
+sem ser visto. Por isso ele roda **na cadeia do `build`, depois do `public-types:check`**, e **não** no
+`pre-commit`: é o único ponto em que o `.d.ts` do commit existe. O mesmo raciocínio do `public-types:check`,
+que também mede o artefato.
+
+**Os outros dois limites, declarados no cabeçalho dele:** classifica pelo **formato** do nome (PascalCase,
+SCREAMING_SNAKE, `use`, camelCase) sem consultar o tipo declarado, e **não julga se o nome é bom** — só a
+convenção da espécie; e lê apenas a última linha agrupada `export { … };` do `.d.ts`, tratando o nome depois
+de `as` como o importável, de modo que mudança de formato do bundler exige mudar a análise junto.
+
+**O que ele fecha:** antes dele, a convenção vivia só na skill `ui-novo-componente` — metade da superfície
+nasceu antes dela e nada cobrava. Era o caso clássico de regra sem gate, que o §8 do [[00-contexto]]
+cataloga.

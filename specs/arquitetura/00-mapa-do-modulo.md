@@ -149,7 +149,7 @@ Cada companion carrega, no cabeçalho, **por que foi extraído**. Extração sem
 
 Toda variável consumida precisa de uma **fonte emissora real**. É o que `auditor_ghostvars.mjs` cobra ([[04-contrato-de-tokens-e-paridade]]).
 
-> ⚠️ **Exceção real encontrada, e não é decorativa:** existem **2 usos vivos de `--sx-*`** no CSS, como fallback de segundo nível — `src/styles/_utilities.css:80` e `:89`, ambos na forma `var(--sarak-range-active-bg, var(--sx-color-primary-base))`. Como `--sx-color-primary-base` não é emitida por ninguém, esse fallback resolve para vazio: o efeito prático é que a declaração cai por terra se o token principal faltar. As outras 3 ocorrências de `--sx-` em `src/` são comentários que documentam a proibição. Registrado em DIVERGÊNCIAS — **não corrigido aqui**.
+> ✅ **A proibição está cumprida no CSS** *(medido em 2026-10-02)*: não há nenhum `--sx-` em `src/styles/` — o fallback de segundo nível que existia no range foi trocado por token oficial. As ocorrências restantes de `--sx-` em `src/` são **comentários** que documentam a própria proibição (`SarakUploader.tsx:48`, `SarakContextMenu.tsx:9`, e um teste do `SarakSparkline`), e por serem prosa não resolvem variável nenhuma.
 
 ## 6.2 Os scripts não têm uma convenção só
 

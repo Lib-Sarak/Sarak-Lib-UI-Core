@@ -1,14 +1,20 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { IconMap, type IconFamily } from './IconMap';
-import { ICONE_DESCONHECIDO, type IconName } from './iconNames';
+import { SarakIconMap, type SarakIconFamily } from './IconMap';
+import { SARAK_ICONE_DESCONHECIDO, type SarakIconName } from './iconNames';
 
 export interface SarakIconProps {
-    name: IconName | string;
+    /** Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. */
+    name: SarakIconName | string;
+    /** Define a dimensão SVG; sem a prop, usa 24 px. */
     size?: number | string;
+    /** Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. */
     color?: string;
+    /** Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. */
     style?: React.CSSProperties;
+    /** Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. */
     onClick?: () => void;
 }
 
@@ -23,7 +29,7 @@ function avisarNomeDesconhecido(name: string): void {
     if (jaAvisados.has(name)) return;
     jaAvisados.add(name);
     console.warn(
-        `[Sarak:Icon] ícone "${name}" fora do contrato — renderizando "${ICONE_DESCONHECIDO}" no lugar. ` +
+        `[Sarak:Icon] ícone "${name}" fora do contrato — renderizando "${SARAK_ICONE_DESCONHECIDO}" no lugar. ` +
         'Os nomes válidos estão na seção "Ícones" de docs/component-catalog.md. ' +
         'Precisa de um nome novo? Acrescente-o em src/components/atomic/Icon/iconNames.ts (as três famílias são cobradas pelo compilador).'
     );
@@ -31,14 +37,14 @@ function avisarNomeDesconhecido(name: string): void {
 
 export const SarakIcon: React.FC<SarakIconProps> = ({ name, size = 24, className = '', color, style, onClick }) => {
     const { design } = useSarakUI();
-    const family = (design?.iconFamily || 'lucide') as IconFamily;
+    const family = (design?.iconFamily || 'lucide') as SarakIconFamily;
     const weight = design?.iconWeight || 'regular';
 
-    const triple = IconMap[name as IconName];
+    const triple = SarakIconMap[name as SarakIconName];
     if (!triple) avisarNomeDesconhecido(String(name));
 
     // Degradação visível, nunca tela quebrada: nome fora do contrato vira o ícone de aviso.
-    const ResolvedIcon = (triple ?? IconMap[ICONE_DESCONHECIDO])[family] ?? IconMap[ICONE_DESCONHECIDO].lucide;
+    const ResolvedIcon = (triple ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO])[family] ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO].lucide;
 
     if (family === 'phosphor') {
         return <ResolvedIcon size={size} className={className} weight={weight} color={color} style={style} onClick={onClick} />;

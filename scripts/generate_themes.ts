@@ -49,9 +49,9 @@ themes.forEach(theme => {
 
     const exportName = theme.id.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
 
-    const fileContent = `import { ThemePreset } from '../index';
+    const fileContent = `import { SarakThemePreset } from '../index';
 
-export const ${exportName}Theme: ThemePreset = {
+export const ${exportName}Theme: SarakThemePreset = {
     id: '${theme.id}',
     name: '${theme.name}',
     description: '${theme.description}',

@@ -10,19 +10,51 @@ import { twMerge } from 'tailwind-merge';
 import { useFormData } from './hooks/useFormData';
 
 export interface SarakFormProps<TData extends Record<string, unknown>> {
+    /**
+     * URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos
+     * os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento.
+     */
     endpoint: string;
+    /** Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto. */
     label?: string;
+    /**
+     * Define as chaves e os rótulos dos campos. Sem ela, as chaves de
+     * `formData` viram campos e `_` é trocado por espaço; em `create`, as
+     * chaves mapeadas ausentes começam como texto vazio.
+     */
     mapping?: Record<string, string>; // { field_name: "Label do Input" }
+    /**
+     * Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create`
+     * não busca, usa `initialData` e salva por padrão com `POST`.
+     */
     mode?: 'create' | 'edit';
+    /**
+     * Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da
+     * busca os substitui; em `create`, são preservados. A prop é lida na
+     * montagem, então mudanças posteriores não reinicializam o formulário.
+     */
     initialData?: TData;
+    /**
+     * Configura o destino e o método do botão Salvar; somente `actions[0]` é
+     * usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou
+     * `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem
+     * usados; em `DELETE`, `formData` vai como configuração, não como corpo.
+     */
     actions?: Array<{
         label: string;
         endpoint: string;
         method: 'POST' | 'PATCH' | 'DELETE';
     }>;
+    /**
+     * Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário
+     * salva e exibe o status, mas não notifica o chamador.
+     */
     onSuccess?: () => void;
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação. */
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade. */
     density?: 'compact' | 'standard' | 'spacious';
+    /** Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 

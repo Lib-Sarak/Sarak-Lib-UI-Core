@@ -82,16 +82,6 @@ describe('useStructuralStyles', () => {
             );
         });
 
-        it('getResponsiveStackStyles: `md` e `lg` usam os MESMOS números de BREAKPOINT_TABLET/DESKTOP', () => {
-            const { result } = renderHook(() => useStructuralStyles());
-            expect(result.current.getResponsiveStackStyles('md').className).toBe(
-                `flex flex-col @min-[${BREAKPOINT_TABLET}px]:flex-row`,
-            );
-            expect(result.current.getResponsiveStackStyles('lg').className).toBe(
-                `flex flex-col @min-[${BREAKPOINT_DESKTOP}px]:flex-row`,
-            );
-        });
-
         it('getHeaderStyles usa o MESMO número de BREAKPOINT_TABLET, escrito literal', () => {
             const { result } = renderHook(() => useStructuralStyles());
             expect(result.current.getHeaderStyles().className).toBe(

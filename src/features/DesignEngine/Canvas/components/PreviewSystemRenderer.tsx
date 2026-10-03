@@ -1,10 +1,10 @@
 import React from 'react';
-import { DeviceProvider } from '../../../../core/Provider/DeviceProvider';
-import { DesignScope } from '../../../../core/Design/components/DesignScope';
+import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
+import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import { SidebarNav } from '../../../../core/Shell/Components/SidebarNav';
 import { TopbarNav } from '../../../../core/Shell/Components/TopbarNav';
 import { DockNav } from '../../../../core/Shell/Components/DockNav';
-import { DiscoveredModule } from '../../../../core/Discovery/types';
+import { SarakDiscoveredModule } from '../../../../core/Discovery/types';
 import { SarakUIContextType } from '../../../../core/Provider/types';
 import { SarakDesignState } from '../../../../core/Provider/types';
 import { SarakTokenValue } from '../../../../core/Design/types';
@@ -99,8 +99,8 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
     const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
 
     return (
-        <DeviceProvider overrideDevice={previewDevice}>
-            <DesignScope
+        <SarakDeviceProvider overrideDevice={previewDevice}>
+            <SarakDesignScope
                 design={activeDesign}
                 className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
                 data-sx-texture={activeDesign.texture}
@@ -148,7 +148,7 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
                             toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
-                            groupedModules={mockGroupedModules as unknown as Record<string, DiscoveredModule[]>}
+                            groupedModules={mockGroupedModules as unknown as Record<string, SarakDiscoveredModule[]>}
                             setIsNavVisible={setPreviewNavVisible}
                             setIsSearchOpen={() => { }}
                             startResizing={startResizingSidebar}
@@ -183,7 +183,7 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
                                     toggleNav={() => setPreviewMobileNavOpen(false)}
                                     activeModuleId={activePreviewApp}
                                     setActiveModuleId={setActivePreviewApp}
-                                    groupedModules={mockGroupedModules as unknown as Record<string, DiscoveredModule[]>}
+                                    groupedModules={mockGroupedModules as unknown as Record<string, SarakDiscoveredModule[]>}
                                     setIsNavVisible={setPreviewNavVisible}
                                     setIsSearchOpen={() => { }}
                                     startResizing={() => { }}
@@ -196,7 +196,7 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
                     {isDock && (
                         <DockNav
                             design={activeDesign}
-                            discoveredModules={mockDiscoveredModules as unknown as DiscoveredModule[]}
+                            discoveredModules={mockDiscoveredModules as unknown as SarakDiscoveredModule[]}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
                             setIsSearchOpen={() => { }}
@@ -214,7 +214,7 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
                                 setIsSearchOpen={() => { }}
                                 activeModuleId={activePreviewApp}
                                 setActiveModuleId={setActivePreviewApp}
-                                discoveredModules={mockDiscoveredModules as unknown as DiscoveredModule[]}
+                                discoveredModules={mockDiscoveredModules as unknown as SarakDiscoveredModule[]}
                                 user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
                                 logout={() => { }}
                                 startResizing={startResizingTopbar}
@@ -231,8 +231,8 @@ const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
                         </main>
                     </div>
                 </div>
-            </DesignScope>
-        </DeviceProvider>
+            </SarakDesignScope>
+        </SarakDeviceProvider>
     );
 };
 

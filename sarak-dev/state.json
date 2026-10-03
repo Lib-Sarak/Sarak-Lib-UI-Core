@@ -7,7 +7,7 @@
   },
   "design": {
     "schemaFiles": {
-      "count": 28,
+      "count": 29,
       "files": [
         "advanced.ts",
         "animations.ts",
@@ -29,6 +29,7 @@
         "motion.ts",
         "navigation.ts",
         "overlays.ts",
+        "preferences.ts",
         "scrollbars.ts",
         "specialized.ts",
         "status.ts",
@@ -44,16 +45,16 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 423,
-        "idsUnicos": 423
+        "entradasBrutas": 427,
+        "idsUnicos": 427
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 423
+        "tokens": 427
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 423,
+        "ids": 427,
         "responsivos": 40
       }
     }
@@ -81,69 +82,89 @@
       "flows"
     ],
     "publicos": {
-      "count": 77,
+      "count": 96,
       "nomes": [
-        "DEFAULT_COLUMN_WIDTH",
-        "ExpandableCard",
-        "FilterSelect",
-        "HelpButton",
-        "ImageCard",
-        "MIN_COLUMN_WIDTH",
+        "SARAK_DEFAULT_COLUMN_WIDTH",
+        "SARAK_MIN_COLUMN_WIDTH",
         "SarakAccordion",
         "SarakActionCard",
+        "SarakAlert",
         "SarakAnalyticalPage",
         "SarakAppChrome",
         "SarakAppChromeMobile",
         "SarakAuthScreen",
+        "SarakAutocomplete",
+        "SarakAvatar",
         "SarakBadge",
         "SarakBreadcrumbs",
         "SarakButton",
+        "SarakCard",
+        "SarakCardBody",
+        "SarakCardFooter",
         "SarakCardGrid",
+        "SarakCardHeader",
         "SarakCatalogGrid",
         "SarakChart",
         "SarakChartEngine",
         "SarakChat",
         "SarakChatEngine",
+        "SarakCheckbox",
         "SarakContextMenu",
+        "SarakCurrencyInput",
         "SarakDataEmpty",
         "SarakDataGrid",
         "SarakDataGridImpl",
         "SarakDataTable",
         "SarakDataTableImpl",
         "SarakDatePicker",
+        "SarakDivider",
         "SarakDrawer",
         "SarakEmptyState",
+        "SarakExpandableCard",
         "SarakExpandableMatrix",
+        "SarakFieldError",
+        "SarakFilterSelect",
         "SarakFlex",
         "SarakFlowEngine",
         "SarakForm",
         "SarakFormGroup",
         "SarakGrid",
+        "SarakHelpButton",
         "SarakHidden",
         "SarakIcon",
         "SarakIconButton",
+        "SarakImageCard",
         "SarakInput",
         "SarakKanban",
         "SarakLightbox",
         "SarakLink",
         "SarakManagementGrid",
         "SarakMarkdownRenderer",
+        "SarakMaskedInput",
+        "SarakMenuItem",
         "SarakModal",
         "SarakMultiSelect",
         "SarakOverlayProvider",
         "SarakPDFViewer",
         "SarakPageTransition",
         "SarakPagination",
+        "SarakRadio",
         "SarakRangeSlider",
         "SarakRichText",
         "SarakScrim",
         "SarakSearch",
         "SarakSearchCard",
         "SarakSelect",
+        "SarakShellLanguageSelector",
         "SarakShellNav",
+        "SarakShellSearchWidget",
+        "SarakShellThemeToggle",
+        "SarakShellUserWidget",
         "SarakSkeleton",
         "SarakSlider",
+        "SarakSocialButton",
         "SarakSparkline",
+        "SarakSpinner",
         "SarakSplitPane",
         "SarakSpotlight",
         "SarakStats",
@@ -158,8 +179,7 @@
         "SarakTooltip",
         "SarakTreeView",
         "SarakTypography",
-        "SarakUploader",
-        "SocialButton"
+        "SarakUploader"
       ]
     }
   },
@@ -181,6 +201,14 @@
       "comando": "node scripts/generate-component-catalog.mjs --check"
     },
     {
+      "nome": "npm run chrome-token-parity:check",
+      "comando": "node gates/scripts/contrato/check-chrome-token-parity.mjs"
+    },
+    {
+      "nome": "npm run class-merge:check",
+      "comando": "node gates/scripts/contrato/check-class-merge.mjs"
+    },
+    {
       "nome": "npm run composicao-atomica:check",
       "comando": "node gates/scripts/audit/auditor_composicaoatomica.mjs"
     },
@@ -195,6 +223,10 @@
     {
       "nome": "npm run coverage:check",
       "comando": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs"
+    },
+    {
+      "nome": "npm run cromo-css-real:check",
+      "comando": "npm run build && playwright test --config=browser-tests/playwright.config.ts"
     },
     {
       "nome": "npm run deep-import:check",
@@ -237,6 +269,10 @@
       "comando": "node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check"
     },
     {
+      "nome": "npm run prefix:check",
+      "comando": "node gates/scripts/contrato/check-public-prefix.mjs"
+    },
+    {
       "nome": "npm run public-types:check",
       "comando": "node gates/scripts/contrato/check-public-types-parity.mjs --check"
     },
@@ -251,6 +287,10 @@
     {
       "nome": "npm run token-types:check",
       "comando": "npx tsx scripts/generate-token-types.ts --check"
+    },
+    {
+      "nome": "npm run trail-citation:check",
+      "comando": "node gates/scripts/contrato/check-trail-citation.mjs"
     },
     {
       "nome": "npm run zero-brand:check",
@@ -334,7 +374,11 @@
       "009-persistencia-tenant-aware.md",
       "010-temas-salvos-pelo-usuario.md",
       "011-tema-salvo-por-uma-porta-de-escrita.md",
-      "012-escrita-git-sob-autorizacao-do-dono.md"
+      "012-escrita-git-sob-autorizacao-do-dono.md",
+      "013-item-de-navegacao-como-atomo-proprio.md",
+      "014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md",
+      "015-metrica-do-item-de-navegacao-horizontal.md",
+      "016-preferencias-do-usuario-separadas-do-tema.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

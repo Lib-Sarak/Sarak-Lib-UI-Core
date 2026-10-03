@@ -191,3 +191,44 @@ describe('useDesignManager — onSave recebe o id do tema ativo (plan-42)', () =
         expect(result.current.persistDesign).toBe(persistDesignBeforeThemeChange);
     });
 });
+
+describe('useDesignManager — id de tema removido/inexistente semeia com a referência do modo pedido (R33)', () => {
+    let warnSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+        warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warnSpy.mockRestore();
+    });
+
+    it('initialTheme desconhecido, sem config.mode: semeia com a referência ESCURA (sarak-sovereign) e avisa', () => {
+        const { result } = renderHook(() => useDesignManager({ ...baseProps(), initialTheme: 'tema-removido-do-catalogo' }));
+
+        expect(result.current.design.mode).toBe('dark');
+        expect(result.current.design.colorBgBody).toBe('#050505');
+        expect(warnSpy).toHaveBeenCalled();
+        expect(warnSpy.mock.calls.some((call: unknown[]) => String(call[0]).includes('tema-removido-do-catalogo'))).toBe(true);
+    });
+
+    it('initialTheme desconhecido, com config.mode "light": semeia com a referência CLARA (minimalist-airy)', () => {
+        const { result } = renderHook(() =>
+            useDesignManager({
+                ...baseProps(),
+                initialConfig: { mode: 'light' } as SarakThemePayload,
+                initialTheme: 'tema-removido-do-catalogo',
+            }),
+        );
+
+        expect(result.current.design.mode).toBe('light');
+        expect(result.current.design.colorBgBody).toBe('#F9FAFB');
+    });
+
+    it('activeThemeId (a "porta persistida" que o consumidor restaura) com o mesmo id removido tem o mesmo comportamento de fallback', () => {
+        const { result } = renderHook(() => useDesignManager({ ...baseProps(), activeThemeId: 'tema-removido-do-catalogo' }));
+
+        expect(result.current.design.mode).toBe('dark');
+        expect(warnSpy).toHaveBeenCalled();
+    });
+});

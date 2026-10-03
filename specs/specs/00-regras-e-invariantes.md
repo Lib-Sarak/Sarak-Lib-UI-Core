@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**34 regras: 31 verificáveis (§2) e 3 de conduta (§3).**
+**37 regras: 34 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -80,8 +80,8 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
-| ⚠️ escopo menor que a regra | **9** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** |
+| ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
+| ⚠️ escopo menor que a regra | **11** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -90,8 +90,9 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > (escopo do gate, e o gate de R8.1). Medido o vão inteiro — não há **componente ou hook** fora do alcance
 > de `auditor_coverage.mjs` — e a linha `**Estado:**` de R8 foi alinhada a ✅. Os dois voltam a concordar.
 >
-> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **35**, não 34: a 35ª é a sub-regra **R8.1**, que não entra na
-> contagem das regras numeradas (§1.3 conta 34).
+> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **uma a mais** que a contagem acima: a extra é a sub-regra
+> **R8.1**, que não entra na contagem das regras numeradas. Quem confere a contagem usa
+> `grep -c "^## R"`, que conta só as numeradas.
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
@@ -410,6 +411,12 @@ de design no JSX continua sem detector.
 use `SarakButton`, `SarakInput`, `SarakSelect`. E proibido `switch`/`case` de design ou `<style>` de roteamento
 dentro do JSX: essa decisão mora no Hook Controlador.
 
+⚠️ **Trocar o elemento cru pelo átomo NÃO basta — tem de ser o átomo do PAPEL certo.** Item de menu não é
+botão de ação: o átomo dele é **`SarakMenuItem`**, não `SarakButton`. Cumprir a R10 com o átomo errado
+troca um defeito (vazamento de especificidade) por outro (o item herda a métrica de ação), e nenhum gate
+enxerga o segundo. É o que aconteceu com o cromo inteiro e está registrado em
+[[013-item-de-navegacao-como-atomo-proprio]].
+
 **A fronteira, explícita** *(decisão do dono, 2026-08-05)* — porque "template ou componente pré-montado" não é
 verificável e foi o que impediu o gate de nascer:
 
@@ -582,11 +589,13 @@ export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 ```
 
-**Cobrada por:** `npm run barrel:check`. A contagem corrente de componentes e a confirmação de zero falta vivem em [[01-gates-e-baseline]] §3 *(a contagem já caiu uma vez, quando a `plan-09` removeu o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
+**Cobrada por:** `npm run barrel:check`, que prova **resolução**, não registro: ele monta um `ts.Program` sobre `src/index.ts` e segue cada export pelo *type checker* até o símbolo final, exigindo que o nome resolva para um **valor** declarado dentro das raízes de componente. Registro sintático não basta — em ES/TS um `export` explícito **sombreia** o `export *` em silêncio, e um nome pode estar no barril resolvendo para outra coisa. A contagem corrente de componentes e a confirmação de zero falta vivem em [[01-gates-e-baseline]] §3 *(a contagem já caiu uma vez, quando a `plan-09` removeu o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
 
 > ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
 >
-> ⚠️ **O vão que CONTINUA de pé, declarado.** Categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos (`scripts/publicComponents.mjs:167-172`) — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio.
+> ⚠️ **O vão que CONTINUA de pé, declarado.** Categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos (`scripts/publicComponents.mjs:167-172`) — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio. **É este vão que mantém a regra em ⚠️** — a prova de resolução não o alcança.
+>
+> ⚠️ **Dois vãos NOVOS, declarados junto com a prova mais funda que os criou.** (1) "O valor **é** o componente" é conferido por **prefixo de caminho** contra `src/components/{atomic,engines,Layout}/`, não por identidade de declaração: dois componentes homônimos em categorias diferentes ainda passariam um pelo outro. (2) Só a resolução do **valor** subiu para o *type checker*; a metade do `<Nome>Props` continua por AST sintática, porque Props não tem o mesmo histórico de colisão medido. Os quatro limites estão no cabeçalho do próprio gate.
 
 ---
 
@@ -1000,7 +1009,7 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
   — a causa de o texto de botão primário sair ilegível na conversão.
 - ✅ **E desde a `plan-26` a segunda passada mede a contraparte AUTORADA**, não a sintetizada, quando o tema
   declara uma. O gate deixou de verificar o que a lib derivou e passa a verificar **o que alguém escreveu** —
-  e **exige** contraparte fora da lista de isenção dos 18 legados, imprimindo o número de isentos.
+  e **exige** contraparte fora da lista de isenção dos temas legados, imprimindo o número de isentos.
 
 **O que o gate ainda NÃO vê** — e é por isso que a linha segue ⚠️:
 
@@ -1120,6 +1129,147 @@ ERRADO   exportar useSarakUIOptional — vira contrato público sem querer
 
 **Cobrada por:** `src/core/Provider/__tests__/SarakUIProvider.test.tsx`, na suíte (`npx vitest run`, Anel 3 do
 `pre-push`). Consumido hoje por `SarakButton`, `SarakIconButton`, `SarakInput` e `useStructuralStyles`.
+
+---
+
+## R35 — A classe do chamador vence a do átomo
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate distingue *"concatena"* de *"usa merge"*, e **não
+confere a ordem** dentro da chamada de merge; varre só `src/components/atomic/**`.
+
+**Enunciado.** Átomo que aceita `className` compõe a classe **por merge**, pela porta única
+`mergeSarakClasses` (`src/components/atomic/hooks/mergeSarakClasses.ts`), com a `className` recebida como
+**último** argumento. Para a mesma propriedade CSS, a classe do chamador **substitui** a do átomo.
+
+**Por quê.** Duas utilitárias Tailwind que escrevem a mesma propriedade têm a **mesma especificidade**:
+quem vence é a que aparece depois **no stylesheet emitido**, não a que aparece depois no atributo `class`.
+Concatenar não sobrescreve — empilha, e entrega o resultado à ordem de emissão do Tailwind, que é acidental
+e muda quando a ferramenta muda. Um override que funciona hoje por sorte deixa de funcionar amanhã sem que
+uma linha de código mude.
+
+**A configuração das utilitárias próprias é obrigatória, não opcional.** `tailwind-merge` só resolve o
+conflito de classe que ele **reconhece no grupo certo**; classe que ele não conhece passa a **coexistir**
+com a concorrente em vez de substituí-la — o mesmo defeito, agora silencioso. As desta base:
+
+| Classe | Onde nasce | Grupo |
+| --- | --- | --- |
+| `text-2xs` · `text-3xs` | `src/styles/_theme.css` (tokens `@theme`) | `font-size` |
+| `rounded-btn` | `src/styles/_theme.css` (classe CSS avulsa) | `rounded` |
+| `font-tab` | `src/styles/_typography.css` (classe CSS avulsa) | `font-family` |
+
+**Classe própria que nascer depois precisa ser registrada ali, ou não conflita com nada.**
+
+⚠️ **Merge é de classe, nunca de estilo.** O `style` inline que o Design Engine devolve não passa por aqui
+e não é tocado.
+
+⚠️ **Conflito entre grupos diferentes não existe, e é onde a regra engana.** `min-w-fit` está em
+`min-width`, não em `width`: ele **sobrevive** a um `w-full` e mantém o piso de largura no conteúdo. Largura
+cheia se resolve **na origem** — `useButtonLayoutStyles` deixa de emitir o piso quando a largura cheia é
+pedida —, não pelo merge.
+
+**Certo × Errado.**
+
+```
+CERTO    mergeSarakClasses(base, variante, className)   // className por último
+ERRADO   `${base} ${variante} ${className}`             // empilha; a ordem de emissão decide
+ERRADO   mergeSarakClasses(className, base)             // merge feito, ordem errada: o átomo vence
+ERRADO   extendTailwindMerge(...) dentro do átomo       // a configuração tem uma porta só
+```
+
+**Cobrada por:** `check-class-merge.mjs` (`npm run class-merge:check`), no Anel 1 do `.githooks/pre-commit`
+**e** no passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`. **Os dois lugares são
+obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O
+comportamento resultante tem teste próprio (`mergeSarakClasses.test.ts`, uma asserção por utilitária
+própria; `SarakButton.test.tsx`, `SarakIconButton.test.tsx`).
+
+**O vão, e a dívida declarada.** O gate não vê: átomo que renomeie a prop na desestruturação; a **ordem**
+dos argumentos do merge; nada fora de `src/components/atomic/**` (`Layout/`, `core/`, `features/`). E a
+allowlist `gates/allowlists/classMergeExclusions.mjs` declara, com motivo por entrada, os átomos que ainda
+concatenam — convertê-los é trabalho futuro. **Contagem corrente: na saída do próprio comando**, nunca
+nesta prosa.
+
+---
+
+## R36 — O código não cita o rastro de execução
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só as linhas **adicionadas** no commit local; o
+legado, a CI e os arquivos isentos ficam fora.
+
+**Enunciado.** Comentário, string e nome em `src/`, `gates/`, `scripts/` e `bin/` não citam plan, veredito
+nem achado de veredito. Explique a decisão no próprio código, ou cite a spec **fixa** que é dona do fato.
+`achado N` só aparece junto do nome da spec que o numera (`15-divida-conhecida`).
+
+**Por quê.** A plan sai do disco na síntese, e o veredito vive dentro dela: a citação vira ponteiro morto no
+dia seguinte. Nada cobrava a norma mecanicamente, e ela custou oito rodadas de correção numa só campanha — o
+revisor inclusive deixou passar uma. Numa medição de 2026-09-13, os três padrões apareciam mais de 500 vezes
+no código; por isso o gate cobra só o que entra, e a regra fecha a classe daqui para frente sem exigir limpar
+o legado antes.
+
+**Certo × Errado.**
+
+```
+ERRADO   // corrigido na plan-12
+ERRADO   // achado 3 do veredito de 2026-09-10
+ERRADO   // (achado 3)                                   ← ambíguo: de qual documento?
+CERTO    // o fallback precisa do sinal porque o token é magnitude (01-gates-e-baseline §4.1)
+CERTO    // achado 40, 15-divida-conhecida               ← spec fixa, numeração estável
+```
+
+**Cobrada por:** `check-trail-citation.mjs` (`npm run trail-citation:check`), no Anel 1 do
+`.githooks/pre-commit`, sobre as linhas **adicionadas** do staged (`--staged`). Sem flag, o mesmo gate lê o
+worktree contra o `HEAD` **mais os arquivos não rastreados** — é o modo de quem revisa. Caminho com acento é
+lido sem escape. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
+motivo, os arquivos cujo domínio é o próprio identificador de plan. O gate também reprova entrada **sem
+motivo** ou de arquivo que **não existe mais**.
+
+**O vão.**
+- **O legado não é cobrado.** Só linha adicionada.
+- **A CI não roda o gate.** O runner não tem staging, e um intervalo de commits incluiria histórico anterior
+  ao gate. É a mesma razão do Anel 0.
+- **Documento não entra.** `specs/`, `docs/` e `.agents/` ficam fora; em `docs/migracoes.md`, a menção à
+  plan é procedência.
+- **A isenção é do arquivo inteiro.** Nome de teste ou comentário num arquivo isento passa sem ser visto. A
+  revisão confere esses arquivos por grep.
+- **É textual.** Outra forma de apontar para o rastro, como *"na campanha anterior"*, não é vista.
+
+---
+
+## R37 — Todo nome do barril público carrega o prefixo da biblioteca
+
+**Estado:** ✅ **cobrada por gate**, com allowlist vazia.
+
+**Enunciado.** Nome entregue pelo barril público segue a convenção da sua espécie: PascalCase começa com
+`Sarak`; constante SCREAMING_SNAKE começa com `SARAK_`; hook começa com `use`; demais funções camelCase
+**contêm** `Sarak`. O tipo de props acompanha o componente (`SarakFooProps`). Exceção só com motivo escrito
+na allowlist.
+
+**Por quê.** O consumidor lê a linha de `import` e precisa saber o que é da lib. Nome genérico colide com o
+vocabulário do projeto que importa — foi o integrador do primeiro consumidor real quem reportou, e enquanto
+houver um consumidor só, quebrar a API é mais barato do que será depois. A convenção já existia na skill
+`ui-novo-componente`, mas valia pela metade: metade da superfície nasceu antes dela, e não havia gate. Regra
+sem gate não é cobrável.
+
+**Certo × Errado.**
+
+```
+ERRADO   export type { CatalogItem }              ← colide com o tipo local do consumidor
+ERRADO   export { reorder, widthOf }              ← nome genérico de função
+CERTO    export type { SarakCatalogItem }
+CERTO    export { sarakReorder, sarakWidthOf }
+CERTO    export { useSarakDevice, getSarakModule } ← hook e função que já contêm Sarak
+```
+
+**Cobrada por:** `check-public-prefix.mjs` (`npm run prefix:check`), na cadeia do `npm run build`, logo
+depois do `public-types:check`. A allowlist `gates/allowlists/publicPrefixExclusions.mjs` exige motivo por
+entrada e **se autolimpa**: entrada de nome já conforme ou inexistente derruba o gate. O gate nomeia o nome
+**e a espécie** ao reprovar.
+
+**O vão.**
+- **Lê o artefato, não a fonte.** `dist/index.d.ts` desatualizado faz o gate medir o passado — por isso ele
+  roda depois do `build`, nunca no `pre-commit`.
+- **Julga formato, não qualidade.** `SarakCoisa` passa; se o nome é bom, decide a revisão.
+- **Lê só a última linha agrupada `export { … };`** do `.d.ts`. Se o bundler mudar esse formato, a análise
+  textual precisa mudar junto.
 
 ---
 
@@ -1260,6 +1410,8 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
+| **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
+| **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1278,6 +1430,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verify_parity.ts` | R4 | `gates/scripts/audit/` | ✅ via `auditor_paridade.mjs` |
 | `verify_presets.ts` | R5 | `gates/scripts/audit/` | ✅ via `auditor_presets.mjs` |
 | `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `gates/scripts/contrato/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
+| `check-public-prefix.mjs` | **R37** | `gates/scripts/contrato/` | ✅ `prefix:check` (cadeia do `build`, depois do `public-types:check`) |
 | `check-package-contents.mjs` | **R19** | `gates/scripts/contrato/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
 | `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` — geram **e** conferem, por isso **não** migram | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
 | `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `gates/scripts/release/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
@@ -1291,6 +1444,8 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `check-no-deep-import.mjs` | **R27** | `gates/scripts/contrato/` | ✅ `npm run deep-import:check` (Anel 1) |
 | `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
+| **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
+| **`check-trail-citation.mjs`** | **R36** | `gates/scripts/contrato/` | ✅ Anel 1 do `pre-commit` (`--staged`) · `npm run trail-citation:check` para revisão — **só local**, sem CI; allowlist em `gates/allowlists/trailCitationExclusions.mjs` |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 

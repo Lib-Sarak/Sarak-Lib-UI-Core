@@ -1,8 +1,10 @@
 import { SarakDesignState } from '../types';
 import { PAYLOAD_EXTRA_KEYS } from '../payloadExtraKeys';
-import { getAllDesignTokens } from '../../Design/master-map';
-import { DESIGN_MANIFEST } from '../manifest';
-import type { DesignToken } from '../../Design/types';
+import { sarakGetAllDesignTokens } from '../../Design/master-map';
+import { SARAK_DESIGN_MANIFEST } from '../manifest';
+import { isSafeCssString, isSafeMediaString } from './cssSafety';
+import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
+import type { SarakDesignToken } from '../../Design/types';
 
 /**
  * Sarak Design Validation (v12.0 — Spec 44 §2.3)
@@ -14,11 +16,10 @@ import type { DesignToken } from '../../Design/types';
  * `console.warn`, nunca injetado. É isto que torna localStorage e um JSON de
  * tema escrito à mão seguros por construção, independente de onde vieram.
  */
-
-let tokenIndexCache: Map<string, DesignToken> | null = null;
-const getTokenIndex = (): Map<string, DesignToken> => {
+let tokenIndexCache: Map<string, SarakDesignToken> | null = null;
+const getTokenIndex = (): Map<string, SarakDesignToken> => {
     if (!tokenIndexCache) {
-        tokenIndexCache = new Map(getAllDesignTokens().map((token) => [token.id, token]));
+        tokenIndexCache = new Map(sarakGetAllDesignTokens().map((token) => [token.id, token]));
     }
     return tokenIndexCache;
 };
@@ -31,14 +32,8 @@ const getTokenIndex = (): Map<string, DesignToken> => {
 // por enum/faixa numérica como os tokens do catálogo principal.
 const ALLOWED_EXTRA_KEYS = new Set<string>([
     ...(PAYLOAD_EXTRA_KEYS as readonly string[]),
-    ...Object.keys(DESIGN_MANIFEST)
+    ...Object.keys(SARAK_DESIGN_MANIFEST)
 ]);
-
-/** Caracteres que permitem escapar de uma declaração CSS (`--x:VALOR;`) ou de
- * uma tag `<style>` (breakout de HTML). Nenhum valor de tema pode contê-los. */
-const CSS_BREAKOUT_PATTERN = /[<>{};]/;
-
-const isSafeCssString = (value: string): boolean => !CSS_BREAKOUT_PATTERN.test(value);
 
 /** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)` e as
  * palavras-chave seguras. Rejeita qualquer outra coisa (inclui `url()`, que não
@@ -51,12 +46,12 @@ const isValidColor = (value: unknown): boolean =>
 const isFiniteNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);
 
-const getNumberBounds = (token: DesignToken): { min?: number; max?: number } => ({
+const getNumberBounds = (token: SarakDesignToken): { min?: number; max?: number } => ({
     min: token.min ?? token.constraints?.min,
     max: token.max ?? token.constraints?.max
 });
 
-const clampNumber = (value: number, token: DesignToken): number => {
+const clampNumber = (value: number, token: SarakDesignToken): number => {
     const { min, max } = getNumberBounds(token);
     let result = value;
     if (typeof min === 'number') result = Math.max(result, min);
@@ -64,7 +59,7 @@ const clampNumber = (value: number, token: DesignToken): number => {
     return result;
 };
 
-const getEnumOptions = (token: DesignToken): string[] | null => {
+const getEnumOptions = (token: SarakDesignToken): string[] | null => {
     const options = token.constraints?.options ?? token.options;
     if (!options || options.length === 0) return null;
     return options.map((opt) => String(opt.value ?? opt.id ?? '')).filter(Boolean);
@@ -85,7 +80,7 @@ const isSafeExtraValue = (value: unknown): boolean => {
 
 /** Valida um valor de RESPONSIVE (`{ desk, tab, mob }`) token a token, clampando
  * cada eixo dentro dos limites do token — nunca deixa passar um eixo fora do tipo. */
-const validateResponsiveValue = (token: DesignToken, value: Record<string, unknown>): Record<string, number> | null => {
+const validateResponsiveValue = (token: SarakDesignToken, value: Record<string, unknown>): Record<string, number> | null => {
     const axes: Array<'desk' | 'tab' | 'mob'> = ['desk', 'tab', 'mob'];
     const result: Record<string, number> = {};
     for (const axis of axes) {
@@ -98,7 +93,7 @@ const validateResponsiveValue = (token: DesignToken, value: Record<string, unkno
 
 /** Tipo-checa e (quando aplicável) clampa um valor contra o contrato do token.
  * Retorna `undefined` quando o valor está fora do contrato — o chamador descarta. */
-const coerceTokenValue = (token: DesignToken, value: unknown): unknown => {
+const coerceTokenValue = (token: SarakDesignToken, value: unknown): unknown => {
     const isResponsiveShape = value !== null && typeof value === 'object' && !Array.isArray(value) && 'desk' in (value as Record<string, unknown>);
 
     if (token.isResponsive && isResponsiveShape) {
@@ -121,11 +116,12 @@ const coerceTokenValue = (token: DesignToken, value: unknown): unknown => {
         }
         case 'color':
             return isValidColor(value) ? value : undefined;
+        case 'image':
+        case 'file':
+            return typeof value === 'string' && isSafeMediaString(value) ? value : undefined;
         case 'string':
         case 'text':
         case 'font':
-        case 'image':
-        case 'file':
         default:
             return typeof value === 'string' && isSafeCssString(value) ? value : undefined;
     }
@@ -140,7 +136,7 @@ export interface TokenContractDrift {
 }
 
 /** Descreve, para humano, por que `coerceTokenValue` rejeitou o valor. */
-const describeDriftReason = (token: DesignToken, value: unknown): string => {
+const describeDriftReason = (token: SarakDesignToken, value: unknown): string => {
     if (token.isResponsive && value !== null && typeof value === 'object' && !Array.isArray(value) && 'desk' in (value as Record<string, unknown>)) {
         return 'eixo responsivo não-numérico (tipo)';
     }
@@ -155,6 +151,9 @@ const describeDriftReason = (token: DesignToken, value: unknown): string => {
             return getEnumOptions(token) ? 'enum ausente (valor fora de constraints.options)' : 'tipo (esperado string segura)';
         case 'color':
             return 'formato de cor inválido (fora de COLOR_PATTERN)';
+        case 'image':
+        case 'file':
+            return 'mídia inválida (nem https:, nem data: de imagem/vídeo bem-formado)';
         default:
             return 'string insegura (fora de isSafeCssString)';
     }
@@ -189,6 +188,11 @@ export const validateDesign = (design: unknown): SarakDesignState => {
 
     Object.entries(input).forEach(([key, value]) => {
         if (value === null || value === undefined || value === '') return;
+
+        if (REMOVED_TOKEN_KEYS.has(key)) {
+            warnRemovedTokenKeyOnce(key, value);
+            return;
+        }
 
         const token = tokenIndex.get(key);
         if (token) {

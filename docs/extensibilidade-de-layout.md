@@ -9,7 +9,7 @@
 | | **(a) Fundo/atmosfera GLOBAL por tema** | **(b) Conteúdo por REGIÃO (slots)** |
 | --- | --- | --- |
 | Onde aparece | atrás de **toda a aplicação** | numa **região do cromo** (topo, rodapé, sidebar, camada de fundo do cromo) |
-| Como se define | **dado** (tokens do tema / CustomizationPanel) | **props `ReactNode`** no `SarakAppChrome` |
+| Como se define | **dado** (tokens do tema / SarakCustomizationPanel) | **props `ReactNode`** no `SarakAppChrome` |
 | Quem troca | quem troca o **tema** (atinge todas as telas) | o **código do app** que monta o cromo |
 | Use quando | quer ambiente/marca d'água/plano de fundo do produto inteiro | quer um banner, rodapé, cabeçalho de sidebar, logo animado, arte só do cromo |
 
@@ -25,21 +25,20 @@ pelo `SarakUIProvider`, zero-config) desenha o fundo da aplicação inteira. **N
 componente para isso** — preenche-se o tema (Configuração, não Expansão).
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
-const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
-  ...t,
+const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
+  id: 'meu-tema', name: 'Meu Tema',
   design: {
-    ...t.design,
-    globalBackgroundImageUrl: '/midia/fundo.webm', // imagem OU vídeo (animação)
+    globalBackgroundImageUrl: '/midia/fundo.webm', // imagem OU vídeo (animação), do SEU servidor
     globalBackgroundOpacity: 0.35,
     globalBackgroundBlur: 4,
     texture: 'aurora',          // textura/atmosfera procedural (sem arquivo)
     bgNoiseAnimation: true,     // ruído animado
   },
-}));
+});
 
-<SarakUIProvider customThemes={MEUS_TEMAS} initialTheme={MEUS_TEMAS[0].id}>
+<SarakUIProvider customThemes={[MEU_TEMA]} initialTheme={MEU_TEMA.id}>
   <App />
 </SarakUIProvider>
 ```
@@ -52,7 +51,7 @@ const MEUS_TEMAS = SARAK_REFERENCE_THEMES.map((t) => ({
   contraste (overlay condicional por luminância da mídia).
 - **Modo Embarcado** (`mode: 'embedded'`): overlays de página inteira ficam desligados por
   desenho — a lib não é dona da página do host. Nesse modo, use os **slots** (nível b).
-- Tokens relacionados (schema vivo, `getAllDesignTokens()`): `globalBackgroundImageUrl`,
+- Tokens relacionados (schema vivo, `sarakGetAllDesignTokens()`): `globalBackgroundImageUrl`,
   `globalBackgroundOpacity`, `globalBackgroundBlur`, `globalBackgroundBlendMode`, `texture`,
   `textureOpacity`, `atmosphereNoiseOpacity`, `bgNoiseAnimation`, `bgGradientMode`.
 

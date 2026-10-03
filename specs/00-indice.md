@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "57"
+proximo_numero_plan: "99"
 ---
 
 # 0. O que é este arquivo
@@ -42,7 +42,60 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
+| 1 | [plan-87-processo-que-a-pratica-furou](plan/plan-87-processo-que-a-pratica-furou.md) | Fazer cada regra de processo que só existia em prosa ganhar um gatilho mecânico ou ser reescrita para o que a prática mostrou ser exequível | — | 🔴 A executar | specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md + specs/02-enforcement-por-commit.md + specs/17-contrato-de-operacao-git.md |
+| 2 | [plan-92-selo-de-build-em-runtime](plan/plan-92-selo-de-build-em-runtime.md) | Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao | — | 🔴 A executar | specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md |
+| 3 | [plan-93-persistencia-fecha-o-ciclo-do-tema](plan/plan-93-persistencia-fecha-o-ciclo-do-tema.md) | Fazer o par design mais id do tema sobreviver ao ciclo inteiro de persistencia, por qualquer caminho de aplicacao, sem gravacao no boot e sem o consumidor precisar de guarda propria | — | 🔴 A executar | specs/09-temas-e-presets.md + arquitetura/03-superficie-publica.md |
+| 4 | [plan-94-um-cromo-so](plan/plan-94-um-cromo-so.md) | Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade | plan-93-persistencia-fecha-o-ciclo-do-tema | 🔴 A executar | adr/017 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md |
+| 5 | [plan-95-icones-por-uma-porta-aberta-ao-consumidor](plan/plan-95-icones-por-uma-porta-aberta-ao-consumidor.md) | Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada | plan-94-um-cromo-so | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 6 | [plan-88-vaos-de-gate-medidos](plan/plan-88-vaos-de-gate-medidos.md) | Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha | — | 🔴 A executar | specs/01-gates-e-baseline.md + specs/00-regras-e-invariantes.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 7 | [plan-89-tokens-de-cromo-ligados-e-medidos](plan/plan-89-tokens-de-cromo-ligados-e-medidos.md) | Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo | plan-94-um-cromo-so | 🔴 A executar | specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md |
+| 8 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
+| 9 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 10 | [plan-96-templates-sem-dominio-embutido](plan/plan-96-templates-sem-dominio-embutido.md) | Fazer nenhum componente da lib conhecer URL, cliente HTTP, rota de dominio, texto fixo em portugues ou conceito de um produto, de modo que os templates sirvam a qualquer sistema | plan-95-icones-por-uma-porta-aberta-ao-consumidor | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/10-seguranca-e-acessibilidade.md + specs/08-identidade-do-host-e-zero-marca.md + specs/00-regras-e-invariantes.md |
+| 11 | [plan-97-dados-tabela-estados-valor-e-metrica](plan/plan-97-dados-tabela-estados-valor-e-metrica.md) | Dar a lib o que quatro sistemas refizeram a mao para exibir dado: tabela semantica com celula customizada e os tres estados, paginacao com tamanho e resumo, valor numerico formatado com cor por sinal e cartao de metrica completo | plan-96-templates-sem-dominio-embutido | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 12 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> ⚪ **A `plan-86` foi SINTETIZADA e REMOVIDA em 2026-10-02.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **86** | [[11-testes-e-cobertura]] §3.5 (*suíte verde* é `npx vitest run` sem flag; a intermitência era **contenção entre workers**, 15 execuções seguidas verdes), §5 (`maxWorkers: 4` e `exclude` de `.claude/**`, com o motivo) e §7.3 (harness de navegador buildado **uma vez**, no `globalSetup`, um worker) · [[15-divida-conhecida]] — achados **44** e **47** fecharam (§6), e o **43** deixou de depender do 44 · [[16-integracao-continua]] §4.3 — custo do `cromo-css-real` remedido (69–83 s; 37–47 s nos 22 casos). Ficou de fora, de propósito: o piso de cobertura (decisão do achado 43) |
+
+> 🔵 **O [[00-backlog]] zerou em 2026-10-02: os 34 itens foram conferidos contra o código e promovidos pelo
+> dono, agrupados por causa comum.** Nenhum deixou de valer. **Destino demonstrado** de cada linha removida
+> de lá, como a [[00-contexto]] §5 exige:
+>
+> | Itens do backlog | Para onde foram |
+> |---|---|
+> | 5 · 12 | `plan-86` — paralelismo sem teto nos dois runners |
+> | 1 · 9 · 10 · 11 · 31 · 32 · 35 | `plan-87` — regra de processo que só existia em prosa |
+> | 16 · 25 · 26 · 27 · 34 | `plan-88` — gate que mede menos que a regra |
+> | 7 · 13 · 24 · 30 | `plan-89` — token de cromo sem efeito ou sem medição |
+> | 3 · 4 · 6 · 20 · 28 · 29 | `plan-90` — CSS que o `jsdom` não vê |
+> | 18 · 19 · 21 · 23 · 36 · 37 | `plan-91` — a superfície promete e não entrega |
+> | 22 | `plan-93` — o par design + id do tema fecha o ciclo (movido da `plan-91` em 2026-10-03, com a análise dos consumidores) |
+> | 17 | `plan-92` — nada diz qual build o navegador executa |
+> | 15 | [[10-seguranca-e-acessibilidade]] §2.1 — limite declarado do predicado de mídia; não é defeito |
+> | 8 | [[15-divida-conhecida]] — achado **57** (o padrão sem fronteira de palavra, demanda do ecossistema) e achado **54** (o modo de leitura do Anel 0) |
+>
+> **A ordem da fila não é a do número:** a `plan-92` vem em terceiro porque a etapa seguinte do repositório
+> — validar a lib nos sistemas que a aplicam — começa pela pergunta que ela responde. **`plan-89` → `plan-90`
+> → `plan-91` são sequenciais** (as duas primeiras estendem os mesmos arquivos de `browser-tests/`; as duas
+> últimas tocam `SarakSelect.tsx`), e a `plan-89` espera a `plan-86`, que estabiliza o runner de navegador.
+
+> ⚪ **As `plan-85` e `plan-84` foram SINTETIZADAS e REMOVIDAS em 2026-09-27, e as `plan-83` e `plan-80` em 2026-09-30 A `plan-82` fechou a fila em 2026-10-02.** O arquivo saiu; a verdade delas vive nas specs
+> fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/` a recupera. **Destino
+> demonstrado**, como a [[00-contexto]] §5 exige de toda remoção:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **85** | [[05-cromo-e-slots]] §2.4 e §2.4.1 — o respiro do conteúdo por token, nos quatro lados e nos dois modos · o escopo do gate em **dois** schemas, sem lista fechada · e a regra nova: **CSS global não é consumo do cromo** |
+> | | [[01-gates-e-baseline]] §2.2 e §2.2.1 — o `chrome-token-parity:check` entrou no catálogo e na tabela de onde cada gate roda, o que **fechou o item 2 do [[00-backlog]]** · **§9.6 (nova)** — os dois vãos que fecharam e os quatro limites que continuam declarados |
+> | **84** | [[05-cromo-e-slots]] **§5 reescrita** — a raiz do cromo tem altura de janela e contém o excedente · **§5.1 (nova)** — o contrato de rolagem: o documento não rola, o painel de conteúdo rola, o `<nav>` da barra lateral rola por dentro, e as faixas ficam no lugar |
+> | **83** | [[03-superficie-publica]] **§6.4 (nova)** — o contrato de valor dos átomos de escolha: `checked` de quem chama governa, `defaultChecked` semeia, a pele é o valor efetivo — e o `SarakSwitch` é a exceção, sempre controlado |
+> | **80** | [[09-temas-e-presets]] §2.1 (a isenção de `contraparte` acabou), §4.3 (id de tema que sumiu → referência do modo + um `warn`), §5.2 (a tabela 18→23 sai; fica a relação e a fonte viva) e §7 (o que um tema shippado exige) · [[05-cromo-e-slots]] §2.4 — **duas** varreduras de realce: ativo e hover, este nos dois modos |
+> | **82** | [[03-superficie-publica]] **§4.3 (nova)** — a convenção de prefixo por espécie de nome, a allowlist com motivo e autolimpeza, e os três limites do gate · [[00-regras-e-invariantes]] **R37** + a linha do inventário da §4.1 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (o `prefix:check` roda no `build`, não no `pre-commit`) e **§9.7 (nova)** — o vão de origem do dado |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
@@ -97,6 +150,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 >
 > *(Registro datado. Consulte a tabela acima para o estado corrente da fila — prosa que afirma estado
 > envelhece no dia seguinte, e é o padrão que [[15-divida-conhecida]] §3.3 cataloga.)*
+
+> **Tarefa que não é plan não aparece nesta tabela.** As de **via direta** — instrução completa, sem
+> arquivo de plan — estão na **§6**, com os prompts guardados em `plan/prompts/`.
 
 # 2. Legenda de status
 
@@ -192,3 +248,23 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
   execução. O `plan-index:check` bloqueia o commit na divergência, e a divergência nasce de um movimento
   **legítimo** do executor (🟡 ao iniciar, 🟠 ao entregar). Espelhar no veredito basta para o fluxo normal;
   espelhar **ao liberar** é o que cobre a liberação parcial. Ver a nota da §2.
+
+---
+
+# 6. Tarefas diretas pendentes — os prompts guardados
+
+Estas **não são plans**: são tarefas de [via direta](00-prompt-revisor.md) (§6), sem `NN`, sem status de
+fila e fora da tabela gerada acima. O que as traz para cá é uma decisão do dono, de 2026-09-19: os prompts
+não seriam executados na mesma conversa em que nasceram, e ficariam perdidos.
+
+⚠️ **Prompt guardado em arquivo envelhece** — é por isso que a [[00-prompt-revisor]] §1 manda mantê-lo só na
+conversa. Cada arquivo diz a data em que foi escrito e o que foi medido nela. **Antes de despachar um,
+confira que o código ainda é o que o bloco afirma.** Uma vez executada, a tarefa sai desta tabela e o
+arquivo dela é removido: quem responde pelo resultado é o veredito do revisor, na conversa.
+
+Origem: o relatório do agente que integra a lib no ERP Earendel, triado em 2026-09-19. A ordem é de
+execução, e os arquivos vivem em [`plan/prompts/`](plan/prompts/).
+
+> ✅ **A fila zerou em 2026-10-02.** As doze tarefas diretas e a `plan-82` foram executadas,
+> revisadas e removidas; os arquivos de prompt saíram com elas, como esta seção manda. A tabela volta a
+> existir quando houver prompt guardado — e o `plan/prompts/` fica, vazio, porque é onde eles moram.

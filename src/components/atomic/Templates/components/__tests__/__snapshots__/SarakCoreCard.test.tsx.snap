@@ -201,7 +201,7 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
         style="gap: calc(var(--sarak-layout-gap-md,16px) / 2.5);"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98]   flex-1"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98] flex-1"
         >
           <span>
             <svg
@@ -220,7 +220,7 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           </span>
         </button>
         <button
-          class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95] shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20  shadow-lg"
+          class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95] shadow-[var(--sarak-primary-color,#3b82f6)]/20 shadow-lg"
         >
           <svg
             class="lucide lucide-external-link"

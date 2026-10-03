@@ -1,9 +1,9 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { solveThemeContrast } from '../solve_theme_contrast.ts';
-import { getDefaultDesignState } from '../../../../../src/core/Design/master-map.ts';
+import { sarakGetDefaultDesignState } from '../../../../../src/core/Design/master-map.ts';
 import { rgbToHsl, parseToRgba } from '../../../../../src/core/Provider/utils/color-engine.ts';
-import { GLOBAL_THEMES } from '../../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_GLOBAL_THEMES } from '../../../../../src/core/Design/presets/themes/index.ts';
 import { evaluatePair, PAIRS } from '../../../../../gates/scripts/audit/verify_contrast.ts';
 
 /**
@@ -28,14 +28,14 @@ const hslOf = (color: string): [number, number, number] => {
 };
 
 const mergedOf = (id: string) => {
-    const theme = GLOBAL_THEMES.find((t) => t.id === id);
+    const theme = SARAK_GLOBAL_THEMES.find((t) => t.id === id);
     if (!theme) throw new Error(`tema "${id}" não encontrado`);
-    return { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+    return { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
 };
 
 const CENARIOS: Record<string, Record<string, unknown>> = {
     brutalista: {
-        ...getDefaultDesignState(),
+        ...sarakGetDefaultDesignState(),
         mode: 'dark',
         // O caso citado na própria plan (§2, "O caso que prova a diferença"):
         // preto quase puro sobre um fundo quase-preto.
@@ -53,7 +53,7 @@ const CENARIOS: Record<string, Record<string, unknown>> = {
         accentColor: '#ff2d2d',
     },
     glass: {
-        ...getDefaultDesignState(),
+        ...sarakGetDefaultDesignState(),
         mode: 'dark',
         // Vidro translúcido escuro com texto quase tão translúcido quanto o fundo.
         colorBgBody: '#0b1220',

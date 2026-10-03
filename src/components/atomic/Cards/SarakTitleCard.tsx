@@ -7,10 +7,15 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { SarakThemePayload } from '../../../core/Provider/types';
 
 export interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
+    /** Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`. */
     item: TItem;
+    /** Associa esses campos a caminhos do registro; aceita caminhos pontuados e, sem a prop, não há valores mapeados (o subtítulo usa `Modelo`). */
     mapping?: Record<string, string>;
+    /** Acrescenta classes à raiz do cartão; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
+    /** Substitui o tema do provider para este cartão; omitida, usa o tema global. */
     design?: SarakThemePayload;
+    /** Texto do selo de rascunho; sem a prop, usa `Card de Título`, e o selo só aparece durante a composição de rascunho. */
     label?: string;
 }
 

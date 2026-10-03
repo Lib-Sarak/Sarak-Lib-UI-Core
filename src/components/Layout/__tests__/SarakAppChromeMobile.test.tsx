@@ -15,6 +15,14 @@ const renderMobile = (ui: React.ReactElement) => render(<SarakUIProvider config=
 const base = { rootStyle: { minHeight: '100dvh' } };
 
 describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)', () => {
+    it('layoutPadding chega aos quatro lados do conteúdo por token', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>conteúdo</div></SarakAppChromeMobile>,
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
+    });
+
     it('começa fechado: toggle acessível (aria-expanded=false) e drawer ausente', () => {
         const { container } = renderMobile(
             <SarakAppChromeMobile nav={NAV} {...base}><div>conteúdo</div></SarakAppChromeMobile>,
@@ -122,5 +130,61 @@ describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no 
         expect(deco).toHaveAttribute('aria-hidden', 'true');
         expect(deco.style.pointerEvents).toBe('none');
         expect(deco.querySelector('button, a, input')).toBeNull();
+    });
+});
+
+describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada some no celular)', () => {
+    it('DEFAULT: com `user`/`logout`, busca/tema/usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('sem `user`, o widget de usuário não aparece — busca e tema continuam', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByTitle('Sair')).toBeNull();
+    });
+
+    it('opt-out desliga os três defaults isoladamente', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile
+                nav={NAV}
+                user={{ username: 'ana' }}
+                logout={vi.fn()}
+                widgets={{ search: false, themeToggle: false, user: false }}
+                {...base}
+            >
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
+        expect(screen.queryByText(/^Modo /)).toBeNull();
+        expect(screen.queryByTitle('Sair')).toBeNull();
+    });
+});
+
+// os textos da própria lib seguem o idioma que vale.
+describe('SarakAppChromeMobile — idioma que vale', () => {
+    it('sai em inglês com `config.language: "en"`', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ mode: 'dark', language: 'en' }}>
+                <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}>
+                    <div>x</div>
+                </SarakAppChromeMobile>
+            </SarakUIProvider>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        expect(screen.getByPlaceholderText('Smart search…')).toBeInTheDocument();
+        expect(screen.getByTitle('Logout')).toBeInTheDocument();
     });
 });
