@@ -10,7 +10,10 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
     testDir: '.',
     testMatch: '**/*.spec.ts',
+    globalSetup: './global-setup.mjs',
     fullyParallel: true,
+    workers: 1,
+    timeout: 240_000,
     retries: 0,
     reporter: [['list']],
     use: {

@@ -8,12 +8,13 @@ export default defineConfig({
         // browser-tests/**: medição de CSS renderizado em navegador real (Playwright,
         // specs/specs/11-testes-e-cobertura.md §7) — jsdom não resolve cascata de
         // stylesheet, então não pode nem deve coletar esses arquivos.
-        exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**'],
+        exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**', '**/.claude/**'],
         // Workers reutilizados acumulam heap do jsdom entre arquivos e estouravam o
         // teto default do Node (~4GB) em lotes grandes ("vitest run" completo caía
         // por OOM). Teto explícito de 8GB por worker (Vitest 4: opção top-level;
         // `poolOptions` foi removido e era ignorado em silêncio).
         pool: 'forks',
+        maxWorkers: 4,
         execArgv: ['--max-old-space-size=8192'],
         // R8.1 (piso móvel, plan-12) — só ativa com `--coverage` (não no
         // `pre-push`, que roda a suíte pura por custo). `json-summary` é o

@@ -132,8 +132,8 @@ jobs:
             - name: Instalar o Chromium do Playwright (só este job paga o custo do binário)
               run: npx playwright install --with-deps chromium
 
-            # npm run build (o dist/ real que o consumidor instala) + os 3 testes
-            # Playwright, um por faixa de dispositivo — ver browser-tests/cromo-css-real.spec.ts.
+            # npm run build (o dist/ real que o consumidor instala) + a suíte Playwright
+            # de CSS em navegador real — ver browser-tests/cromo-css-real.spec.ts.
             - name: Medir o CSS renderizado do cromo (build + Playwright, em navegador real)
               run: npm run cromo-css-real:check
 

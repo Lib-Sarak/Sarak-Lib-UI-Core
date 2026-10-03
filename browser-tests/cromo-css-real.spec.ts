@@ -38,12 +38,12 @@
  * 2. NÃO mede fonte carregada (`@font-face`/web font). O Chromium do harness usa a
  *    stack de fallback do sistema; `font-weight` computado é o que importa aqui, não
  *    o glifo renderizado.
- * 3. Cobre os tokens DEFAULT (`SarakUIProvider` sem `config`) mais três recortes
- *    NOMEADOS de `config`: `?bg=1` (mídia global, item 7) e os dois de `?tema=` —
- *    `botao-cantos` (raio mestre 0, cantos 9999) e `borda-tracejada` (`borderStyle`
- *    dashed). NÃO mede tema que sobrescreva token de CROMO (`--sarak-topbar-*`,
- *    `--sarak-sidebar-*`, hover/ativo do item de navegação) e NÃO varre temas — o
- *    conjunto é deliberadamente pequeno e nomeado.
+ * 3. Cobre os tokens DEFAULT (`SarakUIProvider` sem `config`) mais `?bg=1` (mídia
+ *    global, item 7) e quatro recortes NOMEADOS de `?tema=`: `respiro-responsivo`,
+ *    `respiro-compacto`, `botao-cantos` (raio mestre 0, cantos 9999) e
+ *    `borda-tracejada` (`borderStyle: dashed`). NÃO mede tema que sobrescreva token
+ *    de CROMO (`--sarak-topbar-*`, `--sarak-sidebar-*`, hover/ativo do item de
+ *    navegação) e NÃO varre temas — o conjunto é deliberadamente pequeno e nomeado.
  * 4. NÃO substitui a suíte `jsdom`: não prova estrutura de DOM, não prova
  *    comportamento de evento além do necessário para revelar o drawer, não roda em
  *    `npx vitest run` (arquivo `.spec.ts`, fora do `include` do Vitest — ver
@@ -77,8 +77,6 @@
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Locator, type Page } from '@playwright/test';
-import fs from 'node:fs';
-import { buildHarness } from './build-harness.mjs';
 
 const BREAKPOINTS = {
     mobile: { width: 375, height: 800 }, // < 768 — specs/specs/07-responsividade-e-multidispositivo.md §2
@@ -190,20 +188,19 @@ async function readRootBackgroundColor(page: Page): Promise<string> {
     return page.locator(CHROME_ROOT_SELECTOR).first().evaluate((el) => getComputedStyle(el).backgroundColor);
 }
 
-let harnessOutDir: string;
-let harnessUrl: string;
+const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
+if (!harnessUrl) {
+    throw new Error('O globalSetup não preparou o harness de CSS para esta execução do Playwright.');
+}
+
 let browser: Browser;
 
 test.beforeAll(async () => {
-    const { outDir, htmlPath } = await buildHarness();
-    harnessOutDir = outDir;
-    harnessUrl = 'file://' + htmlPath.split('\\').join('/');
     browser = await chromium.launch();
 });
 
 test.afterAll(async () => {
     await browser.close();
-    fs.rmSync(harnessOutDir, { recursive: true, force: true });
 });
 
 /** `tema` escolhe um recorte de tokens nomeado da fixture (`TOKEN_VARIANTS`); omitido, vale o default. */
