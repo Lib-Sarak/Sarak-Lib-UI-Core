@@ -29,7 +29,7 @@ vivem exatamente nesse ponto cego — por isso seguem no código com a suíte ve
 | 1 | **Seletor que casa pelo NOME da classe.** `[data-sx-texture] [class*="card"]` força `background` e `backdrop-filter` com `!important` | `src/styles/_atmosphere.css:618-623`; o mesmo mecanismo nas regras `[class*="card"]::after`, a partir de `:83` — 85 ocorrências no arquivo | qualquer utilitária com `card` no nome — da lib (`bg-theme-card`) ou do consumidor (`hover:bg-[var(--color-theme-card,…)]`) — perde o fundo quando há textura. É a classe de defeito que a camada de padrões de elemento já fechou para `[class*="border"]` |
 | 2 | **Custom property cíclica.** `--theme-primary-hover: var(--theme-primary-hover, color-mix(…))` e as irmãs `-active`, `-focus`, `secondary-*`, `accent-*` referenciam a si mesmas no `body` | `src/styles/_base.css:26-34` | ciclo é inválido; a reserva `color-mix(...)` **nunca** é usada. Com o Design Engine montado o valor injetado vence; sem ele, não há hover de botão. O mesmo arquivo já resolveu isso para o raio (`:36-45`, com o motivo no comentário) |
 | 3 | **O `body` não cede à classe utilitária.** Os padrões dele estão divididos entre dois arquivos, e o token de entrelinha só vence o literal por ordem de arquivo | `src/styles/_base.css:12-56` (`line-height: 1.5` literal em `:55`) · `src/styles/_typography.css:5-8` | é o item que [[02-design-engine]] §9.1 lista em *"o que ainda não cede à classe"* |
-| 4 | **Valor de CSS malformado em estilo inline.** Parêntese sobrando, e `box-shadow` que é só uma cor | `src/components/atomic/hooks/useAtomicStyles.ts` — `:58` e `:61` (botão `frosted`), `:106` e `:110-112` (campo: foco e `neumorphism`), `:138`, `:147-148` (switch) | o navegador descarta a declaração inteira, em silêncio |
+| 4 | **Valor de CSS malformado em estilo inline.** Parêntese sobrando, e `box-shadow` que é só uma cor | `src/components/atomic/hooks/useAtomicStyles.ts` — `:58` e `:61` (botão `frosted`), `:106` e `:110-112` (campo: foco e `neumorphism`), `:138`, `:147-148` (switch); e, pela mesma classe de defeito, `src/components/atomic/Feedback/SarakDataEmpty.tsx:24` e `src/components/atomic/Buttons/SarakSocialButton.tsx:76,85-86` | o navegador descarta a declaração inteira, em silêncio |
 | 5 | **A seta do `SarakSelect` flutua.** Sem `fullWidth`, o invólucro é bloco e ocupa a célula; o `<select>` fica com a largura do conteúdo; a seta é absoluta e ancorada na direita do invólucro | `src/components/atomic/Inputs/SarakSelect.tsx:50-67` | em grid que estica, a seta aparece sozinha no canto direito, longe do campo |
 | 6 | **Relato não reproduzido:** a busca de token do painel descarta a primeira digitação logo depois de abrir a aba Design | campo em `src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx:105`; o painel é `lazy` (`src/features/DesignEngine/Library/CustomizationPanel/index.tsx:16`) | relatado no ERP por automação; **não** reproduzido em `jsdom` por quatro métodos. Hipótese: o campo que recebe a primeira digitação é substituído por uma montagem nova |
 
@@ -50,6 +50,7 @@ nome. No `packages/ui-kit` do ERP Earendel não há nenhum `className` literal c
 - `src/styles/_atmosphere.css` — os seletores por nome de classe.
 - `src/styles/_base.css` · `src/styles/_typography.css` · `src/styles/_elements.css` — o ciclo e o `body`.
 - `src/components/atomic/hooks/useAtomicStyles.ts` — **só** os valores malformados.
+- `src/components/atomic/Feedback/SarakDataEmpty.tsx` e `src/components/atomic/Buttons/SarakSocialButton.tsx` — **só** os valores malformados.
 - `src/components/atomic/Inputs/SarakSelect.tsx` — **só** a relação entre invólucro, campo e seta.
 - Componentes da lib que hoje só recebem a superfície de cartão por causa do casamento por nome — eles
   ganham a âncora explícita. A lista entra no resumo.
@@ -147,8 +148,8 @@ número escrito à mão. Classe usada num elemento de prova tem de ser uma que o
 - [ ] Em `src/styles/_base.css`, nenhuma custom property referencia a si mesma.
 - [ ] A lista *"o que ainda não cede à classe"* não tem mais motivo para citar o `body`: ele cede, e o caso
       de navegador prova.
-- [ ] Nenhum valor de `useAtomicStyles.ts` tem parêntese desbalanceado; o `box-shadow` de foco é uma sombra,
-      não uma cor.
+- [ ] Nenhum valor de `useAtomicStyles.ts`, `SarakDataEmpty.tsx` ou `SarakSocialButton.tsx` tem parêntese desbalanceado; o
+      `box-shadow` de foco é uma sombra, não uma cor.
 - [ ] A seta do `SarakSelect` fica dentro da caixa do campo, com e sem `fullWidth`.
 - [ ] O item 6 tem a contagem das 20 tentativas no resumo, e uma das duas saídas: não reproduz (caso fica
       como regressão) ou reproduz (consertado, ou relatado com a causa).

@@ -1,7 +1,7 @@
 ---
 tipo: "plan"
 titulo: "Fazer a superfície pública entregar o que o contrato dela promete"
-objetivo: "Alinhar ao contrato publicado sete pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só"
+objetivo: "Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só"
 dominio: "Sarak-Lib-UI-Core / Superfície pública / Átomos e persistência"
 status: "🔴 A executar"
 prioridade: "Média"
@@ -14,7 +14,7 @@ destino_sintese: "arquitetura/03-superficie-publica.md"
 
 # 1. Objetivo
 
-Sete pontos em que a lib promete uma coisa e entrega outra passam a cumprir o que está publicado — e o erro
+Os pontos em que a lib promete uma coisa e entrega outra passam a cumprir o que está publicado — e o erro
 de campo, que hoje tem duas formas visuais, passa a ter **uma**.
 
 # 2. Contexto
@@ -24,13 +24,17 @@ numa spec, numa prop, num documento — e o comportamento diverge dele.** Todos 
 
 | # | A promessa | O que acontece | Onde |
 |---|---|---|---|
-| 1 | `onSave` recebe o conjunto de tokens **e o id do tema ativo** ([[09-temas-e-presets]] §4.4.2) | *"Aplicar Alterações Globais"* com tema do catálogo entrega o design novo com o id do tema **anterior**. `handleApplyToSystem` chama `persistDesign` **antes** de `setResolvedThemeId`, e `persistDesign` lê o id de uma ref que só se atualiza no render seguinte. A gravação automática corrige o par 1,5 s depois; quem fecha a aba nesse intervalo guarda o par errado (medido: `[design do minimalist-airy, "sarak-sovereign"]`) | `src/features/DesignEngine/hooks/useDesignDraft.ts:202-217` · `src/core/Provider/hooks/useDesignManager.ts:94-95` e `:130-145` |
+| 1 | *(saiu desta plan em 2026-10-03: o par design + id do tema é a `plan-93` inteira)* | — | — |
 | 2 | Template de dado sem `data` e sem `endpoint` não busca e não fica preso em carregamento ([[03-superficie-publica]] §6.3 — vale hoje para `SarakTable` e `SarakCardGrid`) | `SarakStats` fica em carregamento **para sempre**: o hook nasce com `loading: !initialData`, e o efeito não busca sem `endpoint` | `src/components/atomic/Templates/hooks/useSarakStatsData.ts:7` |
 | 3 | A lib tem um componente de erro de campo, `SarakFieldError`: ícone + texto, `role="alert"`, id `${fieldId}-error` | **Nove** átomos têm a prop `error` e desenham o erro por conta própria, **só texto**, sem ícone e sem `role`. Um formulário que use os dois mostra duas formas | `src/components/atomic/Feedback/SarakFieldError.tsx` × `src/components/atomic/Inputs/` — `SarakInput`, `SarakSelect`, `SarakTextarea`, `SarakDatePicker`, `SarakMultiSelect`, `SarakRangeSlider`, `SarakRichText`, `SarakTimePicker`, `SarakUploader` |
 | 4 | Os tokens de direção e alinhamento de cartão valem para os cartões | Valem para os quatro cartões de domínio, por `useCardLayoutStyles(design)`. O `SarakCard` composto usa `useSarakCardLayoutStyles()`, de nome quase igual: **não é hook**, não recebe `design` e devolve uma string constante. É defensável — as peças do cartão composto são explícitas —, mas não está escrito em lugar nenhum | `src/components/atomic/Cards/hooks/useSarakCardLayoutStyles.ts` · `src/components/atomic/Cards/SarakCard.tsx:17` |
-| 5 | Todo texto da lib segue o idioma escolhido ([[10-seguranca-e-acessibilidade]] §3.6) | Três textos em português fixo: a categoria `'Sistema'` (é o que chega à tela no Shell), `'mínimo'`/`'máximo'` no rótulo acessível do intervalo, e `'Horário'` | `src/shared/hooks/useModuleDiscovery.ts:36` · `src/components/atomic/Inputs/SarakRangeSlider.tsx:106` e `:117` · `src/components/atomic/Inputs/SarakTimePicker.tsx:66` |
+| 5 | Todo texto da lib segue o idioma escolhido ([[10-seguranca-e-acessibilidade]] §3.6) | Textos em português fixo: `'mínimo'`/`'máximo'` no rótulo acessível do intervalo, e `'Horário'` (o `'Sistema'` do Discovery sai com a `plan-94`) | `src/components/atomic/Inputs/SarakRangeSlider.tsx:106` e `:117` · `src/components/atomic/Inputs/SarakTimePicker.tsx:66` |
 | 6 | O documento de extensibilidade lista os tokens do fundo global | Lista `globalBackgroundBlendMode`, que **saiu do schema** | `docs/extensibilidade-de-layout.md:54-55` |
-| 7 | O parâmetro `useSystemDesign` promete o design **do sistema** | Lê `sarak.design`, que hoje inclui o rascunho. Nenhum ponto de chamada passa `true`: é código morto com nome enganoso | `src/features/DesignEngine/Canvas/PreviewCanvas.tsx:111-116` · `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx:14`, `:54`, `:65`, `:87` |
+| 7 | O parâmetro `useSystemDesign` promete o design **do sistema** | Lê `sarak.design`, que hoje inclui o rascunho. Nenhum ponto de chamada passa `true`: é código morto com nome enganoso. **Se a `plan-94` já tiver reescrito o preview, confira se sobrou** | `src/features/DesignEngine/Canvas/PreviewCanvas.tsx:111-116` · `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx:14`, `:54`, `:65`, `:87` |
+| 8 | `SarakInput` aceita `icon`, `leftIcon` e `rightIcon` | Renderiza **um** só (`icon`, senão `leftIcon`, senão `rightIcon`), num invólucro `pointer-events-none`. O ícone da direita nunca aparece quando há um à esquerda — é o que mata o "mostrar senha" do próprio template de autenticação (`AuthFormFields.tsx:79-88`), medido no `login-completo` | `src/components/atomic/Inputs/SarakInput.tsx:80,99` |
+| 9 | Os átomos de campo têm `label` e ligam o erro ao controle | `SarakSelect` não tem `label`, e o `error` dele não vai para `aria-describedby`; o `login-completo` deixou 4 selects sem rótulo visível | `src/components/atomic/Inputs/SarakSelect.tsx:6-10` |
+| 10 | `SarakPDFViewer` funciona onde a lib está instalada | O worker default resolve `pdfjs-dist/build/pdf.worker.min.mjs` a partir do próprio `dist`; com a lib consumida por caminho local, a URL sai do projeto e o Vite recusa — demanda 8 do ERP, contornada por `workerSrc` | `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts:22` |
+| 11 | Toda variável que deixa de ser emitida tem nota de migração | `--theme-text` deixou de ser emitida (o legado `Novo` a consome em três telas) e `docs/migracoes.md` não a menciona | `docs/migracoes.md` · `src/core/Design/hooks/useDesignVariables.ts` |
 
 **Decisão do dono (2026-10-02), item 3:** vence a forma do `SarakFieldError`. Os nove átomos passam a usá-lo
 por dentro.
@@ -39,13 +43,14 @@ por dentro.
 
 ## 3.1 Dentro (o que pode ser tocado)
 
-- `src/features/DesignEngine/hooks/useDesignDraft.ts` e `src/core/Provider/hooks/useDesignManager.ts` —
-  item 1. `src/core/Provider/types.ts`, se a assinatura de `persistDesign` precisar acompanhar.
 - `src/components/atomic/Templates/hooks/useSarakStatsData.ts` — item 2.
 - Os nove átomos de `src/components/atomic/Inputs/` listados acima — **só** a renderização do erro.
 - `src/components/atomic/Cards/hooks/useSarakCardLayoutStyles.ts`, o teste dele e `SarakCard.tsx` — item 4.
-- `src/shared/hooks/useModuleDiscovery.ts`, `SarakRangeSlider.tsx`, `SarakTimePicker.tsx` e o catálogo de
-  textos em `src/core/i18n/` — item 5.
+- `SarakRangeSlider.tsx`, `SarakTimePicker.tsx` e o catálogo de textos em `src/core/i18n/` — item 5.
+- `src/components/atomic/Inputs/SarakInput.tsx` — item 8 (os dois ícones renderizam; o da direita pode ser interativo).
+- `src/components/atomic/Inputs/SarakSelect.tsx` — item 9 (`label` e `aria-describedby`).
+- `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts` — item 10.
+- `docs/migracoes.md` — item 11 (a nota de `--theme-text`).
 - `docs/extensibilidade-de-layout.md` — item 6.
 - `PreviewCanvas.tsx` e `PreviewSystemRenderer.tsx` — item 7.
 - Testes ao lado do que mudou (`__tests__/`), e os snapshots **dos nove átomos**.
@@ -55,8 +60,8 @@ por dentro.
 
 - **`SarakFieldError.tsx`** — é a forma que venceu; não muda.
 - O layout do `SarakSelect` (invólucro, campo e seta) — foi da `plan-90`.
-- A prop `error` em si: nome, tipo (`string`) e JSDoc ficam. Não nasce prop nova nos átomos.
-- A gravação automática de `useDesignManager` e o atraso dela.
+- A prop `error` em si: nome, tipo (`string`) e JSDoc ficam. Prop nova só a `label` do `SarakSelect` (item 9).
+- O Provider e a persistência — `plan-93`.
 - Os tokens de cartão e os quatro cartões de domínio.
 - Outros textos fixos que apareçam pelo caminho — relate em *Achados fora do escopo*.
 - Snapshot de qualquer componente que não seja um dos nove.
@@ -82,9 +87,7 @@ por dentro.
 
 # 5. Instruções de execução
 
-1. **Item 1.** Ao aplicar um tema do catálogo, a **primeira** chamada de `onSave` já recebe o design novo
-   com o id do tema **que está sendo aplicado**. Teste de regressão na borda pública: aplicar um tema do
-   catálogo e conferir os dois argumentos da primeira chamada.
+1. *(Item 1 saiu — `plan-93`.)*
 2. **Item 2.** `SarakStats` sem `data` e sem `endpoint` termina o carregamento e não busca. Teste.
 3. **Item 3.** Os nove átomos renderizam o erro por `SarakFieldError`. O que tem de continuar verdadeiro em
    cada um:
@@ -96,25 +99,32 @@ por dentro.
 4. **Item 4.** `useSarakCardLayoutStyles` deixa de se chamar hook: o nome novo não começa com `use` e não se
    confunde com `useCardLayoutStyles`. Um comentário no ponto de uso diz por que o cartão composto não lê os
    tokens de direção e alinhamento.
-5. **Item 5.** Os três textos passam a vir do catálogo de textos, nos idiomas que ele oferece. Teste: com
+5. **Item 5.** Os textos passam a vir do catálogo de textos, nos idiomas que ele oferece. Teste: com
    outro idioma, cada um muda.
 6. **Item 6.** `docs/extensibilidade-de-layout.md` deixa de citar `globalBackgroundBlendMode`.
-7. **Item 7.** O parâmetro `useSystemDesign` sai dos dois arquivos, com o ramo que ele alimentava.
-8. `npm run build` — ele roda os gates de catálogo, barril, tipos públicos e prefixo.
-9. `npm run dev-kit`. `npx tsc --noEmit` → zero erros. `npx vitest run` → verde. `npm run audit` contra o
+7. **Item 7.** O parâmetro `useSystemDesign` sai dos dois arquivos, com o ramo que ele alimentava (se ainda existir).
+8. **Item 8.** `SarakInput` renderiza `leftIcon` e `rightIcon` ao mesmo tempo; o da direita aceita clique
+   (é o que um "mostrar senha" precisa). Teste.
+9. **Item 9.** `SarakSelect` ganha `label` (mesmo contrato do `SarakInput`) e liga o erro por `aria-describedby`. Teste.
+10. **Item 10.** O worker default do PDF resolve a partir de **onde a lib está instalada** (o `import.meta.url` do
+    próprio módulo da lib, nunca um caminho que saia do pacote); `workerSrc` continua como override. Teste.
+11. **Item 11.** `docs/migracoes.md` ganha a nota de `--theme-text` na entrada do major em que ela saiu.
+12. `npm run build` — ele roda os gates de catálogo, barril, tipos públicos e prefixo.
+13. `npm run dev-kit`. `npx tsc --noEmit` → zero erros. `npx vitest run` → verde. `npm run audit` contra o
    baseline → sem regressão.
 
 # 6. Critérios de aceite
 
-- [ ] **1** — teste prova que a primeira chamada de `onSave` após aplicar um tema do catálogo leva o design
-      e o id **desse** tema.
 - [ ] **2** — teste prova que `SarakStats` sem as duas props sai do carregamento e não chama a rede.
 - [ ] **3** — `git grep -n "error && (" -- src/components/atomic/Inputs` não devolve nenhum `<p` de erro
       desenhado à mão; os nove átomos importam `SarakFieldError`; um teste por átomo prova o `role="alert"` e
       a associação por `aria-describedby`.
 - [ ] **4** — nenhum arquivo de `src/` cita `useSarakCardLayoutStyles`; o comentário existe no ponto de uso.
-- [ ] **5** — os três textos mudam com o idioma, provado por teste; nenhum dos três literais em português
-      sobra nos arquivos.
+- [ ] **5** — os textos mudam com o idioma, provado por teste; nenhum literal em português sobra nos arquivos.
+- [ ] **8** — `SarakInput` com `leftIcon` e `rightIcon` renderiza os dois; clique no da direita dispara (teste).
+- [ ] **9** — `SarakSelect` com `label` renderiza o rótulo ligado ao controle; com `error`, `aria-describedby` aponta para a mensagem (teste).
+- [ ] **10** — teste prova que o worker default resolve dentro do pacote da lib.
+- [ ] **11** — `grep -c -- "--theme-text" docs/migracoes.md` → 1, na entrada certa.
 - [ ] **6** — `grep -c globalBackgroundBlendMode docs/extensibilidade-de-layout.md` → 0.
 - [ ] **7** — `git grep -n useSystemDesign -- src` → vazio.
 - [ ] Só os snapshots dos nove átomos mudaram.
@@ -144,8 +154,8 @@ por dentro.
 - **§6 (onde a taxonomia fala dos cartões)** — o cartão composto (`SarakCard` e peças) **não** lê os tokens
   de direção e alinhamento de cartão; quem os lê são os cartões de domínio.
 
-Os itens 1, 5, 6 e 7 não deixam texto: o comportamento correto já está especificado ([[09-temas-e-presets]]
-§4.4.2 e [[10-seguranca-e-acessibilidade]] §3.6), ou é limpeza.
+Os itens 5, 6, 7, 8, 10 e 11 não deixam texto: o comportamento correto já está especificado ou é limpeza. O item 9
+entra na subseção do erro de campo (todo átomo de campo tem `label` e liga o erro ao controle).
 
 > A síntese é ato do **revisor** ([[00-prompt-revisor]]), e o gatilho é do **usuário**: o revisor propõe ao
 > aprovar e espera autorização. Esta seção apenas a prepara.

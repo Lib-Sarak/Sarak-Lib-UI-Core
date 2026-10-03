@@ -1,7 +1,7 @@
 ---
 tipo: "plan"
-titulo: "Expor em runtime o selo do build que o navegador está executando"
-objetivo: "Permitir responder em um olhar, na página do consumidor, qual build da lib o navegador está executando"
+titulo: "Expor em runtime o selo do build, e deixar a instalação honesta"
+objetivo: "Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao"
 dominio: "Sarak-Lib-UI-Core / Build e distribuição / Identidade de build"
 status: "🔴 A executar"
 prioridade: "Alta"
@@ -9,7 +9,7 @@ tags: ["plan", "build", "identidade-de-build", "consumidor", "cache"]
 relacionados: ["[[13-instalacao-e-atualizacao]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[08-identidade-do-host-e-zero-marca]]"]
 depende_de: ""
 retida_por: ""
-destino_sintese: "specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md"
+destino_sintese: "specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md"
 ---
 
 # 1. Objetivo
@@ -48,6 +48,14 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
   literal igual vira constante, e o ramo morto é apagado em silêncio. O selo deve ser **lido**, não
   comparado, dentro da lib.
 
+**Lote 2 — a instalação, medida nos consumidores (2026-10-02):**
+
+| Fato | Onde |
+|---|---|
+| **Há uma terceira camada de cache, e a spec diz que ela não existe.** O Vite serve a dependência pré-empacotada com `cache-control: max-age=31536000,immutable`, sob uma chave `?v=` calculada do lockfile, da config e dos **caminhos** das dependências — nunca do conteúdo. Refazer o pré-bundle não muda a chave, então o navegador normal segue com o bundle antigo por um ano, e a aba anônima recebe o novo. Foi o "versões diferentes em navegadores diferentes" do ERP: três builds da lib em jogo, todos `6.3.0`. A `13-instalacao` §9.1 afirma que *"recarregar, hard-refresh ou guia anônima não alcançam"* — está errada | `vite@5.4.21` (`getOptimizedBrowserHash`, `depsFromOptimizedDepInfo`); `specs/specs/13-instalacao-e-atualizacao.md` §9.1 |
+| **Os 19 peers são obrigatórios** (sem `peerDependenciesMeta`): o `login-completo` instalou `echarts`, `pdfjs-dist`, `reactflow`, `react-grid-layout` e `react-markdown` para uma tela de login; o Cripto não instala (Tailwind 3 e `date-fns` 2 contra as faixas) | `package.json` (`peerDependencies`) |
+| **O kit tem seis demandas abertas do ERP** desde 2026-08-29, todas conferidas em 2026-10-02 e ainda válidas: (1) o modo "apontar" para o kit não é oficial no `START-HERE`; (2) a instalação pressupõe a topologia 1 — em monorepo a raiz que importou não é a do repositório; (3) `docs/migracoes.md` não viaja no kit; (4) `VERSION` é `chave=valor` ad hoc; (5) `templates/README.md` manda copiar para `packages/ui-kit/themes.ts` quando um pacote real precisa de `src/` e `package.json`; (6) o catálogo não lista variáveis que os componentes da lib usam e o consumidor acaba consumindo — nove nomes `--sarak-*` emitidos ficam fora de `tokens.cssVars`, e `--color-theme-card`, `--border-color`, `--theme-title` não têm equivalente público | `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP\packages\ui-kit\DEMANDAS.md` (só leitura) · `sarak-ui/START-HERE.md` · `sarak-ui/VERSION` · `sarak-ui/templates/README.md` · `sarak-ui/catalog.json` |
+
 # 3. Escopo
 
 ## 3.1 Dentro (o que pode ser tocado)
@@ -63,6 +71,12 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
   duas vezes no `git status` (`.claude/skills` é symlink rastreado sob os dois prefixos): é esperado.
 - `dist/`, `sarak-ui/`, `sarak-dev/`, `docs/component-catalog.*` — regenerados. Nunca à mão.
 
+**Lote 2 — instalação e kit**
+- `package.json` — `peerDependenciesMeta` (optional) para todo peer que só um motor lazy importa; `engines`, se faltar.
+- `sarak-ui/START-HERE.md` e `sarak-ui/templates/README.md` — prosa fora dos marcadores: o modo "apontar", as topologias, o caminho real do pacote `ui-kit`.
+- `scripts/consumer-kit/**` — `VERSION` em JSON (ou o carimbo dentro de `catalog.json`), `docs/migracoes.md` copiado para o kit, e `tokens.cssVars` listando toda variável `--sarak-*` que a lib emite.
+- `.agents/skills/ui-integra-consumidor/**` — o kit ensina as três camadas de cache e o que fazer em consumo por `file:`.
+
 ## 3.2 Fora (o que NÃO pode ser tocado)
 
 - **Qualquer texto visível na interface do host.** O selo é atributo ou valor legível por inspeção, nunca
@@ -72,6 +86,8 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 - O formato e as chaves de `dist/BUILD_INFO.json`.
 - A lista de `--external` do `build:js`.
 - `browser-tests/` — as plans 89 e 90 mexem ali.
+- Renomear as variáveis legadas (`--theme-*`, `--color-theme-*`) que os componentes da lib usam por dentro: fica declarado que não são contrato; a renomeação é trabalho próprio, se um dia valer.
+- Qualquer plugin de Vite ou código que leia o cache do bundler do consumidor.
 
 # 4. Referências obrigatórias
 
@@ -114,7 +130,23 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
    Diferentes: a segunda camada de cache está defasada, e o procedimento é o da
    [[13-instalacao-e-atualizacao]] §9.1.
 8. `npm run guide`, `npm run build`, `npm run build-info:check`, `npm run dev-kit`.
-9. `npm run zero-brand:check` → verde. `npx tsc --noEmit` → zero erros. `npx vitest run` → verde.
+9. `npm run zero-brand:check` → verde. `npx tsc --noEmit` → zero erros. `npx vitest run` →
+   verde. Entregue o lote 1 e **pare para o veredito**.
+
+**Lote 2 — instalação e kit**
+
+10. **Peers opcionais.** Todo peer que só um motor carregado sob demanda importa fica `optional` em
+    `peerDependenciesMeta`; o que o barril importa eager continua obrigatório. Registre no resumo a lista
+    com o motivo de cada um. O `package:check` e o job `install-sha` continuam verdes.
+11. **As três camadas de cache.** A skill fonte (e por ela o kit) descreve as três — store do gerenciador,
+    pré-bundle do bundler, cache do navegador com `immutable` — e o procedimento para consumo por `file:`:
+    o selo do lote 1 é o que diz em qual camada se está. Nada de plugin: é instrução.
+12. **As seis demandas do kit:** o `START-HERE` passa a ter o modo "apontar" como oficial e as topologias
+    (a raiz é a do pacote que importou); `docs/migracoes.md` entra no kit; `VERSION` vira JSON ou carimbo em
+    `catalog.json` (com teste); `templates/README.md` aponta o caminho de um pacote real; `tokens.cssVars` lista
+    toda variável `--sarak-*` emitida (medida pelo mesmo registro que o `auditor_ghostvars` usa), e a spec
+    passa a declarar que `--theme-*`/`--color-theme-*` são internas.
+13. `npm run guide` · `npm run guide:check` · `npm run package:check` · `npx vitest run` → verdes. verde.
 
 # 6. Critérios de aceite
 
@@ -130,6 +162,11 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 - [ ] `npm run build` verde — inclusive `barrel:check`, `public-types:check`, `prefix:check` e
       `catalog:check`, se o selo for exportado.
 - [ ] `npx tsc --noEmit` com zero erros; suíte verde.
+- [ ] **Lote 2:** `peerDependenciesMeta` cobre os peers de motor lazy; `npm run package:check` verde.
+- [ ] O kit descreve as três camadas de cache e o procedimento por `file:`; a `13` §9.1 deixa de afirmar que
+      aba anônima não alcança.
+- [ ] As seis demandas do kit estão fechadas, cada uma com a evidência no resumo; `tokens.cssVars` contém
+      os nove nomes que o ERP consome e o catálogo não listava.
 
 # 7. Como verificar (uso do revisor)
 
@@ -159,6 +196,10 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
   *o que está executando?* (o selo).
 - **`05-build-e-distribuicao`** §2 e §6 — onde a tríade nasce no pipeline, e que ela tem fonte única.
 - **`03-superficie-publica`** — o nome exportado, se houver.
+- **`12-kit-do-consumidor`** — o modo "apontar", as topologias, `VERSION`, `migracoes.md` no kit, o
+  catálogo de variáveis (as emitidas são contrato; as legadas são internas).
+- **`13-instalacao-e-atualizacao`** §2.3 e §9.1 — peers opcionais; a **terceira** camada de cache, com o
+  mecanismo (`?v=` por lockfile, config e caminhos) e a correção da frase sobre a aba anônima.
 
 > A síntese é ato do **revisor** ([[00-prompt-revisor]]), e o gatilho é do **usuário**: o revisor propõe ao
 > aprovar e espera autorização. Esta seção apenas a prepara.

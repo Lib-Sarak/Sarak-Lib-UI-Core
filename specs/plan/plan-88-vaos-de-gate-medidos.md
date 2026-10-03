@@ -31,6 +31,7 @@ para provar.
 | 3 | `auditor_ghostvars` | `auditor_ghostvars.mjs:131` — o registro conta como variável emitida o `id` de **qualquer** objeto do schema, inclusive o `id` das **opções** de um `select`. `{ id: 'overlay' }` cria `--sarak-overlay` e, pela expansão de sufixo, `--sarak-overlay-bg` | **zero fantasmas novos.** 59 ids vêm só de opção; sem eles o registro cai de 14.881 para 13.760 entradas, e o resultado continua 1 consumo (o do baseline) |
 | 4 | `auditor_contraste` | Sete pares de `PAIRS` (`verify_contrast.ts:98`) têm cadeia de fundo que **não termina numa base opaca**. Com barra, botão ou superfície translúcidos, o par é declarado pulado | **51 pares-tema** pulados hoje, somando os dois modos. Compondo sobre `colorBgBody`: 49 passam, **2 reprovam** — ver abaixo |
 | 5 | `class-merge:check` | O gate só mede concatenação por template literal. **Onze átomos** importam `twMerge` direto de `tailwind-merge`, contra a porta única da R35 — e o `twMerge` cru não conhece as utilitárias próprias da base | os onze arquivos da lista abaixo |
+| 6 | `guide:check` / `catalog:check` | **Nada confere que o que o consumidor recebe cita nomes que o barril exporta.** Depois da `plan-82` renomear 114 nomes, **15 arquivos** — `README.md`, o guia e os templates do kit, a skill de integração, quatro documentos de `docs/` e o próprio `sarak-ui init` — continuaram ensinando `registerLocalComponent`, `CustomizationPanel`, `ThemeEntry`…; um projeto gerado não compilava, e o teste do gerador conferia o nome velho. É a dívida 23 da `15-divida-conhecida` (conteúdo do kit não é conferido), materializada. Corrigido à mão em 2026-10-03; o gate é o que falta | **zero** na data (acabou de ser limpo); o caso que falha é a fixture |
 
 **Os sete pares do vão 4**, e quantos pares-tema cada um deixa pulados: `btnPrimaryText / btnPrimaryBg` (8) ·
 `textColorMaster / sidebarColor` (8) · `textColorMaster / topbarColor` (8) · `titleColor / surfaceColor` (3) ·
@@ -55,7 +56,9 @@ navegação ativo do tema, ilegível abaixo de AA — e nenhum gate o via.
 - `gates/scripts/contrato/check-plan-index-sync.mjs` (ou módulo irmão chamado pelo mesmo script) — a
   conferência das referências da §4.
 - `gates/scripts/contrato/check-trail-citation.mjs` — o padrão e o limite 5 do cabeçalho.
-- `gates/scripts/contrato/__tests__/` — os testes dos dois.
+- `gates/scripts/contrato/` — o gate do vão 6 (`kit-names:check` ou nome equivalente), parametrizável por `{ root, barrelTypes }`, ligado ao `build` (como o `prefix:check`) e à CI.
+- `bin/scaffold/__tests__/runInit.fs.test.mjs` — só se o gate absorver a prova que ele faz hoje.
+- `gates/scripts/contrato/__tests__/` — os testes dos três.
 
 **Lote 2 — gates de design**
 - `gates/scripts/audit/auditor_ghostvars.mjs` e o teste dele em `gates/scripts/audit/__tests__/`.
@@ -116,27 +119,31 @@ resultado antes e depois.
    `specs/24-modo-embarcado.md`.
 2. **Vão 2.** O padrão passa a casar *"veredito de"*, *"veredito do"* e *"veredito da"*. Caso que falha:
    uma linha adicionada com *"veredito do lote 1"*.
-3. Entregue o lote 1 e **pare para o veredito** antes de seguir.
+3. **Vão 6.** Todo identificador que `README.md`, `docs/*.md`, o kit `sarak-ui/` (guia, skill, templates) e o
+   `main.tsx` gerado pelo `init` importam de `@sarak/lib-ui-core` ou citam em crase como nome público **existe no
+   barril** (`dist/index.d.ts`). `docs/migracoes.md` fica fora (cita nomes velhos de propósito). Caso que falha: um
+   template de fixture importando `registerLocalComponent`. Declare o limite: prosa sem crase não é lida.
+4. Entregue o lote 1 e **pare para o veredito** antes de seguir.
 
 **Lote 2**
 
-4. **Vão 3.** Só `id` de **token** entra no registro; `id` de opção de `select` não. Caso que falha: schema
+5. **Vão 3.** Só `id` de **token** entra no registro; `id` de opção de `select` não. Caso que falha: schema
    de fixture com uma opção `{ id: 'overlay' }` e um consumidor de `var(--sarak-overlay-bg)` — tem de ser
    acusado como fantasma. Confira que o resultado sobre a base real continua em **1 consumo**.
-5. **Vão 4.** Nenhum par de `PAIRS` é pulado por cadeia incompleta: toda cadeia termina numa base que resolve
+6. **Vão 4.** Nenhum par de `PAIRS` é pulado por cadeia incompleta: toda cadeia termina numa base que resolve
    opaca. Para cada um dos sete pares, a cadeia reflete a pilha real de superfícies — justifique no resumo
    onde ela não for simplesmente `colorBgBody` ao fim. Caso que falha: um design de fixture com `sidebarColor`
    translúcido, cujo par hoje volta `pulado`.
-6. **Os dois pares do `kinetic-flow`.** Ajuste, na contraparte do tema, o mínimo de cor para os dois pares
+7. **Os dois pares do `kinetic-flow`.** Ajuste, na contraparte do tema, o mínimo de cor para os dois pares
    passarem de 4,5:1 — pela skill `ui-criar-tema`. Nenhuma outra cor muda.
-7. **Vão 5.** O `class-merge:check` passa a acusar import de `tailwind-merge` em `src/components/atomic/**`
+8. **Vão 5.** O `class-merge:check` passa a acusar import de `tailwind-merge` em `src/components/atomic/**`
    fora de `hooks/mergeSarakClasses.ts`. Caso que falha: um átomo de fixture com o import direto. Depois
    troque a porta nos onze átomos, **preservando a ordem dos argumentos** — a `className` do chamador
    continua por último.
-8. Regenerar o que for gerado: `npm run build`, depois `npm run dev-kit`.
-9. `npm run audit`, lido contra `gates/baselines/audit-baseline.json`. Nenhuma métrica piora. Se alguma
+9. Regenerar o que for gerado: `npm run build`, depois `npm run dev-kit`.
+10. `npm run audit`, lido contra `gates/baselines/audit-baseline.json`. Nenhuma métrica piora. Se alguma
    **melhorar**, regrave com `npm run audit:baseline -- --write`.
-10. `npx tsc --noEmit` → zero erros. `npx vitest run --maxWorkers=4` → verde.
+11. `npx tsc --noEmit` → zero erros. `npx vitest run` → verde.
 
 # 6. Critérios de aceite
 
@@ -144,6 +151,7 @@ resultado antes e depois.
       ponteiro; as plans ativas reais passam; o limite sobre *Skill* está declarado.
 - [ ] **Vão 2** — *"veredito do"* e *"veredito da"* em linha adicionada são acusados; o limite 5 do
       cabeçalho descreve os padrões que o gate de fato tem.
+- [ ] **Vão 6** — a fixture com nome inexistente é acusada; a base real passa; o gate roda no `build` e na CI.
 - [ ] **Vão 3** — a fixture com `id` de opção é acusada; sobre a base real o auditor continua em 1 consumo.
 - [ ] **Vão 4** — `node gates/scripts/audit/auditor_contraste.mjs` imprime **0 pares-tema pulados** nos dois
       modos e **0 reprovados**.
@@ -155,7 +163,7 @@ resultado antes e depois.
 
 # 7. Como verificar (uso do revisor)
 
-**Gate:** **R23**, estendida à §4 das plans ativas (vão 1) — é a única conferência **nova**. Os outros quatro
+**Gate:** **R23**, estendida ao que ainda não cobria: a §4 das plans ativas (vão 1) e os nomes públicos citados pelo que o consumidor recebe (vão 6) — a regra é a mesma, *zero ponteiro morto na documentação*; são dois alcances dela. Os outros quatro
 são alargamento de gate que já existe (R36, R7, R31, R35): a regra não muda, o gate passa a alcançá-la.
 
 - `git status` + `git diff --stat` → só os arquivos de §3.1.
@@ -181,7 +189,7 @@ são alargamento de gate que já existe (R36, R7, R31, R35): a regra não muda, 
 - **`09-temas-e-presets`** §6.5 — toda cadeia de fundo termina em base opaca; nenhum par é pulado por
   cadeia incompleta.
 - **`15-divida-conhecida`** achado **18** — a parte *"pares em `rgba()`, hoje pulados"* fecha; fica o que
-  ainda é cobertura parcial.
+  ainda é cobertura parcial. Achado **23** (gate de conteúdo sobre o kit) fecha com o vão 6.
 
 > A síntese é ato do **revisor** ([[00-prompt-revisor]]), e o gatilho é do **usuário**: o revisor propõe ao
 > aprovar e espera autorização. Esta seção apenas a prepara.

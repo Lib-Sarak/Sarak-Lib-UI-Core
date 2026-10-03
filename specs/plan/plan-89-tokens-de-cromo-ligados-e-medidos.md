@@ -1,13 +1,13 @@
 ---
 tipo: "plan"
 titulo: "Ligar os três tokens de layout sem consumidor e medir o cromo por token em navegador"
-objetivo: "Fazer todo token de layout que o painel oferece ter efeito nos dois cromos, com a medição de navegador cobrindo tema que sobrescreve token de cromo"
+objetivo: "Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo"
 dominio: "Sarak-Lib-UI-Core / Cromo / Tokens de layout"
 status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "cromo", "tokens", "layout", "browser-tests"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-contrato-de-tokens-e-paridade]]", "[[07-responsividade-e-multidispositivo]]", "[[11-testes-e-cobertura]]"]
-depende_de: "plan-86-teto-de-paralelismo-nos-runners"
+depende_de: "plan-94-um-cromo-so"
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md"
 ---
@@ -15,7 +15,7 @@ destino_sintese: "specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + s
 # 1. Objetivo
 
 Nenhum controle de layout do painel de Design é inerte: `layoutDensity`, `maxContentWidth` e
-`isSplitViewEnabled` passam a ter efeito visível no `SarakShell` **e** no `SarakAppChrome`, e a medição de
+`isSplitViewEnabled` passam a ter efeito visível no `SarakAppChrome` — o único cromo desde a `plan-94` —, e a medição de
 navegador passa a provar que um tema que sobrescreve token de cromo chega à tela.
 
 # 2. Contexto
@@ -25,9 +25,9 @@ declarado em `gates/scripts/contrato/check-chrome-token-parity.mjs:105-109` (`OR
 
 | Token | Schema | Situação |
 |---|---|---|
-| `layoutDensity` | `src/core/Design/schema/system.ts:26` — `compact` · `comfortable` (default) · `spacious` | sem consumidor em **nenhum** dos dois cromos |
-| `maxContentWidth` | `system.ts:39` — `1000px` a `1600px`, ou `100%`; default `1440px` | sem consumidor em **nenhum** dos dois cromos |
-| `isSplitViewEnabled` | `system.ts:66` — booleano, default `false` | consumido pelo Shell (`src/core/Shell/Components/ShellContent.tsx:26`); **falta no `SarakAppChrome`** |
+| `layoutDensity` | `src/core/Design/schema/system.ts:26` — `compact` · `comfortable` (default) · `spacious` | sem consumidor em **nenhum** do cromo |
+| `maxContentWidth` | `system.ts:39` — `1000px` a `1600px`, ou `100%`; default `1440px` | sem consumidor em **nenhum** do cromo |
+| `isSplitViewEnabled` | `system.ts:66` — booleano, default `false` | era consumido só pelo `SarakShell`, que a `plan-94` removeu; **sem consumidor no `SarakAppChrome`** |
 
 **Decisão do dono (2026-10-02): ligar os três.** Não remover.
 
@@ -56,13 +56,15 @@ que não existe.
 
 ## 3.1 Dentro (o que pode ser tocado)
 
+> ⚠️ **Esta plan depende da `plan-94`** (um cromo só): o cromo é o `SarakAppChrome`, e o gate de paridade tem um grupo de consumidores desde a 94.
+
 **Lote 1 — medir**
 - `browser-tests/fixtures/harness-entry.tsx` — recortes novos de token, itens de navegação para o caso do
   tablet, e o ponteiro da linha 2.
 - `browser-tests/cromo-css-real.spec.ts` — casos novos e o limite 3 do cabeçalho.
 
 **Lote 2 — ligar largura e densidade**
-- `src/components/Layout/` e `src/core/Shell/` — o consumo dos dois tokens na região de conteúdo.
+- `src/components/Layout/` — o consumo dos dois tokens na região de conteúdo.
 - `src/core/Design/schema/system.ts` — **só** a `description` dos três tokens, para dizer o que cada um faz
   de fato, e `cssVars`/`structuralConsumer` se a paridade exigir.
 - `src/core/Design/hooks/` e `src/core/Provider/manifest.ts` — se o efeito precisar de variável derivada.
@@ -88,6 +90,7 @@ que não existe.
 - Os casos que já existem em `cromo-css-real.spec.ts` — têm de continuar verdes **sem edição**.
 - `src/styles/` — é da `plan-90`.
 - `browser-tests/playwright.config.ts` e o ciclo de vida do harness — foram da `plan-86`.
+- A presença e a composição dos widgets da barra (busca inclusive) — foram da `plan-94`; aqui só os três tokens de layout.
 - Átomos fora do cromo. Densidade alcançando cada componente não é esta plan.
 
 # 4. Referências obrigatórias
@@ -108,7 +111,6 @@ que não existe.
 | **Skill** | `ui-novo-componente` | se nascer token ou variável derivada |
 | **Skill** | `test-unitario` | os testes em `jsdom` |
 | Código | `gates/scripts/contrato/check-chrome-token-parity.mjs` | o que conta como consumidor, e a lista de órfãos |
-| Código | `src/core/Shell/Components/ShellContent.tsx` | como o Shell já consome `isSplitViewEnabled` |
 | Código | `src/components/Layout/SarakAppChrome.tsx` | os slots e a região de conteúdo |
 | Código | `src/components/Layout/chrome/ChromeTopbarBody.tsx` | o corpo do modo topbar — o caso do tablet |
 | Código | `browser-tests/cromo-css-real.spec.ts` | o cabeçalho de limites e o idioma dos casos |
@@ -137,9 +139,9 @@ nunca um número em px escrito à mão.
 
 **Lote 2 — largura e densidade**
 
-5. **`maxContentWidth`.** Nos dois cromos, a região de conteúdo não passa da largura do token e fica
+5. **`maxContentWidth`.** No cromo, a região de conteúdo não passa da largura do token e fica
    centralizada; com `100%`, ocupa tudo. O respiro por `layoutPadding` continua valendo nos quatro lados.
-6. **`layoutDensity`.** Nos dois cromos, a densidade escala o **respiro e o espaçamento da região de
+6. **`layoutDensity`.** No cromo, a densidade escala o **respiro e o espaçamento da região de
    conteúdo**: `compact` < `comfortable` < `spacious`. **`comfortable` é a identidade** — com ele, todo valor
    computado é exatamente o de hoje.
 7. A `description` dos dois tokens passa a dizer **só** o que eles fazem.
@@ -168,8 +170,8 @@ nunca um número em px escrito à mão.
       estrutura), cada um provando que o valor do tema chega ao computado.
 - [ ] O relato do tablet está resolvido por uma das três saídas do passo 2, com a medição no resumo.
 - [ ] `browser-tests/fixtures/harness-entry.tsx` não aponta mais para arquivo inexistente.
-- [ ] `maxContentWidth` limita e centraliza o conteúdo nos dois cromos; `100%` ocupa tudo.
-- [ ] `layoutDensity` ordena o respiro `compact < comfortable < spacious` nos dois cromos, e `comfortable`
+- [ ] `maxContentWidth` limita e centraliza o conteúdo no cromo; `100%` ocupa tudo.
+- [ ] `layoutDensity` ordena o respiro `compact < comfortable < spacious` no cromo, e `comfortable`
       computa exatamente os valores de antes.
 - [ ] Com o token ligado e o slot preenchido, o `SarakAppChrome` mostra dois painéis lado a lado no desktop
       e empilhados no celular; sem um dos dois, o computado é o de antes.
@@ -201,7 +203,7 @@ exceções** dele. O efeito na tela é provado por caso de navegador e por teste
 **Destino:** `specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md`
 
 - **`05-cromo-e-slots`** — §2.2: o slot novo na tabela, com a região e o que acontece quando ausente.
-  §2.4: o que largura máxima e densidade fazem na região de conteúdo, nos dois cromos.
+  §2.4: o que largura máxima e densidade fazem na região de conteúdo, no cromo.
 - **`11-testes-e-cobertura`** §7.3 — a medição cobre tema que sobrescreve token de cromo; a lista do que ela
   não vê perde esse item.
 - **`01-gates-e-baseline`** §9.6 — o gate de paridade de cromo não tem mais lista de órfãos.
