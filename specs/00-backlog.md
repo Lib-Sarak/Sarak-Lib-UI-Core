@@ -62,6 +62,7 @@ via normal.
 
 | # | Achado | Origem | Registrado em | Peso |
 |---|---|---|---|---|
+| 1 | `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx:61` mocka `core/Design/master-map` sem `sarakGetDefaultDesignState`, que `Main/utils/exportTheme.ts:18` importa; o stderr da CI acusa `No "sarakGetDefaultDesignState" export is defined` e o teste "exporta o tema como JSON" passa mesmo assim — talvez sem provar o que promete (resíduo do rename `965bc44`) | ritual (log da CI do `80785e5`) | 2026-10-03 | médio |
 
 ---
 

@@ -95,6 +95,13 @@ em 10 arquivos numa rodada; 22/22 verdes isolados). Com o teto, a suíte fechou 
 seguidas** sem flag (10 do executor, 5 do revisor, 2026-10-02), e a etapa `coverage:check` do `gates:full`,
 que abortava por timeout, chegou à comparação com o piso em 3/3.
 
+> ⚠️ **O limite dessa medição, medido depois (2026-10-03):** as 15 execuções foram numa máquina de **16
+> threads**. O runner da CI (`ubuntu-latest`, 4 vCPU) falhou uma vez com o teto já em vigor — 3 testes de
+> **um** arquivo (`useDesignDraft.persistenceIntegration.test.tsx`), que dorme 1600 ms de relógio real duas
+> vezes sob o limite de 5 s. A suíte inteira com cobertura presa a 4 núcleos **não reproduziu** (405/405), então
+> o teto de 4 **não** é a explicação medida; o que ficou provado é a fragilidade do teste sob carga. Registro e
+> destino em [[15-divida-conhecida]] achado **58**.
+
 > O que segue abaixo é o registro da investigação **anterior à causa**, mantido porque o procedimento de
 > captura continua valendo para qualquer intermitência futura.
 
