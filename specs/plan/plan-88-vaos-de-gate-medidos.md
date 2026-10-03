@@ -57,6 +57,8 @@ navegação ativo do tema, ilegível abaixo de AA — e nenhum gate o via.
   conferência das referências da §4.
 - `gates/scripts/contrato/check-trail-citation.mjs` — o padrão e o limite 5 do cabeçalho.
 - `gates/scripts/contrato/` — o gate do vão 6 (`kit-names:check` ou nome equivalente), parametrizável por `{ root, barrelTypes }`, ligado ao `build` (como o `prefix:check`) e à CI.
+- `package.json` — **só** o script do gate novo e o encadeamento dele no `build`, como o `prefix:check` já está.
+  Nada além disso: o `build:js` e o resto dos scripts são de outra plan.
 - `bin/scaffold/__tests__/runInit.fs.test.mjs` — só se o gate absorver a prova que ele faz hoje.
 - `gates/scripts/contrato/__tests__/` — os testes dos três.
 
