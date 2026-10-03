@@ -1,7 +1,7 @@
 /**
  * `src/modules/ExampleModule.tsx` — starter padrão (Spec 45): um módulo de
  * negócio de EXEMPLO, componente React comum registrado via
- * `registerSarakModule`/`registerLocalComponent` em `main.tsx`. Tematizado
+ * `registerSarakModule`/`sarakRegisterLocalComponent` em `main.tsx`. Tematizado
  * automaticamente pela central (Design Engine) porque usa componentes Sarak —
  * é o contrato de tokens públicos (Spec 43 §3.3) em ação. Apague e crie os seus.
  */

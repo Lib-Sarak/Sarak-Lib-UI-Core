@@ -8,7 +8,7 @@ export type SarakFlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reve
 
 export interface SarakFlexProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;
-    /** Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional). */
+    /** Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional). */
     direction?: SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>;
     justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | string;
     align?: 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | string;

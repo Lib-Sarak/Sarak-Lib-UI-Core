@@ -1162,7 +1162,7 @@ interface SarakAppChromeProps {
     };
     /**
      * Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza
-     * ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado
+     * ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado
      * ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado
      * para o cromo por-app; tem precedência sobre `nav` quando ambos são passados.
      */
@@ -1202,7 +1202,7 @@ interface SarakAppChromeProps {
     topbarEnd?: React__default.ReactNode;
     /**
      * Slot `search`: conteúdo de busca do consumidor (tipicamente um
-     * `ShellSearchWidget`), posicionado por `design.searchPositionTopbar`
+     * `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar`
      * (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar`
      * (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com
      * conteúdo — é o token, não a ausência de `search`, quem decide sumir.
@@ -1621,7 +1621,7 @@ declare const SarakTitleCard: <TItem extends Record<string, unknown>>({ item, ma
 type SarakFlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
 interface SarakFlexProps extends Omit<React__default.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React__default.ReactNode;
-    /** Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional). */
+    /** Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional). */
     direction?: SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>;
     justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | string;
     align?: 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | string;
@@ -1650,7 +1650,7 @@ interface SarakGridProps extends Omit<React__default.HTMLAttributes<HTMLDivEleme
      * Colunas do grid. Aceita:
      * - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1
      *   coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop.
-     * - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
+     * - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
      * Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular).
      */
     templateColumns?: string | SarakResponsiveValue<string>;
@@ -2195,7 +2195,7 @@ interface SarakSearchProps {
     /**
      * Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado
      * (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria
-     * navegação. Omitida, a busca segue pelo registro (`getRegisteredModules`) — o
+     * navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o
      * comportamento de sempre, inclusive no `SarakShell`.
      */
     items?: SarakSearchItem[];

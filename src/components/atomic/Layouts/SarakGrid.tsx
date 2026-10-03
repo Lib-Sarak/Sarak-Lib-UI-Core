@@ -10,7 +10,7 @@ export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement
      * Colunas do grid. Aceita:
      * - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1
      *   coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop.
-     * - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
+     * - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
      * Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular).
      */
     templateColumns?: string | SarakResponsiveValue<string>;

@@ -19,7 +19,7 @@ export interface SarakSearchProps {
     /**
      * Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado
      * (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria
-     * navegação. Omitida, a busca segue pelo registro (`getRegisteredModules`) — o
+     * navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o
      * comportamento de sempre, inclusive no `SarakShell`.
      */
     items?: SarakSearchItem[];

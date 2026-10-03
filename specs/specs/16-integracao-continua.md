@@ -134,7 +134,7 @@ antes**, porque o harness lê `dist/`). O que ele mede, e os limites declarados,
 | `install-sha` (matriz, só em PR) | PR→main | **npm ~82-87 s · pnpm ~12-13 s · yarn ~22-27 s** — em paralelo entre si e com `gates`; quem governa o acréscimo é o mais lento (npm) |
 | `release-tag` (`needs: gates`) | push:main | **32 s** — soma ao `gates` porque depende dele |
 | `install-semver` | push de tag `v*` | ⚠️ **zero execuções** — ver §5.1 |
-| `cromo-css-real` | push:develop · push:main · PR→main | ⚠️ **ainda não medido em runner limpo.** Local, com o binário em cache: **~34 s** — medido quando o arquivo tinha **3 casos**; o conjunto cresceu desde então ([[11-testes-e-cobertura]] §7.3) e **o custo não foi remedido**. Em runner limpo soma-se o download do Chromium, **~310 MiB** — ordem de grandeza, não medição. Roda **em paralelo** com `gates` e **não** bloqueia merge (§2.1) |
+| `cromo-css-real` | push:develop · push:main · PR→main | ⚠️ **ainda não medido em runner limpo.** Local, com o binário em cache: **69 a 83 s** por execução, dos quais **37 a 47 s** são os 22 casos (medido em 2026-10-02, 3 execuções seguidas, harness buildado uma vez por execução — [[11-testes-e-cobertura]] §7.3). Em runner limpo soma-se o download do Chromium, **~310 MiB** — ordem de grandeza, não medição. Roda **em paralelo** com `gates` e **não** bloqueia merge (§2.1) |
 
 **Ponta a ponta, por tipo de evento:** push:develop **5 min 05 s** · PR→main **5 min 15 s** (`gates` e
 `install-sha` em paralelo) · push:main **5 min 47 s** (`gates` **+** `release-tag`, sequenciais).

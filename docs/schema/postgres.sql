@@ -24,7 +24,7 @@
 
 -- =============================================================================
 -- 1) Temas CRIADOS pelo importador (docs/persistencia-de-tema.md §1.2)
---    Espelha `ThemeEntry` — entregue via `options.theme.onSave`.
+--    Espelha `SarakThemeEntry` — entregue via `options.theme.onSave`.
 -- =============================================================================
 CREATE TABLE sarak_theme_definitions (
     -- Chave técnica; NÃO é o que garante unicidade por tenant — ver tenant_key abaixo.
@@ -37,15 +37,15 @@ CREATE TABLE sarak_theme_definitions (
     -- Nunca escreva nela diretamente; ela deriva de tenant_id sozinha.
     tenant_key      TEXT GENERATED ALWAYS AS (COALESCE(tenant_id, '')) STORED,
 
-    -- ThemeEntry.id — livre, definido no momento do salvamento (slug do nome).
+    -- SarakThemeEntry.id — livre, definido no momento do salvamento (slug do nome).
     theme_id        TEXT NOT NULL,
 
-    -- ThemeEntry.name — rótulo exibido nas listas do painel.
+    -- SarakThemeEntry.name — rótulo exibido nas listas do painel.
     name            TEXT,
 
-    -- ThemeEntry.design (+ contraparte, se você optar por guardar os dois juntos
+    -- SarakThemeEntry.design (+ contraparte, se você optar por guardar os dois juntos
     -- num único objeto — a lib não prescreve como combinar os dois campos do
-    -- ThemeEntry na coluna). OPAQUE: veja o aviso no cabeçalho, item 2.
+    -- SarakThemeEntry na coluna). OPAQUE: veja o aviso no cabeçalho, item 2.
     design          JSONB NOT NULL,
 
     -- Auditoria de "quem alterou por último" — texto livre (e-mail, login, o que

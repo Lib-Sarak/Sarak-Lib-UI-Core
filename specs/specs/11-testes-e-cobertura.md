@@ -87,7 +87,18 @@ uma spec aprovada com snapshot vermelho fora da pasta olhada** ([[01-gates-e-bas
 
 ## 3.5 O que "suíte verde" significa — e o limite medido
 
-**A suíte fecha verde e não foi provada determinística.** Em 2026-08-13 e 2026-08-14 ela falhou duas vezes,
+**"Suíte verde" é `npx vitest run`, sem flag nenhuma.** O teto de workers mora na configuração (§5), e todo
+script, hook e job o herda. A intermitência que esta seção cataloga tinha causa, e ela foi medida:
+**contenção entre workers** — sem teto, o Vitest abria um worker por thread da máquina (16), e sob essa
+carga apareciam timeouts e **falhas de asserção** que nunca se reproduziam isoladas (a pior amostra: 13 falhas
+em 10 arquivos numa rodada; 22/22 verdes isolados). Com o teto, a suíte fechou verde em **15 execuções
+seguidas** sem flag (10 do executor, 5 do revisor, 2026-10-02), e a etapa `coverage:check` do `gates:full`,
+que abortava por timeout, chegou à comparação com o piso em 3/3.
+
+> O que segue abaixo é o registro da investigação **anterior à causa**, mantido porque o procedimento de
+> captura continua valendo para qualquer intermitência futura.
+
+**A suíte fechava verde e não tinha sido provada determinística.** Em 2026-08-13 e 2026-08-14 ela falhou duas vezes,
 sempre com a mesma assinatura — **1 arquivo, 2 testes** —, e as execuções seguintes passaram. **Os testes
 nunca foram nomeados**, porque a falha não voltou a se reproduzir sob medição controlada:
 
@@ -171,8 +182,9 @@ verificou cada arquivo antes de nomeá-lo.
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
-    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**'],
+    exclude: [… '**/__e2e__/**', '**/*.spec.ts', '**/*.spec.tsx', '**/browser-tests/**', '**/.claude/**'],
     pool: 'forks',
+    maxWorkers: 4,
     execArgv: ['--max-old-space-size=8192'],
 }
 ```
@@ -184,6 +196,8 @@ verificou cada arquivo antes de nomeá-lo.
 | `environment: 'jsdom'` | é biblioteca de UI; quase todo teste monta DOM |
 | `globals: true` | `describe`/`it`/`expect` sem import em nenhum arquivo de teste |
 | `pool: 'forks'` + `execArgv` | ver o quadro abaixo |
+| `maxWorkers: 4` | **o teto de contenção** (§3.5). Sem ele, um worker por thread: 16 nesta máquina, e a suíte caía por timeout e por asserção sob carga. O valor é o maior **medido** que fechou a suíte e respeitou o próprio teto — 8 foi testado e descartado porque a fotografia dos processos mostrou **9** workers. É configuração, não flag: `coverage:check`, hook e CI herdam |
+| `exclude` de `.claude/**` | `.claude/skills` é symlink de `.agents/skills`, mas o git rastreia os arquivos sob os dois prefixos; sem a exclusão a suíte coletava e rodava os dois arquivos de teste de lá **em dobro** (407 → 405 arquivos; 2.121 → 2.115 testes) |
 | `exclude` de `*.spec.*` e `browser-tests/**` | é o que mantém a medição de navegador (§7.3) **fora** da suíte: `jsdom` não resolve cascata de stylesheet, então não pode nem deve coletar aqueles arquivos. `__e2e__` é herança do aparato removido em 2026-08-18 e hoje não casa nada |
 
 > ## ⚠️ As DUAS lições do OOM — nenhuma é sobre memória
@@ -376,6 +390,12 @@ fonte carregada · tema que sobrescreva **token de cromo** (ela cobre o default 
 desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que
 `cromo-css-real:check` embute o build como primeiro passo — e é a mesma armadilha que §7.1 registra para
 qualquer medição sobre artefato publicado.
+
+**O harness é buildado uma vez por execução**, no `globalSetup` do Playwright (`browser-tests/global-setup.mjs`),
+fora do tempo de qualquer caso; a URL chega aos casos por variável de ambiente, e o teardown apaga o diretório
+temporário. A suíte roda com **um worker** (`browser-tests/playwright.config.ts`) — com `fullyParallel` e sem
+teto, cada worker buildava o próprio harness dentro do `beforeAll`, e a passada a frio estourava o timeout do
+primeiro caso sem nenhuma asserção ter rodado.
 
 **Por que ela não repete o erro de 2026-08-18:** ela **nasceu ligada ao gatilho**. O job existe no mesmo
 commit em que o arquivo existe; não houve etapa em que a cobertura estivesse no disco esperando alguém

@@ -184,7 +184,7 @@
           "name": "navItems",
           "type": "SarakNavItem[]",
           "optional": true,
-          "doc": "Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados."
+          "doc": "Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados."
         },
         {
           "name": "nav",
@@ -238,7 +238,7 @@
           "name": "search",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
+          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
         },
         {
           "name": "sidebarHeader",
@@ -1698,7 +1698,7 @@
           "name": "direction",
           "type": "SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>",
           "optional": true,
-          "doc": "Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional)."
+          "doc": "Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional)."
         },
         {
           "name": "justify",
@@ -1856,7 +1856,7 @@
           "name": "templateColumns",
           "type": "string | SarakResponsiveValue<string>",
           "optional": true,
-          "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
+          "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
         },
         {
           "name": "templateAreas",
@@ -2775,7 +2775,7 @@
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": true,
-          "doc": "Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`getRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`."
+          "doc": "Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`."
         },
         {
           "name": "onSelect",

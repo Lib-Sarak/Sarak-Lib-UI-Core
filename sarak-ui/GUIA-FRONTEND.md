@@ -125,12 +125,12 @@ A partir daí, três peças **opcionais** e independentes:
 | Peça | O que dá | Quando usar |
 | --- | --- | --- |
 | **`SarakAppChrome`** | topbar/sidebar temáveis, navegação com ícone, drawer no celular — **apresentacional**, sem registro nem host | Quase sempre. É o cromo por-app: cada app renderiza o seu. |
-| **`CustomizationPanel`** | o **Design Engine** — a central onde se troca tema/template e se exporta o JSON | Numa rota tipo `/design`, para quem administra a aparência. |
+| **`SarakCustomizationPanel`** | o **Design Engine** — a central onde se troca tema/template e se exporta o JSON | Numa rota tipo `/design`, para quem administra a aparência. |
 | **`SarakShell` + `registerSarakModule`** | um **host de módulos-plugin**: a base gera navegação e roteamento a partir dos módulos registrados | Só quando o sistema é **um** app que hospeda vários módulos. Veja §2.1. |
 
 **Os dois modelos de consumo — escolha consciente:**
 
-- **Base como kit** (`Provider` + componentes + `SarakAppChrome` + `CustomizationPanel`): você mantém
+- **Base como kit** (`Provider` + componentes + `SarakAppChrome` + `SarakCustomizationPanel`): você mantém
   o seu roteador e a sua estrutura. É o modelo que serve às 4 topologias.
 - **Base como host** (`Provider` + `SarakShell` + módulos registrados): a base assume navegação e
   roteamento. Mais barato de montar, mas amarra a estrutura do app à lib.
@@ -451,15 +451,15 @@ o pacote também traz `docs/component-catalog.md`.
 `tokenId → valor`.
 
 ```tsx
-import { SarakUIProvider, deriveThemeFromReference } from '@sarak/lib-ui-core';
+import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
 // Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
 const TEMAS = [
-  deriveThemeFromReference('minimalist-airy', {
+  sarakDeriveThemeFromReference('minimalist-airy', {
     id: 'marca-claro', name: 'Marca (claro)',
     design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
   }),
-  deriveThemeFromReference('sarak-sovereign', {
+  sarakDeriveThemeFromReference('sarak-sovereign', {
     id: 'marca-escuro', name: 'Marca (escuro)',
     design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
   }),
@@ -469,7 +469,7 @@ const TEMAS = [
 - **Nunca monte um tema do zero** com um punhado de chaves de cor: eixos omitidos (fonte, cromo,
   raio, espaçamento) simplesmente não mudam, e o sintoma vira "troquei o tema e a fonte continuou
   igual". Derive de um id de `SARAK_REFERENCE_THEMES` (o par completo) ou de `themes.presetIds`.
-- **Derivar é uma chamada, não uma cópia de campo.** `deriveThemeFromReference` devolve o tema completo —
+- **Derivar é uma chamada, não uma cópia de campo.** `sarakDeriveThemeFromReference` devolve o tema completo —
   `design` **e** `contraparte` — e aplica a customização nos dois modos. Espalhar `{ ...ref.design, … }`
   perde a contraparte, e a troca de claro/escuro passa a degradar em silêncio.
 - **Qual tema está ativo** — três caminhos, não confunda:
@@ -478,7 +478,7 @@ const TEMAS = [
   | `activeThemeId` | **controlado**: sempre vence e reaplica a cada mudança. Use quando o app decide (por cliente/config). |
   | `initialTheme` | **semente**: só semeia o primeiro carregamento; o usuário troca depois e não é forçado de volta. É a opção segura. |
   | nenhum dos dois | cai no default de `options.theme.defaultTheme` ou no primeiro tema global. |
-- **A central** é o `CustomizationPanel`: monte-o numa rota sua (`/design`, por exemplo) ou, no modelo
+- **A central** é o `SarakCustomizationPanel`: monte-o numa rota sua (`/design`, por exemplo) ou, no modelo
   host, use o módulo nativo que a base já registra. Ele ajusta tokens ao vivo e **exporta o JSON**
   completo — "salvar tema" **é** exportar e colar num arquivo do seu repositório.
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
@@ -502,7 +502,7 @@ celular/tablet/desktop: o cromo e as primitivas de layout leem o dispositivo soz
 - Os breakpoints e a lista do que adapta automaticamente estão em `catalog.json` → `responsive`
   (e no Apêndice A, seção A.2). Em resumo: o cromo colapsa em drawer no celular, as primitivas de
   layout viram uma coluna / quebram linha, e os componentes densos colapsam para cards.
-- **Refino opcional:** onde quiser controlar por dispositivo, passe um `ResponsiveValue<T>` —
+- **Refino opcional:** onde quiser controlar por dispositivo, passe um `SarakResponsiveValue<T>` —
   `{ mob, tab, desk }` — nas props que o aceitam (a lista está em `responsive.responsiveProps`).
 - Para ler o dispositivo no seu código: `useSarakDevice()` → `'smartphone' | 'tablet' | 'desktop'`.
   Para ocultar por dispositivo sem CSS: `<SarakHidden on={['smartphone']}>`.
@@ -751,7 +751,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `logo` | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
 | `topbarEnd` | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
-| `search` | Slot `search`: conteúdo de busca do consumidor (tipicamente um `ShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
+| `search` | Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
 | `sidebarHeader` | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
 | `sidebarFooter` | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
 | `banner` | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |

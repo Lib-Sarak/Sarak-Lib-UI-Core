@@ -14,7 +14,7 @@ import { createRoot } from 'react-dom/client';
 import {
     SarakUIProvider,
     SarakAppChrome,
-    CustomizationPanel,
+    SarakCustomizationPanel,
     type SarakNavItem,
 } from '@sarak/lib-ui-core';
 
@@ -44,7 +44,7 @@ function useRotaAtual(): [string, (rota: string) => void] {
 function Conteudo({ rota }: { rota: string }) {
     // A central de tema/layout: monte-a numa rota sua. É o Design Engine — quem a
     // abre ajusta os tokens ao vivo e exporta o tema em JSON.
-    if (rota.startsWith('/design')) return <CustomizationPanel />;
+    if (rota.startsWith('/design')) return <SarakCustomizationPanel />;
     return <div>Sua tela aqui — veja `tela-exemplo.tsx`.</div>;
 }
 

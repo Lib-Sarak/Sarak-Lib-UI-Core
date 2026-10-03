@@ -87,7 +87,7 @@ existe na paridade e não move nada — a mesma classe de defeito de uma variáv
 **(a) Sete ids duplicados.** O `theme_table_mapping.json` tem **416 entradas brutas para 409 ids
 únicos**: sete ids aparecem em duas colunas. Quatro são ambiguidade real (colunas diferentes) e
 três são redundância literal (mesma coluna). Consertar muda **qual definição vence** em
-`getDefaultDesignState()`, então exige caracterização antes. Está roteado para a Campanha 2.
+`sarakGetDefaultDesignState()`, então exige caracterização antes. Está roteado para a Campanha 2.
 
 **(b) `src/core/Provider/generated/design-token-ids.ts` está DEFASADO.** Ele é gerado por
 `scripts/generate-token-types.ts` a partir do `MASTER_DESIGN_MAP`, e o gerador **não está

@@ -55,7 +55,7 @@ cromo apresentacional + central de tema. Serve às 4 topologias (monolito, monor
 microsserviço):
 
 ```tsx
-import { SarakUIProvider, SarakAppChrome, CustomizationPanel } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel } from '@sarak/lib-ui-core';
 
 <SarakUIProvider customThemes={TEMAS} initialTheme={TEMAS[0].id}>
   <SarakAppChrome brand={{ name: 'Meu Sistema' }} navItems={NAV} onNavigate={navegar}>
@@ -68,10 +68,10 @@ import { SarakUIProvider, SarakAppChrome, CustomizationPanel } from '@sarak/lib-
 registrados. Só faz sentido quando o sistema é **um** app hospedando vários módulos:
 
 ```tsx
-import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
 import { MeuModuloDeNegocio } from './modulos/MeuModulo';
 
-registerLocalComponent('meu-modulo', MeuModuloDeNegocio);
+sarakRegisterLocalComponent('meu-modulo', MeuModuloDeNegocio);
 registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 
 <SarakUIProvider>
@@ -80,11 +80,10 @@ registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 ```
 
 - `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera
-  navegação e roteamento sozinha. `registerLocalComponent(id, Component)` liga o React ao `id`
+  navegação e roteamento sozinha. `sarakRegisterLocalComponent(id, Component)` liga o React ao `id`
   (alternativa: `component` direto no objeto de registro). Use um guard `safeRegister` contra
   `undefined` — é o que o `init` já gera.
-- **Não existe mais motor de renderização por manifesto.** O modelo é 100% React; telas em JSON foram
-  removidas (o `SarakManifestRenderer` não existe). Nunca oriente o consumidor a "programar em JSON".
+- A biblioteca não converte manifestos JSON em telas; os módulos são componentes React. Nunca oriente o consumidor a "programar em JSON".
 - O importador **pode criar o que precisar** — módulo, componente, tela. A única regra é a de tokens,
   logo abaixo.
 
@@ -100,9 +99,9 @@ montar com um punhado de chaves de cor produz o sintoma clássico "troquei o tem
 igual" (eixos omitidos não mudam). A derivação é **uma chamada**, não uma cópia de campo:
 
 ```tsx
-import { deriveThemeFromReference } from '@sarak/lib-ui-core';
+import { sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
-const MEU_TEMA = deriveThemeFromReference('minimalist-airy', {
+const MEU_TEMA = sarakDeriveThemeFromReference('minimalist-airy', {
   id: 'minha-marca', name: 'Minha Marca',
   design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
 });
@@ -138,7 +137,7 @@ load contra o schema de tokens. Chave desconhecida ou valor de tipo errado → `
 descartado, nunca CSS cru. Se um ajuste "não pegou", o console diz por quê. As chaves válidas estão
 no `catalog.json` → `designTokens.ids`.
 
-**Exportar um tema pela UI:** o `CustomizationPanel` (a central) tem **"Exportar" → "Exportar JSON"**,
+**Exportar um tema pela UI:** o `SarakCustomizationPanel` (a central) tem **"Exportar" → "Exportar JSON"**,
 que baixa o tema **completo** — cole num arquivo do repositório e adicione a `customThemes`. Não
 existe "salvar tema no banco": a central não tem servidor, e salvar **é** exportar.
 
