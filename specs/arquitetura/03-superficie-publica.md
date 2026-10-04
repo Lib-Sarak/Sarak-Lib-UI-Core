@@ -4,7 +4,7 @@ titulo: "Superfície pública — o barril, os gates e as fronteiras de bundle"
 dominio: "Arquitetura / Contrato público / Empacotamento"
 status: "🟢 Vigente"
 tags: ["arquitetura", "barril", "contrato-publico", "catalogo", "bundle", "lazy", "taxonomia"]
-relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
 ---
 
 # 1. Propósito
@@ -276,6 +276,23 @@ A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridS
 e sem `checked` fica em `false` e não muda ao clique. A divergência é dentro da mesma família de átomos de
 escolha, e é exatamente o tipo de coisa que o consumidor descobre do jeito difícil — por isso está escrita
 aqui, e não só no JSDoc de cada um.
+
+## 6.5 O contrato do Provider para quem persiste tema
+
+Três pontos da superfície carregam contrato de **tipo**, e mudá-los é mudança de nível `MAJOR`
+([[03-versionamento-e-release]] §3). O comportamento de cada um mora em [[09-temas-e-presets]] §4.4.2 e §4.6; o
+formato do dado persistido, em `docs/persistencia-de-tema.md`.
+
+- **`options.persistence.onLoad`** devolve o design, ou `{ design, activeThemeId }`, ou `null`/`undefined` para
+  *nada gravado*. Quem devolve só o design continua compilando e funcionando. O id carregado **não** vence a
+  prop controlada `activeThemeId`.
+- **Apagar tema** é `options.theme.onDelete` (a porta opcional do consumidor) e `useSarakUI().deleteTheme(id)`
+  (o gesto) — [[017-porta-de-apagar-tema-simetrica-a-de-escrever]]. `SarakUIContextType` **exige** `deleteTheme`:
+  quem monta o contexto à mão precisa fornecê-lo.
+- **`customThemes` e `allThemes` são `SarakThemeEntry[]`**, e não mais `unknown[]`: o consumidor não precisa de
+  cast, e quem passava um valor fora do formato deixa de compilar.
+
+Os nomes e tipos exatos são fonte viva — leia-os em `dist/index.d.ts`, não aqui.
 
 
 # 7. Fronteiras de bundle — a parte MEDIDA

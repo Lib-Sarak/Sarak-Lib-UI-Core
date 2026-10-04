@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Expor em runtime o selo do build, e deixar a instalação honesta"
 objetivo: "Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao"
 dominio: "Sarak-Lib-UI-Core / Build e distribuição / Identidade de build"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "build", "identidade-de-build", "consumidor", "cache"]
 relacionados: ["[[13-instalacao-e-atualizacao]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[08-identidade-do-host-e-zero-marca]]"]

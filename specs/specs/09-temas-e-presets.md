@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -224,6 +224,10 @@ consumidor ao contrato de estabilidade de referência** que `activeThemeId` exig
 tema inicial usa `initialTheme`; quem quer um seletor de tema controlado pelo próprio estado usa
 `activeThemeId` **e** memoiza `customThemes`.
 
+**A persistência do consumidor entra na ordem.** O tema resolvido no boot vem da prop **controlada**
+`activeThemeId`; sem ela, do **id que `onLoad` devolve** junto do design (§4.4.2); sem esse, do `initialTheme`.
+A prop controlada vence **sempre** o id carregado.
+
 > 🔴 **`resolvedThemeId` — leia ESTE, nunca `activeThemeId` cru** *(plan-27, 2026-08-11)*. As duas props
 > acima são **entrada**; nenhuma delas diz qual tema está **efetivamente no ar**. O contexto passou a expor
 > `resolvedThemeId`, que nasce da semente (`activeThemeId || initialTheme`), acompanha a prop controlada
@@ -311,20 +315,30 @@ atrasa os `children` até o carregamento remoto terminar — trocando flash por 
 **`tenantId` compõe a chave efetiva** — `` `${storageKey}::tenant:${tenantId}` `` — para que apps
 multi-tenant na mesma origem não vazem tema entre inquilinos. A composição tem **fonte única**
 (`resolveStorageKey`): todo ponto de leitura, de escrita e o filtro de `crossTabSync` consomem essa função,
-nunca compõem a chave por conta própria.
+nunca compõem a chave por conta própria. **Trocar `tenantId` recarrega:** a lib descarta o estado do inquilino
+anterior e chama `onLoad` de novo para o novo, **sem remontar o Provider**.
 
 > ⚠️ **Consequência que governa o design de token, e não é óbvia: em `'hybrid'`, chave ausente na fonte
 > remota NÃO apaga a chave presente no cache local.** Para tirar um valor de circulação de fato, ele sai
 > das **duas** fontes. É a mesma assimetria que faz valor persistido vencer default —
 > ver [[07-responsividade-e-multidispositivo]] §6.1, regra 4.
 
-### 4.4.2 O que a porta de escrita entrega
+### 4.4.2 O que a porta entrega — e recebe
 
 `onSave` recebe **duas** coisas: o conjunto de tokens **e o `id` do tema ativo**. O id viaja como
 **segundo parâmetro**, não dentro do payload — o payload é o dicionário de tokens e nada mais, e misturar
-identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar. Sem isso, quem implementa
-`onSave` consegue guardar *quais tokens* estão aplicados, mas não *de qual tema eles vieram* — e não
-consegue restaurar a seleção no boot seguinte.
+identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar.
+
+**`onLoad` devolve o par de volta.** Ele pode devolver só o design (o formato mais simples, que continua
+aceito) **ou** `{ design, activeThemeId }`; com o id presente, é o tema resolvido no boot (§4.3).
+`null` ou `undefined` significa *nada gravado ainda* e não aplica nem grava coisa alguma. Sem o id de volta, o
+consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria restaurar *de qual tema eles vieram*.
+
+**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave`, não
+escrevem no `localStorage` e não chamam `onThemeChange`. Só gravam a edição do usuário (com o atraso de 1,5 s) e
+a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Todo caminho que aplica tema
+— a aba de modelos, *Aplicar alterações globais* e o desfazer da última aplicação — anuncia o id **antes** de
+gravar, de modo que a primeira chamada de `onSave` leva o par certo.
 
 **O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
 (formato, schema em dois dialetos e exemplo de ligação) — ver [[13-instalacao-e-atualizacao]]. Persistir é
@@ -372,8 +386,10 @@ A divisão de responsabilidade é assimétrica de propósito:
 
 **Não existe porta de leitura, e isso é decisão, não lacuna:** a leitura já é a prop `customThemes` — o
 importador devolve os temas salvos por ali, no boot. Uma segunda porta criaria duas fontes para o mesmo
-dado. **Também não existe porta de apagar**: remover tema é operação do importador sobre o próprio
-armazenamento, e a lib não a intermedia.
+dado. **Apagar tem porta**, simétrica à de escrever ([[017-porta-de-apagar-tema-simetrica-a-de-escrever]]):
+`useSarakUI().deleteTheme(id)` tira o tema da coleção **da sessão** e chama `options.theme.onDelete(id)`, quando
+configurada. O armazenamento continua do importador — `onDelete` é o ponto em que ele remove o tema da própria
+fonte, e a lib não toca nela. Id desconhecido não faz nada.
 
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
