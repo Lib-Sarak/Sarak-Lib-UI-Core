@@ -114,7 +114,7 @@ Critério: um executor **sem nenhum contexto desta conversa** realiza a plan len
 | **Critérios de aceite** | Checklist `- [ ]` objetivo, cada item verificável por você em §7.1. |
 | **Como verificar** | Os comandos exatos do seu veredito. Escritos **antes** da execução — inclusive a linha `Gate:`, sempre presente (mesmo `nenhum`). Critério de qual forma a verificação toma: §5.4. |
 | **Destino da síntese** | Obrigatório, inclusive `—`. Ver §5.2. |
-| **Resumo / Veredito / Síntese** | Cabeçalhos vazios, append-only, reservados a executor e a você. |
+| **Resumo / Veredito** | Cabeçalhos vazios, append-only, reservados a executor e a você. A síntese não tem cabeçalho na plan: o rastro dela vive onde o Git o guarda (§7.4). |
 
 ## 5.2 Destino da síntese
 
@@ -149,6 +149,15 @@ fora dela.
 
 Só se acrescenta linha a esse bloco por algo **circunstancial daquela execução** ("o serviço X está fora do
 ar; pule o passo 6"). Sentiu falta de outra coisa? O defeito está na §4 da plan — corrija a plan.
+
+**Dois casos circunstanciais que são obrigatórios, não opcionais:**
+
+- **Há trabalho não commitado de outra tarefa no worktree?** (`git status --short` antes de despachar.) Então
+  o prompt carrega **a linha que o nomeia** — quais arquivos ou qual plan, e que o executor não os lê para
+  "limpar", não os reverte e não os formata. Sem ela, o executor não tem como saber que a sujeira não é dele.
+- **O `🟡` é seu, e é neste momento.** Ao entregar o prompt para despacho, mova a plan para
+  `status: "🟡 Em execução"` e rode **`npm run plan-index`**, na mesma ação. O executor recebe a plan já em
+  `🟡` e só move para `🟠`, ao entregar.
 
 ## 5.4 Dimensionamento
 
@@ -223,6 +232,11 @@ conversa**, não em arquivo.
 ---
 
 # 7. Veredito
+
+> **Um revisor por plan.** **Imediatamente antes de gravar um veredito, releia a §10 da plan no disco.**
+> Bloco de veredito que você não escreveu nesta conversa significa que **outra sessão de revisor** está no
+> comando dessa plan: **pare e leve ao dono**, que decide qual sessão comanda. Gravar por cima produz dois
+> vereditos conflitantes na mesma seção append-only — um deles já vencido ao ser escrito.
 
 ## 7.1 Roteiro de verificação
 
@@ -322,10 +336,14 @@ nenhum status descreve.
 
 **Como fechar — tudo na mesma ação:**
 
-1. Acrescente o bloco `## Síntese — AAAA-MM-DD` à plan (o que foi transportado, o que ficou de fora). Ele
-   existe para aparecer no diff do commit de remoção, que é onde o rastro passa a viver.
+1. Registre a linha de **destino demonstrado** na nota da §1 do `00-indice` (o que foi transportado, para
+   onde, e o que ficou de fora). **Não escreva bloco `## Síntese` na plan:** síntese e remoção saem na mesma
+   ação, e o diff de uma deleção mostra o conteúdo do `HEAD`, onde um bloco novo não está — ele nunca
+   chegaria ao Git.
 2. `git rm` da plan **e** remoção da linha do `00-indice`.
-3. Diga ao usuário que o commit agora sai inteiro: código, spec fixa e a remoção da plan na mesma unidade.
+3. Entregue ao usuário, na conversa, o **texto da mensagem de commit**, redigido: o que a síntese
+   transportou e para onde. Os dois lugares onde o rastro passa a viver são a nota do índice e essa mensagem.
+   Diga que o commit agora sai inteiro: código, spec fixa e a remoção da plan na mesma unidade.
 
 **Exceção — plan retida.** Outra plan **aberta** ainda precisa desta como contexto de execução? Então ela
 fica: no frontmatter dela preencha `retida_por: "plan-NN"` **e** `destino_sintese: "sintetizada · retida por
@@ -381,8 +399,10 @@ Grave a ponto de não poder esperar? Então não é backlog — é demanda; leve
     sem custo, e a escrita é do usuário. A **única** porta é ele **solicitar e autorizar** naquela conversa,
     e ela vale para aquele ato, não para os próximos ([[17-contrato-de-operacao-git]] §2.0 ·
     [[012-escrita-git-sob-autorizacao-do-dono]]). **Ler é livre e obrigatório** — sem `git status`/`diff` não
-    há veredito (§7.1). *(Este item fecha a lista, e não abre a numeração, porque `§9.6` e `§9.7` são citados
-    de fora — ver a decisão registrada no resumo da `plan-55`.)*
+    há veredito (§7.1).
+
+> Os itens desta lista são citados de fora **pelo nome, nunca pelo número**: item novo entra onde fizer
+> sentido, sem quebrar ponteiro de ninguém.
 
 ---
 
@@ -400,7 +420,11 @@ nenhum código tocado.
 **Na via direta:** nenhum arquivo criado · prompt completo (objetivo, dentro, fora, referências, pronto
 quando) · uma tarefa só · nada a sintetizar, confirmado contra o diff.
 
-**Ao dar veredito:** `git status` + `git diff` lidos integralmente · diff comparado ao escopo (excesso **e**
+**Ao despachar uma plan:** `git status --short` olhado, e trabalho alheio no worktree nomeado numa linha do
+prompt (§5.3) · plan movida para `🟡` e `npm run plan-index` rodado, na mesma ação.
+
+**Ao dar veredito:** §10 da plan relida no disco imediatamente antes de gravar (bloco que você não escreveu
+= outra sessão de revisor: pare e leve ao dono) · `git status` + `git diff` lidos integralmente · diff comparado ao escopo (excesso **e**
 falta) · cada critério com evidência · comandos rodados com saída real · regras do `00-contexto` e
 `padrao-escrita` conferidas · resumo do executor confrontado com o diff (na plan, ou colado pelo usuário no
 prompt de conclusão — se não veio, peça antes de julgar) · **achados fora do escopo transcritos para o
@@ -410,5 +434,6 @@ informado.
 
 **Ao sintetizar:** **`git log` conferido ANTES de escrever** · destino respeitado como declarado ·
 transportado o que o **diff** confirma, no presente, sem narrativa nem menção a bug · `00-contexto` revisado
-ou confirmado sem mudança · bloco `## Síntese` escrito · plan removida **e** linha do índice removida — ou
-`retida_por` preenchido, se outra plan aberta ainda a usa como contexto · nenhum commit, nenhuma co-autoria.
+ou confirmado sem mudança · linha de destino demonstrado na nota da §1 do `00-indice` · texto da mensagem
+de commit entregue ao dono · plan removida **e** linha do índice removida — ou `retida_por` preenchido, se
+outra plan aberta ainda a usa como contexto · nenhum commit, nenhuma co-autoria.

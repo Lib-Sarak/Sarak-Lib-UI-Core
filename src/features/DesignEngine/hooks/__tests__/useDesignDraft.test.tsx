@@ -213,6 +213,7 @@ describe('useDesignDraft', () => {
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw: vi.fn(),
             } as unknown as SarakUIContextType;
@@ -228,16 +229,21 @@ describe('useDesignDraft', () => {
         });
 
         it('aplicar ao sistema DEPOIS de pré-visualizar anuncia o id pendente', () => {
+            const applicationOrder: string[] = [];
             const setResolvedThemeId = vi.fn();
-            const applyFullConfigRaw = vi.fn();
+            const applyFullConfigRaw = vi.fn(() => applicationOrder.push('apply'));
+            const persistDesign = vi.fn(() => applicationOrder.push(`persist:${applicationOrder.includes('theme:tema-escolhido')}`));
+            setResolvedThemeId.mockImplementation((id: string) => applicationOrder.push(`theme:${id}`));
             const sarak = {
                 draftDesign: null,
                 systemDesign: { mode: 'dark' },
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw,
+                persistDesign,
             } as unknown as SarakUIContextType;
 
             const { result } = renderHook(() => useDesignDraft(sarak));
@@ -253,6 +259,8 @@ describe('useDesignDraft', () => {
 
             expect(applyFullConfigRaw).toHaveBeenCalled();
             expect(setResolvedThemeId).toHaveBeenCalledWith('tema-escolhido');
+            expect(persistDesign).toHaveBeenCalled();
+            expect(applicationOrder).toEqual(['apply', 'theme:tema-escolhido', 'persist:true']);
         });
 
         it('sem themeId (preview de preset comum), aplicar NÃO chama setResolvedThemeId', () => {
@@ -264,6 +272,7 @@ describe('useDesignDraft', () => {
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw,
             } as unknown as SarakUIContextType;

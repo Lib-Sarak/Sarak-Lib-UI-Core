@@ -302,7 +302,8 @@ achado que não é a tarefa de agora  →  [[00-backlog]]  (uma linha, sem fila,
   **revisor** — inclusive em plan que só escreve documento *(decisão do dono, 2026-09-02: "agente revisor
   apenas escreve specs e plan, agente executor faz as alterações e o revisor aprova")*. Isto **substitui** o
   desvio anterior, que mandava o revisor executar plan de `specs/`; o que restringe o executor agora está na
-  [[00-prompt-executor]] §7.3, e é mais estreito: ele nunca cria nem edita spec **por iniciativa própria**,
+  proibição *"NUNCA crie nem edite spec por iniciativa própria"* da lista de [[00-prompt-executor]] §7, e é
+  mais estreito: ele nunca cria nem edita spec **por iniciativa própria**,
   mas edita o arquivo que a §3.1 da plan declara dentro do escopo.
 - **O usuário nomeia as specs no prompt.** Via de regra, é ele quem diz ao agente quais specs ler. O ritual de
   entrada dos dois prompts continua obrigatório — a menção do usuário reforça, não substitui.
@@ -345,7 +346,8 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   do dono, e o padrão é o agente **instruir** — ele entrega o comando pronto e quem digita é o dono. A **única**
   porta é o dono **solicitar e autorizar** naquela conversa, e ela vale para aquele ato, não para os seguintes
   ([`specs/17`](specs/17-contrato-de-operacao-git.md) §2.0 · [`adr/012`](adr/012-escrita-git-sob-autorizacao-do-dono.md)).
-  **Ler é livre e esperado** — `status`, `log`, `diff`, `fetch`, os `*:check`. As seis proibições absolutas,
+  O hook de commit e o de push barram a sessão de agente que não declare a autorização no próprio comando
+  ([[00-regras-e-invariantes]] R38). **Ler é livre e esperado** — `status`, `log`, `diff`, `fetch`, os `*:check`. As seis proibições absolutas,
   que autorização nenhuma dissolve, estão na §3 daquela spec.
 - **Não rode `npm version` por conta própria.** Ele cria tag e faz `push` no `postversion`: é publicação, e
   publicação é decisão do usuário. O que fazer quando o push é bloqueado está na §3.1.

@@ -22,16 +22,18 @@ import { useDesignDraft } from '../useDesignDraft';
 
 const Harness = (): React.ReactElement => {
     const sarak = useSarakUI();
-    const { updateDraft, handleApplyToSystem } = useDesignDraft(sarak);
+    const { updateDraft, handleThemePreview, handleApplyToSystem } = useDesignDraft(sarak);
     return (
         <div>
             <button data-testid="btn-edit" onClick={() => updateDraft('primaryColor', '#654321')}>Editar</button>
+            <button data-testid="btn-preview-theme" onClick={() => handleThemePreview({ primaryColor: '#123456' }, undefined, 'tema-aplicado')}>Preview tema</button>
             <button data-testid="btn-apply" onClick={() => handleApplyToSystem()}>Aplicar</button>
         </div>
     );
 };
 
 const AUTO_PERSIST_DEBOUNCE_MS = 1500;
+const DESIGN_STORAGE_KEY = 'sarak-theme-design-persistence-integration';
 
 /**
  * A persistência automática só roda 1500 ms após `design` mudar; afirmar que
@@ -42,27 +44,26 @@ const advancePastAutoPersistDebounce = async (): Promise<void> => {
     await act(() => vi.advanceTimersByTimeAsync(AUTO_PERSIST_DEBOUNCE_MS + 1));
 };
 
-/*
- * O boot muda `design` e persiste uma vez, sem relação com o rascunho. Avançar
- * o debounce e instalar/limpar o espião depois evita falso-positivo nos três testes.
- */
 const verifyLocalStoragePort = async (): Promise<void> => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
     render(
-        <SarakUIProvider>
+        <SarakUIProvider options={{ persistence: { storageKey: DESIGN_STORAGE_KEY } }}>
             <Harness />
         </SarakUIProvider>
     );
 
-    // A gravação de boot terminou antes de instalar o espião.
+    const hasDesignStorageWrite = (): boolean =>
+        setItemSpy.mock.calls.some(([key]) => key === DESIGN_STORAGE_KEY);
+
     await advancePastAutoPersistDebounce();
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+    expect(hasDesignStorageWrite()).toBe(false);
 
     fireEvent.click(screen.getByTestId('btn-edit'));
     await advancePastAutoPersistDebounce();
-    expect(setItemSpy).not.toHaveBeenCalled();
+    expect(hasDesignStorageWrite()).toBe(false);
 
     fireEvent.click(screen.getByTestId('btn-apply'));
-    expect(setItemSpy).toHaveBeenCalled();
+    expect(hasDesignStorageWrite()).toBe(true);
     setItemSpy.mockRestore();
 };
 
@@ -75,9 +76,8 @@ const verifyPersistenceOnSavePort = async (): Promise<void> => {
         </SarakUIProvider>
     );
 
-    // Zera a gravação de boot para medir só as mudanças do rascunho.
     await advancePastAutoPersistDebounce();
-    onSave.mockClear();
+    expect(onSave).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId('btn-edit'));
     await advancePastAutoPersistDebounce();
@@ -98,9 +98,8 @@ const verifyThemeChangePort = async (): Promise<void> => {
         </SarakUIProvider>
     );
 
-    // Zera a gravação de boot para medir só as mudanças do rascunho.
     await advancePastAutoPersistDebounce();
-    onThemeChange.mockClear();
+    expect(onThemeChange).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId('btn-edit'));
     await advancePastAutoPersistDebounce();
@@ -129,4 +128,33 @@ describe('Editar o rascunho não grava nem espalha — só "Aplicar" grava, pela
     it('localStorage: nenhuma escrita enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" grava', verifyLocalStoragePort);
     it('persistence.onSave: não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', verifyPersistenceOnSavePort);
     it('onThemeChange (a porta do tema): não chama enquanto edita — mesmo depois do prazo da gravação automática; "Aplicar" chama', verifyThemeChangePort);
+
+    it('aplicar um tema persiste o design e o id novo já na primeira chamada de onSave', async () => {
+        const onSave = vi.fn().mockResolvedValue(undefined);
+        const customThemes = [{ id: 'tema-aplicado', name: 'Tema Aplicado', design: { primaryColor: '#123456' } }];
+
+        render(
+            <SarakUIProvider customThemes={customThemes} options={{ persistence: { onSave } }}>
+                <Harness />
+            </SarakUIProvider>,
+        );
+
+        await advancePastAutoPersistDebounce();
+        expect(onSave).not.toHaveBeenCalled();
+
+        act(() => {
+            fireEvent.click(screen.getByTestId('btn-preview-theme'));
+        });
+
+        await act(async () => {
+            fireEvent.click(screen.getByTestId('btn-apply'));
+        });
+
+        expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onSave).toHaveBeenNthCalledWith(
+            1,
+            expect.objectContaining({ primaryColor: '#123456' }),
+            'tema-aplicado',
+        );
+    });
 });

@@ -12,6 +12,13 @@
 if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
 
 # =============================================================================
+# TRAVA DE AUTORIA — primeiro passo, antes do Anel 0. Sessão de agente sem a
+# autorização declarada NAQUELE comando não escreve no Git
+# (specs/specs/17-contrato-de-operacao-git.md §2.0).
+# =============================================================================
+node gates/scripts/contrato/check-agent-git-write.mjs || exit 1
+
+# =============================================================================
 # ANEL 0 — Segurança e índice (custo desprezível, sempre roda)
 # =============================================================================
 echo "[Sarak] Anel 0 — verificando vazamento de segredos no staged..."

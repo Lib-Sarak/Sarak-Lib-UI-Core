@@ -106,7 +106,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
     // 1.5. Temas: fusão (GLOBAL_THEMES + customThemes + salvos em runtime) + porta única de escrita (ADR-011).
-    const { allThemes, saveTheme } = useThemeCollection(customThemes, options);
+    const { allThemes, saveTheme, deleteTheme } = useThemeCollection(customThemes, options);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, resolvedThemeId, setResolvedThemeId } = useDesignManager({
@@ -124,7 +124,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 2.6 Preferências do usuário — camada separada, nunca persistida no tema;
     //     `effectiveDesign` sobrepõe as OFERECIDAS pelo tema resolvido.
     const { preferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
-    const activeTheme = (allThemes as SarakThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
+    const activeTheme = allThemes.find((theme) => theme.id === resolvedThemeId);
 
     // 3. Gerenciamento de Rascunho (Live Preview) — sobre o design BRUTO: o
     //    painel edita e comita o tema, nunca o efetivo.
@@ -170,7 +170,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isHydrated,
         options,
         allThemes,
-        saveTheme,
+        saveTheme, deleteTheme,
         activeThemeId,
         resolvedThemeId,
         setResolvedThemeId,
@@ -186,7 +186,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         drafting.setDraftDesign, drafting.smartApplyConfig,
         drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
         persistDesign, registeredModules, isHydrated, options,
-        allThemes, saveTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
+        allThemes, saveTheme, deleteTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
         token, branding, updateBranding, onMediaUpload
     ]);
 

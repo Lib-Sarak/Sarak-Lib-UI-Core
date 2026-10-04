@@ -9,7 +9,7 @@ tags: ["plan", "cromo", "shell", "navegacao", "widgets", "adr"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
 depende_de: "plan-93-persistencia-fecha-o-ciclo-do-tema"
 retida_por: ""
-destino_sintese: "adr/017 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md"
+destino_sintese: "adr/018 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md"
 ---
 
 # 1. Objetivo
@@ -199,9 +199,9 @@ tokens cobra as três fontes.
 
 # 8. Destino da síntese
 
-**Destino:** `adr/017 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md`
+**Destino:** `adr/018 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md`
 
-- **`adr/017`** — *um cromo só, o consumidor é dono das rotas*: substitui a parte do ADR-005 que fazia da lib
+- **`adr/018`** — *um cromo só, o consumidor é dono das rotas*: substitui a parte do ADR-005 que fazia da lib
   o host. Alternativas reais: (1) manter dois cromos e portar defeito a defeito — custo: trabalho dobrado
   permanente e gate de paridade entre os dois; (2) Shell como camada fina sobre o AppChrome — custo: manter
   registro e roteador que nenhum consumidor atual usa. Escolhida: descartar. Custo da escolhida: o legado

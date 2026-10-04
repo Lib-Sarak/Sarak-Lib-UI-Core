@@ -49,8 +49,14 @@ prompt de conclusão (§6.1), para o usuário levar ao revisor. Esse prompt nunc
 4. `specs/00-knowledge.md` — quando a instrução nomear uma skill que você não conhece.
 5. `CLAUDE.md` da raiz.
 
-Depois disso, e **antes de editar**: `status: "🟡 Em execução"` no frontmatter da plan. *Via direta não tem
-status — comece.*
+6. **A fotografia do worktree.** Depois da leitura e **antes da primeira edição**, rode `git status --short`
+   e guarde a saída: ela entra no resumo (§5), no campo *Estado do worktree ao iniciar*. O worktree é
+   compartilhado — pode conter trabalho não commitado de **outra tarefa**, e a fotografia é o que separa o
+   que já estava ali do que você mexeu. Arquivo que aparece nela **não é seu** (§7, item 12).
+
+**O `status` da plan já vem em `🟡 Em execução`:** quem o move é o **revisor**, ao entregar o prompt para
+despacho. Você não faz essa transição — só a de `🟠`, ao entregar (§5). Plan que chega em `🔴` não foi
+despachada: avise o usuário em vez de mover o status por conta própria. *Via direta não tem status — comece.*
 
 **Instrução ambígua ou incompleta:** faça primeiro tudo que não depende da dúvida e pergunte sobre o resto —
 ou, se a dúvida for pequena, siga a interpretação mais conservadora e **declare-a no resumo** como suposição.
@@ -84,6 +90,23 @@ Suposição não registrada é reprovação garantida.
    prova que a regra roda, não que ela está certa ([[00-prompt-revisor]] §5.4).
 9. **Nada irreversível ou externo** (deploy, migration real, reescrita de histórico, `push`, deleção em
    massa) sem a instrução mandar — e, ainda assim, confirme com o usuário.
+10. **Controle em `HEAD` limpo — sem escrever no Git.** Precisa separar regressão sua de intermitência
+    (teste que falha e você não sabe se falharia sem a sua mudança)? O `stash` continua proibido; o controle
+    se faz numa **cópia do `HEAD` fora do repositório**, e `git archive` é leitura:
+    1. `git status --short` do repositório — guarde a saída.
+    2. Exporte o `HEAD` para um diretório temporário **fora do repositório**:
+       `git archive --format=tar HEAD -o <tmp>.tar`, e extraia o `.tar` em `<tmp>` (`tar -xf`).
+    3. Dê à cópia o `node_modules` do repositório por **junção** (PowerShell:
+       `New-Item -ItemType Junction -Path <tmp>\node_modules -Target <repo>\node_modules`).
+    4. Dentro de `<tmp>`, rode só o arquivo de teste em questão (`npx vitest run <arquivo>`).
+    5. Desfaça: **remova a junção ANTES de apagar o diretório** (`(Get-Item <tmp>\node_modules).Delete()`) e
+       só então `Remove-Item -Recurse -Force <tmp>`. ⚠️ Apagar recursivamente com a junção dentro apaga o
+       `node_modules` de verdade — confira com `Test-Path <repo>\node_modules` depois.
+    6. `git status --short` de novo: tem de ser **idêntico** ao do passo 1. Cole os dois e a saída do teste
+       no resumo.
+
+    A cópia mostra o comportamento do `HEAD`, não o do worktree compartilhado: trabalho não commitado de
+    outra tarefa não está nela, e é justamente isso que a faz um controle.
 
 ---
 
@@ -92,7 +115,9 @@ Suposição não registrada é reprovação garantida.
 - [ ] Rodei os testes/linters/validadores pedidos e **li** a saída.
 - [ ] Se a instrução declarou `Gate: <regra>` (§3, item 8): mostrei entrada exata e resultado para cada
   limite/falso positivo que a regra promete não ter — não só suíte verde.
-- [ ] `git status` e `git diff` conferem com o escopo — nada a mais, nada a menos.
+- [ ] Fotografei o worktree (`git status --short`) antes da primeira edição, e a fotografia está no resumo.
+- [ ] `git status` e `git diff` conferem com o escopo — nada a mais, nada a menos. Arquivo modificado que
+  não estava na fotografia e eu não toquei: parei e relatei.
 - [ ] Percorri os critérios de aceite e sei apontar a evidência de cada um.
 - [ ] Sem debug, `TODO` novo, teste em skip, segredo ou hardcoded.
 - [ ] Nenhum comentário novo cita plan.
@@ -115,6 +140,9 @@ rigor, e **sem criar arquivo** para abrigá-lo.
 ## Resumo da execução — AAAA-MM-DD
 
 **Resultado:** <Concluído | Concluído com pendências | Bloqueado>
+
+**Estado do worktree ao iniciar**
+<a saída de `git status --short` da fotografia da §2, colada; `(limpo)` se vazia>
 
 **O que foi feito**
 - <mudança — arquivo:linha> — <por quê>
@@ -212,8 +240,14 @@ Abaixo, o resumo da execução, como entregue pelo executor:
     descarte trabalho: a escrita é do usuário, e o seu padrão é deixar as alterações no worktree. A **única**
     porta é ele **solicitar e autorizar** naquela conversa, e ela vale para aquele ato, não para os seguintes
     ([[17-contrato-de-operacao-git]] §2.0 · [[012-escrita-git-sob-autorizacao-do-dono]]). **Ler é livre e
-    esperado** — `status`, `log`, `diff`. *(Este item fecha a lista, e não abre a numeração, porque `§7.3` é
-    citado de fora — ver a decisão registrada no resumo desta execução.)*
+    esperado** — `status`, `log`, `diff`.
+12. **NUNCA mexa no que não é seu.** Arquivo que já estava modificado na fotografia do worktree (§2) é
+    trabalho de outra tarefa: não reverta, não restaure, não formate, não "limpe". Arquivo que aparece
+    modificado, não estava na fotografia e você não tocou: **pare e relate** — não presuma que foi efeito
+    colateral seu e não o desfaça.
+
+> Os itens desta lista são citados de fora **pelo nome, nunca pelo número**: item novo entra onde fizer
+> sentido, sem quebrar ponteiro de ninguém.
 
 ---
 
@@ -235,7 +269,8 @@ Você recebe um **prompt de correção** com os achados numerados. Muda pouco:
 # 9. Checklist
 
 Via identificada (§1) · instrução lida por inteiro, mais `00-contexto` e tudo que as Referências nomeiam ·
-`status: 🟡` marcado antes da primeira edição (com plan) · passos seguidos na ordem, skills aplicadas ·
+plan em `🟡` ao chegar (movida pelo revisor) e worktree fotografado antes da primeira edição · passos
+seguidos na ordem, skills aplicadas ·
 escopo respeitado, achados externos **anotados, não corrigidos** · testes/validadores rodados com saída lida
 · sem debug, `TODO` novo, segredo, hardcoded, gate contornado ou comentário citando plan · resumo no formato
 da §5, fiel ao `git diff`, com datas absolutas · `status: 🟠` marcado (com plan) · via direta: **nenhum

@@ -62,6 +62,8 @@ via normal.
 
 | # | Achado | Origem | Registrado em | Peso |
 |---|---|---|---|---|
+| 2 | `.agents/skills/git-ci-cd/SKILL.md` (quadro 🔒) afirma que o commit **pela UI do VS Code** não dispara a trava de `check-agent-git-write`, mas só o terminal do dono foi medido; o ambiente que a UI passa ao `git` não — se carregar um dos três marcadores, o dono é bloqueado no caminho de commit que ele mais usa. A medição é o primeiro commit real depois da trava | `plan-87` | 2026-10-03 | alto |
+| 3 | `.agents/skills/git-ci-cd/SKILL.md:785-786` cita `00-prompt-executor.md:165` e `00-prompt-revisor.md:67`/`:246` por **número de linha**, e já não apontam para a regra de co-autoria desde antes da `plan-87` (no `HEAD` eram uma linha vazia, uma de 3 caracteres e outro item) — citar pelo nome | `plan-87` | 2026-10-03 | baixo |
 | 1 | `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx:61` mocka `core/Design/master-map` sem `sarakGetDefaultDesignState`, que `Main/utils/exportTheme.ts:18` importa; o stderr da CI acusa `No "sarakGetDefaultDesignState" export is defined` e o teste "exporta o tema como JSON" passa mesmo assim — talvez sem provar o que promete (resíduo do rename `965bc44`) | ritual (log da CI do `80785e5`) | 2026-10-03 | médio |
 
 ---

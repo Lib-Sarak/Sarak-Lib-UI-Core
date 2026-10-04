@@ -42,19 +42,24 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-87-processo-que-a-pratica-furou](plan/plan-87-processo-que-a-pratica-furou.md) | Fazer cada regra de processo que só existia em prosa ganhar um gatilho mecânico ou ser reescrita para o que a prática mostrou ser exequível | — | 🔴 A executar | specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md + specs/02-enforcement-por-commit.md + specs/17-contrato-de-operacao-git.md |
-| 2 | [plan-92-selo-de-build-em-runtime](plan/plan-92-selo-de-build-em-runtime.md) | Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao | — | 🔴 A executar | specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md |
-| 3 | [plan-93-persistencia-fecha-o-ciclo-do-tema](plan/plan-93-persistencia-fecha-o-ciclo-do-tema.md) | Fazer o par design mais id do tema sobreviver ao ciclo inteiro de persistencia, por qualquer caminho de aplicacao, sem gravacao no boot e sem o consumidor precisar de guarda propria | — | 🔴 A executar | specs/09-temas-e-presets.md + arquitetura/03-superficie-publica.md |
-| 4 | [plan-94-um-cromo-so](plan/plan-94-um-cromo-so.md) | Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade | plan-93-persistencia-fecha-o-ciclo-do-tema | 🔴 A executar | adr/017 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md |
-| 5 | [plan-95-icones-por-uma-porta-aberta-ao-consumidor](plan/plan-95-icones-por-uma-porta-aberta-ao-consumidor.md) | Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada | plan-94-um-cromo-so | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
-| 6 | [plan-88-vaos-de-gate-medidos](plan/plan-88-vaos-de-gate-medidos.md) | Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha | — | 🔴 A executar | specs/01-gates-e-baseline.md + specs/00-regras-e-invariantes.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 7 | [plan-89-tokens-de-cromo-ligados-e-medidos](plan/plan-89-tokens-de-cromo-ligados-e-medidos.md) | Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo | plan-94-um-cromo-so | 🔴 A executar | specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md |
-| 8 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
-| 9 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 10 | [plan-96-templates-sem-dominio-embutido](plan/plan-96-templates-sem-dominio-embutido.md) | Fazer nenhum componente da lib conhecer URL, cliente HTTP, rota de dominio, texto fixo em portugues ou conceito de um produto, de modo que os templates sirvam a qualquer sistema | plan-95-icones-por-uma-porta-aberta-ao-consumidor | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/10-seguranca-e-acessibilidade.md + specs/08-identidade-do-host-e-zero-marca.md + specs/00-regras-e-invariantes.md |
-| 11 | [plan-97-dados-tabela-estados-valor-e-metrica](plan/plan-97-dados-tabela-estados-valor-e-metrica.md) | Dar a lib o que quatro sistemas refizeram a mao para exibir dado: tabela semantica com celula customizada e os tres estados, paginacao com tamanho e resumo, valor numerico formatado com cor por sinal e cartao de metrica completo | plan-96-templates-sem-dominio-embutido | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 12 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-92-selo-de-build-em-runtime](plan/plan-92-selo-de-build-em-runtime.md) | Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao | — | 🔴 A executar | specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md |
+| 2 | [plan-93-persistencia-fecha-o-ciclo-do-tema](plan/plan-93-persistencia-fecha-o-ciclo-do-tema.md) | Fazer o par design mais id do tema sobreviver ao ciclo inteiro de persistencia, por qualquer caminho de aplicacao, sem gravacao no boot e sem o consumidor precisar de guarda propria | — | 🟢 Aprovada | adr/017 (nova) + specs/09-temas-e-presets.md + arquitetura/03-superficie-publica.md |
+| 3 | [plan-94-um-cromo-so](plan/plan-94-um-cromo-so.md) | Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade | plan-93-persistencia-fecha-o-ciclo-do-tema | 🔴 A executar | adr/018 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md |
+| 4 | [plan-95-icones-por-uma-porta-aberta-ao-consumidor](plan/plan-95-icones-por-uma-porta-aberta-ao-consumidor.md) | Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada | plan-94-um-cromo-so | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 5 | [plan-88-vaos-de-gate-medidos](plan/plan-88-vaos-de-gate-medidos.md) | Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha | — | 🔴 A executar | specs/01-gates-e-baseline.md + specs/00-regras-e-invariantes.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 6 | [plan-89-tokens-de-cromo-ligados-e-medidos](plan/plan-89-tokens-de-cromo-ligados-e-medidos.md) | Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo | plan-94-um-cromo-so | 🔴 A executar | specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md |
+| 7 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
+| 8 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 9 | [plan-96-templates-sem-dominio-embutido](plan/plan-96-templates-sem-dominio-embutido.md) | Fazer nenhum componente da lib conhecer URL, cliente HTTP, rota de dominio, texto fixo em portugues ou conceito de um produto, de modo que os templates sirvam a qualquer sistema | plan-95-icones-por-uma-porta-aberta-ao-consumidor | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/10-seguranca-e-acessibilidade.md + specs/08-identidade-do-host-e-zero-marca.md + specs/00-regras-e-invariantes.md |
+| 10 | [plan-97-dados-tabela-estados-valor-e-metrica](plan/plan-97-dados-tabela-estados-valor-e-metrica.md) | Dar a lib o que quatro sistemas refizeram a mao para exibir dado: tabela semantica com celula customizada e os tres estados, paginacao com tamanho e resumo, valor numerico formatado com cor por sinal e cartao de metrica completo | plan-96-templates-sem-dominio-embutido | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 11 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> ⚪ **A `plan-87` foi SINTETIZADA e REMOVIDA em 2026-10-03.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **87** | [[00-regras-e-invariantes]] **R38 (nova)** — a regra, o gate e o vão; §1.3 (37 → 38 regras, ⚠️ 11 → 12), §4 e §4.1 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (o gate no catálogo e na tabela de onde roda) e §9.4 (a convenção `§7.3` deixou de valer para os prompts) · [[02-enforcement-por-commit]] **§2.0 (nova)** — a trava como primeiro passo dos dois hooks, de qualquer branch · [[17-contrato-de-operacao-git]] §2.0 — a porta da autorização tem forma mecânica · [[00-contexto]] §7. Os prompts, o molde e este índice foram editados pela própria execução. Ficou de fora, de propósito: a afirmação de que o commit pela UI do VS Code não dispara a trava (não foi medida; está no [[00-backlog]]) e as cinco citações de `[[00-prompt-revisor]] §7.4` por cabeçalho, que continuam válidas |
 
 > ⚪ **A `plan-86` foi SINTETIZADA e REMOVIDA em 2026-10-02.** Destino demonstrado:
 >
@@ -159,7 +164,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | Status | Significado | Quem move para cá |
 |---|---|---|
 | 🔴 A executar | Spec escrita. Aguarda a **sua vez na fila** — não é autorização para começar (§5). | revisor (ao criar) |
-| 🟡 Em execução | Executor trabalhando. | executor (ao iniciar) |
+| 🟡 Em execução | Executor trabalhando. | revisor (ao entregar o prompt de execução para despacho) |
 | 🟠 Em revisão | Execução concluída no worktree, aguardando veredito. | executor (ao entregar) |
 | 🔵 Em correção | Reprovada. Prompt de correção emitido, executor refazendo. | revisor (ao reprovar) |
 | 🟢 Aprovada | Verificada pelo revisor. Pronta para o usuário commitar. | revisor (ao aprovar) |
@@ -170,15 +175,16 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > execução nova; a plan e o histórico de vereditos são os mesmos.
 
 > 🔴 **A coluna "Quem move para cá" fala do `status` DA PLAN, não deste arquivo** *(esclarecido em 2026-08-07)*.
-> Ela e a §5 pareciam se contradizer: aqui o executor "move" 🟡 e 🟠, e lá está escrito que *"só o revisor edita
+> Ela e a §5 pareciam se contradizer: aqui o executor "move" 🟠, e lá está escrito que *"só o revisor edita
 > este arquivo"*. **As duas estão certas, e o sujeito é que era ambíguo:** o executor move o `status` no
 > frontmatter da plan — que é a **fonte da verdade** (§5) — e o revisor **espelha aqui**. O executor nunca abre
 > este arquivo.
 >
 > **Isso deixou de ser detalhe quando o gate nasceu.** O `plan-index:check` (`plan-12`) compara os dois e
-> **bloqueia o commit** na divergência. Como o executor legitimamente move a plan para 🟡 antes da primeira
-> edição ([[00-prompt-executor]] §2) e para 🟠 ao entregar (§5), **toda execução cria uma divergência que só o
-> revisor pode fechar** — e o bloqueio cai sobre quem commita, que é o dono.
+> **bloqueia o commit** na divergência. O 🟡 é do **revisor**, que o move ao despachar o prompt e roda
+> `npm run plan-index` na mesma ação ([[00-prompt-revisor]] §5.3); o executor só move para 🟠
+> ao entregar ([[00-prompt-executor]] §5) — e **essa transição cria uma divergência que só o revisor pode
+> fechar**, e o bloqueio cai sobre quem commita, que é o dono.
 >
 > **A regra operacional que resolve, e é do revisor:** *espelhar o status aqui **antes de liberar qualquer
 > commit**, inclusive nas liberações parciais no meio de uma execução.* Foi a falha que apareceu na `plan-15`:
@@ -246,7 +252,7 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 - **Só o revisor edita este arquivo.** O executor nunca o toca; ele escreve apenas na plan que executou.
 - **O revisor espelha o status ANTES de liberar qualquer commit** — inclusive liberação parcial no meio de uma
   execução. O `plan-index:check` bloqueia o commit na divergência, e a divergência nasce de um movimento
-  **legítimo** do executor (🟡 ao iniciar, 🟠 ao entregar). Espelhar no veredito basta para o fluxo normal;
+  **legítimo** do executor (🟠 ao entregar; o 🟡 já foi movido pelo revisor ao despachar). Espelhar no veredito basta para o fluxo normal;
   espelhar **ao liberar** é o que cobre a liberação parcial. Ver a nota da §2.
 
 ---

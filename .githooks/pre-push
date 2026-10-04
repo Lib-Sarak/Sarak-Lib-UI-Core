@@ -21,6 +21,10 @@
 #
 # POSIX sh (Git Bash no Windows). Nada de PowerShell aqui dentro.
 
+# TRAVA DE AUTORIA — primeiro passo. Sessão de agente sem a autorização declarada
+# NAQUELE comando não empurra (specs/specs/17-contrato-de-operacao-git.md §2.0).
+node gates/scripts/contrato/check-agent-git-write.mjs || exit 1
+
 STDIN=$(cat)
 
 # =============================================================================

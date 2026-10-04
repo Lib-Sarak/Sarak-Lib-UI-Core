@@ -26,7 +26,8 @@ describe('TemplatesTab', () => {
             { id: 'theme2', name: 'Theme 2', description: 'Desc 2', design: { mode: 'light' } }
         ],
         applyFullConfig: vi.fn(),
-        persistDesign: vi.fn().mockResolvedValue(true)
+        setResolvedThemeId: vi.fn(),
+        persistDesign: vi.fn().mockResolvedValue(true),
     };
 
     beforeEach(() => {
@@ -41,16 +42,24 @@ describe('TemplatesTab', () => {
         expect(screen.getByText('Copie o JSON abaixo.')).toBeInTheDocument();
         expect(screen.getByText('Theme 1')).toBeInTheDocument();
         expect(screen.getByText('Theme 2')).toBeInTheDocument();
+        expect(screen.getByText('Desc 1')).toBeInTheDocument();
+        expect(screen.getByText('Desc 2')).toBeInTheDocument();
     });
 
     it('chama applyFullConfig e persistDesign ao aplicar um tema', () => {
+        const applicationOrder: string[] = [];
+        mockSarakUI.applyFullConfig.mockImplementation(() => applicationOrder.push('apply'));
+        mockSarakUI.setResolvedThemeId.mockImplementation((id: string) => applicationOrder.push(`theme:${id}`));
+        mockSarakUI.persistDesign.mockImplementation(async () => { applicationOrder.push('persist'); });
         render(<TemplatesTab />);
         
         const applyButtons = screen.getAllByText('Aplicar Tema');
         fireEvent.click(applyButtons[0]);
 
         expect(mockSarakUI.applyFullConfig).toHaveBeenCalledWith({ mode: 'dark' });
+        expect(mockSarakUI.setResolvedThemeId).toHaveBeenCalledWith('theme1');
         expect(mockSarakUI.persistDesign).toHaveBeenCalledWith({ mode: 'dark' });
+        expect(applicationOrder).toEqual(['apply', 'theme:theme1', 'persist']);
     });
 
     it('copia o tema e muda ícone', async () => {

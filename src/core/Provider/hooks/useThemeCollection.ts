@@ -10,14 +10,16 @@ import { SarakUIOptions, SarakThemeEntry } from '../types';
  * seguinte (§2 do ADR). Extraído do `SarakUIProvider` para manter aquele
  * arquivo abaixo do teto de 250 linhas do auditor de Clean Code (R9).
  */
-export const useThemeCollection = (customThemes: unknown[], options: SarakUIOptions) => {
+export const useThemeCollection = (customThemes: SarakThemeEntry[], options: SarakUIOptions) => {
     const [savedThemes, setSavedThemes] = useState<SarakThemeEntry[]>([]);
+    const [deletedThemeIds, setDeletedThemeIds] = useState<string[]>([]);
 
     // savedThemes funde DEPOIS de customThemes para que um tema salvo agora
     // apareça sem reload.
     const allThemes = useMemo<SarakThemeEntry[]>(() => {
-        return [...SARAK_GLOBAL_THEMES, ...customThemes, ...savedThemes] as SarakThemeEntry[];
-    }, [customThemes, savedThemes]);
+        return [...SARAK_GLOBAL_THEMES, ...customThemes, ...savedThemes]
+            .filter((theme) => !deletedThemeIds.includes(theme.id));
+    }, [customThemes, deletedThemeIds, savedThemes]);
 
     // `saveTheme` é a ÚNICA porta de escrita (ADR-011): valida o `design` na
     // fronteira (mesma regra de qualquer tema de origem externa —
@@ -32,9 +34,18 @@ export const useThemeCollection = (customThemes: unknown[], options: SarakUIOpti
             ...theme,
             design: validateDesign(theme.design) as unknown as Record<string, unknown>
         };
+        setDeletedThemeIds((prev) => prev.filter((id) => id !== validatedTheme.id));
         setSavedThemes((prev) => [...prev.filter((t) => t.id !== validatedTheme.id), validatedTheme]);
         await options?.theme?.onSave?.(validatedTheme);
     }, [options?.theme?.onSave]);
 
-    return { allThemes, saveTheme };
+    const deleteTheme = useCallback(async (id: string): Promise<void> => {
+        if (!allThemes.some((theme) => theme.id === id)) return;
+
+        setDeletedThemeIds((prev) => [...new Set([...prev, id])]);
+        setSavedThemes((prev) => prev.filter((theme) => theme.id !== id));
+        await options?.theme?.onDelete?.(id);
+    }, [allThemes, options?.theme?.onDelete]);
+
+    return { allThemes, saveTheme, deleteTheme };
 };

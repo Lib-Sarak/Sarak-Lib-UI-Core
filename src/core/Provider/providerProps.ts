@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { SarakThemePayload, SarakUIOptions } from './types';
+import type { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from './types';
 
 /**
  * Props públicas do `SarakUIProvider`. Extraído de `types.ts` só para manter
@@ -13,7 +13,7 @@ export interface SarakUIProviderProps {
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
-    customThemes?: unknown[]; // Temas em JSON definidos pelo consumidor no próprio código (Spec 44)
+    customThemes?: SarakThemeEntry[]; // Temas em JSON definidos pelo consumidor no próprio código (Spec 44)
     /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
     activeThemeId?: string;
     /**

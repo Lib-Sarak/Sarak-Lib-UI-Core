@@ -4230,7 +4230,7 @@
         },
         {
           "name": "customThemes",
-          "type": "unknown[]",
+          "type": "SarakThemeEntry[]",
           "optional": true,
           "doc": ""
         },

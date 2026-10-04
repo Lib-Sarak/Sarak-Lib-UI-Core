@@ -119,6 +119,35 @@ mas uma customização de cor de modo não chega ao modo oposto. Três controles
 A seleção do tema persiste em `localStorage` sozinha. Para sincronizar no backend **do
 consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`.
 
+Para fechar o ciclo no backend, guarde o design aplicado e o id do tema juntos. `onSave` recebe
+`(design, activeThemeId)`; `onLoad` pode devolver `{ design, activeThemeId }`. O formato antigo,
+que devolve apenas o design, continua aceito. `null`/`undefined` em `onLoad` significa que ainda
+nada foi salvo. O boot e a hidratação não chamam `onSave`; ao trocar `tenantId`, a biblioteca
+carrega o estado daquele tenant sem remontar o Provider. `activeThemeId` passado como prop
+controlada continua prevalecendo.
+
+```tsx
+<SarakUIProvider
+  customThemes={temasSalvos}
+  options={{
+    persistence: {
+      onSave: async (design, activeThemeId) =>
+        salvarEstado({ design, activeThemeId }),
+      onLoad: async () => buscarEstado(), // { design, activeThemeId? } | null
+    },
+    theme: {
+      onDelete: async (id) => excluirTema(id),
+    },
+  }}
+>
+  <App />
+</SarakUIProvider>
+```
+
+`customThemes` recebe a coleção nomeada carregada pelo consumidor. Para excluir um tema em
+runtime, chame `useSarakUI().deleteTheme(id)`; a lib o remove da sessão e chama `options.theme.onDelete`
+para o consumidor removê-lo também da fonte persistente.
+
 **Tema × preferência — duas camadas.** O **tema** é do administrador e vale para o sistema inteiro; o painel
 (`/design`) o edita — **proteja essa rota**: a lib não autentica ninguém. A **preferência** é de cada usuário
 — modo, tamanho da fonte, barra no topo ou na lateral, navegação recolhida, idioma —, aplicada por cima do

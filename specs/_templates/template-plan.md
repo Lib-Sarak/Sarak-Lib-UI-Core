@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Título curto no infinitivo (Ex: Extrair validação de CPF para o domínio)"
 objetivo: "" # Uma frase no infinitivo: o resultado observável, não a tarefa. Alimenta a coluna Objetivo do 00-indice.
 dominio: "Nome do Módulo (Ex: Autenticação)"
-status: "🔴 A executar" # 🔴 A executar · 🟡 Em execução · 🟠 Em revisão · 🔵 Em correção · 🟢 Aprovada · ⚪ Sintetizada · ⛔ Bloqueada
+status: "🔴 A executar" # 🔴 A executar · 🟡 Em execução (o REVISOR move, ao despachar o prompt) · 🟠 Em revisão (o executor move, ao entregar) · 🔵 Em correção · 🟢 Aprovada · ⚪ Sintetizada · ⛔ Bloqueada
 prioridade: "Alta"
 tags: ["plan"]
 relacionados: [] # Ex: [[arquitetura/03-api]], [[specs/02-login]]
@@ -109,10 +109,3 @@ O que deve ser levado para a spec fixa depois (texto pronto para transporte, se 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
-
----
-
-# 11. Síntese
-
-<!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
-     Append-only. O que foi transportado, e o que ficou de fora. -->

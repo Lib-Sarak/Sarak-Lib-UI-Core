@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDesignManager } from '../useDesignManager';
 import type { SarakUIOptions, SarakThemePayload } from '../../types';
 
@@ -136,6 +136,21 @@ describe('useDesignManager — onSave recebe o id do tema ativo (plan-42)', () =
         );
     });
 
+    it('persistDesign lê o id anunciado antes do render seguinte na mesma execução', async () => {
+        const onSave = vi.fn();
+        const options: SarakUIOptions = { persistence: { storageKey: 'synchronous-theme-id-key', onSave } };
+        const { result } = renderHook(() => useDesignManager(baseProps(options)));
+        const nextDesign = { ...result.current.design, primaryColor: '#2468ac' };
+
+        await act(async () => {
+            result.current.setResolvedThemeId?.('tema-anunciado');
+            await result.current.persistDesign(nextDesign);
+        });
+
+        expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#2468ac' }), 'tema-anunciado');
+    });
+
     it('um consumidor que só declara onSave(design) — SEM o segundo parâmetro — continua compilando (tsc) e sendo chamado', async () => {
         const received: SarakThemePayload[] = [];
         // Assinatura de ANTES desta plan, de propósito: prova em tempo de compilação
@@ -189,6 +204,61 @@ describe('useDesignManager — onSave recebe o id do tema ativo (plan-42)', () =
 
         expect(result.current.resolvedThemeId).toBe('tema-b');
         expect(result.current.persistDesign).toBe(persistDesignBeforeThemeChange);
+    });
+});
+
+describe('useDesignManager — ciclo de carga do tema ativo', () => {
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    it('onLoad restaura o par sem gravar no boot; a próxima gravação usa o id salvo', async () => {
+        vi.useFakeTimers();
+        const onSave = vi.fn();
+        const onLoad = vi.fn().mockResolvedValue({
+            design: { primaryColor: '#123456' },
+            activeThemeId: 'tema-salvo',
+        });
+        const options: SarakUIOptions = { persistence: { onSave, onLoad } };
+        const { result } = renderHook(() => useDesignManager(baseProps(options)));
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(1601);
+        });
+
+        expect(result.current.resolvedThemeId).toBe('tema-salvo');
+        expect(onSave).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await result.current.persistDesign({ ...result.current.design, primaryColor: '#654321' } as never);
+        });
+
+        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#654321' }), 'tema-salvo');
+    });
+
+    it('trocar tenantId chama onLoad de novo e aplica o estado do tenant novo sem remontagem', async () => {
+        const onLoad = vi.fn()
+            .mockResolvedValueOnce({ design: { primaryColor: '#111111' }, activeThemeId: 'tema-a' })
+            .mockResolvedValueOnce({ design: { primaryColor: '#222222' }, activeThemeId: 'tema-b' });
+        const { result, rerender } = renderHook(
+            ({ tenantId }: { tenantId: string }) => useDesignManager({
+                ...baseProps({ persistence: { storageKey: 'tema', tenantId, onLoad } }),
+            }),
+            { initialProps: { tenantId: 'tenant-a' } },
+        );
+
+        await waitFor(() => expect(onLoad).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(result.current.resolvedThemeId).toBe('tema-a'));
+
+        rerender({ tenantId: 'tenant-b' });
+
+        await waitFor(() => expect(onLoad).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(result.current.resolvedThemeId).toBe('tema-b'));
+        expect(result.current.design.primaryColor).toBe('#222222');
     });
 });
 

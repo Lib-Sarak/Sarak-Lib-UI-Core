@@ -22,10 +22,17 @@ export const useDesignSync = (
     // (reproduzido com CPU ~100%, achado na Spec 43 §5.1). O guard aplica o tema
     // só quando o ID pedido de fato muda — não a cada render.
     const lastAppliedThemeIdRef = useRef<string | undefined>(undefined);
+    const previousStorageKeyRef = useRef(storageKey);
 
     // RE-HYDRATION & ACTIVE THEME ID SYNC
     useEffect(() => {
         if (!isHydrated) return;
+
+        if (previousStorageKeyRef.current !== storageKey) {
+            previousStorageKeyRef.current = storageKey;
+            lastAppliedThemeIdRef.current = undefined;
+            hasHydratedRef.current = false;
+        }
 
         // Se temos um tema ativo definido explicitamente, ele é a verdade absoluta
         if (activeThemeId && allThemes) {
@@ -74,7 +81,9 @@ export const useDesignSync = (
                     const parsed = JSON.parse(saved);
                     setDesign((prev) => validateDesign({ ...prev, ...parsed }));
                 }
-            } catch (e) {}
+            } catch (error) {
+                console.error('[Sarak:Design] localStorage re-hydration error:', error);
+            }
             hasHydratedRef.current = true;
         }
     }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef]);

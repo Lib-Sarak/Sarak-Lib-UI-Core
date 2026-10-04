@@ -80,6 +80,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
+| Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
 | Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
@@ -165,6 +166,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
 | `prefix` | — | ✅ *(via `build`)* | ✅ | — | ✅ | 
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
+| `agent-git-write` | **1º passo, antes do Anel 0** | — | — | **1º passo**, antes do anel de release | ⛔ **não roda** — o runner não tem sessão de agente, e a decisão é sobre quem digita o comando |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
@@ -681,8 +683,9 @@ O detector é barato — 40 linhas — e a `plan-06` o escreveu como sonda. Ele 
 mortas de verdade**. As outras 19 são ruído de duas classes que precisam estar codificadas **antes** de o gate
 existir, ou ele reprova o repositório inteiro:
 
-1. **`§7.3` significa "item 3 da seção 7"**, não um heading `7.3`. É convenção viva em `00-prompt-executor` §7,
-   `01-gates` §6 e `10-seguranca` §5.
+1. **`§7.3` significa "item 3 da seção 7"**, não um heading `7.3`. É convenção viva em `01-gates` §6 e
+   `10-seguranca` §5. As listas de proibições de `00-prompt-executor` §7 e `00-prompt-revisor` §9 **deixaram de
+   ser citadas assim, de fora**: citam-se pelo nome, nunca pelo número, e item novo entra onde fizer sentido.
 2. **Alvo com `## 2.1` sem um `# 2` pai** — o heading existe, o pai não.
 
 E há uma decisão de escopo, tomada em 2026-08-03: **o detector ignora `specs/plan/`**. Plan é rastro

@@ -542,7 +542,7 @@ interface SarakUIProviderProps {
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
-    customThemes?: unknown[];
+    customThemes?: SarakThemeEntry[];
     /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
     activeThemeId?: string;
     /**
@@ -710,7 +710,13 @@ interface SarakUIOptions {
          *  produz. Quem já implementa `onSave(design)` continua funcionando: em
          *  JavaScript, argumento extra não declarado é ignorado. */
         onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
-        onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
+        onLoad?: () => Promise<SarakThemePayload | {
+            design: SarakThemePayload;
+            activeThemeId?: string;
+        } | null | undefined> | SarakThemePayload | {
+            design: SarakThemePayload;
+            activeThemeId?: string;
+        } | null | undefined;
         /** Segura os filhos até `onLoad` resolver — troca flash por tela vazia (ver "o primeiro paint" em `docs/persistencia-de-tema.md`). Default `false`. */
         strictBackendSync?: boolean;
         /** Sincroniza o tema entre abas/apps que compartilham a `storageKey`. Escuta `storage` e reaplica o design (validado) quando outra aba grava a mesma chave. Default `true`. */
@@ -726,10 +732,11 @@ interface SarakUIOptions {
          * validado (`validateDesign`) entrar na sessão (`allThemes`). Recebe o
          * `ThemeEntry` completo (`{ id, name, design }`); GUARDAR — arquivo, tabela,
          * `localStorage`, o que for — e DEVOLVER no próximo boot via `customThemes` é
-         * inteiramente do consumidor. Não existe porta de leitura nem de apagar: a
-         * leitura já é a prop `customThemes`, e apagar é decisão de quem guarda.
+         * inteiramente do consumidor. A leitura já é a prop `customThemes`; a porta
+         * opcional `onDelete` permite remover da fonte persistente.
          */
         onSave?: (theme: SarakThemeEntry) => Promise<void> | void;
+        /** Remove o tema salvo pelo consumidor, quando configurada. */ onDelete?: (id: string) => Promise<void> | void;
     };
     preferences?: SarakPreferencesOptions;
     /**
@@ -772,11 +779,12 @@ interface SarakUIContextType {
     layouts: unknown[];
     isHydrated: boolean;
     options: SarakUIOptions;
-    allThemes: unknown[];
+    allThemes: SarakThemeEntry[];
     /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
      *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
      *  se configurado — sem a porta, não sobrevive a um reload. */
     saveTheme: (theme: SarakThemeEntry) => Promise<void>;
+    deleteTheme: (id: string) => Promise<void>;
     activeThemeId?: string;
     resolvedThemeId?: string;
     setResolvedThemeId?: (id: string | undefined) => void;

@@ -86,12 +86,14 @@ describe('useLastAppliedSnapshot — desfazer a última aplicação', () => {
     });
 
     it('captura e restaura também o TEMA anunciado (resolvedThemeId), não só o design', () => {
-        const setResolvedThemeId = vi.fn();
+        const operationOrder: string[] = [];
+        const setResolvedThemeId = vi.fn((id: string | undefined) => operationOrder.push(`theme:${id}`));
+        const persistDesign = vi.fn(() => operationOrder.push('persist'));
         const sarak = {
             systemDesign: { mode: 'dark' },
             resolvedThemeId: 'sarak-sovereign',
-            applyFullConfigRaw: vi.fn(),
-            persistDesign: vi.fn(),
+            applyFullConfigRaw: vi.fn(() => operationOrder.push('apply')),
+            persistDesign,
             setResolvedThemeId,
         } as unknown as SarakUIContextType;
 
@@ -112,5 +114,7 @@ describe('useLastAppliedSnapshot — desfazer a última aplicação', () => {
         });
 
         expect(setResolvedThemeId).toHaveBeenCalledWith('sarak-sovereign');
+        expect(persistDesign).toHaveBeenCalledWith({ mode: 'dark' });
+        expect(operationOrder).toEqual(['apply', 'theme:sarak-sovereign', 'persist']);
     });
 });

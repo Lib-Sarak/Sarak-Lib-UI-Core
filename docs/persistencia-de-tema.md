@@ -40,8 +40,25 @@ onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | 
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
   tema salvo pelo importador — a lib não distingue as duas origens neste campo.
 
-`onLoad` é o inverso — devolve o `design` a aplicar no boot. **Não recebe nenhum argumento**: a lib
-nunca pede identidade de usuário, porque não tem esse conceito (§4).
+`onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
+devolver o par:
+
+```ts
+onLoad?: () => Promise<SarakThemePayload | { design: SarakThemePayload; activeThemeId?: string } | null | undefined>
+  | SarakThemePayload
+  | { design: SarakThemePayload; activeThemeId?: string }
+  | null
+  | undefined
+```
+
+Quando `activeThemeId` vier no objeto, o Provider restaura essa identidade junto com o `design`.
+`activeThemeId` controlado na prop do Provider continua vencendo. `null`/`undefined` significa que
+nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identidade de usuário,
+porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
+remontagem do Provider.
+
+O boot e a hidratação não chamam `onSave`. Depois que a carga termina, alterações reais do design
+continuam sendo gravadas pelo debounce; uma aplicação explícita também grava imediatamente.
 
 ### 1.2 Os temas criados — `options.theme.onSave`
 
@@ -60,9 +77,10 @@ interface SarakThemeEntry {
 }
 ```
 
-**Não existe porta de leitura nem de apagar.** A leitura já é a prop `customThemes` — você devolve
-a lista de temas guardados nela no próximo boot, e eles entram na sessão junto dos embarcados.
-Apagar é decisão sua, na sua fonte; a lib nunca chama nada para remover.
+Não existe porta separada de leitura: a prop `customThemes` recebe a lista de temas guardados no
+próximo boot, e eles entram na sessão junto dos embarcados. Para apagar, `useSarakUI().deleteTheme(id)`
+remove o tema da coleção da sessão e chama `options.theme.onDelete(id)` quando essa porta opcional
+estiver configurada. O consumidor continua responsável por removê-lo da própria fonte persistente.
 
 Quem dispara `theme.onSave` é o contexto do Provider, pelo método `sarak.saveTheme(theme)` — é o
 que o botão "Salvar" do painel chama por baixo. Se você construir uma UI própria para criar temas
@@ -117,7 +135,7 @@ import { SarakUIProvider } from '@sarak/lib-ui-core';
 
 function App({ temasSalvos, estadoAplicado }: {
   temasSalvos: SarakThemeEntry[];          // devolvidos do SEU backend, ver §1.2
-  estadoAplicado: SarakThemePayload | undefined; // devolvido do SEU backend, ver §1.1
+  estadoAplicado: { design: SarakThemePayload; activeThemeId?: string } | undefined; // ver §1.1
 }) {
   return (
     <SarakUIProvider
@@ -141,7 +159,7 @@ function App({ temasSalvos, estadoAplicado }: {
           },
           onLoad: async () => {
             const res = await fetch('/api/tema/estado');
-            return (await res.json()).design;
+            return (await res.json()).estadoAplicado;
           },
         },
         theme: {
@@ -150,6 +168,9 @@ function App({ temasSalvos, estadoAplicado }: {
               method: 'PUT',
               body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
             });
+          },
+          onDelete: async (id) => {
+            await fetch(`/api/tema/definicoes/${encodeURIComponent(id)}`, { method: 'DELETE' });
           },
         },
       }}

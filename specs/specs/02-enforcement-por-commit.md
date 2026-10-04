@@ -30,6 +30,7 @@ Esta spec descreve o pipeline, as decisões de desenho com a justificativa de ca
 
 | Anel | Quando | Consequência | Custo medido |
 | --- | --- | --- | --- |
+| **Trava de autoria** (§2.0) | Todo commit e todo push, de qualquer branch, **antes de tudo** | **BLOQUEIA** sessão de agente sem autorização | ~0,06 s |
 | **0 — Segurança** | Todo commit, sem exceção | **BLOQUEIA** | < 1 s |
 | **1 — Contrato** | Commit que toca código/artefato | **BLOQUEIA** no vermelho | ~2,9 s |
 | **2 — Auditoria** | Commit que toca código/artefato | **BLOQUEIA só em REGRESSÃO** | ~7 s (+ ~11 s se tocar `.ts`/`.tsx`) |
@@ -40,6 +41,19 @@ Esta spec descreve o pipeline, as decisões de desenho com a justificativa de ca
 **Custo total de um commit de código:** ~10 s sem TypeScript, ~20 s com. Um commit de documentação custa **~0,6 s** (§3). **Custo de um push da `main` com código:** ~170 s; de qualquer outro push: instantâneo.
 
 > A tabela tem cinco linhas para quatro anéis porque o **Anel 3 foi partido em dois** em P27: a suíte virou hook, o `build`/`package:check` não — e não vai virar. O porquê está na §4.1.
+
+## 2.0 A trava de autoria — o primeiro passo dos dois hooks
+
+`check-agent-git-write.mjs` roda **antes de qualquer anel**: no `pre-commit`, antes do Anel 0; no `pre-push`,
+antes do anel de release e antes de o hook ler o stdin. Se o ambiente carrega um marcador de sessão de agente
+(`CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID`) e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA`, o
+commit ou o push é bloqueado, com a regra, o motivo e a forma de o dono autorizar. O terminal do dono não
+carrega marcador algum e passa direto.
+
+Diferente do anel de release, que só age para `refs/heads/main`, **a trava vale para todo push, de qualquer
+branch**: a pergunta que ela faz é *quem está escrevendo*, não *o que está sendo escrito*. A regra é a **R38**
+([[00-regras-e-invariantes]]), com o vão declarado nela; o contrato de quem decide é a
+[[17-contrato-de-operacao-git]] §2.0. Não roda na CI: o runner não tem sessão de agente.
 
 ## 2.1 Anel 0 — Segurança (inalterado)
 

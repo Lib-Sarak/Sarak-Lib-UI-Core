@@ -64,7 +64,8 @@ CREATE UNIQUE INDEX sarak_theme_definitions_tenant_theme_uk
 -- =============================================================================
 -- 2) O tema APLICADO agora — estado corrente, SINGULAR por tenant
 --    (docs/persistencia-de-tema.md §1.1). Entregue via
---    `options.persistence.onSave(design, activeThemeId)` / lido por `onLoad`.
+--    `options.persistence.onSave(design, activeThemeId)` / lido por `onLoad`
+--    como { design: state_design, activeThemeId: active_theme_id }.
 -- =============================================================================
 CREATE TABLE sarak_applied_theme_state (
     tenant_id           TEXT,

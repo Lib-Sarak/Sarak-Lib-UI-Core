@@ -3,13 +3,11 @@ import { motion } from 'framer-motion';
 import { Copy, Check, FileJson, Info, ExternalLink, Code, Terminal } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import type { SarakThemeEntry, SarakThemePayload } from '../../../core/Provider/types';
 
-interface SarakThemeItem {
-    id: string;
-    name: string;
-    description?: string;
-    design: Record<string, unknown>; // The underlying system uses generic objects here often, but let's be more specific if possible. Actually, let's use Record<string, unknown>
-}
+type ThemeWithDesign = SarakThemeEntry & { description?: string; design: Record<string, unknown> };
+
+const hasThemeDesign = (theme: SarakThemeEntry): theme is ThemeWithDesign => Boolean(theme.design);
 
 /**
  * TemplatesTab (v13.0)
@@ -19,12 +17,13 @@ export const TemplatesTab: React.FC = () => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [appliedId, setAppliedId] = useState<string | null>(null);
     const sarak = useSarakUI();
-    const themes = (sarak.allThemes as unknown as SarakThemeItem[]) || [];
-    const handleApply = async (theme: SarakThemeItem) => {
+    const themes = sarak.allThemes.filter(hasThemeDesign);
+    const handleApply = async (theme: ThemeWithDesign) => {
         setAppliedId(theme.id);
-        sarak.applyFullConfig(theme.design);
-        // O consumer system intercepta através do onSave para persistir ou ativar no banco
-        await sarak.persistDesign?.(theme.design);
+        const design = theme.design as SarakThemePayload;
+        sarak.applyFullConfig(design);
+        sarak.setResolvedThemeId?.(theme.id);
+        await sarak.persistDesign?.(design);
         setTimeout(() => setAppliedId(null), 2000);
     };
 
@@ -70,13 +69,13 @@ export const TemplatesTab: React.FC = () => {
 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
-                {themes.map((template: SarakThemeItem) => (
+                {themes.map((template) => (
                     <div key={template.id} className="group bg-white/[0.02] border border-white/5 hover:border-white/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{template.name}</div>
+                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{template.name || template.id}</div>
                                 </div>
                                 <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/30">{template.description || 'Tema customizado.'}</p>
                             </div>

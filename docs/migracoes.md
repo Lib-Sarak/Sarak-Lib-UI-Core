@@ -5,6 +5,27 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## A persistência do tema ativo restaura também o id
+
+**Compatibilidade.** As assinaturas antigas de `onSave(design)` e `onLoad()` que devolve somente o
+design continuam aceitas. Há mudanças de tipo que exigem atualização em consumidores que fornecem
+`unknown[]` em vez de entradas de tema tipadas ou que constroem `SarakUIContextType` manualmente.
+O Provider também aceita `null` ou `undefined` de `onLoad` para indicar que ainda não há estado salvo.
+
+| | Antes | Agora |
+|---|---|---|
+| Leitura do estado aplicado | `onLoad` devolvia só o design | Pode devolver `{ design, activeThemeId }`; o id salvo é restaurado junto |
+| Gravação no boot | A hidratação podia disparar uma gravação sem mudança | Boot e hidratação não gravam; alterações reais e aplicações explícitas continuam gravando |
+| Troca de tenant | O consumidor precisava remontar o Provider | Alterar `tenantId` chama `onLoad` novamente sem remontagem |
+| Remover tema customizado | O consumidor removia a entrada apenas na própria lista | `useSarakUI().deleteTheme(id)` remove da coleção da sessão e chama opcionalmente `options.theme.onDelete(id)` |
+| Tipos de `customThemes` e `allThemes` | `unknown[]` | `SarakThemeEntry[]`; cada entrada tem `id` e pode declarar `name`, `design` e `contraparte` |
+| `SarakUIContextType` | Não expunha `deleteTheme` | Exige `deleteTheme(id)` no valor do contexto; contextos montados manualmente devem fornecer a operação |
+
+O id carregado não vence `activeThemeId` quando essa prop é controlada. O consumidor continua dono
+do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria fonte persistente.
+
+---
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.

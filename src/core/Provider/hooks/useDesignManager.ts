@@ -11,6 +11,10 @@ import { useDesignStorageSync } from './useDesignStorageSync';
 import { useResolvedThemeId } from './useResolvedThemeId';
 import { SarakThemePayload, SarakUIOptions, SarakDesignState, SarakThemeEntry } from '../types';
 
+// O mesmo design associado a outro tema representa outro estado persistido.
+const createPersistenceSignature = (design: SarakDesignState, activeThemeId?: string): string =>
+    JSON.stringify([design, activeThemeId]);
+
 /**
  * useDesignManager (v11.0 — Spec 44, sem backend próprio)
  *
@@ -34,6 +38,12 @@ export const useDesignManager = (props: {
     const configRef = useRef(initialConfig);
     const hasHydratedRef = useRef(false);
     const onThemeChangeRef = useRef(onThemeChange);
+    // A gravação automática só acompanha edições explícitas, não hidratação ou sync.
+    const userChangedDesignRef = useRef(false);
+    // Guarda o par já persistido para evitar repetir a mesma gravação automática.
+    const lastPersistedSignatureRef = useRef<string | null>(null);
+    // O baseline separa a leitura inicial de uma alteração feita depois do boot.
+    const hasPersistenceBaselineRef = useRef(false);
 
     optionsRef.current = options;
     configRef.current = initialConfig;
@@ -84,15 +94,16 @@ export const useDesignManager = (props: {
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
     // `initialTheme` (R33). Extraído do corpo deste hook para não estourar o
     // teto de estado por hook (R9) — sem isso são 5 useState/useEffect aqui.
-    const [resolvedThemeId, setResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
-
-    // Espelho por ref (plan-42): `persistDesign` precisa do id do tema ativo no
-    // instante do save, mas NÃO pode depender dele — mesmo idioma de `optionsRef`
-    // acima. Pôr `resolvedThemeId` no array de dependências de `persistDesign`
-    // trocaria a identidade da função a cada troca de tema e refaria o efeito de
-    // persistência automática (:134), gravando de novo (a armadilha da plan-34 §11).
+    const [resolvedThemeId, updateResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
+    // `persistDesign` lê a ref no instante da gravação para levar o id anunciado
+    // junto com o design. O setter atualiza esta ref sincronamente, então aplicar
+    // id e persistir na mesma chamada não depende de um render intermediário.
     const resolvedThemeIdRef = useRef(resolvedThemeId);
     resolvedThemeIdRef.current = resolvedThemeId;
+    const setResolvedThemeId = useCallback((id: string | undefined) => {
+        resolvedThemeIdRef.current = id;
+        updateResolvedThemeId(id);
+    }, [updateResolvedThemeId]);
 
     // Chave efetiva (ADR-009 §2.1) — fonte única, calculada ANTES da semente para
     // que a leitura síncrona do boot (abaixo) e todo o resto do hook consumam a
@@ -111,49 +122,86 @@ export const useDesignManager = (props: {
                 const parsed = JSON.parse(saved);
                 return validateDesign({ ...getSeedConfig(), ...parsed });
             }
-        } catch (e) {}
+        } catch (error) {
+            console.error('[Sarak:Design] localStorage load error:', error);
+        }
         return validateDesign(getSeedConfig());
     });
 
+    const persistDesign = useCallback(async (config: SarakDesignState) => {
+        if (!isHydrated) return;
+        const activeThemeIdAtSave = resolvedThemeIdRef.current;
+        const signature = createPersistenceSignature(config, activeThemeIdAtSave);
+        if (lastPersistedSignatureRef.current === signature) return;
+
+        const opt = optionsRef.current;
+        const strategy = resolveEffectiveStrategy(opt?.persistence);
+        try {
+            if (strategy !== 'remote') localStorage.setItem(storageKey, JSON.stringify(config));
+            if (strategy !== 'local' && opt?.persistence?.onSave) {
+                await opt.persistence.onSave(config, activeThemeIdAtSave);
+            }
+            onThemeChangeRef.current?.(config);
+            lastPersistedSignatureRef.current = signature;
+            hasPersistenceBaselineRef.current = true;
+        } catch (error) {
+            console.error('[Sarak:Design] Save error:', error);
+        }
+    }, [isHydrated, storageKey]);
+
+    const previousStorageKeyRef = useRef(storageKey);
+    useEffect(() => {
+        if (previousStorageKeyRef.current !== storageKey) {
+            // Uma chave nova representa outra partição (por exemplo, outro
+            // tenant): descarte o baseline anterior e carregue seus dados antes
+            // de permitir que qualquer alteração seja persistida.
+            previousStorageKeyRef.current = storageKey;
+            hasHydratedRef.current = false;
+            userChangedDesignRef.current = false;
+            lastPersistedSignatureRef.current = null;
+            hasPersistenceBaselineRef.current = false;
+            setIsBackendLoaded(false);
+            setDesign(validateDesign(getSeedConfig()));
+            return;
+        }
+
+        if (!isHydrated || !isBackendLoaded) return;
+
+        // A primeira leitura apenas estabelece a comparação. Sem este baseline,
+        // a hidratação remota/local poderia parecer uma edição e gravar no boot.
+        if (!hasPersistenceBaselineRef.current && !userChangedDesignRef.current) {
+            lastPersistedSignatureRef.current = createPersistenceSignature(design, resolvedThemeId);
+            hasPersistenceBaselineRef.current = true;
+        }
+
+        // Cargas e sincronizações não são edições do usuário; só o setter público
+        // marca a ref e habilita o debounce de gravação automática.
+        if (!userChangedDesignRef.current) return;
+
+        const timer = setTimeout(() => persistDesign(design), 1500);
+        return () => clearTimeout(timer);
+    }, [design, getSeedConfig, isBackendLoaded, isHydrated, persistDesign, resolvedThemeId, storageKey]);
+
     useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
-    useDesignRemoteLoader(isHydrated, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign, getSeedConfig);
+    useDesignRemoteLoader({
+        isHydrated,
+        optionsRef,
+        isBackendLoaded,
+        setIsBackendLoaded,
+        setDesign,
+        getSeedConfig,
+        activeThemeId,
+        setResolvedThemeId,
+        storageKey,
+    });
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out
     // via `options.persistence.crossTabSync === false`.
     const crossTabSyncEnabled = options?.persistence?.crossTabSync !== false;
     useDesignStorageSync(isHydrated, storageKey, crossTabSyncEnabled, design, setDesign);
 
-    // 3. Persistência de Design (Core Logic). `strategy` (ADR-009 §2.2) decide o
-    // destino: 'local'/'hybrid' gravam localStorage; 'remote' só chama `onSave` —
-    // a lib nunca faz fetch para servidor próprio, `onSave`/`onThemeChange` são
-    // portas opcionais "traga sua persistência" do PRÓPRIO consumidor.
-    const persistDesign = useCallback(async (config: SarakDesignState) => {
-        if (!isHydrated) return;
-        const opt = optionsRef.current;
-        const strategy = resolveEffectiveStrategy(opt?.persistence);
-        try {
-            if (strategy !== 'remote') {
-                localStorage.setItem(storageKey, JSON.stringify(config));
-            }
-            if (strategy !== 'local' && opt?.persistence?.onSave) {
-                await opt.persistence.onSave(config, resolvedThemeIdRef.current);
-            }
-            onThemeChangeRef.current?.(config);
-        } catch (e) {
-            console.error("[Sarak:Design] Save error:", e);
-        }
-    }, [isHydrated, storageKey]);
-
-    // 4. Persistência Automática (Debounced)
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            persistDesign(design);
-        }, 1500);
-
-        return () => clearTimeout(timer);
-    }, [design, persistDesign]);
-
     const safeSetDesign = useCallback((next: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => {
+        userChangedDesignRef.current = true;
         setDesign((prev) => {
             const updated = typeof next === 'function' ? next(prev) : next;
             return validateDesign(updated);
@@ -176,6 +224,6 @@ export const useDesignManager = (props: {
         persistDesign,
         isBackendLoaded,
         resolvedThemeId,
-        setResolvedThemeId
+        setResolvedThemeId,
     };
 };

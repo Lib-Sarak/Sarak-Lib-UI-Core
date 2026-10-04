@@ -4,7 +4,7 @@ import { useThemeCollection } from '../useThemeCollection';
 import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes/index';
 import type { SarakUIOptions } from '../../types';
 
-describe('useThemeCollection (ADR-011 — uma porta de escrita, sem porta de leitura/apagar)', () => {
+describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumidor)', () => {
     it('allThemes começa como GLOBAL_THEMES + customThemes, sem nenhum tema salvo', () => {
         const customTheme = { id: 'meu-custom', name: 'Meu Custom', design: {} };
         const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
@@ -78,6 +78,20 @@ describe('useThemeCollection (ADR-011 — uma porta de escrita, sem porta de lei
         });
 
         expect(result.current.allThemes.some((t) => t.id === 'meu-tema')).toBe(true);
+    });
+
+    it('deleteTheme chama onDelete e remove da coleção da sessão', async () => {
+        const onDelete = vi.fn().mockResolvedValue(undefined);
+        const options: SarakUIOptions = { theme: { onDelete } };
+        const customTheme = { id: 'meu-tema', name: 'Meu Tema', design: {} };
+        const { result } = renderHook(() => useThemeCollection([customTheme], options));
+
+        await act(async () => {
+            await result.current.deleteTheme('meu-tema');
+        });
+
+        expect(onDelete).toHaveBeenCalledWith('meu-tema');
+        expect(result.current.allThemes.some((theme) => theme.id === 'meu-tema')).toBe(false);
     });
 
     it('descarta chave fora do contrato do design com warn (validateDesign na fronteira — 10-seguranca §2.1)', async () => {

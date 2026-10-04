@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core (todo o módulo)"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "regras", "invariantes", "contrato", "gates", "conduta"]
-relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[00-mapa-do-modulo]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[02-design-engine]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[17-contrato-de-operacao-git]]", "[[00-mapa-do-modulo]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[02-design-engine]]", "[[05-build-e-distribuicao]]"]
 ---
 
 # 1. Propósito
@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**37 regras: 34 verificáveis (§2) e 3 de conduta (§3).**
+**38 regras: 35 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
-| ⚠️ escopo menor que a regra | **11** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** |
+| ⚠️ escopo menor que a regra | **12** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -1273,6 +1273,44 @@ entrada e **se autolimpa**: entrada de nome já conforme ou inexistente derruba 
 
 ---
 
+## R38 — Agente não commita nem empurra sem autorização declarada naquele comando
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só `commit` e `push`, só os marcadores medidos, e a
+autorização é uma variável que um agente consegue escrever.
+
+**Enunciado.** Sessão de agente não escreve no Git (`commit`, `push`) sem a autorização do dono declarada
+**naquele comando**: a variável `SARAK_GIT_ESCRITA_AUTORIZADA` escrita na frente do comando, nunca exportada.
+Valor vazio não autoriza. O dono que digita o comando no terminal dele não precisa de nada.
+
+**Por quê.** A proibição de agente escrever no Git era só textual ([[17-contrato-de-operacao-git]] §2.0), e
+nenhum anel do `pre-commit` perguntava quem estava commitando. Um executor commitou (`bd1dc1a`) com os gates
+verdes e sem coautoria, e outros dois indexaram os próprios arquivos. O gate não impede a intenção: transforma
+o acidente em ato deliberado.
+
+**Certo × Errado.**
+
+```
+ERRADO   git commit -m "..."                            ← de dentro de sessão de agente, sem autorização
+ERRADO   $env:SARAK_GIT_ESCRITA_AUTORIZADA='1'          ← exportada e esquecida: vale para o resto da sessão
+CERTO    SARAK_GIT_ESCRITA_AUTORIZADA=1 git commit -m "..."   ← o dono pediu e autorizou aquele ato
+CERTO    o dono digita o commit no terminal dele
+```
+
+**Cobrada por:** `check-agent-git-write.mjs` (`gates/scripts/contrato/`), chamado como **primeiro passo** do
+`pre-commit` e do `pre-push`, antes do Anel 0. A decisão é a função exportada `decideAgentGitWrite(env)`, que
+recebe o ambiente por parâmetro e é testada por fixture em `__tests__/check-agent-git-write.test.mjs`. A lista
+de marcadores — `CLAUDECODE`, `AI_AGENT`, `CLAUDE_CODE_SESSION_ID` — é dado, em `AGENT_SESSION_MARKERS`, num
+lugar só. Custo medido: ~60 ms.
+
+**O vão.**
+- **Só `commit` e `push`.** Não existe hook para `add`, `stash`, `checkout`, `reset` nem `merge`.
+- **A autorização é escrevível por um agente.** A trava não impede intenção.
+- **Agente cujo marcador não está na lista passa.** Só entraram os marcadores medidos num shell de agente.
+- **Marcador vazio conta como ausente.**
+- **Não roda na CI.** O runner não tem sessão de agente, e a decisão é sobre quem digita o comando.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1412,6 +1450,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
 | **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
+| **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1446,6 +1485,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
 | **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
 | **`check-trail-citation.mjs`** | **R36** | `gates/scripts/contrato/` | ✅ Anel 1 do `pre-commit` (`--staged`) · `npm run trail-citation:check` para revisão — **só local**, sem CI; allowlist em `gates/allowlists/trailCitationExclusions.mjs` |
+| **`check-agent-git-write.mjs`** | **R38** | `gates/scripts/contrato/` | ✅ **primeiro passo** do `pre-commit` e do `pre-push`, antes do Anel 0 — **só local**, sem CI; lê o ambiente de quem digita o comando |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 

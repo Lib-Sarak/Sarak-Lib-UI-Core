@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, sarakGetAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
 import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
-import { SarakUIContextType, SarakDesignState, SarakThemeEntry } from '../../../core/Provider/types';
+import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
 
@@ -124,8 +124,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         // fallback sobre o design corrente, como sempre.
         if (key === 'mode') {
             const targetMode = value as 'light' | 'dark';
-            const allThemes = sarak.allThemes as SarakThemeEntry[] | undefined;
-            const activeTheme = allThemes?.find((t) => t.id === sarak.resolvedThemeId);
+            const activeTheme = sarak.allThemes.find((theme) => theme.id === sarak.resolvedThemeId);
             const isReload = Boolean(activeTheme?.design) && draft.mode !== targetMode;
 
             setDraftState((prev: SarakDesignState | null) => {
@@ -203,15 +202,13 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         if (sarak.applyFullConfigRaw && isDirty) {
             captureBeforeApply(); // foto do sistema ANTES de aplicar (useLastAppliedSnapshot.ts)
             sarak.applyFullConfigRaw(draft);
-            if (sarak.persistDesign) {
-                sarak.persistDesign(draft);
-            }
             // Só agora o tema escolhido no catálogo é anunciado como o tema no ar —
             // é o que `useResolvedThemeId.ts` promete ("só quem aplica anuncia").
             if (pendingThemeId) {
                 sarak.setResolvedThemeId?.(pendingThemeId);
                 setPendingThemeId(undefined);
             }
+            sarak.persistDesign?.(draft);
             showToast('success', 'Design aplicado ao sistema com sucesso.');
         }
     };
