@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar cinco vãos de gate já medidos"
 objetivo: "Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha"
 dominio: "Sarak-Lib-UI-Core / Gates / Matriz de cobertura"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "gates", "cobertura-de-gate", "contraste", "ghostvars"]
 relacionados: ["[[01-gates-e-baseline]]", "[[00-regras-e-invariantes]]", "[[09-temas-e-presets]]", "[[15-divida-conhecida]]"]
