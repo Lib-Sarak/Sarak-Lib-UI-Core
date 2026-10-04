@@ -19,7 +19,7 @@
     ],
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
-        "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
+        "build:js": "node scripts/generate-build-info.mjs --prepare && tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
         "build:css:scoped": "node scripts/build-scoped-css.mjs",
         "build": "npm run token-types:check && npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run deep-import:check && npm run build:js && npm run public-types:check && npm run prefix:check && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
         "catalog": "node scripts/generate-component-catalog.mjs",
@@ -60,7 +60,7 @@
         "migration-anchor:check": "node gates/scripts/contrato/check-migration-anchor.mjs",
         "minor-no-removal:check": "node gates/scripts/contrato/check-minor-no-removal.mjs",
         "preversion": "npm run gates:full",
-        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
+        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev src/buildInfo.ts src/core/Provider/buildInfo.ts",
         "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check"
     },

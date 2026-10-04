@@ -11,6 +11,7 @@
     }
   },
   "barrelExports": [
+    "SARAK_BUILD_INFO",
     "SARAK_DEFAULT_COLUMN_WIDTH",
     "SARAK_DEFAULT_DEVICE_BREAKPOINTS",
     "SARAK_DESIGN_MANIFEST",

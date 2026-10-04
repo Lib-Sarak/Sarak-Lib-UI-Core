@@ -35,6 +35,7 @@ export type {
 export type { SarakPreferenceId, SarakPreferencePosition } from './core/Design/schema/preferences';
 export type { SarakDesignTokens } from './core/Provider/generated/design-token-ids';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
+export { SARAK_BUILD_INFO } from './buildInfo';
 export { SarakDesignScope } from './core/Design/components/DesignScope';
 export type { SarakDesignScopeProps } from './core/Design/components/DesignScope';
 export * from './components/atomic/Buttons/SarakButton';

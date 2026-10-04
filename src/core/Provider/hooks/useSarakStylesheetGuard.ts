@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { removeSarakGlobalStyles } from '../injectStyles';
 import { SARAK_MODE_ATTRIBUTE, SARAK_SCOPE_CLASS } from '../scope';
 import type { SarakUIMode } from '../types';
+import { useSarakBuildSeal } from './useSarakBuildSeal';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
@@ -62,4 +63,6 @@ export const useSarakStylesheetGuard = (mode: SarakUIMode, scopeElement: HTMLEle
             );
         }
     }, [mode, scopeElement]);
+
+    useSarakBuildSeal(mode);
 };

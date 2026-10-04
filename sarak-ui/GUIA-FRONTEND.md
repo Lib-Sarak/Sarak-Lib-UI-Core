@@ -615,7 +615,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **331** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **332** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (102)
 

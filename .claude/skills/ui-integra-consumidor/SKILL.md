@@ -323,6 +323,12 @@ pode** conter o commit que o publica — o `dist/` é commitado DEPOIS de gerado
 próprio hash é auto-referência impossível. Por isso o campo se chama `baseCommit` (sempre um passo
 atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizado?", `sarak:check`.
 
+**Qual build o navegador está executando:** no DevTools, leia o atributo
+`data-sarak-build-info` de um elemento da lib. Ele contém JSON com `libVersion`, `baseCommitShort` e
+`builtAt`. Compare esses três campos com `node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json`.
+Se forem iguais, o navegador executa o build instalado; se diferirem, o pré-bundle do bundler ainda
+serve um build anterior. Siga o procedimento abaixo para invalidá-lo.
+
 **Ao atualizar, leia `docs/migracoes.md` ANTES de investigar quebra de tipo** — mudanças de contrato
 público ficam lá com antes/depois.
 
