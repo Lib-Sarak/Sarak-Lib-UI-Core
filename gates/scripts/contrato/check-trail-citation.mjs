@@ -21,7 +21,11 @@
 //    comentário de autoria.
 // 5. NÃO enxerga outra forma de apontar para o rastro de execução, como "na
 //    campanha anterior" ou "no ciclo passado" — só os três padrões textuais
-//    fixos (plan-N, veredito de, achado N sem 15-divida-conhecida).
+//    fixos: plan-N, "veredito d" + e/o/a (de, do, da — e também desta, deste,
+//    dessa, dos, das: o padrão não tem fronteira de palavra, então "veredito
+//    desta rodada" casa; "veredito" seguido de palavra que não começa por "d" +
+//    e/o/a, como "veredito final", não casa) e achado N sem
+//    15-divida-conhecida.
 // 6. A isenção da allowlist vale para o ARQUIVO INTEIRO, não só para o trecho
 //    que a justificou. Qualquer linha adicionada num arquivo isento passa
 //    sem ser vista — nome de teste, comentário ou string, mesmo que não
@@ -38,7 +42,7 @@ const SCOPE_DIRS = ['src', 'gates', 'scripts', 'bin'];
 const SCOPE_RE = /^(?:src|gates|scripts|bin)\//;
 
 const PLAN_RE = /plan-\d/i;
-const VEREDITO_RE = /veredito de/i;
+const VEREDITO_RE = /veredito d[eoa]/i;
 const ACHADO_RE = /achado\D{0,4}\d/i;
 const DIVIDA_CONHECIDA_RE = /15-divida-conhecida/i;
 

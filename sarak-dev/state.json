@@ -249,6 +249,10 @@
       "comando": "node scripts/generate-consumer-kit.mjs --check"
     },
     {
+      "nome": "npm run kit-names:check",
+      "comando": "node gates/scripts/contrato/check-kit-names.mjs"
+    },
+    {
       "nome": "npm run migration-anchor:check",
       "comando": "node gates/scripts/contrato/check-migration-anchor.mjs"
     },

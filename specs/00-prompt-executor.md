@@ -246,6 +246,12 @@ Abaixo, o resumo da execução, como entregue pelo executor:
     modificado, não estava na fotografia e você não tocou: **pare e relate** — não presuma que foi efeito
     colateral seu e não o desfaça.
 
+    **Duas exceções, e só duas.** (a) O arquivo que a §3.1 da **sua** plan manda editar e que já tinha edição de
+    outra tarefa na fotografia — o `package.json` com o trecho de outra execução em paralelo — **não é motivo
+    para parar**: edite só o seu trecho, por substituição exata, e preserve o resto como está; a regra proíbe
+    desfazer o que não é seu, não editar o que é. (b) O `status` de uma plan e o `00-indice.md` são do revisor e
+    podem mudar a qualquer momento, inclusive os de outra plan: não é anomalia, e não se relata.
+
 > Os itens desta lista são citados de fora **pelo nome, nunca pelo número**: item novo entra onde fizer
 > sentido, sem quebrar ponteiro de ninguém.
 

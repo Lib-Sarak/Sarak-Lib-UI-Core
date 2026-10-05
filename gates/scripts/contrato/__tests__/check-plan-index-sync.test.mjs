@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { checkPlanIndexSync } from '../check-plan-index-sync.mjs';
+import { checkPlanIndexSync, checkPlanReferences } from '../check-plan-index-sync.mjs';
 
 function montarFixture({ statusIndice, statusFrontmatter, comArquivo = true }) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-plan-index-'));
@@ -65,6 +65,68 @@ describe('checkPlanIndexSync', () => {
     });
     const { ponteirosMortos } = checkPlanIndexSync({ indicePath, planDir });
     expect(ponteirosMortos).toEqual(['plan-99-fixture.md']);
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+});
+
+function montarFixtureDeReferencias(linhasDaTabela) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-plan-refs-'));
+  const planDir = path.join(root, 'specs', 'plan');
+  const specsDir = path.join(root, 'specs');
+  fs.mkdirSync(path.join(specsDir, 'specs'), { recursive: true });
+  fs.mkdirSync(planDir, { recursive: true });
+  fs.writeFileSync(path.join(specsDir, 'specs', '01-existe.md'), '# existe');
+  fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'src', 'real.ts'), 'export {};');
+
+  const plan = [
+    '---', 'status: "🟡 Em execução"', '---', '',
+    '# 3. Escopo', '', '| Tipo | Referência | Por quê |', '|---|---|---|', '| Código | `src/fora-da-secao-4.ts` | não é lida |', '',
+    '# 4. Referências obrigatórias', '',
+    '| Tipo | Referência | Por quê |', '|---|---|---|',
+    ...linhasDaTabela, '',
+    '# 5. Instruções de execução',
+  ].join('\n');
+  fs.writeFileSync(path.join(planDir, 'plan-99-fixture.md'), plan);
+  return { root, planDir, specsDir };
+}
+
+describe('checkPlanReferences — §4 das plans', () => {
+  it('acusa caminho que nunca existiu, nomeando a plan e o ponteiro', () => {
+    const { root, planDir, specsDir } = montarFixtureDeReferencias([
+      '| Spec fixa | `specs/24-modo-embarcado.md` | o modo embarcado |',
+    ]);
+    const { ponteirosMortosNaSecao4 } = checkPlanReferences({ planDir, root, specsDir });
+    expect(ponteirosMortosNaSecao4).toEqual([{ plan: 'plan-99-fixture.md', referencia: 'specs/24-modo-embarcado.md' }]);
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it('acusa wikilink sem spec correspondente', () => {
+    const { root, planDir, specsDir } = montarFixtureDeReferencias([
+      '| Spec fixa | [[99-nao-existe]] · [[01-existe]] | contexto |',
+    ]);
+    const { ponteirosMortosNaSecao4 } = checkPlanReferences({ planDir, root, specsDir });
+    expect(ponteirosMortosNaSecao4).toEqual([{ plan: 'plan-99-fixture.md', referencia: '[[99-nao-existe]]' }]);
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it('libera caminho relativo à raiz, relativo a specs/, com sufixo de linha e pasta', () => {
+    const { root, planDir, specsDir } = montarFixtureDeReferencias([
+      '| Spec fixa | `specs/specs/01-existe.md` · `specs/01-existe.md` | resolve pela raiz e por specs/ |',
+      '| Código | `src/real.ts:12` · `src/` | sufixo de linha e pasta |',
+    ]);
+    const { ponteirosMortosNaSecao4 } = checkPlanReferences({ planDir, root, specsDir });
+    expect(ponteirosMortosNaSecao4).toEqual([]);
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it('não resolve linha Skill, glob, metavariável, nome sem barra nem seção fora da §4', () => {
+    const { root, planDir, specsDir } = montarFixtureDeReferencias([
+      '| **Skill** | `skill/que-nao-existe-aqui` | skill é por nome — limite declarado |',
+      '| Código | `src/**/*.ts` · `src/<modulo>/x.ts` · `catalog.ts` | glob, metavariável e nome solto |',
+    ]);
+    const { ponteirosMortosNaSecao4 } = checkPlanReferences({ planDir, root, specsDir });
+    expect(ponteirosMortosNaSecao4).toEqual([]);
     fs.rmSync(root, { recursive: true, force: true });
   });
 });

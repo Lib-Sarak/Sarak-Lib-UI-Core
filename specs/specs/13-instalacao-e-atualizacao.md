@@ -62,7 +62,14 @@ depois**, e sempre em cima de outra pessoa.
 | | Quantidade | Quem instala |
 | --- | --- | --- |
 | `dependencies` | **3** — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` | a lib traz junto |
-| `peerDependencies` | **19** — React, `tailwindcss`, e as libs pesadas (`echarts`, `reactflow`, `recharts`, `pdfjs-dist`, `framer-motion`, `react-markdown`, `react-syntax-highlighter`, …) | **o consumidor** |
+| `peerDependencies` | **19** — 10 obrigatórias e 9 opcionais (`peerDependenciesMeta`) | o consumidor instala as obrigatórias; motores opcionais só são necessários quando usados |
+
+As obrigatórias são `@tanstack/react-virtual`, `axios`, `clsx`, `date-fns`, `framer-motion`,
+`lucide-react`, `react`, `react-dom`, `react-dropzone` e `tailwind-merge`. São importadas pelo
+barril ou por código eager. As opcionais são `echarts`, `echarts-for-react`, `pdfjs-dist`,
+`react-markdown`, `react-syntax-highlighter`, `reactflow` e `recharts`, usadas por motores lazy;
+`react-grid-layout` não tem import runtime alcançável pelo barril e `tailwindcss` só participa do
+build CSS da biblioteca. Cada opcional é declarada em `peerDependenciesMeta`.
 
 A divisão é deliberada e o critério está em `specs/arquitetura/05-build-e-distribuicao.md`: o que
 o consumidor precisa **controlar a versão** (React, Tailwind) ou o que é **pesado e opcional**
@@ -389,7 +396,7 @@ fazer** e ainda assim roda o `refresh` (`packageJsonFields.mjs:37-40`).
 
 # 9.1 ⚠️ Atualizar o PACOTE não é atualizar o que o navegador executa
 
-Entre o `dist/` da lib e a tela do consumidor existem **duas camadas de cache em série**. Cobrir só a
+Entre o `dist/` da lib e a tela do consumidor existem **três camadas de cache em série**. Cobrir só a
 primeira é o modo de falha mais caro desta spec: todo comando responde sucesso, todo gate passa, e a tela
 continua com o build anterior — **sem erro, sem aviso, sem sintoma que aponte para a causa.**
 
@@ -397,11 +404,16 @@ continua com o build anterior — **sem erro, sem aviso, sem sintoma que aponte 
 | --- | --- | --- | --- |
 | 1 | **Store do gerenciador** — com `pnpm`, `file:` é **cópia**, não link (§6.1) | o lockfile continua satisfeito; nada manda recopiar | `pnpm install --force --filter <pacote>` |
 | 2 | **Pré-bundle do bundler** — Vite: `node_modules/.vite/deps/` | o Vite re-otimiza por **lockfile + versão + config**, nunca por conteúdo. Com dependência local a `version` fica parada, o caminho é o mesmo e a config não muda: **a chave do cache nunca se move** | derrubar o dev server, apagar a pasta, **provar** que apagou, subir |
+| 3 | **Cache HTTP do navegador** — Vite entrega o pré-bundle com `cache-control: max-age=31536000, immutable` e URL otimizada com `?v=` | o `?v=` considera lockfile, configuração e caminhos, não o conteúdo; refazer o pré-bundle pode manter a URL. A aba normal pode reutilizar a resposta antiga por um ano; uma aba anônima começa sem o cache HTTP daquele perfil e faz uma nova requisição, mas recebe o recurso que o servidor entrega — que ainda pode vir do pré-bundle da camada 2 | limpar/desabilitar o cache do navegador ou comparar com uma aba anônima para testar o cache HTTP do perfil; isso não verifica as camadas 1 e 2 |
 
-**Nenhum sinal existente responde a essa pergunta sozinho, e é importante saber por quê:**
-`sarak-ui check` compara o **pacote** e responde `live`/`fresh`/`stale` — corretamente; `BUILD_INFO.json`
-descreve o **artefato em disco** (§10); e recarregar, hard-refresh ou guia anônima **não alcançam**, porque
-o cache é do **servidor de desenvolvimento**, não do navegador.
+`sarak-ui check` compara a dependência local com o pacote instalado (`live`/`fresh`/`stale`), e
+`dist/BUILD_INFO.json` identifica o artefato instalado (§10). O atributo `data-sarak-build-info` em
+um elemento da lib identifica o build que a página executa. Se o selo divergir do `BUILD_INFO.json`,
+o build servido está preso no pré-bundle ou no navegador. Depois de limpar o pré-bundle, compare com
+uma aba anônima: se ela mostra o selo instalado e a aba normal não, isso é evidência de que a camada 3
+do perfil normal reutilizou uma resposta antiga. A aba anônima faz uma nova requisição, mas não
+recompila o pré-bundle nem atualiza a cópia instalada; se ambas divergem do selo instalado, continue
+investigando as camadas 1 e 2. Hard-refresh sozinho não é prova suficiente.
 
 ## O aviso automático
 
@@ -421,14 +433,19 @@ tinha o que comparar. Silêncio não é garantia — os limites do detector est�
 ## O procedimento, na ordem — e a ordem importa
 
 1. **Derrube o dev server primeiro.** No Windows, um processo com os arquivos abertos **impede** a deleção.
-2. Apague o cache do bundler.
-3. **PROVE que apagou** — `Test-Path` ⇒ `False`, ou `[ ! -d … ]`. Não confie no código de saída do passo 2:
+2. Em consumo por `file:`, confira `sarak-ui check`. Com `pnpm`, se a dependência estiver `stale`, rode
+   `pnpm install --force --filter <pacote-importador>` para recopiá-la; `npm`/`yarn` podem usar link vivo.
+3. No pacote que executa o Vite, apague `node_modules/.vite`.
+4. **PROVE que apagou** — `Test-Path` ⇒ `False`, ou `[ ! -d … ]`. Não confie no código de saída da deleção:
    *"pasta não existe"* e *"arquivo em uso"* são erros **diferentes**, e um supressor de erro genérico os
    confunde, transformando falha em sucesso aparente.
-4. Só então reinstale (camada 1) e suba o dev server.
+5. Só então suba o dev server e compare `data-sarak-build-info` com o `BUILD_INFO.json` instalado.
+   Se uma aba anônima mostrar o selo instalado e a normal não, isso é evidência de cache HTTP antigo
+   no perfil normal; limpe-o ou desabilite-o nas ferramentas do navegador. A aba anônima não substitui
+   a verificação da cópia instalada nem do pré-bundle.
 
-Pular o passo 1 produz tela **branca** com `504 (Outdated Optimize Dep)`; pular o passo 3 produz tela
-**idêntica** à anterior. Nenhum dos dois sintomas aponta para a causa.
+Pular o passo 1 pode produzir tela **branca** com `504 (Outdated Optimize Dep)`; pular a prova da deleção
+pode manter a tela **idêntica** à anterior. Nenhum dos dois sintomas aponta sozinho para a causa.
 
 # 9.2 Verificação em consumidor real
 
@@ -437,10 +454,11 @@ Depois de atualizar, o que confirma que chegou — em ordem de custo:
 | Pergunta | Como responder |
 | --- | --- |
 | O **pacote** está atualizado? | `sarak-ui check` |
-| O **navegador** está com esse pacote? | ausência de `[sarak:check:cache]`; na dúvida, §9.1 |
+| O navegador executa o build instalado? | compare `data-sarak-build-info` com `dist/BUILD_INFO.json`; na dúvida, §9.1 |
+| O pré-bundle Vite aponta para chunk removido? | aviso `[sarak:check:cache]`; cobre só a camada 2 e o cache padrão |
 | A mudança **aparece na tela**? | abrir a tela afetada, com dado real |
 
-A terceira é a única que fecha o ciclo, e **nenhuma verificação estática a substitui**: gates verdes e
+A confirmação visual é a única que fecha o ciclo, e **nenhuma verificação estática a substitui**: gates verdes e
 artefato conferido convivem perfeitamente com tela errada. Quando o consumidor persiste tema, some ainda a
 precedência de [[09-temas-e-presets]] §4.4.1 — **valor salvo vence default**, então mudança de default não
 aparece para quem já tinha o valor gravado.
@@ -546,7 +564,9 @@ um commit atrás**:
 
 O `BUILD_INFO` **é** útil para outra pergunta: *"qual artefato está instalado aqui?"* — é parte da
 assinatura do modo `file:` (§6.2) e foi como o P28 provou que a cópia do ERP havia sido refeita.
-São perguntas diferentes, e confundi-las é o erro que a armadilha produz.
+O atributo `data-sarak-build-info` responde *"qual build a página executa?"*. São sinais distintos:
+`sarak-ui check` verifica a dependência local, o `BUILD_INFO` identifica o pacote instalado e o selo
+identifica o runtime da página.
 
 Desde o ADR-008 isso **parou de importar tanto**: a identidade passou a ser a **tag**.
 

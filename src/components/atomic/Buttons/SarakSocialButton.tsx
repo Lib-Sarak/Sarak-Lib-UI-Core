@@ -1,11 +1,11 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 type ClassValue = string | false | null | undefined;
 
 function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
+    return mergeSarakClasses(clsx(inputs));
 }
 
 export interface SarakSocialButtonProps {

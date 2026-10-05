@@ -329,6 +329,6 @@ export const kineticFlowTheme: SarakThemePreset = {
         matrixItemBg: '#fdeef3',
         matrixBorderColor: 'rgba(255, 0, 85, 0.15)',
         matrixSearchBg: '#ffffff',
-        navItemActiveColor: '#008a7a',
+        navItemActiveColor: '#007568',
     }
 };

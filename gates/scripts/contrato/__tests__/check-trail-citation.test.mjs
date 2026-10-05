@@ -69,6 +69,26 @@ describe('checkTrailCitation — casos pegos', () => {
         expect(violacoes[0].padrao).toBe('veredito de');
     });
 
+    it.each([
+        ['veredito do lote 1', '// veredito do lote 1: ok'],
+        ['veredito da correção', '// veredito da correção 2'],
+        ['veredito desta rodada', '// veredito desta rodada: ok'],
+        ['veredito deste lote', '// veredito deste lote'],
+        ['veredito dessa execução', '// veredito dessa execução'],
+        ['veredito dos achados', '// veredito dos achados'],
+        ['veredito das rodadas', '// veredito das rodadas'],
+    ])('pega linha adicionada com "%s"', (_rotulo, linhaAdicionada) => {
+        const dir = criarRepoVazio();
+        escrever(dir, 'src/foo.ts', 'const a = 1;\n');
+        commitarTudo(dir, 'base');
+        escrever(dir, 'src/foo.ts', `const a = 1;\n${linhaAdicionada}\n`);
+        git(dir, ['add', '-A']);
+
+        const { violacoes } = checkTrailCitation({ cwd: dir, staged: true });
+        expect(violacoes).toHaveLength(1);
+        expect(violacoes[0].padrao).toBe('veredito de');
+    });
+
     it('pega linha adicionada com "(achado 3)"', () => {
         const dir = criarRepoVazio();
         escrever(dir, 'src/foo.ts', 'const a = 1;\n');
@@ -131,6 +151,17 @@ describe('checkTrailCitation — casos liberados', () => {
         escrever(dir, 'src/foo.ts', 'const a = 1;\n');
         commitarTudo(dir, 'base');
         escrever(dir, 'src/foo.ts', 'const a = 1;\n// ver 15-divida-conhecida (achado 34, 15-divida-conhecida)\n');
+        git(dir, ['add', '-A']);
+
+        const { violacoes } = checkTrailCitation({ cwd: dir, staged: true });
+        expect(violacoes).toEqual([]);
+    });
+
+    it('libera "veredito" seguido de outra palavra ("veredito final")', () => {
+        const dir = criarRepoVazio();
+        escrever(dir, 'src/foo.ts', 'const a = 1;\n');
+        commitarTudo(dir, 'base');
+        escrever(dir, 'src/foo.ts', 'const a = 1;\n// o veredito final do parser é binário\n');
         git(dir, ['add', '-A']);
 
         const { violacoes } = checkTrailCitation({ cwd: dir, staged: true });

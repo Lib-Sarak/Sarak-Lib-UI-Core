@@ -13,7 +13,7 @@ import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import type { SarakCatalogGridProps } from './SarakCatalogGridProps';
 
 export type { SarakCatalogItem, SarakCatalogGridProps } from './SarakCatalogGridProps';
@@ -72,9 +72,9 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     // abaixo usam classe `@min-[…]` (container query), que precisa de um ancestral com
     // `container-type` para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className={twMerge('@container', containerLayout.className)} style={{ ...containerLayout.style, paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
+        <div className={mergeSarakClasses('@container', containerLayout.className)} style={{ ...containerLayout.style, paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
             {/* Header & Filter Section */}
-            <section className={twMerge("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
+            <section className={mergeSarakClasses("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                 <div className="absolute top-0 right-0 opacity-5 pointer-events-none" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                     <LayoutGrid size={240} />
                 </div>

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, Activity } from 'lucide-react';
 import api from '../../../shared/services/api';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useChartData } from './hooks/useChartData';
 
 export interface SarakChartProps {
@@ -42,7 +42,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     const barStack = getFlexStyles('column', undefined, undefined, '0px');
 
     return (
-        <div className={twMerge("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={containerLayout.style}>
+        <div className={mergeSarakClasses("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={containerLayout.style}>
             {/* Contextual Glow Header */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] blur-[var(--sarak-empty-state-orb-blur,100px)] pointer-events-none" />
 

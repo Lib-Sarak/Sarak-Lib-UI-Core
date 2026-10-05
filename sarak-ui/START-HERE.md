@@ -29,7 +29,18 @@ do guia (`GUIA-FRONTEND.md` §0). Ela cobre inclusive os casos que ninguém prev
 
 ---
 
-## O que fazer com esta pasta (3 movimentos)
+## Onde está o pacote que importa a biblioteca
+
+O **pacote importador** é a pasta cujo `package.json` declara `@sarak/lib-ui-core`. Em um
+monolito, normalmente é a raiz do repositório. Em um monorepo, é a raiz do app ou pacote que
+importa a biblioteca — não presuma que seja a raiz do workspace. Instale a lib e execute os
+comandos de `sarak-ui` nesse pacote.
+
+Você pode **apontar** para o kit instalado, sem copiá-lo: leia os arquivos diretamente em
+`node_modules/@sarak/lib-ui-core/sarak-ui/` (ou no caminho equivalente resolvido pelo seu
+gerenciador de pacotes). Essa é uma forma oficial de uso e sempre acompanha a versão instalada.
+
+## O que copiar deste kit (3 movimentos)
 
 Faça isto **uma vez**, ao instalar a biblioteca. Os caminhos abaixo são os que o comando de
 atualização conhece — se você escolher outros, terá de re-sincronizar à mão.
@@ -38,7 +49,7 @@ atualização conhece — se você escolher outros, terá de re-sincronizar à m
 | --- | --- | --- | --- | --- |
 | 1 | **O guia de autoria** | `sarak-ui/GUIA-FRONTEND.md` | `specs/sarak-ui-guia-frontend.md` do seu projeto | Vira **decisão estrutural do seu projeto**: como este sistema escreve frontend. Fica versionado junto com o seu código. |
 | 2 | **A skill de uso** | `sarak-ui/skill/` | `.claude/skills/ui-integra-consumidor/` **e** `.agents/skills/ui-integra-consumidor/` | Autoria assistida por IA: o agente do seu repositório passa a saber instalar, acoplar e atualizar a base. |
-| 3 | **O kit inteiro** | `sarak-ui/` (do `node_modules`) | `sarak-ui/` na raiz do seu projeto | Deixa `catalog.json`, `VERSION` e `templates/` à mão, sem depender de `node_modules`. |
+| 3 | **O kit inteiro (opcional)** | `sarak-ui/` (do pacote instalado) | `sarak-ui/` ao lado do `package.json` importador | Deixa `catalog.json`, `VERSION`, `docs/migracoes.md` e `templates/` à mão, sem depender de `node_modules`. |
 
 > Se você rodou `npx sarak-ui init`, o movimento **3** já foi feito por ele — confira se a pasta
 > `sarak-ui/` existe na raiz do projeto antes de copiar de novo.
@@ -57,7 +68,9 @@ substituída a cada atualização da lib.
 | `skill/` | A skill `ui-integra-consumidor`, versão consumidor. |
 | `templates/` | Esqueletos de código copiáveis: wiring do app, forma de um `ui-kit` compartilhado, tela-exemplo com os 3 estados e componente próprio temável. |
 | `catalog.json` | **GERADO.** A superfície viva desta versão. A regra nº 1 acima. |
-| `VERSION` | **GERADO.** Carimbo (versão + hash do kit) para saber quando re-sincronizar. |
+| `VERSION` | **GERADO.** Carimbo legado para o CLI comparar e re-sincronizar cópias. |
+| `catalog.json` → `kitStamp` | **GERADO em JSON.** Versão e hash do kit em formato estruturado. |
+| `docs/migracoes.md` | Histórico de mudanças do contrato público, copiado da documentação da biblioteca. |
 
 `catalog.json`, `VERSION` e o Apêndice A do guia são **gerados do código-fonte** e conferidos por
 um gate no build da biblioteca: é impossível publicar uma versão cujo kit não bata com a API.
@@ -77,7 +90,8 @@ caminhos da tabela; nada do seu código é alterado.
 
 Para conferir se a lib está atualizada sem instalar nada: `npm run sarak:check`.
 
-Ao atualizar, leia `node_modules/@sarak/lib-ui-core/docs/migracoes.md` **antes** de investigar
+Ao atualizar, leia `sarak-ui/docs/migracoes.md` na cópia local ou
+`node_modules/@sarak/lib-ui-core/sarak-ui/docs/migracoes.md` no modo apontar **antes** de investigar
 qualquer quebra de tipo — mudanças de contrato público ficam registradas lá com antes/depois.
 
 ---
@@ -87,8 +101,8 @@ qualquer quebra de tipo — mudanças de contrato público ficam registradas lá
 <!-- SARAK-KIT:CARIMBO:INICIO -->
 
 - **Versão da lib:** `7.0.0`
-- **Carimbo do kit (`kitHash`):** `202edf9f4127` — igual ao do arquivo `VERSION`.
-- **Superfície desta versão:** 102 componentes públicos · 427 tokens de tema · 73 CSS Variables · 100 ícones · 14 temas embutidos.
+- **Carimbo do kit (`kitHash`):** `7403343d1f53` — igual ao do arquivo `VERSION`.
+- **Superfície desta versão:** 102 componentes públicos · 427 tokens de tema · 757 nomes de CSS Variables emitíveis · 100 ícones · 14 temas embutidos.
 - **Guias completos que viajam no pacote:** `docs/component-catalog.md` · `docs/extensibilidade-de-layout.md` · `docs/identidade-do-host.md` · `docs/migracoes.md` · `docs/persistencia-de-tema.md` · `docs/temas-cromo-e-multidispositivo.md`.
 
 <!-- SARAK-KIT:CARIMBO:FIM -->

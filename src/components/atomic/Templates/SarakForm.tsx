@@ -6,7 +6,7 @@ import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
 import { SarakGrid, SarakFormGroup } from '../Layouts';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useFormData } from './hooks/useFormData';
 
 export interface SarakFormProps<TData extends Record<string, unknown>> {
@@ -82,7 +82,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
     const containerLayout = getContainerStyles();
 
     if (loading) return (
-        <div className={twMerge("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] items-center justify-center animate-pulse rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 3)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+        <div className={mergeSarakClasses("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] items-center justify-center animate-pulse rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 3)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
             <div className="w-12 h-12 bg-white/10 rounded-full" />
             <div className="h-4 w-48 bg-white/5 rounded" />
         </div>
@@ -91,7 +91,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
     const fields = mapping ? Object.keys(mapping) : Object.keys(formData);
 
     return (
-        <div className={twMerge("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
+        <div className={mergeSarakClasses("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
             {/* Header Area */}
             <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>

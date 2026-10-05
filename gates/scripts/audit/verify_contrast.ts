@@ -8,7 +8,14 @@
 //    (o token de fundo + as bases que o sustentam, da mais próxima à mais
 //    distante). Se o último elo da cadeia ainda resolver translúcido, o par
 //    é declarado como pulado — este verificador nunca presume um fundo além
-//    do que a cadeia descreve.
+//    do que a cadeia descreve. Toda cadeia de `PAIRS` termina em `colorBgBody`,
+//    a base que a pilha real de superfícies sempre tem por baixo (barra, botão,
+//    superfície ou card translúcidos compõem sobre ela); o par só volta a ser
+//    pulado se um tema declarar o PRÓPRIO `colorBgBody` translúcido ou não
+//    parseável. O botão primário (`btnPrimaryBg`) pode sentar sobre card ou
+//    modal, não só sobre o corpo: a cadeia usa o corpo por ser a base comum
+//    — um botão translúcido sobre um card de cor muito diferente do corpo
+//    seria medido contra o fundo errado.
 // 3. Cobre só os PARES desta lista — não "todo par possível entre token de
 //    cor de texto e token de cor de fundo". A lista foi levantada cruzando
 //    `catalog/partitions` (categorias + `relatedTokens`), a própria
@@ -102,8 +109,8 @@ export const PAIRS: ContrastPair[] = [
     { fg: 'textColorMaster', bgChain: ['colorBgLayer2'], min: 4.5 },
     { fg: 'textColorMaster', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'textColorMaster', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['sidebarColor'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['topbarColor'], min: 4.5 },
+    { fg: 'textColorMaster', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'textColorMaster', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'textColorSecondary', bgChain: ['colorBgBody'], min: 4.5 },
     { fg: 'textColorSecondary', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'textColorSecondary', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
@@ -122,7 +129,7 @@ export const PAIRS: ContrastPair[] = [
     { fg: 'textColorMuted', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'textColorMuted', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'titleColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'titleColor', bgChain: ['surfaceColor'], min: 4.5 },
+    { fg: 'titleColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
     { fg: 'titleColor', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     // `_typography.css:2-4` pinta h1–h6 com `--text-title` → `--sarak-title-color`:
     // todo título dentro de card ou modal é este par.
@@ -135,12 +142,12 @@ export const PAIRS: ContrastPair[] = [
     { fg: 'cardActionBtnText', bgChain: ['cardActionBtnPrimaryBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'cardActionBtnText', bgChain: ['cardActionBtnHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'cardSearchTextFocusColor', bgChain: ['cardSearchBgFocus', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'btnPrimaryText', bgChain: ['btnPrimaryBg'], min: 4.5 },
+    { fg: 'btnPrimaryText', bgChain: ['btnPrimaryBg', 'colorBgBody'], min: 4.5 },
     { fg: 'inputTextColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'topbarTitleColor', bgChain: ['topbarColor'], min: 4.5 },
+    { fg: 'topbarTitleColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'tooltipTextColor', bgChain: ['tooltipBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor'], min: 4.5 },
-    { fg: 'navItemActiveColor', bgChain: ['topbarActiveColor', 'topbarColor'], min: 4.5 },
+    { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'navItemActiveColor', bgChain: ['topbarActiveColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
 ];
 
 const HEX6_RE = /^#([0-9a-fA-F]{6})$/;

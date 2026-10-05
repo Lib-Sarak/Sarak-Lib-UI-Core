@@ -18,7 +18,7 @@ const GATE = path.resolve(
 
 // O registro precisa de PELO MENOS um schema válido para o auditor rodar sem
 // erro (ele varre src/core/Design/schema/*.ts mesmo vazio de tokens).
-const SCHEMA_STUB = "export const X = { id: 'stubToken' };\n";
+const SCHEMA_STUB = "export const X = { id: 'stubToken', type: 'color' };\n";
 
 describe('auditor_ghostvars — escopo ampliado a src/styles/ e src/core/', () => {
   it('acusa fantasma consumido em src/styles/*.css (vão 2)', () => {
@@ -57,7 +57,7 @@ describe('auditor_ghostvars — escopo ampliado a src/styles/ e src/core/', () =
 
   it('libera uma var real emitida pelo schema e consumida em src/core/', () => {
     const { status } = runGateAgainstFixture(GATE, {
-      'src/core/Design/schema/stub.ts': "export const X = { id: 'meuToken' };",
+      'src/core/Design/schema/stub.ts': "export const X = { id: 'meuToken', type: 'color' };",
       'src/core/Fixture3.ts': "const s = 'var(--sarak-meu-token, 1px)';",
     });
     expect(status).toBe(0);

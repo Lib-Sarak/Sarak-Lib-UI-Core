@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Expor em runtime o selo do build, e deixar a instalação honesta"
 objetivo: "Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao"
 dominio: "Sarak-Lib-UI-Core / Build e distribuição / Identidade de build"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "build", "identidade-de-build", "consumidor", "cache"]
 relacionados: ["[[13-instalacao-e-atualizacao]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[08-identidade-do-host-e-zero-marca]]"]
@@ -20,9 +20,11 @@ com o build que está instalado em disco.
 
 # 2. Contexto
 
-Entre o `dist/` da lib e a tela do consumidor há duas camadas de cache, e as duas falham em silêncio
-([[13-instalacao-e-atualizacao]] §9.1). A segunda — o pré-bundle do bundler — re-otimiza por lockfile, versão
-e config, **nunca por conteúdo**: com dependência local, o dev server segue servindo o build anterior.
+O diagnóstico inicial contava duas camadas — store do gerenciador e pré-bundle do bundler —, como dizia
+[[13-instalacao-e-atualizacao]] §9.1. A medição do Lote 2 confirmou a terceira: cache HTTP do navegador,
+com resposta `immutable` e chave `?v=` que não incorpora o conteúdo. O pré-bundle também re-otimiza por
+lockfile, versão e configuração, **nunca por conteúdo**; com dependência local, o dev server pode seguir
+servindo o build anterior.
 
 **Nada na lib diz, em runtime, qual build está no ar.** Os sinais que existem respondem outra pergunta:
 `sarak-ui check` compara o **pacote**; `dist/BUILD_INFO.json` descreve o **artefato em disco**. Medir contra
@@ -76,6 +78,15 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 
 **Lote 2 — instalação e kit**
 - `package.json` — `peerDependenciesMeta` (optional) para todo peer que só um motor lazy importa; `engines`, se faltar.
+  *(O arquivo pode ter, na fotografia, edição da plan-88 em `scripts`: preserve-a, e edite só as suas chaves.)*
+- `specs/specs/13-instalacao-e-atualizacao.md` §9.1 e `specs/specs/12-kit-do-consumidor.md` — **só** o que os
+  critérios do lote 2 pedem: a frase sobre a aba anônima deixa de ser falsa e a declaração de que `--theme-*` e
+  `--color-theme-*` são internas. O resto das duas specs é da síntese, do revisor. *(Ampliado em 2026-10-04: o item
+  12 e os critérios mandam mudar essas specs, e a §3.1 não as listava.)*
+- `gates/scripts/contrato/check-section-pointers.mjs` — **só** o filtro que lê `sarak-ui/*.md`, para deixar de
+  ler a cópia de `docs/migracoes.md` que viaja no kit (ela carrega `§N.M` que só resolvem no repositório de
+  origem; hoje a cópia acende 3 ponteiros mortos e o baseline regride `auditor_sectionpointers.mortos` 0 → 3), com o
+  limite declarado no cabeçalho (R18) e um caso de fixture que falha. *(Ampliado em 2026-10-04 pelo revisor.)*
 - `sarak-ui/START-HERE.md` e `sarak-ui/templates/README.md` — prosa fora dos marcadores: o modo "apontar", as topologias, o caminho real do pacote `ui-kit`.
 - `scripts/consumer-kit/**` — `VERSION` em JSON (ou o carimbo dentro de `catalog.json`), `docs/migracoes.md` copiado para o kit, e `tokens.cssVars` listando toda variável `--sarak-*` que a lib emite.
 - `.agents/skills/ui-integra-consumidor/**` — o kit ensina as três camadas de cache e o que fazer em consumo por `file:`.
@@ -147,8 +158,11 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 12. **As seis demandas do kit:** o `START-HERE` passa a ter o modo "apontar" como oficial e as topologias
     (a raiz é a do pacote que importou); `docs/migracoes.md` entra no kit; `VERSION` vira JSON ou carimbo em
     `catalog.json` (com teste); `templates/README.md` aponta o caminho de um pacote real; `tokens.cssVars` lista
-    toda variável `--sarak-*` emitida (medida pelo mesmo registro que o `auditor_ghostvars` usa), e a spec
-    passa a declarar que `--theme-*`/`--color-theme-*` são internas.
+    toda variável `--sarak-*` que a engine **de fato emite** (a base de cada token e as variantes só dos tokens de
+    cor com `generateVariants`, como `useDesignVariables.ts` as gera — o registro do `auditor_ghostvars` é
+    deliberadamente permissivo, expande sufixo em toda base, e **não** serve de contrato público), e a spec
+    passa a declarar que `--theme-*`/`--color-theme-*` são internas. *(Corrigido em 2026-10-04 pelo revisor: a
+    primeira redação mandava usar o registro do auditor, e isso publicou ~12 mil nomes, a maioria inexistente.)*
 13. `npm run guide` · `npm run guide:check` · `npm run package:check` · `npx vitest run` → verdes. verde.
 
 # 6. Critérios de aceite
@@ -168,8 +182,12 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 - [ ] **Lote 2:** `peerDependenciesMeta` cobre os peers de motor lazy; `npm run package:check` verde.
 - [ ] O kit descreve as três camadas de cache e o procedimento por `file:`; a `13` §9.1 deixa de afirmar que
       aba anônima não alcança.
-- [ ] As seis demandas do kit estão fechadas, cada uma com a evidência no resumo; `tokens.cssVars` contém
-      os nove nomes que o ERP consome e o catálogo não listava.
+- [ ] As seis demandas do kit estão fechadas, cada uma com a evidência no resumo. `tokens.cssVars` lista **só**
+      o que a engine emite (nenhum nome como `--sarak-300-10`) e contém toda variável `--sarak-*` que o ERP
+      consome por `var()` **e** a engine emite; as que o ERP consome e a engine não emite vão para o resumo.
+      *(Reescrito em 2026-10-04: o "nove nomes" da primeira redação não era reproduzível. Medido no ERP —
+      `packages/ui-kit` e `modules/*/web/src`, só leitura —: 40 nomes `--sarak-*` em `var()`, 23 fora do catálogo
+      antigo.)*
 
 # 7. Como verificar (uso do revisor)
 
@@ -489,6 +507,283 @@ depois de o JavaScript já ter sido empacotado. O `build-info:check` confere o a
 
 ---
 
+## Resumo da execução — Lote 2 — 2026-10-04
+
+**Resultado:** Lote 2 executado e pronto para revisão. O baseline e a suíte completa passaram. A execução de
+`install-sha` da CI não foi realizada localmente.
+
+**Escopo:** itens 10 a 13 da §5 e ampliações da §3.1. Os itens 1 a 9 do lote 1 foram preservados. No
+`package.json`, mantive intactas as mudanças da plan-88 em `scripts` e alterei somente `peerDependenciesMeta`
+e `engines`.
+
+**Estado do worktree ao retomar a execução**
+```text
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-T7R4TDNU.js
+ D dist/SarakChartEngine-MDIEP7AG.js
+ D dist/SarakChatEngine-TCSSPAUZ.js
+ D dist/SarakDataTableImpl-5MTKAMEX.js
+ D dist/SarakFlowEngine-LZF3VTP5.js
+ D dist/SarakMarkdownRendererImpl-MY5O4PD5.js
+ D dist/SarakPDFViewerImpl-6S4LCYTA.js
+ D dist/chunk-3UIXFAJY.js
+ D dist/chunk-NNEEHELO.js
+ D dist/chunk-THX5URLG.js
+ D dist/chunk-U3I46WIX.js
+ D dist/chunk-X7D42LWO.js
+ D dist/chunk-YCNNTEDM.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M gates/scripts/contrato/__tests__/check-plan-index-sync.test.mjs
+ M gates/scripts/contrato/__tests__/check-trail-citation.test.mjs
+ M gates/scripts/contrato/check-plan-index-sync.mjs
+ M gates/scripts/contrato/check-trail-citation.mjs
+ M package.json
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/skill/SKILL.md
+ M sarak-ui/templates/README.md
+ M scripts/consumer-kit/__tests__/kitGenerator.test.mjs
+ M scripts/consumer-kit/buildKitCatalog.mjs
+ M scripts/consumer-kit/buildKitOutputs.mjs
+ M scripts/consumer-kit/kitFiles.mjs
+ M specs/00-indice.md
+ M specs/00-prompt-executor.md
+ M specs/plan/plan-88-vaos-de-gate-medidos.md
+ M specs/plan/plan-92-selo-de-build-em-runtime.md
+ M specs/specs/12-kit-do-consumidor.md
+ M specs/specs/13-instalacao-e-atualizacao.md
+ M src/buildInfo.ts
+ M src/core/Provider/buildInfo.ts
+?? .claude/settings.local.json
+?? dist/CustomizationPanelImpl-PHSROK2S.js
+?? dist/SarakChartEngine-QU22JXN4.js
+?? dist/SarakChatEngine-6EQ5ZWF7.js
+?? dist/SarakDataTableImpl-ICCZMKFX.js
+?? dist/SarakFlowEngine-GSJVU5JW.js
+?? dist/SarakMarkdownRendererImpl-KXY4LRVA.js
+?? dist/SarakPDFViewerImpl-J57TJ2TC.js
+?? dist/chunk-4TCDHU3G.js
+?? dist/chunk-JFH7N37V.js
+?? dist/chunk-LU7VRHPI.js
+?? dist/chunk-SXOUMUMG.js
+?? dist/chunk-UBYSMYWN.js
+?? gates/scripts/contrato/__tests__/check-kit-names.test.mjs
+?? gates/scripts/contrato/check-kit-names.mjs
+?? sarak-ui/docs/
+?? scripts/consumer-kit/collectEmittedSarakCssVars.mjs
+```
+
+**O que foi feito**
+
+1. Declarei nove peers opcionais em `peerDependenciesMeta` e `engines.node` como `>=20.0.0`. `echarts` e
+   `echarts-for-react` alimentam o motor de gráficos carregado sob demanda; `recharts` é a alternativa desse
+   mesmo motor. `reactflow` pertence ao motor de fluxos lazy. `react-markdown` e `react-syntax-highlighter`
+   ficam nos motores lazy de chat/Markdown. `pdfjs-dist` só é usado pelo visualizador PDF lazy. `react-grid-layout`
+   não tem import runtime alcançável pelo barril; `tailwindcss` só entra no build do CSS da biblioteca.
+   Permanecem obrigatórios `@tanstack/react-virtual`, `axios`, `clsx`, `date-fns`, `framer-motion`,
+   `lucide-react`, `react`, `react-dom`, `react-dropzone` e `tailwind-merge`.
+2. A skill fonte e o kit documentam as três camadas de cache e o fluxo para consumo por `file:`. A §9.1 da
+   spec 13 agora limita a aba anônima ao diagnóstico do cache HTTP daquele perfil: ela não atualiza o store
+   nem recompila o pré-bundle. A spec 12 declara `--theme-*` e `--color-theme-*` como internos.
+3. Completei as demandas do kit: modo apontar e topologias em `START-HERE`; cópia gerada de
+   `docs/migracoes.md`; carimbo JSON `kitStamp` dentro de `catalog.json`, mantendo `VERSION` textual para o
+   CLI legado; caminho de pacote real em `templates/README.md`; e catálogo com as variáveis `--sarak-*`
+   emitidas, a partir do registro de emissores compartilhado com `auditor_ghostvars`.
+4. O checker de ponteiros agora lê apenas `sarak-ui/*.md` no primeiro nível. O limite R18 declara que Markdown
+   aninhado sob `sarak-ui` não é validado, pois a cópia de migrações contém referências ao repositório-fonte.
+   A fixture confirma que um ponteiro morto no `START-HERE.md` continua falhando e que o mesmo ponteiro na
+   cópia aninhada não entra no escopo.
+
+**Verificações executadas**
+
+- `node gates/scripts/contrato/check-section-pointers.mjs` → passou; zero ponteiros mortos, 409 referências
+  cross-documento ignoradas e 8 citações ignoradas.
+- `npm.cmd run guide` e `npm.cmd run guide:check` → passaram; kit em dia, 7 arquivos.
+- `npm.cmd run package:check` → passou; 95 arquivos no tarball, allowlist respeitada.
+- `npm.cmd run audit:baseline -- --with-tsc` → igual ao baseline de 2026-08-11, sem regressões.
+- `npx.cmd vitest run --maxWorkers=4` → **412 arquivos e 2.177 testes passaram** (512,32 s). Antes da
+  execução, confirmei zero Vitest ativo; não houve outra suíte concorrente.
+- `git diff --check` nos arquivos da plan e do lote → sem erros de whitespace. Nenhum `stage`, commit, push,
+  stash ou outra escrita no Git foi feito.
+
+**Achado alheio, preservado**
+
+`kit-names:check` também acusa a cópia `sarak-ui/docs/migracoes.md`, conforme a ocorrência da plan-88 que
+está sendo corrigida em paralelo. Não alterei esse gate nem a plan-88. A suíte Vitest passou; `install-sha`
+é um job de CI e não foi executado localmente.
+
+---
+
+## Resumo da execução (correção do lote 2) — 2026-10-04
+
+**Resultado:** Concluído com pendências de consumo no ERP, registradas abaixo.
+
+**Escopo:** exclusivamente os três achados do veredito do lote 2. As alterações já aprovadas do lote 2 foram preservadas.
+
+**Estado do worktree ao iniciar**
+```text
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-T7R4TDNU.js
+ D dist/SarakChartEngine-MDIEP7AG.js
+ D dist/SarakChatEngine-TCSSPAUZ.js
+ D dist/SarakDataTableImpl-5MTKAMEX.js
+ D dist/SarakFlowEngine-LZF3VTP5.js
+ D dist/SarakMarkdownRendererImpl-MY5O4PD5.js
+ D dist/SarakPDFViewerImpl-6S4LCYTA.js
+ D dist/chunk-3UIXFAJY.js
+ D dist/chunk-NNEEHELO.js
+ D dist/chunk-THX5URLG.js
+ D dist/chunk-U3I46WIX.js
+ D dist/chunk-X7D42LWO.js
+ D dist/chunk-YCNNTEDM.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M gates/scripts/audit/__tests__/auditor_ghostvars.manifest-orphan.test.mjs
+ M gates/scripts/audit/__tests__/auditor_ghostvars.scope.test.mjs
+ M gates/scripts/audit/__tests__/verify_contrast.test.ts
+ M gates/scripts/audit/auditor_ghostvars.mjs
+ M gates/scripts/audit/verify_contrast.ts
+ M gates/scripts/contrato/__tests__/check-class-merge.test.mjs
+ M gates/scripts/contrato/__tests__/check-plan-index-sync.test.mjs
+ M gates/scripts/contrato/__tests__/check-section-pointers.test.mjs
+ M gates/scripts/contrato/__tests__/check-trail-citation.test.mjs
+ M gates/scripts/contrato/check-class-merge.mjs
+ M gates/scripts/contrato/check-plan-index-sync.mjs
+ M gates/scripts/contrato/check-section-pointers.mjs
+ M gates/scripts/contrato/check-trail-citation.mjs
+ M package.json
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/skill/SKILL.md
+ M sarak-ui/templates/README.md
+ M scripts/consumer-kit/__tests__/kitGenerator.test.mjs
+ M scripts/consumer-kit/buildKitCatalog.mjs
+ M scripts/consumer-kit/buildKitOutputs.mjs
+ M scripts/consumer-kit/kitFiles.mjs
+ M specs/00-indice.md
+ M specs/00-prompt-executor.md
+ M specs/plan/plan-88-vaos-de-gate-medidos.md
+ M specs/plan/plan-92-selo-de-build-em-runtime.md
+ M specs/specs/12-kit-do-consumidor.md
+ M specs/specs/13-instalacao-e-atualizacao.md
+ M src/buildInfo.ts
+ M src/components/atomic/Buttons/SarakSocialButton.tsx
+ M src/components/atomic/Feedback/SarakBadge.tsx
+ M src/components/atomic/Modals/SarakModal.tsx
+ M src/components/atomic/Templates/SarakCatalogGrid.tsx
+ M src/components/atomic/Templates/SarakChart.tsx
+ M src/components/atomic/Templates/SarakForm.tsx
+ M src/components/atomic/Templates/SarakManagementGrid.tsx
+ M src/components/atomic/Templates/SarakTable.tsx
+ M src/components/atomic/Templates/components/ManagementGroupCard.tsx
+ M src/components/atomic/UX/SarakTabs.tsx
+ M src/components/atomic/UX/SarakTooltip.tsx
+ M src/core/Design/presets/themes/kinetic-flow.ts
+ M src/core/Provider/buildInfo.ts
+ M src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap
+?? .claude/settings.local.json
+?? dist/CustomizationPanelImpl-PHSROK2S.js
+?? dist/SarakChartEngine-QU22JXN4.js
+?? dist/SarakChatEngine-6EQ5ZWF7.js
+?? dist/SarakDataTableImpl-ICCZMKFX.js
+?? dist/SarakFlowEngine-GSJVU5JW.js
+?? dist/SarakMarkdownRendererImpl-KXY4LRVA.js
+?? dist/SarakPDFViewerImpl-J57TJ2TC.js
+?? dist/chunk-4TCDHU3G.js
+?? dist/chunk-JFH7N37V.js
+?? dist/chunk-LU7VRHPI.js
+?? dist/chunk-SXOUMUMG.js
+?? dist/chunk-UBYSMYWN.js
+?? gates/scripts/audit/__tests__/auditor_ghostvars.option-id.test.mjs
+?? gates/scripts/contrato/__tests__/check-kit-names.test.mjs
+?? gates/scripts/contrato/check-kit-names.mjs
+?? sarak-ui/docs/
+?? scripts/consumer-kit/collectEmittedSarakCssVars.mjs
+```
+
+**O que foi corrigido**
+
+1. `collectEmittedSarakCssVars.mjs` agora carrega o `useDesignVariables` real com o Design Engine e captura os nomes de `variables` e de `responsiveCSS`; `buildKitCatalog.mjs` usa esse resultado como fonte única de `tokens.cssVars`. O design parte dos defaults e aplica a uma cor real, não transparente, apenas aos tokens `color` com `generateVariants`, para revelar todas as variantes que a engine emite. O catálogo lista **757** nomes: `--sarak-300-10` não está presente e `--sarak-primary-color-10` está. Nenhuma lista do auditor alimenta o catálogo.
+2. `check-section-pointers.mjs` voltou a percorrer todo o Markdown sob `sarak-ui` e filtra só arquivos cujo nome é `migracoes.md`. A fixture em `check-section-pointers.test.mjs` recebe o mesmo `§9.9` morto em `sarak-ui/skill/SKILL.md` e `sarak-ui/docs/migracoes.md`; o resultado contém só a ocorrência da skill. A frase de R18 declara essa exceção.
+3. `kitGenerator.test.mjs` compartilha um único catálogo em `beforeAll` e passa esse catálogo a `buildKitOutputs`, sem reconstruí-lo nos testes. O caso verifica a lista real da engine, exclui `--sarak-300-10` e inclui uma variante de cor válida. Não foi aumentado nenhum timeout de teste.
+4. Atualizei em `specs/specs/12-kit-do-consumidor.md` a origem da lista: agora descreve a geração real de `useDesignVariables`, e não o registro do auditor. `npm run guide` regenerou o catálogo e o `START-HERE`; ambos anunciam a contagem real de **757**.
+
+**Conferência somente leitura no ERP**
+
+Em `packages/ui-kit` e `modules/*/web/src`, encontrei 40 variáveis `--sarak-*` em chamadas `var()`. O catálogo anterior tinha 73 nomes, dos quais 23 não cobriam essas chamadas. A engine emite 30 das 40 usadas, e todas as 30 estão no catálogo gerado. A engine **não** emite as dez abaixo; não as acrescentei ao catálogo:
+
+- As sete do veredito: `--sarak-border-color`, `--sarak-card-padding-lg`, `--sarak-card-padding-sm`, `--sarak-danger-color`, `--sarak-layout-gap-xs`, `--sarak-primary` e `--sarak-primary-light`.
+- Três nomes adicionais encontrados na mesma varredura: `--sarak-card-border`, `--sarak-error-color` e `--sarak-font-size`.
+
+**Arquivos alterados nesta correção**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `scripts/consumer-kit/collectEmittedSarakCssVars.mjs` | alterado | Deriva a lista da saída real da engine, incluindo CSS responsivo e variantes válidas. |
+| `scripts/consumer-kit/buildKitCatalog.mjs` | alterado | Usa apenas a lista derivada da engine para `tokens.cssVars`. |
+| `scripts/consumer-kit/buildKitOutputs.mjs` | alterado | Aceita um catálogo compartilhado para a geração dos arquivos. |
+| `scripts/consumer-kit/__tests__/kitGenerator.test.mjs` | alterado | Monta o catálogo uma vez e cobre ausência/presença de nomes representativos. |
+| `gates/scripts/contrato/check-section-pointers.mjs` | alterado | Exclui somente `migracoes.md` e mantém os demais documentos aninhados sob verificação. |
+| `gates/scripts/contrato/__tests__/check-section-pointers.test.mjs` | alterado | Fixture acusa o ponteiro da skill e ignora a cópia de migrações. |
+| `specs/specs/12-kit-do-consumidor.md` | alterado | Alinha a regra e o critério da lista à geração real da engine. |
+| `sarak-ui/catalog.json`, `sarak-ui/START-HERE.md`, `sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/VERSION` | gerados | Regenerados pelo `guide`; catálogo e material do kit refletem a lista corrigida e seu carimbo. |
+| `specs/plan/plan-92-selo-de-build-em-runtime.md` | alterado | Acrescenta este resumo e muda o status para revisão. |
+
+**Verificações executadas**
+
+- Antes do teste isolado e da suíte completa, a contagem de processos `node` com `tsup`, `generate-build-info` ou `vitest` na linha de comando foi 0; as linhas de comando não foram impressas.
+- `npm.cmd run guide` → gerou o kit; 102 componentes, 427 tokens, 100 ícones, `kitHash` `7403343d1f53`. A leitura do catálogo e `START-HERE` confirmou 757 variáveis e contagens iguais.
+- `npm.cmd run guide:check` → kit em dia, 7 arquivos.
+- `npm.cmd run package:check` → passou; 95 arquivos no tarball, allowlist respeitada. A primeira tentativa falhou porque o cache global `C:\npm-short` não permitiu escrita; repetir com cache temporário exclusivo passou e o cache temporário foi removido.
+- `npm.cmd run section-pointers:check` → passou; zero ponteiros mortos, 412 referências cross-documento e 8 citações ignoradas conforme os limites declarados.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11, nenhuma regressão.
+- `npx.cmd vitest run scripts/consumer-kit/__tests__/kitGenerator.test.mjs` → 1 arquivo e 14 testes passaram em 1,98 s, sem timeout adicional.
+- `npx.cmd vitest run --maxWorkers=4` → **413 arquivos e 2.192 testes passaram** em 342,03 s. Houve avisos GLib/Windows e `Could not parse CSS stylesheet`; o processo terminou com `exit 0`.
+- `git diff --check` nos arquivos alterados → sem erros de whitespace. Git avisou que normalizará CRLF de `check-section-pointers.mjs` para LF no próximo toque.
+
+**Critérios de aceite**
+
+- [x] `tokens.cssVars` lista somente o que a engine emite — 757 nomes, sem `--sarak-300-10`, com `--sarak-primary-color-10`.
+- [x] Das 40 variáveis usadas pelo ERP, todas as 30 que a engine emite estão no catálogo; as dez que ela não emite estão explicitadas neste resumo.
+- [x] As sete variáveis apontadas no veredito foram verificadas e não foram inventadas no catálogo; a varredura também identificou mais três nomes usados e não emitidos.
+- [x] O `START-HERE` anuncia 757 nomes, o mesmo número de `tokens.cssVars`.
+- [x] A spec 12 descreve a geração real da engine e não usa o registro do auditor como contrato.
+- [x] O gate acusa `§9.9` morto em `sarak-ui/skill/SKILL.md` e não acusa a mesma referência em `sarak-ui/docs/migracoes.md`, pela fixture e pelo código do filtro.
+- [x] O teste do kit passou isolado e na suíte completa, com um catálogo compartilhado e sem alterar timeouts.
+- [x] `guide`, `guide:check`, `package:check`, `section-pointers:check`, `check-audit-baseline --with-tsc` e a suíte completa passaram.
+
+**Decisões e suposições**
+
+- Para capturar todas as variantes possíveis da engine, mantive o Design State padrão e usei um valor de cor já existente no schema nos tokens que declaram `generateVariants` e `type === 'color'`; a lista de nomes vem da execução da engine, não da inspeção de um registro permissivo.
+- A verificação das variáveis consumidas pelo ERP foi somente leitura. Os dez nomes não emitidos ficam como achado de consumo e não foram transformados em variáveis novas na biblioteca.
+
+**Achados fora do escopo (não corrigidos)**
+
+- `--sarak-border-color`, `--sarak-card-padding-lg`, `--sarak-card-padding-sm`, `--sarak-danger-color`, `--sarak-layout-gap-xs`, `--sarak-primary`, `--sarak-primary-light`, `--sarak-card-border`, `--sarak-error-color` e `--sarak-font-size` são usados pelo ERP, mas não são emitidos pelo Design Engine. Registrei-os para encaminhamento no consumidor; não alterei o ERP nem inventei tokens na lib.
+
+**Pendências / riscos**
+
+- A aplicação do ERP pode usar fallback nas dez variáveis listadas até que o consumidor trate esses nomes; isso não afeta o contrato de CSS Variables emitidas pela lib.
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -613,6 +908,112 @@ nenhum texto do selo renderizado; kit regenerado ensina a ler e a comparar com o
 **Liberação parcial.** O lote 1 está aprovado e **pode ser commitado**. A plan **não** está concluída: o lote 2
 (§5 itens 10 a 13) não foi iniciado. O `status` volta a `🟡 Em execução`, e a síntese e a remoção só acontecem
 depois do veredito do lote 2.
+
+## Veredito — 2026-10-04 — 🔴 Reprovado (lote 2)
+
+**Antes de gravar:** a §10 foi relida no disco: só os três blocos do lote 1, escritos nesta conversa.
+
+**O que está certo, e foi verificado por mim:**
+
+- `package.json`: só `peerDependenciesMeta` (9 opcionais) e `engines` mudaram, e a edição da plan-88 em `scripts`
+  foi preservada. Conferi por `import` em `src/` que os opcionais são alcançados só por motor lazy
+  (`echarts`, `echarts-for-react`, `recharts` no motor de gráficos; `reactflow` no de fluxos; `react-markdown` e
+  `react-syntax-highlighter` no Markdown/chat; `pdfjs-dist` no visualizador de PDF); `react-grid-layout` e
+  `tailwindcss` **não têm import** em `src/`. Os 10 obrigatórios têm import eager. `package:check` → 95 arquivos.
+- `START-HERE` (modo "apontar" como oficial, o pacote importador e o monorepo), `templates/README.md` (`src/` e
+  `package.json` do pacote real) e a skill (as três camadas de cache e o procedimento, com a prova da deleção)
+  ensinam o que a plan pede. `kitStamp` em `catalog.json` e a cópia de `docs/migracoes.md` no kit existem, com teste.
+- Specs 12 e 13: a §9.1 deixou de afirmar que a aba anônima "não alcança" e a 12 declara `--theme-*`/`--color-theme-*`
+  internas. **As duas specs receberam mais do que a §3.1 ampliada autorizava** (a tabela de peers da 13, o §10, a
+  tabela do kit e o carimbo na 12). Conferi cada afirmação contra o código e o `package.json` e **adoto o excedente
+  como síntese antecipada**, para não desfazê-lo e reescrevê-lo igual; a frase da 12 sobre o registro de
+  variáveis, porém, muda com o achado 1 abaixo.
+- `tsc` → 0 · `check-audit-baseline --with-tsc` → igual ao baseline · verdes: `guide` (7 arquivos), `package`,
+  `section-pointers`, `kit-names`, `dev-kit`, `catalog`, `gate-limits`. A suíte completa **não** foi repetida por
+  mim nesta rodada: a correção mexe no gerador do kit e exige nova execução; vale o 412/2177 do executor, e a
+  verificação integrada fecha com a plan-88.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **`tokens.cssVars` publica ~12 mil nomes, a maioria inexistente.** Foi de **73 para 12.024** entradas
+   (11.951 novas, nenhuma removida); o `catalog.json` foi de 210 KB para 655 KB, e o `START-HERE` passou a anunciar
+   *"12024 nomes de CSS Variables emitíveis"*. O `collectEmittedSarakCssVars.mjs` **copia** o registro do
+   `auditor_ghostvars` e aplica os 18 sufixos a **toda** base (`--sarak-300-10`, `--sarak-300-active`…). O
+   `useDesignVariables.ts:127` mostra que a engine só gera variante para token com `generateVariants` **e**
+   `type === 'color'`. O registro do auditor é permissivo de propósito (evita falso positivo); como **contrato
+   público** ele mente — o consumidor passa a usar nomes que não existem, em silêncio. Pior: o teste novo é
+   circular (compara o catálogo com a saída do mesmo coletor), então passa com a lista inflada. A `plan-88` (lote 2)
+   vai estreitar o registro do auditor em paralelo, e a **cópia** dele diverge. Faça: listar só o que a engine
+   emite — a base de cada token e as variantes dos tokens de cor com `generateVariants` — **derivado da própria
+   engine** (por exemplo, executando a geração de variáveis sobre o design padrão), e **sem copiar** o registro do
+   auditor; o número do `START-HERE` passa a ser o real. Critério (§6, reescrito por mim): `--sarak-300-10` **não**
+   está em `cssVars`; uma variante de token de cor com `generateVariants` **está**; toda variável que o ERP consome
+   por `var()` e a engine emite está. **Medi no ERP** (só leitura, `packages/ui-kit` e `modules/*/web/src`):
+   40 nomes `--sarak-*`, 23 fora do catálogo antigo. As que o catálogo novo (inflado) **ainda não traz** — o ERP usa
+   e a lib provavelmente não emite — são `--sarak-border-color`, `--sarak-card-padding-lg`,
+   `--sarak-card-padding-sm`, `--sarak-danger-color`, `--sarak-layout-gap-xs`, `--sarak-primary` e
+   `--sarak-primary-light`; confirme a emissão e relate cada uma no resumo (não as invente para fechar o critério).
+   Ajuste a frase da spec 12 sobre o registro ao que ficar. Critério violado: §5 item 12 e §6 (e a R17: o catálogo
+   não transcreve lista que mente).
+2. **O ajuste do `check-section-pointers` estreitou mais do que o necessário.** O filtro novo lê só o primeiro nível
+   de `sarak-ui` (`path.dirname(file) === sarak-ui`). Reproduzi com uma fixture em que o **mesmo** ponteiro morto
+   está em 4 arquivos: o gate só acusa o `sarak-ui/START-HERE.md`. `sarak-ui/skill/SKILL.md`,
+   `sarak-ui/skill/references/examples.md` e `sarak-ui/templates/README.md` — documentos que o consumidor lê — **deixaram
+   de ser verificados**, quando a plan pedia só deixar de ler a cópia de `migracoes.md`. O limite declarado no
+   R18 descreve a perda, mas ela era evitável. Exclua **só** os arquivos chamados `migracoes.md` sob `sarak-ui` (a
+   mesma regra do `kit-names`), com um caso de fixture que falha: ponteiro morto em `sarak-ui/skill/SKILL.md` é
+   acusado; o mesmo na cópia `sarak-ui/docs/migracoes.md` não.
+3. **O teste novo do gerador do kit estoura o timeout padrão.** `kitGenerator.test.mjs` →
+   *"lista no catálogo todas as CSS Variables Sarak do registro do auditor"* leva **~5,8 s contra 5 s** e **falhou
+   isolado** na minha execução (`Test timed out in 5000ms`); só fechou nas suítes do executor por folga de máquina —
+   é a classe do achado 58 da `15-divida-conhecida`. Faça o teste novo (o do achado 1) rápido e determinístico:
+   monte o catálogo **uma vez** num `beforeAll` compartilhado e dê a esse `beforeAll` o prazo próprio, ou assegure a
+   propriedade sem reconstruir o kit; sem relógio como margem.
+
+**Para o dono:** as 7 variáveis acima são o que o ERP usa e a lib não emite — vira item da plan de atualização do
+ERP, não da lib. Nada disso muda o lote 1, que segue aprovado.
+
+## Veredito — 2026-10-04 (correção do lote 2) — 🟢 Aprovado (plan concluída)
+
+**Antes de gravar:** a §10 foi relida no disco: só os quatro blocos anteriores, escritos nesta conversa.
+
+**Achado 1 — `tokens.cssVars` publicava ~12 mil nomes, a maioria inexistente — fechou.** O catálogo agora lista
+**757** nomes (antes 12.024). `collectEmittedSarakCssVars.mjs` deixou de copiar o registro do `auditor_ghostvars`: roda
+`useDesignVariables` sobre o design padrão, com todo token de cor `generateVariants` ligado, e junta as chaves
+geradas com o CSS responsivo — a engine é a fonte, como o `useDesignVariables.ts:127` a define. `--sarak-300-10`
+não está; `--sarak-primary-color-10` está. O número do `START-HERE` (757) bate com o catálogo.
+
+**Medi o que saiu (73 do catálogo antigo → 757):** 8 nomes antigos deixaram de constar. Seis eram promessa sem
+emissor, listada só em `vars:` do `manifest.ts` (`--sarak-palette`, `--sarak-error-color`, `--sarak-success-color`,
+`--sarak-warning-color`, `--sarak-card-border`, `--sarak-font-scale`) e `--sarak-max-width` só é lido por
+`_base.css:94` com fallback `none`, ninguém a emite. **Sair é o correto.** A oitava, `--sarak-font-size`, **é**
+emitida em runtime pelo CSS estático da lib (`_typography.css:14-18`, sob `[data-font-scale]`), e o resumo do
+executor a chama de "não emitida pelo Design Engine" — verdadeiro para o motor, impreciso para a lib. Não
+reprovo por uma variável: o critério da §6 foi escrito por mim como "emitida pela engine", o catálogo cumpre-o, e
+a diferença está registrada aqui e vai ao backlog (o coletor pode passar a somar as `--sarak-*` declaradas em
+`src/styles/`).
+
+**ERP (só leitura):** das 40 variáveis `--sarak-*` que o ERP usa, 30 estão no catálogo; as 10 restantes são as 7 do
+veredito mais `--sarak-card-border`, `--sarak-error-color` e `--sarak-font-size`. O `ContractCard`, `Templates`,
+`Detail`, `List` e outros usam `--sarak-card-border` e `--sarak-error-color` — são as promessas fantasma do `manifest`.
+Tudo isso é item da plan de atualização do ERP, não da lib.
+
+**Achado 2 — `check-section-pointers` estreito demais — fechou.** O filtro exclui **só** arquivos chamados
+`migracoes.md`. Refiz a fixture fora do repositório com o mesmo `§9.9` morto em 4 arquivos: o gate acusa
+`sarak-ui/skill/SKILL.md`, `sarak-ui/START-HERE.md` e `sarak-ui/templates/README.md` e **não** a cópia
+`sarak-ui/docs/migracoes.md`. `section-pointers:check` sobre a árvore real → OK.
+
+**Achado 3 — teste do gerador estourava o prazo — fechou.** `kitGenerator.test.mjs` passou a **14 testes**; rodei
+três vezes isolado: **2,6 s, 2,4 s e 5,4 s** de relógio total, verdes nas três (o teste do catálogo monta o kit uma
+vez, em `beforeAll`).
+
+**Verificação integrada, a mesma rodada da plan-88:** `npx vitest run` → **413 arquivos, 2192 testes verdes** · `tsc` →
+0 · `check-audit-baseline --with-tsc` → igual ao baseline · verdes: `guide` (7), `package` (95), `kit-names`,
+`dev-kit`, `catalog`, `gate-limits` (41), `class-merge`, `trail-citation`.
+
+**Conclusão.** A plan 92 está **concluída** (lote 1 já aprovado + lote 2 corrigido). Commite **por caminho**; a
+síntese e a remoção acontecem depois do commit e da sua autorização. Destinos: `13` §2.3/§9.1/§10,
+`05-build` §2/§6, `03-superficie`, `12-kit` e `03-versionamento` §6.
 
 ---
 

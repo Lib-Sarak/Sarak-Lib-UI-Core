@@ -329,79 +329,75 @@ atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizad
 Se forem iguais, o navegador executa o build instalado; se diferirem, o pré-bundle do bundler ainda
 serve um build anterior. Siga o procedimento abaixo para invalidá-lo.
 
-**Ao atualizar, leia `docs/migracoes.md` ANTES de investigar quebra de tipo** — mudanças de contrato
-público ficam lá com antes/depois.
+**Ao atualizar, leia as migrações ANTES de investigar quebra de tipo** — mudanças de contrato público
+ficam com antes/depois em `sarak-ui/docs/migracoes.md` se você copiou o kit, ou em
+`node_modules/@sarak/lib-ui-core/sarak-ui/docs/migracoes.md` no modo apontar.
 
 **Desenvolvimento local (`file:`/`npm link`) — não incorporado ao `init`:** trocar a dependência por
 `"@sarak/lib-ui-core": "file:../Sarak-Lib-UI-Core"` propaga mudanças sem reinstalar, na TEORIA.
 **Trade-off:** NÃO reproduz o pacote publicado (aponta para o `dist/` local, sem passar pela allowlist
 de `files`) — nunca use este modo para validar uma instalação real ou testar atualização.
 
-### ⚠️ Rebuildou a lib e a tela não mudou — DUAS camadas de cache, nenhuma delas avisa
+### ⚠️ Rebuildou a lib e a tela não mudou — três camadas de cache
 
-Achado real (2026-08-14/15, três rodadas de investigação perdidas na LIB, que estava certa nas três):
-o pacote foi corrigido, os gates passaram, o artefato foi conferido — e a tela do consumidor **não
-mudou**. A causa não estava na lib; estava em duas camadas de cache **entre** o `dist/` e o navegador.
-Cobrir só uma repete o incidente.
+Há três caches entre o `dist/` reconstruído e a tela. Em consumo por `file:`, resolva cada um na
+ordem abaixo; o selo `data-sarak-build-info` mostra o build que a página realmente executa.
 
-**1. O gerenciador de pacotes copia, não linka.** Com `pnpm`, `file:` é **cópia** para o store —
-rebuildar a lib não move um byte da cópia instalada sozinho.
+**1. Store do gerenciador.** Com `pnpm`, `file:` é cópia para o store: rebuildar a lib não atualiza
+a cópia instalada. Rode o comando a partir do pacote importador (o `package.json` que declara a lib):
 ```bash
-pnpm install --force --filter <pacote-do-consumidor>   # OBRIGATÓRIO — sem --force o pnpm considera
-                                                          # o lockfile satisfeito e não recopia
+pnpm install --force --filter <pacote-importador>
 ```
-`npm`/`yarn` num projeto simples costumam **linkar** (symlink direto para a fonte) — aí este passo nem
-é necessário. `sarak-ui check` diz `live`/`fresh`/`stale`, e é exatamente essa pergunta que ele responde.
+`npm` e `yarn` podem manter um link vivo para a fonte. Use `sarak-ui check` para saber se a
+dependência instalada está `live`, `fresh` ou `stale`.
 
-**2. O cache de pré-bundle do bundler** (Vite: `node_modules/.vite/`) **decide por lockfile + versão +
-config, nunca por conteúdo.** Com dependência local a `version` fica parada, o caminho `file:` é o
-mesmo e a config não muda — **a chave do cache nunca se move**, mesmo com o passo 1 já feito. O dev
-server continua servindo o build ANTERIOR, em silêncio: sem erro, sem aviso. Hard-refresh e guia
-anônima **não mudam nada** — o cache é do SERVIDOR de dev, não do navegador (testado).
+**2. Pré-bundle do bundler.** O Vite guarda dependências em `node_modules/.vite/deps/` e calcula
+`?v=` a partir do lockfile, da configuração e dos caminhos das dependências — não do conteúdo. Um
+rebuild de uma dependência local mantém esses valores; o pré-bundle pode continuar antigo.
 
-**O procedimento, NA ORDEM CERTA** (a ordem errada já produziu tela BRANCA com
-`504 Outdated Optimize Dep`, achado real):
-```bash
-# 1. DERRUBE o dev server PRIMEIRO. No Windows, um processo com os arquivos abertos IMPEDE a
-#    deleção — e esse erro pode ser ENGOLIDO por um -ErrorAction tolerante demais.
-#    (Ctrl+C no terminal do "npm run dev", ou mate o processo pela porta.)
+**3. Cache HTTP do navegador.** O Vite serve o pré-bundle com `cache-control: max-age=31536000, immutable`.
+Se o `?v=` não mudar, uma aba normal pode reutilizar o arquivo antigo por um ano. Uma
+aba anônima começa sem esse cache e recebe a resposta atual; compare as duas depois de atualizar.
 
-# 2. Apague o cache do bundler:
-rm -rf node_modules/.vite                          # bash/mac/linux
-Remove-Item -Recurse -Force node_modules/.vite      # PowerShell
+**Confira o selo em uma instância da lib e compare com o arquivo instalado:**
+`node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json`. Se `data-sarak-build-info` divergir do
+arquivo, a página ainda executa um pré-bundle ou uma resposta HTTP antiga. `sarak-ui check`
+compara a instalação local; `BUILD_INFO.json` descreve o pacote instalado; o atributo mostra o
+runtime da página.
 
-# 3. PROVE que apagou — não confie no código de saída do passo 2 ("pasta não existe" e
-#    "arquivo em uso" são erros DIFERENTES; um -ErrorAction genérico confunde os dois):
-Test-Path node_modules/.vite      # PowerShell — TEM de responder False antes de seguir
-[ ! -d node_modules/.vite ] && echo apagado   # bash
+O aviso `[sarak:check:cache]`, quando aparece, aponta referência antiga no pré-bundle Vite padrão.
+Sua ausência não prova que o navegador descartou uma resposta HTTP `immutable`; confira o selo e compare
+com uma aba anônima.
 
-# 4. Só ENTÃO suba o dev server de novo.
-npm run dev
-```
-Pular o passo 3 faz o passo 4 rodar sobre uma premissa que pode ser falsa — e o sintoma (tela
-idêntica, ou branca) não aponta para a causa.
+**Procedimento para `file:`, na ordem** (a ordem errada já produziu tela branca com
+`504 Outdated Optimize Dep`):
 
-**`sarak-ui check` (e `--notify`) avisam sobre isto**, com um rótulo **separado**
-(`[sarak:check:cache]`, nunca misturado com o veredito do pacote): a partir da raiz do workspace (o
-diretório do lockfile, achado subindo a árvore de onde o comando roda), ele desce e varre TODO
-`node_modules/.vite/deps/` alcançável — não só o do diretório onde o comando roda — atrás de
-referência a um chunk content-hashed da lib que não existe mais no `dist/` instalado. É o que faz o
-aviso funcionar mesmo quando quem DECLARA a lib (onde o `predev` roda o `check`) e quem RODA o Vite
-(o app que de fato sobe o dev server) são pacotes **irmãos** no monorepo, não um dentro do outro —
-topologia comum e a que motivou esta seção. **Cobertura declarada, não prometida:** só Vite, só a
-pasta `.vite` (sem `cacheDir` customizado no `vite.config`); a busca desce a partir da raiz do
-workspace, nunca sobe — sem lockfile em lugar nenhum, cai no diretório onde o comando roda. Bundler
-diferente, ou cache num lugar não padrão: o aviso fica em silêncio — siga o procedimento manual acima
-de qualquer forma. **Silêncio nunca é "confirmado em dia"** — é só "nada de errado encontrado por
-este sinal".
+1. Pare o servidor de desenvolvimento que executa o bundler.
+2. Rode `sarak-ui check` no pacote que declara a lib. Se estiver `stale` e usar `pnpm`, rode
+   `pnpm install --force --filter <pacote-importador>` para atualizar o store.
+3. Apague `node_modules/.vite` no projeto que executa o Vite:
+   ```bash
+   rm -rf node_modules/.vite
+   ```
+   No PowerShell: `Remove-Item -Recurse -Force node_modules/.vite`.
+4. Prove que a pasta sumiu: `Test-Path node_modules/.vite` deve responder `False` no PowerShell;
+   em bash, `[ ! -d node_modules/.vite ]` deve retornar sucesso. Diferencie pasta ausente de arquivo
+   em uso.
+5. Suba o servidor Vite e leia `data-sarak-build-info` no DOM. Compare seu JSON com o
+   `BUILD_INFO.json` instalado. Se a aba anônima mostrar o build novo e a normal não, limpe o cache
+   HTTP da aba normal ou desabilite-o nas ferramentas do navegador.
 
-**Nenhum dos três mecanismos abaixo responde pelo outro — cada um responde uma pergunta diferente:**
+Pular a prova da deleção pode manter a tela idêntica. Silêncio de `sarak-ui check` sobre cache não
+confirma que todas as camadas estão atualizadas; o sinal automático cobre Vite com `.vite` padrão.
+
+**Cada sinal responde a uma pergunta:**
 
 | Pergunta | Quem responde |
 |---|---|
-| "O pacote em disco está atualizado?" | `sarak-ui check` |
-| "Qual artefato está instalado?" | `dist/BUILD_INFO.json` (`builtAt`/`libVersion` — nunca "estou atualizado?", ver acima) |
-| "O bundler já notou a mudança?" | o procedimento acima — `sarak-ui check` ajuda (só Vite, cache padrão), não garante |
+| "A dependência local foi instalada?" | `sarak-ui check` |
+| "Qual artefato está instalado?" | `dist/BUILD_INFO.json` |
+| "Qual build a página executa?" | o atributo `data-sarak-build-info` |
+| "A aba normal reteve uma resposta HTTP?" | compare com uma aba anônima após refazer o pré-bundle |
 
 **Tamanho do bundle — o que resolve e o que NÃO resolve (medido):** quando o `dist/` do consumidor
 parecer grande, **não** mexa em `manualChunks` — ele não reduz um byte, só decide em qual arquivo
@@ -430,10 +426,9 @@ cada byte cai, e uma regra ampla demais **funde de volta** os chunks lazy que a 
 
 ## Referências
 **Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
-- `sarak-ui/` — **o kit de uso**: START-HERE, `GUIA-FRONTEND.md`, `catalog.json`, `templates/`, `VERSION`.
+- `sarak-ui/` — **o kit de uso**: START-HERE, `GUIA-FRONTEND.md`, `catalog.json`, `docs/migracoes.md`, `templates/`, `VERSION`.
 - `bin/sarak-ui.mjs` (`npx sarak-ui init`) — o scaffolder oficial; Node puro, idempotente.
 - `docs/component-catalog.md` / `.json` — catálogo gerado, com o TIPO completo de cada prop.
-- `docs/migracoes.md` — breaking changes do contrato público, com antes/depois.
 - `docs/identidade-do-host.md` — título da aba, favicon e marca são sempre do importador.
 - `docs/extensibilidade-de-layout.md` — os 2 níveis de imagem/animação: fundo global por tema e slots do cromo.
 - `docs/temas-cromo-e-multidispositivo.md` — temas completos, cromo e contrato de responsividade.

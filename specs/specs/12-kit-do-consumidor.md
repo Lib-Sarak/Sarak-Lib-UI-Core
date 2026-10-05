@@ -29,11 +29,12 @@ não pode ficar dessincronizado da versão instalada: **dentro dela**.
 | `skill/` | **Espelho** de `.agents/skills/ui-integra-consumidor/` | Gerado (espelhado) |
 | `templates/` | Código copiável (7 arquivos) | À mão, estável |
 | `catalog.json` | **100% gerado** | Gerador |
-| `VERSION` | **100% gerado** | Gerador |
+| `VERSION` | **100% gerado**; formato textual mantido para o CLI atual | Gerador |
+| `docs/migracoes.md` | Cópia gerada do histórico de mudanças do contrato | Gerador |
 
 O gerador é `scripts/generate-consumer-kit.mjs` (`npm run guide`), e o plano de saída dele
-(`scripts/consumer-kit/buildKitOutputs.mjs:47-76`) tem **6 arquivos**: `catalog.json`, `VERSION`,
-`GUIA-FRONTEND.md`, `START-HERE.md` e os 2 arquivos da skill espelhada.
+(`scripts/consumer-kit/buildKitOutputs.mjs`) inclui `catalog.json`, `VERSION`, `GUIA-FRONTEND.md`,
+`START-HERE.md`, `docs/migracoes.md` e os arquivos da skill espelhada.
 
 > ⚠️ **`templates/` NÃO está no plano de saída** — logo, não é conferido pelo `guide:check`. Ele é
 > código estável, escrito à mão, e a única coisa que o cobra é o `package:check`, que exige os 7
@@ -43,7 +44,7 @@ O gerador é `scripts/generate-consumer-kit.mjs` (`npm run guide`), e o plano de
 
 # 2. O princípio central — nunca escrever à mão o que muda
 
-> **A PROSA é estável e editada à mão. Toda LISTA é derivada do código por AST.**
+> **A PROSA é estável e editada à mão. Toda LISTA é derivada automaticamente das fontes vivas.**
 
 Esta é a regra que define o artefato inteiro, e ela está escrita no cabeçalho do próprio gerador
 (`scripts/generate-consumer-kit.mjs:9-12`).
@@ -54,7 +55,9 @@ templates.
 
 **São derivadas** (mudam a cada alteração de superfície): componentes, props, tipos, tokens de
 tema, CSS Variables, nomes de ícone, temas embutidos, contrato de responsividade, slots do cromo,
-nomes exportados pelo barril, guias shippados em `docs/`.
+nomes exportados pelo barril e guias shippados em `docs/`. As CSS Variables `--sarak-*` do catálogo
+são derivadas da geração real de `useDesignVariables` sobre o mapa padrão; variantes vêm apenas de
+tokens `color` com `generateVariants`. O registro do auditor não define o contrato público.
 
 ## 2.1 Como as duas convivem no mesmo arquivo — os marcadores
 
@@ -118,6 +121,9 @@ O sistema é resiliente por construção, e a resiliência tem um preço em obse
 - **CSS Variable inventada** → `var(--nome-que-ninguem-emite, fallback)` resolve para o fallback.
   A tela renderiza com o valor errado e **deixa de responder ao tema** — e é exatamente esse o
   sintoma da dívida `--sx-*` que a própria lib carrega ([[01-gates-e-baseline]]).
+- `--theme-*` e `--color-theme-*` são nomes internos usados por componentes da biblioteca; não
+  fazem parte do contrato público do catálogo. Só as variáveis `--sarak-*` emitidas e listadas em
+  `catalog.json` podem ser consumidas como superfície pública.
 - **Nome de ícone fora do `IconMap`** → `console.warn` + ícone de alerta.
 - **Componente inexistente** → aí sim quebra, em tempo de tipo. É o único dos quatro que grita.
 
@@ -128,7 +134,7 @@ dela.
 # 4. O gate `guide:check` — por que é impossível publicar um kit defasado
 
 ```
-npm run guide         # gera (escreve os 6 arquivos)
+npm run guide         # gera o kit
 npm run guide:check   # confere (exit 1 se qualquer um estiver defasado)
 ```
 
@@ -148,7 +154,8 @@ npm run guide:check   # confere (exit 1 se qualquer um estiver defasado)
 temporário e o kit não regenerado, `guide:check` saiu **exit 1** apontando os 4 arquivos
 defasados; o mesmo comportamento foi provado editando a skill-fonte (2 arquivos defasados).
 
-**Baseline atual:** `[guide:check] kit em dia (6 arquivos).` — ver [[01-gates-e-baseline]].
+**Baseline atual:** a saída conferida inclui também `sarak-ui/docs/migracoes.md`; a contagem exata
+vem do mapa do gerador — ver [[01-gates-e-baseline]].
 
 ## 4.1 A skill é espelhada, não copiada
 
@@ -161,23 +168,27 @@ vermelho. É por isso que [[14-artefatos-do-mantenedor]] e a reconciliação de 
 `ui-integra-consumidor` como **arquivo gerado do lado do kit** — quem a edita à mão dentro de
 `sarak-ui/skill/` perde a edição na próxima geração.
 
-# 5. O carimbo — `VERSION` e o `kitHash`
+# 5. O carimbo — `catalog.json` e o `kitHash`
 
-`sarak-ui/VERSION` é gerado por `renderVersionFile` (`kitFiles.mjs:58-70`) e carrega seis campos:
-`libVersion`, `kitSchemaVersion`, `kitHash`, `components`, `designTokens` e `iconNames`. Os valores mudam a
-cada release — leia o arquivo gerado, não um carimbo transcrito aqui.
+O carimbo canônico em JSON fica em `sarak-ui/catalog.json` → `kitStamp`, com `libVersion`,
+`kitSchemaVersion` e `kitHash`. `sarak-ui/VERSION` continua gerado no formato textual legado porque o
+CLI atual o lê; suas seis chaves (`libVersion`, `kitSchemaVersion`, `kitHash`, `components`,
+`designTokens` e `iconNames`) acompanham os mesmos valores.
 
-**`kitHash` é hash de CONTEÚDO, nunca de commit** — SHA-256 dos primeiros 12 hex do
-`catalog.json` (`kitFiles.mjs:50-51`). A escolha é deliberada e o motivo é o que salva o gate de
-virar ruído: um carimbo derivado do commit mudaria a **cada commit**, deixando o `guide:check`
+**`kitHash` é hash de CONTEÚDO, nunca de commit** — SHA-256 dos primeiros 12 hex do conteúdo de
+`catalog.json` sem o próprio campo `kitStamp` (`kitFiles.mjs:50-51` e `buildKitOutputs.mjs`). A
+escolha é deliberada e o motivo é o que salva o gate de virar ruído: um carimbo derivado do commit
+mudaria a **cada commit**, deixando o `guide:check`
 vermelho o tempo todo, e um gate que está sempre vermelho é um gate que todo mundo aprende a
-ignorar. Com hash de conteúdo, o carimbo muda **quando a superfície muda** — e só então. Há teste
-para as duas metades da propriedade (`kitGenerator.test.mjs:45-51`).
+ignorar. O hash exclui `kitStamp` para não criar referência circular; com isso, o carimbo muda
+**quando a superfície muda** — e só então. Há teste para o cálculo e para a cópia de
+`docs/migracoes.md` (`kitGenerator.test.mjs`).
 
-**Para que o consumidor usa o carimbo.** O `START-HERE.md` manda mover duas cópias do kit para
-lugares canônicos do projeto dele (§6). Essas cópias saem do alcance do gerador da lib e
-envelhecem em silêncio. O `VERSION` é o que permite detectar isso: `runRefreshKit` compara o
-`VERSION` do kit instalado com o da cópia local (`bin/scaffold/refreshKit/runRefreshKit.mjs:33-36`
+**Para que o consumidor usa o carimbo.** O `START-HERE.md` permite apontar para o kit instalado ou
+mover cópias do kit para lugares canônicos do projeto dele (§6). Essas cópias saem do alcance do
+gerador da lib e envelhecem em silêncio. O `VERSION` é o que permite ao CLI detectar isso:
+`runRefreshKit` compara o `VERSION` do kit instalado com o da cópia local
+(`bin/scaffold/refreshKit/runRefreshKit.mjs:33-36`
 e `:60`) e reescreve o que ficou para trás.
 
 ⚠️ **O carimbo NÃO responde "estou na versão mais nova da lib?"** — ele responde "minhas cópias
@@ -186,9 +197,13 @@ batem com o pacote que está instalado aqui?". A primeira pergunta é do `sarak-
 
 # 6. Os 3 movimentos de instalação
 
-Definidos em `sarak-ui/START-HERE.md:32-47` e implementados como contrato de código em
+Definidos em `sarak-ui/START-HERE.md` e implementados como contrato de código em
 `bin/scaffold/kitTargets.mjs:10-21` — os dois **têm de concordar**, e o comentário do arquivo diz
 isso por escrito (`:5-6`).
+
+O **modo apontar** é igualmente oficial: o consumidor pode ler o kit no pacote instalado sem
+copiar a pasta. Quando escolher cópias, a raiz é sempre a do `package.json` que declara a lib; em
+monorepo essa raiz pode ser um app ou pacote abaixo da raiz do workspace.
 
 | # | O quê | De | Para |
 | --- | --- | --- | --- |
@@ -214,9 +229,10 @@ O quarto movimento — **atualizar uma lib já instalada** — é onde o kit mai
 falha ruidosamente quando dá errado; a atualização falha **em silêncio**: o pacote troca no disco, todo
 comando responde sucesso e a tela continua com o build anterior.
 
-Por isso o procedimento de atualização do kit cobre as **duas camadas de cache** entre o `dist/` e o
-navegador — store do gerenciador e pré-bundle do bundler —, na ordem correta e com a **prova da deleção**
-antes de subir o dev server. Detalhe completo em [[13-instalacao-e-atualizacao]] §9.1.
+Por isso o procedimento de atualização do kit cobre as **três camadas de cache** entre o `dist/` e o
+navegador — store do gerenciador, pré-bundle do bundler e cache HTTP do navegador —, na ordem correta
+e com a **prova da deleção** antes de subir o dev server. Detalhe completo em
+[[13-instalacao-e-atualizacao]] §9.1.
 
 É conteúdo do kit, e não apenas desta spec, exatamente pelo princípio da §2: quem precisa da informação é o
 consumidor, no momento em que ele atualiza — não alguém lendo a documentação do mantenedor depois.
@@ -353,11 +369,13 @@ volta a ser conferido a cada geração do kit — o valor corrente está em `sar
 
 # 14. Plano de Testes (Quality Gate)
 
-## Testes Unitários (existentes — `scripts/consumer-kit/__tests__/kitGenerator.test.mjs`)
+## Testes Unitários (`scripts/consumer-kit/__tests__/kitGenerator.test.mjs`)
 - [x] `injectBlock` preserva a prosa dos dois lados e é idempotente.
 - [x] `injectBlock` falha alto com marcador ausente e com marcadores invertidos.
 - [x] `kitHashOf` muda quando a superfície muda e **não** muda quando ela não muda.
 - [x] O catálogo lista componentes de `components/` **e** a API de `core/`.
+- [x] `tokens.cssVars` lista apenas CSS Variables `--sarak-*` que a engine emite e `buildKitOutputs`
+      confere o carimbo JSON e a cópia de `docs/migracoes.md`.
 - [x] O contrato de responsividade sai do uso real de `useSarakDevice`.
 - [x] Os slots do cromo saem das props `ReactNode` opcionais do `SarakAppChrome`.
 - [x] O kit não vaza nome de importador nenhum.

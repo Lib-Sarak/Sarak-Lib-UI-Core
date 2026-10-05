@@ -13,7 +13,7 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { motion, AnimatePresence } from 'framer-motion';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 export type SarakTooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
@@ -147,7 +147,7 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
                           transition={{ duration: 0.15 }}
                           role="tooltip"
                           data-sarak-tooltip="true"
-                          className={twMerge(
+                          className={mergeSarakClasses(
                               'fixed z-[var(--z-index-tooltip, 9000)] text-xs font-bold whitespace-nowrap',
                               'bg-[var(--theme-surface)] text-[var(--color-theme-title,#ffffff)]',
                               'border border-[var(--theme-border)] shadow-lg rounded-md pointer-events-none',

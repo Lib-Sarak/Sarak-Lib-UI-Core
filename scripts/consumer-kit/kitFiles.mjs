@@ -18,6 +18,8 @@ export const START_HERE = path.join(KIT_DIR, 'START-HERE.md');
 export const GUIDE = path.join(KIT_DIR, 'GUIA-FRONTEND.md');
 export const CATALOG = path.join(KIT_DIR, 'catalog.json');
 export const VERSION = path.join(KIT_DIR, 'VERSION');
+export const MIGRATIONS = path.join(KIT_DIR, 'docs', 'migracoes.md');
+export const MIGRATIONS_SOURCE = path.join(ROOT, 'docs', 'migracoes.md');
 export const SKILL_DIR = path.join(KIT_DIR, 'skill');
 export const SKILL_SOURCE = path.join(ROOT, '.agents', 'skills', 'ui-integra-consumidor');
 
@@ -74,7 +76,7 @@ export const renderStamp = ({ catalog, kitHash }) =>
         `- **Versão da lib:** \`${catalog.lib.version}\``,
         `- **Carimbo do kit (\`kitHash\`):** \`${kitHash}\` — igual ao do arquivo \`VERSION\`.`,
         `- **Superfície desta versão:** ${Object.keys(catalog.components).length} componentes públicos · ` +
-            `${catalog.designTokens.count} tokens de tema · ${catalog.tokens.cssVars.length} CSS Variables · ` +
+            `${catalog.designTokens.count} tokens de tema · ${catalog.tokens.cssVars.length} nomes de CSS Variables emitíveis · ` +
             `${catalog.tokens.iconNames.length} ícones · ${catalog.themes.presetIds.length} temas embutidos.`,
         `- **Guias completos que viajam no pacote:** ${catalog.shippedDocs.map((doc) => `\`${doc.file}\``).join(' · ')}.`,
     ].join('\n');

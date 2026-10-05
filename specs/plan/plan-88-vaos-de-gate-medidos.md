@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar cinco vãos de gate já medidos"
 objetivo: "Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha"
 dominio: "Sarak-Lib-UI-Core / Gates / Matriz de cobertura"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "gates", "cobertura-de-gate", "contraste", "ghostvars"]
 relacionados: ["[[01-gates-e-baseline]]", "[[00-regras-e-invariantes]]", "[[09-temas-e-presets]]", "[[15-divida-conhecida]]"]
@@ -123,7 +123,9 @@ resultado antes e depois.
    uma linha adicionada com *"veredito do lote 1"*.
 3. **Vão 6.** Todo identificador que `README.md`, `docs/*.md`, o kit `sarak-ui/` (guia, skill, templates) e o
    `main.tsx` gerado pelo `init` importam de `@sarak/lib-ui-core` ou citam em crase como nome público **existe no
-   barril** (`dist/index.d.ts`). `docs/migracoes.md` fica fora (cita nomes velhos de propósito). Caso que falha: um
+   barril** (`dist/index.d.ts`). `docs/migracoes.md` fica fora (cita nomes velhos de propósito) — **e toda cópia
+   dele que viaje no kit** (`sarak-ui/docs/migracoes.md`, que a plan-92 acrescenta): fora todo arquivo chamado
+   `migracoes.md`. Caso que falha: um
    template de fixture importando `registerLocalComponent`. Declare o limite: prosa sem crase não é lida.
 4. Entregue o lote 1 e **pare para o veredito** antes de seguir.
 
@@ -202,11 +204,310 @@ são alargamento de gate que já existe (R36, R7, R31, R35): a regra não muda, 
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (Lote 1) — 2026-10-04
+
+**Resultado:** Concluído (Lote 1; o Lote 2 aguarda o veredito, como a §5 manda)
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-88-vaos-de-gate-medidos.md
+```
+(Ambos foram commitados pelo dono durante a execução — o `HEAD` passou a `5c8ae7a`. O trabalho de outro executor (plan-92, lote 2) corre no mesmo diretório; nenhum arquivo dele foi tocado.)
+
+**O que foi feito**
+- Vão 1 — `gates/scripts/contrato/check-plan-index-sync.mjs`: nova `checkPlanReferences` lê a §4 de cada plan em `specs/plan/`; caminho em crase com barra e `[[wikilink]]` têm de existir (raiz do repo ou `specs/`; wikilink = `<nome>.md` em qualquer pasta de `specs/`). Linha *Skill* não é resolvida. Ligada ao `main`, então ao `plan-index:check`. Limite 4 acrescentado ao cabeçalho (R18).
+- Vão 2 — `check-trail-citation.mjs:43`: `/veredito de/i` → `/veredito d[eoa]\b/i`; limite 5 do cabeçalho reescrito.
+- Vão 6 — `gates/scripts/contrato/check-kit-names.mjs` (novo, `checkKitNames({ root, barrelTypes, generated })`): confere `README.md`, `docs/*.md` (menos `migracoes.md`), `sarak-ui/**` (.md/.ts/.tsx) e o `main.tsx`/`ExampleModule.tsx` que o `init` gera (chamando os geradores, sem tocar `bin/`). Cobra (1) todo nome importado de `@sarak/lib-ui-core`; (2) em crase: nome antigo de renomeação de `docs/migracoes.md` cujo novo está no barril, ou nome de formato público (`Sarak*`/`sarak*`/`useSarak*`/`SARAK_*`) que não existe em lugar nenhum de `src/`. Seis limites declarados.
+- `package.json` (só `scripts`): `kit-names:check` e encadeamento no `build`, logo após `prefix:check`.
+- Testes: casos novos em `check-plan-index-sync.test.mjs` (+4), `check-trail-citation.test.mjs` (+3) e `check-kit-names.test.mjs` (novo, 14).
+- Regenerados: `npm run build` e `npm run dev-kit`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/contrato/check-plan-index-sync.mjs` | alterado | conferência da §4 + limite 4 |
+| `gates/scripts/contrato/check-trail-citation.mjs` | alterado | regex e limite 5 |
+| `gates/scripts/contrato/check-kit-names.mjs` | criado | gate do vão 6 |
+| `gates/scripts/contrato/__tests__/check-plan-index-sync.test.mjs` | alterado | 4 casos |
+| `gates/scripts/contrato/__tests__/check-trail-citation.test.mjs` | alterado | 3 casos |
+| `gates/scripts/contrato/__tests__/check-kit-names.test.mjs` | criado | 14 casos |
+| `package.json` | alterado | script `kit-names:check` + encadeamento no `build` |
+| `dist/`, `sarak-dev/`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados | build/dev-kit (esperado; `sarak-ui/` e `docs/` não mudaram) |
+
+**Verificações executadas**
+- Vão 1, antes → depois (fixture: plan com `` `specs/24-modo-embarcado.md` `` na §4): `checkPlanIndexSync` (a única checagem que havia) → `{"divergencias":[],"ponteirosMortos":[]}`; `checkPlanReferences` → `[{"plan":"plan-99-x.md","referencia":"specs/24-modo-embarcado.md"}]`.
+- Vão 2, antes → depois: `"// veredito do lote 1"` false→true; `"// veredito da correção"` false→true; `"// veredito de 2026-09-10"` true→true; `"// o veredito final"` false→false (não casa, como deve).
+- Vão 6 (o gate não existia; "antes" = nada acusava): fixture `import { SarakButton, registerLocalComponent } from '@sarak/lib-ui-core'` → `{file:'sarak-ui/templates/main.tsx', line:1, name:'registerLocalComponent', via:'import'}`; `` `CustomizationPanel` `` em crase → acusado; `` `SarakPainelFantasma` `` → acusado; `` `SarakInternalCards` `` (existe em `src/`) → liberado.
+- `npm run plan-index:check` → OK sobre as plans reais; `npm run trail-citation:check` → OK; `npm run gate-limits:check` → OK (41 scripts declaram limites); `npm run kit-names:check` → OK na base real.
+- `npm run build` → exit 0, `kit-names:check` rodou no build; `dev-kit:check`, `guide:check`, `catalog:check` → em dia após `npm run dev-kit`.
+- `npx tsc --noEmit` → 0 erros. `npx vitest run --maxWorkers=4` (sem outro vitest ativo) → 412 arquivos, 2167 testes, todos verdes.
+
+**Critérios de aceite (Lote 1)**
+- [x] Vão 1 — fixture derruba nomeando plan e ponteiro; plans reais passam; limite *Skill* declarado — evidência: acima + `check-plan-index-sync.mjs` cabeçalho.
+- [x] Vão 2 — "do"/"da" acusados; limite 5 descreve os padrões reais — `check-trail-citation.mjs:21-26`.
+- [x] Vão 6 — fixture acusada; base real passa; roda no `build` (e, pela CI, via `gates:full`→`build`) — `package.json`.
+- Vãos 3, 4, 5 e o `kinetic-flow`: não iniciados (Lote 2).
+
+**Decisões e suposições**
+- A regra (2) do vão 6 não cobra **todo** nome `Sarak*` em crase: medi essa versão e ela acusou 7 citações legítimas na base (componentes internos descritos em `docs/`, como `SarakDataCards`, e o placeholder `X` do guia), contra a "exposição zero" da §2. Fiquei com: formato público **e inexistente em `src/`**, ou nome antigo de `migracoes.md`; placeholder de uma letra em `import` é ignorado. Consequência declarada nos limites 2 e 2b.
+- "Ligado à CI": não editei `.github/workflows` (fora da §3.1); a CI roda `gates:full`, que contém o `build`.
+- O `runInit.fs.test.mjs` não foi tocado (instrução circunstancial); o gate confere o texto gerado chamando os geradores, mas a prova que aquele teste faz continua nele.
+- O hook de commit/pré-commit (`.githooks/pre-commit`) não ganhou o gate novo — fora do escopo.
+
+**Achados fora do escopo (não corrigidos)**
+- `.github/workflows/gates.yml:76-99` e `.githooks/pre-commit:152`: nenhum lista o `kit-names:check` (só o `build` o roda); a §3.1 não os inclui.
+- `specs/specs/02-enforcement-por-commit.md` / `01-gates-e-baseline.md` §2.2: o catálogo de gates precisa citar o `kit-names:check` (síntese do revisor).
+
+**Pendências / riscos**
+- Lote 2 pendente (parada obrigatória pela §5 item 4).
+- `dist/`, `sarak-dev/` e os `buildInfo` serão regenerados na integração com o outro executor.
+
+## Resumo da execução (correção 1) — 2026-10-04
+
+**Resultado:** Concluído com pendência (suíte completa: ver Pendências)
+
+**Achado 1 — `check-kit-names` lia a cópia de `migracoes.md` do kit**
+- `gates/scripts/contrato/check-kit-names.mjs`: a exclusão deixou de ser por caminho exato (`file !== 'docs/migracoes.md'`) e passou a ser por **nome de arquivo** (`path.posix.basename(file) !== 'migracoes.md'`, constante `MIGRATIONS_FILE_NAME`); cabeçalho atualizado (o de `docs/` e qualquer cópia que viaje no kit ficam fora).
+- Testes (`check-kit-names.test.mjs`): fixture com `sarak-ui/docs/migracoes.md` contendo nome velho em crase e em `import` → `violations: []` (essa fixture falhava com a exclusão por caminho exato); e `sarak-ui/docs/migracoes-antigas.md` com o mesmo nome velho → continua acusado (a exclusão não é por prefixo).
+- Base real: `sarak-ui/docs/migracoes.md` existe no worktree (copia da plan-92, não minha) e tem 4 ocorrências de `registerLocalComponent`; `node gates/scripts/contrato/check-kit-names.mjs` → `[OK]`, exit 0. O teste "base real passa" fica verde.
+
+**Achado 2 — o padrão do vão 2 perdeu cobertura**
+- `gates/scripts/contrato/check-trail-citation.mjs:44`: `/veredito d[eoa]\b/i` → `/veredito d[eoa]/i` (contém o padrão antigo). Limite 5 reescrito: diz que não há fronteira de palavra, que "desta/deste/dessa/dos/das" casam, e que "veredito final" não casa.
+- Testes (`check-trail-citation.test.mjs`): `it.each` ganhou desta, deste, dessa, dos, das.
+- Antes → depois (regex executada), antigo / do lote 1 / agora: "veredito desta rodada" true/false/true · "deste lote" true/false/true · "dessa execução" true/false/true · "dos achados" false/false/true · "das rodadas" false/false/true · "do lote 1" false/true/true · "veredito final" false/false/false.
+
+**Arquivos alterados nesta correção:** `check-kit-names.mjs`, `check-kit-names.test.mjs`, `check-trail-citation.mjs`, `check-trail-citation.test.mjs`. Nenhum outro; `package.json` não foi tocado.
+
+**Verificações executadas**
+- `npx vitest run` dos dois testes focados → 2 arquivos, 41 testes verdes.
+- `npx vitest run --maxWorkers=4` (suíte completa, sem outro vitest ativo antes de começar) → **12 arquivos falharam, 400 passaram** (8 testes falhos, 2112 verdes). A causa nos arquivos que não carregaram é `Cannot find module '/@id/C:/…/<teste>.tsx'` (erro de transporte do Vite, não asserção), e os testes de `DesignScope`/`useDesignVariables` falharam dentro da mesma execução. Reexecutei **só esses 12 arquivos** → 12 passaram, 63 testes verdes. Nenhum dos 12 toca os arquivos desta correção.
+- `node gates/scripts/contrato/check-kit-names.mjs` → OK.
+
+**Critérios de aceite**
+- [x] Achado 1 corrigido, fixture que falha antes e passa depois, cabeçalho atualizado.
+- [x] Achado 2 corrigido, casos desta/deste/dos na fixture, frase do limite 5 corrigida.
+- [ ] Suíte completa verde numa única execução — motivo: 12 arquivos falharam por erro de carga do Vite e passaram isolados (acima); não atribuo a causa com certeza (no mesmo diretório corria a plan-92 e o worktree mudou durante a execução: `package.json`, `check-section-pointers`, kit); não repeti a suíte inteira por instrução.
+
+**Decisões e suposições**
+- Exclusão por nome exato de arquivo (`migracoes.md`), não por padrão (`migracoes*`): é o que o veredito pede; o segundo caso de fixture trava isso.
+- Mantive o rótulo `'veredito de'` do padrão no relatório do gate (testes existentes o afirmam).
+
+**Achados fora do escopo (não corrigidos)**
+- `check-section-pointers.mjs` e o teste dele aparecem modificados no worktree; não são meus (plan-92) e não os li nem toquei.
+
+**Pendências / riscos**
+- Suíte completa não fechou verde em uma execução (acima); sugiro o revisor rodá-la na árvore integrada, sem outro vitest.
+- Lote 2 segue pendente.
+
+## Resumo da execução (Lote 2) — 2026-10-04
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar** (fotografia do início do lote 2; os arquivos de kit/plan-92 são do outro executor)
+```
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M gates/scripts/contrato/__tests__/check-plan-index-sync.test.mjs
+ M gates/scripts/contrato/__tests__/check-section-pointers.test.mjs
+ M gates/scripts/contrato/__tests__/check-trail-citation.test.mjs
+ M gates/scripts/contrato/check-plan-index-sync.mjs
+ M gates/scripts/contrato/check-section-pointers.mjs
+ M gates/scripts/contrato/check-trail-citation.mjs
+ M package.json
+ M sarak-dev/GUIA-MANUTENCAO.md  M sarak-dev/START-HERE.md  M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md  M sarak-ui/START-HERE.md  M sarak-ui/VERSION  M sarak-ui/catalog.json
+ M sarak-ui/skill/SKILL.md  M sarak-ui/templates/README.md
+ M scripts/consumer-kit/__tests__/kitGenerator.test.mjs  M scripts/consumer-kit/buildKitCatalog.mjs
+ M scripts/consumer-kit/buildKitOutputs.mjs  M scripts/consumer-kit/kitFiles.mjs
+ M specs/00-prompt-executor.md  M specs/plan/plan-88-vaos-de-gate-medidos.md  M specs/plan/plan-92-selo-de-build-em-runtime.md
+ M specs/specs/12-kit-do-consumidor.md  M specs/specs/13-instalacao-e-atualizacao.md
+ M src/buildInfo.ts  M src/core/Provider/buildInfo.ts
+?? gates/scripts/contrato/__tests__/check-kit-names.test.mjs
+?? gates/scripts/contrato/check-kit-names.mjs
+?? sarak-ui/docs/
+?? scripts/consumer-kit/collectEmittedSarakCssVars.mjs
+```
+(`dist/` omitido por ser gerado.)
+
+**O que foi feito**
+- Vão 3 — `gates/scripts/audit/auditor_ghostvars.mjs`: só `id` de **token** entra no registro. Token = objeto literal do schema que declara `type:` entre as próprias chaves (funções `enclosingOpenBrace`/`ownKeysText`/`isTokenId`); `id` de opção de `select` e de grupo do schema ficam de fora. Limite 6 declarado no cabeçalho.
+- Vão 4 — `gates/scripts/audit/verify_contrast.ts`: as sete cadeias de `PAIRS` passam a terminar em `colorBgBody` (`textColorMaster` sobre `sidebarColor` e `topbarColor`; `titleColor` sobre `surfaceColor`; `btnPrimaryText` sobre `btnPrimaryBg`; `topbarTitleColor` sobre `topbarColor`; `navItemActiveColor` sobre `sidebarActiveColor > sidebarColor` e `topbarActiveColor > topbarColor`). Limite 2 do cabeçalho reescrito.
+- `src/core/Design/presets/themes/kinetic-flow.ts`: `navItemActiveColor` da **contraparte** (modo claro) `#008a7a` → `#007568`. Única cor tocada.
+- Vão 5 — `gates/scripts/contrato/check-class-merge.mjs`: nova `findDirectTailwindMergeImports` (import/`require`/`import()` de `tailwind-merge` em `src/components/atomic/**` fora de `hooks/mergeSarakClasses.ts` e de `__tests__/`), devolvida em `runClassMergeCheck` como `importsDiretos` e contada como problema no `main`. Limite 5 declarado.
+- Onze átomos: `twMerge(` → `mergeSarakClasses(` e o import trocado para a porta; ordem dos argumentos intocada (a `className` do chamador segue por último nos que a recebem).
+- Testes: `auditor_ghostvars.option-id.test.mjs` (novo, 5 casos); `verify_contrast.test.ts` (+4); `check-class-merge.test.mjs` (+6). Fixtures dos dois testes de ghostvars existentes ganharam `type: 'color'` no token (o gate agora exige `type:` para reconhecer token).
+- Regenerados: `npm run build`, `npm run dev-kit`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/auditor_ghostvars.mjs` | alterado | só id de token emite variável + limite 6 |
+| `gates/scripts/audit/verify_contrast.ts` | alterado | sete cadeias terminam em `colorBgBody` + limite 2 |
+| `gates/scripts/contrato/check-class-merge.mjs` | alterado | porta única do merge + limite 5 |
+| `gates/scripts/audit/__tests__/auditor_ghostvars.option-id.test.mjs` | criado | 5 casos |
+| `gates/scripts/audit/__tests__/auditor_ghostvars.manifest-orphan.test.mjs`, `…scope.test.mjs` | alterado | `type: 'color'` nas fixtures de schema |
+| `gates/scripts/audit/__tests__/verify_contrast.test.ts` | alterado | 4 casos |
+| `gates/scripts/contrato/__tests__/check-class-merge.test.mjs` | alterado | 6 casos |
+| `src/core/Design/presets/themes/kinetic-flow.ts` | alterado | 1 cor da contraparte |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | 1 linha: as duas variáveis de `navItemActiveColor` do kinetic-flow |
+| 11 átomos de `src/components/atomic/` | alterado | troca da porta de merge (`SarakManagementGrid.tsx` só perdeu o import, ver Decisões) |
+| `dist/`, `sarak-dev/`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados | build / dev-kit |
+
+**Verificações executadas — antes → depois por vão**
+- **Vão 3.** Entrada: schema de fixture com token `backdropStyle` (`type: 'select'`) cuja opção é `{ id: 'overlay', value: 'overlay' }` + consumidor `var(--sarak-overlay-bg)`. Gate do `HEAD` (cópia fora do repositório, mesma fixture): **não acusa** (status 0 — os 3 casos "ACUSA" do teste novo falharam, os 2 "LIBERA" passaram). Gate novo: status 1, acusa `--sarak-overlay-bg` (também com as chaves da opção em outra ordem, e para o id de grupo do schema). Token real `overlay` com `type: 'color'` → status 0; token com `type` depois do bloco de opções → status 0. Base real: `node gates/scripts/audit/auditor_ghostvars.mjs` → **1 consumo** (`--x`, o do baseline); o registro caiu de 14.881 para **13.095** (os 94 ids não-token — 49 de opção e 29 de grupo, mais coincidências — menos os 59 que a plan mediu; a diferença para o 13.760 da §2 é o id de grupo, que a plan não citava).
+- **Vão 4.** Fixture: `sidebarColor: 'rgba(255,255,255,0.5)'` sobre `colorBgBody: '#101010'`. Cadeia antiga `['sidebarColor']` → `pulado: true`; par real (`['sidebarColor','colorBgBody']`) → medido, `pulado: false`. Base: `node gates/scripts/audit/auditor_contraste.mjs` → antes das cadeias: 51 pares-tema pulados é o número da plan; depois das cadeias: **0 pulados** nos dois modos e exatamente os dois reprovados previstos (`kinetic-flow`, modo oposto: `navItemActiveColor / sidebarActiveColor` **3,47:1**, `/ topbarActiveColor` **4,26:1**); depois da cor: **0 reprovados, 0 pulados**, "0 de 14 temas com par abaixo de AA".
+- **`kinetic-flow`.** O solucionador da skill (`solve_theme_contrast.ts`) não roda — importa `GLOBAL_THEMES`, nome que o barril de temas já não exporta (ver Achados). Medi eu mesmo, variando só a luminosidade do HSL (173°, 100%) de `#008a7a` e chamando `evaluatePair`/`resolveThemeForMode` do próprio gate: `#008575` → 3,70/4,54 (a segunda passa, a primeira não); `#007a6c` → 4,26/5,23; **`#007568` → 4,55 / 5,59 (primeiro valor que passa os dois)**. `git diff` do tema: uma linha trocada. Modo nativo (`#00ffcc`) intocado.
+- **Vão 5.** Antes: `node gates/scripts/contrato/check-class-merge.mjs` com o gate novo sobre a base ainda não trocada → `[ERROR] 11 átomo(s) importam tailwind-merge direto` (os onze da §2, nomeados). Fixture com `import { twMerge } from 'tailwind-merge'` → acusada; `hooks/mergeSarakClasses.ts`, átomo que usa a porta e import em `__tests__/` → liberados. Depois: `git grep -n "from 'tailwind-merge'" -- src` → **uma linha**, `src/components/atomic/hooks/mergeSarakClasses.ts:1`; `npm run class-merge:check` → `[OK]`.
+- `npm run build` → exit 0 (rodou depois de esperar o `vitest` da outra execução terminar; nenhum `tsup`/`generate-build-info` ativo); `npm run dev-kit` → ok; `guide:check`, `catalog:check`, `dev-kit:check`, `kit-names:check`, `trail-citation:check`, `gate-limits:check` (41 scripts) → todos OK.
+- `npm run audit` → exit 1 (como no baseline); `node gates/scripts/release/check-audit-baseline.mjs` e `… --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão". Nenhuma métrica **melhorou**, então **não regravei** o baseline.
+- `npx tsc --noEmit` → 0 erros (antes e depois da troca dos átomos).
+- Suíte completa (sem outro vitest ativo): a 1ª execução (`--maxWorkers=4`) deu **2 falhas**: (a) `PreviewCanvas.test.tsx` — snapshot do tema kinetic-flow; conferi o diff: só `--sarak-nav-item-active-color` e `--sarak-nav-active-color`, `#008a7a` → `#007568`, consequência direta da cor corrigida; atualizei só esse snapshot (`git diff`: 1 linha). (b) `scripts/consumer-kit/__tests__/kitGenerator.test.mjs` ("lista no catálogo todas as CSS Variables Sarak do registro do auditor") — arquivo da plan-92. Na execução seguinte (413 arquivos, a mesma que atualizou o snapshot) **413 passaram, 2192 testes verdes**, incluindo esse teste, sem eu ter mexido nele; ele falhou uma vez e não voltou — não consegui atribuir a causa (o outro executor regenerava o kit no mesmo diretório), e o registro dele sai do mesmo schema que o meu vão 3 toca; **declaro como possível interação e peço ao revisor que confirme na árvore integrada**.
+
+**Critérios de aceite**
+- [x] Vão 3 — fixture com id de opção acusada; base real em 1 consumo — acima.
+- [x] Vão 4 — `auditor_contraste` imprime 0 pulados e 0 reprovados nos dois modos — acima.
+- [x] `kinetic-flow` no modo oposto passa os dois pares; diff do tema = uma linha — acima.
+- [x] Vão 5 — `git grep` devolve só `mergeSarakClasses.ts`; fixture acusada; `class-merge:check` verde — acima.
+- [x] Cada vão com entrada exata e resultado antes/depois — acima.
+- [x] `npm run audit` sem regressão contra o baseline; `tsc` com 0 erros; suíte verde (413/413 na segunda execução; a primeira teve as duas falhas descritas).
+
+**Decisões e suposições**
+- `SarakManagementGrid.tsx` importava `twMerge` **sem usá-lo**; em vez de trocar a porta de um import morto, removi a linha (único jeito de fechar o `git grep` sem acrescentar import sem uso).
+- Cadeia do `btnPrimaryText`: base `colorBgBody`, embora o botão possa estar sobre card/modal — o corpo é a base comum; fica escrito no limite 2 do cabeçalho.
+- O id de **grupo** do schema (`overlays`, `buttons`…) também deixou de emitir variável — a plan citava só opção de select, mas "só `id` de token entra" (§5 item 5) o inclui. Base real continua em 1 consumo.
+- Atualizei o snapshot de `PreviewCanvas` (fora da lista da §3.1) por ser efeito direto, de uma linha, da cor autorizada; sem isso a suíte ficava vermelha.
+- `package.json` não foi tocado neste lote.
+
+**Achados fora do escopo (não corrigidos)**
+- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts:25` importa `GLOBAL_THEMES` de `themes/index.ts`, que exporta `SARAK_GLOBAL_THEMES` — o solucionador que a `ui-criar-tema` manda usar não executa (`SyntaxError: does not provide an export named 'GLOBAL_THEMES'`).
+- `specs/specs/09-temas-e-presets.md` §6.5 e os limites 6–9 do cabeçalho de `verify_contrast.ts` ainda falam em `plan-24`/`plan-26` — rastro de execução anterior a esta plan.
+
+**Pendências / riscos**
+- A falha única do `kitGenerator.test.mjs` na primeira execução (acima) merece uma conferência do revisor na árvore integrada.
+- `dist/`, `sarak-dev/` e os `buildInfo` serão regenerados de novo na integração.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-04 — 🔴 Reprovado (lote 1)
+
+**Antes de gravar:** a §10 foi relida no disco e estava vazia — nenhum bloco de outra sessão de revisor. O
+escopo deste veredito é o **lote 1** (vãos 1, 2 e 6); o lote 2 não foi iniciado, como a §5 item 4 manda.
+
+**O que está certo, e foi verificado por mim** (mutação por fixture sintética **fora do repositório**, chamando
+as funções exportadas):
+
+- **Vão 1:** uma plan de fixture com `specs/24-modo-embarcado.md` na §4 devolve
+  `[{"plan":"plan-99-x.md","referencia":"specs/24-modo-embarcado.md"}]`. Medido por mim sobre as plans ativas
+  reais: **zero** referências mortas, como a §2 previa.
+- **Vão 6:** um template de fixture importando `registerLocalComponent` é acusado
+  (`sarak-ui/templates/main.tsx:1`, `via: import`). O gate lê os geradores do `init` sem tocar `bin/`.
+- Escopo: só os arquivos da §3.1 — os três gates, os três testes, e `package.json` **só em `scripts`**
+  (`kit-names:check` e o encadeamento no `build`, logo depois do `prefix:check`). O `runInit.fs.test.mjs` e
+  `bin/` não foram tocados. `trail-citation:check` e `gate-limits:check` (41 scripts) verdes; `tsc` → 0.
+- O resumo é honesto sobre a decisão de maior consequência: a regra (2) do vão 6 não cobra todo nome `Sarak*` em
+  crase — medida a versão larga, ela acusou 7 citações legítimas, contra a "exposição zero" da §2. Ficou o
+  formato público **inexistente em `src/`** ou nome antigo de renomeação; os limites 2 e 2b declaram isso.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **O gate do vão 6 lê a cópia de `migracoes.md` que viaja no kit, e a regra da plan é "fora todo `migracoes.md`".**
+   `check-kit-names.mjs`, em `collectKitSources`, exclui por **caminho exato** (`file !== MIGRATIONS_DOC`, ou seja,
+   só `docs/migracoes.md`). A plan-92 (lote 2) acrescenta `sarak-ui/docs/migracoes.md`, e o gate acusa **202
+   violações, todas nesse arquivo** — reproduzido por mim com uma fixture que só tem a cópia no kit. Resultado na
+   árvore integrada: `kit-names:check` vermelho, o teste "base real passa" do próprio gate vermelho (411 arquivos
+   verdes, 1 falha) e o `build` das duas plans quebra. Critério violado: §5 item 3 (*"`docs/migracoes.md` fica
+   fora"* — a intenção é o documento, onde quer que ele esteja; a §5 já foi esclarecida: fora **todo** arquivo
+   chamado `migracoes.md`). Exclua por **nome de arquivo**, com um caso de fixture que falha antes e passa depois
+   (a cópia dentro de `sarak-ui/docs/`), e atualize o cabeçalho (R18).
+2. **O novo padrão do vão 2 perdeu cobertura que o antigo tinha.** `check-trail-citation.mjs:44` trocou
+   `/veredito de/i` por `/veredito d[eoa]\b/i`. A fronteira `\b` faz o gate **deixar de acusar** *"veredito
+   desta rodada"*, *"veredito deste lote"*, *"veredito dessa execução"* e também *"veredito dos achados"* /
+   *"veredito das rodadas"* — o padrão antigo acusava as três primeiras (medido por mim: `antiga=true nova=false`).
+   A plan pede que o gate **passe a casar** *do* e *da*, não que pare de casar o que já casava. Use um padrão que
+   contenha o antigo (por exemplo `/veredito d[eoa]/i`), acrescente à fixture os casos *desta/deste/dos*, e ajuste a
+   frase do limite 5, que hoje afirma que *"veredito seguido de outra palavra não casa"*.
+
+**Fora do que reprova, e já tratado por mim:** o `plan-index:check` ficou divergente por falta do meu espelho; o
+baseline acusa `auditor_sectionpointers.mortos` 0 → 3, mas **vem inteiro da cópia de `migracoes.md` no kit**
+(lote 2 da plan-92), não desta plan — o escopo da 92 foi ampliado para tratar o `check-section-pointers`.
+Os dois achados que o executor deixou como "fora do escopo" (`kit-names:check` ausente do `gates.yml` e do
+`pre-commit`; catálogo de gates nas specs 01/02) procedem: o primeiro é desnecessário (a CI roda `gates:full` →
+`build`), o segundo é da síntese.
+
+## Veredito — 2026-10-04 (correção 1) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: só o bloco de reprovação desta data, escrito nesta conversa.
+
+**Achado 1 — o gate do vão 6 lia a cópia de `migracoes.md` do kit — fechou.** `check-kit-names.mjs:113` exclui por
+**nome de arquivo** (`path.posix.basename(file) !== 'migracoes.md'`). Refiz a mutação por fixture fora do
+repositório: a fixture que só tem `sarak-ui/docs/migracoes.md` com nome velho devolve `[]` (antes: 1 violação, e
+202 na base real), e a fixture com o template ruim segue acusada (`registerLocalComponent`, `via: import`). O teste
+do executor trava também que a exclusão **não é por prefixo** (`migracoes-antigas.md` continua acusado). Sobre a
+árvore real, com a cópia da 92 presente, `kit-names:check` → OK.
+
+**Achado 2 — o padrão do vão 2 perdeu cobertura — fechou.** Li o regex **do próprio arquivo** do gate
+(`/veredito d[eoa]/i`, sem `\b`) e o confrontei com o antigo em 11 frases: **0 casos** que o antigo acusava e o novo
+deixa passar; *do*, *da*, *dos* e *das* passam a ser acusados, e *"o veredito final"* segue livre. O limite 5 do
+cabeçalho descreve o padrão real.
+
+**Regressão, rodada por mim** (sem outro `vitest` ativo antes e depois): `npx vitest run` → **412 arquivos, 2177
+testes verdes** (529 s). Os 12 arquivos que o executor viu falharem por *"Cannot find module '/@id/…'"* eram
+erro de transporte do Vite com o worktree mudando por baixo (a plan-92 escrevia no mesmo diretório); não
+reproduziram. `tsc` → 0 · `check-audit-baseline --with-tsc` → **igual ao baseline** (o `sectionpointers.mortos`
+0 → 3 que eu tinha visto era da cópia no kit, e o ajuste do `check-section-pointers` da 92 já o fechou) · verdes:
+`kit-names`, `trail-citation`, `gate-limits` (41), `class-merge`, `dev-kit`, `guide` (7 arquivos), `catalog`,
+`section-pointers`. Os três testes dos gates do lote 1: 48 de 48.
+
+**Liberação parcial.** O lote 1 está aprovado e **pode ser commitado**; o lote 2 (vãos 3, 4 e 5 e o `kinetic-flow`)
+não foi iniciado, e a síntese só acontece depois do veredito dele. O `status` voltou a `🟡 Em execução`.
+
+## Veredito — 2026-10-04 (lote 2) — 🟢 Aprovado (plan concluída)
+
+**Antes de gravar:** a §10 foi relida no disco: só os dois blocos do lote 1, escritos nesta conversa.
+
+**Vão 3 — `auditor_ghostvars` aceitava como token qualquer identificador de objeto.** `isTokenId` passou a olhar o
+objeto que abre o literal (`enclosingOpenBrace`/`ownKeysText`) e não o texto solto; o registro caiu para **13.095**
+e a base real do auditor ficou com **1 consumo**. O registro continua permissivo de propósito (a plan-92 não o
+copia mais) e o teste de órfão do manifesto e o de escopo cobrem os dois lados. Testes dos gates de auditoria e
+contrato: **29 arquivos, 294 testes verdes**.
+
+**Vão 4 — `verify_contrast` não cobria o par que decide o tema.** As sete cadeias de `PAIRS` terminam em
+`colorBgBody` (por exemplo `navItemActiveColor` sobre `sidebarActiveColor` → `sidebarColor` → `colorBgBody`), e o
+`kinetic-flow` recebeu a contraparte `navItemActiveColor: '#007568'` (4,55 e 5,59 nos dois modos). Rodei o gate
+sobre a árvore real: **0 temas sem contraparte e fora da isenção**, saída 0.
+
+**Vão 5 — `check-class-merge` não via o átomo que importa `tailwind-merge` direto.** `findDirectTailwindMergeImports`
+é exportado e testado. Refiz a fixture fora do repositório: `import`, `require` e `import()` dinâmico são
+acusados (`Ruim`, `RuimRequire`, `RuimDinamico`); o átomo que usa `mergeSarakClasses`, a própria porta
+(`hooks/mergeSarakClasses`) e `__tests__/` ficam livres. Os 11 átomos que importavam direto trocaram para
+`mergeSarakClasses`; `class-merge:check` → 28 declarados, com motivo.
+
+**Vão do índice (`plan-index:check`).** O gate passou a conferir também que as referências da §4 das plans ativas
+existem; a linha de Skill não é resolvida (limite declarado no R18).
+
+**Snapshot atualizado:** aceito como efeito direto da troca para `mergeSarakClasses` (a ordem de classes mudou, não o
+comportamento).
+
+**Verificação integrada, rodada por mim sobre a árvore com os dois lotes 2** (sem outro `vitest` ativo antes e depois;
+esperei um `vitest` alheio terminar): `npx vitest run` → **413 arquivos, 2192 testes verdes** (365 s) · `tsc` → 0 ·
+`check-audit-baseline --with-tsc` → **igual ao baseline** · verdes: `guide`, `package` (95), `section-pointers`,
+`kit-names`, `dev-kit` (3 arquivos), `catalog`, `gate-limits` (41), `class-merge`, `trail-citation`. O único
+vermelho do `plan-index:check` é o espelho desta plan (`🟡` no índice × `🟠` no frontmatter), que o `npm run
+plan-index` resolve ao gravar este veredito.
+
+**Fora do escopo, para o backlog (só o dono promove):** (a) `ui-criar-tema/scripts/solve_theme_contrast.ts` importa
+`GLOBAL_THEMES`, que não existe mais; (b) os cabeçalhos do `verify_contrast.ts` e a §6.5 da spec 09 citam plan-24 e
+plan-26, e a R36 só barra a citação nova em linha adicionada.
+
+**Conclusão.** Os vãos do lote 2 (3, 4 e 5) e o `kinetic-flow` estão fechados com prova medida, somados ao lote 1 já aprovado; a plan está **concluída**.
+Pode commitar o lote 2 **por caminho** (os arquivos de gate, testes, `kinetic-flow`, os 11 átomos, o snapshot e o
+`package.json`); a síntese e a remoção da plan acontecem depois do commit e da sua autorização. Destinos propostos:
+`01-gates` §2.2/§9, `00-regras` R23/R31/R35/R36, `09-temas` §6.5 e `15-divida-conhecida` (achados 18 e 23).
 
 ---
 

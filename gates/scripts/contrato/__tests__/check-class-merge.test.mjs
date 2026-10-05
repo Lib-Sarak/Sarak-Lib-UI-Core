@@ -10,6 +10,7 @@ import os from 'os';
 import path from 'path';
 import { describe, expect, it, afterEach } from 'vitest';
 import {
+    findDirectTailwindMergeImports,
     findRawClassNameConcatenation,
     runClassMergeCheck,
 } from '../check-class-merge.mjs';
@@ -121,5 +122,53 @@ describe('check-class-merge — repositório real', () => {
         const { naoDeclarados, obsoletas } = runClassMergeCheck();
         expect(naoDeclarados).toEqual([]);
         expect(obsoletas).toEqual([]);
+    });
+});
+
+describe('findDirectTailwindMergeImports — porta única do merge (R35)', () => {
+    it('PLANTADO: átomo que importa twMerge direto de tailwind-merge', () => {
+        const root = makeAtomicFixture({
+            'Feedback/DirectBadge.tsx': "import { twMerge } from 'tailwind-merge';\nexport const DirectBadge = () => null;",
+        });
+        expect(findDirectTailwindMergeImports({ root, relativeTo: root })).toEqual(['Feedback/DirectBadge.tsx']);
+    });
+
+    it('PLANTADO: runClassMergeCheck devolve o import direto e reprova mesmo sem concatenação', () => {
+        const root = makeAtomicFixture({
+            'Feedback/DirectBadge.tsx': "import { twMerge } from 'tailwind-merge';\nexport const DirectBadge = () => null;",
+        });
+        const { naoDeclarados, obsoletas, importsDiretos } = runClassMergeCheck({ root, relativeTo: root, exclusions: {} });
+        expect(naoDeclarados).toEqual([]);
+        expect(obsoletas).toEqual([]);
+        expect(importsDiretos).toEqual(['Feedback/DirectBadge.tsx']);
+    });
+
+    it('pega também require e import dinâmico, em .ts', () => {
+        const root = makeAtomicFixture({
+            'hooks/useX.ts': "const m = require('tailwind-merge');",
+            'hooks/useY.ts': "const m = await import('tailwind-merge');",
+        });
+        expect(findDirectTailwindMergeImports({ root, relativeTo: root })).toEqual(['hooks/useX.ts', 'hooks/useY.ts']);
+    });
+
+    it('DEIXA PASSAR: a própria porta única (hooks/mergeSarakClasses.ts)', () => {
+        const root = makeAtomicFixture({
+            'hooks/mergeSarakClasses.ts': "import { extendTailwindMerge } from 'tailwind-merge';",
+        });
+        expect(findDirectTailwindMergeImports({ root, relativeTo: root })).toEqual([]);
+    });
+
+    it('DEIXA PASSAR: átomo que usa a porta, e import em __tests__/', () => {
+        const root = makeAtomicFixture({
+            'Feedback/GoodBadge.tsx': "import { mergeSarakClasses } from '../hooks/mergeSarakClasses';",
+            'Feedback/__tests__/x.test.tsx': "import { twMerge } from 'tailwind-merge';",
+        });
+        expect(findDirectTailwindMergeImports({ root, relativeTo: root })).toEqual([]);
+    });
+});
+
+describe('check-class-merge — porta única na base real', () => {
+    it('nenhum átomo importa tailwind-merge direto', () => {
+        expect(findDirectTailwindMergeImports()).toEqual([]);
     });
 });

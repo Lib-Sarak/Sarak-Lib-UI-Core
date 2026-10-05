@@ -1,6 +1,6 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 export type SarakBadgeVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'muted';
 export type SarakBadgeSize = 'sm' | 'md' | 'lg';
@@ -74,7 +74,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
 
     return (
         <span
-            className={twMerge(
+            className={mergeSarakClasses(
                 baseClasses,
                 sizeClasses[size],
                 shapeClasses,

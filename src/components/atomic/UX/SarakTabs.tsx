@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { SarakButton } from '../Buttons/SarakButton';
 
 /** `border-radius` por variante (equivalente ao `rounded-*` que cada uma usava). Zero
@@ -62,9 +62,9 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     };
 
     return (
-        <div className={twMerge("w-full flex", className)} style={{ flexDirection: 'column' }}>
+        <div className={mergeSarakClasses("w-full flex", className)} style={{ flexDirection: 'column' }}>
             <div
-                className={twMerge(
+                className={mergeSarakClasses(
                     "flex items-center",
                     variant === 'underlined' && "border-b border-[var(--theme-border)]",
                     variant === 'pills' && "bg-black/10 rounded-xl",

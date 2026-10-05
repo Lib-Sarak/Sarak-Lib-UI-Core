@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../../hooks/mergeSarakClasses';
 import { Cloud, Plus, Settings2, ToggleRight, ToggleLeft, Trash2 } from 'lucide-react';
 import { SarakIconButton } from '../../Buttons';
 
@@ -40,7 +40,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={twMerge(`rounded-[var(--sarak-card-radius,12px)] border overflow-hidden transition-all h-full`, containerLayout.className, 
+            className={mergeSarakClasses(`rounded-[var(--sarak-card-radius,12px)] border overflow-hidden transition-all h-full`, containerLayout.className, 
                 isConfigured ? 'bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]' : 'bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] opacity-50 grayscale'
             )}
             style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
@@ -65,7 +65,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                 </div>
             </div>
 
-            <div className={twMerge("flex-1 max-h-[var(--sarak-management-group-list-max-height,340px)] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: containerLayout.style?.gap }}>
+            <div className={mergeSarakClasses("flex-1 max-h-[var(--sarak-management-group-list-max-height,340px)] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: containerLayout.style?.gap }}>
                 {isConfigured ? (
                     items.map((item: TItem) => {
                         const itemId = String(getVal(item, mapping.id) || '');
@@ -81,7 +81,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                                 style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
                             >
                                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
-                                    <div className={twMerge("truncate", containerLayout.className)} style={{ padding: 0, gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)' }}>
+                                    <div className={mergeSarakClasses("truncate", containerLayout.className)} style={{ padding: 0, gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)' }}>
                                         <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sarak-primary-color,#3b82f6)' }}>{String(getVal(item, mapping.title) || '')}</span>
                                         <span className="text-2xs font-mono text-white/30 truncate max-w-[var(--sarak-management-group-desc-max-width,140px)]">
                                             {String(getVal(item, mapping.description || '') || '') || '************'}
@@ -124,7 +124,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                         );
                     })
                 ) : (
-                    <div className={twMerge("items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, paddingTop: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)', paddingBottom: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)' }}>
+                    <div className={mergeSarakClasses("items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, paddingTop: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)', paddingBottom: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)' }}>
                         <Settings2 className="w-10 h-10" />
                         <p className="text-2xs font-black uppercase" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Offline</p>
                     </div>

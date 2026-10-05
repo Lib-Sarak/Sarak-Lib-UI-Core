@@ -7,10 +7,13 @@ import {
   contrastRatio,
   resolveChain,
   auditTheme,
+  evaluatePair,
+  type ContrastPair,
   auditThemeOppositeMode,
   auditContraparteRequired,
   CONTRAPARTE_EXEMPTION_LIST,
 } from '../verify_contrast.ts';
+import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
 import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 // Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
@@ -191,5 +194,43 @@ describe('auditContraparteRequired', () => {
     const semContraparte = { id: 'tema-novo-sem-contraparte', name: 'x', description: 'x', design: { mode: 'dark' } } as unknown as SarakThemePreset;
     const audit = auditContraparteRequired([...SARAK_GLOBAL_THEMES, semContraparte]);
     expect(audit.faltando).toEqual(['tema-novo-sem-contraparte']);
+  });
+});
+
+// Vão de cobertura (R31): sete pares tinham cadeia de fundo que não terminava numa base
+// opaca; com barra, botão ou superfície translúcidos o par era declarado pulado. Toda
+// cadeia agora termina em `colorBgBody`.
+describe('PAIRS — nenhuma cadeia termina em fundo que pode ser translúcido', () => {
+  const translucentSidebar = {
+    ...sarakGetDefaultDesignState(),
+    colorBgBody: '#101010',
+    sidebarColor: 'rgba(255, 255, 255, 0.5)',
+    textColorMaster: '#ffffff',
+  } as Record<string, unknown>;
+
+  it('PLANTADO: a cadeia antiga de um elo só ficava PULADA com sidebarColor translúcido', () => {
+    const cadeiaAntiga: ContrastPair = { fg: 'textColorMaster', bgChain: ['sidebarColor'], min: 4.5 };
+    expect(evaluatePair(cadeiaAntiga, translucentSidebar).pulado).toBe(true);
+  });
+
+  it('o par real textColorMaster / sidebarColor compõe sobre colorBgBody e é MEDIDO, não pulado', () => {
+    const par = PAIRS.find((p) => p.fg === 'textColorMaster' && p.bgChain[0] === 'sidebarColor') as ContrastPair;
+    expect(par.bgChain).toEqual(['sidebarColor', 'colorBgBody']);
+    const result = evaluatePair(par, translucentSidebar);
+    expect(result.pulado).toBe(false);
+  });
+
+  it('nenhum par é pulado em nenhum tema do catálogo, nos dois modos', () => {
+    const pulados = SARAK_GLOBAL_THEMES.flatMap((theme) =>
+      [auditTheme(theme), auditThemeOppositeMode(theme)].flatMap((r) => r.pulados.map((p) => `${r.id}: ${p.pair.fg} / ${p.pair.bgChain[0]}`)),
+    );
+    expect(pulados).toEqual([]);
+  });
+
+  it('kinetic-flow, no modo oposto, passa os dois pares do item de navegação ativo', () => {
+    const theme = SARAK_GLOBAL_THEMES.find((t) => t.id === 'kinetic-flow') as SarakThemePreset;
+    const nav = auditThemeOppositeMode(theme).resultados.filter((r) => r.pair.fg === 'navItemActiveColor');
+    expect(nav).toHaveLength(2);
+    nav.forEach((r) => expect(!r.pulado && r.pass).toBe(true));
   });
 });

@@ -38,7 +38,8 @@
 // -------------------------------------------------------------------------
 // 1. ESCOPO: `specs/**/*.md` (exceto `specs/plan/` — rastro append-only,
 //    cobrar ponteiro nele reprovaria o repositório para sempre),
-//    `.agents/skills/*/SKILL.md`, `sarak-dev/*.md`, `sarak-ui/*.md` e
+//    `.agents/skills/*/SKILL.md`, `sarak-dev/*.md`, `sarak-ui/**/*.md` (exceto
+//    arquivos chamados `migracoes.md`) e
 //    `README.md` da raiz. NÃO varre comentário de código-fonte (`.ts`/
 //    `.tsx`) — escopo deliberadamente menor, para não multiplicar o
 //    risco de falso-positivo numa primeira versão do detector (ele já
@@ -117,6 +118,9 @@
 //    verdade — o que não tem uso conhecido nesta base — escaparia do gate.
 //    Aceito pela mesma razão do item 4: o efeito só pode ser sub-cobertura.
 // -------------------------------------------------------------------------
+// R18 item 6: cópias chamadas migracoes.md no kit levam ponteiros para as
+// specs do repositório de origem; os demais documentos do consumidor seguem
+// no escopo do gate, inclusive quando estão em subpastas de sarak-ui.
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -127,28 +131,30 @@ const SCOPE_GLOBS = [
   { dir: 'specs', exclude: (p) => p.split(path.sep).includes('plan') },
   { dir: '.agents/skills', filter: (p) => p.endsWith('SKILL.md') },
   { dir: 'sarak-dev', filter: (p) => p.endsWith('.md') },
-  { dir: 'sarak-ui', filter: (p) => p.endsWith('.md') },
+  { dir: 'sarak-ui', filter: (file) => path.basename(file) !== 'migracoes.md' },
 ];
 
-function walkMd(dir, { exclude, filter } = {}, out = []) {
-  const abs = path.join(ROOT, dir);
+function walkMd(root, dir, { exclude, filter } = {}, out = []) {
+  const abs = path.join(root, dir);
   if (!fs.existsSync(abs)) return out;
   for (const entry of fs.readdirSync(abs)) {
     const full = path.join(abs, entry);
-    const rel = path.relative(ROOT, full);
+    const rel = path.relative(root, full);
     if (fs.statSync(full).isDirectory()) {
-      if (!exclude || !exclude(rel)) walkMd(rel, { exclude, filter }, out);
-    } else if (full.endsWith('.md') && (!filter || filter(full))) {
+      if (!exclude || !exclude(rel)) walkMd(root, rel, { exclude, filter }, out);
+    } else if (full.endsWith('.md') && (!filter || filter(full, root))) {
       out.push(rel.split(path.sep).join('/'));
     }
   }
   return out;
 }
 
-function collectScopeFiles() {
+function collectScopeFiles(root = ROOT) {
   const files = new Set();
-  for (const { dir, exclude, filter } of SCOPE_GLOBS) walkMd(dir, { exclude, filter }).forEach((f) => files.add(f));
-  const readme = path.join(ROOT, 'README.md');
+  for (const { dir, exclude, filter } of SCOPE_GLOBS) {
+    walkMd(root, dir, { exclude, filter }).forEach((file) => files.add(file));
+  }
+  const readme = path.join(root, 'README.md');
   if (fs.existsSync(readme)) files.add('README.md');
   return [...files];
 }
@@ -244,7 +250,7 @@ function hasDocumentQualifier(line, linhaSeguinte) {
 }
 
 export function checkSectionPointers({ root = ROOT, files = null } = {}) {
-  const scopeFiles = files ?? collectScopeFiles();
+  const scopeFiles = files ?? collectScopeFiles(root);
   const parsed = new Map();
   for (const rel of scopeFiles) {
     const content = fs.readFileSync(path.join(root, rel), 'utf8');

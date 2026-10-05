@@ -6,7 +6,7 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
 import { useModalBehavior } from './hooks/useModalBehavior';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
@@ -113,7 +113,7 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                     role="dialog"
                     aria-modal="true"
-                    className={twMerge(
+                    className={mergeSarakClasses(
                         "relative w-full max-w-lg bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden flex",
                         className
                     )}
