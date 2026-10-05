@@ -1014,12 +1014,56 @@
     "cssVariables": [],
     "allowedValues": [
       "top",
-      "bottom",
-      "hidden"
+      "bottom"
     ],
     "relatedTokens": [
       "searchPositionTopbar"
     ]
+  },
+  {
+    "tokenId": "chromeSearchPosition",
+    "name": "Composição: Busca",
+    "description": "Define se a busca fica fixa na barra, dentro do menu de preferências ou não é oferecida.",
+    "type": "select",
+    "importance": 80,
+    "categories": ["chrome-composition"],
+    "tags": ["chrome", "busca", "composição"],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": ["SarakAppChrome"],
+    "cssVariables": [],
+    "allowedValues": ["pinned", "menu", "off"],
+    "relatedTokens": ["chromeUserPosition", "chromeNotificationsPosition"]
+  },
+  {
+    "tokenId": "chromeUserPosition",
+    "name": "Composição: Usuário",
+    "description": "Define se o widget do usuário fica fixo na barra, dentro do menu de preferências ou não é oferecido.",
+    "type": "select",
+    "importance": 80,
+    "categories": ["chrome-composition"],
+    "tags": ["chrome", "usuário", "composição"],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": ["SarakAppChrome"],
+    "cssVariables": [],
+    "allowedValues": ["pinned", "menu", "off"],
+    "relatedTokens": ["chromeSearchPosition", "chromeNotificationsPosition"]
+  },
+  {
+    "tokenId": "chromeNotificationsPosition",
+    "name": "Composição: Notificações",
+    "description": "Define se as notificações ficam fixas na barra, dentro do menu de preferências ou não são oferecidas.",
+    "type": "select",
+    "importance": 80,
+    "categories": ["chrome-composition"],
+    "tags": ["chrome", "notificações", "composição"],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": ["SarakAppChrome"],
+    "cssVariables": [],
+    "allowedValues": ["pinned", "menu", "off"],
+    "relatedTokens": ["chromeSearchPosition", "chromeUserPosition"]
   },
   {
     "tokenId": "searchDropdownGap",

@@ -7,6 +7,7 @@ import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
+import type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import type { SarakNavItem } from './chrome/navItem';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
@@ -14,6 +15,7 @@ import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 export type { SarakNavItem } from './chrome/navItem';
 /** Opt-out dos widgets do cromo que nascem montados por padrão. */
 export type { SarakChromeWidgets } from './chrome/chromeWidgets';
+export type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 
 /**
  * SarakAppChrome — cromo temável do aplicativo (topbar/sidebar) com navegação por dados.
@@ -85,8 +87,9 @@ export interface SarakAppChromeProps {
      * Slot `search`: conteúdo de busca do consumidor (tipicamente um
      * `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar`
      * (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar`
-     * (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com
-     * conteúdo — é o token, não a ausência de `search`, quem decide sumir.
+     * (`top`/`bottom`) na sidebar/drawer. A composição do widget controla se a
+     * busca default é oferecida; a região personalizada continua controlada pelo
+     * conteúdo desta prop.
      */
     search?: React.ReactNode;
     /** Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. */
@@ -103,14 +106,18 @@ export interface SarakAppChromeProps {
      * COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui.
      */
     decoration?: React.ReactNode;
-    /** Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). */
+    /** Identidade exibida no widget de usuário default. */
     user?: SarakShellUser;
     /** Encerra a sessão a partir do widget de usuário default. */
     logout?: () => void;
+    /** Notificações fornecidas pelo aplicativo para o widget da barra. */
+    notifications?: SarakChromeNotification[];
+    /** Trata a seleção de uma notificação pelo usuário. */
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
     /**
      * O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget
-     * de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop
-     * mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais.
+     * de usuário, notificações e colapso da navegação MONTADOS — sem escrever nada.
+     * Omitir esta prop mantém os widgets ligados; `false` num campo desliga só aquele.
      * Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente.
      */
     widgets?: SarakChromeWidgets;
@@ -142,6 +149,8 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     decoration,
     user,
     logout,
+    notifications,
+    onNotificationSelect,
     widgets,
     className = '',
     style,
@@ -206,6 +215,8 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
                 decoration={decoration}
                 user={user}
                 logout={logout}
+                notifications={notifications}
+                onNotificationSelect={onNotificationSelect}
                 widgets={widgets}
                 className={className}
                 rootStyle={rootStyle}
@@ -220,7 +231,8 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // 250 linhas (R9) depois de ganhar o consumo dos tokens de cromo que faltavam.
     const shared = {
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
-        topbarStart, endSlot, search, banner, footer, decoration, user, logout, widgets, className, rootStyle,
+        topbarStart, endSlot, search, banner, footer, decoration, user, logout, notifications,
+        onNotificationSelect, widgets, className, rootStyle,
     };
 
     if (mode === 'topbar') {

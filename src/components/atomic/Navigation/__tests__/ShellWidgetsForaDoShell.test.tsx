@@ -9,6 +9,7 @@ import { SarakShellSearchWidget } from '../SarakShellSearchWidget';
 import { SarakShellThemeToggle } from '../SarakShellThemeToggle';
 import { SarakShellUserWidget } from '../SarakShellUserWidget';
 import { SarakShellLanguageSelector } from '../SarakShellLanguageSelector';
+import { PREFERENCE_POSITION_TOKEN_IDS } from '../../../../core/Provider/preferencesTypes';
 
 /**
  * Os quatro widgets compõem slots independentes — este
@@ -16,11 +17,11 @@ import { SarakShellLanguageSelector } from '../SarakShellLanguageSelector';
  * `SarakAppChrome`, sob o `SarakUIProvider`, sem registro global de módulos.
  * Falha se algum dos quatro voltar a depender do registro.
  */
-// Os defaults do cromo (busca/tema/usuário/colapso) desligam por inteiro aqui: o
-// objetivo deste arquivo é provar cada widget MONTADO À MÃO pelo consumidor num slot —
-// os defaults montariam um segundo exemplar do mesmo widget e ambiguariam as buscas
-// por texto/role/placeholder abaixo.
-const NO_DEFAULTS = { search: false, themeToggle: false, user: false, collapse: false } as const;
+// O cromo fica desligado para isolar os widgets que o consumidor monta nos slots.
+const NO_DEFAULTS = { search: false, themeToggle: false, user: false, notifications: false, collapse: false } as const;
+const NO_PREFERENCE_DEFAULTS = Object.fromEntries(
+    Object.values(PREFERENCE_POSITION_TOKEN_IDS).map((tokenId) => [tokenId, 'off']),
+);
 
 const renderNoSlot = (
     slot: React.ReactNode,
@@ -29,7 +30,7 @@ const renderNoSlot = (
     config: Record<string, unknown> = {},
 ) =>
     render(
-        <SarakUIProvider config={config}>
+        <SarakUIProvider config={{ ...NO_PREFERENCE_DEFAULTS, ...config }}>
             <SarakDeviceProvider overrideDevice="desktop">
                 <SarakAppChrome navigationStyle={navigationStyle} widgets={NO_DEFAULTS} {...{ [slotName]: slot }}>
                     <div>conteúdo do app</div>
@@ -53,7 +54,12 @@ describe('Widgets do cromo montados em slots do SarakAppChrome', () => {
     });
 
     it('ShellThemeToggle: alterna o tema', () => {
-        const { container } = renderNoSlot(<SarakShellThemeToggle variant="horizontal" />, 'topbarEnd');
+        const { container } = renderNoSlot(
+            <SarakShellThemeToggle variant="horizontal" />,
+            'topbarEnd',
+            'topbar',
+            { [PREFERENCE_POSITION_TOKEN_IDS.colorMode]: 'pinned' },
+        );
         const btn = screen.getByRole('button');
         expect(container.querySelector('[data-sarak-slot="topbarEnd"]')).toContainElement(btn);
 

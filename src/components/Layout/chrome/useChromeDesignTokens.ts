@@ -3,7 +3,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
 export type ChromeContentAlignment = 'stretch' | 'center';
-export type ChromeSearchPositionSidebar = 'top' | 'bottom' | 'hidden';
+export type ChromeSearchPositionSidebar = 'top' | 'bottom';
 export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
 
 export interface ChromeDesignTokens {
@@ -15,6 +15,9 @@ export interface ChromeDesignTokens {
     searchPositionSidebar: ChromeSearchPositionSidebar;
     searchPositionTopbar: ChromeSearchPositionTopbar;
 }
+
+const resolveSidebarSearchPosition = (value: unknown): ChromeSearchPositionSidebar =>
+    value === 'bottom' ? 'bottom' : 'top';
 
 /**
  * Leitura tolerante (Spec 18) dos tokens de cromo que `SarakAppChrome` passou a
@@ -31,7 +34,7 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
         contentAlignment: (design?.contentAlignment as ChromeContentAlignment) || 'stretch',
         isNavHidden: design?.isNavHidden ?? false,
         isAutoHideEnabled: design?.isAutoHideEnabled ?? false,
-        searchPositionSidebar: (design?.searchPositionSidebar as ChromeSearchPositionSidebar) || 'top',
+        searchPositionSidebar: resolveSidebarSearchPosition(design?.searchPositionSidebar),
         searchPositionTopbar: (design?.searchPositionTopbar as ChromeSearchPositionTopbar) || 'left',
     };
 };

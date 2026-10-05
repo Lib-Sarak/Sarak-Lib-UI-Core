@@ -877,6 +877,271 @@ lote 3.
 
 ---
 
+## 2026-10-05 — execução encerrada no item 11
+
+**Fotografia de `git status --short` antes da primeira edição:**
+
+```text
+?? .claude/settings.local.json
+```
+
+**Execução.** 7) `searchPositionSidebar` deixou de aceitar `hidden`; os seis temas que ocultavam a busca passaram
+a `top`, e os temas shippados declaram os novos tokens de composição. 8) Os oito widgets/preferências têm posição
+`pinned`, `menu` ou `off`, com padrão de fábrica `pinned`; os três tokens novos estão nas três fontes de paridade,
+com tipos e catálogos regenerados. A migração `8.0.0` registra antes/depois, a normalização de `hidden` legado e
+o novo padrão. 9) O painel ganhou “Composição da Barra” pelo fluxo de folksonomia existente. 10) Usuário sem
+identidade/logout e notificações sem itens/handler aparecem com `aria-disabled`, sem handler e com rótulos nos
+seis idiomas; o warning dev-only deduplica a configuração ausente. Execução encerrada no item 11.
+
+**Verificações.** `npx tsc --noEmit` retornou 0; `npm run build` passou; `npx vitest run` passou com 391 arquivos e
+2.099 testes. `check-audit-baseline.mjs --with-tsc` ficou igual ao baseline de 2026-08-11. Passaram
+`token-types:check`, `catalog:check`, `kit-names:check`, `trail-citation:check`, `class-merge:check`,
+`section-pointers:check`, `plan-index:check`, `barrel:check`, `prefix:check`, `public-types:check`,
+`chrome-token-parity:check`, `migration-anchor:check`, `guide:check` e `dev-kit:check`. Paridade do cromo: 40/43
+tokens cobertos; as três dívidas declaradas ficaram intactas. A parte i18n alterada tem 128 linhas (teto: 250).
+
+**Mutações.** Tema: `aurora-veil.chromeSearchPosition` foi alterado para `'off'`; o teste falhou com
+`expected 'off' to be 'pinned'`; valor restaurado. Warning: ao ignorar temporariamente a deduplicação, o teste
+falhou com `expected "warn" to be called 1 times, but got 2 times`; guarda restaurada.
+
+**Auditoria AST TypeScript.** A varredura cobriu 50 arquivos TS/TSX alterados. Os widgets novo de notificações e
+estado indisponível, o widget de usuário, o teste de temas e os helpers de posicionamento/schema ficaram sem
+infrações de tamanho ou tipagem. O validador aponta o `console.warn` dev-only exigido pelo padrão do guard
+existente, a função `buildDynamicGroups` (83 linhas; organização preservada no painel) e achados preexistentes de
+limiares, tipagem e números em componentes, testes e presets. Os testes de folksonomia também recebem falsos
+positivos do heurístico por usarem a chave de domínio `tokenId`.
+
+**Entrega.** Nenhum commit foi criado. Execução parada após o item 11.
+
+## Veredito — 2026-10-05 — 🔴 Reprovado (lote 2)
+
+**Antes de gravar:** a §10 foi relida no disco: só os três blocos do lote 1, escritos nesta conversa.
+
+**O que está certo, e foi verificado por mim:**
+
+- **`hidden` saiu.** `searchPositionSidebar` aceita só `top`/`bottom` no schema e no catálogo; os seis temas que
+  escondiam a busca (`aurora-veil`, `data-terminal`, `golden-hour`, `minimalist-airy`, `nebula-space`,
+  `neumorphic-mobile`) passaram a `top`. Medi o valor legado: `validateDesign` o **descarta** (com um
+  `console.error` do contrato) e o cromo lê `top` (`resolveSidebarSearchPosition`) — o "normalizado para `top`" da nota é
+  verdade no efeito.
+- **Paridade das três fontes** dos três tokens novos (`chromeSearchPosition`, `chromeUserPosition`,
+  `chromeNotificationsPosition`): schema, catálogo e `theme_table_mapping.json`; `token-types:check` → 430 tokens;
+  `chrome-token-parity:check` → 40 de 43, as três dívidas declaradas intactas.
+- **Oito widgets com posição** (`colorMode`, `fontSize`, `navigationStyle`, `navCollapsed`, `language`, `search`, `user`,
+  `notifications`) e **padrão `pinned`** em todos (as três preferências que eram `off` passaram a `pinned`).
+- **Widget sem conexão desabilitado:** `ChromeUnavailableWidget` (`aria-disabled="true"`, sem handler, focável), usado
+  pelo usuário sem `user`/`logout` e pelas notificações sem itens ou sem `onNotificationSelect`; o aviso de
+  desenvolvimento deduplica por configuração e tem teste de "uma vez, mesmo após remontar".
+- **Seção "Composição da Barra"** montada pela folksonomia (`design-pillars.json` + `dynamic-categories.ts`), no
+  pilar de navegação.
+- **Regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+  `check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` → **391 arquivos, 2099 testes
+  verdes** (378 s) · verdes: `token-types`, `catalog`, `kit-names`, `trail-citation`, `class-merge`,
+  `section-pointers`, `plan-index`, `barrel`, `prefix` (311), `public-types`, `chrome-token-parity`, `guide`,
+  `dev-kit`, `build-info`, `package`, `zero-brand`.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **Escolher qualquer tema do catálogo zera a composição que o sistema configurou.** Os **14** temas shippados
+   passaram a declarar `chromeSearchPosition`, `chromeUserPosition` e `chromeNotificationsPosition: 'pinned'`
+   (42 linhas). `handleThemePreview` aplica o tema com `{ ...rascunho, ...tema }`, então toda chave que o tema declara
+   **vence** a do sistema. **Medi:** com um sistema em `search: 'off'`, `user: 'menu'`, `notifications: 'off'`,
+   aplicar **qualquer** dos 14 temas devolve os três a `pinned` (**14 de 14**); o token antigo (`preferenceLanguagePosition`)
+   sobrevive nos 14, justamente porque **nenhum tema o declara**. É o oposto da decisão do dono (§2: a composição é
+   do **sistema**, no painel, "e nunca pelo tema"). Faça: **remover as três chaves dos 14 temas** — o padrão `pinned` já
+   vem do schema (`getChromeWidgetPosition`) — e trocar o teste `chromeWidgetDefaults.test.ts` por um que afirme que
+   **nenhum tema shippado declara token de composição** (nenhum `chrome*Position` nem `preference*Position`) e que
+   nenhum usa `searchPositionSidebar: 'hidden'`. Acrescente um teste que **falha** se um tema voltar a declarar (mostre a
+   mutação: re-incluir a chave em um tema → falha). Corrija a nota `8.0.0` em `docs/migracoes.md`: a frase "cada tema
+   pode escolher `pinned`, `menu` ou `off` pelos tokens de composição" passa a dizer que **o sistema** escolhe (pelo
+   painel ou pela configuração do design) e que os temas distribuídos não carregam a composição.
+2. **A seção "Composição da Barra" não aparece no modo padrão do painel.** O painel nasce em **Essencial**
+   (`importance >= 80` no catálogo) e os **oito** tokens da seção têm `importance` **50 a 70** — a seção só existe em
+   Avançado/Completo. O critério da plan é "a seção existe no painel", e quem abre o painel não a vê. Faça: leve os
+   **oito** tokens a `importance: 80` no catálogo (só o campo; nenhum outro dado muda) e **teste** que, com o conjunto
+   Essencial calculado do catálogo **real**, os oito entram (falha se um deles voltar abaixo de 80).
+3. **O rótulo do widget desabilitado é uma instrução de desenvolvedor mostrada ao usuário final.**
+   `chromeUserUnavailableLabel` = "Conecte usuário e logout" e `chromeNotificationsUnavailableLabel` = "Conecte
+   notificações e ação" viram `aria-label` e `title` do widget — o leitor de tela anuncia isso a quem usa o sistema, que
+   não conecta nada. O aviso de desenvolvimento já diz o que ligar. Faça: rótulos que descrevem o **estado** ao usuário
+   ("Usuário indisponível", "Notificações indisponíveis" e os equivalentes nos seis idiomas do catálogo); a frase
+   "Conecte …" fica **só** no `console.warn`. Atualize os testes e os dois snapshots que carregam o texto.
+4. **`buildDynamicGroups` cresceu numa função que já passava do limite** (83 linhas, contra as 40 do Nível 0; o
+   próprio resumo o admite). Faça: extraia a colocação da seção de composição (`dynamic-categories.ts`) para um helper
+   com nome e teste, de modo que a função **não cresça** — não refatore o resto dela.
+5. **O resumo da §9 do lote 2 está fora do formato** (como o do lote 1 estava): faltam **Arquivos alterados**
+   (agrupados por diretório, como na correção 2 do lote 1), **Critérios de aceite** com a evidência de cada um e
+   **Decisões e suposições** (por exemplo: o widget de notificações é **novo**, com `notifications` e
+   `onNotificationSelect` no `SarakAppChrome`; os três padrões que eram `off` viraram `pinned`; a categoria nova
+   `chrome-composition`). Bloco novo, append-only.
+
+**Para o dono:** o achado 1 é o que importa: com ele, o painel "Aplicar tema" desfaria a composição do sistema sem
+avisar. **Não commite o lote 2 ainda** (a correção mexe nos mesmos temas e testes). Os dois gates vermelhos de antes
+(`npm run audit` e `check-minor-no-removal`) seguem sendo baseline e versão ainda `7.0.0`.
+
+---
+
+## Resumo da execução (correção do lote 2) — 2026-10-05
+
+**Resultado:** Concluído com pendências.
+
+**Estado do worktree ao iniciar**
+
+A fotografia inicial da rodada de correção ficou incompleta: não listou
+`src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap`.
+Conforme confirmado pelo usuário, esse snapshot já estava modificado às 14:57, antes da correção, e pertence ao lote 2;
+não foi revertido nem editado nesta rodada. A tabela abaixo foi calculada do `git status --short` atual, excluindo os
+arquivos não pertencentes a esta plan (`specs/00-indice.md` e `.claude/settings.local.json`).
+
+**Achados corrigidos**
+
+1. **Temas não substituem a composição do sistema.** Removi `chromeSearchPosition`, `chromeUserPosition` e
+   `chromeNotificationsPosition` dos 14 temas. `chromeWidgetDefaults.test.ts` verifica todos os IDs de
+   `CHROME_WIDGET_POSITION_TOKEN_IDS` e rejeita `searchPositionSidebar: 'hidden'`. Mutações: reintroduzir
+   `chromeSearchPosition: 'pinned'` em `aurora-veil` fez o teste falhar, recebendo `"pinned"` onde esperava ausência;
+   revertida a mutação, o teste passou. O script externo aplicado a `{ ...sistema, ...tema.design }` nos 14 temas,
+   com sistema `search: off`, `user: menu`, `notifications: off`, retornou `themesEvaluated: 14`,
+   `themesThatResetComposition: []`, `resetCount: 0`. Corrigi a nota 8.0.0 para atribuir a composição ao sistema.
+2. **Composição aparece no conjunto Essencial.** As oito entradas `chrome-composition` receberam somente
+   `importance: 80` nos campos de catálogo; o teste calcula o conjunto a partir do `TokenCatalog` real com a regra do
+   painel (`importance >= 80`) e confirma as oito entradas. O catálogo expõe também os registros existentes da
+   partição `structural`, usada por esses tokens. Nenhum outro campo dessas oito entradas foi alterado.
+3. **Rótulos descrevem o estado ao usuário final.** Atualizei os rótulos de usuário/notificações indisponíveis em
+   pt, en, es, fr, de e it. `useChromeDefaultWidgets.ts:125` mantém a orientação “Conecte …” somente no aviso de
+   desenvolvimento. A mutação que remove a deduplicação fez o teste esperar uma chamada e observar duas; restaurada
+   a guarda, o teste passou. Atualizei os testes e regenerei o snapshot PreviewCanvas com
+   `npx vitest run src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx -u` (2 testes passaram).
+4. **Colocação da seção extraída.** Extraí somente a colocação de tokens da composição de `buildDynamicGroups` para
+   `placeChromeCompositionToken` (`dynamic-categories.ts:40`), com teste (`dynamic-categories.test.ts:58`). O corpo
+   restante da função foi preservado.
+5. **Resumo, inventário e entrega.** Acrescentei esta seção com os achados, inventário por diretório, critérios de
+   aceite, decisões e verificações. A fotografia incompleta foi registrada acima e o snapshot PresetCard foi
+   contabilizado como arquivo do lote 2.
+
+**Arquivos alterados do lote 2**
+
+Contagem do `git status --short` atual: 96 caminhos pertencentes ao lote 2/esta plan — 65 alterados, 13 removidos e
+18 criados. A coluna de build é subconjunto dos demais estados. Os dois caminhos não pertencentes a esta plan foram
+excluídos da contagem.
+
+| Diretório | Alterados | Removidos | Criados | Regenerados pelo build | Natureza |
+|---|---:|---:|---:|---:|---|
+| `dist/` | 7 | 13 | 13 | 33 | Saídas ESM/CJS/DTS/CSS e troca de chunks com hash. |
+| `docs/` | 3 | 0 | 0 | 0 | Catálogo de componentes e nota de migração. |
+| `sarak-dev/` | 3 | 0 | 0 | 0 | Kit do mantenedor regenerado. |
+| `sarak-ui/` | 5 | 0 | 0 | 0 | Kit do consumidor e cópia da migração regenerados. |
+| `specs/plan/` | 1 | 0 | 0 | 0 | Resumo append-only e status desta plan. |
+| `src/` (raiz) | 2 | 0 | 0 | 1 | `buildInfo.ts` gerado pelo build; barril público alterado. |
+| `src/components/Layout/` | 14 | 0 | 4 | 0 | Cromo, widgets e testes; quatro arquivos novos de notificações/estado indisponível. |
+| `src/components/atomic/` | 3 | 0 | 0 | 0 | Preferências e testes dos widgets fora do Shell. |
+| `src/core/Design/catalog/` | 4 | 0 | 0 | 0 | Catálogo, partições e mapeamento de temas. |
+| `src/core/Design/presets/themes/` | 8 | 0 | 1 | 0 | Temas sem tokens de composição e teste de defaults. |
+| `src/core/Design/schema/` | 3 | 0 | 0 | 0 | Schema e teste de preferências. |
+| `src/core/i18n/` | 1 | 0 | 0 | 0 | Rótulos nos seis idiomas. |
+| `src/core/Provider/` | 6 | 0 | 0 | 1 | Tipos, posicionamento e testes; `buildInfo.ts` gerado pelo build. |
+| `src/features/DesignEngine/Canvas/` | 2 | 0 | 0 | 0 | Snapshots PreviewCanvas e PresetCard; este último já estava modificado às 14:57. |
+| `src/features/DesignEngine/config/` | 1 | 0 | 0 | 0 | Pilar da nova categoria de composição. |
+| `src/features/DesignEngine/utils/` | 2 | 0 | 0 | 0 | Helper e testes de categorias dinâmicas. |
+
+**Critérios de aceite do lote 2**
+
+- [x] `searchPositionSidebar` não aceita `hidden`; nenhum dos 14 temas declara token de composição ou `hidden` —
+  teste de temas e mutação descritos no achado 1; migração 8.0.0 registra a normalização do valor legado.
+- [x] Todos os oito widgets/preferências têm posição e default `pinned`; os três que eram `off` passaram a `pinned` —
+  schema e `token-types:check` (430 tokens).
+- [x] A composição está nas três fontes de paridade — `token-types:check`, `catalog:check` e teste do catálogo real;
+  `chrome-token-parity:check` passou com 40/43 consumidores, mantendo as três dívidas preexistentes.
+- [x] A seção `chrome-composition` aparece no modo Essencial — teste usa `TokenCatalog` real e confirma oito tokens
+  com `importance >= 80`; a colocação usa o helper testado.
+- [x] Widgets sem dados/handler estão desabilitados, sem handler, com rótulos de estado nos seis idiomas; aviso único
+  em desenvolvimento — testes dos widgets e mutação de deduplicação descritos no achado 3.
+- [x] Nota MAJOR 8.0.0 documenta antes/depois, tema consumidor que declara `hidden` e novo padrão de fábrica —
+  `migration-anchor:check` passou.
+- [x] Gates técnicos e regressão — `npx tsc --noEmit` retornou 0; `check-audit-baseline.mjs --with-tsc` ficou igual
+  ao baseline de 2026-08-11; `npx vitest run` passou com 391 arquivos e 2.101 testes; build e gates técnicos listados
+  abaixo passaram.
+
+**Verificações finais registradas**
+
+- `npx tsx scripts/generate-token-types.ts` e `npm run token-types:check` — 430 tokens; `npm run catalog:check` passou.
+- `npm run kit-names:check`, `trail-citation:check`, `class-merge:check`, `section-pointers:check`, `barrel:check`
+  (96 componentes), `prefix:check` (311 exports) e `public-types:check` passaram.
+- `plan-index:check` passou na rodada anterior à transição obrigatória de status; após mover o frontmatter para
+  `🟠 Em revisão`, a nova execução apontou divergência com `specs/00-indice.md`, que ainda registra `🔵 Em correção`.
+- `npm run chrome-token-parity:check` passou (40/43; as três dívidas conhecidas não foram alteradas).
+- `npm run migration-anchor:check`, `npm run guide:check` e `npm run dev-kit:check` passaram; `npm run guide` e
+  `npm run dev-kit` regeneraram os kits.
+- `npx tsc --noEmit` → 0; `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline
+  de 2026-08-11.
+- Sem outro processo `vitest`/`tsup` ativo, `npx vitest run` → 391 arquivos, 2.101 testes aprovados.
+- Sem outro processo `vitest`/`tsup` ativo, `npm run build` passou após uma nova tentativa autorizada pelo ambiente
+  depois de o sandbox negar acesso na primeira tentativa; bundles e declarações foram gerados.
+
+**Decisões e suposições**
+
+- O widget de notificações é novo e recebe `notifications` e `onNotificationSelect` em `SarakAppChrome`.
+- Os três padrões que eram `off` passaram a `pinned`; a composição é do sistema, nunca do tema distribuído.
+- `chrome-composition` é a categoria nova do painel; as oito composições usam `importance: 80` para entrarem em
+  Essencial.
+- `PresetCard.test.tsx.snap` é arquivo legítimo do lote 2; as variáveis CSS nele refletem o design padrão e as três
+  posições `off` que passaram a `pinned`. Não foi revertido nem reformatado.
+- Nenhum commit foi criado; a execução termina no item 11. O lote 3 não foi iniciado.
+
+**Pendências / riscos**
+
+- `plan-index:check` está vermelho após a mudança de status porque o índice, fora do escopo e pertencente ao revisor,
+  ainda mostra `🔵 Em correção`; não alterei `specs/00-indice.md`.
+
+---
+
+## Veredito — 2026-10-05 (correção do lote 2) — 🟢 Aprovado (lote 2 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: o bloco de reprovação do lote 2 e os três do lote 1, escritos nesta
+conversa. A pendência que o executor registrou acima (`plan-index:check` vermelho depois de mover o frontmatter para
+`🟠`) é a divergência esperada: o espelho no índice é meu, e este veredito o fecha.
+
+**Os cinco achados fecharam:**
+
+1. **Tema não zera mais a composição — fechou.** `git grep` nos 14 temas: **0** ocorrências de `chrome*Position` e
+   `preference*Position`. Refiz o cálculo `{ ...sistema, ...tema.design }` (sistema em `search: off`, `user: menu`,
+   `notifications: off`): **0 de 14** zeram (antes, 14 de 14). `chromeWidgetDefaults.test.ts` agora proíbe os oito ids e
+   o `hidden`; **mutação minha numa cópia fora do repositório:** declarar `chromeUserPosition` em `kinetic-flow` → o
+   teste falha. A nota `8.0.0` agora diz que a composição vem do sistema e os temas distribuídos não a carregam.
+2. **A seção aparece no modo padrão — fechou.** Os oito tokens estão em `importance: 80` (só esse campo mudou).
+   **Mutação minha:** baixar `chromeUserPosition` para 70 → falha `inclui os oito tokens reais da composição no conjunto
+   Essencial`. O Essencial passou de 127 para **135** tokens (a `plan-99` já foi atualizada).
+3. **Rótulos de estado — fechou.** "Usuário indisponível" / "Notificações indisponíveis" nos seis idiomas; `git grep
+   "Conecte"` em `src/` devolve **só** o `console.warn` (`useChromeDefaultWidgets.ts:125`).
+4. **Helper — fechou.** `placeChromeCompositionToken` com teste; `buildDynamicGroups` não cresceu.
+5. **Resumo — fechou:** tabela por diretório, critérios com evidência e decisões; a fotografia incompleta foi
+   declarada e o `PresetCard.test.tsx.snap` registrado como arquivo do lote 2. (O bloco ficou depois do veredito
+   anterior em vez de na §9; não o movi, por ser append-only.)
+
+**Uma consequência que eu não tinha visto no lote 2, e o executor consertou sem ser pedido:** a partição
+`structural.json` (que guarda as cinco preferências) **não entrava no `TokenCatalog`**, então as cinco caíam em
+"Especializado" e a seção só tinha os três tokens novos. `catalog/index.ts` passou a incluir as entradas
+`chrome-composition` dessa partição. **Medi:** a seção do pilar de navegação lista agora os **oito** tokens. Aceito,
+com uma ressalva: entra só o subconjunto `chrome-composition` da partição, não ela inteira.
+
+**Ruído, aceito:** `cyberpunk-neon.ts` e `neo-brutalism.ts` mostram 2 linhas cada, **só de espaço/fim de linha**
+(`git diff -w` vazio).
+
+**Regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+`check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` → **391 arquivos, 2101 testes verdes**
+(409 s) · verdes: `token-types` (430), `catalog`, `kit-names`, `trail-citation`, `class-merge`, `section-pointers`,
+`barrel` (96), `prefix` (311), `public-types`, `chrome-token-parity` (40/43), `guide`, `dev-kit`, `build-info`,
+`package` (95).
+
+**Critérios do lote 2:** `hidden` não existe; nenhum tema esconde widget nem carrega composição; os oito widgets têm
+posição e padrão `pinned`; a seção existe no painel **e aparece no modo padrão**; widget sem conexão é desabilitado
+(`aria-disabled`, sem handler, rótulo de estado traduzido) e o aviso de desenvolvimento sai uma vez; paridade das três
+fontes verde; nota MAJOR atualizada.
+
+**Liberação parcial.** O lote 2 está aprovado e **pode ser commitado**. A plan **não** está concluída: o lote 3 não foi
+iniciado. O `status` volta a `🟡 Em execução`; a síntese e a remoção só acontecem depois do veredito do lote 3.
+
+---
+
 # 11. Síntese
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.

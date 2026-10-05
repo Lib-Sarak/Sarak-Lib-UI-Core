@@ -359,16 +359,60 @@ export const NavigationSchema: ComponentSchema = {
             id: 'searchPositionSidebar',
             label: 'Posição Pesquisa (Sidebar)',
             type: 'select',
-            description: 'Posição do campo de busca dentro da sidebar — Topo/Rodapé posicionam o campo, Oculta remove a busca da sidebar.',
+            description: 'Posição do campo de busca dentro da sidebar — Topo/Rodapé posicionam o campo. Para não oferecer a busca, use o token de composição da barra.',
             axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'top', value: 'top', label: 'Topo' },
-                    { id: 'bottom', value: 'bottom', label: 'Rodapé' },
-                    { id: 'hidden', value: 'hidden', label: 'Oculta' }
+                    { id: 'bottom', value: 'bottom', label: 'Rodapé' }
                 ]
             },
             defaultValue: 'top'
+        },
+        {
+            id: 'chromeSearchPosition',
+            label: 'Composição: Busca',
+            type: 'select',
+            description: 'Define se a busca fica fixa na barra, dentro do menu de preferências ou não é oferecida.',
+            axis: 'geometry',
+            constraints: {
+                options: [
+                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'menu', value: 'menu', label: 'No menu' },
+                    { id: 'off', value: 'off', label: 'Não oferecida' }
+                ]
+            },
+            defaultValue: 'pinned'
+        },
+        {
+            id: 'chromeUserPosition',
+            label: 'Composição: Usuário',
+            type: 'select',
+            description: 'Define se o widget do usuário fica fixo na barra, dentro do menu de preferências ou não é oferecido.',
+            axis: 'geometry',
+            constraints: {
+                options: [
+                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'menu', value: 'menu', label: 'No menu' },
+                    { id: 'off', value: 'off', label: 'Não oferecido' }
+                ]
+            },
+            defaultValue: 'pinned'
+        },
+        {
+            id: 'chromeNotificationsPosition',
+            label: 'Composição: Notificações',
+            type: 'select',
+            description: 'Define se as notificações ficam fixas na barra, dentro do menu de preferências ou não são oferecidas.',
+            axis: 'geometry',
+            constraints: {
+                options: [
+                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'menu', value: 'menu', label: 'No menu' },
+                    { id: 'off', value: 'off', label: 'Não oferecidas' }
+                ]
+            },
+            defaultValue: 'pinned'
         },
         {
             id: 'searchDropdownGap',

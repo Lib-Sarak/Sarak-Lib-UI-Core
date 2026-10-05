@@ -1,5 +1,5 @@
-import { PREFERENCE_IDS, isPreferenceOffered, getPreferencePosition } from '../preferencesTypes';
-import type { SarakPreferenceId } from '../preferencesTypes';
+import { CHROME_WIDGET_IDS, PREFERENCE_IDS, getChromeWidgetPosition } from '../preferencesTypes';
+import type { SarakChromeWidgetId, SarakPreferenceId } from '../preferencesTypes';
 
 /**
  * Teto de código para as duas preferências que já eram widget antes desta
@@ -9,6 +9,7 @@ import type { SarakPreferenceId } from '../preferencesTypes';
  * de código, só a posição do tema decide.
  */
 export type ChromePreferenceCeilings = Partial<Record<SarakPreferenceId, boolean>>;
+export type ChromeWidgetCeilings = Partial<Record<SarakChromeWidgetId, boolean>>;
 
 export interface ChromePreferencesPlacement {
     /** Oferecidas com posição `pinned` — controle direto na barra. */
@@ -24,25 +25,47 @@ export interface ChromePreferencesPlacement {
     menu: SarakPreferenceId[];
 }
 
+export interface ChromeWidgetsPlacement {
+    pinned: SarakChromeWidgetId[];
+    offered: SarakChromeWidgetId[];
+    menu: SarakChromeWidgetId[];
+}
+
 /**
- * Resolve, para as 5 preferências (Spec 09 §4.7), onde cada uma aparece na
- * barra configurável pelo administrador. Pura, sem estado — os dois cromos
- * (Shell e `SarakAppChrome`) chamam esta mesma função e desenham cada um a
- * própria UI por cima, porque `core/` não importa `components/Layout/`.
+ * Resolve onde cada preferência aparece na barra configurável pelo administrador.
+ * Pura, sem estado, para que a camada de Provider não dependa dos componentes visuais.
  */
 export const splitPreferencesByPlacement = (
     design: Record<string, unknown> | undefined,
     ceilings: ChromePreferenceCeilings = {},
 ): ChromePreferencesPlacement => {
-    const pinned: SarakPreferenceId[] = [];
-    const offered: SarakPreferenceId[] = [];
+    const placement = splitChromeWidgetsByPlacement(design, ceilings);
+    return {
+        pinned: placement.pinned.filter(isPreferenceId),
+        offered: placement.offered.filter(isPreferenceId),
+        menu: placement.menu.filter(isPreferenceId),
+    };
+};
+
+export const splitChromeWidgetsByPlacement = (
+    design: Record<string, unknown> | undefined,
+    ceilings: ChromeWidgetCeilings = {},
+): ChromeWidgetsPlacement => {
+    const pinned: SarakChromeWidgetId[] = [];
+    const offered: SarakChromeWidgetId[] = [];
     let hasMenuOnly = false;
-    PREFERENCE_IDS.forEach((id) => {
+
+    CHROME_WIDGET_IDS.forEach((id) => {
         if (ceilings[id] === false) return;
-        if (!isPreferenceOffered(design, id)) return;
+        const position = getChromeWidgetPosition(design, id);
+        if (position === 'off') return;
         offered.push(id);
-        if (getPreferencePosition(design, id) === 'pinned') pinned.push(id);
+        if (position === 'pinned') pinned.push(id);
         else hasMenuOnly = true;
     });
+
     return { pinned, offered, menu: hasMenuOnly ? offered : [] };
 };
+
+const isPreferenceId = (id: SarakChromeWidgetId): id is SarakPreferenceId =>
+    (PREFERENCE_IDS as readonly SarakChromeWidgetId[]).includes(id);

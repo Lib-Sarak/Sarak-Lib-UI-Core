@@ -50,6 +50,19 @@ não consulta mais o registro de módulos como fallback.
 `npx sarak-ui init` gera `src/main.tsx` com o Provider e `src/App.tsx` com `SarakAppChrome`,
 `navItems` e um exemplo de roteamento local. Ajuste `src/App.tsx` ao roteador e às telas do projeto.
 
+### Composição dos widgets da barra
+
+| | Antes | Agora |
+|---|---|---|
+| `searchPositionSidebar` | Aceitava `top`, `bottom` e `hidden` | Aceita `top` e `bottom`; para não oferecer a busca default, use `chromeSearchPosition: 'off'` ou `widgets.search: false` |
+| Tema consumidor com `searchPositionSidebar: 'hidden'` | A busca não aparecia na sidebar | O valor legado não é válido e é normalizado para `top`; a busca aparece no topo até o tema escolher `bottom` ou desligá-la pela composição |
+| Posição de fábrica dos widgets e preferências | Busca e preferências tinham defaults diferentes; usuário e notificações não tinham composição | Todos os widgets e preferências ficam `pinned` por padrão; o sistema escolhe `pinned`, `menu` ou `off` pelo painel ou pela configuração do design. Os temas distribuídos não carregam a composição |
+
+Temas de consumidor que declaram `hidden` em `searchPositionSidebar` devem trocar o valor por `top` ou
+`bottom`; o valor legado é descartado e a busca default aparece na posição definida pelo schema. A posição
+`hidden` de `searchPositionTopbar` continua válida. A composição vem do sistema, e os temas distribuídos
+herdam `pinned` quando o design não configura outra posição.
+
 ---
 
 ## A persistência do tema ativo restaura também o id

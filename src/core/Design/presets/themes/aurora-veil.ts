@@ -199,7 +199,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         sidebarBlur: 16,
         sidebarShadow: 'none',
         searchPositionTopbar: 'center',
-        searchPositionSidebar: 'hidden',
+        searchPositionSidebar: 'top',
         modalOverlayColor: 'rgba(247, 245, 251, 0.7)',
         modalOverlayBlur: 16,
         modalBorderRadius: 28,

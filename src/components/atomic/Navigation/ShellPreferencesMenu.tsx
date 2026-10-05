@@ -10,6 +10,8 @@ import { renderShellPreferenceRow, type ShellPreferenceRowContext } from './shel
 export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContext, 't'> {
     /** TODAS as preferências oferecidas (fixadas inclusive). Vazio = não monta. */
     menuIds: SarakPreferenceId[];
+    /** Widgets de composição que compartilham o mesmo menu de preferências. */
+    additionalRows?: React.ReactNode;
     /** Lado da tela em que a barra vive — decide para onde o menu abre. */
     align?: 'start' | 'end';
     className?: string;
@@ -28,14 +30,14 @@ const MENU_ID = 'sarak-preferences-menu';
  * existe botão que abre um painel sem nada dentro.
  */
 export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
-    menuIds, isNavHidden, onToggleNavCollapsed, align = 'end', className = '',
+    menuIds, isNavHidden, onToggleNavCollapsed, additionalRows, align = 'end', className = '',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const close = () => setIsOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(isOpen, close);
     const t = useLibraryText();
 
-    if (menuIds.length === 0) return null;
+    if (menuIds.length === 0 && !additionalRows) return null;
 
     return (
         <div className={mergeSarakClasses('relative', className)} data-sarak-widget="preferences-menu">
@@ -68,6 +70,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     }}
                 >
                     {menuIds.map((id) => renderShellPreferenceRow(id, { isNavHidden, onToggleNavCollapsed, t }))}
+                    {additionalRows}
                 </div>
             )}
         </div>

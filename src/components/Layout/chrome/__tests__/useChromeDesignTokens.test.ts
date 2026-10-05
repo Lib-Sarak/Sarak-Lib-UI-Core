@@ -53,4 +53,11 @@ describe('useChromeDesignTokens', () => {
             searchPositionTopbar: 'right',
         });
     });
+
+    it('valor legado "hidden" na sidebar degrada para a posição padrão "top"', () => {
+        const { result } = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ searchPositionSidebar: 'hidden' }),
+        });
+        expect(result.current.searchPositionSidebar).toBe('top');
+    });
 });

@@ -196,7 +196,7 @@ export const minimalistAiry: SarakThemePreset = {
         sidebarBlur: 0,
         sidebarShadow: '1px 0 0 #e2e8f0',
         searchPositionTopbar: 'center',
-        searchPositionSidebar: 'hidden',
+        searchPositionSidebar: 'top',
         modalOverlayColor: 'rgba(0,0,0,0.5)',
         modalOverlayBlur: 4,
         modalBorderRadius: 16,

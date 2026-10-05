@@ -10,7 +10,8 @@ import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidge
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
-import { ChromeUserThemeGroup } from './ChromeUserThemeGroup';
+import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
+import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
 import { resolveChromeContentAlignmentClass, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
@@ -33,7 +34,9 @@ export interface ChromeTopbarBodyProps {
     /** Identidade exibida no widget de usuário default (fora do slot `topbarEnd`). */
     user?: SarakShellUser;
     logout?: () => void;
-    /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
+    notifications?: SarakChromeNotification[];
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
+    /** Opt-out dos widgets default; omitir mantém a composição de fábrica ativa. */
     widgets?: SarakChromeWidgets;
     className: string;
     rootStyle: React.CSSProperties;
@@ -46,20 +49,33 @@ export interface ChromeTopbarBodyProps {
  */
 export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot,
-    search, banner, footer, decoration, user, logout, widgets, className, rootStyle, children,
+    search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const { navbarLayout, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
-    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
+    const w = useChromeDefaultWidgets(widgets, {
+        hasCustomSearch: Boolean(search),
+        hasUser: Boolean(user),
+        hasLogout: Boolean(logout),
+        hasNotifications: Boolean(notifications?.length),
+        hasNotificationHandler: Boolean(onNotificationSelect),
+    });
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
     const showLanguage = w.preferencePlacement.pinned.includes('language');
-    const hasPreferencesMenu = w.preferencePlacement.menu.length > 0;
+    const menuWidgets = (
+        <>
+            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+        </>
+    );
+    const hasMenuWidgets = w.widgetPlacement.menu.length > 0;
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
-        || w.showThemeToggle || w.showUser || showFontSize || showNavigationStyle || showLanguage || hasPreferencesMenu;
+        || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -112,11 +128,13 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                                 variant="horizontal"
                                 className="flex items-center gap-2"
                             />
-                            {hasPreferencesMenu && (
+                            {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="horizontal" />}
+                            {hasMenuWidgets && (
                                 <ShellPreferencesMenu
                                     menuIds={w.preferencePlacement.menu}
                                     isNavHidden={isNavHidden}
                                     onToggleNavCollapsed={w.toggleNavHidden}
+                                    additionalRows={menuWidgets}
                                 />
                             )}
                         </div>
@@ -130,7 +148,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             >
                 {children}
             </main>
-            {w.showSearch && (
+            {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}

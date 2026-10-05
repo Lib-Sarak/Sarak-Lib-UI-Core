@@ -12,6 +12,7 @@ import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
+import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralStyles';
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
@@ -63,8 +64,9 @@ export interface SarakAppChromeMobileProps {
     /** Identidade exibida no widget de usuário default, no rodapé do drawer. */
     user?: SarakShellUser;
     logout?: () => void;
-    /** Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não
-     * se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. */
+    notifications?: SarakChromeNotification[];
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
+    /** Opt-out dos widgets default; o hambúrguer continua controlando a navegação no celular. */
     widgets?: SarakChromeWidgets;
     className?: string;
     rootStyle: React.CSSProperties;
@@ -89,6 +91,8 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     decoration,
     user,
     logout,
+    notifications,
+    onNotificationSelect,
     widgets,
     className = '',
     rootStyle,
@@ -98,8 +102,14 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const { containerRef, handleTrap } = useFocusTrap(open, close);
     const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
     const t = useLibraryText();
-    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
-    const effectiveSearch = search ?? (w.showSearch ? <SarakShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
+    const w = useChromeDefaultWidgets(widgets, {
+        hasCustomSearch: Boolean(search),
+        hasUser: Boolean(user),
+        hasLogout: Boolean(logout),
+        hasNotifications: Boolean(notifications?.length),
+        hasNotificationHandler: Boolean(onNotificationSelect),
+    });
+    const effectiveSearch = search ?? (w.showSearchOffered ? <SarakShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
     // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
     // — não há distinção de "botão direto vs. dentro do ⚙" quando só existe uma barra.
     // `navCollapsed` fica de fora: o próprio hambúrguer já é o controle de colapso aqui.
@@ -171,11 +181,14 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
                         <ChromeUserThemeGroup
                             showThemeToggle={mobileShowThemeToggle}
-                            showUser={w.showUser}
+                            showUser={w.showUserOffered}
                             user={user}
                             logout={logout}
                             variant="vertical"
                         />
+                        {w.showNotificationsOffered && (
+                            <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />
+                        )}
                         {extraPreferenceRows.map((id) => renderShellPreferenceRow(id, {
                             isNavHidden: false,
                             onToggleNavCollapsed: w.toggleNavHidden,
@@ -192,7 +205,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             >
                 {children}
             </main>
-            {w.showSearch && (
+            {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}

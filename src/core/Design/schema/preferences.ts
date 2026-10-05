@@ -1,4 +1,5 @@
 import { ComponentSchema } from '../types';
+import { NavigationSchema } from './navigation';
 
 /**
  * As cinco preferências de usuário que a lib conhece (specs/09 — seção de
@@ -16,6 +17,13 @@ export type SarakPreferenceId = typeof PREFERENCE_IDS[number];
 
 export type SarakPreferencePosition = 'off' | 'menu' | 'pinned';
 
+export const CHROME_WIDGET_IDS = [
+    'colorMode', 'fontSize', 'navigationStyle', 'navCollapsed', 'language',
+    'search', 'user', 'notifications',
+] as const;
+
+export type SarakChromeWidgetId = typeof CHROME_WIDGET_IDS[number];
+
 /** Token de tema — sob a paridade de três fontes (R4) — que guarda a posição
  *  de cada preferência. Fonte única: nunca compor o nome à mão fora daqui. */
 export const PREFERENCE_POSITION_TOKEN_IDS: Record<SarakPreferenceId, string> = {
@@ -26,13 +34,25 @@ export const PREFERENCE_POSITION_TOKEN_IDS: Record<SarakPreferenceId, string> = 
     language: 'preferenceLanguagePosition',
 };
 
+export const CHROME_WIDGET_POSITION_TOKEN_IDS: Record<SarakChromeWidgetId, string> = {
+    ...PREFERENCE_POSITION_TOKEN_IDS,
+    search: 'chromeSearchPosition',
+    user: 'chromeUserPosition',
+    notifications: 'chromeNotificationsPosition',
+};
+
 const POSITION_OPTIONS = [
     { value: 'off', label: 'Não oferecida' },
     { value: 'menu', label: 'No menu' },
     { value: 'pinned', label: 'Fixa na barra' },
 ];
 
-const buildPositionToken = (id: string, label: string, description: string, defaultValue: SarakPreferencePosition) => ({
+const buildPositionToken = (
+    id: string,
+    label: string,
+    description: string,
+    defaultValue: SarakPreferencePosition,
+): NonNullable<ComponentSchema['tokens']>[number] => ({
     id,
     label,
     type: 'select' as const,
@@ -42,9 +62,7 @@ const buildPositionToken = (id: string, label: string, description: string, defa
 });
 
 /**
- * Padrão de fábrica: EXATAMENTE a barra de hoje — modo e navegação recolhida
- * fixos na barra; tamanho da fonte, navegação topo/lateral e idioma não
- * oferecidos. Nenhum consumidor existente vê a barra mudar só por atualizar.
+ * Padrão de fábrica: todos os widgets e preferências ficam fixos na barra.
  */
 export const PreferencesSchema: ComponentSchema = {
     id: 'preferences',
@@ -60,13 +78,13 @@ export const PreferencesSchema: ComponentSchema = {
             PREFERENCE_POSITION_TOKEN_IDS.fontSize,
             'Preferência: Tamanho da Fonte',
             'Onde a escolha de tamanho de fonte (P/M/G) do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'off',
+            'pinned',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.navigationStyle,
             'Preferência: Navegação Topo/Lateral',
             'Onde a escolha de orientação da navegação (topo/lateral) do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'off',
+            'pinned',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.navCollapsed,
@@ -78,7 +96,7 @@ export const PreferencesSchema: ComponentSchema = {
             PREFERENCE_POSITION_TOKEN_IDS.language,
             'Preferência: Idioma',
             'Onde a escolha de idioma do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'off',
+            'pinned',
         ),
     ],
 };
@@ -86,21 +104,36 @@ export const PreferencesSchema: ComponentSchema = {
 /** Padrão de fábrica de cada token — fonte única para quando a chave está
  *  ausente do `design` (ex.: um modelo do painel que substitui o design
  *  inteiro por um do catálogo, sem as chaves novas). */
+const POSITION_TOKENS = [
+    ...PreferencesSchema.tokens,
+    ...NavigationSchema.tokens.filter((token) =>
+        Object.values(CHROME_WIDGET_POSITION_TOKEN_IDS).includes(token.id),
+    ),
+];
+
 const DEFAULT_POSITIONS: Record<string, SarakPreferencePosition> = Object.fromEntries(
-    PreferencesSchema.tokens.map((token) => [token.id, token.defaultValue as SarakPreferencePosition]),
+    POSITION_TOKENS.map((token) => [token.id, token.defaultValue as SarakPreferencePosition]),
 );
+
+const isChromeWidgetPosition = (value: unknown): value is SarakPreferencePosition =>
+    value === 'off' || value === 'menu' || value === 'pinned';
+
+export const getChromeWidgetPosition = (
+    design: Record<string, unknown> | undefined,
+    id: SarakChromeWidgetId,
+): SarakPreferencePosition => {
+    const tokenId = CHROME_WIDGET_POSITION_TOKEN_IDS[id];
+    const value = design?.[tokenId];
+    return isChromeWidgetPosition(value) ? value : DEFAULT_POSITIONS[tokenId];
+};
 
 /**
  * Lê a posição de `id` diretamente do `design` (nunca de um campo fora
  * dele) — qualquer valor além de `'off'` conta como oferecida. Chave AUSENTE
- * cai no padrão de fábrica do PRÓPRIO token — nunca em "oferecida" às cegas:
- * um design sem as chaves novas (a barra de hoje) tem de continuar exibindo
- * só o que a fábrica já oferecia (modo e recolhimento), não tudo.
+ * cai no padrão de fábrica do próprio token.
  */
 export const isPreferenceOffered = (design: Record<string, unknown> | undefined, id: SarakPreferenceId): boolean => {
-    const tokenId = PREFERENCE_POSITION_TOKEN_IDS[id];
-    const value = design?.[tokenId] ?? DEFAULT_POSITIONS[tokenId];
-    return value !== 'off';
+    return getPreferencePosition(design, id) !== 'off';
 };
 
 /**
@@ -111,6 +144,5 @@ export const isPreferenceOffered = (design: Record<string, unknown> | undefined,
  * nunca reconstrói a tabela de defaults em outro arquivo.
  */
 export const getPreferencePosition = (design: Record<string, unknown> | undefined, id: SarakPreferenceId): SarakPreferencePosition => {
-    const tokenId = PREFERENCE_POSITION_TOKEN_IDS[id];
-    return (design?.[tokenId] as SarakPreferencePosition | undefined) ?? DEFAULT_POSITIONS[tokenId];
+    return getChromeWidgetPosition(design, id);
 };

@@ -168,15 +168,17 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | `logo` | `React.ReactNode` | não | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | `React.ReactNode` | não | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
 | `topbarEnd` | `React.ReactNode` | não | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
-| `search` | `React.ReactNode` | não | Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
+| `search` | `React.ReactNode` | não | Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. A composição do widget controla se a busca default é oferecida; a região personalizada continua controlada pelo conteúdo desta prop. |
 | `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
 | `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
 | `banner` | `React.ReactNode` | não | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
 | `footer` | `React.ReactNode` | não | Slot `footer`: faixa full-width na base do cromo (rodapé da página). |
 | `decoration` | `React.ReactNode` | não | Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui. |
-| `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). |
+| `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default. |
 | `logout` | `() => void` | não | Encerra a sessão a partir do widget de usuário default. |
-| `widgets` | `SarakChromeWidgets` | não | O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente. |
+| `notifications` | `SarakChromeNotification[]` | não | Notificações fornecidas pelo aplicativo para o widget da barra. |
+| `onNotificationSelect` | `(notification: SarakChromeNotification) => void` | não | Trata a seleção de uma notificação pelo usuário. |
+| `widgets` | `SarakChromeWidgets` | não | O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário, notificações e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os widgets ligados; `false` num campo desliga só aquele. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente. |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 
@@ -202,7 +204,9 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | `decoration` | `React.ReactNode` | não | Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). |
 | `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default, no rodapé do drawer. |
 | `logout` | `() => void` | não |  |
-| `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. |
+| `notifications` | `SarakChromeNotification[]` | não |  |
+| `onNotificationSelect` | `(notification: SarakChromeNotification) => void` | não |  |
+| `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default; o hambúrguer continua controlando a navegação no celular. |
 | `className` | `string` | não |  |
 | `rootStyle` | `React.CSSProperties` | sim |  |
 

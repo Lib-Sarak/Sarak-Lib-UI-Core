@@ -14,12 +14,15 @@ export const sanitizeCategory = (rawCategory: string): string => {
     if (['botoes', 'interacao', 'interação', 'comportamento', 'estado', 'acessibilidade', 'destaque'].includes(raw)) return 'Botões e Interação';
     if (['data-and-charts', 'tabelas', 'gráficos', 'indicadores', 'exibição'].includes(raw)) return 'Dados e Gráficos';
     if (['inputs', 'switches', 'ajuste'].includes(raw)) return 'Formulários';
+    if (['chrome-composition', 'composicao-da-barra', 'composição da barra'].includes(raw)) return CHROME_COMPOSITION_CATEGORY;
     if (['specialized-engines', 'media', 'imagem', 'câmera', 'overlays', 'status', 'scrollbar', 'tooltip', 'arquitetura', 'especial', 'ergonomia'].includes(raw)) return 'Especializado';
 
     return 'Geral';
 };
 
 import DesignPillars from '../config/design-pillars.json';
+
+export const CHROME_COMPOSITION_CATEGORY = 'Composição da Barra';
 
 // Extrai PILLAR_TO_CATEGORIES a partir do JSON de configuração
 export const PILLAR_TO_CATEGORIES: Record<string, string[]> = {};
@@ -34,11 +37,28 @@ Object.entries(PILLAR_TO_CATEGORIES).forEach(([pillarId, cats]) => {
 
 import type { ComponentSchema, SarakDesignToken } from '../../../core/Design/types';
 
+export const placeChromeCompositionToken = (
+    groups: Record<string, Record<string, SarakDesignToken[]>>,
+    token: SarakDesignToken,
+    categories: string[],
+): boolean => {
+    if (!categories.includes(CHROME_COMPOSITION_CATEGORY)) return false;
+    const pillarId = CATEGORY_TO_PILLAR[CHROME_COMPOSITION_CATEGORY];
+    if (pillarId) {
+        if (!groups[pillarId][CHROME_COMPOSITION_CATEGORY]) groups[pillarId][CHROME_COMPOSITION_CATEGORY] = [];
+        groups[pillarId][CHROME_COMPOSITION_CATEGORY].push(token);
+    }
+    return true;
+};
+
 /**
  * Constrói grupos lógicos ("Colors", "Typography", "Inputs") a partir do catálogo global e da estrutura de schemas mestre.
  * A estrutura resultante é { "Pillar": { "Group": [Token] } }
  */
-export const buildDynamicGroups = (masterTokens: ComponentSchema[], catalogJSON: { tokenId?: string, categories?: string[] }[]) => {
+export const buildDynamicGroups = (
+    masterTokens: ComponentSchema[],
+    catalogJSON: { tokenId?: string, categories?: string[] }[],
+): Record<string, Record<string, SarakDesignToken[]>> => {
     // 1. Mapa de categorias sanitizadas por token
     const tokenCategoriesMap: Record<string, string[]> = {};
     
@@ -59,8 +79,9 @@ export const buildDynamicGroups = (masterTokens: ComponentSchema[], catalogJSON:
         if (masterToken.id === 'global') return; // Global é tratado separado na UI
 
         masterToken.tokens.forEach((t: SarakDesignToken) => {
-            let foundInCatalog: { tokenId?: string, categories?: string[] } | undefined;
             const myCategories = tokenCategoriesMap[t.id] || ['Especializado'];
+
+            if (placeChromeCompositionToken(groups, t, myCategories)) return;
             
             myCategories.forEach(mainCategory => {
                 const pillarId = CATEGORY_TO_PILLAR[mainCategory];
@@ -90,7 +111,7 @@ export const buildDynamicGroups = (masterTokens: ComponentSchema[], catalogJSON:
         const subs = Object.keys(pillarData);
         
         subs.forEach(sub => {
-            if (sub !== 'Geral' && pillarData[sub].length <= 2) {
+            if (sub !== 'Geral' && sub !== CHROME_COMPOSITION_CATEGORY && pillarData[sub].length <= 2) {
                 if (!pillarData['Geral']) pillarData['Geral'] = [];
                 // Move os tokens para Geral
                 pillarData['Geral'].push(...pillarData[sub]);

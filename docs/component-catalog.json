@@ -238,7 +238,7 @@
           "name": "search",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir."
+          "doc": "Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. A composição do widget controla se a busca default é oferecida; a região personalizada continua controlada pelo conteúdo desta prop."
         },
         {
           "name": "sidebarHeader",
@@ -274,7 +274,7 @@
           "name": "user",
           "type": "SarakShellUser",
           "optional": true,
-          "doc": "Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo)."
+          "doc": "Identidade exibida no widget de usuário default."
         },
         {
           "name": "logout",
@@ -283,10 +283,22 @@
           "doc": "Encerra a sessão a partir do widget de usuário default."
         },
         {
+          "name": "notifications",
+          "type": "SarakChromeNotification[]",
+          "optional": true,
+          "doc": "Notificações fornecidas pelo aplicativo para o widget da barra."
+        },
+        {
+          "name": "onNotificationSelect",
+          "type": "(notification: SarakChromeNotification) => void",
+          "optional": true,
+          "doc": "Trata a seleção de uma notificação pelo usuário."
+        },
+        {
           "name": "widgets",
           "type": "SarakChromeWidgets",
           "optional": true,
-          "doc": "O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente."
+          "doc": "O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário, notificações e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os widgets ligados; `false` num campo desliga só aquele. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente."
         },
         {
           "name": "className",
@@ -403,10 +415,22 @@
           "doc": ""
         },
         {
+          "name": "notifications",
+          "type": "SarakChromeNotification[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onNotificationSelect",
+          "type": "(notification: SarakChromeNotification) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
           "name": "widgets",
           "type": "SarakChromeWidgets",
           "optional": true,
-          "doc": "Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav."
+          "doc": "Opt-out dos widgets default; o hambúrguer continua controlando a navegação no celular."
         },
         {
           "name": "className",

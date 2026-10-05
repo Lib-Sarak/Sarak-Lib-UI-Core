@@ -61,7 +61,7 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         sidebarBlur: 10,
         sidebarShadow: '10px 0 30px rgba(0,0,0,0.5)',
         searchPositionTopbar: 'center',
-        searchPositionSidebar: 'hidden',
+        searchPositionSidebar: 'top',
         cardBorderRadius: 24,
         cardRadiusTL: 24,
         cardRadiusTR: 24,

@@ -10,7 +10,8 @@ import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidge
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
-import { ChromeUserThemeGroup } from './ChromeUserThemeGroup';
+import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
+import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
 import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
@@ -35,7 +36,9 @@ export interface ChromeSidebarBodyProps {
     /** Identidade exibida no widget de usuário default (fora do slot `sidebarFooter`). */
     user?: SarakShellUser;
     logout?: () => void;
-    /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
+    notifications?: SarakChromeNotification[];
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
+    /** Opt-out dos widgets default; omitir mantém a composição de fábrica ativa. */
     widgets?: SarakChromeWidgets;
     className: string;
     rootStyle: React.CSSProperties;
@@ -49,11 +52,17 @@ export interface ChromeSidebarBodyProps {
  */
 export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter,
-    search, banner, footer, decoration, user, logout, widgets, className, rootStyle, children,
+    search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const { sidebarPosition, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
-    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
+    const w = useChromeDefaultWidgets(widgets, {
+        hasCustomSearch: Boolean(search),
+        hasUser: Boolean(user),
+        hasLogout: Boolean(logout),
+        hasNotifications: Boolean(notifications?.length),
+        hasNotificationHandler: Boolean(onNotificationSelect),
+    });
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
         : null);
@@ -64,8 +73,15 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     // mas a preferência continua oferecida (Spec 05 §2.3, "nada some"), então o ⚙
     // a recebe, mesmo quando nenhuma está em posição `menu` (que já a levaria).
     const collapsedExtras = w.preferencePlacement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
-    const menuIdsToShow = isNavHidden && w.preferencePlacement.menu.length === 0 ? collapsedExtras : w.preferencePlacement.menu;
-    const hasPreferencesMenu = menuIdsToShow.length > 0;
+    const menuIdsToShow = isNavHidden ? [...new Set([...w.preferencePlacement.menu, ...collapsedExtras])] : w.preferencePlacement.menu;
+    const menuWidgets = (
+        <>
+            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+        </>
+    );
+    const hasPreferencesMenu = w.widgetPlacement.menu.length > 0 || menuIdsToShow.length > 0;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -116,6 +132,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
                         {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant={isNavHidden ? 'mini' : 'vertical'} />}
                         {!isNavHidden && (showFontSize || showNavigationStyle || showLanguage) && (
                             <div className="flex flex-col gap-2 px-2 py-1">
                                 {showFontSize && <ShellFontSizeControl />}
@@ -136,6 +153,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                                     menuIds={menuIdsToShow}
                                     isNavHidden={isNavHidden}
                                     onToggleNavCollapsed={w.toggleNavHidden}
+                                    additionalRows={menuWidgets}
                                     align="start"
                                 />
                             </div>
@@ -150,7 +168,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                     {children}
                 </main>
             </div>
-            {w.showSearch && (
+            {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}

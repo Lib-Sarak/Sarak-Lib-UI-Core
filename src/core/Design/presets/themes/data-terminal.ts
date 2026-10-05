@@ -199,7 +199,7 @@ export const dataTerminal: SarakThemePreset = {
         sidebarBlur: 0,
         sidebarShadow: '1px 0 0 #c8e6d0',
         searchPositionTopbar: 'center',
-        searchPositionSidebar: 'hidden',
+        searchPositionSidebar: 'top',
         modalOverlayColor: 'rgba(10, 46, 24, 0.4)',
         modalOverlayBlur: 4,
         modalBorderRadius: 0,

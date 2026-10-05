@@ -53,7 +53,7 @@ describe('Caracterização — minimalist-airy antes/depois da reconciliação (
         expect(result.shadowColorMode).toBe('neutral');
         expect(result.btnStyleType).toBe('matte');
         expect(result.cardVariant).toBe('classic');
-        expect(result.searchPositionSidebar).toBe('hidden');
+        expect(result.searchPositionSidebar).toBe('top');
         expect(result.switchStyleType).toBe('tactile');
         expect(result.h1Weight).toBe('800');
     });

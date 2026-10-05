@@ -200,7 +200,7 @@ export const goldenHourTheme: SarakThemePreset = {
         sidebarBlur: 0,
         sidebarShadow: '-1px 0 0 #eadfc4',
         searchPositionTopbar: 'center',
-        searchPositionSidebar: 'hidden',
+        searchPositionSidebar: 'top',
         modalOverlayColor: 'rgba(61, 46, 15, 0.35)',
         modalOverlayBlur: 4,
         modalBorderRadius: 20,

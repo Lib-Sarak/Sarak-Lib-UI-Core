@@ -5,6 +5,7 @@ import BrandingConfigTokens from './partitions/branding_config.json';
 import ColorsAndAtmosphereTokens from './partitions/colors_and_atmosphere.json';
 import TypographyTokens from './partitions/typography.json';
 import LayoutAndNavigationTokens from './partitions/layout_and_navigation.json';
+import StructuralTokens from './partitions/structural.json';
 import ComponentsBaseTokens from './partitions/components_base.json';
 import CardsEngineTokens from './partitions/cards_engine.json';
 import DataAndChartsTokens from './partitions/data_and_charts.json';
@@ -19,6 +20,7 @@ export const TokenCatalog = [
     ...ColorsAndAtmosphereTokens,
     ...TypographyTokens,
     ...LayoutAndNavigationTokens,
+    ...StructuralTokens.filter((token) => token.categories?.includes('chrome-composition')),
     ...ComponentsBaseTokens,
     ...CardsEngineTokens,
     ...DataAndChartsTokens,

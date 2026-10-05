@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useChromeDefaultWidgets } from '../useChromeDefaultWidgets';
 
@@ -10,6 +10,23 @@ const wrapper = ({ children }: { children: React.ReactNode }) =>
 const pressCtrlK = () => fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
 
 describe('useChromeDefaultWidgets', () => {
+    it('avisa uma vez para uma conexão ausente mesmo após remontar o cromo', () => {
+        const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const firstMount = renderHook(
+            () => useChromeDefaultWidgets(undefined, { hasNotifications: true }),
+            { wrapper },
+        );
+        firstMount.unmount();
+        renderHook(
+            () => useChromeDefaultWidgets(undefined, { hasNotifications: true }),
+            { wrapper },
+        );
+
+        expect(warning).toHaveBeenCalledTimes(1);
+        expect(warning.mock.calls[0][0]).toContain('onNotificationSelect');
+        warning.mockRestore();
+    });
+
     it('fora do Provider: hasProvider falso, nenhum default liga (degradação)', () => {
         const { result } = renderHook(() => useChromeDefaultWidgets());
         expect(result.current.hasProvider).toBe(false);
@@ -46,9 +63,10 @@ describe('useChromeDefaultWidgets', () => {
         expect(result.current.showCollapse).toBe(true);
     });
 
-    it('sem `hasUser`, o widget de usuário não liga — mesmo com Provider e sem opt-out', () => {
+    it('sem `hasUser`, o widget continua oferecido para renderizar o estado desabilitado', () => {
         const { result } = renderHook(() => useChromeDefaultWidgets(), { wrapper });
-        expect(result.current.showUser).toBe(false);
+        expect(result.current.showUser).toBe(true);
+        expect(result.current.showUserOffered).toBe(true);
     });
 
     it('`widgets.user: false` desliga mesmo com `hasUser: true`', () => {

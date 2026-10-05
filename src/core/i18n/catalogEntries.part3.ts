@@ -70,6 +70,22 @@ export const CATALOG_PART_3 = {
     userRoleMaster: {
         pt: `Master`, en: `Master`, es: `Master`, fr: `Master`, de: `Master`, it: `Master`,
     },
+    chromeUserUnavailableLabel: {
+        pt: `Usuário indisponível`,
+        en: `User unavailable`,
+        es: `Usuario no disponible`,
+        fr: `Utilisateur indisponible`,
+        de: `Benutzer nicht verfügbar`,
+        it: `Utente non disponibile`,
+    },
+    chromeNotificationsUnavailableLabel: {
+        pt: `Notificações indisponíveis`,
+        en: `Notifications unavailable`,
+        es: `Notificaciones no disponibles`,
+        fr: `Notifications indisponibles`,
+        de: `Benachrichtigungen nicht verfügbar`,
+        it: `Notifiche non disponibili`,
+    },
     userRoleAdmin: {
         pt: `Administrador`, en: `Admin`, es: `Administrador`, fr: `Administrateur`, de: `Administrator`, it: `Amministratore`,
     },

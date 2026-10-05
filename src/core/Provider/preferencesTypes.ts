@@ -1,7 +1,15 @@
-import type { SarakPreferenceId, SarakPreferencePosition } from '../Design/schema/preferences';
+import type { SarakChromeWidgetId, SarakPreferenceId, SarakPreferencePosition } from '../Design/schema/preferences';
 
-export type { SarakPreferenceId, SarakPreferencePosition };
-export { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, isPreferenceOffered, getPreferencePosition } from '../Design/schema/preferences';
+export type { SarakChromeWidgetId, SarakPreferenceId, SarakPreferencePosition };
+export {
+    CHROME_WIDGET_IDS,
+    CHROME_WIDGET_POSITION_TOKEN_IDS,
+    PREFERENCE_IDS,
+    PREFERENCE_POSITION_TOKEN_IDS,
+    getChromeWidgetPosition,
+    isPreferenceOffered,
+    getPreferencePosition,
+} from '../Design/schema/preferences';
 
 export type SarakColorModePreference = 'light' | 'dark' | 'system';
 export type SarakFontSizePreference = 'sm' | 'md' | 'lg';

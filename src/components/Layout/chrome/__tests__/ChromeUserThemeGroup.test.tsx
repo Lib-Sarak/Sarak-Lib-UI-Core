@@ -48,11 +48,20 @@ describe('ChromeUserThemeGroup', () => {
         expect(screen.getByTitle('Sair')).toBeInTheDocument();
     });
 
-    it('showUser sem `logout`: o widget aparece, mas sem o botão de sair', () => {
+    it('showUser sem `logout`: apresenta o estado indisponível e fica desabilitado', () => {
         renderGroup(
             <ChromeUserThemeGroup showThemeToggle={false} showUser user={{ username: 'visitante' }} variant="vertical" />,
         );
-        expect(screen.getByText('visitante')).toBeInTheDocument();
+        const unavailableWidget = screen.getByRole('button', { name: 'Usuário indisponível' });
+        expect(unavailableWidget).toHaveAttribute('aria-disabled', 'true');
+        expect(screen.queryByText('visitante')).toBeNull();
         expect(screen.queryByTitle('Sair')).toBeNull();
+    });
+
+    it('showUser sem identidade: aparece desabilitado', () => {
+        renderGroup(
+            <ChromeUserThemeGroup showThemeToggle={false} showUser logout={vi.fn()} variant="vertical" />,
+        );
+        expect(screen.getByRole('button', { name: 'Usuário indisponível' })).toHaveAttribute('aria-disabled', 'true');
     });
 });

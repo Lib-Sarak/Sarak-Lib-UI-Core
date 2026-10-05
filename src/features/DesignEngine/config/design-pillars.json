@@ -32,7 +32,7 @@
       "title": "5. Navegação e Estrutura",
       "icon": "Activity",
       "index": 5,
-      "categories": ["Layout e Navegação"]
+      "categories": ["Layout e Navegação", "Composição da Barra"]
     },
     {
       "id": "systems",

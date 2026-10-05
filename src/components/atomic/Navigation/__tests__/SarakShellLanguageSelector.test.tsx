@@ -97,7 +97,7 @@ describe('ShellLanguageSelector', () => {
         expect(screen.getByTestId('host-language')).toHaveTextContent('en');
     });
 
-    it('idioma NÃO OFERECIDO (padrão de fábrica): escolher no seletor não muda o idioma efetivo que o host lê', () => {
+    it('idioma explicitamente desligado: escolher no seletor não muda o idioma efetivo que o host lê', () => {
         // Sem o administrador oferecer a preferência, ela é gravada (existe para quando for
         // oferecida) mas IGNORADA ao montar o design efetivo — ler a crua misturaria dois
         // idiomas na mesma tela.
@@ -111,7 +111,7 @@ describe('ShellLanguageSelector', () => {
                 <SarakShellLanguageSelector variant="horizontal" />
                 <Consumer />
             </>,
-            { ...TWO_LANGUAGES, language: 'pt' }, // preferenceLanguagePosition ausente → 'off', o padrão de fábrica
+            { ...TWO_LANGUAGES, language: 'pt', preferenceLanguagePosition: 'off' },
         );
 
         fireEvent.click(screen.getByRole('button'));

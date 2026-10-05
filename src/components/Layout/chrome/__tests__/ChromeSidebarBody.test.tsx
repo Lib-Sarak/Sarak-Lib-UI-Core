@@ -123,15 +123,15 @@ describe('ChromeSidebarBody — slot de busca (searchPositionSidebar)', () => {
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
     });
 
-    it('"hidden": a busca NÃO aparece mesmo com conteúdo passado', () => {
+    it('valor legado "hidden" cai em "top" e mantém a busca visível', () => {
         const { container } = render(
-            <SarakUIProvider config={{ searchPositionSidebar: 'hidden' }}>
+            <SarakUIProvider config={{ searchPositionSidebar: 'hidden' } as Record<string, unknown>}>
                 <ChromeSidebarBody nav={NAV} className="" rootStyle={{}} search={<div>buscar</div>}>
                     <div>x</div>
                 </ChromeSidebarBody>
             </SarakUIProvider>,
         );
-        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
     });
 });
 

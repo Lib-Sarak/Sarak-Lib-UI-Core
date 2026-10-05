@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { splitPreferencesByPlacement } from '../chromePreferencePlacement';
-import { PREFERENCE_POSITION_TOKEN_IDS } from '../../preferencesTypes';
+import { splitChromeWidgetsByPlacement, splitPreferencesByPlacement } from '../chromePreferencePlacement';
+import { CHROME_WIDGET_POSITION_TOKEN_IDS, PREFERENCE_POSITION_TOKEN_IDS } from '../../preferencesTypes';
 
 describe('splitPreferencesByPlacement', () => {
-    it('padrão de fábrica (chave ausente): colorMode e navCollapsed pinned, e o ⚙ NÃO nasce — a barra de hoje', () => {
+    it('padrão de fábrica (chave ausente): as cinco preferências ficam fixas na barra', () => {
         const result = splitPreferencesByPlacement(undefined);
-        expect(result.pinned.sort()).toEqual(['colorMode', 'navCollapsed'].sort());
-        expect(result.offered.sort()).toEqual(['colorMode', 'navCollapsed'].sort());
+        expect(result.pinned.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
+        expect(result.offered.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
         expect(result.menu).toEqual([]);
     });
 
@@ -24,8 +24,8 @@ describe('splitPreferencesByPlacement', () => {
     it("uma preferência 'menu' faz o ⚙ nascer com TODAS as oferecidas, fixadas inclusive", () => {
         const design = { [PREFERENCE_POSITION_TOKEN_IDS.fontSize]: 'menu' };
         const result = splitPreferencesByPlacement(design);
-        // fontSize=menu + os dois pinned de fábrica (colorMode, navCollapsed)
-        expect(result.menu.sort()).toEqual(['colorMode', 'fontSize', 'navCollapsed'].sort());
+        // fontSize=menu + as demais preferências fixadas de fábrica.
+        expect(result.menu.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
         expect(result.menu).toContain('colorMode'); // fixada também aparece no menu
         expect(result.pinned).not.toContain('fontSize');
     });
@@ -59,5 +59,28 @@ describe('splitPreferencesByPlacement', () => {
             expect(splitPreferencesByPlacement({ [tokenId]: 'menu' }).menu).toContain(id);
             expect(splitPreferencesByPlacement({ [tokenId]: 'pinned' }).pinned).toContain(id);
         });
+    });
+});
+
+describe('splitChromeWidgetsByPlacement', () => {
+    it('mantém busca, usuário e notificações fixos quando o tema omite as posições', () => {
+        const result = splitChromeWidgetsByPlacement(undefined);
+        expect(result.pinned).toEqual(expect.arrayContaining(['search', 'user', 'notifications']));
+        expect(result.offered).toEqual(expect.arrayContaining(['search', 'user', 'notifications']));
+    });
+
+    it('respeita pinned, menu e off para cada widget de composição', () => {
+        const design = {
+            [CHROME_WIDGET_POSITION_TOKEN_IDS.search]: 'menu',
+            [CHROME_WIDGET_POSITION_TOKEN_IDS.user]: 'off',
+            [CHROME_WIDGET_POSITION_TOKEN_IDS.notifications]: 'pinned',
+        };
+        const result = splitChromeWidgetsByPlacement(design);
+        expect(result.pinned).toContain('notifications');
+        expect(result.pinned).not.toContain('search');
+        expect(result.offered).not.toContain('user');
+        expect(result.menu).toContain('search');
+        expect(result.menu).toContain('notifications');
+        expect(result.menu).not.toContain('user');
     });
 });
