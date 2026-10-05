@@ -3,7 +3,7 @@ tipo: "adr"
 titulo: "Item de navegação é átomo próprio, não variante do botão de ação"
 status: "🔴 Substituído"
 tags: ["adr", "atomos", "cromo", "navegacao", "superficie-publica"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[arquitetura/03-superficie-publica]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[05-cromo-e-slots]]", "[[arquitetura/03-superficie-publica]]"]
 substitui: ""
 substituido_por: "[[015-metrica-do-item-de-navegacao-horizontal]]"
 alternativas_consideradas:

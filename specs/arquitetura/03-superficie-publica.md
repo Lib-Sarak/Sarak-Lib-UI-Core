@@ -24,11 +24,11 @@ Aqui está a regra de **exposição**. As regras de estilo e de hardcode moram n
 
 O barril é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino. **Quantos nomes ele exporta, e quantos componentes o gate registra, não se afirma aqui** — são cifras derivadas, e o lugar delas é a fonte que as produz: `npm run barrel:check` para os componentes, `dist/index.d.ts` e `docs/component-catalog.json` para os nomes. Cifra em prosa acerta por um dia e mente pelo resto ([[15-divida-conhecida]], achado 32).
 
-## 2.1 Duas particularidades do barril que você precisa conhecer
+## 2.1 Uma particularidade do barril que você precisa conhecer
 
 **Um `export *` que exclui um nome.** A categoria `Layouts/` **não** é exportada com `export *`; ela usa exports nomeados um a um (`src/index.ts:58-72`). O motivo está no comentário: existe um `SarakTabs` duplicado, e um `export *` puxaria o de `Layouts/`, colidindo com o de `UX/` — que é o público. Ver a dívida na §7.
 
-**O barril tem efeito colateral de import** (`src/index.ts:119-125`): ao importar a lib, ela executa `registerLocalComponent('mx-customization', CustomizationPanel)` e `registerLocalComponent('personalization', CustomizationPanel)`. São ids legados do Discovery, registrados só por o módulo ter sido importado. Ver §7.
+**O barril não tem efeito colateral de import.** Não há registro de módulos: importar a lib não executa nada além de injetar o CSS ([[01-forma-do-produto-e-modos-de-consumo]] §5).
 
 # 3. Como a superfície é DERIVADA
 
@@ -56,8 +56,8 @@ componente fora dessas raízes é invisível para os gates, mesmo que seja expor
 Isso corta nos dois sentidos, e os dois já aconteceram:
 
 - **Componente que devia ser público e não era.** Os quatro widgets do cromo — busca, alternância de tema,
-  widget de usuário e seletor de idioma — moravam em `src/core/Shell/Components/`. Eram alcançáveis só de
-  dentro do `SarakShell`, e o consumidor do modo ui-kit não tinha como montá-los nos slots do cromo.
+  widget de usuário e seletor de idioma — moravam numa pasta de `core/` fora das raízes varridas (o antigo host, removido pelo [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). Eram alcançáveis só de
+  dentro dele, e o consumidor não tinha como montá-los nos slots do cromo.
   Hoje vivem em `src/components/atomic/Navigation/`, com as interfaces de props exportadas, e chegam ao
   barril pelo `export *` da categoria — nenhuma linha nomeada foi preciso acrescentar em `src/index.ts`.
 - **Regra violada sem ninguém ver.** Ao entrarem na raiz varrida, os mesmos quatro expuseram hardcode
@@ -121,7 +121,7 @@ A convenção é **por espécie do nome**, e cada espécie tem uma forma só:
 | Componente, tipo, interface (PascalCase) | começa com `Sarak` | `SarakExpandableCard`, `SarakFlexDirection` |
 | Constante (SCREAMING_SNAKE) | começa com `SARAK_` | `SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS` |
 | Hook | começa com `use` | `useSarakDevice` — já conforme por construção |
-| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `getSarakModule` |
+| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `sarakResolveResponsiveValue` |
 
 O tipo de props acompanha o componente (`SarakFooProps`), que é o par que o `barrel:check` já cobra.
 
@@ -159,24 +159,21 @@ formato do bundler exige mudar a análise junto.
 
 - **O gate** (`collectPublicComponentNames()`) varre as peças **visuais**: `components/atomic/**` +
   `components/engines/**` + `components/Layout/**`.
-- **O kit** amplia com as peças de **montagem** — as **6** que o barril exporta, têm `<Nome>Props` e **não**
+- **O kit** amplia com as peças de **montagem** — as **3** que o barril exporta, têm `<Nome>Props` e **não**
   moram nas pastas varridas pelo gate (`collectKitSources.mjs`, `collectExtraPublicApi()`).
 
-**A diferença é sempre 6**, e é essa a invariante. *(Medido em 2026-08-11: gate **77**, kit **83**. Os
+**A diferença é sempre 3**, e é essa a invariante. *(Medido em 2026-10-05: gate **96**, kit **99**. Os
 números vivem em `npm run barrel:check` e em `sarak-ui/catalog.json` — se divergirem daqui, eles vencem.)*
 
-Os 6, com onde moram:
+Os 3, com onde moram:
 
 | Nome | Mora em |
 | --- | --- |
 | `SarakUIProvider` | `src/core/Provider/` |
-| `SarakShell` | `src/core/Shell/` |
-| `DynamicRenderer` | `src/core/Discovery/` |
-| `SarakComponent` | `src/core/Discovery/registry.ts` |
-| `DeviceProvider` | `src/core/Provider/DeviceProvider.tsx` |
-| `DesignScope` | `src/core/Design/components/` |
+| `SarakDeviceProvider` | `src/core/Provider/DeviceProvider.tsx` |
+| `SarakDesignScope` | `src/core/Design/components/` |
 
-**Nenhum dos 6 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, Shell, Discovery), que o importador também precisa saber que existem.
+**Nenhum dos 3 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, escopo de design, provedor de dispositivo), que o importador também precisa saber que existem. *(O `SarakShell` e o Discovery saíram da lista com o modo host — [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]].)*
 
 > A lista era de **7** antes do P26, e o sétimo era `SarakChartEngine`: ele precisava ser reincorporado por este caminho justamente porque `engines/` estava fora do escopo do gate. Com `engines/` dentro (§3), os três engines entram pela porta da frente e a lista de extras encolheu — a divergência de contagem passou a medir só o que ela sempre quis medir, as peças de montagem em `core/`.
 
@@ -378,6 +375,8 @@ Esta seção era, até 2026-07-29, a maior dívida desta lista: **três das quat
 | `SarakChatEngine` | ✅ `core/Discovery/components/ContractRenderer.tsx:67` | ❌ | **EXPOSTO** (barril próprio, lazy) |
 | `SarakFlowEngine` | ✅ `ContractRenderer.tsx:89` | ❌ | **EXPOSTO** (barril próprio, lazy) |
 | `SarakVisualEngine` | ❌ nenhum | ❌ | **REMOVIDO** |
+
+> O `ContractRenderer` citado acima saiu com o modo host ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]); hoje nenhum engine tem uso interno na lib.
 
 **O achado que explicava a confusão:** existia um `src/components/engines/index.ts` que declarava os quatro atrás de `React.lazy` e **não era importado por ninguém** — o `ContractRenderer` importava direto dos arquivos e o `src/index.ts` importava de `engines/charts`. Código morto que produzia leitura errada da arquitetura: quem o lia concluía que os quatro engines eram alcançáveis. Foi apagado.
 

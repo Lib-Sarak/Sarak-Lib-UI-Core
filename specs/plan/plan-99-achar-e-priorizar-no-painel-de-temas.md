@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Fazer a busca do painel de temas achar por sentido e dar a ele um modo de poucas opções de grande impacto"
 objetivo: "Fazer quem edita um tema encontrar o controle certo escrevendo do jeito que fala (cor texto, fonte, escrita) e poder trabalhar num terceiro modo, Impacto, com poucos controles que mudam o visual inteiro"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel de customização"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "design-engine", "painel", "busca", "modos"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[10-seguranca-e-acessibilidade]]"]
-depende_de: "plan-94-um-cromo-so"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -47,8 +47,7 @@ falta um terceiro modo com **poucas opções de grande impacto visual**.
 que separa os modos mora **no token**. Por isso o Impacto é um **campo no catálogo** (`visualImpact` na
 entrada do token, com o nome do grupo), não uma lista num arquivo de configuração: token novo de grande impacto se declara onde nasce.
 
-**Dependência:** `plan-94` (a edição do painel dela e esta tocam `src/features/DesignEngine/` e as partições do
-catálogo) — é colisão de arquivo, não dependência lógica. A `plan-90` (item 6) mede o campo de busca em
+**Contexto:** a `plan-94` já tocou o painel e as partições do catálogo (a seção "Composição da Barra" e os oito tokens de composição); esta plan parte dessa árvore. A `plan-90` (item 6) mede o campo de busca em
 `ThemeSidebarHeader.tsx`: este plan roda **antes** dela e **não troca nem remonta o `<input>`**.
 
 # 3. Escopo

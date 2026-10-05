@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "cromo", "tokens", "layout", "browser-tests"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-contrato-de-tokens-e-paridade]]", "[[07-responsividade-e-multidispositivo]]", "[[11-testes-e-cobertura]]"]
-depende_de: "plan-94-um-cromo-so"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md"
 ---
@@ -15,7 +15,7 @@ destino_sintese: "specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + s
 # 1. Objetivo
 
 Nenhum controle de layout do painel de Design é inerte: `layoutDensity`, `maxContentWidth` e
-`isSplitViewEnabled` passam a ter efeito visível no `SarakAppChrome` — o único cromo desde a `plan-94` —, e a medição de
+`isSplitViewEnabled` passam a ter efeito visível no `SarakAppChrome` — o único cromo desde o [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]] —, e a medição de
 navegador passa a provar que um tema que sobrescreve token de cromo chega à tela.
 
 # 2. Contexto
@@ -27,7 +27,7 @@ declarado em `gates/scripts/contrato/check-chrome-token-parity.mjs:105-109` (`OR
 |---|---|---|
 | `layoutDensity` | `src/core/Design/schema/system.ts:26` — `compact` · `comfortable` (default) · `spacious` | sem consumidor em **nenhum** do cromo |
 | `maxContentWidth` | `system.ts:39` — `1000px` a `1600px`, ou `100%`; default `1440px` | sem consumidor em **nenhum** do cromo |
-| `isSplitViewEnabled` | `system.ts:66` — booleano, default `false` | era consumido só pelo `SarakShell`, que a `plan-94` removeu; **sem consumidor no `SarakAppChrome`** |
+| `isSplitViewEnabled` | `system.ts:66` — booleano, default `false` | era consumido só pelo `SarakShell`, que o [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]] removeu; **sem consumidor no `SarakAppChrome`** |
 
 **Decisão do dono (2026-10-02): ligar os três.** Não remover.
 
@@ -56,7 +56,7 @@ que não existe.
 
 ## 3.1 Dentro (o que pode ser tocado)
 
-> ⚠️ **Esta plan depende da `plan-94`** (um cromo só): o cromo é o `SarakAppChrome`, e o gate de paridade tem um grupo de consumidores desde a 94.
+> ℹ️ **O cromo único já existe** ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]): o cromo é o `SarakAppChrome`, e o gate de paridade tem um grupo de consumidores.
 
 **Lote 1 — medir**
 - `browser-tests/fixtures/harness-entry.tsx` — recortes novos de token, itens de navegação para o caso do
@@ -90,7 +90,7 @@ que não existe.
 - Os casos que já existem em `cromo-css-real.spec.ts` — têm de continuar verdes **sem edição**.
 - `src/styles/` — é da `plan-90`.
 - `browser-tests/playwright.config.ts` e o ciclo de vida do harness — foram da `plan-86`.
-- A presença e a composição dos widgets da barra (busca inclusive) — foram da `plan-94`; aqui só os três tokens de layout.
+- A presença e a composição dos widgets da barra (busca inclusive) — foram do cromo único ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]); aqui só os três tokens de layout.
 - Átomos fora do cromo. Densidade alcançando cada componente não é esta plan.
 
 # 4. Referências obrigatórias

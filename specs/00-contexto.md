@@ -37,8 +37,9 @@ central resolve o dicionário inteiro de tokens em tempo de execução, e os com
 de terem estilo fixo.
 
 **Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
-registry npm. O consumo é feito de dois modos ortogonais — como **host do Shell** (a lib desenha o cromo) ou
-como **kit de componentes** com o Provider (o host desenha o seu).
+registry npm. O consumo é feito como **kit de componentes** com o Provider: o consumidor é dono do layout e
+das rotas, e a lib entrega o look e o cromo apresentacional (`SarakAppChrome`). A lib **não é host** — não
+registra módulos nem resolve rotas ([[adr/018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]).
 
 **O que ela NÃO é:** não é aplicação, não tem servidor, não persiste nada por conta própria e **não impõe
 marca** — a identidade visível é sempre do host ([[adr/006-zero-marca-soberania-host]]).
@@ -111,9 +112,9 @@ testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, ma
 |---|---|---|
 | `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → o dicionário de tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
-| `src/core/Shell/` · `Discovery/` | Cromo, rotas e os módulos-plugin | [`specs/04`](specs/04-shell-e-discovery.md) · [`specs/05`](specs/05-cromo-e-slots.md) |
+| `src/components/Layout/` | O cromo único (`SarakAppChrome`), os slots e os widgets da barra | [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |
-| `src/components/` | `atomic/` (átomos) · `engines/` (motores lazy) · `Layout/` | [`arquitetura/03`](arquitetura/03-superficie-publica.md) |
+| `src/components/` | `atomic/` (átomos) · `engines/` (motores lazy) | [`arquitetura/03`](arquitetura/03-superficie-publica.md) |
 | `src/features/DesignEngine/` | Painel de customização e preview | [`specs/06`](specs/06-painel-de-customizacao-e-preview.md) |
 
 **Fronteiras de dependência:** só **duas** regras são cobradas (`components/` não importa `features/`;
@@ -224,8 +225,7 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
 | **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as duas camadas de cache entre o `dist/` e o navegador | skill local `ui-integra-consumidor` |
-| Mexer no Shell, rotas ou módulos-plugin | `specs/04-shell-e-discovery` | [[00-knowledge]] |
-| Mexer no cromo ou nos slots | `specs/05-cromo-e-slots` | [[00-knowledge]] |
+| Mexer no cromo, nos slots, nos widgets da barra ou na navegação | `specs/05-cromo-e-slots` | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
 | **Operar Git**: commit, PR, merge na `main`, emitir release | `specs/17-contrato-de-operacao-git` (quem faz o quê) + `specs/03` + `specs/16` + `adr/008` | skill local **`git-ci-cd`** — ela **instrui, nunca executa** |
 | Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` + `specs/16-integracao-continua` | [[00-knowledge]] |
@@ -241,7 +241,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 |---|---|---|
 | 0 | [`sarak-dev/START-HERE.md`](../sarak-dev/START-HERE.md) | O índice operacional e o **carimbo de estado** — números recontados a cada geração, nunca escritos à mão |
 | 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As regras em duas categorias, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
-| 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
+| 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e o modo de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
 | 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O baseline do `run_audit` **não é zero** — compare com `gates/baselines/audit-baseline.json`, nunca com zero (§2) |

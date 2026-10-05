@@ -81,7 +81,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
-| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não

@@ -7,6 +7,7 @@ import { SarakInput } from './SarakInput';
 
 /** Um resultado fornecido pelo aplicativo ao palette. */
 export interface SarakSearchItem {
+    /** Com `onSelect`, identifica o destino do item (a rota); na busca embutida, também vira o `href` do resultado. */
     id: string;
     label: string;
     category?: string;

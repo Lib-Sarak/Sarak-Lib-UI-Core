@@ -294,7 +294,7 @@ outra aba/app da mesma origem grava a mesma chave.
 
 `crossTabSync` é o que faz o modo ui-kit + central funcionar com **apps separados por deploy**: N
 Providers independentes, mesma origem, mesma `storageKey` → trocar o tema numa aba repinta as outras.
-Ver [[005-modelo-modulos-plugin-e-apps-separados]].
+Ver [[005-modelo-modulos-plugin-e-apps-separados]] e [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]].
 
 ### 4.4.1 `strategy` e `tenantId` — quem vence quem
 

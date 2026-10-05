@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Fazer todo ícone passar por uma porta só, aberta ao consumidor"
 objetivo: "Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada"
 dominio: "Sarak-Lib-UI-Core / Átomos / Ícones"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "icones", "iconFamily", "lucide", "consumidor"]
 relacionados: ["[[03-superficie-publica]]", "[[09-temas-e-presets]]", "[[01-gates-e-baseline]]"]
-depende_de: "plan-94-um-cromo-so"
+depende_de: ""
 retida_por: ""
 destino_sintese: "arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md"
 ---
@@ -29,7 +29,8 @@ consumidor cobre o caso.
 | Fato | Onde |
 |---|---|
 | Os tokens `iconFamily` (`lucide` / `phosphor` / `tabler`) e `iconWeight` existem, 14 temas os declaram, e o `SarakIcon` os consome | `src/core/Design/schema/system.ts:205-232` · `src/components/atomic/Icon/SarakIcon.tsx:40-41` |
-| **37 arquivos** de `src/components` e `src/core` importam `lucide-react` direto e não seguem o token — entre eles `SarakModal`, `SarakStats`, `SarakTable`, `SarakSearch`, `SarakExpandableCard`, `SarakShellThemeToggle` | `git grep -l "from 'lucide-react'" -- src/components src/core` (38 arquivos, um é a própria família) |
+| **34 arquivos** de `src/components` e `src/core` importam `lucide-react` direto e não seguem o token — entre eles `SarakModal`, `SarakStats`, `SarakTable`, `SarakSearch`, `SarakExpandableCard`, `SarakShellThemeToggle` *(eram 37 antes de o modo host sair)* | `git grep -l "from 'lucide-react'" -- src/components src/core` (35 arquivos, um é a própria família) |
+| **Mais 30 arquivos de `src/features/DesignEngine/`** importam `lucide-react` direto. **Ficam fora da regra, de propósito:** são os ícones do **painel de autoria** — a ferramenta com que a lib faz o tema, não o produto do consumidor —, e o painel não deve repintar o próprio chrome com a família que está sendo editada. O gate declara esse limite (R18) | `git grep -l "from 'lucide-react'" -- src/features` |
 | O catálogo de componentes afirma que trocar a família "repinta todos os ícones" | `docs/component-catalog.md:89` |
 | A lista de nomes é fechada em 100; nome desconhecido vira `AlertCircle` com um aviso. Dos ícones que o Oss usa faltam 25 de 38; dos do Cripto, 39 de 98 (`Brain`, `Gauge`, `Key`, `Wallet`, `Wifi`, `Target`…) | `src/components/atomic/Icon/iconNames.ts:19-54` · `SarakIcon.tsx:28-47` |
 | `iconStrokeWidth` só é lido pelo `SarakSpinner`; dois temas o declaram sem efeito | `src/components/atomic/Feedback/SarakSpinner.tsx:47` |
@@ -43,13 +44,13 @@ consumidor cobre o caso.
 
 - `src/components/atomic/Icon/**` — a porta: o registro extensível, o elemento como ícone, o consumo de
   `iconStrokeWidth`.
-- Os 37 arquivos que importam `lucide-react` direto — passam a usar `SarakIcon` (ou a porta que ele expõe).
+- Os 34 arquivos de `src/components` e `src/core` que importam `lucide-react` direto — passam a usar `SarakIcon` (ou a porta que ele expõe). **Não** os de `src/features/DesignEngine/` (§2).
 - `src/core/Design/schema/system.ts` — só `description` dos três tokens, se precisar dizer o alcance.
 - `src/constants/icon-packs.tsx`, `src/features/DesignEngine/Library/ThemeEditor.tsx`,
   `src/features/DesignEngine/Context/useThemePreview.ts`, `src/features/DesignEngine/Panels/ShortcutsTab.tsx`,
   `LanguageTab.tsx`, a chave `emojiSet` em `src/core/Provider/types.ts` e `payloadExtraKeys.ts`, e os testes
   deles — **removidos**.
-- `gates/scripts/contrato/` — o gate que impede `lucide-react` (e as outras famílias) fora da porta, com teste.
+- `gates/scripts/contrato/` — o gate que impede `lucide-react` (e as outras famílias) fora da porta, com teste. Escopo do gate: `src/` **menos** `src/features/DesignEngine/` e a pasta das famílias; o limite é declarado no cabeçalho (R18).
 - `package.json` — a faixa do peer `lucide-react`, se a escolha for cortar os ícones de marca ou fixar o teto.
 - `src/components/Layout/chrome/navItem.ts` e `src/components/atomic/Navigation/SarakMenuItem.tsx` — `icon`
   aceita nome **ou** elemento.
@@ -82,15 +83,15 @@ consumidor cobre o caso.
 
 # 5. Instruções de execução
 
-1. **Inventário**: liste os 37 arquivos e, em cada um, os ícones usados. Registre no resumo.
+1. **Inventário**: liste os 34 arquivos e, em cada um, os ícones usados. Registre no resumo.
 2. **A porta aceita elemento**: `SarakIcon` (e o `icon` do item de navegação) aceita nome registrado **ou**
    `ReactNode`. Elemento passa direto, com o tamanho e a cor do contexto.
 3. **Registro extensível**: `sarakRegisterIcons({ nome: componente })` — o consumidor acrescenta nomes; os 100
    continuam. Nome desconhecido continua caindo em `AlertCircle` com aviso único.
-4. **Família e peso valem para todos**: os 37 arquivos passam a usar a porta; nenhum `from 'lucide-react'`
-   (nem phosphor/tabler) sobra fora de `src/components/atomic/Icon/families/`. `iconStrokeWidth` chega ao
+4. **Família e peso valem para todos**: os 34 arquivos passam a usar a porta; nenhum `from 'lucide-react'`
+   (nem phosphor/tabler) sobra fora de `src/components/atomic/Icon/families/` e de `src/features/DesignEngine/` (o painel de autoria). `iconStrokeWidth` chega ao
    ícone.
-5. **O gate**: `icon-port:check`, no Anel 1 e na CI, acusa import direto de qualquer família fora da porta.
+5. **O gate**: `icon-port:check`, no Anel 1 e na CI, acusa import direto de qualquer família fora da porta (e fora do painel de autoria, que o cabeçalho declara não ver).
    Caso que falha por fixture. Cabeçalho com os limites (R18).
 6. **Ícones de marca**: tire `Chrome`/`Github` da família lucide (o `SarakSocialButton` passa a receber o
    ícone do consumidor por `icon`, elemento) e ajuste o peer para a faixa que a lib de fato suporta. Registre
@@ -105,10 +106,10 @@ consumidor cobre o caso.
 
 # 6. Critérios de aceite
 
-- [ ] `git grep -l "from '\(lucide-react\|@phosphor-icons/react\|@tabler/icons-react\)'" -- src` devolve só
+- [ ] `git grep -l "from '\(lucide-react\|@phosphor-icons/react\|@tabler/icons-react\)'" -- src ':!src/features/DesignEngine'` devolve só
       arquivos de `src/components/atomic/Icon/families/`.
 - [ ] Teste: trocar `iconFamily` no Provider muda a família de um ícone do `SarakModal` e de um do `SarakTable`
-      (dois dos 37, escolhidos como amostra).
+      (dois dos 34, escolhidos como amostra).
 - [ ] Teste: `sarakRegisterIcons` torna um nome novo renderizável; `icon={<svg/>}` renderiza o elemento.
 - [ ] Teste: `iconStrokeWidth` chega ao `stroke-width` do ícone.
 - [ ] O gate acusa uma fixture com import direto e passa sobre a base.

@@ -104,10 +104,10 @@ kit:
 | `index.html` | `indexHtml.mjs` | ponto de entrada Vite |
 | `vite.config.ts` | `viteConfig.mjs` | React + `manualChunks` só de `react`/`react-dom` |
 | `tsconfig.json` | `tsconfig.mjs` | front puro, `include: ['src']` |
-| `src/main.tsx` | `mainTsx.mjs` | `SarakUIProvider` + `SarakShell` + registro do módulo de exemplo |
-| `src/modules/ExampleModule.tsx` | `exampleModule.mjs` | um componente React comum, tematizado |
+| `src/main.tsx` | `mainTsx.mjs` | `SarakUIProvider` envolvendo o `App` (e, no modo embarcado, o CSS escopado) |
+| `src/App.tsx` | `appTsx.mjs` | `SarakAppChrome` com `navItems`, `onNavigate` e um roteamento local de exemplo (`pushState`/`popstate`) |
 
-**É um starter de modelo módulos-plugin, Vite puro, SEM backend.** O tema persiste em
+**É um starter de cromo único com rotas do próprio app, Vite puro, SEM backend.** O tema persiste em
 `localStorage`, embutido no Provider (ADR-003).
 
 ## 3.2 As 3 stacks que colapsaram numa só — e por quê
@@ -139,19 +139,14 @@ grava **BOM UTF-8**, e `JSON.parse` não o tolera — o `init` morria no meio, c
 escritos e o merge abortado. Por isso todo `package.json` existente é lido por
 `parsePackageJson` (`mergePackageJson.mjs:36-38`), que remove o BOM.
 
-## 3.4 Dois achados reais preservados no gerador
+## 3.4 Um achado real preservado no gerador
 
-**(a) `@types/react` e `@types/react-dom` faltavam.** A lib os declara só em `devDependencies`
+**`@types/react` e `@types/react-dom` faltavam.** A lib os declara só em `devDependencies`
 (uso interno), então o starter nascia sem eles e `tsc --noEmit` falhava em `main.tsx` com
 **TS7016** em `react-dom/client`. Hoje entram no `STARTER_DEV_DEPENDENCIES`
 (`constants.mjs:31-32`), com o motivo escrito ao lado.
 
-**(b) A landing default caía no Design Engine.** Sem `defaultModuleId`, o `SarakShell` sempre
-abria no módulo nativo `mx-customization` — **prioridade 9999**, que vence qualquer módulo do
-consumidor. O starter passava a impressão de que a lib é um painel de temas. Corrigido setando
-`options={{ theme: { defaultModuleId: 'exemplo' } }}` (`generators/mainTsx.mjs:13-20`).
-
-Os dois têm a mesma forma: **o starter funcionava para quem o escreveu e não para quem o
+Ele tem esta forma: **o starter funcionava para quem o escreveu e não para quem o
 recebia.** É o argumento a favor do smoke test de instalação existir.
 
 # 4. O CLI de subcomandos
@@ -574,18 +569,12 @@ Desde o ADR-008 isso **parou de importar tanto**: a identidade passou a ser a **
 
 Escopo da Campanha 1 fechado — todos vão para a Campanha 2.
 
-## 11.1 O starter gerado cita um consumidor OBSOLETO
+## 11.1 ✅ FECHADO — o starter gerado deixou de citar um consumidor obsoleto
 
-`bin/scaffold/generators/mainTsx.mjs:37-40` escreve, **dentro do `main.tsx` que todo consumidor
-novo recebe**:
-
-> `// Registro Industrial de Componentes com Proteção — espelha o padrão real do Sarak-MyService`
-> `// (safeRegister/registerSarakModuleSafe em Sarak-MyService/src/main.tsx)`
-
-O `Sarak-MyService` é **OBSOLETO** (decisão D6, 2026-07-28) e o importador não tem acesso nenhum
-a esse repositório. O código gerado está correto; a **justificativa** aponta para algo que o
-leitor não pode conferir. Mesma classe do achado dos JSDoc ([[12-kit-do-consumidor]] §10):
-comentário que viaja para o consumidor é documentação pública.
+O `main.tsx` que todo consumidor novo recebe já não carrega bloco de registro nem comentário que aponte
+para repositório que o importador não pode conferir: com o cromo único ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]) ele só monta o
+Provider e o `App`. Vale a regra do achado dos JSDoc ([[12-kit-do-consumidor]] §10): comentário que viaja
+para o consumidor é documentação pública.
 
 ## 11.2 Ponteiro morto em `context.mjs`
 

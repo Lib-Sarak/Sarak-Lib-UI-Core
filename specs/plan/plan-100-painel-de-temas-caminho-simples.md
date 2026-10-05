@@ -102,7 +102,7 @@ caminho e a lista plana do modo Impacto foram para a plan-99. Duas decisões del
   tabela do catálogo) — só **o jeito de chegar** neles muda.
 - A **geometria dos dispositivos** (largura 375/768, molduras) e o `useContainerScale`.
 - O motor de design, o schema, `theme_table_mapping.json`, o catálogo de tokens.
-- `src/components/Layout/**` e o cromo (plan-94 e plan-89) · `src/styles/` (plan-90) · textos do painel em
+- `src/components/Layout/**` e o cromo (ADR-018 e plan-89) · `src/styles/` (plan-90) · textos do painel em
   outros idiomas (o painel é pt-BR hoje).
 - **Dependência nova.**
 

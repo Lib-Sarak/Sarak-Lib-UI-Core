@@ -61,7 +61,7 @@ nada específico de um sistema entra. Medido em 2026-10-02, no `login-completo` 
 - **Capacidade nova de componente** (célula customizada, paginação com resumo, KPI com delta, confirmação,
   modal com tamanhos): são das `plan-97` e `plan-98`.
 - O motor de gráficos além dos dois builders do item 7.
-- O Provider e a persistência (`plan-93`); o cromo (`plan-94`); os ícones (`plan-95`).
+- O Provider e a persistência (`plan-93`); o cromo ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]); os ícones (`plan-95`).
 - Qualquer tela, fluxo ou texto de domínio (login, cripto, ERP) — a lib não ganha nada deles.
 
 # 4. Referências obrigatórias

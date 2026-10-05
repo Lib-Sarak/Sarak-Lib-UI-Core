@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar à lib um quadro kanban de gestão de projetos que funciona em toque e teclado, com o cartão e seus blocos de detalhe"
 objetivo: "Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico)"
 dominio: "Sarak-Lib-UI-Core / DataDisplay / Gestão de projetos"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "kanban", "gestao-de-projetos", "dnd", "spike", "adr"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]", "[[13-instalacao-e-atualizacao]]"]

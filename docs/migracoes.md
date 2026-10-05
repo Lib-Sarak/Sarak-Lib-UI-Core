@@ -10,6 +10,12 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+Itens de navegação com destino (`SarakMenuItem` e, por ele, `SarakShellNav` e o menu do `SarakAppChrome`)
+agora são âncoras `<a href>` em vez de `<button>`. Testes de ponta a ponta e seletores de consumidor que
+procuravam `role="button"`/`button` em um item de navegação devem procurar `role="link"`/`a`. Sem
+`onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
+ignorar o clique.
+
 ### Exports removidos do barril público
 
 | Nome removido | Migração |

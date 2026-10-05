@@ -44,7 +44,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [002](./002-remocao-motor-manifesto.md) | Remoção do renderizador de páginas por manifesto (#2) | 🟢 Aceito |
 | [003](./003-remocao-backend-proprio.md) | Remoção do backend próprio — tema é dado no código do consumidor | 🟢 Aceito |
 | [004](./004-remocao-design-agent.md) | Remoção do Design Agent (agente LLM embarcado) | 🟢 Aceito |
-| [005](./005-modelo-modulos-plugin-e-apps-separados.md) | Modelo módulos-plugin oficial e a composição apps-separados | 🟢 Aceito |
+| [005](./005-modelo-modulos-plugin-e-apps-separados.md) | Modelo módulos-plugin oficial e a composição apps-separados | 🔴 Substituído por [018](./018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md), só no que diz respeito ao modo Shell-host |
 | [006](./006-zero-marca-soberania-host.md) | A lib nunca estampa a própria marca | 🟢 Aceito |
 | [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🔴 Substituído por [008](./008-releases-com-tag-e-semver-em-git.md) |
 | [008](./008-releases-com-tag-e-semver-em-git.md) | Releases com tag e faixa semver em Git — sem registry | 🟢 Aceito |
@@ -57,11 +57,14 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [015](./015-metrica-do-item-de-navegacao-horizontal.md) | O item de navegação horizontal usa caixa normal e corpo legível, não tipografia de etiqueta | 🟢 Aceito |
 | [016](./016-preferencias-do-usuario-separadas-do-tema.md) | Preferência do usuário é uma camada separada do tema — sobreposta ao renderizar, nunca gravada nele | 🟢 Aceito |
 | [017](./017-porta-de-apagar-tema-simetrica-a-de-escrever.md) | Tema salvo em runtime também se apaga por uma porta — simétrica à de escrever | 🟢 Aceito |
+| [018](./018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md) | Um cromo só — o consumidor é dono das rotas, e a lib não é host | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 
 > **Sobre o 007 → 008:** o 008 substitui o 007 **numa única conclusão** — a de que atualização automática exigiria registry. Todo o resto do 007 (identidade de build, comando por gerenciador, aviso no `predev`, a armadilha do `baseCommit`) continua descrevendo o que vale hoje, e é por isso que ele segue sendo leitura obrigatória mesmo marcado como substituído. O protocolo desta pasta é binário de propósito: um ADR substituído **em qualquer parte** muda de status, e o ADR novo declara o recorte.
 
 > **Sobre o 010 → 011:** mesmo caso. O 011 substitui **só o recorte técnico** do 010 — as três portas (`onSaveTheme`/`onLoadThemes`/`onDeleteTheme`) viram **uma** (`options.theme.onSave`), e o tipo passa de `ThemePreset` (cujo `id` é união fechada dos temas embarcados, e por isso não aceita tema autorado em runtime) para `ThemeEntry`. O **objetivo** do 010 — usuário final salva tema sem deploy —, a coexistência com "Exportar JSON", o corte sem editar/renomear e a validação de fronteira **continuam vigentes**, e é por isso que o 010 segue sendo leitura obrigatória. Os dois se leem juntos.
+
+> **Sobre o 005 → 018:** mesmo caso. O 018 substitui **só o recorte do modo Shell-host** do 005 — o `SarakShell`, o Discovery e o registro de módulos saem, e a lib deixa de ser dona das rotas. O **modo "ui-kit + central"** do 005 — o cromo por-app, a central que alcança todas as telas por código compartilhado e `localStorage`, o limite de mesma origem — **continua vigente** e passou a ser o único modo de consumo; é por isso que o 005 segue sendo leitura obrigatória. Os dois se leem juntos.
 
 > **Sobre o 013 → 015:** mesmo caso. O 015 substitui **um valor tipográfico** do 013 — o ramo `horizontal` do item de navegação deixa a caixa alta e o espaçamento largo e ganha corpo legível. O **núcleo** do 013 — item de navegação é átomo próprio, com métrica de navegação e não de botão de ação, e a `className` do chamador vencendo o default — **continua vigente**, e é por isso que o 013 segue sendo leitura obrigatória. Os dois se leem juntos.

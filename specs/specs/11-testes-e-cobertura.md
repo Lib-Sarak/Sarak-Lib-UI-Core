@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Qualidade / Testes"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "testes", "cobertura", "vitest", "gates", "divida-tecnica"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[04-shell-e-discovery]]", "[[10-seguranca-e-acessibilidade]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[10-seguranca-e-acessibilidade]]"]
 ---
 
 # 1. Propósito e os números MEDIDOS
@@ -479,7 +479,7 @@ Todos do jsdom, e nenhum indica problema:
 
 - `Could not parse CSS stylesheet` — o jsdom não entende o CSS moderno da lib;
 - `HTMLCanvasElement's getContext()` — a luminância híbrida usa canvas;
-- `Not implemented: navigation` — `useSarakRouter` mexe no `history`.
+- `Not implemented: navigation` — o jsdom não implementa a navegação (clique em âncora, `history`).
 
 # 10. Critérios de aceite
 

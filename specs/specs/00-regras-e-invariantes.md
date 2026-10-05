@@ -1256,7 +1256,7 @@ ERRADO   export type { CatalogItem }              ← colide com o tipo local do
 ERRADO   export { reorder, widthOf }              ← nome genérico de função
 CERTO    export type { SarakCatalogItem }
 CERTO    export { sarakReorder, sarakWidthOf }
-CERTO    export { useSarakDevice, getSarakModule } ← hook e função que já contêm Sarak
+CERTO    export { useSarakDevice, sarakGetThemePreset } ← hook e função que já contêm Sarak
 ```
 
 **Cobrada por:** `check-public-prefix.mjs` (`npm run prefix:check`), na cadeia do `npm run build`, logo

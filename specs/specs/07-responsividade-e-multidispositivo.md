@@ -183,7 +183,7 @@ Vale saber, para não procurar no lugar errado:
 3. **Container query estrutural** (`@min-[Npx]:` nas classes) — layout interno de componente, reagindo ao
    **container**, não à janela. Constantes em build-time.
 
-A camada 3 é a razão de `@container` aparecer na raiz do Shell (`SarakShell.tsx:94`): componentes internos
+A camada 3 é a razão de cada componente plantar o próprio `@container` (e de o escopo do preview o ter): componentes internos
 reagem à largura **disponível**, não à do viewport — é o que faz um card se comportar igual dentro de uma
 sidebar estreita e de uma página larga.
 
@@ -198,7 +198,7 @@ elemento fica no valor base para sempre. E o elemento **nunca é container de si
 no mesmo elemento da classe `@min-[…]` não faz a query dele casar. O container vai num **ancestral**.
 
 Por isso todo componente que consome `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/
-`getResponsiveSpacingStyles` planta o seu próprio `@container`, em vez de depender de haver um `SarakShell`
+`getResponsiveSpacingStyles` planta o seu próprio `@container`, em vez de depender de haver um cromo
 acima. Cobrado por `container-query-boundary:check`. Caso especial: componente que renderiza em
 `createPortal` planta o container na raiz **do portal**, não na raiz do componente — o portal escapa da
 subárvore no DOM real.

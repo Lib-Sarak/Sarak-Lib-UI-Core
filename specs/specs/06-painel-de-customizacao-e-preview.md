@@ -80,6 +80,13 @@ arbitrária que envelhece — o mesmo princípio da §2.
 **O Command Center tem entrada própria**, separada dos dois modos: é acesso direto por busca, não uma
 terceira curadoria.
 
+### 2.1.1 A seção "Composição da Barra"
+
+No pilar de **navegação** mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
+
+- **Aparece no modo padrão.** Os oito têm `importance: 80` no catálogo, então entram no **Essencial**; a seção não exige abrir o modo Avançado.
+- **É do sistema, não do tema.** Escolher um tema no painel **não** altera essa seção: nenhum tema distribuído declara token de composição.
+
 # 3. Controles polimórficos
 
 `TokenControl` (`Main/components/TokenControl.tsx`) e `DynamicTokenControl`
@@ -266,6 +273,10 @@ As quatro regras de operação dessa camada (container em ancestral, classe lite
 forma candidato, e default que não conserta opção) valem aqui integralmente — ver
 [[07-responsividade-e-multidispositivo]] §6.1.
 
+### 6.2.2 O preview desenha o cromo real
+
+`PreviewSystemRenderer` monta o **`SarakAppChrome`** — o mesmo que o consumidor monta — com a navegação de exemplo derivada das telas do preview, e a seleção de um item troca a tela ativa (`onNavigate`). Isso vale nas três geometrias de dispositivo. O administrador configura, no painel, **a barra que o usuário final vai ver**: topbar/sidebar, os oito widgets e o estado desabilitado do que depende do consumidor.
+
 ## 6.3 Mocks modulares
 
 `Canvas/Mocks/` — telas falsas que exercitam os componentes reais: `DashboardMock`, `TableMock`,
@@ -326,8 +337,7 @@ lado**, e o motivo tem de ser "isto não é consumidor-facing" — nunca "estava
 ([[01-gates-e-baseline]] §6, regra 1). Adicionar arquivo aqui é assumir publicamente que ele nunca chega
 ao produto do consumidor.
 
-⚠️ **Mas há uma tensão real:** o `CustomizationPanel` **é exportado no barril público** (`src/index.ts:50`)
-e **registrado no Discovery por efeito colateral de import** (`:119-125`, ver [[04-shell-e-discovery]] §7.1).
+⚠️ **Mas há uma tensão real:** o `CustomizationPanel` **é exportado no barril público** (`src/index.ts:50`).
 Ou seja, um consumidor **pode** exibi-lo — e nesse caso os painéis da allowlist chegam à tela dele. A
 allowlist é justificada pela **intenção** de uso, não por uma barreira técnica. Registrado como nuance, não
 como violação: os três arquivos são abas internas, e nenhum consumidor real exibe o Kitchen Sink hoje.
@@ -349,15 +359,16 @@ incompatível. O alvo (`useThemePersistenceHandlers`) aceitava `'error' | 'succe
 com efeito colateral** para registrá-lo no Discovery — o painel inteiro, a peça mais pesada da biblioteca, no
 caminho crítico de todo consumidor.
 
-**Conserto:** o bloco de efeito colateral foi apagado (saíram junto os dois ids legados do Discovery,
-`mx-customization`/`personalization` — ver [[04-shell-e-discovery]] §7.1), e `src/index.ts:50-52` passou a
+**Conserto:** o bloco de efeito colateral foi apagado (saíram junto os dois ids legados do registro de módulos,
+`mx-customization`/`personalization`), e `src/index.ts:50-52` passou a
 exportar o índice lazy (`Library/CustomizationPanel/index.tsx`, `React.lazy` + `Suspense` interno, no padrão
 do `SarakChartEngine`). **O Design Engine inteiro saiu do caminho crítico:** chunk de boot medido em
 **674.011 → 167.684 bytes (−75,1%)**. O tipo público não mudou (`React.FC`, não `LazyExoticComponent`) —
 consequência de seguir o padrão existente em vez da previsão original desta spec.
 
-**Consequência para o consumidor:** quem dependia do registro automático de `mx-customization` como módulo
-do Discovery precisa registrá-lo explicitamente agora — está em `docs/migracoes.md`.
+**Consequência para o consumidor:** quem dependia do registro automático de `mx-customization` precisava montar o
+painel direto (`<CustomizationPanel />`); o registro de módulos deixou de existir de vez com o cromo único
+([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]) — está em `docs/migracoes.md`.
 
 ## 9.3 ✅ FECHADO em 2026-08-04 (`plan-08`, F2) — as 6 abas mortas saíram, não voltaram
 

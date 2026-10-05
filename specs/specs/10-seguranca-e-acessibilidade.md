@@ -309,16 +309,10 @@ telemetria, não há phone-home, não há endpoint da lib (o backend próprio fo
 
 ## 3.3 Roteamento
 
-**No modo ui-kit (#3):** a lib reage à rota; o host é dono da URL. O cromo apresentacional entrega a
-seleção por callback (`onNavigate`) e **não navega** — ver [[05-cromo-e-slots]].
-
-**No modo Shell-host (#1) isto é diferente, e a spec antiga simplificava:** `useSarakRouter`
-(`src/shared/hooks/useSarakRouter.ts:37-57`) **escreve na URL** — `history.pushState`/`replaceState` +
-dispatch manual de `popstate`. O módulo ativo do Shell **é** o primeiro segmento do path
-(`useSarakShell.ts:14`). Portanto: **no modo Shell-host a lib controla a URL**, e um host que já tenha
-router próprio na mesma página vai disputar o `history` com ela. Não é bug — é o contrato do modo #1 (a
-lib é o host). Mas tem de estar escrito, porque "a lib nunca controla a URL" é falso. Ver
-[[04-shell-e-discovery]].
+**A lib reage à rota; o consumidor é dono da URL** ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). O cromo entrega a seleção por callback
+(`onNavigate`) e **não navega**; os itens de navegação são âncoras que o navegador segue quando não há callback
+([[05-cromo-e-slots]] §2.1.2). **A lib nunca escreve na URL** (`history.pushState`/`replaceState`): o router do
+consumidor não disputa o `history` com ela.
 
 ## 3.4 Origem, CSP e CORS
 

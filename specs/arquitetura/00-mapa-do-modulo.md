@@ -21,23 +21,22 @@ Contagens recursivas, medidas no filesystem:
 
 ```
 src/
-├── components/           302   a camada visual
-│   ├── atomic/           264     14 categorias de componentes burros (§3)
-│   ├── Layout/            14     o cromo e o layout de aplicação
-│   └── engines/           24     wrappers sobre libs pesadas de terceiros
-├── core/                 189   o cérebro, sem UI de produto
-│   ├── Design/            86     o dicionário de tokens, o catálogo, os presets
-│   ├── Provider/          54     o SarakUIProvider e seus gerenciadores
-│   ├── Shell/             33     o host de módulos-plugin (SarakShell)
-│   ├── Discovery/         14     o registro de módulos e componentes locais
+├── components/           393   a camada visual
+│   ├── atomic/           336     14 categorias de componentes burros (§3)
+│   ├── Layout/            37     o cromo único (SarakAppChrome) e o layout de aplicação
+│   └── engines/           20     wrappers sobre libs pesadas de terceiros
+├── core/                 202   o cérebro, sem UI de produto
+│   ├── Design/            91     o dicionário de tokens, o catálogo, os presets
+│   ├── Provider/          99     o SarakUIProvider e seus gerenciadores
+│   ├── i18n/              10     o catálogo de textos da lib, nos seis idiomas
 │   └── Security/           2     sanitização de conteúdo rico
-├── features/             163   a única feature: o painel do Design Engine
-│   └── DesignEngine/     163
-├── styles/                11   o CSS base e os parciais (fonte do Tailwind)
+├── features/             172   a única feature: o painel do Design Engine
+│   └── DesignEngine/     172
+├── styles/                13   o CSS base e os parciais (fonte do Tailwind)
 ├── shared/                 5   utilitários transversais (hooks/services/types)
 ├── constants/              2
 ├── types/                  1
-├── effects/                1
+├── effects/                2
 └── __tests__/              2
 ```
 
@@ -73,7 +72,7 @@ Confirmadas varrendo `src/components/atomic/`. São **15 pastas**: 14 categorias
 
 A organização é hermética, e a direção das setas importa:
 
-**`core/` — o cérebro.** O Provider, o Design Engine, o dicionário de tokens, o Shell, o Discovery. Nenhuma UI de produto vive aqui. Regra mestra: *a interface do payload dita a realidade* — se uma propriedade não existe no tipo TypeScript, ela não existe no sistema.
+**`core/` — o cérebro.** O Provider, o Design Engine, o dicionário de tokens, o catálogo de textos. Nenhuma UI de produto vive aqui, e **a lib não tem host**: não há Shell nem Discovery ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). Regra mestra: *a interface do payload dita a realidade* — se uma propriedade não existe no tipo TypeScript, ela não existe no sistema.
 
 **`components/atomic/` — os músculos.** Blocos visuais **burros**: não buscam dados, não têm lógica de negócio, não sabem de onde os tokens vêm. Só renderizam o que recebem. Regra mestra: nada de valor hardcoded; tudo mapeia token com fallback.
 

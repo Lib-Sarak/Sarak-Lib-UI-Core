@@ -1,11 +1,11 @@
 ---
 tipo: "adr"
 titulo: "Modelo módulos-plugin oficial e a composição apps-separados"
-status: "🟢 Aceito"
+status: "🔴 Substituído"
 tags: ["adr", "arquitetura", "modos-de-consumo", "shell", "ui-kit", "cromo"]
 relacionados: ["[[001-tres-arquiteturas]]", "[[002-remocao-motor-manifesto]]", "[[003-remocao-backend-proprio]]"]
 substitui: ""
-substituido_por: ""
+substituido_por: "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]"
 ---
 
 # 1. Contexto e Problema

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Identidade / Branding"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "zero-marca", "identidade", "branding", "soberania-host", "gate"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[04-shell-e-discovery]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
 ---
 
 # 1. A regra
@@ -197,11 +197,10 @@ Os sinks neutralizados (`docs/migracoes.md` §"Rótulos decorativos"):
 | `SarakSearch` (rodapé) | `'Sarak Lib Search Engine'` fixo | `` `${systemName} Search Engine` `` ou `'Search Engine'` |
 | `ChatHeader` (subtítulo) | `'Agnostic Interface • Sarak Lib Engine'` | `'Agnostic Interface • Chat Engine'` |
 | `SarakChat` (default de `label`) | `'Sarak AI Chat Lab'` | `'AI Chat'` |
-| **`SarakShell`** (default de `brand`) | `{ name: 'Sarak Lib' }` | `{ name: 'Sistema' }` |
 | **`ShellUserWidget`** (usuário sem nome) | `'Sarak User'` | `'User'` |
 
-**Os dois últimos não estavam no levantamento inicial** — apareceram na confirmação em código. E o
-`SarakShell` é o mais instrutivo: `SidebarNav`/`TopbarNav` **já consumiam corretamente**
+**O último não estava no levantamento inicial** — apareceu na confirmação em código. E o caso mais
+instrutivo foi o do cromo antigo (o `SarakShell`, removido pelo [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]): a navegação **já consumia corretamente**
 (`systemName || brand.name`); era o **default do `brand`** que nomeava a lib quando o consumidor não passava
 `manifest.brand`. **A porta certa estava certa; o vazamento entrou pela fonte do valor que passa por ela.**
 

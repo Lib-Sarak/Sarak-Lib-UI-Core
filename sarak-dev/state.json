@@ -383,7 +383,8 @@
       "014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md",
       "015-metrica-do-item-de-navegacao-horizontal.md",
       "016-preferencias-do-usuario-separadas-do-tema.md",
-      "017-porta-de-apagar-tema-simetrica-a-de-escrever.md"
+      "017-porta-de-apagar-tema-simetrica-a-de-escrever.md",
+      "018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",
@@ -398,7 +399,6 @@
       "01-gates-e-baseline.md",
       "02-enforcement-por-commit.md",
       "03-versionamento-e-release.md",
-      "04-shell-e-discovery.md",
       "05-cromo-e-slots.md",
       "06-painel-de-customizacao-e-preview.md",
       "07-responsividade-e-multidispositivo.md",

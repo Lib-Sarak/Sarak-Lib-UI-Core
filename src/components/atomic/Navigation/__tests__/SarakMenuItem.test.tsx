@@ -159,6 +159,17 @@ describe('SarakMenuItem', () => {
     });
 });
 
+describe('SarakMenuItem — navegação com clique do meio', () => {
+    it('mantém o clique para o navegador e não chama onNavigate', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent.click(link, { button: 1 })).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+});
+
 describe('SarakMenuItem — cor de ativo/hover do cromo por orientação', () => {
     it('vertical ATIVO consome --sarak-sidebar-active-color (sidebar/drawer)', () => {
         render(<SarakMenuItem label="Módulo" orientation="vertical" active />);
