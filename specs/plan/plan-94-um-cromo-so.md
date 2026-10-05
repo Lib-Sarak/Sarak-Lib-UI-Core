@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ficar com um cromo só, completo por padrão e com navegação genérica"
 objetivo: "Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade"
 dominio: "Sarak-Lib-UI-Core / Cromo / Navegação"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "cromo", "shell", "navegacao", "widgets", "adr"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -178,7 +178,9 @@ por arraste (só o Shell tinha). O dono não os pediu; se fizerem falta, voltam 
 - [ ] `disabled`, `badge` e `target` chegam do dado ao átomo (teste).
 - [ ] Resultado da busca clicável navega (teste).
 - [ ] Widget de usuário renderiza com `{ name, role }` e nada com `level` sobra em `src/`.
-- [ ] `docs/migracoes.md` tem a nota MAJOR; `README`, kit e `docs/` não mencionam o modo host.
+- [ ] `docs/migracoes.md` tem a nota MAJOR; `README`, kit e `docs/` não mencionam o modo host — **exceto** a
+      própria nota de migração (e a cópia dela no kit), que cita `SarakShell` para ensinar a sair dele; o
+      `kit-names:check` e o `section-pointers:check` já a isentam por ser `migracoes.md`.
 - [ ] `npm run build`, `npx tsc --noEmit`, `npx vitest run` verdes; `npm run audit` sem regressão.
 
 # 7. Como verificar (uso do revisor)
