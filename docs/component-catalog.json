@@ -2159,7 +2159,7 @@
     "SarakLink": {
       "propsInterface": "SarakLinkProps",
       "source": "src/components/atomic/Navigation/SarakLink.tsx",
-      "extends": "Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'>",
+      "extends": "Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel' | 'onClick'>",
       "props": [
         {
           "name": "href",
@@ -2171,7 +2171,31 @@
           "name": "external",
           "type": "boolean",
           "optional": true,
-          "doc": "Abre em nova aba com `rel=\"noreferrer noopener\"` + indicação visual/a11y."
+          "doc": "Abre em nova aba com `rel=\"noopener noreferrer\"` + indicação visual/a11y."
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "optional": true,
+          "doc": "Contexto de navegação nativo; fora de `_self`, o navegador mantém o comportamento."
+        },
+        {
+          "name": "rel",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": "Intercepta apenas clique primário simples destinado à aba atual."
+        },
+        {
+          "name": "onClick",
+          "type": "React.MouseEventHandler<HTMLAnchorElement>",
+          "optional": true,
+          "doc": ""
         },
         {
           "name": "children",
@@ -2311,7 +2335,7 @@
     "SarakMenuItem": {
       "propsInterface": "SarakMenuItemProps",
       "source": "src/components/atomic/Navigation/SarakMenuItem.tsx",
-      "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'>",
       "props": [
         {
           "name": "icon",
@@ -2348,6 +2372,48 @@
           "type": "string",
           "optional": true,
           "doc": "Tooltip nativo; cai para o texto do rótulo quando `label` é string."
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true,
+          "doc": "Destino opcional; quando informado, o item é renderizado como link."
+        },
+        {
+          "name": "onNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": "Chamado apenas para clique primário simples em link destinado à aba atual."
+        },
+        {
+          "name": "badge",
+          "type": "string | number",
+          "optional": true,
+          "doc": "Indica uma quantidade ou estado adicional; também integra o nome acessível."
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "optional": true,
+          "doc": "Contexto de navegação nativo do link."
+        },
+        {
+          "name": "type",
+          "type": "React.ButtonHTMLAttributes<HTMLButtonElement>['type']",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onClick",
+          "type": "React.MouseEventHandler<HTMLElement>",
+          "optional": true,
+          "doc": ""
         },
         {
           "name": "className",
@@ -2962,7 +3028,13 @@
           "name": "onClick",
           "type": "() => void",
           "optional": false,
-          "doc": "Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados."
+          "doc": "Callback do gatilho `icon`; obrigatório."
+        },
+        {
+          "name": "onSelect",
+          "type": "(item: SarakSearchItem) => void",
+          "optional": true,
+          "doc": "Seleciona um resultado da variante `bar`."
         }
       ]
     },
@@ -2986,7 +3058,7 @@
           "name": "user",
           "type": "SarakShellUser",
           "optional": true,
-          "doc": "Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário."
+          "doc": "Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico."
         },
         {
           "name": "logout",
@@ -2998,7 +3070,7 @@
           "name": "variant",
           "type": "'horizontal' | 'vertical' | 'mini'",
           "optional": true,
-          "doc": "Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos."
+          "doc": "Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`."
         }
       ]
     },

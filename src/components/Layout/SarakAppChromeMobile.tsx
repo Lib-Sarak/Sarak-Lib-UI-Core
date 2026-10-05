@@ -17,6 +17,7 @@ import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralSty
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
+import { getSarakSearchItems } from './chrome/navItem';
 
 /**
  * SarakAppChromeMobile — colapso do cromo no celular (Spec 40.3 — L1).
@@ -109,7 +110,15 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
         hasNotifications: Boolean(notifications?.length),
         hasNotificationHandler: Boolean(onNotificationSelect),
     });
-    const effectiveSearch = search ?? (w.showSearchOffered ? <SarakShellSearchWidget variant="bar" onClick={w.openSearch} /> : null);
+    const searchableItems = getSarakSearchItems(nav);
+    const effectiveSearch = search ?? (w.showSearchOffered
+        ? <SarakShellSearchWidget
+            variant="bar"
+            onClick={w.openSearch}
+            items={searchableItems}
+            onSelect={onNavigate ? (item) => handleSelect(item.id) : undefined}
+        />
+        : null);
     // No celular tudo o que é OFERECIDO vai para o drawer, fixado ou não (Spec 05 §2.3)
     // — não há distinção de "botão direto vs. dentro do ⚙" quando só existe uma barra.
     // `navCollapsed` fica de fora: o próprio hambúrguer já é o controle de colapso aqui.
@@ -209,8 +218,8 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}
-                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
-                    onSelect={handleSelect}
+                    items={searchableItems}
+                    onSelect={onNavigate ? handleSelect : undefined}
                 />
             )}
         </ChromeFrame>

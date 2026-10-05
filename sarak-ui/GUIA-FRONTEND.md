@@ -680,12 +680,12 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Modals | **SarakDrawer** | `isOpen` · `onClose` · `direction` · `children` · `size` · `className` |
 | Modals | **SarakModal** | `isOpen` · `onClose` · `title` · `children` · `footer` · `steps` · `onComplete` · `disableOverlayClick` · `hideCloseButton` · `className` |
 | Navigation | **SarakBreadcrumbs** | `items` · `separator` · `onNavigate` · `className` |
-| Navigation | **SarakLink** | `href` · `external` · `children` |
-| Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `className` |
+| Navigation | **SarakLink** | `href` · `external` · `target` · `rel` · `onNavigate` · `onClick` · `children` |
+| Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `href` · `onNavigate` · `badge` · `target` · `type` · `disabled` · `onClick` · `className` |
 | Navigation | **SarakPagination** | `current` · `total` · `maxVisible` · `onChange` · `className` |
 | Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
-| Navigation | **SarakShellSearchWidget** | `variant` · `items` · `onClick` |
+| Navigation | **SarakShellSearchWidget** | `variant` · `items` · `onClick` · `onSelect` |
 | Navigation | **SarakShellThemeToggle** | `variant` |
 | Navigation | **SarakShellUserWidget** | `user` · `logout` · `variant` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |

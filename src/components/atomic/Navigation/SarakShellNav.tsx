@@ -20,6 +20,12 @@ export interface SarakShellNavItem {
     route: string;
     /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
     icon?: string;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
     category?: string;
 }
@@ -66,14 +72,18 @@ const NavEntry: React.FC<{
     isActive: boolean;
     horizontal: boolean;
     collapsed: boolean;
-    onSelect: (route: string) => void;
+    onSelect?: (route: string) => void;
 }> = ({ item, isActive, horizontal, collapsed, onSelect }) => (
     // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
     // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
     // `className="relative"` ancora o marcador do item ativo (abaixo), equivalente ao
     // do `SidebarNav` do Shell (`navActiveMarkerColor`/`navActiveMarkerGlow`, Spec 05 §2.4).
     <SarakMenuItem
-        onClick={() => onSelect(item.route)}
+        href={item.route}
+        target={item.target}
+        disabled={item.disabled}
+        badge={item.badge}
+        onNavigate={onSelect}
         active={isActive}
         collapsed={collapsed}
         orientation={horizontal ? 'horizontal' : 'vertical'}
@@ -115,10 +125,12 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
         : orientation;
     const horizontal = resolved === 'horizontal';
 
-    const select = (route: string): void => {
-        onNavigate?.(route);
-        onChange?.(route);
-    };
+    const select = onNavigate || onChange
+        ? (route: string): void => {
+            onNavigate?.(route);
+            onChange?.(route);
+        }
+        : undefined;
 
     const groups = groupByCategory(items ?? []);
 

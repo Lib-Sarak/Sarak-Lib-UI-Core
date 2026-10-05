@@ -31,26 +31,26 @@ describe('ChromeUserThemeGroup', () => {
             <ChromeUserThemeGroup
                 showThemeToggle={false}
                 showUser
-                user={{ username: 'visitante' }}
+                user={{ name: 'Visitante' }}
                 logout={logout}
                 variant="vertical"
             />,
         );
-        expect(screen.getByText('visitante')).toBeInTheDocument();
-        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        expect(screen.getByText('Visitante')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
     it('os dois ligados: ambos montam juntos', () => {
         renderGroup(
-            <ChromeUserThemeGroup showThemeToggle showUser user={{ username: 'ana' }} logout={vi.fn()} variant="horizontal" />,
+            <ChromeUserThemeGroup showThemeToggle showUser user={{ name: 'Ana' }} logout={vi.fn()} variant="horizontal" />,
         );
         expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
-        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        expect(screen.getAllByRole('button')).toHaveLength(2);
     });
 
     it('showUser sem `logout`: apresenta o estado indisponível e fica desabilitado', () => {
         renderGroup(
-            <ChromeUserThemeGroup showThemeToggle={false} showUser user={{ username: 'visitante' }} variant="vertical" />,
+            <ChromeUserThemeGroup showThemeToggle={false} showUser user={{ name: 'Visitante' }} variant="vertical" />,
         );
         const unavailableWidget = screen.getByRole('button', { name: 'Usuário indisponível' });
         expect(unavailableWidget).toHaveAttribute('aria-disabled', 'true');

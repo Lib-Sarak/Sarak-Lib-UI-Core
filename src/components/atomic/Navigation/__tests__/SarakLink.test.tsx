@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SarakLink, sarakIsSafeLinkHref } from '../SarakLink';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
@@ -35,7 +35,7 @@ describe('SarakLink (átomo de link acessível)', () => {
         );
         const link = screen.getByRole('link', { name: /Site externo/ });
         expect(link).toHaveAttribute('target', '_blank');
-        expect(link).toHaveAttribute('rel', 'noreferrer noopener');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
         expect(screen.getByText('(abre em nova aba)', { exact: false })).toBeInTheDocument();
     });
 
@@ -72,6 +72,34 @@ describe('SarakLink (átomo de link acessível)', () => {
     it('rejeita href vazio', () => {
         expect(sarakIsSafeLinkHref('')).toBe(false);
         expect(sarakIsSafeLinkHref('   ')).toBe(false);
+    });
+
+    it('clique primário simples com onNavigate previne o padrão e delega a rota', () => {
+        const onNavigate = vi.fn();
+        render(<SarakLink href="/clientes" onNavigate={onNavigate}>Clientes</SarakLink>);
+        const link = screen.getByRole('link', { name: 'Clientes' });
+
+        expect(fireEvent.click(link)).toBe(false);
+        expect(onNavigate).toHaveBeenCalledWith('/clientes');
+    });
+
+    it('clique com modificador preserva a navegação nativa e não chama onNavigate', () => {
+        const onNavigate = vi.fn();
+        render(<SarakLink href="/clientes" onNavigate={onNavigate}>Clientes</SarakLink>);
+        const link = screen.getByRole('link', { name: 'Clientes' });
+
+        expect(fireEvent.click(link, { ctrlKey: true })).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('target externo e clique do meio preservam o comportamento do navegador', () => {
+        const onNavigate = vi.fn();
+        render(<SarakLink href="https://example.com" target="_blank" onNavigate={onNavigate}>Site</SarakLink>);
+        const link = screen.getByRole('link', { name: 'Site' });
+
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(fireEvent(link, new MouseEvent('auxclick', { bubbles: true, button: 1, cancelable: true }))).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
     });
 });
 

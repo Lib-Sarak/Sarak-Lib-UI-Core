@@ -1,3 +1,5 @@
+import type { SarakSearchItem } from '../../atomic/Inputs/SarakSearch';
+
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
  *
@@ -25,6 +27,21 @@ export interface SarakNavItem {
     href: string;
     /** Marca o item como ativo (destaque + `aria-current="page"`). */
     active?: boolean;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual — mesmo campo do `ShellNavItem`; itens sem categoria ficam no grupo raiz. */
     category?: string;
 }
+
+export const getSarakSearchItems = (items: readonly {
+    route: string;
+    label: string;
+    category?: string;
+    disabled?: boolean;
+}[]): SarakSearchItem[] => items
+    .filter((item) => !item.disabled)
+    .map(({ route, label, category }) => ({ id: route, label, category }));

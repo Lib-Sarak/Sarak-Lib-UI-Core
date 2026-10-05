@@ -18,6 +18,7 @@ import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
 import type { SarakChromeWidgets } from './chromeWidgets';
+import { getSarakSearchItems } from './navItem';
 
 export interface ChromeTopbarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -61,7 +62,12 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
         hasNotificationHandler: Boolean(onNotificationSelect),
     });
     const effectiveSearch = search ?? (w.showSearch
-        ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
+        ? <SarakShellSearchWidget
+            variant={isNavHidden ? 'icon' : 'bar'}
+            onClick={w.openSearch}
+            items={getSarakSearchItems(nav)}
+            onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
+        />
         : null);
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
@@ -152,8 +158,8 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}
-                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
-                    onSelect={onNavigate}
+            items={getSarakSearchItems(nav)}
+            onSelect={onNavigate}
                 />
             )}
         </ChromeFrame>

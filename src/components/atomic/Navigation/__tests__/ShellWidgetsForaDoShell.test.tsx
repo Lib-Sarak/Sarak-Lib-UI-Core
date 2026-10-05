@@ -77,12 +77,12 @@ describe('Widgets do cromo montados em slots do SarakAppChrome', () => {
     it('ShellUserWidget: exibe o usuário e aciona logout', () => {
         const logout = vi.fn();
         renderNoSlot(
-            <SarakShellUserWidget user={{ username: 'visitante' }} logout={logout} variant="vertical" />,
+            <SarakShellUserWidget user={{ name: 'Visitante' }} logout={logout} variant="vertical" />,
             'sidebarFooter',
             'sidebar',
         );
-        expect(screen.getByText('visitante')).toBeInTheDocument();
-        fireEvent.click(screen.getByTitle('Sair'));
+        expect(screen.getByText('Visitante')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button'));
         expect(logout).toHaveBeenCalled();
     });
 });

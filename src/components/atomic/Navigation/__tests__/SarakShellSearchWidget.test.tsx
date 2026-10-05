@@ -28,6 +28,24 @@ describe('ShellSearchWidget', () => {
         expect(screen.getByText('Resultados')).toBeInTheDocument();
         expect(screen.getByText('Dashboard App')).toBeInTheDocument();
     });
+
+    it('selecionar resultado clicável chama onSelect com o item e fecha a lista', () => {
+        const onSelect = vi.fn();
+        customRender(
+            <SarakShellSearchWidget
+                variant="bar"
+                onClick={vi.fn()}
+                onSelect={onSelect}
+                items={[{ id: '/projetos', label: 'Projetos', category: 'Gestão' }]}
+            />,
+        );
+        fireEvent.change(screen.getByPlaceholderText('Busca inteligente…'), { target: { value: 'Projetos' } });
+        const result = screen.getByRole('link', { name: /Projetos/ });
+
+        fireEvent.click(result);
+        expect(onSelect).toHaveBeenCalledWith({ id: '/projetos', label: 'Projetos', category: 'Gestão' });
+        expect(screen.queryByRole('link', { name: /Projetos/ })).not.toBeInTheDocument();
+    });
 });
 
 // os textos da própria lib seguem o idioma que vale.

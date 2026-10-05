@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, renderHook } from '@testing-library/react';
+import { render, screen, renderHook, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
@@ -92,6 +92,70 @@ describe('SarakMenuItem', () => {
     it('title cai para o texto do rótulo quando não informado', () => {
         render(<SarakMenuItem label="Módulo" />);
         expect(screen.getByRole('button', { name: 'Módulo' })).toHaveAttribute('title', 'Módulo');
+    });
+
+    it('com href, renderiza link; clique primário simples chama onNavigate e previne a navegação nativa', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).toHaveAttribute('href', '/projetos');
+        expect(fireEvent.click(link)).toBe(false);
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
+    });
+
+    it.each([
+        ['Ctrl', { ctrlKey: true }],
+        ['Cmd', { metaKey: true }],
+        ['Shift', { shiftKey: true }],
+        ['Alt', { altKey: true }],
+    ])('mantém clique com %s para o navegador', (_modifier, init) => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent.click(link, init)).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('mantém clique do meio e clique direito para o navegador', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent(link, new MouseEvent('auxclick', { bubbles: true, button: 1, cancelable: true }))).toBe(true);
+        expect(fireEvent.click(link, { button: 2 })).toBe(true);
+        expect(fireEvent.contextMenu(link, { button: 2 })).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('target diferente de _self mantém o comportamento nativo e acrescenta rel seguro', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" target="_blank" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(fireEvent.click(link)).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('link desabilitado não tem href navegável, não recebe foco e ignora clique', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" disabled onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).not.toHaveAttribute('href');
+        expect(link).toHaveAttribute('aria-disabled', 'true');
+        expect(link).toHaveAttribute('tabindex', '-1');
+        fireEvent.click(link);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('badge aparece no item e integra o nome acessível', () => {
+        render(<SarakMenuItem label="Projetos" href="/projetos" badge={4} />);
+        expect(screen.getByRole('link', { name: 'Projetos 4' })).toBeInTheDocument();
+        expect(screen.getByText('4')).toBeInTheDocument();
     });
 });
 

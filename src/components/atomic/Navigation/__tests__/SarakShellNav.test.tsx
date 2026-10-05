@@ -21,16 +21,16 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
 
     it('destaca o item ativo via aria-current (estado vindo de {{$route}})', () => {
         render(<SarakShellNav items={ITEMS} activeRoute="/relatorios" />);
-        const active = screen.getByRole('button', { name: 'Relatórios' });
+        const active = screen.getByRole('link', { name: 'Relatórios' });
         expect(active).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByRole('button', { name: 'Contratos' })).not.toHaveAttribute('aria-current');
+        expect(screen.getByRole('link', { name: 'Contratos' })).not.toHaveAttribute('aria-current');
     });
 
     it('emite a rota por onChange (caminho manifesto/$event) e onNavigate (caminho TSX)', () => {
         const onChange = vi.fn();
         const onNavigate = vi.fn();
         render(<SarakShellNav items={ITEMS} onChange={onChange} onNavigate={onNavigate} />);
-        fireEvent.click(screen.getByRole('button', { name: 'Contratos' }));
+        fireEvent.click(screen.getByRole('link', { name: 'Contratos' }));
         expect(onChange).toHaveBeenCalledWith('/contratos');
         expect(onNavigate).toHaveBeenCalledWith('/contratos');
     });
@@ -51,7 +51,7 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
             const nav = screen.getByRole('navigation');
             expect(nav.style.flexDirection).toBe('row');
             // Itens continuam presentes e clicáveis.
-            expect(screen.getByRole('button', { name: 'Contratos' })).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Contratos' })).toBeInTheDocument();
         });
 
         it('auto + design.navigationStyle="topbar" → horizontal (paridade MyService)', () => {

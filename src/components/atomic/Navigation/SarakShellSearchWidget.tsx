@@ -4,14 +4,17 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from '../Inputs/SarakInput';
 import type { SarakSearchItem } from '../Inputs/SarakSearch';
 import { SarakMenuItem } from './SarakMenuItem';
+import { SarakLink } from './SarakLink';
 
 export interface SarakShellSearchWidgetProps {
     /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
     /** Resultados fornecidos pelo aplicativo. */
     items?: SarakSearchItem[];
-    /** Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. */
+    /** Callback do gatilho `icon`; obrigatório. */
     onClick: () => void;
+    /** Seleciona um resultado da variante `bar`. */
+    onSelect?: (item: SarakSearchItem) => void;
 }
 
 /**
@@ -19,7 +22,7 @@ export interface SarakShellSearchWidgetProps {
  * Standardizes search entry points for Topbar and Sidebar.
  */
 export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
-    variant = 'bar', onClick, items = []
+    variant = 'bar', onClick, onSelect, items = []
 }) => {
     const t = useLibraryText();
     const [query, setQuery] = useState('');
@@ -40,6 +43,12 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
         m.label.toLowerCase().includes(query.toLowerCase()) ||
         m.id.toLowerCase().includes(query.toLowerCase())
     );
+
+    const selectResult = (item: SarakSearchItem): void => {
+        setIsOpen(false);
+        setQuery('');
+        onSelect?.(item);
+    };
 
     if (variant === 'icon') {
         return (
@@ -105,12 +114,9 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
                                 >
                                     {t('shellSearchResultsHeading')}
                                 </h4>
-                                {filteredModules.map(mod => (
-                                    <div
-                                        key={mod.id}
-                                        className="group h-12 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--theme-primary)]/5 transition-all cursor-pointer"
-                                        style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)' }}
-                                    >
+                                {filteredModules.map((mod) => {
+                                    const resultContent = (
+                                        <>
                                         <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)' }}>
                                             <div className="w-8 h-8 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--theme-card)] flex items-center justify-center text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] group-hover:bg-[var(--theme-primary)]/10 transition-all border border-[var(--theme-border)]">
                                                 <Command size={14} />
@@ -121,8 +127,30 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
                                             </div>
                                         </div>
                                         <ArrowRight className="w-3 h-3 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                    </div>
-                                ))}
+                                        </>
+                                    );
+                                    const resultClassName = 'group h-12 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--theme-primary)]/5 transition-all';
+
+                                    return onSelect ? (
+                                        <SarakLink
+                                            key={mod.id}
+                                            href={mod.id}
+                                            onNavigate={() => selectResult(mod)}
+                                            className={`${resultClassName} w-full cursor-pointer !text-[var(--theme-title)] no-underline hover:no-underline`}
+                                            style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)' }}
+                                        >
+                                            {resultContent}
+                                        </SarakLink>
+                                    ) : (
+                                        <div
+                                            key={mod.id}
+                                            className={resultClassName}
+                                            style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)' }}
+                                        >
+                                            {resultContent}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div

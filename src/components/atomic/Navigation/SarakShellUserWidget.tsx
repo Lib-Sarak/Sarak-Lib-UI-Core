@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { motion } from 'framer-motion';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -6,18 +6,18 @@ import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 /** Identidade do usuário exibida pelo widget do cromo. */
 export interface SarakShellUser {
-    username?: string;
+    name: string;
+    role?: string;
+    avatarUrl?: string;
     email?: string;
-    level?: number;
-    [key: string]: unknown;
 }
 
 export interface SarakShellUserWidgetProps {
-    /** Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. */
+    /** Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico. */
     user?: SarakShellUser;
     /** Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. */
     logout?: () => void;
-    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. */
+    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 
@@ -25,13 +25,52 @@ export interface SarakShellUserWidgetProps {
  * ShellUserWidget — Sovereign User Identity Component (v8.5)
  * Unifies profile display and logout actions across all Shell layouts.
  */
+const isSafeAvatarUrl = (avatarUrl?: string): boolean => {
+    if (!avatarUrl?.trim()) return false;
+    try {
+        const protocol = new URL(avatarUrl, 'https://sarak-avatar.invalid/').protocol;
+        return protocol === 'http:' || protocol === 'https:';
+    } catch {
+        return false;
+    }
+};
+
+const getUserInitials = (name: string): string => name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toLocaleUpperCase();
+
+const SarakShellUserAvatar = ({ name, avatarUrl }: { name: string; avatarUrl?: string }): React.ReactElement => {
+    const [failedAvatarUrl, setFailedAvatarUrl] = useState<string>();
+    const showAvatar = isSafeAvatarUrl(avatarUrl) && failedAvatarUrl !== avatarUrl;
+
+    return (
+        <div aria-hidden="true" className="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden">
+            {showAvatar ? (
+                <img
+                    src={avatarUrl}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    onError={() => setFailedAvatarUrl(avatarUrl)}
+                />
+            ) : (
+                <span className="relative z-10 text-xs font-bold">{getUserInitials(name)}</span>
+            )}
+        </div>
+    );
+};
+
 export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
     user, logout, variant = 'vertical'
 }) => {
     const t = useLibraryText();
     const isHorizontal = variant === 'horizontal';
     const isMini = variant === 'mini';
-    const roleLabel = user?.level === 100 ? t('userRoleMaster') : (user?.level ?? 0) >= 50 ? t('userRoleAdmin') : t('genericUserLabel');
+    const displayName = user?.name || t('genericUserLabel');
 
     if (isHorizontal) {
         return (
@@ -41,18 +80,17 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
             >
                 <div className="flex items-end" style={{ flexDirection: 'column' }}>
                     <span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest leading-tight">
-                        {user?.username || user?.email?.split('@')[0] || t('genericUserLabel')}
+                        {displayName}
                     </span>
-                    <span className="text-[var(--sarak-type-scale-micro,7px)] text-[var(--theme-primary)] font-bold uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
-                        {roleLabel}
-                    </span>
+                    {user?.role && (
+                        <span className="text-[var(--sarak-type-scale-micro,7px)] text-[var(--theme-primary)] font-bold tracking-[var(--sarak-tracking-tight,0.2em)]">
+                            {user.role}
+                        </span>
+                    )}
                 </div>
 
                 <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                    <div className="w-9 h-9 rounded-xl bg-[var(--theme-card)] border border-[var(--theme-border)] flex items-center justify-center overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-secondary)] opacity-10" />
-                        <SarakIcon name="User" size={16} className="text-[var(--theme-primary)] relative z-10" />
-                    </div>
+                    <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} />
 
                     {logout && (
                         <SarakIconButton
@@ -80,22 +118,25 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                 style={isMini ? { flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)' } : undefined}
             >
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)', flexDirection: isMini ? 'column' : 'row' }}>
-                    <div className="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden">
-                         <div className="absolute inset-0 bg-gradient-to-tr from-[var(--theme-primary)] to-transparent opacity-10" />
-                        <SarakIcon name="User" size={16} />
-                    </div>
+                    <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} />
+
+                    {isMini && (
+                        <span className="sr-only">{user?.role ? `${displayName}, ${user.role}` : displayName}</span>
+                    )}
 
                     {!isMini && (
                         <div className="flex overflow-hidden" style={{ flexDirection: 'column' }}>
                             <span className="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate">
-                                {user?.username || user?.email?.split('@')[0] || t('genericUserLabel')}
+                                {displayName}
                             </span>
-                            <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
-                                <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
-                                <span className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] uppercase tracking-widest font-black">
-                                    {roleLabel}
-                                </span>
-                            </div>
+                            {user?.role && (
+                                <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
+                                    <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
+                                    <span className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black">
+                                        {user.role}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

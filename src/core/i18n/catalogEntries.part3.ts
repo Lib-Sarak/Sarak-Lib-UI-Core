@@ -67,9 +67,6 @@ export const CATALOG_PART_3 = {
     userLogoutTitle: {
         pt: `Sair`, en: `Logout`, es: `Cerrar sesión`, fr: `Déconnexion`, de: `Abmelden`, it: `Esci`,
     },
-    userRoleMaster: {
-        pt: `Master`, en: `Master`, es: `Master`, fr: `Master`, de: `Master`, it: `Master`,
-    },
     chromeUserUnavailableLabel: {
         pt: `Usuário indisponível`,
         en: `User unavailable`,
@@ -85,9 +82,6 @@ export const CATALOG_PART_3 = {
         fr: `Notifications indisponibles`,
         de: `Benachrichtigungen nicht verfügbar`,
         it: `Notifiche non disponibili`,
-    },
-    userRoleAdmin: {
-        pt: `Administrador`, en: `Admin`, es: `Administrador`, fr: `Administrateur`, de: `Administrator`, it: `Amministratore`,
     },
     languageSelectorLabel: {
         pt: `Idioma`, en: `Language`, es: `Idioma`, fr: `Langue`, de: `Sprache`, it: `Lingua`,

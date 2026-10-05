@@ -76,18 +76,18 @@ describe('SarakAppChrome (Spec 40.2 — L1, navegação estruturada + ícones fi
 
     it('marca o item ativo com aria-current="page" (acessível)', () => {
         renderChrome(<SarakAppChrome navItems={NAV_ITEMS}><div>x</div></SarakAppChrome>);
-        const ativo = screen.getByText('Propostas').closest('button');
-        const inativo = screen.getByText('Projetos').closest('button');
+        const ativo = screen.getByText('Propostas').closest('a');
+        const inativo = screen.getByText('Projetos').closest('a');
         expect(ativo).toHaveAttribute('aria-current', 'page');
         expect(inativo).not.toHaveAttribute('aria-current');
     });
 
-    it('navItems são <button> (foco por teclado) e emitem onNavigate com a href', () => {
+    it('navItems são links nativos e o clique simples emite onNavigate sem recarregar', () => {
         const onNavigate = vi.fn();
         renderChrome(<SarakAppChrome navItems={NAV_ITEMS} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
-        const botao = screen.getByText('Projetos').closest('button');
-        expect(botao?.tagName).toBe('BUTTON'); // focável por teclado nativamente
-        fireEvent.click(screen.getByText('Projetos'));
+        const link = screen.getByRole('link', { name: 'Projetos' });
+        expect(link).toHaveAttribute('href', '/projetos');
+        expect(fireEvent.click(link)).toBe(false);
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
 
@@ -97,6 +97,34 @@ describe('SarakAppChrome (Spec 40.2 — L1, navegação estruturada + ícones fi
         );
         // Ambos têm "Propostas"/"Projetos"; garante que só há UMA renderização (a do navItems).
         expect(screen.getAllByText('Propostas')).toHaveLength(1);
+    });
+});
+
+describe('SarakAppChrome — navegação por links', () => {
+    it('repassa disabled, badge e target aos links de navegação', () => {
+        const navItems = [
+            { id: 'relatorios', label: 'Relatórios', href: '/relatorios', badge: 'Novo', target: '_blank' },
+            { id: 'faturamento', label: 'Faturamento', href: '/faturamento', disabled: true },
+        ];
+        renderChrome(<SarakAppChrome navItems={navItems}><div>x</div></SarakAppChrome>);
+
+        const reportsLink = screen.getByRole('link', { name: 'Relatórios Novo' });
+        expect(reportsLink).toHaveAttribute('target', '_blank');
+        expect(reportsLink).toHaveAttribute('rel', 'noopener noreferrer');
+        const disabledLink = screen.getByRole('link', { name: 'Faturamento' });
+        expect(disabledLink).not.toHaveAttribute('href');
+        expect(disabledLink).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    it('resultado da busca embutida navega pela callback do cromo', () => {
+        const onNavigate = vi.fn();
+        renderChrome(<SarakAppChrome navItems={NAV_ITEMS} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
+        fireEvent.change(screen.getByPlaceholderText('Busca inteligente…'), { target: { value: 'Projetos' } });
+        const results = screen.getAllByRole('link', { name: /Projetos/ });
+        const result = results[results.length - 1];
+
+        expect(fireEvent.click(result)).toBe(false);
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
 });
 
@@ -417,7 +445,7 @@ describe('SarakAppChrome (Spec 48 — L1, slots opcionais por região)', () => {
 
 // O widget de usuário default só liga com identidade de verdade — os testes que o
 // exercitam passam `user`/`logout` explicitamente.
-const HOST_USER = { username: 'ana' };
+const HOST_USER = { name: 'Ana' };
 const freshLogout = () => vi.fn();
 
 describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso)', () => {
@@ -532,7 +560,7 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         renderAtDevice('desktop', <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
         expect(screen.getAllByText('Projetos').length).toBeGreaterThan(0);
-        fireEvent.click(screen.getAllByText('Projetos')[0].closest('button')!);
+        fireEvent.click(screen.getByRole('button', { name: /Projetos/ }));
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
 

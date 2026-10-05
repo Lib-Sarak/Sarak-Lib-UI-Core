@@ -785,10 +785,14 @@ Props (`SarakLinkProps` — `src/components/atomic/Navigation/SarakLink.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `href` | `string` | sim | Destino do link. Esquemas perigosos (`javascript:`, `data:`, ...) são bloqueados. |
-| `external` | `boolean` | não | Abre em nova aba com `rel="noreferrer noopener"` + indicação visual/a11y. |
+| `external` | `boolean` | não | Abre em nova aba com `rel="noopener noreferrer"` + indicação visual/a11y. |
+| `target` | `string` | não | Contexto de navegação nativo; fora de `_self`, o navegador mantém o comportamento. |
+| `rel` | `string` | não |  |
+| `onNavigate` | `(href: string) => void` | não | Intercepta apenas clique primário simples destinado à aba atual. |
+| `onClick` | `React.MouseEventHandler<HTMLAnchorElement>` | não |  |
 | `children` | `React.ReactNode` | sim |  |
 
-Estende: `Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'>`
+Estende: `Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel' | 'onClick'>`
 
 ### SarakManagementGrid
 
@@ -843,9 +847,16 @@ Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.
 | `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
 | `orientation` | `SarakMenuItemOrientation` | não | `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). |
 | `title` | `string` | não | Tooltip nativo; cai para o texto do rótulo quando `label` é string. |
+| `href` | `string` | não | Destino opcional; quando informado, o item é renderizado como link. |
+| `onNavigate` | `(href: string) => void` | não | Chamado apenas para clique primário simples em link destinado à aba atual. |
+| `badge` | `string \| number` | não | Indica uma quantidade ou estado adicional; também integra o nome acessível. |
+| `target` | `string` | não | Contexto de navegação nativo do link. |
+| `type` | `React.ButtonHTMLAttributes<HTMLButtonElement>['type']` | não |  |
+| `disabled` | `boolean` | não |  |
+| `onClick` | `React.MouseEventHandler<HTMLElement>` | não |  |
 | `className` | `string` | não |  |
 
-Estende: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>`
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'>`
 
 ### SarakModal
 
@@ -1045,7 +1056,8 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 | --- | --- | --- | --- |
 | `variant` | `'bar' \| 'icon'` | não | Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. |
 | `items` | `SarakSearchItem[]` | não | Resultados fornecidos pelo aplicativo. |
-| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. |
+| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. |
+| `onSelect` | `(item: SarakSearchItem) => void` | não | Seleciona um resultado da variante `bar`. |
 
 ### SarakShellThemeToggle
 
@@ -1061,9 +1073,9 @@ Props (`SarakShellUserWidgetProps` — `src/components/atomic/Navigation/SarakSh
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `user` | `SarakShellUser` | não | Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. |
+| `user` | `SarakShellUser` | não | Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico. |
 | `logout` | `() => void` | não | Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. |
-| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. |
 
 ### SarakSkeleton
 

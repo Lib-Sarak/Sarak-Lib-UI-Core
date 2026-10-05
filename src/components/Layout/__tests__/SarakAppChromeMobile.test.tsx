@@ -136,7 +136,7 @@ describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no 
 describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada some no celular)', () => {
     it('DEFAULT: com `user`/`logout`, busca/tema/usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
         const { container } = renderMobile(
-            <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
+            <SarakAppChromeMobile nav={NAV} user={{ name: 'Ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
         );
         fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
@@ -158,7 +158,7 @@ describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada so
         const { container } = renderMobile(
             <SarakAppChromeMobile
                 nav={NAV}
-                user={{ username: 'ana' }}
+                user={{ name: 'Ana' }}
                 logout={vi.fn()}
                 widgets={{ search: false, themeToggle: false, user: false }}
                 {...base}
@@ -178,7 +178,7 @@ describe('SarakAppChromeMobile — idioma que vale', () => {
     it('sai em inglês com `config.language: "en"`', () => {
         const { container } = render(
             <SarakUIProvider config={{ mode: 'dark', language: 'en' }}>
-                <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}>
+                <SarakAppChromeMobile nav={NAV} user={{ name: 'Ana' }} logout={vi.fn()} {...base}>
                     <div>x</div>
                 </SarakAppChromeMobile>
             </SarakUIProvider>,

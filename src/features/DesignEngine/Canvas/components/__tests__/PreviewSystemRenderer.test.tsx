@@ -79,15 +79,15 @@ describe('PreviewSystemRenderer', () => {
             if (device === 'smartphone') {
                 fireEvent.click(screen.getByRole('button', { name: /Abrir menu/ }));
             }
-            expect(screen.getByRole('button', { name: 'dashboard' })).toBeTruthy();
-            expect(screen.getByRole('button', { name: 'reports' })).toBeTruthy();
+            expect(screen.getByRole('link', { name: 'dashboard' })).toBeTruthy();
+            expect(screen.getByRole('link', { name: 'reports' })).toBeTruthy();
         },
     );
 
     it('encaminha a seleção de navegação para o app ativo', () => {
         const { setActivePreviewApp } = renderPreview('desktop');
 
-        fireEvent.click(screen.getByRole('button', { name: 'reports' }));
+        fireEvent.click(screen.getByRole('link', { name: 'reports' }));
 
         expect(setActivePreviewApp).toHaveBeenCalledWith('reports');
     });

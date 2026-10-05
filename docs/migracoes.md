@@ -63,6 +63,29 @@ Temas de consumidor que declaram `hidden` em `searchPositionSidebar` devem troca
 `hidden` de `searchPositionTopbar` continua válida. A composição vem do sistema, e os temas distribuídos
 herdam `pinned` quando o design não configura outra posição.
 
+### Modelo público de usuário do cromo
+
+**Classificação: MAJOR.** `SarakShellUser` deixa de aceitar os campos de produto `username` e `level`; o nome
+passa a ser obrigatório e o papel passa a ser um rótulo genérico fornecido pelo aplicativo.
+
+| | Antes | Agora |
+|---|---|---|
+| Nome exibido | `username` opcional | `name` obrigatório |
+| Papel exibido | `level` numérico, convertido em rótulo de produto | `role` textual opcional, definido pelo consumidor |
+| Avatar e e-mail | `avatarUrl`/`email` aceitos como campos abertos | `avatarUrl` e `email` opcionais declarados no tipo |
+
+```tsx
+// Antes
+const user = { username: 'ana', level: 100, email: 'ana@example.com' };
+
+// Depois
+const user = { name: 'Ana Lima', role: 'Administradora', email: 'ana@example.com' };
+```
+
+Migre `username` para `name` com o nome que deve aparecer no cromo e substitua `level` por `role` somente
+quando houver um rótulo apropriado para o consumidor. Não converta números de nível em nomes de produto;
+omita `role` se o aplicativo não tiver um papel para exibir.
+
 ---
 
 ## A persistência do tema ativo restaura também o id

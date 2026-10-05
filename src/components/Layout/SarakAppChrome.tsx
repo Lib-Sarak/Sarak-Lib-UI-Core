@@ -173,7 +173,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // teclado + agrupamento por categoria. A rota ativa vem do item marcado `active`;
     // sem `navItems`, cai no `nav`/`activeRoute`.
     const effectiveNav: SarakShellNavItem[] = navItems
-        ? navItems.map((item) => ({ label: item.label, route: item.href, icon: item.icon, category: item.category }))
+        ? navItems.map(({ label, href, icon, category, disabled, badge, target }) => ({ label, route: href, icon, category, disabled, badge, target }))
         : nav;
     const effectiveActiveRoute = navItems
         ? navItems.find((item) => item.active)?.href ?? activeRoute

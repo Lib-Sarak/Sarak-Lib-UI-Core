@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ficar com um cromo só, completo por padrão e com navegação genérica"
 objetivo: "Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade"
 dominio: "Sarak-Lib-UI-Core / Cromo / Navegação"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "cromo", "shell", "navegacao", "widgets", "adr"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -711,6 +711,78 @@ M  specs/plan/plan-94-um-cromo-so.md
 
 ---
 
+## Resumo da execução — 2026-10-05
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+
+```text
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- `SarakMenuItem` agora renderiza `<a href>` quando recebe destino e mantém `<button>` sem destino; clique primário simples na aba atual delega a rota e cancela a navegação nativa. Modificadores, clique do meio/direito e `target` fora de `_self` permanecem nativos. Implementação compartilhada em `src/components/atomic/Navigation/linkNavigation.ts:29` e uso em `SarakMenuItem.tsx:121` e `SarakLink.tsx:57`.
+- O modelo `SarakNavItem` e o cromo repassam `disabled`, `badge` e `target`; links desabilitados perdem `href`/foco, recebem `aria-disabled`, usam o token existente `--text-muted` e não navegam. Badge integra o nome acessível. `src/components/Layout/chrome/navItem.ts:21`, `src/components/atomic/Navigation/SarakShellNav.tsx:82` e `SarakMenuItem.tsx:94-109`.
+- A busca embutida aceita `onSelect`; o resultado clicável segue pelo `onNavigate` do cromo. O palette `SarakSearch` não teve implementação alterada; clique e Enter/Espaço seguem cobertos por teste.
+- `SarakShellUser` agora declara `name`, `role?`, `avatarUrl?` e `email?`; o widget exibe avatar seguro ou iniciais, nome e papel textual, sem converter níveis em papéis de produto. A nota MAJOR com antes/depois e migração `username`→`name`, `level`→`role` foi acrescentada a `docs/migracoes.md:66` e sincronizada no kit.
+- O teste do gerador `sarak-ui init` permaneceu verde, preservando o fluxo `onNavigate` + `pushState` no `src/App.tsx` gerado.
+
+**Arquivos alterados**
+
+| Diretório | Arquivos | Natureza / mudança |
+|---|---|---|
+| `src/components/atomic/Navigation/` | `linkNavigation.ts` (criado); `SarakLink.tsx`; `SarakMenuItem.tsx`; `SarakShellNav.tsx`; `SarakShellSearchWidget.tsx`; `SarakShellUserWidget.tsx`; testes de `SarakLink`, `SarakMenuItem`, `SarakShellNav`, `SarakShellSearchWidget`, `SarakShellUserWidget` e `ShellWidgetsForaDoShell` | Links nativos seguros, navegação por callback, propriedades do item, resultado selecionável, modelo genérico do usuário e cobertura de regressão. |
+| `src/components/Layout/` | `SarakAppChrome.tsx`; `SarakAppChromeMobile.tsx`; testes de `SarakAppChrome` e `SarakAppChromeMobile`; `chrome/ChromeSidebarBody.tsx`; `chrome/ChromeTopbarBody.tsx`; `chrome/navItem.ts`; `chrome/__tests__/ChromeUserThemeGroup.test.tsx` | Propagação das propriedades de navegação, seleção da busca embutida e atualização dos fixtures para `name`. |
+| `src/components/atomic/Inputs/` | `__tests__/SarakSearch.test.tsx` | Testes de seleção por clique, Enter e Espaço; a implementação de `SarakSearch` ficou intacta. |
+| `src/features/DesignEngine/Canvas/` | `components/__tests__/PreviewSystemRenderer.test.tsx`; `__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | Asserções e snapshot ajustados para os links renderizados no preview. |
+| `src/core/` | `i18n/catalogEntries.part3.ts`; `Provider/buildInfo.ts`; `buildInfo.ts` | Removidos os rótulos de produto `userRoleMaster`/`userRoleAdmin`; metadados de build regenerados. Nenhum texto novo de interface foi necessário. |
+| `docs/` | `migracoes.md`; `component-catalog.json`; `component-catalog.md` | Nota MAJOR de migração e catálogo regenerado. |
+| `sarak-ui/` | `GUIA-FRONTEND.md`; `START-HERE.md`; `VERSION`; `catalog.json`; `docs/migracoes.md` | Artefatos do kit regenerados, incluindo a cópia da nota MAJOR. |
+| `dist/` | `BUILD_INFO.json`, bundles JS/CJS, declarações `.d.ts`/`.d.cts`, CSS e chunks com hash | Saída regenerada pelo build; chunks antigos removidos e novos emitidos. |
+| `specs/plan/` | `plan-94-um-cromo-so.md` | Este resumo acrescentado antes de `# 10. Veredito` e status alterado para 🟠. |
+
+`.claude/settings.local.json` já estava não rastreado na fotografia e não foi alterado. O resíduo ignorado `agent-design-operator/` não foi tocado.
+
+**Verificações executadas**
+- `npx vitest run` → 391 arquivos e 2.116 testes passaram (335,29 s).
+- `npx vitest run bin/scaffold/__tests__/runInit.fs.test.mjs` → 1 arquivo, 19 testes passaram.
+- Testes focados após os ajustes finais: `SarakAppChrome.test.tsx` + `SarakShellUserWidget.test.tsx` → 2 arquivos/58 testes; `SarakMenuItem.test.tsx` + `SarakLink.test.tsx` → 2 arquivos/69 testes. Ambos passaram.
+- `npm run build` → passou; ESM, CJS, declarações públicas, CSS e metadados foram gerados. A primeira tentativa no sandbox não conseguiu ler dependências/arquivos-pai; a repetição autorizada passou.
+- `npm run guide`, `npm run catalog` e `npm run dev-kit` → passaram e regeneraram os artefatos listados acima.
+- `npx tsc --noEmit` → exit 0. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11.
+- `chrome-token-parity:check`, `kit-names:check`, `trail-citation:check`, `class-merge:check`, `section-pointers:check`, `plan-index:check`, `barrel:check`, `prefix:check`, `public-types:check`, `token-types:check`, `catalog:check`, `guide:check`, `dev-kit:check` e `migration-anchor:check` → passaram. `plan-index:check` foi executado antes da transição do status; o índice é do revisor e não foi editado.
+- `git diff --check -- . ':!dist'` → sem whitespace inválido nos fontes, testes e documentos alterados. O diff completo aponta whitespace final em uma linha do bundle minificado `dist/index.cjs` gerado pelo build.
+- Validador AST TypeScript em 25 arquivos TS/TSX → 0 falhas de parse e 60 apontamentos atuais; comparação normalizada com `HEAD` não encontrou apontamento novo (o baseline tinha 64). Os apontamentos restantes são violações preexistentes de limiares/tipagem/logging em componentes e testes tocados.
+- `npm run audit` → exit 1 pelos achados já presentes no baseline: uma referência fantasma `--x` e `<input>` nativo em `SarakMultiSelect.tsx:113` e `SarakUploader.tsx:113`. O comparador de baseline com `--with-tsc` confirmou nenhuma regressão.
+- Pré-voo antes do Vitest completo: 269 processos Node, 0 comandos `vitest`/`tsup` legíveis e 15 linhas de comando inacessíveis. Antes do build final: 269 processos Node, 0 comandos `vitest`/`tsup` legíveis e 18 linhas de comando inacessíveis. Nenhuma linha de comando foi impressa.
+- `git grep -n "level" -- src` → nenhuma ocorrência no modelo do usuário. As ocorrências restantes são profundidade/nível hierárquico em `SarakTreeView.tsx`, `SarakExpandableMatrix.tsx`, `RecursiveMatrixNode.tsx`, `matrixTree.ts` e `resolveConfig.ts`; níveis visuais de série em `SarakStats.tsx`; e “module-level/top-level” nos comentários de `core/Design/master-map.ts`, `core/Design/__tests__/master-map.test.ts` e `core/Provider/__tests__/SarakUIProvider.test.tsx`.
+- Testes de mutação (alterações temporárias restauradas): (a) remover `!event.ctrlKey` do guard e rodar `SarakMenuItem.test.tsx -t "mantém clique com Ctrl"` → falhou porque o clique Ctrl passou a ser interceptado (`expected true`, recebido `false`); (b) acrescentar `auxclick` com `preventDefault`/`onNavigate` e rodar `-t "mantém clique do meio"` → falhou (`expected true`, recebido `false`); (c) remover `preventDefault()` e rodar `-t "clique primário simples"` → falhou (`expected false`, recebido `true`); (d) remover o guard de `disabled` e rodar `-t "link desabilitado"` → falhou porque `onNavigate('/projetos')` foi chamado.
+
+**Critérios de aceite**
+- [x] Item 12 — link real, clique simples interceptado e modificadores/cliques auxiliares nativos; `SarakMenuItem.test.tsx:97-130` e `SarakLink.test.tsx:77-103`; mutações (a)–(c) falharam como esperado.
+- [x] Item 13 — `disabled`, `badge` e `target` chegam ao átomo; `SarakAppChrome.test.tsx:104` e `SarakMenuItem.test.tsx:132-159`. Link desabilitado ignora clique e não recebe foco (`SarakMenuItem.test.tsx:143-152`); o estilo usa `--text-muted` (`SarakMenuItem.tsx:94-97`); mutação (d) falhou como esperado.
+- [x] Item 14 — resultado da busca embutida navega pelo callback do cromo (`SarakAppChrome.test.tsx:119`, `SarakShellSearchWidget.test.tsx:32-50`); o palette mantém seleção por clique e teclado (`SarakSearch.test.tsx:77-100`).
+- [x] Item 15 — contrato genérico e apresentação com avatar/iniciais, nome e papel (`SarakShellUserWidget.tsx:8-13,47-159`); nota MAJOR e instruções de migração em `docs/migracoes.md:66-86`. Os `level` remanescentes foram classificados acima.
+- [ ] Item 16 integral — build, geração de guide/catalog/dev-kit, TypeScript, Vitest completo e baseline sem regressão passaram; `npm run audit` ainda termina em exit 1 pelos achados preexistentes listados acima.
+
+**Decisões e suposições**
+- A busca filtra itens `disabled` no adaptador compartilhado para que uma rota inativa não continue selecionável pela paleta; desktop e mobile usam o mesmo caminho de `onNavigate`.
+- `SarakLink` e `SarakMenuItem` compartilham a validação do destino e a regra de interceptação; `target` diferente de `_self` preserva navegação do navegador e recebe `noopener noreferrer`.
+- Não acrescentei textos de interface ao catálogo: o papel vem do consumidor e o fallback já existe nos seis idiomas. Removi os dois rótulos de produto que deixaram de ser usados.
+- `email` permanece opcional no contrato, mas o widget não o usa como substituto de `name`; o aplicativo controla o nome e o papel exibidos.
+
+**Achados fora do escopo (não corrigidos)**
+- `npm run audit` continua acusando `--x` e `<input>` nativo em `SarakMultiSelect.tsx:113`/`SarakUploader.tsx:113`; os dois componentes são alheios ao lote e o baseline permaneceu igual.
+- Os 60 apontamentos do validador AST correspondem a dívida já existente nos arquivos tocados (64 em `HEAD`, antes da comparação normalizada); não ampliei a tarefa para refatorar componentes e testes fora dos itens 12–16.
+
+**Pendências / riscos**
+- `npm run audit` não fica verde até a correção dos achados de baseline. O bundle minificado também conserva whitespace final detectado pelo `git diff --check` completo.
+- A contagem de processos encontrou 18 linhas de comando inacessíveis; nenhuma linha foi impressa. O pré-voo encontrou zero processos `vitest`/`tsup` entre as linhas legíveis antes das execuções completas.
+- Nenhum commit foi criado.
+
+---
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -1139,6 +1211,58 @@ fontes verde; nota MAJOR atualizada.
 
 **Liberação parcial.** O lote 2 está aprovado e **pode ser commitado**. A plan **não** está concluída: o lote 3 não foi
 iniciado. O `status` volta a `🟡 Em execução`; a síntese e a remoção só acontecem depois do veredito do lote 3.
+
+## Veredito — 2026-10-05 (lote 3) — 🟢 Aprovado (plan concluída)
+
+**Antes de gravar:** a §10 foi relida no disco: os quatro blocos dos lotes 1 e 2, escritos nesta conversa. O resumo do
+lote 3 está na §9 (`## Resumo da execução — 2026-10-05`, antes de `# 10`), no formato.
+
+**O que verifiquei, item a item:**
+
+- **Item 12 — link de verdade.** `SarakMenuItem` com `href` vira `<a>`; sem `href` segue `<button>`. A regra de
+  interceptar está num lugar só (`linkNavigation.ts`) e vale para `SarakMenuItem` e `SarakLink`: clique primário
+  (`button 0`), sem Alt/Ctrl/Cmd/Shift, sem `defaultPrevented`, `target` ausente ou `_self`. `target` externo ganha
+  `rel="noopener noreferrer"`; `href` passa pela lista de esquemas seguros. **Mutações minhas numa cópia fora do
+  repositório:** tirar `metaKey` do guard → falha `mantém clique com Cmd para o navegador`; tirar o guard de
+  `disabled` → falha `link desabilitado…`; resultado da busca que não seleciona → falha o teste do widget. (Tirar o
+  `button === 0` não derruba nenhum teste — ver a nota abaixo.)
+- **Item 13 — `disabled`, `badge`, `target`.** Chegam do dado (`navItem.ts`) ao átomo; link desabilitado perde `href`
+  e foco (`tabIndex -1`, `aria-disabled`), e o `badge` entra no nome acessível.
+- **Item 14 — busca embutida.** `SarakShellSearchWidget` ganhou `onSelect`; o resultado é um `SarakLink` que navega
+  pelo `onNavigate` do cromo (desktop e mobile); itens `disabled` saem da lista pesquisável. A paleta `SarakSearch`
+  não mudou e tem teste de clique, Enter e Espaço.
+- **Item 15 — usuário genérico.** `SarakShellUser` = `{ name, role?, avatarUrl?, email? }`; saíram `username`,
+  `level` e o índice aberto, e saíram também os rótulos de produto `Master`/`Administrador` do catálogo de i18n. O
+  avatar só aceita `http(s)` e cai para as iniciais se a imagem falhar. `git grep` por `user.level` /
+  `level?: number` em `src/` → **vazio**.
+- **Item 16 — regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+  `check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` → **391 arquivos, 2116 testes
+  verdes** (502 s) · verdes: `token-types` (430), `catalog`, `kit-names`, `trail-citation`, `class-merge`,
+  `section-pointers`, `barrel` (96), `prefix` (311), `public-types`, `chrome-token-parity` (40/43), `guide`,
+  `dev-kit`, `build-info`, `package` (95), `zero-brand`.
+
+**Os critérios da plan inteira (§6), fechados:** modo host removido (`git grep` vazio em `src/` e nos documentos do
+consumidor, fora da nota); preview, `init` e paridade de cromo com um grupo; nenhum tema esconde widget nem carrega
+composição; widgets com posição e padrão `pinned`; widget sem conexão desabilitado, com aviso único; item de menu é
+`<a href>` com a regra dos modificadores; `disabled`/`badge`/`target`; resultado de busca navega; usuário `{ name,
+role }` sem `level`; nota `8.0.0` completa.
+
+**Três notas pequenas, que não reprovam e vão numa tarefa direta (sem plan):**
+
+1. **A nota `8.0.0` não avisa que o item de menu deixou de ser `<button>`.** Testes de ponta a ponta de consumidor que
+   buscam `role="button"` num item de navegação passam a falhar; e `SarakShellNav` sem `onNavigate`/`onChange` agora
+   **navega pelo navegador**, antes não fazia nada. Uma linha na nota resolve.
+2. **`SarakSearchItem.id` agora é usado como destino** (`href`) pelo widget de busca. No cromo é a rota; fora dele é um
+   id qualquer. O JSDoc de `id` precisa dizer que, ao usar `onSelect`, ele é o destino.
+3. **O guard `button === 0` não tem teste que o prenda:** o caso do clique direito usa `button: 2`, que o React já
+   descarta, e o do meio dispara `auxclick`, que o componente nem ouve. Um caso `fireEvent.click(link, { button: 1 })`
+   fecha.
+
+**Para o dono:** a plan-94 está **concluída**. **Commite o lote 3 só depois da tarefa direta das três notas** (elas
+mexem em `docs/migracoes.md`, em `SarakSearch.tsx` e em um teste), para tudo entrar no mesmo commit. A síntese e a
+remoção da plan (ADR-018 novo, `arquitetura/01`, `specs/05`, retirada da `specs/04`, `specs/06`, `00-contexto`)
+acontecem depois do commit e da sua autorização. Os dois gates vermelhos de antes (`npm run audit` e
+`check-minor-no-removal`) seguem sendo baseline e a versão ainda `7.0.0`, que sobe na emissão.
 
 ---
 

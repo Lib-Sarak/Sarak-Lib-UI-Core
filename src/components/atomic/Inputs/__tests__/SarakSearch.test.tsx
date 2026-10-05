@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakSearch } from '../SarakSearch';
 
@@ -82,6 +83,19 @@ describe('SarakSearch — itens do aplicativo (`items`/`onSelect`)', () => {
         // <button> nativo: focável e acionável por Enter/Espaço por construção do
         // browser — não há handler de teclado manual a testar aqui.
         fireEvent.click(resultado!);
+        expect(onSelect).toHaveBeenCalledWith('/propostas');
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    it.each(['Enter', ' '])('com `onSelect`, teclado %s seleciona resultado e fecha', async (key) => {
+        const onSelect = vi.fn();
+        const onClose = vi.fn();
+        const user = userEvent.setup();
+        renderSearch({ items, onSelect, onClose });
+        const result = screen.getByRole('button', { name: /Propostas/ });
+        result.focus();
+
+        await user.keyboard(key === ' ' ? ' ' : `{${key}}`);
         expect(onSelect).toHaveBeenCalledWith('/propostas');
         expect(onClose).toHaveBeenCalled();
     });

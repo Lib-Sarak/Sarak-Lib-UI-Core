@@ -1617,11 +1617,11 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           class="flex"
                           style="flex-direction: column; gap: calc(var(--sarak-tab-gap, 8px) * 0.5);"
                         >
-                          <button
+                          <a
                             aria-current="page"
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm normal-case tracking-normal transition-colors font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)] cursor-pointer relative"
+                            href="/dashboard"
                             title="dashboard"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
@@ -1633,150 +1633,150 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                               class="absolute left-0 w-1 h-4 rounded-full"
                               style="background: var(--sarak-nav-marker-color, #00f2ff); box-shadow: 0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff);"
                             />
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/forms"
                             title="forms"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               forms
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/chat"
                             title="chat"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               chat
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/logs"
                             title="logs"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               logs
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/settings"
                             title="settings"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               settings
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/components"
                             title="components"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               components
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/typography"
                             title="typography"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               typography
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/auth"
                             title="auth"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               auth
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/matrix"
                             title="matrix"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               matrix
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/tabela"
                             title="tabela"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               tabela
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/caixas-texto"
                             title="caixas texto"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               caixas texto
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/graficos"
                             title="graficos"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               graficos
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/documentos"
                             title="documentos"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               documentos
                             </span>
-                          </button>
-                          <button
+                          </a>
+                          <a
                             class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            href="/kitchen-sink"
                             title="kitchen sink"
-                            type="button"
                           >
                             <span
                               class="flex-1 min-w-0 truncate text-left"
                             >
                               kitchen sink
                             </span>
-                          </button>
+                          </a>
                         </div>
                       </nav>
                       <div
@@ -1877,6 +1877,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           type="button"
                         >
                           <span
+                            aria-hidden="true"
                             class="shrink-0 inline-flex items-center justify-center"
                           >
                             <svg

@@ -833,8 +833,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "f20bc4b";
-    readonly builtAt: "2026-10-05T19:57:43.493Z";
+    readonly baseCommitShort: "d8ac4e3";
+    readonly builtAt: "2026-10-05T21:47:01.755Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1019,6 +1019,12 @@ interface SarakShellNavItem {
     route: string;
     /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
     icon?: string;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
     category?: string;
 }
@@ -1051,23 +1057,19 @@ declare const SarakShellNav: React__default.FC<SarakShellNavProps>;
 
 /** Identidade do usuário exibida pelo widget do cromo. */
 interface SarakShellUser {
-    username?: string;
+    name: string;
+    role?: string;
+    avatarUrl?: string;
     email?: string;
-    level?: number;
-    [key: string]: unknown;
 }
 interface SarakShellUserWidgetProps {
-    /** Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. */
+    /** Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico. */
     user?: SarakShellUser;
     /** Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. */
     logout?: () => void;
-    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. */
+    /** Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. */
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
-/**
- * ShellUserWidget — Sovereign User Identity Component (v8.5)
- * Unifies profile display and logout actions across all Shell layouts.
- */
 declare const SarakShellUserWidget: React__default.FC<SarakShellUserWidgetProps>;
 
 interface SarakChromeNotification {
@@ -1075,6 +1077,28 @@ interface SarakChromeNotification {
     label: string;
     description?: string;
 }
+
+/** Um resultado fornecido pelo aplicativo ao palette. */
+interface SarakSearchItem {
+    id: string;
+    label: string;
+    category?: string;
+}
+interface SarakSearchProps {
+    isOpen: boolean;
+    onClose: () => void;
+    /** Itens da busca, fornecidos pela navegação do aplicativo. */
+    items: SarakSearchItem[];
+    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
+     * resultados não são acionáveis — o comportamento de sempre. */
+    onSelect?: (id: string) => void;
+}
+/**
+ * SarakSearch (v6.0 Command Palette)
+ *
+ * Global search component integrated into the Sarak ecosystem.
+ */
+declare const SarakSearch: React__default.FC<SarakSearchProps>;
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -1103,6 +1127,12 @@ interface SarakNavItem {
     href: string;
     /** Marca o item como ativo (destaque + `aria-current="page"`). */
     active?: boolean;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual — mesmo campo do `ShellNavItem`; itens sem categoria ficam no grupo raiz. */
     category?: string;
 }
@@ -1889,29 +1919,31 @@ interface SarakPaginationProps {
 /** Controles `< 1 2 … 5 >` respeitando o design base da Sarak (Spec 14, Regra 4). */
 declare const SarakPagination: React__default.FC<SarakPaginationProps>;
 
-/**
- * Valida o esquema de um `href` de link contra uma allow-list (`http(s):`,
- * `mailto:`, `tel:`, caminhos relativos/âncora). Bloqueia `javascript:`, `data:`
- * e qualquer outro esquema executável — vetor clássico de XSS via link.
- */
 declare const sarakIsSafeLinkHref: (href: string) => boolean;
-interface SarakLinkProps extends Omit<React__default.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'> {
+
+interface SarakLinkProps extends Omit<React__default.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel' | 'onClick'> {
     /** Destino do link. Esquemas perigosos (`javascript:`, `data:`, ...) são bloqueados. */
     href: string;
-    /** Abre em nova aba com `rel="noreferrer noopener"` + indicação visual/a11y. */
+    /** Abre em nova aba com `rel="noopener noreferrer"` + indicação visual/a11y. */
     external?: boolean;
+    /** Contexto de navegação nativo; fora de `_self`, o navegador mantém o comportamento. */
+    target?: string;
+    rel?: string;
+    /** Intercepta apenas clique primário simples destinado à aba atual. */
+    onNavigate?: (href: string) => void;
+    onClick?: React__default.MouseEventHandler<HTMLAnchorElement>;
     children: React__default.ReactNode;
 }
 /**
  * Componente Atômico: SarakLink
  * Âncora acessível por tokens: anel de foco real (`--sarak-focus-width`), `href`
  * validado por allow-list de esquema, e marcação de link externo (`target="_blank"`
- * + `rel="noreferrer noopener"` + ícone/texto para leitor de tela).
+ * + `rel="noopener noreferrer"` + ícone/texto para leitor de tela).
  */
 declare const SarakLink: React__default.FC<SarakLinkProps>;
 
 type SarakMenuItemOrientation = 'vertical' | 'horizontal';
-interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'> {
+interface SarakMenuItemProps extends Omit<React__default.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'> {
     /** Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). */
     icon?: React__default.ReactNode;
     /** Rótulo do item; trunca em vez de transbordar (orientação vertical). */
@@ -1924,6 +1956,17 @@ interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
     orientation?: SarakMenuItemOrientation;
     /** Tooltip nativo; cai para o texto do rótulo quando `label` é string. */
     title?: string;
+    /** Destino opcional; quando informado, o item é renderizado como link. */
+    href?: string;
+    /** Chamado apenas para clique primário simples em link destinado à aba atual. */
+    onNavigate?: (href: string) => void;
+    /** Indica uma quantidade ou estado adicional; também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto de navegação nativo do link. */
+    target?: string;
+    type?: React__default.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    disabled?: boolean;
+    onClick?: React__default.MouseEventHandler<HTMLElement>;
     className?: string;
 }
 /**
@@ -1935,40 +1978,20 @@ interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
  * largura cheia NA ORIGEM (nunca emite `min-w-fit`), então o rótulo trunca em vez de
  * transbordar; `className` do chamador vence os defaults por `mergeSarakClasses` (R35).
  *
- * @sarak-encapsula button — a razão de existir deste componente é encapsular o
- *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
+ * @sarak-encapsula button — encapsula a ação sem destino com o elemento nativo;
+ *   links usam âncoras para preservar a navegação do navegador.
  */
 declare const SarakMenuItem: React__default.FC<SarakMenuItemProps>;
-
-/** Um resultado fornecido pelo aplicativo ao palette. */
-interface SarakSearchItem {
-    id: string;
-    label: string;
-    category?: string;
-}
-interface SarakSearchProps {
-    isOpen: boolean;
-    onClose: () => void;
-    /** Itens da busca, fornecidos pela navegação do aplicativo. */
-    items: SarakSearchItem[];
-    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
-     * resultados não são acionáveis — o comportamento de sempre. */
-    onSelect?: (id: string) => void;
-}
-/**
- * SarakSearch (v6.0 Command Palette)
- *
- * Global search component integrated into the Sarak ecosystem.
- */
-declare const SarakSearch: React__default.FC<SarakSearchProps>;
 
 interface SarakShellSearchWidgetProps {
     /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
     /** Resultados fornecidos pelo aplicativo. */
     items?: SarakSearchItem[];
-    /** Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. */
+    /** Callback do gatilho `icon`; obrigatório. */
     onClick: () => void;
+    /** Seleciona um resultado da variante `bar`. */
+    onSelect?: (item: SarakSearchItem) => void;
 }
 /**
  * ShellSearchWidget — Adaptive Search Trigger (v8.5)
