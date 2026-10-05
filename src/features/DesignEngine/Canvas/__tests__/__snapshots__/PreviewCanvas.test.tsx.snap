@@ -783,7 +783,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
               </span>
             </div>
             <div
-              class="sarak-design-scope sarak-scope-r1 dark @container sarak-device-desktop w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate "
+              class="sarak-design-scope sarak-scope-r1 dark @container sarak-device-desktop w-full h-full flex flex-col overflow-hidden relative isolate "
               data-sx-anim-enabled="true"
               data-sx-bg-gradient-mode="linear"
               data-sx-body-font="'Inter', sans-serif"
@@ -1487,845 +1487,48 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
 }
               </style>
               <div
-                class="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]"
+                class="absolute inset-0 z-0"
                 style="background-color: var(--sarak-bg-base);"
               />
               <div
-                class="absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--color-theme-title,#ffffff)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-sidebar bg-[var(--theme-body)]"
+                class="absolute inset-0 origin-top-left overflow-hidden z-10"
                 style="width: 133.33%; height: 133.33%; transform: scale(0.75);"
               >
-                <aside
-                  class="sarak-shell-sidebar flex-shrink-0 h-full transition-all duration-300 z-30 border-r flex flex-col shrink-0 relative z-[100] overflow-hidden"
-                  style="width: 250px; opacity: 1; visibility: visible; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease; margin: var(--theme-tab-section-margin, 12px); border-radius: var(--radius-theme, 12px); height: calc(100vh - (var(--theme-tab-section-margin, 12px) * 2)); border-width: 1px; border-style: solid; background-color: var(--theme-sidebar-bg, var(--theme-sidebar)); border-color: var(--theme-border); backdrop-filter: blur(var(--sarak-sidebar-blur, 0px)); box-shadow: var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5));"
+                <div
+                  class="flex flex-col w-full h-full min-h-0 overflow-hidden "
+                  style="height: 100%; overflow: hidden; background: var(--bg-body, var(--theme-body, transparent)); width: 100%;"
                 >
                   <div
-                    aria-hidden="true"
-                    class="absolute inset-0 pointer-events-none mix-blend-overlay"
-                    style="opacity: var(--sarak-sidebar-noise-opacity, 0); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
-                  />
-                  <div
-                    class="h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 justify-between"
+                    class="relative flex flex-1 min-w-0 min-h-0 flex-row"
                   >
-                    <div
-                      class="flex items-center gap-3 w-full "
+                    <aside
+                      class="relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-300 border-r"
+                      style="width: var(--sarak-sidebar-width, 240px); min-width: var(--sidebar-min-width, 150px); max-width: var(--sidebar-max-width, 450px); margin: var(--sarak-tab-section-margin, 0px); height: calc(100% - (var(--sarak-tab-section-margin, 0px) * 2)); background: var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent)); border-color: var(--border-color, var(--theme-border, rgba(255,255,255,0.1))); backdrop-filter: blur(var(--sarak-sidebar-blur, 0px)); box-shadow: var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5));"
                     >
                       <div
-                        class="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-[var(--theme-on-primary)] shrink-0"
-                      >
-                        S
-                      </div>
-                      <span
-                        class="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[var(--sarak-sidebar-label-max-width,120px)]"
-                      >
-                        Sarak Preview
-                      </span>
-                    </div>
-                    <button
-                      class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]"
-                    >
-                      <svg
-                        class=""
-                        fill="none"
-                        height="16"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="m15 18-6-6 6-6"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div
-                    class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col"
-                    style="gap: var(--theme-tab-gap, undefinedpx);"
-                  >
-                    <div
-                      class="px-1 mb-2 shrink-0"
-                    >
-                      <div
-                        class="hidden md:flex items-center w-64 group relative"
-                      >
-                        <div
-                          class="flex flex-col w-full w-full"
-                          style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
-                        >
-                          <div
-                            class="flex-1 flex relative w-full"
-                            style="flex-direction: column;"
-                          >
-                            <div
-                              class="relative w-full flex items-center"
-                            >
-                              <div
-                                class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
-                              >
-                                <svg
-                                  class="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors"
-                                  fill="none"
-                                  height="14"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  viewBox="0 0 24 24"
-                                  width="14"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <circle
-                                    cx="11"
-                                    cy="11"
-                                    r="8"
-                                  />
-                                  <path
-                                    d="m21 21-4.3-4.3"
-                                  />
-                                </svg>
-                              </div>
-                              <input
-                                class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
-                                id=":r2:"
-                                placeholder="Busca inteligente…"
-                                style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
-                                value=""
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style="margin-bottom: var(--theme-tab-gap, undefinedpx);"
-                    >
-                      <h4
-                        class="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[var(--sarak-tracking-tight,0.2em)] mb-3 px-3"
-                      >
-                        System Modules
-                      </h4>
-                      <div
-                        class="space-y-1"
-                        style="gap: var(--theme-tab-gap, undefinedpx);"
-                      >
-                        <button
-                          aria-current="page"
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm normal-case tracking-normal transition-colors font-bold text-[var(--sarak-nav-active-color,#3b82f6)] cursor-pointer relative group font-tab bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]"
-                          title="Dashboard"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--sarak-nav-active-color,#00f2ff)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 3v18h18"
-                              />
-                              <path
-                                d="M18 17V9"
-                              />
-                              <path
-                                d="M13 17V5"
-                              />
-                              <path
-                                d="M8 17v-3"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Dashboard
-                          </span>
-                          <div
-                            class="absolute left-0 w-1 h-4 rounded-full"
-                            layoutid="active-pill"
-                            style="background: var(--sarak-nav-marker-color, #00f2ff); box-shadow: 0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff);"
-                          />
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Formulários"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect
-                                height="18"
-                                rx="2"
-                                ry="2"
-                                width="18"
-                                x="3"
-                                y="3"
-                              />
-                              <line
-                                x1="3"
-                                x2="21"
-                                y1="9"
-                                y2="9"
-                              />
-                              <line
-                                x1="9"
-                                x2="9"
-                                y1="21"
-                                y2="9"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Formulários
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Documentos"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
-                              />
-                              <polyline
-                                points="14 2 14 8 20 8"
-                              />
-                              <line
-                                x1="16"
-                                x2="8"
-                                y1="13"
-                                y2="13"
-                              />
-                              <line
-                                x1="16"
-                                x2="8"
-                                y1="17"
-                                y2="17"
-                              />
-                              <line
-                                x1="10"
-                                x2="8"
-                                y1="9"
-                                y2="9"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Documentos
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Chat Ops"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Chat Ops
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="System Logs"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
-                              />
-                              <path
-                                d="M3 3v5h5"
-                              />
-                              <path
-                                d="M12 7v5l4 2"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            System Logs
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Settings"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect
-                                height="6"
-                                rx="1"
-                                width="6"
-                                x="16"
-                                y="16"
-                              />
-                              <rect
-                                height="6"
-                                rx="1"
-                                width="6"
-                                x="2"
-                                y="16"
-                              />
-                              <rect
-                                height="6"
-                                rx="1"
-                                width="6"
-                                x="9"
-                                y="2"
-                              />
-                              <path
-                                d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"
-                              />
-                              <path
-                                d="M12 12V8"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Settings
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Gallery"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
-                              />
-                              <path
-                                d="m3.3 7 8.7 5 8.7-5"
-                              />
-                              <path
-                                d="M12 22V12"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Gallery
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Typography"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <polyline
-                                points="4 7 4 4 20 4 20 7"
-                              />
-                              <line
-                                x1="9"
-                                x2="15"
-                                y1="20"
-                                y2="20"
-                              />
-                              <line
-                                x1="12"
-                                x2="12"
-                                y1="4"
-                                y2="20"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Typography
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Security Gate"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect
-                                height="11"
-                                rx="2"
-                                ry="2"
-                                width="18"
-                                x="3"
-                                y="11"
-                              />
-                              <path
-                                d="M7 11V7a5 5 0 0 1 10 0v4"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Security Gate
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Matrix Network"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"
-                              />
-                              <path
-                                d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"
-                              />
-                              <path
-                                d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Matrix Network
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Tabela Analítica"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect
-                                height="18"
-                                rx="2"
-                                width="18"
-                                x="3"
-                                y="3"
-                              />
-                              <path
-                                d="M3 9h18"
-                              />
-                              <path
-                                d="M3 15h18"
-                              />
-                              <path
-                                d="M9 3v18"
-                              />
-                              <path
-                                d="M15 3v18"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Tabela Analítica
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Caixas de Texto"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <line
-                                x1="21"
-                                x2="3"
-                                y1="6"
-                                y2="6"
-                              />
-                              <line
-                                x1="15"
-                                x2="3"
-                                y1="12"
-                                y2="12"
-                              />
-                              <line
-                                x1="17"
-                                x2="3"
-                                y1="18"
-                                y2="18"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Caixas de Texto
-                          </span>
-                        </button>
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Gráficos Avançados"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 3v18h18"
-                              />
-                              <path
-                                d="m19 9-5 5-4-4-3 3"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Gráficos Avançados
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                    <div
-                      style="margin-bottom: var(--theme-tab-gap, undefinedpx);"
-                    >
-                      <h4
-                        class="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[var(--sarak-tracking-tight,0.2em)] mb-3 px-3"
-                      >
-                        Experimental
-                      </h4>
-                      <div
-                        class="space-y-1"
-                        style="gap: var(--theme-tab-gap, undefinedpx);"
-                      >
-                        <button
-                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative group font-tab"
-                          title="Kitchen Sink"
-                          type="button"
-                        >
-                          <span
-                            class="shrink-0 inline-flex items-center justify-center"
-                          >
-                            <svg
-                              class="text-[var(--theme-muted)]"
-                              fill="none"
-                              height="16"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <polygon
-                                points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="flex-1 min-w-0 truncate text-left"
-                          >
-                            Kitchen Sink
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="mt-auto space-y-1 p-2"
-                  >
-                    <button
-                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
-                      title="Modo Claro"
-                      type="button"
-                    >
-                      <span
-                        class="shrink-0 inline-flex items-center justify-center"
-                      >
-                        <svg
-                          class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-                          fill="none"
-                          height="18"
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="4"
-                          />
-                          <path
-                            d="M12 2v2"
-                          />
-                          <path
-                            d="M12 20v2"
-                          />
-                          <path
-                            d="m4.93 4.93 1.41 1.41"
-                          />
-                          <path
-                            d="m17.66 17.66 1.41 1.41"
-                          />
-                          <path
-                            d="M2 12h2"
-                          />
-                          <path
-                            d="M20 12h2"
-                          />
-                          <path
-                            d="m6.34 17.66-1.41 1.41"
-                          />
-                          <path
-                            d="m19.07 4.93-1.41 1.41"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="flex-1 min-w-0 truncate text-left"
-                      >
-                        Modo Claro
-                      </span>
-                    </button>
-                    <button
-                      class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
-                      title="Notificações"
-                      type="button"
-                    >
-                      <span
-                        class="shrink-0 inline-flex items-center justify-center"
-                      >
-                        <svg
-                          class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-                          fill="none"
-                          height="18"
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
-                          />
-                          <path
-                            d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="flex-1 min-w-0 truncate text-left"
-                      >
-                        Notificações
-                      </span>
-                      <div
-                        class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
+                        aria-hidden="true"
+                        class="absolute inset-0 pointer-events-none mix-blend-overlay"
+                        style="opacity: var(--sarak-sidebar-noise-opacity, 0); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
                       />
-                    </button>
-                  </div>
-                  <div
-                    class="border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 "
-                    style="padding: var(--sarak-layout-gap-md, 16px);"
-                  >
-                    <div
-                      class="flex items-center group justify-between w-full"
-                    >
                       <div
-                        class="flex items-center"
-                        style="gap: calc(var(--sarak-layout-gap-sm, 8px) * 1.5); flex-direction: row;"
+                        class="flex items-center justify-between px-1"
                       >
                         <div
-                          class="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden"
+                          class="flex items-center gap-2 min-w-0 px-2 py-3 "
                         >
-                          <div
-                            class="absolute inset-0 bg-gradient-to-tr from-[var(--theme-primary)] to-transparent opacity-10"
-                          />
+                          <span
+                            class="truncate font-bold tracking-tight"
+                            style="font-family: var(--font-heading, var(--font-main, inherit)); color: var(--sarak-topbar-title-color, var(--color-theme-title, inherit)); max-width: var(--sarak-sidebar-label-max-width, 120px);"
+                          >
+                            Sarak Preview
+                          </span>
+                        </div>
+                        <button
+                          aria-label="Recolher navegação"
+                          class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98] shrink-0"
+                          data-sarak-widget="collapse"
+                          type="button"
+                        >
                           <svg
                             class=""
                             fill="none"
@@ -2339,105 +1542,312 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
-                            />
-                            <circle
-                              cx="12"
-                              cy="7"
-                              r="4"
+                              d="m15 18-6-6 6-6"
                             />
                           </svg>
-                        </div>
+                        </button>
+                      </div>
+                      <div
+                        class="min-w-0 px-2 pb-2"
+                        data-sarak-slot="search"
+                      >
                         <div
-                          class="flex overflow-hidden"
-                          style="flex-direction: column;"
+                          class="hidden md:flex items-center w-64 group relative"
+                        >
+                          <div
+                            class="flex flex-col w-full w-full"
+                            style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
+                          >
+                            <div
+                              class="flex-1 flex relative w-full"
+                              style="flex-direction: column;"
+                            >
+                              <div
+                                class="relative w-full flex items-center"
+                              >
+                                <div
+                                  class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
+                                >
+                                  <svg
+                                    class="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors"
+                                    fill="none"
+                                    height="14"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                    width="14"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <circle
+                                      cx="11"
+                                      cy="11"
+                                      r="8"
+                                    />
+                                    <path
+                                      d="m21 21-4.3-4.3"
+                                    />
+                                  </svg>
+                                </div>
+                                <input
+                                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
+                                  id=":r2:"
+                                  placeholder="Busca inteligente…"
+                                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
+                                  value=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <nav
+                        aria-label="Navegação principal"
+                        class="flex h-full min-h-0 overflow-y-auto flex-1 min-h-0"
+                        style="flex-direction: column; gap: var(--sarak-layout-gap-sm, 8px); padding: var(--sarak-layout-gap-md, 16px);"
+                      >
+                        <div
+                          class="flex"
+                          style="flex-direction: column; gap: calc(var(--sarak-tab-gap, 8px) * 0.5);"
+                        >
+                          <button
+                            aria-current="page"
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm normal-case tracking-normal transition-colors font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)] cursor-pointer relative"
+                            title="dashboard"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              dashboard
+                            </span>
+                            <span
+                              aria-hidden="true"
+                              class="absolute left-0 w-1 h-4 rounded-full"
+                              style="background: var(--sarak-nav-marker-color, #00f2ff); box-shadow: 0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff);"
+                            />
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="forms"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              forms
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="chat"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              chat
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="logs"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              logs
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="settings"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              settings
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="components"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              components
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="typography"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              typography
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="auth"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              auth
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="matrix"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              matrix
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="tabela"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              tabela
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="caixas texto"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              caixas texto
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="graficos"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              graficos
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="documentos"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              documentos
+                            </span>
+                          </button>
+                          <button
+                            class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer relative"
+                            title="kitchen sink"
+                            type="button"
+                          >
+                            <span
+                              class="flex-1 min-w-0 truncate text-left"
+                            >
+                              kitchen sink
+                            </span>
+                          </button>
+                        </div>
+                      </nav>
+                      <div
+                        class=""
+                        data-sarak-widget="user-theme"
+                      >
+                        <button
+                          class="flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))] cursor-pointer group font-tab"
+                          title="Modo Claro"
+                          type="button"
                         >
                           <span
-                            class="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate"
-                          >
-                            Usuário
-                          </span>
-                          <div
-                            class="flex items-center"
-                            style="gap: calc(var(--sarak-layout-gap-sm, 8px) * 0.75);"
+                            class="shrink-0 inline-flex items-center justify-center"
                           >
                             <svg
-                              class="text-[var(--theme-primary)]"
+                              class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
                               fill="none"
-                              height="8"
+                              height="18"
                               stroke="currentColor"
                               stroke-linecap="round"
                               stroke-linejoin="round"
                               stroke-width="2"
                               viewBox="0 0 24 24"
-                              width="8"
+                              width="18"
                               xmlns="http://www.w3.org/2000/svg"
                             >
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="4"
+                              />
                               <path
-                                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+                                d="M12 2v2"
+                              />
+                              <path
+                                d="M12 20v2"
+                              />
+                              <path
+                                d="m4.93 4.93 1.41 1.41"
+                              />
+                              <path
+                                d="m17.66 17.66 1.41 1.41"
+                              />
+                              <path
+                                d="M2 12h2"
+                              />
+                              <path
+                                d="M20 12h2"
+                              />
+                              <path
+                                d="m6.34 17.66-1.41 1.41"
+                              />
+                              <path
+                                d="m19.07 4.93-1.41 1.41"
                               />
                             </svg>
-                            <span
-                              class="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] uppercase tracking-widest font-black"
-                            >
-                              Usuário
-                            </span>
-                          </div>
-                        </div>
+                          </span>
+                          <span
+                            class="flex-1 min-w-0 truncate text-left"
+                          >
+                            Modo Claro
+                          </span>
+                        </button>
                       </div>
-                      <button
-                        class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)]"
-                        title="Sair"
-                      >
-                        <svg
-                          class=""
-                          fill="none"
-                          height="14"
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                          width="14"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
-                          />
-                          <polyline
-                            points="16 17 21 12 16 7"
-                          />
-                          <line
-                            x1="21"
-                            x2="9"
-                            y1="12"
-                            y2="12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    class="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                    title="Arraste para redimensionar"
-                  />
-                </aside>
-                <div
-                  class="flex-1 flex flex-col h-full overflow-hidden relative bg-[var(--theme-body)]"
-                >
-                  <main
-                    class="flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate "
-                  >
-                    <div
-                      class="relative z-10"
+                    </aside>
+                    <main
+                      class="relative flex-1 min-w-0 min-h-0 overflow-auto "
+                      data-sarak-content="true"
+                      style="color: var(--text-main, var(--color-theme-title, inherit)); padding: var(--sarak-layout-padding, 16px);"
                     >
                       <div
                         data-testid="mock-dashboard"
                       >
                         Dashboard Mocked
                       </div>
-                    </div>
-                  </main>
+                    </main>
+                  </div>
                 </div>
               </div>
             </div>

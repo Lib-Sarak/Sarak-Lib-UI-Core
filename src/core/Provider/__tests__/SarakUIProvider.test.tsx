@@ -6,10 +6,6 @@ import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvi
 import { useDesignManager } from '../hooks/useDesignManager';
 
 // Mock dependências do SarakUIProvider
-vi.mock('../hooks/useRegistryManager', () => ({
-    useRegistryManager: vi.fn(() => ({ registeredModules: [], isHydrated: true }))
-}));
-
 vi.mock('../hooks/useDesignManager', () => ({
     useDesignManager: vi.fn()
 }));

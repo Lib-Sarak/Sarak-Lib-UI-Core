@@ -56,7 +56,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildExampleModuleTsx } from '../../../bin/scaffold/generators/exampleModule.mjs';
+import { buildAppTsx } from '../../../bin/scaffold/generators/appTsx.mjs';
 import { buildMainTsx } from '../../../bin/scaffold/generators/mainTsx.mjs';
 import { parsePublicExportNames } from './check-public-prefix.mjs';
 
@@ -118,7 +118,7 @@ export function collectGeneratedSources() {
     return [
         { file: 'init → src/main.tsx (modo app)', text: buildMainTsx({ answers: { mode: 'app' } }) },
         { file: 'init → src/main.tsx (modo embarcado)', text: buildMainTsx({ answers: { mode: 'embedded' } }) },
-        { file: 'init → src/modules/ExampleModule.tsx', text: buildExampleModuleTsx() },
+        { file: 'init → src/App.tsx', text: buildAppTsx() },
     ];
 }
 

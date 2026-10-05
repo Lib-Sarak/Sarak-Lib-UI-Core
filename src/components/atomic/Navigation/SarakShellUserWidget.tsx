@@ -1,9 +1,16 @@
 import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { motion } from 'framer-motion';
-import { SarakShellUser } from '../../../core/Shell/Components/types';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+
+/** Identidade do usuário exibida pelo widget do cromo. */
+export interface SarakShellUser {
+    username?: string;
+    email?: string;
+    level?: number;
+    [key: string]: unknown;
+}
 
 export interface SarakShellUserWidgetProps {
     /** Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. */

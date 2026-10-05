@@ -2774,8 +2774,8 @@
         {
           "name": "items",
           "type": "SarakSearchItem[]",
-          "optional": true,
-          "doc": "Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`."
+          "optional": false,
+          "doc": "Itens da busca, fornecidos pela navegação do aplicativo."
         },
         {
           "name": "onSelect",
@@ -2927,6 +2927,12 @@
           "type": "'bar' | 'icon'",
           "optional": true,
           "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
+        },
+        {
+          "name": "items",
+          "type": "SarakSearchItem[]",
+          "optional": true,
+          "doc": "Resultados fornecidos pelo aplicativo."
         },
         {
           "name": "onClick",

@@ -153,17 +153,21 @@ describe('ShellLanguageSelector', () => {
         expect(screen.getByTestId('host-language')).toHaveTextContent('pt');
     });
 
-    it('o caminho de substituição do seletor pelo host continua funcionando', () => {
+    it('continua lendo o override global do seletor', () => {
         const Override: React.FC<{ variant?: string }> = ({ variant }) => (
             <div data-testid="override-lang">override-{variant}</div>
         );
-        (window as Window & { __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>> })
-            .__SARAK_OVERRIDES__ = { 'shell-language-selector': Override };
+        (window as Window & {
+            __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>>;
+        }).__SARAK_OVERRIDES__ = { 'shell-language-selector': Override };
 
-        // Mesmo sem idiomas habilitados no tema, o override monta — ele não depende
-        // da regra de "um idioma só não monta", que é desta biblioteca, não dele.
-        renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />, {});
+        renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />, { enabledLanguages: [] });
 
-        expect(screen.getByTestId('override-lang')).toHaveTextContent('override-horizontal');
+        const override = screen.getByTestId('override-lang');
+        expect(override).toHaveTextContent('override-horizontal');
+
+        const wrapper = override.closest('.sarak-language-override-wrapper');
+        expect(wrapper).toHaveClass('sarak-language-override-wrapper', 'horizontal-variant');
     });
+
 });

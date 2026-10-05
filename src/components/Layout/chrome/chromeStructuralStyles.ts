@@ -1,15 +1,9 @@
 import type { ChromeContentAlignment, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
 
 /**
- * Tradução de tokens ESTRUTURAIS de cromo (`sidebarPosition`, `navbarLayout`,
- * `contentAlignment`) em classes, para o cromo do modo ui-kit.
- *
- * Comportamento de REFERÊNCIA: `src/core/Shell/hooks/useShellLayoutStyles.ts`
- * (não importado — `src/core/Shell/` não é tocado por esta plan, §3.2). Os
- * mapas abaixo são o equivalente para a estrutura do `SarakAppChrome`, que
- * difere da do Shell (aqui a direção do flex vale só para a linha
- * sidebar+conteúdo, não para a casca inteira — banner/footer do `ChromeFrame`
- * continuam empilhados em coluna nos dois sentidos).
+ * Converte os tokens estruturais de cromo em classes para `SarakAppChrome`.
+ * A direção do flex governa a linha sidebar e conteúdo; banner e footer
+ * continuam empilhados em coluna pelo `ChromeFrame`.
  */
 
 const BODY_DIRECTION_CLASS: Record<ChromeSidebarPosition, string> = {

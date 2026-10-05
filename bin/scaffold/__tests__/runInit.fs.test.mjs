@@ -57,7 +57,7 @@ function getBarrelExportNames(sourceText) {
     return exportNames;
 }
 
-describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 45)', () => {
+describe('runInit (fs real, tmp dir) — starter com navegação do app', () => {
     it('gera a estrutura completa do starter na 1ª execução', async () => {
         const result = await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
@@ -67,7 +67,7 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
             'vite.config.ts',
             'tsconfig.json',
             'src/main.tsx',
-            'src/modules/ExampleModule.tsx',
+            'src/App.tsx',
             'package.json',
         ]) {
             expect(fs.existsSync(path.join(tmpDir, relPath)), `esperava ${relPath}`).toBe(true);
@@ -79,34 +79,34 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         expect(pkg.devDependencies.typescript.startsWith('^5')).toBe(true);
     });
 
-    it('main.tsx segue o padrão módulos-plugin (Sarak-MyService): Provider+Shell+registro, sem manifesto', async () => {
+    it('gera Provider e SarakAppChrome com navegação e rotas controladas pelo app', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
+        const appTsx = fs.readFileSync(path.join(tmpDir, 'src/App.tsx'), 'utf8');
         expect(mainTsx).toContain('SarakUIProvider');
-        expect(mainTsx).toContain('SarakShell');
-        expect(mainTsx).toContain('registerSarakModule');
+        expect(mainTsx).toContain("import { App } from './App'");
+        expect(appTsx).toContain('SarakAppChrome');
+        expect(appTsx).toContain('navItems');
+        expect(appTsx).toContain('window.history.pushState');
+        expect(appTsx).toContain("window.addEventListener('popstate'");
+        expect(appTsx).not.toContain('registerSarakModule');
+        expect(appTsx).not.toContain('SarakShell');
         expect(mainTsx).not.toContain('app.manifest.json');
     });
 
-    it('main.tsx importa somente identificadores exportados pelo barril público', async () => {
+    it('os arquivos gerados importam somente identificadores exportados pelo barril público', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
+        const appTsx = fs.readFileSync(path.join(tmpDir, 'src/App.tsx'), 'utf8');
         const barrelTypes = fs.readFileSync(BARREL_TYPES_PATH, 'utf8');
-        const importedNames = getPackageNamedImports(mainTsx, '@sarak/lib-ui-core');
+        const importedNames = [mainTsx, appTsx].flatMap((source) => getPackageNamedImports(source, '@sarak/lib-ui-core'));
         const publicExports = getBarrelExportNames(barrelTypes);
         const missingNames = importedNames.filter((name) => !publicExports.has(name));
 
         expect(importedNames.length).toBeGreaterThan(0);
         expect(missingNames).toEqual([]);
-    });
-
-    it('main.tsx define o módulo de exemplo como defaultModuleId (achado real: sem isso, o Shell abre no Design Engine por padrão — prioridade 9999)', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
-
-        const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
-        expect(mainTsx).toContain("defaultModuleId: 'exemplo'");
     });
 
     it('não gera backend nenhum (Spec 44/45): sem server.ts, sem rotas Next, sem manifesto/Sarak-Engine', async () => {

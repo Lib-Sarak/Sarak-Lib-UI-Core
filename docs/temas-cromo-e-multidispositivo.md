@@ -61,8 +61,8 @@ tokens — o JSON exportado nasce completo, pronto para colar em `customThemes`.
 
 ## 2. Cromo apresentacional (L2) — `SarakAppChrome`
 
-Topbar/sidebar temáveis **sem** o modelo de host/registro do `SarakShell`. Cada app
-renderiza o seu, isolado; a navegação é DADO e a seleção sai por callback.
+O `SarakAppChrome` é montado por cada app; a navegação é declarada em dados e a
+seleção da rota segue pelo callback para o roteador do consumidor.
 
 ### Navegação estruturada com ícone first-class (Spec 40.2 — L1)
 
@@ -83,7 +83,7 @@ const NAV: SarakNavItem[] = [
 <SarakAppChrome
   brand={{ name: 'Meu Sistema' }}
   navItems={NAV.map((it) => ({ ...it, active: it.href === rotaAtual }))}
-  onNavigate={(href) => window.location.assign(href)}  // o host decide como navegar
+  onNavigate={(href) => window.location.assign(href)}  // a aplicação decide como navegar
 >
   <MinhaTela />
 </SarakAppChrome>

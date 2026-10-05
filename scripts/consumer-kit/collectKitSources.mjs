@@ -176,8 +176,8 @@ export const collectBarrelExports = () =>
 
 /**
  * O resto da API React pública que o catálogo de componentes NÃO cobre: ele varre só
- * `components/atomic/` e `components/Layout/`, então `SarakUIProvider`, `SarakShell` e
- * companhia (que moram em `core/`) ficavam de fora. Para o kit isso seria um buraco —
+ * `components/atomic/` e `components/Layout/`, então `SarakUIProvider` e
+ * outros componentes de montagem que moram em `core/` ficavam de fora. Para o kit isso seria um buraco —
  * são justamente as peças de montagem. Derivado, não listado à mão: todo nome do barril
  * que tenha uma interface `<Nome>Props` no código-fonte.
  */

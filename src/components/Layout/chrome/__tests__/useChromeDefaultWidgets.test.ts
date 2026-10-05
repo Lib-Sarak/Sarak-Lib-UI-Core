@@ -68,7 +68,7 @@ describe('useChromeDefaultWidgets', () => {
         expect(result.current.isSearchOpen).toBe(false);
     });
 
-    it('toggleNavHidden inverte design.isNavHidden (o mesmo token que o SarakShell usa)', () => {
+    it('toggleNavHidden inverte design.isNavHidden', () => {
         const { result } = renderHook(() => {
             const w = useChromeDefaultWidgets();
             const { design } = useSarakUI();

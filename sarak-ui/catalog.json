@@ -83,8 +83,6 @@
     "SarakChromeWidgets",
     "SarakColorModePreference",
     "SarakColumn",
-    "SarakComponent",
-    "SarakComponentProps",
     "SarakContextMenu",
     "SarakContextMenuPosition",
     "SarakContextMenuProps",
@@ -113,14 +111,11 @@
     "SarakDeviceProvider",
     "SarakDeviceProviderProps",
     "SarakDeviceType",
-    "SarakDiscoveredModule",
     "SarakDivider",
     "SarakDividerOrientation",
     "SarakDividerProps",
     "SarakDrawer",
     "SarakDrawerProps",
-    "SarakDynamicRenderer",
-    "SarakDynamicRendererProps",
     "SarakEmptyState",
     "SarakEmptyStateProps",
     "SarakExpandableCard",
@@ -131,7 +126,6 @@
     "SarakFieldErrorProps",
     "SarakFileRejection",
     "SarakFilterConfig",
-    "SarakFilterDescriptor",
     "SarakFilterSelect",
     "SarakFilterSelectProps",
     "SarakFlex",
@@ -187,8 +181,6 @@
     "SarakModal",
     "SarakModalLayoutContext",
     "SarakModalProps",
-    "SarakModule",
-    "SarakModuleManifest",
     "SarakMultiSelect",
     "SarakMultiSelectOption",
     "SarakMultiSelectProps",
@@ -220,7 +212,6 @@
     "SarakResponsiveValue",
     "SarakRichText",
     "SarakRichTextProps",
-    "SarakRouterState",
     "SarakScrim",
     "SarakScrimProps",
     "SarakSearch",
@@ -230,13 +221,11 @@
     "SarakSearchProps",
     "SarakSelect",
     "SarakSelectProps",
-    "SarakShell",
     "SarakShellLanguageSelector",
     "SarakShellLanguageSelectorProps",
     "SarakShellNav",
     "SarakShellNavItem",
     "SarakShellNavProps",
-    "SarakShellProps",
     "SarakShellSearchWidget",
     "SarakShellSearchWidgetProps",
     "SarakShellThemeToggle",
@@ -308,11 +297,7 @@
     "SarakUploader",
     "SarakUploaderProps",
     "SarakUserPreferences",
-    "SarakVisualContract",
-    "SarakVisualContractType",
     "SarakWeekStart",
-    "getSarakModule",
-    "registerSarakModule",
     "sarakBuildPaginationRange",
     "sarakComputeOffsets",
     "sarakDeriveThemeFromReference",
@@ -320,27 +305,20 @@
     "sarakFindMissingThemeAxes",
     "sarakGetAllDesignTokens",
     "sarakGetDefaultDesignState",
-    "sarakGetLocalComponent",
-    "sarakGetLocalComponentIds",
-    "sarakGetRegisteredModules",
     "sarakGetThemePreset",
     "sarakIsResponsiveValue",
     "sarakIsSafeLinkHref",
     "sarakMoveCard",
-    "sarakRegisterLocalComponent",
     "sarakReorder",
     "sarakResolveResponsiveValue",
     "sarakSanitizeRichText",
-    "sarakSubscribeToRegistry",
     "sarakWarnOnIncompleteTheme",
     "sarakWidthOf",
     "useDesignDraft",
     "useModalLayoutStyles",
-    "useModuleDiscovery",
     "useOverlay",
     "useSarakDevice",
     "useSarakPreferences",
-    "useSarakRouter",
     "useSarakUI",
     "useToast"
   ],
@@ -1472,18 +1450,6 @@
         }
       ]
     },
-    "SarakComponent": {
-      "propsInterface": "SarakComponentProps",
-      "source": "src/core/Discovery/registry.ts",
-      "props": [
-        {
-          "name": "children",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        }
-      ]
-    },
     "SarakContextMenu": {
       "propsInterface": "SarakContextMenuProps",
       "source": "src/components/atomic/UX/SarakContextMenu.tsx",
@@ -1933,24 +1899,6 @@
           "type": "string",
           "optional": true,
           "doc": "Classes adicionais aplicadas ao elemento do diálogo, que já mantém rolagem vertical. Sem a prop, usa apenas as classes internas."
-        }
-      ]
-    },
-    "SarakDynamicRenderer": {
-      "propsInterface": "SarakDynamicRendererProps",
-      "source": "src/core/Discovery/DynamicRenderer.tsx",
-      "props": [
-        {
-          "name": "contracts",
-          "type": "SarakVisualContract[]",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "module",
-          "type": "SarakDiscoveredModule",
-          "optional": true,
-          "doc": ""
         }
       ]
     },
@@ -3201,8 +3149,8 @@
         {
           "name": "items",
           "type": "SarakSearchItem[]",
-          "optional": true,
-          "doc": "Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`."
+          "optional": false,
+          "doc": "Itens da busca, fornecidos pela navegação do aplicativo."
         },
         {
           "name": "onSelect",
@@ -3276,54 +3224,6 @@
           "type": "boolean",
           "optional": true,
           "doc": "Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai."
-        }
-      ]
-    },
-    "SarakShell": {
-      "propsInterface": "SarakShellProps",
-      "source": "src/core/Shell/Components/types.ts",
-      "props": [
-        {
-          "name": "children",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "brand",
-          "type": "{ name?: string; logo?: string; }",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "extraToolbarItems",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "user",
-          "type": "SarakShellUser",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "logout",
-          "type": "() => void",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "token",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "authApi",
-          "type": "unknown",
-          "optional": true,
-          "doc": ""
         }
       ]
     },
@@ -3402,6 +3302,12 @@
           "type": "'bar' | 'icon'",
           "optional": true,
           "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
+        },
+        {
+          "name": "items",
+          "type": "SarakSearchItem[]",
+          "optional": true,
+          "doc": "Resultados fornecidos pelo aplicativo."
         },
         {
           "name": "onClick",
@@ -4197,12 +4103,6 @@
           "name": "children",
           "type": "ReactNode",
           "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "discoveryEndpoints",
-          "type": "string[]",
-          "optional": true,
           "doc": ""
         },
         {
@@ -7937,7 +7837,6 @@
       "SarakFlex",
       "SarakGrid",
       "SarakHidden",
-      "SarakShell",
       "SarakSplitPane",
       "SarakTable"
     ],
@@ -8025,6 +7924,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "7403343d1f53"
+    "kitHash": "4dfb3933747b"
   }
 }

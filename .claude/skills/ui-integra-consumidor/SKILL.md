@@ -1,6 +1,6 @@
 ---
 name: ui-integra-consumidor
-description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo/Shell, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
+description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo por-app, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
 ---
 
 # Skill: Integrar Consumidor (Infraestrutura)
@@ -45,47 +45,35 @@ do cromo, todos **gerados do código-fonte** da versão instalada.
 O kit também traz **`GUIA-FRONTEND.md`** — o documento único de autoria (4 topologias + todos os
 casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA.
 
-## Modelo de consumo: dois formatos, o mesmo núcleo
+## Modelo de consumo: um cromo por aplicação
 
-O núcleo é sempre o mesmo: **`SarakUIProvider` + tokens públicos `var(--sarak-*)` + Design Engine
-central**. O que varia é quem manda na navegação:
-
-**(a) Base como KIT** — você mantém o seu roteador e a sua estrutura; a lib entra como componentes +
-cromo apresentacional + central de tema. Serve às 4 topologias (monolito, monorepo, monolito modular,
-microsserviço):
+Cada aplicação controla suas próprias rotas e telas. A base fornece o `SarakUIProvider`, o
+`SarakAppChrome` apresentacional e os tokens públicos `var(--sarak-*)`; `navItems` descreve a
+navegação e `onNavigate` entrega a rota ao roteador do consumidor. O mesmo modelo serve para
+monólito, monorepo, monólito modular e microsserviços:
 
 ```tsx
-import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel } from '@sarak/lib-ui-core';
+import { SarakAppChrome, SarakUIProvider, type SarakNavItem } from '@sarak/lib-ui-core';
+
+const NAV: SarakNavItem[] = [
+  { id: 'inicio', label: 'Início', href: '/' },
+  { id: 'clientes', label: 'Clientes', href: '/clientes' },
+];
 
 <SarakUIProvider customThemes={TEMAS} initialTheme={TEMAS[0].id}>
-  <SarakAppChrome brand={{ name: 'Meu Sistema' }} navItems={NAV} onNavigate={navegar}>
+  <SarakAppChrome
+    brand={{ name: 'Meu Sistema' }}
+    navItems={NAV}
+    onNavigate={navegar}
+  >
     <MinhaRota />
   </SarakAppChrome>
 </SarakUIProvider>
 ```
 
-**(b) Base como HOST (módulos-plugin)** — a base assume navegação e roteamento a partir dos módulos
-registrados. Só faz sentido quando o sistema é **um** app hospedando vários módulos:
-
-```tsx
-import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
-import { MeuModuloDeNegocio } from './modulos/MeuModulo';
-
-sarakRegisterLocalComponent('meu-modulo', MeuModuloDeNegocio);
-registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
-
-<SarakUIProvider>
-  <SarakShell />
-</SarakUIProvider>
-```
-
-- `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera
-  navegação e roteamento sozinha. `sarakRegisterLocalComponent(id, Component)` liga o React ao `id`
-  (alternativa: `component` direto no objeto de registro). Use um guard `safeRegister` contra
-  `undefined` — é o que o `init` já gera.
-- A biblioteca não converte manifestos JSON em telas; os módulos são componentes React. Nunca oriente o consumidor a "programar em JSON".
-- O importador **pode criar o que precisar** — módulo, componente, tela. A única regra é a de tokens,
-  logo abaixo.
+O consumidor mantém a estrutura de rotas e implementa a função `navegar` com o roteador da
+aplicação. O `sarak-ui init` deixa um exemplo em `src/App.tsx` com atualização da URL e tratamento
+do evento `popstate`.
 
 **Contrato de tokens público (o que torna o código DO IMPORTADOR temável):** um componente próprio só
 responde à troca de tema se estilizar por `var(--sarak-*)` — ex.: `background: var(--sarak-card-bg)`,
@@ -172,8 +160,8 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
 
 ## Quando usar
 - Quando o usuário informar que está num repositório que consumirá a `Sarak-Lib-UI-Core` e precisa
-  acoplar a base (Provider + Design Engine, com ou sem Shell).
-- Quando for necessário plugar autenticação/roteamento do host ou registrar os primeiros módulos.
+  acoplar o Provider, Design Engine e cromo da aplicação.
+- Quando for necessário integrar autenticação ou conectar as rotas do consumidor à navegação do cromo.
 - APENAS a pedido explícito de instalação/integração. NÃO acione proativamente.
 
 ## Golden Path (leia antes de tudo)
@@ -189,7 +177,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
   2026-07-26). Confira `packageManager` no `package.json` e o lockfile presente antes de rodar
   qualquer coisa; se houver mais de um lockfile, um deles é resíduo. O `init` e o `check` detectam
   isso sozinhos e geram os comandos do gerenciador certo.
-- **Starter padrão:** front **Vite puro** (Provider + Shell + módulo de exemplo), **sem backend
+- **Starter padrão:** front **Vite puro** (Provider + `SarakAppChrome` + telas e rotas de exemplo), **sem backend
   nenhum** — o tema persiste em `localStorage`. O backend de negócio (se existir) é inteiramente do
   consumidor, em processo separado; a lib **nunca chama rede sozinha**.
 - O `init` é **idempotente**: não sobrescreve arquivo existente sem `--force`; reporta o que pulou.
@@ -203,7 +191,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      - **Modo Embarcado:** suportado, mas o `init` **não** monta a ilha dentro de um host existente —
        ele só garante os artefatos comuns. A montagem é manual (Etapa 4). Registre a escolha.
      - **Se Embarcado, pergunte também:** *"A adoção começa por quais rotas/regiões?"* — a migração é
-       incremental (1 módulo → mais módulos → Shell completo → opcionalmente Modo App).
+       incremental (1 tela → mais telas → integração progressiva das rotas → opcionalmente Modo App).
    - **SEGUNDA PERGUNTA — Topologia:** *"O projeto é um app único (monolito), vários apps num
      repositório (monorepo), apps compostos num deploy único (monolito modular) ou serviços com
      deploys independentes (microsserviço)?"* A resposta não muda o `init`, mas **decide onde moram
@@ -236,7 +224,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      - **TODAS as peerDependencies gravadas** no `package.json` (nunca confie no auto-install do
        npm 7+, que instala em `node_modules` mas não registra — irreproduzível em `npm ci`).
      - `typescript` travado em `^5`; `vite.config.ts`, `tsconfig.json`, `index.html`, `src/main.tsx`
-       e `src/modules/ExampleModule.tsx`.
+       e `src/App.tsx` com `SarakAppChrome`, navegação de exemplo e roteamento local.
      - os scripts `sarak:update` / `sarak:check`.
      - **o kit `sarak-ui/` copiado para a raiz do projeto.**
    - **Ação:** `npm install` (o `init` só escreve `package.json`; quem baixa é o npm).
@@ -255,10 +243,10 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      injeção automática de CSS roda na IMPORTAÇÃO do módulo, antes de qualquer Provider montar; com a
      marcação ela nem acontece. Sem ela o Provider ainda remove o CSS global ao montar (e avisa em
      dev), mas pode haver um flash do host re-estilizado.
-   - **Provider + módulos:** monte a ilha no ponto certo do front existente, com
-     `options={{ mode: 'embedded' }}`. O Provider renderiza um `<div class="sarak-scope">` que ancora
-     o CSS e recebe os tokens.
-   - **Múltiplas ilhas:** N módulos sob **1** Provider embarcado. **N Providers na mesma página está
+   - **Provider + cromo:** monte a ilha no ponto certo do front existente, com
+     `options={{ mode: 'embedded' }}` e o `SarakAppChrome` em torno das telas. O Provider renderiza
+     um `<div class="sarak-scope">` que ancora o CSS e recebe os tokens.
+   - **Múltiplas ilhas:** N áreas de interface sob **1** Provider embarcado. **N Providers na mesma página está
      FORA do suporte** — disputariam a mesma classe de escopo e o mesmo stylesheet.
    - **O que muda vs. Modo App (esperado, não é bug):** título/favicon continuam do host; as fontes do
      Google não são injetadas (opt-in: `embedded: { injectGlobalFonts: true }`); overlays de página
@@ -274,8 +262,8 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
    - Execute os **3 movimentos** do `sarak-ui/START-HERE.md`: guia → `specs/sarak-ui-guia-frontend.md`;
      skill → `.claude/skills/ui-integra-consumidor/` **e** `.agents/skills/ui-integra-consumidor/`;
      kit → raiz. São **cópias**, não recortes.
-   - Informe que a integração arquitetural terminou e que **o próximo passo é escrever os módulos de
-     negócio como React comum**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
+   - Informe que a integração arquitetural terminou e que **o próximo passo é escrever as telas da
+     aplicação como componentes React**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
      regra de fallback universal) e consultando o `catalog.json` para tudo que for lista.
 
 ## Como atualizar a biblioteca
@@ -414,7 +402,7 @@ cada byte cai, e uma regra ampla demais **funde de volta** os chunks lazy que a 
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —
   é o que o `init` existe para eliminar. A única saída manual permitida é a Etapa 4 (ilha embarcada).
 - **NÃO ensine a montar telas nesta skill.** Autoria de tela é o `GUIA-FRONTEND.md` do kit. Aqui é
-  infraestrutura, registro e atualização.
+  infraestrutura, integração de rotas e atualização.
 - **NÃO responda "o que a lib tem" de memória.** Sempre `catalog.json`.
 - **A identidade da página é do CONSUMIDOR.** `<title>`, favicon e marca vivem no projeto dele e a lib
   não os sobrescreve por padrão. Se ele quiser que a lib gerencie, é opt-in

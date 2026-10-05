@@ -1,257 +1,204 @@
 // @vitest-environment node
-// Teste do PRÓPRIO GATE (Spec 05 §2.4.1): tokens de cromo do painel (`sidebarPosition`,
-// `sidebarHoverColor`, etc.) podem ter consumidor no `SarakShell` mas nenhum no
-// `SarakAppChrome` — o painel confirmaria a mudança, a tela do modo ui-kit não reagiria.
-// Casos PLANTADOS que o gate PEGA (token sem consumidor num lado, nos dois) e os que
-// ele DEIXA PASSAR (token referenciado pelo `id`, por `cssVars` ou pelo auto-derivado
-// `--sarak-<kebab>`, no átomo compartilhado) — e, por fim, o repositório real.
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import { describe, expect, it, afterEach } from 'vitest';
-import { ORPHAN_TOKENS, checkChromeTokenParity, getChromeTokens, tokenHasConsumer } from '../check-chrome-token-parity.mjs';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it } from 'vitest';
+import {
+    CONSUMER_GROUPS,
+    ORPHAN_TOKENS,
+    checkChromeTokenParity,
+    getChromeTokens,
+    tokenHasConsumer,
+} from '../check-chrome-token-parity.mjs';
 
-const scratchDirs = [];
+const fixtureRoots = [];
 
-function makeFixtureRoot(files) {
+function createFixtureRoot(files) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-chrome-token-parity-'));
-    scratchDirs.push(root);
-    for (const [relPath, content] of Object.entries(files)) {
-        const full = path.join(root, relPath);
-        fs.mkdirSync(path.dirname(full), { recursive: true });
-        fs.writeFileSync(full, content, 'utf8');
+    fixtureRoots.push(root);
+    for (const [relativePath, content] of Object.entries(files)) {
+        const fullPath = path.join(root, relativePath);
+        fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+        fs.writeFileSync(fullPath, content, 'utf8');
     }
     return root;
 }
 
+const appChromeGroup = {
+    SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+};
+
 afterEach(() => {
-    while (scratchDirs.length) {
-        fs.rmSync(scratchDirs.pop(), { recursive: true, force: true });
-    }
+    while (fixtureRoots.length) fs.rmSync(fixtureRoots.pop(), { recursive: true, force: true });
 });
 
 describe('tokenHasConsumer', () => {
-    const token = { id: 'sidebarPosition', cssVars: [] };
+    const token = { id: 'sidebarPosition', cssVars: ['--theme-sidebar-position'] };
 
-    it('PEGA: id ausente do conteúdo — sem consumidor', () => {
-        expect(tokenHasConsumer(token, 'export const x = 1;')).toBe(false);
-    });
-
-    it('DEIXA PASSAR: id referenciado como identificador (destructuring)', () => {
+    it('reconhece o id do schema por desestruturação', () => {
         expect(tokenHasConsumer(token, 'const { sidebarPosition } = design;')).toBe(true);
     });
 
-    it('DEIXA PASSAR: auto-derivado --sarak-<kebab> em CSS var', () => {
+    it('reconhece a variável automática derivada do id', () => {
         expect(tokenHasConsumer(token, "style.left = 'var(--sarak-sidebar-position, left)';")).toBe(true);
     });
 
-    it('DEIXA PASSAR: cssVar declarado no schema (nome que NÃO é o auto-derivado)', () => {
-        const comCssVar = { id: 'tabGap', cssVars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'] };
-        expect(tokenHasConsumer(comCssVar, "gap: 'var(--theme-tab-gap, 8px)'")).toBe(true);
+    it('reconhece uma variável CSS declarada no schema', () => {
+        expect(tokenHasConsumer(token, "style.left = 'var(--theme-sidebar-position)';")).toBe(true);
     });
 
-    it('PEGA: id como SUBSTRING de outro identificador não conta (word boundary)', () => {
-        // "sidebarPositionX" contém "sidebarPosition" como substring, mas não é o token.
+    it('não trata um id que é parte de outro identificador como consumo', () => {
         expect(tokenHasConsumer(token, 'const sidebarPositionX = 1;')).toBe(false);
+    });
+
+    it('não trata conteúdo sem id ou variável CSS como consumo', () => {
+        expect(tokenHasConsumer(token, 'export const value = 1;')).toBe(false);
     });
 });
 
 describe('checkChromeTokenParity', () => {
-    const tokens = [{ id: 'meuToken', cssVars: ['--meu-token-alias'] }];
+    it('verifica somente o grupo SarakAppChrome', () => {
+        expect(Object.keys(CONSUMER_GROUPS)).toEqual(['SarakAppChrome']);
+    });
 
-    it('PLANTADO: token sem consumidor em NENHUM dos dois grupos — reprova nos dois', () => {
-        const root = makeFixtureRoot({
-            'shell/Nav.tsx': 'export const Nav = () => null;',
+    it('MUTAÇÃO: token sem consumidor aponta o único grupo faltante', () => {
+        const root = createFixtureRoot({
             'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
         });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing).toEqual([{ id: 'meuToken', semConsumidor: ['SarakShell', 'SarakAppChrome'] }]);
-    });
+        const tokens = [{ id: 'sampleNavigationToken', cssVars: ['--sample-navigation-token'] }];
 
-    it('PLANTADO: token com consumidor só de UM lado — reprova só o lado que falta', () => {
-        const root = makeFixtureRoot({
-            'shell/Nav.tsx': 'const { meuToken } = design;',
-            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
-        });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing).toEqual([{ id: 'meuToken', semConsumidor: ['SarakAppChrome'] }]);
-    });
-
-    it('DEIXA PASSAR: token consumido nos dois lados — lista vazia', () => {
-        const root = makeFixtureRoot({
-            'shell/Nav.tsx': 'const { meuToken } = design;',
-            'appchrome/Chrome.tsx': "style.x = 'var(--meu-token-alias, 1px)';",
-        });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([]);
-    });
-
-    it('ignora a pasta __tests__ — um teste que cita o token não é consumo', () => {
-        const root = makeFixtureRoot({
-            'shell/__tests__/Nav.test.tsx': 'const { meuToken } = design;',
-            'appchrome/Chrome.tsx': "style.x = 'var(--meu-token-alias, 1px)';",
-        });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing).toEqual([{ id: 'meuToken', semConsumidor: ['SarakShell'] }]);
-    });
-
-    it('extraFiles conta como consumo do grupo (o átomo compartilhado)', () => {
-        const root = makeFixtureRoot({
-            'shell/Nav.tsx': 'export const Nav = () => null;',
-            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
-            'shared/Atom.tsx': 'const { meuToken } = design;',
-        });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: ['shared/Atom.tsx'] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing).toEqual([{ id: 'meuToken', semConsumidor: ['SarakAppChrome'] }]);
-    });
-
-    it('MUTAÇÃO: retirar layoutPadding do Shell nomeia o SarakShell como lado faltante', () => {
-        const root = makeFixtureRoot({
-            'shell/ShellContent.tsx': 'export const ShellContent = () => null;',
-            'appchrome/ChromeBody.tsx': "const padding = 'var(--sarak-layout-padding, 16px)';",
-        });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const tokens = [{ id: 'layoutPadding', cssVars: ['--sarak-layout-padding'] }];
-        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([
-            { id: 'layoutPadding', semConsumidor: ['SarakShell'] },
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'sampleNavigationToken', semConsumidor: ['SarakAppChrome'] },
         ]);
     });
 
-    it('MUTAÇÃO: retirar layoutPadding do AppChrome nomeia o SarakAppChrome como lado faltante', () => {
-        const root = makeFixtureRoot({
-            'shell/ShellContent.tsx': "const padding = 'var(--sarak-layout-padding, 16px)';",
-            'appchrome/ChromeBody.tsx': 'export const ChromeBody = () => null;',
+    it('MUTAÇÃO: layoutPadding removido do cromo é apontado como ausente', () => {
+        const root = createFixtureRoot({
+            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
         });
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
         const tokens = [{ id: 'layoutPadding', cssVars: ['--sarak-layout-padding'] }];
-        expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([
+
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
             { id: 'layoutPadding', semConsumidor: ['SarakAppChrome'] },
         ]);
     });
-});
 
-describe('getChromeTokens (extração dinâmica do schema)', () => {
-    it('PLANTADO: token novo no schema sem consumidor em NENHUM grupo — pego', () => {
-        const root = makeFixtureRoot({
-            'src/core/Design/schema/navigation.ts': `
-                export const NavigationSchema = {
-                    id: 'navigation',
-                    tokens: [
-                        {
-                            id: 'meuTokenNovo',
-                            type: 'select',
-                            description: 'x',
-                            constraints: { options: [{ id: 'a', value: 'a', label: 'A' }] },
-                            defaultValue: 'a',
-                            cssVars: ['--meu-token-novo'],
-                        },
-                        // comentário entre tokens não deve virar um objeto próprio
-                        { id: 'semCssVars', type: 'text', description: 'y', defaultValue: 'z' },
-                    ],
-                };
-            `,
-            'src/core/Design/schema/system.ts': `
-                export const SystemSchema = {
-                    tokens: [
-                        { id: 'isAutoHideEnabled', type: 'boolean', defaultValue: false },
-                        { id: 'layoutPadding', type: 'slider', defaultValue: 16, cssVars: ['--sarak-layout-padding'] },
-                    ],
-                };
-            `,
-            'shell/Nav.tsx': 'export const Nav = () => null;',
-            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
+    it('aceita o token consumido pelo SarakAppChrome', () => {
+        const root = createFixtureRoot({
+            'appchrome/Chrome.tsx': "const gap = 'var(--sample-navigation-token)';",
         });
-        const tokens = getChromeTokens({ root });
-        expect(tokens.map((t) => t.id)).toEqual(['meuTokenNovo', 'semCssVars', 'isAutoHideEnabled', 'layoutPadding']);
-        expect(tokens.find((t) => t.id === 'meuTokenNovo').cssVars).toEqual(['--meu-token-novo']);
-        expect(tokens.find((t) => t.id === 'semCssVars').cssVars).toEqual([]);
+        const tokens = [{ id: 'sampleNavigationToken', cssVars: ['--sample-navigation-token'] }];
 
-        const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
-        };
-        const missing = checkChromeTokenParity({ root, tokens, groups });
-        expect(missing.map((m) => m.id).sort()).toEqual(['isAutoHideEnabled', 'layoutPadding', 'meuTokenNovo', 'semCssVars']);
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([]);
     });
 
-    it('DEIXA PASSAR: token novo com consumidor dos dois lados — liberado', () => {
-        const root = makeFixtureRoot({
-            'src/core/Design/schema/navigation.ts': `
-                export const NavigationSchema = {
-                    id: 'navigation',
-                    tokens: [
-                        { id: 'meuTokenNovo', type: 'text', description: 'x', defaultValue: 'y', cssVars: ['--meu-token-novo'] },
-                    ],
-                };
-            `,
-            'src/core/Design/schema/system.ts': `
-                export const SystemSchema = {
-                    tokens: [
-                        { id: 'isAutoHideEnabled', type: 'boolean', defaultValue: false },
-                        { id: 'layoutPadding', type: 'slider', defaultValue: 16, cssVars: ['--sarak-layout-padding'] },
-                    ],
-                };
-            `,
-            'shell/Nav.tsx': "style.x = 'var(--meu-token-novo, 1px)';",
-            'appchrome/Chrome.tsx': 'const { meuTokenNovo } = design;',
+    it('ignora referências em __tests__ ao verificar o consumidor', () => {
+        const root = createFixtureRoot({
+            'appchrome/__tests__/Chrome.test.tsx': 'const { sidebarPosition } = design;',
         });
-        const tokens = getChromeTokens({ root }).filter((t) => !['isAutoHideEnabled', 'layoutPadding'].includes(t.id));
+        const tokens = [{ id: 'sidebarPosition', cssVars: [] }];
+
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'sidebarPosition', semConsumidor: ['SarakAppChrome'] },
+        ]);
+    });
+
+    it('conta extraFiles como parte do consumidor do grupo', () => {
+        const root = createFixtureRoot({
+            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
+            'shared/Shared.tsx': 'const { sidebarPosition } = design;',
+        });
         const groups = {
-            SarakShell: { dirs: ['shell'], extraFiles: [] },
-            SarakAppChrome: { dirs: ['appchrome'], extraFiles: [] },
+            SarakAppChrome: { dirs: ['appchrome'], extraFiles: ['shared/Shared.tsx'] },
         };
+        const tokens = [{ id: 'sidebarPosition', cssVars: [] }];
+
         expect(checkChromeTokenParity({ root, tokens, groups })).toEqual([]);
     });
 
-    it('lê toda a seção de layout e para antes da seção de bordas', () => {
-        const root = makeFixtureRoot({
-            'src/core/Design/schema/navigation.ts': "export const NavigationSchema = { tokens: [] };",
-            'src/core/Design/schema/system.ts': `
-                export const SystemSchema = {
-                    tokens: [
-                        { id: 'layoutPadding', type: 'slider', defaultValue: 16 },
-                        // --- ARQUITETURA DE BORDAS ---
-                        { id: 'borderRadius', type: 'slider', defaultValue: 8 },
-                    ],
-                };
-            `,
-        });
-        expect(getChromeTokens({ root }).map((token) => token.id)).toEqual(['layoutPadding']);
+    it('mantém a lista de órfãos e verifica os tokens cobertos no repositório', () => {
+        expect(ORPHAN_TOKENS).toEqual(['layoutDensity', 'maxContentWidth', 'isSplitViewEnabled']);
+        const coveredTokens = getChromeTokens().filter((token) => !ORPHAN_TOKENS.includes(token.id));
+
+        expect(checkChromeTokenParity({ tokens: coveredTokens })).toEqual([]);
     });
 });
 
-describe('check-chrome-token-parity — repositório real', () => {
-    it('os tokens cobertos de navigation e layout têm consumidor no SarakShell E no SarakAppChrome', () => {
-        const tokens = getChromeTokens().filter((t) => !ORPHAN_TOKENS.includes(t.id));
-        expect(checkChromeTokenParity({ tokens })).toEqual([]);
+describe('getChromeTokens — extração dinâmica do schema', () => {
+    it('pega tokens novos sem consumidor no grupo SarakAppChrome', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/navigation.ts': [
+                'export const NavigationSchema = {',
+                '    tokens: [',
+                "        { id: 'meuTokenNovo', type: 'select', defaultValue: 'a', cssVars: ['--meu-token-novo'] },",
+                '        // comentário entre tokens não vira um token',
+                "        { id: 'semCssVars', type: 'text', defaultValue: 'z' },",
+                '    ],',
+                '};',
+            ].join('\n'),
+            'src/core/Design/schema/system.ts': [
+                'export const SystemSchema = {',
+                '    tokens: [',
+                "        { id: 'isAutoHideEnabled', type: 'boolean', defaultValue: false },",
+                "        { id: 'layoutPadding', type: 'slider', defaultValue: 16, cssVars: ['--sarak-layout-padding'] },",
+                '    ],',
+                '};',
+            ].join('\n'),
+            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
+        });
+        const tokens = getChromeTokens({ root });
+
+        expect(tokens.map((token) => token.id)).toEqual([
+            'meuTokenNovo',
+            'semCssVars',
+            'isAutoHideEnabled',
+            'layoutPadding',
+        ]);
+        expect(tokens.find((token) => token.id === 'meuTokenNovo')?.cssVars).toEqual(['--meu-token-novo']);
+        expect(tokens.find((token) => token.id === 'semCssVars')?.cssVars).toEqual([]);
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'meuTokenNovo', semConsumidor: ['SarakAppChrome'] },
+            { id: 'semCssVars', semConsumidor: ['SarakAppChrome'] },
+            { id: 'isAutoHideEnabled', semConsumidor: ['SarakAppChrome'] },
+            { id: 'layoutPadding', semConsumidor: ['SarakAppChrome'] },
+        ]);
     });
 
-    it('declara somente a dívida de layout medida fora desta entrega (R18)', () => {
-        expect(ORPHAN_TOKENS).toEqual(['layoutDensity', 'maxContentWidth', 'isSplitViewEnabled']);
+    it('libera token novo do schema quando o SarakAppChrome o consome', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/navigation.ts': [
+                'export const NavigationSchema = {',
+                '    tokens: [',
+                "        { id: 'meuTokenNovo', type: 'text', defaultValue: 'y', cssVars: ['--meu-token-novo'] },",
+                '    ],',
+                '};',
+            ].join('\n'),
+            'src/core/Design/schema/system.ts': [
+                'export const SystemSchema = { tokens: [',
+                "    { id: 'layoutPadding', type: 'slider', defaultValue: 16 },",
+                '] };',
+            ].join('\n'),
+            'appchrome/Chrome.tsx': "const gap = 'var(--meu-token-novo)';",
+        });
+        const tokens = getChromeTokens({ root }).filter((token) => token.id === 'meuTokenNovo');
+
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([]);
+    });
+
+    it('lê a seção de layout e para antes da seção de bordas', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/navigation.ts': 'export const NavigationSchema = { tokens: [] };',
+            'src/core/Design/schema/system.ts': [
+                'export const SystemSchema = {',
+                '    tokens: [',
+                "        { id: 'layoutPadding', type: 'slider', defaultValue: 16 },",
+                '        // --- ARQUITETURA DE BORDAS ---',
+                "        { id: 'borderRadius', type: 'slider', defaultValue: 8 },",
+                '    ],',
+                '};',
+            ].join('\n'),
+        });
+
+        expect(getChromeTokens({ root }).map((token) => token.id)).toEqual(['layoutPadding']);
     });
 });

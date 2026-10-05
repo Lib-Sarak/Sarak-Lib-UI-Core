@@ -4,8 +4,6 @@ import { PresetsCatalog } from './components/PresetsCatalog';
 import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
 
 import { SarakDesignScope } from '../../../core/Design/components/DesignScope';
-import { useResizable } from '../hooks/useResizable';
-import { useMockModules } from './hooks/useMockModules';
 import { usePreviewApps } from './hooks/usePreviewApps';
 import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
@@ -77,40 +75,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const { isInspecting, setIsInspecting } = useInspector(onInspectComponent);
 
-    const handleSidebarResize = React.useCallback((newWidth: number) => {
-        onUpdateDraft('sidebarWidth', Math.round(newWidth));
-    }, [onUpdateDraft]);
-
-    const handleTopbarResize = React.useCallback((newHeight: number) => {
-        onUpdateDraft('topbarHeight', Math.round(newHeight));
-    }, [onUpdateDraft]);
-
-    const { startResizing: startResizingSidebar, isResizing: isResizingSidebar } = useResizable({
-        initialSize: (tokens.sidebarWidth as number) || 240,
-        minSize: 150,
-        maxSize: 500,
-        direction: 'horizontal',
-        onResize: handleSidebarResize
-    });
-
-    const { startResizing: startResizingTopbar, isResizing: isResizingTopbar } = useResizable({
-        initialSize: (tokens.topbarHeight as number) || 64,
-        minSize: 40,
-        maxSize: 200,
-        direction: 'vertical',
-        onResize: handleTopbarResize
-    });
-
     const previewContextValue = usePreviewContextValue(parentContext, tokens, onUpdateDraft);
 
     const apps = usePreviewApps(tokens, config, previewAnimationStyle);
-    const { mockDiscoveredModules, mockGroupedModules } = useMockModules();
-    const [previewNavVisible, setPreviewNavVisible] = React.useState(true);
-    const [previewMobileNavOpen, setPreviewMobileNavOpen] = React.useState(false);
 
     const renderSystemContent = (useSystemDesign = false) => {
-        const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
-        const navStyle = activeDesign.navigationStyle || 'sidebar';
         return (
             <PreviewSystemRenderer 
                 useSystemDesign={useSystemDesign}
@@ -118,21 +87,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 tokens={tokens}
                 isDualView={isDualView}
                 previewDevice={previewDevice}
-                previewNavVisible={previewNavVisible}
-                setPreviewNavVisible={setPreviewNavVisible}
-                previewMobileNavOpen={previewMobileNavOpen}
-                setPreviewMobileNavOpen={setPreviewMobileNavOpen}
-                isSidebar={navStyle === 'sidebar'}
-                isDock={navStyle === 'dock'}
-                isTopbar={navStyle === 'topbar'}
-                parentContext={parentContext}
                 activePreviewApp={activePreviewApp}
                 setActivePreviewApp={setActivePreviewApp}
-                onUpdateDraft={onUpdateDraft}
-                mockGroupedModules={mockGroupedModules}
-                mockDiscoveredModules={mockDiscoveredModules}
-                startResizingSidebar={startResizingSidebar}
-                startResizingTopbar={startResizingTopbar}
                 apps={apps}
             />
         );
@@ -186,12 +142,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </div>
                     )}
 
-                    {isResizingSidebar && (
-                        <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
-                    )}
-                    {isResizingTopbar && (
-                        <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
-                    )}
                     </div>
                 </div>
             </UIContext.Provider>

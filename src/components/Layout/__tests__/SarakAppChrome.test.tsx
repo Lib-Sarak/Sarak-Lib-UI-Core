@@ -520,7 +520,7 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
     });
 
-    it('atalho Ctrl/Cmd+K abre o command palette (SarakSearch) sem SarakShell', () => {
+    it('atalho Ctrl/Cmd+K abre o command palette (SarakSearch) no cromo do app', () => {
         renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).toBeNull();
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });

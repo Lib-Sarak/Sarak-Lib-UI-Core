@@ -1,7 +1,6 @@
 /**
- * Entrevista do `init` (Spec 21 §2.2; simplificada pela Spec 45 — starter padrão
- * módulos-plugin, sem backend). Só o que é decisão do consumidor: modo de
- * consumo e porta do front. `node:readline`, sem dependência nova. Flags de CLI
+ * Entrevista do `init`: só decisões do consumidor, modo de consumo e porta do
+ * front. `node:readline`, sem dependência nova. Flags de CLI
  * (`--mode`, `--frontend-port`, `--yes`) pulam a pergunta correspondente — usado
  * pelo smoke test e por automação não-interativa.
  */

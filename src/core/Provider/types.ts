@@ -84,7 +84,6 @@ interface SarakThemePayloadExtras {
     globalBackgroundImageUrl?: string;
     globalBackgroundOpacity?: number;
     globalBackgroundBlur?: number;
-    moduleBlacklist?: string;
     searchVariant?: "search" | "classic" | "title" | "action";
     columnGap?: string | number;
     iconSize?: string;
@@ -130,6 +129,8 @@ export type SarakUIMode = 'app' | 'embedded';
 
 export interface SarakUIOptions {
     token?: string;
+    /** Ajustes do sequestro de tema legado executado pelo `SovereignThemeInjector`. */
+    manifest?: Record<string, unknown>;
     /** Modo de consumo (Spec 24). Default `'app'` — zero breaking change. */
     mode?: SarakUIMode;
     /** Ajustes válidos apenas em `mode: 'embedded'`. */
@@ -140,14 +141,6 @@ export interface SarakUIOptions {
          * não escreve `<link>`/`@import` global sem permissão.
          */
         injectGlobalFonts?: boolean;
-    };
-    endpoints?: {
-        discoveryPath?: string;
-        discovery?: string[];
-    };
-    manifest?: {
-        brand?: { name?: string; logoUrl?: string };
-        [key: string]: unknown;
     };
     persistence?: {
         /** Estratégia de persistência (ADR-009 §2.2). Default `'hybrid'` = localStorage + onSave/onLoad; `'local'` ignora as duas portas; `'remote'` para de gravar localStorage e SUBSTITUI pelo que `onLoad` resolver, degradando para `'local'` com aviso único sem porta configurada. */
@@ -172,7 +165,6 @@ export interface SarakUIOptions {
     };
     theme?: {
         defaultTheme?: string;
-        defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
         /**
          * Porta ÚNICA de escrita para "salvar tema em runtime" (ADR-011, substitui as
@@ -210,7 +202,6 @@ export interface SarakBrandingState {
 export interface SarakUIContextType {
     preferences: SarakUserPreferences; // Preferências do usuário — camada separada do tema
     updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
-    discoveryEndpoints: string[];
     design: SarakThemePayload;
     systemDesign?: SarakThemePayload; // Design persistido do sistema (sem rascunho/branding)
     activeDesign: SarakThemePayload;
@@ -225,8 +216,6 @@ export interface SarakUIContextType {
     applyFullConfig: (config: SarakThemePayload) => void;
     applyConfigRaw: (partial: Partial<SarakThemePayload>) => void; // Canal direto para o sistema (ignora rascunho)
     applyFullConfigRaw: (config: SarakThemePayload) => void; // Canal direto para o sistema (ignora rascunho)
-    registeredModules: unknown[];
-    layouts: unknown[];
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: SarakThemeEntry[]; // Array unificado de temas globais, customizados e salvos

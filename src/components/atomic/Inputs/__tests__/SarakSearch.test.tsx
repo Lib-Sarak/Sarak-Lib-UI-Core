@@ -7,7 +7,7 @@ import { SarakSearch } from '../SarakSearch';
 const renderSearch = (props: Partial<React.ComponentProps<typeof SarakSearch>> = {}) =>
     render(
         <SarakUIProvider>
-            <SarakSearch isOpen onClose={() => undefined} {...props} />
+            <SarakSearch isOpen onClose={() => undefined} items={[]} {...props} />
         </SarakUIProvider>,
     );
 
@@ -15,7 +15,7 @@ describe('SarakSearch', () => {
     it('não renderiza o campo de busca quando fechado', () => {
         render(
             <SarakUIProvider>
-                <SarakSearch isOpen={false} onClose={() => undefined} />
+                <SarakSearch isOpen={false} onClose={() => undefined} items={[]} />
             </SarakUIProvider>,
         );
         expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).not.toBeInTheDocument();
@@ -53,15 +53,13 @@ describe('SarakSearch', () => {
     });
 });
 
-// `items`/`onSelect` deixam quem chama alimentar a busca com a própria navegação, no
-// lugar do registro do Discovery — sem eles, o caminho do registro continua intacto.
-describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
+describe('SarakSearch — itens do aplicativo (`items`/`onSelect`)', () => {
     const items = [
         { id: '/propostas', label: 'Propostas', category: 'Comercial' },
         { id: '/projetos', label: 'Projetos' },
     ];
 
-    it('lista os `items` recebidos, não o registro do Discovery', () => {
+    it('lista os itens recebidos', () => {
         renderSearch({ items });
         expect(screen.getByText('Propostas')).toBeInTheDocument();
         expect(screen.getByText('Projetos')).toBeInTheDocument();
@@ -94,7 +92,7 @@ describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
         expect(resultado?.tagName).toBe('DIV');
     });
 
-    it('sem `items`, continua usando o registro do Discovery (Shell intacto)', () => {
+    it('com uma lista vazia, mostra o estado sem resultados', () => {
         renderSearch();
         expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
     });

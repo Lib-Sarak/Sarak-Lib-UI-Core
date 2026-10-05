@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, X, ArrowRight } from 'lucide-react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { sarakGetRegisteredModules } from '../../../core/Discovery/registry';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from './SarakInput';
 
-/** Um resultado do palette — o subconjunto de `DiscoveredModule` que a busca lista. */
+/** Um resultado fornecido pelo aplicativo ao palette. */
 export interface SarakSearchItem {
     id: string;
     label: string;
@@ -16,13 +15,8 @@ export interface SarakSearchItem {
 export interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
-    /**
-     * Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado
-     * (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria
-     * navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o
-     * comportamento de sempre, inclusive no `SarakShell`.
-     */
-    items?: SarakSearchItem[];
+    /** Itens da busca, fornecidos pela navegação do aplicativo. */
+    items: SarakSearchItem[];
     /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
      * resultados não são acionáveis — o comportamento de sempre. */
     onSelect?: (id: string) => void;
@@ -38,8 +32,6 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
     const { searchStyle, systemName } = design || {};
-    const sourceItems: SarakSearchItem[] = items ?? sarakGetRegisteredModules();
-
     const [query, setQuery] = useState('');
 
     // Sem ref: o SarakInput (React.FC simples, não forwardRef) não tem como repassar
@@ -56,7 +48,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
         }
     }, [isOpen, onClose]);
 
-    const filteredItems = sourceItems.filter(m =>
+    const filteredItems = items.filter(m =>
         m.label.toLowerCase().includes(query.toLowerCase()) ||
         m.id.toLowerCase().includes(query.toLowerCase())
     );
@@ -187,4 +179,3 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
 };
 
 export default SarakSearch;
-

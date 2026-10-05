@@ -1,7 +1,7 @@
 import React from 'react';
 import { SarakShellThemeToggle } from '../../atomic/Navigation/SarakShellThemeToggle';
 import { SarakShellUserWidget } from '../../atomic/Navigation/SarakShellUserWidget';
-import type { SarakShellUser } from '../../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 
 export interface ChromeUserThemeGroupProps {
     showThemeToggle: boolean;

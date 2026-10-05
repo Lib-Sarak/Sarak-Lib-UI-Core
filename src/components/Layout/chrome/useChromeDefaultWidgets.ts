@@ -38,8 +38,7 @@ export interface ChromeDefaultWidgetsState {
  * `SarakUIProvider` **e** o consumidor não trouxe o próprio `search`; com o slot
  * preenchido, o teclado continua livre para o navegador e para o que o consumidor
  * montou ali. O widget de usuário, do mesmo jeito, só liga com `user` de verdade. O
- * colapso lê/grava `design.isNavHidden` — o mesmo token que o `SarakShell` já usa
- * (`useSarakShellUI.ts`).
+ * colapso lê e grava `design.isNavHidden`.
  *
  * Nenhum widget monta sem `SarakUIProvider`: todos dependem de estado do Design Engine
  * (tema ativo, `applyConfig`) que só existe dentro dele.

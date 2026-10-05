@@ -62,10 +62,8 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
         <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            // plan-41: `@container` plantado aqui porque o painel de detalhes abaixo usa
-            // `getGridStyles`/`getFlexStyles` com classe `@min-[…]` (container query) — sem
-            // ancestral com `container-type`, ela nunca casava fora do `SarakShell`/painel
-            // (achado real em consumidor, `plan-40`).
+            // O painel de detalhes usa container queries e precisa de um ancestral
+            // com `container-type` para que suas classes responsivas sejam aplicadas.
             className={`@container ${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',

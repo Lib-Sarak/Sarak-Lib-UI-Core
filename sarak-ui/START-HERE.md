@@ -101,8 +101,8 @@ qualquer quebra de tipo — mudanças de contrato público ficam registradas lá
 <!-- SARAK-KIT:CARIMBO:INICIO -->
 
 - **Versão da lib:** `7.0.0`
-- **Carimbo do kit (`kitHash`):** `7403343d1f53` — igual ao do arquivo `VERSION`.
-- **Superfície desta versão:** 102 componentes públicos · 427 tokens de tema · 757 nomes de CSS Variables emitíveis · 100 ícones · 14 temas embutidos.
+- **Carimbo do kit (`kitHash`):** `4dfb3933747b` — igual ao do arquivo `VERSION`.
+- **Superfície desta versão:** 99 componentes públicos · 427 tokens de tema · 757 nomes de CSS Variables emitíveis · 100 ícones · 14 temas embutidos.
 - **Guias completos que viajam no pacote:** `docs/component-catalog.md` · `docs/extensibilidade-de-layout.md` · `docs/identidade-do-host.md` · `docs/migracoes.md` · `docs/persistencia-de-tema.md` · `docs/temas-cromo-e-multidispositivo.md`.
 
 <!-- SARAK-KIT:CARIMBO:FIM -->

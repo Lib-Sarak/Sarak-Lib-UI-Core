@@ -12,7 +12,7 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
  * passa `activeRoute` (a rota atual, do roteador dele) e reage em `onNavigate`.
  */
 
-/** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
+/** Item de navegação declarativo usado pelo cromo do aplicativo. */
 export interface SarakShellNavItem {
     /** Rótulo exibido no menu. */
     label: string;

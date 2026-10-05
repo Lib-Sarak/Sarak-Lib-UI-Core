@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { sarakGetRegisteredModules } from '../../../core/Discovery/registry';
 import { clearSarakStorage } from '../../../core/Provider/utils/storage';
-import { Settings, Cpu, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';
+import { Settings, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';
 
 /** Respiro entre o clique e o reload, para a animação de "resetando" ser vista. */
 const RESET_DELAY_MS = 1000;
@@ -13,8 +12,6 @@ export const AdvancedTab: React.FC = () => {
     // Destruturação com fallbacks para modo standalone
     const systemId = sarak.systemId || 'STANDALONE-MODE';
     const isHydrated = sarak.isHydrated ?? true;
-    const registeredModules = sarak.registeredModules || sarakGetRegisteredModules();
-
 
     const [isResetting, setIsResetting] = useState(false);
 
@@ -40,7 +37,6 @@ export const AdvancedTab: React.FC = () => {
     const stats = [
         { label: 'ID do Sistema', value: systemId, icon: Shield },
         { label: 'Status da Engine', value: isHydrated ? 'HIDRATADA' : 'INICIALIZANDO', icon: Activity, color: isHydrated ? 'text-emerald-400' : 'text-amber-400' },
-        { label: 'Módulos Ativos', value: registeredModules.length.toString(), icon: Cpu },
         { label: 'SDT Version', value: 'v1.0 (Elite)', icon: Zap },
     ];
 
@@ -136,4 +132,3 @@ export const AdvancedTab: React.FC = () => {
 };
 
 export default AdvancedTab;
-

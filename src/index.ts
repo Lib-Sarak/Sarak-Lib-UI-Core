@@ -44,8 +44,6 @@ export * from './components/atomic/Buttons/SarakSocialButton';
 
 
 // Layout Components and Plug & Play UI
-export * from './core/Shell/SarakShell';
-export type { SarakShellProps, SarakShellUser } from './core/Shell/Components/types';
 // Multi-dispositivo (Spec 10/16 — L3 da Spec 40.1): DeviceProvider + useSarakDevice
 // (device atual) + SarakHidden (oculta por dispositivo) + o tipo ResponsiveValue<T>
 // (valor por breakpoint mob/tab/desk) que os tokens responsivos usam. API pública
@@ -172,12 +170,3 @@ export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines
 // (ambos já públicos) e não podiam ser importados pelo nome.
 export type { SarakChartDataItem } from './components/engines/charts/SubEngines/builders/types';
 export type { SarakMessage } from './components/engines/chat/SarakChatEngine';
-
-// Discovery and Dynamic Rendering (Universal Bridge)
-export { default as SarakDynamicRenderer } from './core/Discovery/DynamicRenderer';
-export type { SarakDynamicRendererProps } from './core/Discovery/DynamicRenderer';
-export * from './core/Discovery/registry';
-export * from './core/Discovery/types';
-export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
-export { useSarakRouter } from './shared/hooks/useSarakRouter';
-export type { SarakRouterState } from './shared/hooks/useSarakRouter';

@@ -70,7 +70,7 @@ a folksonomia já usa.
 
 | Modo | O que mostra | Como é derivado |
 | --- | --- | --- |
-| **Essencial** | os tokens de maior impacto visual | `importance >= 80` no schema do token |
+| **Essencial** | os tokens de maior importância no catálogo | `importance >= 80` na entrada do token **no catálogo** (`src/core/Design/catalog/partitions/`), não no schema |
 | **Avançado** | o dicionário inteiro | sem filtro |
 
 O corte por `importance` é o que mantém o Essencial **honesto ao crescer**: token novo de alto impacto

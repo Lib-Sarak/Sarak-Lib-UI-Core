@@ -19,11 +19,8 @@ const MENU_ID = 'sarak-preferences-menu';
 
 /**
  * O widget ⚙ "Preferências" (Spec 05 §2.2.1, nova subseção "a barra
- * configurada pelo administrador") — compartilhado pelos DOIS cromos
- * (`SarakShell` e `SarakAppChrome`), porque vive em `components/atomic/`
- * como os demais widgets de cromo (`ShellThemeToggle`, `ShellUserWidget`…):
- * `core/Shell` não pode importar `components/Layout/`, então o único jeito
- * de não duplicar esta UI é morar na camada atômica.
+ * configurada pelo administrador") — vive na camada atômica para compor
+ * a barra do `SarakAppChrome` junto aos demais widgets.
  *
  * Overlay acessível: abre/fecha por teclado, ESC fecha e o foco volta ao
  * próprio botão ao fechar — mesmo modelo de `useFocusTrap` do drawer mobile

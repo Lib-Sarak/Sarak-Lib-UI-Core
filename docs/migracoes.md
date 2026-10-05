@@ -5,6 +5,53 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — um cromo por aplicação
+
+**Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
+Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
+
+### Exports removidos do barril público
+
+| Nome removido | Migração |
+|---|---|
+| `SarakComponent` | Remova o componente do registro global; importe e monte suas telas diretamente na aplicação. |
+| `SarakComponentProps` | Use os tipos das telas e componentes do próprio consumidor. |
+| `SarakDiscoveredModule` | Para descrever um item de navegação, use `SarakNavItem`; a tela continua sob controle da aplicação. |
+| `SarakDynamicRenderer` | Monte a tela da rota diretamente dentro de `SarakAppChrome`. |
+| `SarakDynamicRendererProps` | Remova a configuração de contratos do renderer; declare as props da tela no consumidor. |
+| `SarakFilterDescriptor` | Remova a descrição de filtros usada pelo Discovery; implemente filtros na tela consumidora. |
+| `SarakModule` | Remova o manifesto do módulo; mantenha a tela como componente React da aplicação. |
+| `SarakModuleManifest` | Remova o manifesto do módulo; defina título, URL e ícone em `navItems` quando forem necessários. |
+| `SarakRouterState` | Use o estado do roteador da aplicação. |
+| `SarakShell` | Substitua por `SarakAppChrome` com `children`, `navItems` e `onNavigate`. |
+| `SarakShellProps` | Ajuste as props para `SarakAppChromeProps`; itens estruturados usam `SarakNavItem[]`. |
+| `SarakVisualContract` | Remova o contrato de renderização declarativa; componha a tela com componentes React. |
+| `SarakVisualContractType` | Remova a discriminação de contratos visuais do Discovery. |
+| `getSarakModule` | Leia a configuração local da aplicação ou do seu roteador. |
+| `registerSarakModule` | Remova o registro global; a aplicação define suas rotas e navegação. |
+| `sarakGetLocalComponent` | Importe e use o componente diretamente na tela consumidora. |
+| `sarakGetLocalComponentIds` | Remova a enumeração do registro; use a configuração de rotas da aplicação. |
+| `sarakGetRegisteredModules` | Remova a consulta ao registro; mantenha a lista de navegação no consumidor. |
+| `sarakRegisterLocalComponent` | Remova o registro; importe e monte o componente diretamente. |
+| `sarakSubscribeToRegistry` | Remova a assinatura ao registro; o estado da aplicação controla mudanças de rota. |
+| `useModuleDiscovery` | Substitua pela lista de navegação e descoberta que a própria aplicação controla. |
+| `useSarakRouter` | Use o roteador da aplicação para ler e alterar a rota ativa. |
+
+### Configuração e scaffolder
+
+O `SarakUIProvider` não recebe mais `discoveryEndpoints`; `useSarakUI()` não expõe mais
+`discoveryEndpoints`, `registeredModules` ou `layouts`. Remova também `options.endpoints`,
+`options.theme.defaultModuleId` e o campo de tema `moduleBlacklist`, que só tinham efeito no modo
+host removido. O `options.manifest` usado pelo `SovereignThemeInjector` continua disponível.
+
+`SarakSearchProps.items` agora é obrigatório. Passe os itens que a busca deve apresentar; o componente
+não consulta mais o registro de módulos como fallback.
+
+`npx sarak-ui init` gera `src/main.tsx` com o Provider e `src/App.tsx` com `SarakAppChrome`,
+`navItems` e um exemplo de roteamento local. Ajuste `src/App.tsx` ao roteador e às telas do projeto.
+
+---
+
 ## A persistência do tema ativo restaura também o id
 
 **Compatibilidade.** As assinaturas antigas de `onSave(design)` e `onLoad()` que devolve somente o

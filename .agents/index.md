@@ -19,7 +19,7 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-criar-tema**: Orquestra a geração autônoma e paramétrica de temas completos (ThemePresets) para a Sarak UI Core. Use ao configurar esquemas globais de cores e atmosferas. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-criar-tema/SKILL.md`
 
-- **ui-integra-consumidor**: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo/Shell, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
+- **ui-integra-consumidor**: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo por-app, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-integra-consumidor/SKILL.md`
 
 - **ui-novo-componente**: Orquestra a adição de novos tokens de design e componentes atômicos à UI Core, garantindo a paridade nas três fontes do dicionário e o alcance pelo barril público. Use ao adicionar um token ou componente base ao sistema. NÃO acione proativamente.

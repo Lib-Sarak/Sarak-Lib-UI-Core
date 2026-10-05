@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Command, ArrowRight } from 'lucide-react';
-import { sarakGetRegisteredModules } from '../../../core/Discovery/registry';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from '../Inputs/SarakInput';
+import type { SarakSearchItem } from '../Inputs/SarakSearch';
 import { SarakMenuItem } from './SarakMenuItem';
 
 export interface SarakShellSearchWidgetProps {
     /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
+    /** Resultados fornecidos pelo aplicativo. */
+    items?: SarakSearchItem[];
     /** Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. */
     onClick: () => void;
 }
@@ -17,13 +19,12 @@ export interface SarakShellSearchWidgetProps {
  * Standardizes search entry points for Topbar and Sidebar.
  */
 export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
-    variant = 'bar', onClick
+    variant = 'bar', onClick, items = []
 }) => {
     const t = useLibraryText();
     const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const registeredModules = sarakGetRegisteredModules();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -35,7 +36,7 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const filteredModules = registeredModules.filter(m =>
+    const filteredModules = items.filter(m =>
         m.label.toLowerCase().includes(query.toLowerCase()) ||
         m.id.toLowerCase().includes(query.toLowerCase())
     );

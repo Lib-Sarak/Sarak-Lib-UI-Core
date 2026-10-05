@@ -61,9 +61,8 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
 
     if (error) return null;
 
-    // plan-41: `statsGrid.className` traz `@min-[1024px]:grid-cols-4` (container query) —
-    // precisa de um ANCESTRAL com `container-type`, nunca do próprio elemento (medido em
-    // `plan-41`: sem isso a classe nunca casa, fora do `SarakShell`/painel).
+    // As classes de container query de `statsGrid` precisam de um ancestral
+    // com `container-type`, nunca do próprio elemento.
     return (
         <div className="@container w-full">
             <div className={statsGrid.className} style={statsGrid.style}>
@@ -108,4 +107,3 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
         </div>
     );
 };
-

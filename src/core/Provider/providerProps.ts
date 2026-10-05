@@ -8,7 +8,6 @@ import type { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from './types
  */
 export interface SarakUIProviderProps {
     children: ReactNode;
-    discoveryEndpoints?: string[];
     config?: SarakThemePayload;
     token?: string | null;
     userId?: string | null;

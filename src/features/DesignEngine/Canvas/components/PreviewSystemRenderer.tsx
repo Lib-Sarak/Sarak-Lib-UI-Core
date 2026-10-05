@@ -1,13 +1,8 @@
 import React from 'react';
+import { SarakAppChrome, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
 import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
-import { SidebarNav } from '../../../../core/Shell/Components/SidebarNav';
-import { TopbarNav } from '../../../../core/Shell/Components/TopbarNav';
-import { DockNav } from '../../../../core/Shell/Components/DockNav';
-import { SarakDiscoveredModule } from '../../../../core/Discovery/types';
-import { SarakUIContextType } from '../../../../core/Provider/types';
-import { SarakDesignState } from '../../../../core/Provider/types';
-import { SarakTokenValue } from '../../../../core/Design/types';
+import type { SarakUIContextType, SarakDesignState } from '../../../../core/Provider/types';
 import { useContainerScale } from '../hooks/useContainerScale';
 
 export interface PreviewSystemRendererProps {
@@ -16,224 +11,120 @@ export interface PreviewSystemRendererProps {
     tokens: Partial<SarakDesignState>;
     isDualView?: boolean;
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
-    previewNavVisible: boolean;
-    setPreviewNavVisible: (v: boolean) => void;
-    previewMobileNavOpen: boolean;
-    setPreviewMobileNavOpen: (v: boolean) => void;
-    isSidebar: boolean;
-    isDock: boolean;
-    isTopbar: boolean;
-    parentContext: SarakUIContextType;
     activePreviewApp: string;
     setActivePreviewApp: (app: string) => void;
-    onUpdateDraft: (key: string, value: SarakTokenValue) => void;
-    mockGroupedModules: Record<string, unknown[]>;
-    mockDiscoveredModules: unknown[];
-    startResizingSidebar: () => void;
-    startResizingTopbar: () => void;
     apps: Record<string, React.ReactNode>;
 }
 
-// plan-36: cada `DesignScope` (este e o de `PreviewCanvas.tsx`, que o envolve) roda o
-// próprio `useDesignVariables` — inclusive `computeColorVariants` por token de cor com
-// `generateVariants` (ver ADR/emenda da plan). `React.memo` corta a recomputação DESTE
-// escopo interno quando nada que afeta a saída visual mudou. Comparação por lista
-// explícita, não shallow-all: `mockGroupedModules`/`mockDiscoveredModules`
-// (`useMockModules.ts`) têm conteúdo IMUTÁVEL (lista fixa de apps mock, não deriva de
-// nenhum token) mas trocam de referência a cada render do pai — comparar por valor as
-// deixaria sempre "iguais" sem risco de conteúdo obsoleto, então nem entram na lista:
-// ignorá-las é seguro porque elas nunca representam a mudança real de nada.
 export const arePreviewPropsEqual = (
-    prev: Readonly<PreviewSystemRendererProps>,
+    previous: Readonly<PreviewSystemRendererProps>,
     next: Readonly<PreviewSystemRendererProps>,
 ): boolean =>
-    prev.tokens === next.tokens &&
-    prev.apps === next.apps &&
-    prev.sarak === next.sarak &&
-    prev.parentContext === next.parentContext &&
-    prev.useSystemDesign === next.useSystemDesign &&
-    prev.previewDevice === next.previewDevice &&
-    prev.isDualView === next.isDualView &&
-    prev.activePreviewApp === next.activePreviewApp &&
-    prev.previewNavVisible === next.previewNavVisible &&
-    prev.previewMobileNavOpen === next.previewMobileNavOpen &&
-    prev.isSidebar === next.isSidebar &&
-    prev.isDock === next.isDock &&
-    prev.isTopbar === next.isTopbar;
+    previous.tokens === next.tokens &&
+    previous.apps === next.apps &&
+    previous.sarak === next.sarak &&
+    previous.useSystemDesign === next.useSystemDesign &&
+    previous.previewDevice === next.previewDevice &&
+    previous.isDualView === next.isDualView &&
+    previous.activePreviewApp === next.activePreviewApp;
 
-const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
-    useSystemDesign = false,
-    sarak,
-    tokens,
-    isDualView,
-    previewDevice,
-    previewNavVisible,
-    setPreviewNavVisible,
-    previewMobileNavOpen,
-    setPreviewMobileNavOpen,
-    isSidebar,
-    isDock,
-    isTopbar,
-    parentContext,
-    activePreviewApp,
-    setActivePreviewApp,
-    onUpdateDraft,
-    mockGroupedModules,
-    mockDiscoveredModules,
-    startResizingSidebar,
-    startResizingTopbar,
-    apps
-}) => {
-    const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
-    const navStyle = activeDesign.navigationStyle || 'sidebar';
-    const hasTexture = activeDesign.texture && activeDesign.texture !== 'none';
-    const isMobile = previewDevice === 'smartphone';
+function createNavigationItems(
+    apps: PreviewSystemRendererProps['apps'],
+    activePreviewApp: string,
+): SarakNavItem[] {
+    return Object.keys(apps).map((appId) => ({
+        id: appId,
+        label: appId.replace(/-/g, ' '),
+        href: `/${appId}`,
+        active: activePreviewApp === appId,
+    }));
+}
 
-    // Escala pela largura REAL do container (plan-35/36) — ver `useContainerScale`.
-    // `fallbackScale` é o valor de antes das duas plans: usado até a primeira medição
-    // resolver, e para sempre em ambiente sem `ResizeObserver` (SSR, jsdom em teste).
-    const fallbackScale = isDualView ? 0.75 : 0.95;
-    const { containerRef: scaleContainerRef, scale: scaleFactor } = useContainerScale(fallbackScale);
+function createNavigationHandler(
+    apps: PreviewSystemRendererProps['apps'],
+    setActivePreviewApp: PreviewSystemRendererProps['setActivePreviewApp'],
+): (route: string) => void {
+    return (route: string): void => {
+        const appId = route.slice(1);
+        if (Object.prototype.hasOwnProperty.call(apps, appId)) setActivePreviewApp(appId);
+    };
+}
 
-    const widthPercent = `${(100 / scaleFactor).toFixed(2)}%`;
-    const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
+interface PreviewDeviceSurfaceProps {
+    activeDesign: Partial<SarakDesignState>;
+    previewDevice: PreviewSystemRendererProps['previewDevice'];
+    containerRef: ReturnType<typeof useContainerScale>['containerRef'];
+    scale: number;
+    navigationItems: SarakNavItem[];
+    onNavigate: (route: string) => void;
+    activeApp: React.ReactNode;
+}
+
+const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElement => {
+    const { activeDesign, previewDevice, containerRef, scale, navigationItems, onNavigate, activeApp } = props;
 
     return (
         <SarakDeviceProvider overrideDevice={previewDevice}>
             <SarakDesignScope
                 design={activeDesign}
-                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
+                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col overflow-hidden relative isolate ${activeDesign.texture && activeDesign.texture !== 'none' ? 'texture-active' : ''}`}
                 data-sx-texture={activeDesign.texture}
             >
                 <div
-                    // `ref`: mede a caixa REAL do preview (este `inset-0` sempre preenche
-                    // exatamente o ancestral posicionado `DesignScope`) para o `scaleFactor`
-                    // acima — não a caixa já escalada abaixo, que seria circular.
-                    ref={scaleContainerRef}
-                    className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
+                    ref={containerRef}
+                    className="absolute inset-0 z-0"
                     style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
                 />
-
                 <div
-                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--color-theme-title,#ffffff)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
-                    style={{
-                        width: widthPercent,
-                        height: heightPercent,
-                        transform: `scale(${scaleFactor})`
-                    }}
+                    className="absolute inset-0 origin-top-left overflow-hidden z-10"
+                    style={{ width: `${(100 / scale).toFixed(2)}%`, height: `${(100 / scale).toFixed(2)}%`, transform: `scale(${scale})` }}
                 >
-                    {activeDesign.isAutoHideEnabled && !previewNavVisible && (
-                        <>
-                            {isSidebar && (
-                                <div
-                                    onMouseEnter={() => setPreviewNavVisible(true)}
-                                    className="absolute left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
-                                />
-                            )}
-                            {isDock && (
-                                <div
-                                    onMouseEnter={() => setPreviewNavVisible(true)}
-                                    className="absolute bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
-                                />
-                            )}
-                        </>
-                    )}
-
-                    {isSidebar && !isMobile && (
-                        <SidebarNav
-                            design={activeDesign}
-                            brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                            user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                            logout={() => { }}
-                            toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
-                            activeModuleId={activePreviewApp}
-                            setActiveModuleId={setActivePreviewApp}
-                            groupedModules={mockGroupedModules as unknown as Record<string, SarakDiscoveredModule[]>}
-                            setIsNavVisible={setPreviewNavVisible}
-                            setIsSearchOpen={() => { }}
-                            startResizing={startResizingSidebar}
-                        />
-                    )}
-
-                    {isMobile && isSidebar && (
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--theme-border)] bg-[var(--theme-sidebar)] z-20 shrink-0 shadow-sm">
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => setPreviewMobileNavOpen(true)}
-                                    className="p-1.5 -ml-1.5 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 transition-colors"
-                                >
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                                </button>
-                                <span className="font-bold tracking-tight text-[var(--theme-title)] truncate">
-                                    {activeDesign.systemName || "Sarak Preview"}
-                                </span>
-                            </div>
-                        </div>
-                    )}
-
-                    {isMobile && isSidebar && previewMobileNavOpen && (
-                        <div className="absolute inset-0 z-[9999] flex">
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setPreviewMobileNavOpen(false)} />
-                            <div className="relative w-4/5 max-w-sm h-full flex flex-col bg-[var(--theme-sidebar)] shadow-2xl animate-in slide-in-from-left duration-300">
-                                <SidebarNav
-                                    design={{ ...activeDesign, isNavHidden: false, isAutoHideEnabled: false }}
-                                    brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                                    user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                                    logout={() => { }}
-                                    toggleNav={() => setPreviewMobileNavOpen(false)}
-                                    activeModuleId={activePreviewApp}
-                                    setActiveModuleId={setActivePreviewApp}
-                                    groupedModules={mockGroupedModules as unknown as Record<string, SarakDiscoveredModule[]>}
-                                    setIsNavVisible={setPreviewNavVisible}
-                                    setIsSearchOpen={() => { }}
-                                    startResizing={() => { }}
-                                    isMobileDrawer={true}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {isDock && (
-                        <DockNav
-                            design={activeDesign}
-                            discoveredModules={mockDiscoveredModules as unknown as SarakDiscoveredModule[]}
-                            activeModuleId={activePreviewApp}
-                            setActiveModuleId={setActivePreviewApp}
-                            setIsSearchOpen={() => { }}
-                            isNavVisible={previewNavVisible}
-                            setIsNavVisible={setPreviewNavVisible}
-                        />
-                    )}
-
-                    <div className={`flex-1 flex flex-col h-full overflow-hidden relative ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}>
-                        {isTopbar && (
-                            <TopbarNav
-                                design={activeDesign}
-                                brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                                toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
-                                setIsSearchOpen={() => { }}
-                                activeModuleId={activePreviewApp}
-                                setActiveModuleId={setActivePreviewApp}
-                                discoveredModules={mockDiscoveredModules as unknown as SarakDiscoveredModule[]}
-                                user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                                logout={() => { }}
-                                startResizing={startResizingTopbar}
-                            />
-                        )}
-
-                        <main
-                            className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
-                            data-sx-texture={activeDesign.texture}
-                        >
-                            <div className="relative z-10">
-                                {apps[activePreviewApp]}
-                            </div>
-                        </main>
-                    </div>
+                    <SarakAppChrome
+                        brand={{ name: activeDesign.systemName || 'Sarak Preview' }}
+                        navItems={navigationItems}
+                        onNavigate={onNavigate}
+                        style={{ width: '100%', height: '100%' }}
+                    >
+                        {activeApp}
+                    </SarakAppChrome>
                 </div>
             </SarakDesignScope>
         </SarakDeviceProvider>
     );
 };
+
+function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.ReactElement {
+    const {
+        useSystemDesign = false,
+        sarak,
+        tokens,
+        isDualView,
+        previewDevice,
+        activePreviewApp,
+        setActivePreviewApp,
+        apps,
+    } = props;
+    const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
+    const { containerRef, scale } = useContainerScale(isDualView ? 0.75 : 0.95);
+    const navigationItems = React.useMemo<SarakNavItem[]>(
+        () => createNavigationItems(apps, activePreviewApp),
+        [apps, activePreviewApp],
+    );
+    const activeApp = apps[activePreviewApp] ?? Object.values(apps)[0] ?? null;
+    const navigateToApp = React.useMemo(
+        () => createNavigationHandler(apps, setActivePreviewApp),
+        [apps, setActivePreviewApp],
+    );
+
+    return <PreviewDeviceSurface
+        activeDesign={activeDesign}
+        previewDevice={previewDevice}
+        containerRef={containerRef}
+        scale={scale}
+        navigationItems={navigationItems}
+        onNavigate={navigateToApp}
+        activeApp={activeApp}
+    />;
+}
 
 export const PreviewSystemRenderer = React.memo(PreviewSystemRendererImpl, arePreviewPropsEqual);

@@ -225,11 +225,655 @@ tokens cobra as três fontes.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## 2026-10-05 — execução encerrada no item 6
+
+**Fotografia de `git status --short` antes da primeira edição:**
+
+```text
+M  specs/00-backlog.md
+M  specs/00-indice.md
+M  specs/plan/plan-94-um-cromo-so.md
+?? .claude/settings.local.json
+```
+
+**Execução.** 1) Removidos o modo host, Shell, Discovery, registro e roteador; `SarakSearch.items` é obrigatório; catálogo de idiomas movido para i18n. 2) O preview usa `SarakAppChrome` nas três geometrias, com navegação de exemplo. 3) `sarak-ui init` gera Provider e `src/App.tsx`, com `navItems` e rotas locais via `pushState`/`popstate`; o teste confere imports contra o barril público. 4) O gate de paridade ficou com o grupo único `SarakAppChrome`, manteve a lista de órfãos e passou. 5) README, kit, guia e nota MAJOR foram atualizados; a tabela de `docs/migracoes.md` cobre individualmente os 22 exports removidos e descreve a migração de configuração, busca e scaffolder. A nota foi sincronizada no kit. 6) Execução encerrada aqui, pronta para revisão; nenhum trabalho posterior foi iniciado.
+
+**Verificações.** `npm run build`, `npm run guide`, `npm run catalog`, `npm run dev-kit`, `npx tsc --noEmit` e `npx vitest run` passaram. Vitest: 388 arquivos, 2.069 testes. `check-audit-baseline.mjs --with-tsc` reportou igualdade com o baseline de 2026-08-11. Os gates `kit-names`, `trail-citation`, `class-merge`, `section-pointers`, `plan-index`, `chrome-token-parity`, `prefix`, `barrel`, `public-types`, `catalog:check`, `guide:check`, `dev-kit:check` e `migration-anchor` passaram.
+
+**Fixture de mutação da paridade.** Entrada: `{ id: "sampleNavigationToken", cssVars: ["--sample-navigation-token"] }`, consumer `export const Chrome = () => null;`, grupo `SarakAppChrome`. Resultado: `[{ id: "sampleNavigationToken", semConsumidor: ["SarakAppChrome"] }]`.
+
+**Achados fora do escopo.** `npm run audit` continua retornando código 1 por `--x` (uma referência) e `<input>` nativo em `SarakMultiSelect.tsx:113` e `SarakUploader.tsx:113`; esses arquivos não foram alterados e o baseline reportou igualdade. O validador TS/JS também apontou funções longas e tipagem inferida em componentes e testes existentes; os novos módulos de idiomas, scaffolder e renderer ficaram sem violações, e não ampliei a refatoração.
+
+**Versão.** `check-minor-no-removal` listou os 22 nomes removidos e falhou em `7.0.0 → 7.0.0`; a nota MAJOR cobre todos individualmente. A versão do pacote permaneceu `7.0.0` nesta execução.
+
+---
+
+## Resumo da execução (correção 1) — 2026-10-05
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+
+```text
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .agents/skills/ui-integra-consumidor/references/examples.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/references/examples.md
+ M README.md
+ M bin/scaffold/__tests__/runInit.fs.test.mjs
+ M bin/scaffold/buildFileMap.mjs
+ M bin/scaffold/constants.mjs
+ D bin/scaffold/generators/exampleModule.mjs
+ M bin/scaffold/generators/mainTsx.mjs
+ M bin/scaffold/generators/viteConfig.mjs
+ M bin/scaffold/prompts.mjs
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-ZPF4CBKP.js
+ D dist/SarakChartEngine-GTF5UPIH.js
+ D dist/SarakChatEngine-FVBQEEID.js
+ D dist/SarakDataTableImpl-G6MU4VAB.js
+ D dist/SarakFlowEngine-EKU6RBPG.js
+ D dist/SarakMarkdownRendererImpl-K34PDQCC.js
+ D dist/SarakPDFViewerImpl-QKO3JBBC.js
+ D dist/chunk-3TGB3W3O.js
+ D dist/chunk-E657C7CH.js
+ D dist/chunk-JH2SPCYK.js
+ D dist/chunk-KV7CTFRO.js
+ D dist/chunk-M5ZA6YHK.js
+ D dist/chunk-WIHSARTC.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/sarak-scoped.css
+ M dist/sarak.css
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M docs/migracoes.md
+ M docs/temas-cromo-e-multidispositivo.md
+ M gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs
+ M gates/scripts/contrato/check-chrome-token-parity.mjs
+ M gates/scripts/contrato/check-container-query-boundary.mjs
+ M gates/scripts/contrato/check-kit-names.mjs
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M sarak-ui/skill/SKILL.md
+ M sarak-ui/skill/references/examples.md
+ M scripts/consumer-kit/collectKitSources.mjs
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/plan/plan-90-css-que-so-o-navegador-mede.md
+ M specs/plan/plan-94-um-cromo-so.md
+ M specs/specs/06-painel-de-customizacao-e-preview.md
+ M src/buildInfo.ts
+ M src/components/Layout/SarakAppChrome.tsx
+ M src/components/Layout/SarakAppChromeMobile.tsx
+ M src/components/Layout/__tests__/SarakAppChrome.test.tsx
+ M src/components/Layout/chrome/ChromeCollapseToggle.tsx
+ M src/components/Layout/chrome/ChromeSidebarBody.tsx
+ M src/components/Layout/chrome/ChromeTopbarBody.tsx
+ M src/components/Layout/chrome/ChromeUserThemeGroup.tsx
+ M src/components/Layout/chrome/__tests__/useChromeDefaultWidgets.test.ts
+ M src/components/Layout/chrome/chromeStructuralStyles.ts
+ M src/components/Layout/chrome/noiseTexture.ts
+ M src/components/Layout/chrome/useChromeAutoHide.ts
+ M src/components/Layout/chrome/useChromeDefaultWidgets.ts
+ M src/components/atomic/Cards/SarakActionCard.tsx
+ M src/components/atomic/Inputs/SarakSearch.tsx
+ M src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx
+ M src/components/atomic/Layouts/SarakGrid.tsx
+ M src/components/atomic/Navigation/SarakShellLanguageSelector.tsx
+ M src/components/atomic/Navigation/SarakShellNav.tsx
+ M src/components/atomic/Navigation/SarakShellSearchWidget.tsx
+ M src/components/atomic/Navigation/SarakShellUserWidget.tsx
+ M src/components/atomic/Navigation/ShellPreferencesMenu.tsx
+ M src/components/atomic/Navigation/__tests__/SarakShellLanguageSelector.test.tsx
+ M src/components/atomic/Navigation/__tests__/SarakShellSearchWidget.test.tsx
+ M src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx
+ M src/components/atomic/Navigation/index.ts
+ M src/components/atomic/Templates/SarakStats.tsx
+ D src/constants/discovery.ts
+ D src/core/Discovery/DynamicRenderer.tsx
+ D src/core/Discovery/__tests__/DynamicRenderer.test.tsx
+ D src/core/Discovery/__tests__/registry.test.ts
+ D src/core/Discovery/components/ContractRenderer.tsx
+ D src/core/Discovery/components/SarakExpandableMatrixEngine.tsx
+ D src/core/Discovery/components/__tests__/ContractRenderer.test.tsx
+ D src/core/Discovery/components/__tests__/SarakExpandableMatrixEngine.test.tsx
+ D src/core/Discovery/components/hooks/__tests__/useExpandableMatrixEngine.test.ts
+ D src/core/Discovery/components/hooks/useExpandableMatrixEngine.ts
+ D src/core/Discovery/constants.ts
+ D src/core/Discovery/hooks/__tests__/useEndpointResolver.test.ts
+ D src/core/Discovery/hooks/useEndpointResolver.ts
+ D src/core/Discovery/registry.ts
+ D src/core/Discovery/types.ts
+ M src/core/Provider/SarakUIProvider.tsx
+ M src/core/Provider/__tests__/SarakUIProvider.test.tsx
+ M src/core/Provider/buildInfo.ts
+ D src/core/Provider/hooks/__tests__/useRegistryManager.test.ts
+ D src/core/Provider/hooks/useRegistryManager.ts
+ M src/core/Provider/manifest.ts
+ M src/core/Provider/payloadExtraKeys.ts
+ M src/core/Provider/providerProps.ts
+ M src/core/Provider/types.ts
+ M src/core/Provider/useHasGlobalBackgroundMedia.ts
+ D src/core/Shell/Components/DockNav.tsx
+ D src/core/Shell/Components/IconRenderer.tsx
+ D src/core/Shell/Components/ShellContent.tsx
+ D src/core/Shell/Components/SidebarNav.tsx
+ D src/core/Shell/Components/SidebarNavModuleItem.tsx
+ D src/core/Shell/Components/TopbarNav.tsx
+ D src/core/Shell/Components/__tests__/DockNav.test.tsx
+ D src/core/Shell/Components/__tests__/IconRenderer.test.tsx
+ D src/core/Shell/Components/__tests__/ShellContent.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNav.preferencesBar.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNav.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNavModuleItem.test.tsx
+ D src/core/Shell/Components/__tests__/TopbarNav.preferencesBar.test.tsx
+ D src/core/Shell/Components/__tests__/TopbarNav.test.tsx
+ D src/core/Shell/Components/types.ts
+ D src/core/Shell/SarakShell.tsx
+ D src/core/Shell/__tests__/SarakShell.test.tsx
+ D src/core/Shell/__tests__/useSarakShell.test.ts
+ D src/core/Shell/hooks/__tests__/useDimensionGuard.test.ts
+ D src/core/Shell/hooks/__tests__/useSarakShellUI.test.ts
+ D src/core/Shell/hooks/__tests__/useShellDiagnostics.test.ts
+ D src/core/Shell/hooks/__tests__/useShellLayoutStyles.test.ts
+ D src/core/Shell/hooks/__tests__/useVisualSafetyGate.test.ts
+ D src/core/Shell/hooks/useDimensionGuard.ts
+ D src/core/Shell/hooks/useSarakShellUI.ts
+ D src/core/Shell/hooks/useShellDiagnostics.ts
+ D src/core/Shell/hooks/useShellLayoutStyles.ts
+ D src/core/Shell/hooks/useVisualSafetyGate.ts
+ D src/core/Shell/useSarakShell.ts
+ M src/core/i18n/__tests__/catalog.test.ts
+ M src/core/i18n/catalog.types.ts
+ M src/core/i18n/useLibraryText.ts
+ M src/features/DesignEngine/Canvas/PreviewCanvas.tsx
+ M src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap
+ M src/features/DesignEngine/Canvas/components/CardsCatalog.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx
+ D src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PreviewSystemRenderer.test.tsx.snap
+ D src/features/DesignEngine/Canvas/hooks/__tests__/useMockModules.test.ts
+ D src/features/DesignEngine/Canvas/hooks/useMockModules.ts
+ M src/features/DesignEngine/Panels/AdvancedTab.tsx
+ M src/features/DesignEngine/Panels/LanguageTab.tsx
+ M src/features/DesignEngine/Panels/__tests__/AdvancedTab.test.tsx
+ M src/features/DesignEngine/Panels/__tests__/__snapshots__/AdvancedTab.test.tsx.snap
+ M src/index.ts
+ D src/shared/hooks/__tests__/useModuleDiscovery.test.ts
+ D src/shared/hooks/__tests__/useSarakRouter.test.ts
+ D src/shared/hooks/useModuleDiscovery.ts
+ D src/shared/hooks/useSarakRouter.ts
+ M src/shared/hooks/useSearchShortcut.ts
+ M src/shared/types/index.ts
+?? .claude/settings.local.json
+?? bin/scaffold/generators/appTsx.mjs
+?? dist/CustomizationPanelImpl-WEDHGLH7.js
+?? dist/SarakChartEngine-XMVWPUQF.js
+?? dist/SarakChatEngine-ZCVXPZW6.js
+?? dist/SarakDataTableImpl-BOJVVO5L.js
+?? dist/SarakFlowEngine-HKU6I3MO.js
+?? dist/SarakMarkdownRendererImpl-747SITTD.js
+?? dist/SarakPDFViewerImpl-6LD74ZEG.js
+?? dist/chunk-6PA5UCUH.js
+?? dist/chunk-LC344QIW.js
+?? dist/chunk-SX4W52WY.js
+?? dist/chunk-TGQ2SYPU.js
+?? dist/chunk-TUZXIQ2Z.js
+?? dist/chunk-ZYXZHYYV.js
+?? specs/plan/plan-100-painel-de-temas-caminho-simples.md
+?? specs/plan/plan-101-motor-de-graficos-completo.md
+?? specs/plan/plan-102-quadro-kanban-de-gestao-de-projetos.md
+?? specs/plan/plan-103-calendario-e-gantt-de-projetos.md
+?? specs/plan/plan-99-achar-e-priorizar-no-painel-de-temas.md
+?? src/core/i18n/languages.ts
+```
+
+**O que foi feito**
+1. **Preview.** Restaurados dois casos para a mídia global, três para a escala pela largura medida e quatro para `arePreviewPropsEqual`, ajustados às props atuais em `PreviewSystemRenderer.test.tsx:96`, `:123` e `:144`. Mutação da mídia: entrada `globalBackgroundImageUrl=https://example.com/preview-background.png`; removi temporariamente a condição que tornava o fundo transparente; resultado: o caso falhou (esperado `transparent`, recebido `var(--sarak-bg-base)`, 1 falha e 12 ignorados). Mutação do comparador: `activePreviewApp` mudou de `dashboard` para `reports`; removi temporariamente a comparação dessa prop; resultado: o caso falhou (exit 1; 1 falha e 12 ignorados). As duas mutações foram revertidas.
+2. **Gate de paridade.** Restaurados casos para fronteira de palavra, desestruturação, exclusão de `__tests__/`, `extraFiles` e os três caminhos de extração dinâmica do schema; nomes em português. Mantidos dois casos de mutação ajustados ao único grupo `SarakAppChrome` em `check-chrome-token-parity.test.mjs:64` e `:75`.
+3. **Override global.** Restaurada somente a leitura de `window.__SARAK_OVERRIDES__['shell-language-selector']` em `SarakShellLanguageSelector.tsx:40`; adicionado teste em `SarakShellLanguageSelector.test.tsx:156`. A consulta ao registro não foi reintroduzida.
+4. **Comentário do grid.** Reescrito em `SarakGrid.tsx:57` para explicar a fronteira de medição sem compor o padrão que acionava o scanner. O build completo passou pelo CSS do Tailwind.
+5. **Resumo.** Acrescentado este bloco, sem alterar o resumo anterior, com tabela de arquivos, critérios do lote 1 e decisões observáveis no diff.
+
+**Arquivos alterados nesta correção**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx` | alterado | Mídia global, escala de contêiner e comparador. |
+| `gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs` | alterado | Casos de fronteira, grupo único, mutações e extração do schema. |
+| `src/components/atomic/Navigation/SarakShellLanguageSelector.tsx` | alterado | Leitura do override global. |
+| `src/components/atomic/Navigation/__tests__/SarakShellLanguageSelector.test.tsx` | alterado | Proteção do override global. |
+| `src/components/atomic/Layouts/SarakGrid.tsx` | alterado | Comentário compatível com o scanner. |
+| `specs/plan/plan-94-um-cromo-so.md` | alterado | Este resumo append-only e retorno do status para revisão. |
+| `dist/**` | regenerado pelo build | Bundles, chunks, CSS e metadados gerados; sem edição manual. |
+| `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados pelo build | Metadados de build gerados pelo comando. |
+
+**Verificações executadas**
+- `npx vitest run src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs src/components/atomic/Navigation/__tests__/SarakShellLanguageSelector.test.tsx` → 3 arquivos, 37 testes verdes.
+- Mutações temporárias dos testes de mídia e comparador → cada teste falhou com a regressão plantada; fontes restauradas depois.
+- `npm run build` → sucesso na execução autorizada; 96 componentes no barril, 310 exports no prefixo, tipos públicos em dia, `kit-names` verde e CSS Tailwind/escopado gerado. Duas tentativas no sandbox padrão pararam no `tsup` com `Acesso negado` ao resolver diretórios; a mesma execução concluiu com acesso aprovado, sem mudar o comando.
+- `npx tsc --noEmit` → exit 0.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11; nenhuma regressão.
+- `npx vitest run` → 388 arquivos e 2.088 testes verdes (359,69 s). Avisos de manifesto GLib e CSS do ambiente apareceram sem falhas de teste.
+- `npm run class-merge:check` → verde; nenhum átomo concatena `className` fora da allowlist.
+- `npm run section-pointers:check` → verde; nenhum ponteiro de seção autorreferente morto.
+- `npm run plan-index:check` → verde antes da transição final do status; índice e frontmatter estavam sincronizados.
+- `npm run chrome-token-parity:check` → verde; 37 tokens cobertos de 40 têm consumidor no grupo único `SarakAppChrome`.
+- `git diff --check` nos arquivos desta correção → sem erro de whitespace.
+
+**Critérios de aceite — lote 1**
+- [x] Modo host removido — evidência já registrada no veredito anterior: `git grep` sem resíduos e diretórios `src/core/Shell/` e `src/core/Discovery/` ausentes; esta correção não alterou esses arquivos.
+- [x] Preview com `SarakAppChrome` nas três geometrias — evidência atual: 3 casos de geometria e os testes restaurados passaram na suíte completa.
+- [x] `init` gera app sem registro de módulos — evidência previamente registrada no resumo anterior: teste do gerador passou e verifica imports pelo barril; não alterado nesta correção.
+- [x] Paridade com um grupo — evidência atual: `chrome-token-parity:check` passou com 37/40 tokens cobertos e o arquivo restaurado tem casos de fronteira e mutação.
+- [x] Nota MAJOR cobre os nomes públicos removidos — evidência previamente confirmada no veredito: 22 nomes cobertos individualmente; documentação não foi alterada nesta correção.
+- [x] TypeScript, testes completos e build — evidência: resultados acima; baseline de auditoria igual ao baseline.
+
+**Decisões e suposições**
+- Mantidos `level?: number` e o índice aberto de `SarakShellUser` no lote 1.
+- Mantido `options.manifest` como `Record<string, unknown>`.
+- Mantida a mudança do catálogo de idiomas para `src/core/i18n/languages.ts`.
+- Mantida a remoção do indicador `Módulos Ativos` de `AdvancedTab`.
+- Mantida a remoção de comentários antigos que apontavam para plans/specs em arquivos do lote 1.
+- Nenhuma suposição adicional foi necessária nesta correção.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum achado novo. A falha de `npm run audit` descrita no resumo anterior permanece como baseline conhecido; os arquivos citados ali não foram alterados nesta correção.
+
+**Pendências / riscos**
+- Nenhum dos cinco achados permanece pendente. Os lotes 2 e 3 não foram iniciados.
+
+## Resumo da execução (correção 2) — 2026-10-05
+
+**Fotografia de `git status --short` antes da primeira edição desta rodada:**
+
+```text
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .agents/skills/ui-integra-consumidor/references/examples.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/references/examples.md
+ M README.md
+ M bin/scaffold/__tests__/runInit.fs.test.mjs
+ M bin/scaffold/buildFileMap.mjs
+ M bin/scaffold/constants.mjs
+ D bin/scaffold/generators/exampleModule.mjs
+ M bin/scaffold/generators/mainTsx.mjs
+ M bin/scaffold/generators/viteConfig.mjs
+ M bin/scaffold/prompts.mjs
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-ZPF4CBKP.js
+ D dist/SarakChartEngine-GTF5UPIH.js
+ D dist/SarakChatEngine-FVBQEEID.js
+ D dist/SarakDataTableImpl-G6MU4VAB.js
+ D dist/SarakFlowEngine-EKU6RBPG.js
+ D dist/SarakMarkdownRendererImpl-K34PDQCC.js
+ D dist/SarakPDFViewerImpl-QKO3JBBC.js
+ D dist/chunk-3TGB3W3O.js
+ D dist/chunk-E657C7CH.js
+ D dist/chunk-JH2SPCYK.js
+ D dist/chunk-KV7CTFRO.js
+ D dist/chunk-M5ZA6YHK.js
+ D dist/chunk-WIHSARTC.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/sarak-scoped.css
+ M dist/sarak.css
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M docs/migracoes.md
+ M docs/temas-cromo-e-multidispositivo.md
+ M gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs
+ M gates/scripts/contrato/check-chrome-token-parity.mjs
+ M gates/scripts/contrato/check-container-query-boundary.mjs
+ M gates/scripts/contrato/check-kit-names.mjs
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M sarak-ui/skill/SKILL.md
+ M sarak-ui/skill/references/examples.md
+ M scripts/consumer-kit/collectKitSources.mjs
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/plan/plan-90-css-que-so-o-navegador-mede.md
+ M specs/plan/plan-94-um-cromo-so.md
+ M specs/specs/06-painel-de-customizacao-e-preview.md
+ M src/buildInfo.ts
+ M src/components/Layout/SarakAppChrome.tsx
+ M src/components/Layout/SarakAppChromeMobile.tsx
+ M src/components/Layout/__tests__/SarakAppChrome.test.tsx
+ M src/components/Layout/chrome/ChromeCollapseToggle.tsx
+ M src/components/Layout/chrome/ChromeSidebarBody.tsx
+ M src/components/Layout/chrome/ChromeTopbarBody.tsx
+ M src/components/Layout/chrome/ChromeUserThemeGroup.tsx
+ M src/components/Layout/chrome/__tests__/useChromeDefaultWidgets.test.ts
+ M src/components/Layout/chrome/chromeStructuralStyles.ts
+ M src/components/Layout/chrome/noiseTexture.ts
+ M src/components/Layout/chrome/useChromeAutoHide.ts
+ M src/components/Layout/chrome/useChromeDefaultWidgets.ts
+ M src/components/atomic/Cards/SarakActionCard.tsx
+ M src/components/atomic/Inputs/SarakSearch.tsx
+ M src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx
+ M src/components/atomic/Layouts/SarakGrid.tsx
+ M src/components/atomic/Navigation/SarakShellLanguageSelector.tsx
+ M src/components/atomic/Navigation/SarakShellNav.tsx
+ M src/components/atomic/Navigation/SarakShellSearchWidget.tsx
+ M src/components/atomic/Navigation/SarakShellUserWidget.tsx
+ M src/components/atomic/Navigation/ShellPreferencesMenu.tsx
+ M src/components/atomic/Navigation/__tests__/SarakShellLanguageSelector.test.tsx
+ M src/components/atomic/Navigation/__tests__/SarakShellSearchWidget.test.tsx
+ M src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx
+ M src/components/atomic/Navigation/index.ts
+ M src/components/atomic/Templates/SarakStats.tsx
+ D src/constants/discovery.ts
+ D src/core/Discovery/DynamicRenderer.tsx
+ D src/core/Discovery/__tests__/DynamicRenderer.test.tsx
+ D src/core/Discovery/__tests__/registry.test.ts
+ D src/core/Discovery/components/ContractRenderer.tsx
+ D src/core/Discovery/components/SarakExpandableMatrixEngine.tsx
+ D src/core/Discovery/components/__tests__/ContractRenderer.test.tsx
+ D src/core/Discovery/components/__tests__/SarakExpandableMatrixEngine.test.tsx
+ D src/core/Discovery/components/hooks/__tests__/useExpandableMatrixEngine.test.ts
+ D src/core/Discovery/components/hooks/useExpandableMatrixEngine.ts
+ D src/core/Discovery/constants.ts
+ D src/core/Discovery/hooks/__tests__/useEndpointResolver.test.ts
+ D src/core/Discovery/hooks/useEndpointResolver.ts
+ D src/core/Discovery/registry.ts
+ D src/core/Discovery/types.ts
+ M src/core/Provider/SarakUIProvider.tsx
+ M src/core/Provider/__tests__/SarakUIProvider.test.tsx
+ M src/core/Provider/buildInfo.ts
+ D src/core/Provider/hooks/__tests__/useRegistryManager.test.ts
+ D src/core/Provider/hooks/useRegistryManager.ts
+ M src/core/Provider/manifest.ts
+ M src/core/Provider/payloadExtraKeys.ts
+ M src/core/Provider/providerProps.ts
+ M src/core/Provider/types.ts
+ M src/core/Provider/useHasGlobalBackgroundMedia.ts
+ D src/core/Shell/Components/DockNav.tsx
+ D src/core/Shell/Components/IconRenderer.tsx
+ D src/core/Shell/Components/ShellContent.tsx
+ D src/core/Shell/Components/SidebarNav.tsx
+ D src/core/Shell/Components/SidebarNavModuleItem.tsx
+ D src/core/Shell/Components/TopbarNav.tsx
+ D src/core/Shell/Components/__tests__/DockNav.test.tsx
+ D src/core/Shell/Components/__tests__/IconRenderer.test.tsx
+ D src/core/Shell/Components/__tests__/ShellContent.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNav.preferencesBar.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNav.test.tsx
+ D src/core/Shell/Components/__tests__/SidebarNavModuleItem.test.tsx
+ D src/core/Shell/Components/__tests__/TopbarNav.preferencesBar.test.tsx
+ D src/core/Shell/Components/__tests__/TopbarNav.test.tsx
+ D src/core/Shell/Components/types.ts
+ D src/core/Shell/SarakShell.tsx
+ D src/core/Shell/__tests__/SarakShell.test.tsx
+ D src/core/Shell/__tests__/useSarakShell.test.ts
+ D src/core/Shell/hooks/__tests__/useDimensionGuard.test.ts
+ D src/core/Shell/hooks/__tests__/useSarakShellUI.test.ts
+ D src/core/Shell/hooks/__tests__/useShellDiagnostics.test.ts
+ D src/core/Shell/hooks/__tests__/useShellLayoutStyles.test.ts
+ D src/core/Shell/hooks/__tests__/useVisualSafetyGate.test.ts
+ D src/core/Shell/hooks/useDimensionGuard.ts
+ D src/core/Shell/hooks/useSarakShellUI.ts
+ D src/core/Shell/hooks/useShellDiagnostics.ts
+ D src/core/Shell/hooks/useShellLayoutStyles.ts
+ D src/core/Shell/hooks/useVisualSafetyGate.ts
+ D src/core/Shell/useSarakShell.ts
+ M src/core/i18n/__tests__/catalog.test.ts
+ M src/core/i18n/catalog.types.ts
+ M src/core/i18n/useLibraryText.ts
+ M src/features/DesignEngine/Canvas/PreviewCanvas.tsx
+ M src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap
+ M src/features/DesignEngine/Canvas/components/CardsCatalog.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx
+ D src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PreviewSystemRenderer.test.tsx.snap
+ D src/features/DesignEngine/Canvas/hooks/__tests__/useMockModules.test.ts
+ D src/features/DesignEngine/Canvas/hooks/useMockModules.ts
+ M src/features/DesignEngine/Panels/AdvancedTab.tsx
+ M src/features/DesignEngine/Panels/LanguageTab.tsx
+ M src/features/DesignEngine/Panels/__tests__/AdvancedTab.test.tsx
+ M src/features/DesignEngine/Panels/__tests__/__snapshots__/AdvancedTab.test.tsx.snap
+ M src/index.ts
+ D src/shared/hooks/__tests__/useModuleDiscovery.test.ts
+ D src/shared/hooks/__tests__/useSarakRouter.test.ts
+ D src/shared/hooks/useModuleDiscovery.ts
+ D src/shared/hooks/useSarakRouter.ts
+ M src/shared/hooks/useSearchShortcut.ts
+ M src/shared/types/index.ts
+?? .claude/settings.local.json
+?? bin/scaffold/generators/appTsx.mjs
+?? dist/CustomizationPanelImpl-PFA3FJDZ.js
+?? dist/SarakChartEngine-G6CHQGS6.js
+?? dist/SarakChatEngine-3VHQ4S22.js
+?? dist/SarakDataTableImpl-6MWJFUKA.js
+?? dist/SarakFlowEngine-ZUJ7437L.js
+?? dist/SarakMarkdownRendererImpl-B6DQS24F.js
+?? dist/SarakPDFViewerImpl-7AOO6IBS.js
+?? dist/chunk-HPB3WKFQ.js
+?? dist/chunk-HZGB4W64.js
+?? dist/chunk-KJCTOGXY.js
+?? dist/chunk-P5O5MJFJ.js
+?? dist/chunk-PTEPJFCX.js
+?? dist/chunk-U4LO7DDF.js
+?? specs/plan/plan-100-painel-de-temas-caminho-simples.md
+?? specs/plan/plan-101-motor-de-graficos-completo.md
+?? specs/plan/plan-102-quadro-kanban-de-gestao-de-projetos.md
+?? specs/plan/plan-103-calendario-e-gantt-de-projetos.md
+?? specs/plan/plan-99-achar-e-priorizar-no-painel-de-temas.md
+?? src/core/i18n/languages.ts
+```
+
+**Achado 3 — fechado.** O componente voltou à ordem do `HEAD`: `useSarakUI`, `useLibraryText` e `useState` são chamados antes da leitura do override e do retorno antecipado. A origem do override é somente `window.__SARAK_OVERRIDES__['shell-language-selector']`; a consulta ao registro não voltou. O override é devolvido dentro do invólucro `relative isolate !overflow-visible sarak-language-override-wrapper`, com `horizontal-variant` quando `variant="horizontal"`.
+
+**Teste e mutação.** O teste verifica que o override é descendente de `.sarak-language-override-wrapper` e que, em `variant="horizontal"`, o invólucro também recebe `horizontal-variant`. Caso normal: 1 teste passou (8 casos do arquivo filtrados). Entrada da mutação: override global configurado para o seletor, renderizado com `variant="horizontal"`; removi temporariamente o invólucro. Resultado: o teste falhou (1 falha, 8 filtrados), pois `closest('.sarak-language-override-wrapper')` retornou `null` e `toHaveClass` recebeu `null`. O invólucro foi restaurado antes da suíte final.
+
+**Arquivos alterados do lote 1**
+
+| Diretório | Alterados | Removidos | Criados | Regenerados pelo build* |
+|---|---:|---:|---:|---:|
+| `.agents/skills/ui-integra-consumidor/**` | 2 | 0 | 0 | 0 |
+| `.claude/skills/ui-integra-consumidor/**` | 2 | 0 | 0 | 0 |
+| `raiz` | 1 | 0 | 0 | 0 |
+| `bin/scaffold/**` | 6 | 1 | 1 | 0 |
+| `dist/**` | 7 | 13 | 13 | 33 |
+| `docs/**` | 4 | 0 | 0 | 0 |
+| `gates/scripts/contrato/**` | 4 | 0 | 0 | 0 |
+| `sarak-ui/**` | 7 | 0 | 0 | 0 |
+| `scripts/consumer-kit/**` | 1 | 0 | 0 | 0 |
+| `specs/plan (plan-94)` | 1 | 0 | 0 | 0 |
+| `src (raiz)` | 2 | 0 | 0 | 1 |
+| `src/components/Layout/**` | 12 | 0 | 0 | 0 |
+| `src/components/atomic/**` | 14 | 0 | 0 | 0 |
+| `src/constants/**` | 0 | 1 | 0 | 0 |
+| `src/core/Discovery/**` | 0 | 14 | 0 | 0 |
+| `src/core/Provider/**` | 8 | 2 | 0 | 1 |
+| `src/core/Shell/**` | 0 | 29 | 0 | 0 |
+| `src/core/i18n/**` | 3 | 0 | 1 | 0 |
+| `src/features/DesignEngine/Canvas/**` | 5 | 3 | 0 | 0 |
+| `src/features/DesignEngine/Panels/**` | 4 | 0 | 0 | 0 |
+| `src/shared/hooks/**` | 1 | 4 | 0 | 0 |
+| `src/shared/types/**` | 1 | 0 | 0 | 0 |
+
+* Os contadores de alteração, remoção e criação foram apurados do `git status --short` capturado nesta rodada: 177 entradas no worktree, das quais 167 pertencem ao lote 1. A tabela exclui os nove arquivos especificados como alheios e `.claude/settings.local.json`. `Regenerados pelo build` é subconjunto desses contadores: 33 arquivos em `dist/` e os dois `buildInfo.ts`. O resíduo ignorado `agent-design-operator/` não aparece no status nem entra na contagem.
+
+**Verificações.** `npx vitest run` → 388 arquivos e 2.088 testes passaram (467,40 s; avisos ambientais de CSS/GLib sem falhas). `npx tsc --noEmit` → exit 0. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11. O build não foi repetido: esta correção não altera artefatos gerados.
+
+**Estado.** Somente o Achado 3 e o inventário agrupado foram tratados nesta rodada. Lote 1 devolvido para revisão; lotes 2 e 3 não iniciados.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-05 — 🔴 Reprovado (lote 1)
+
+**Antes de gravar:** a §10 foi relida no disco: vazia. Verificação feita sobre o worktree com o lote 1 (176 entradas;
+só os arquivos de `specs/` que **não** são do executor aparecem alterados — nenhuma spec fixa foi editada).
+
+**O que está certo, e foi verificado por mim:**
+
+- **Modo host removido.** `git grep -E "SarakShell\b|core/Shell|core/Discovery|useSarakRouter" -- src` → vazio;
+  `src/core/Shell/` e `src/core/Discovery/` não existem. `check-minor-no-removal` lista os **22** nomes e a nota
+  `8.0.0` da `docs/migracoes.md` os cobre **um a um** (a falha dele em `7.0.0 → 7.0.0` é a esperada: a versão sobe na
+  emissão do release, não nesta execução).
+- **Preview:** `PreviewSystemRenderer` monta `SarakAppChrome`, com a navegação de exemplo vinda das telas.
+- **`sarak-ui init`:** gera `main.tsx` (Provider) e `src/App.tsx` (`SarakAppChrome`, `navItems`, rotas por
+  `pushState`/`popstate`); o teste confere os imports contra o barril.
+- **Paridade de cromo:** um grupo, `SarakAppChrome`. Refiz a mutação por fixture fora do repositório: token só citado
+  em `__tests__/` → `semConsumidor: ["SarakAppChrome"]`; token que é **substring** de outro identificador → também
+  acusado. **O gate se comporta; o que faltou foi o teste dele (achado 2).**
+- **Documentação:** `README`, `docs/`, kit (`sarak-ui/`), guia e skills **não** mencionam mais o modo host fora da
+  nota de migração (`git grep` limpo). `kit-names:check` verde.
+- **Provider:** `isHydrated` reimplementado (`useState` + `useEffect`) equivale ao do hook removido (verdadeiro após a
+  montagem). Mudanças em `Layout/**`, `SarakGrid`, `SarakActionCard`, `SarakStats` e nos gates `check-kit-names` e
+  `check-container-query-boundary`: só **import** e **comentário** (conferi linha a linha) — consequência direta da
+  remoção, aceita.
+- **Regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+  `check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` → **388 arquivos, 2069 testes
+  verdes** (375 s) · verdes: `kit-names`, `trail-citation`, `class-merge`, `section-pointers`, `plan-index`,
+  `chrome-token-parity`, `prefix` (310), `barrel` (96), `public-types`, `catalog`, `guide`, `dev-kit`,
+  `build-info`, `package` (95), `zero-brand`, `token-types`.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **Testes de comportamento que continua existindo foram apagados com o código que saiu.**
+   `PreviewSystemRenderer.test.tsx` foi de **11 para 2** casos e perdeu o snapshot. Sumiram: (a) os dois casos da
+   **mídia global no preview** — a spec 06 §6.5 cita este arquivo como a prova em jsdom, e o comportamento
+   (`globalBackgroundImageUrl` → fundo transparente; sem mídia → `var(--sarak-bg-base)`) **continua no código**
+   (`PreviewSystemRenderer.tsx`); (b) os três casos de **escala pela largura real do contêiner** através do
+   renderizador (a spec 06 §6.2.1 e a plan-35); (c) os quatro do comparador `arePreviewPropsEqual`, que
+   **continua exportado** e é o que corta a segunda computação de variantes de cor. O que saía com o Shell eram só
+   as props de navegação (`isSidebar`, `isDock`, `previewNavVisible`…). Faça: restaurar (a), (b) e (c),
+   **adaptados** às props que sobraram; (a) e (c) com um caso que **falha** se o comportamento sumir — mostre a
+   mutação (ex.: tirar a condição de mídia do fundo; incluir `activePreviewApp` fora do comparador).
+2. **O teste do gate de paridade caiu de 17 para 6 casos, e quase todos os perdidos não eram do Shell.** Saíram:
+   o limite de **fronteira de palavra** (id como substring de outro identificador não conta), o consumo por
+   **desestruturação**, a **isenção de `__tests__/`**, o `extraFiles` contar como consumo do grupo, e os **três**
+   da extração dinâmica do schema (token novo sem consumidor é pego, com consumidor é liberado, a leitura da seção
+   de layout para antes da seção de bordas). É o limite 4 do R18 do próprio gate: gate cujo limite não tem caso
+   que falha não está provado. Faça: restaurar esses casos, ajustados a **um** grupo, e manter os dois de
+   mutação (`layoutPadding` do AppChrome). Os nomes dos casos novos estão **em inglês**; o arquivo e o repositório
+   usam português — escreva no idioma do vizinho.
+3. **O override do seletor de idioma pelo host (`window.__SARAK_OVERRIDES__['shell-language-selector']`) foi
+   removido em silêncio.** O plan mandava remover o **registro** (`sarakGetLocalComponent`); o global **não**
+   dependia dele, é caminho documentado (`docs/migracoes.md`, entradas das plans 74/75: "continua funcionando, sem
+   mudança") e **não** consta da nota `8.0.0`. Removeram também o teste dele. Faça: **restaurar só o caminho do
+   global** em `SarakShellLanguageSelector.tsx` (a leitura de `window.__SARAK_OVERRIDES__`; sai apenas a do
+   registro) e o teste que o protege. Se o dono quiser aposentar o global, isso é demanda própria.
+4. **Resto de comentário truncado:** `SarakGrid.tsx:61` ficou com a linha solta `// separados por texto comum, como
+   acima.`, que já não aponta para nada. Reescreva o comentário (o aviso ao scanner do Tailwind precisa seguir
+   dizendo, **sem** montar no texto o prefixo, a medida e o utilitário de uma classe de container query).
+5. **O resumo da §9 está incompleto frente ao formato do executor:** faltam a tabela **Arquivos alterados**, a
+   lista **Critérios de aceite** com a evidência de cada um e **Decisões e suposições**. Acrescente (bloco novo,
+   append-only), com as decisões que o diff mostra e nenhuma linha dizia: `SarakShellUser` passou a morar no arquivo
+   do widget **mantendo** `level?: number` e o índice aberto (o lote 3 o troca); `options.manifest` foi de
+   `{ brand?, … }` para `Record<string, unknown>`; o catálogo de idiomas foi para `src/core/i18n/languages.ts`;
+   `AdvancedTab` perdeu o indicador "Módulos Ativos"; os comentários de plan/Spec saíram de vários arquivos.
+
+**Para o dono:** nada disto muda o rumo — é cobertura de teste e uma frase de nota. **Não commite o lote 1 ainda**
+(a correção mexe nos mesmos arquivos de teste); depois do veredito da correção, o commit é por caminho. O lote 2 só
+começa depois do lote 1 aprovado. Os dois gates vermelhos que o executor relatou (`npm run audit` e
+`check-minor-no-removal`) **não** são regressão: o primeiro é o baseline (1 variável-fantasma e 2 de composição
+atômica, já medidos antes desta plan) e o segundo é a versão ainda `7.0.0`, que sobe na emissão.
+
+## Veredito — 2026-10-05 (correção 1) — 🔴 Reprovado (lote 1, 2.ª rodada — um achado)
+
+**Antes de gravar:** a §10 foi relida no disco: só o bloco de reprovação desta data, escrito nesta conversa. Também
+**fechei no §9** o bloco de código da fotografia do executor, que terminava em ```` ```text ```` (um fecho com texto
+não fecha o bloco, e tudo depois — inclusive esta §10 — era desenhado como código).
+
+**Achados 1, 2, 4 e 5 — fechados:**
+
+1. **Preview — fechou.** `PreviewSystemRenderer.test.tsx` voltou a **13** casos (mídia global ×2, escala do contêiner
+   ×3, comparador ×4, mais os de geometria). **Refiz as duas mutações numa cópia fora do repositório:** tirar a
+   condição de mídia do fundo → falha `expected 'var(--sarak-bg-base)' to be 'transparent'`; tirar
+   `activePreviewApp` do comparador → falha `expected true to be false`. Cópia removida; `node_modules` do repositório
+   intacto.
+2. **Paridade — fechou.** O arquivo foi de 6 para **15** casos, em português. Mutações minhas na cópia: tirar a
+   fronteira de palavra → falha o caso de substring; tirar a isenção de `__tests__/` → falha o caso dela; renomear
+   `extraFiles` → **7** falhas, inclusive os dois de mutação do `layoutPadding`.
+4. **Comentário do grid — fechou**, com uma ressalva aceita: o aviso explícito ao scanner do Tailwind saiu, mas o
+   `check-container-query-literal` (comentário incluído) já o cobre por máquina.
+5. **Resumo — fechou em parte, aceito:** o bloco novo traz critérios com evidência e as decisões que o diff mostra
+   (`SarakShellUser` com `level`, `options.manifest`, `languages.ts`, `AdvancedTab`, comentários). A tabela
+   **Arquivos alterados** lista só os desta correção, não os do lote — o inventário completo já está no veredito
+   anterior e no `git diff`.
+
+**Regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+`check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` com relatório JSON → **388 arquivos,
+2088 testes, 0 falhas, 0 pulados**, e os 388 arquivos que o `vitest list` enumera foram todos executados (uma
+primeira rodada minha contou 387/2086 porque a máquina suspendeu no meio — duração de 36 mil segundos — e a repeti) ·
+verdes: `kit-names`, `trail-citation`, `class-merge`, `prefix` (310), `barrel` (96), `public-types`, `catalog`,
+`guide`, `dev-kit`, `build-info`, `package` (95).
+
+**Achado 3 — o override do seletor de idioma voltou, mas não "sem mudança" — continua reprovado:**
+
+O veredito pedia **restaurar só a leitura de `window.__SARAK_OVERRIDES__`**, porque a `docs/migracoes.md` promete que
+ele "continua funcionando, sem mudança". O diff de `SarakShellLanguageSelector.tsx` faz mais do que restaurar a leitura:
+
+- **O invólucro sumiu.** Antes, o override era montado dentro de
+  `<div className="relative isolate !overflow-visible sarak-language-override-wrapper horizontal-variant">`; agora é
+  devolvido **nu** (`return <OverrideSelector variant={variant} />`). O `!overflow-visible` e o `isolate` existiam
+  para o menu suspenso de um seletor do host não ser cortado dentro da barra; o teste só confere o texto do
+  override, então não vê a diferença.
+- **O retorno antecipado foi para cima dos hooks.** Antes ele vinha **depois** de `useSarakUI`, `useLibraryText` e
+  `useState`; agora vem antes. Medi que, com o override aparecendo entre dois renders, **não lança** (o React só acusa
+  quando algum hook roda a menos, e aqui nenhum roda) — mas o `useState` do menu é descartado, e é uma violação da
+  regra dos hooks que o repositório não tem lint para pegar.
+
+**Faça (exclusivamente isto):** devolva o trecho ao **formato do `HEAD`** — os três hooks primeiro, depois o bloco
+`if (OverrideSelector)` com o **mesmo invólucro** e as mesmas classes —, trocando só a **origem** do componente (sai a
+consulta ao registro; fica o `window.__SARAK_OVERRIDES__`). O teste que o protege passa a **afirmar o invólucro**
+(o override é filho de um elemento com a classe `sarak-language-override-wrapper`); mostre a mutação (tirar o
+invólucro → o teste falha). Acrescente à §9 a **tabela Arquivos alterados do lote 1 agrupada por diretório**
+(quantidade e natureza por grupo), para o resumo cumprir o formato.
+
+**Para o dono:** é a última pendência do lote 1 — uma regressão de apresentação num caminho que quase ninguém usa, mas
+documentado. **Continue sem commitar o lote 1.** Os dois gates vermelhos de antes (`npm run audit` e
+`check-minor-no-removal`) seguem sendo baseline e versão ainda `7.0.0`, não regressão.
+
+## Veredito — 2026-10-05 (correção 2) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: só os dois blocos de reprovação desta data, escritos nesta conversa.
+
+**O achado 3 — o override do seletor de idioma — fechou:**
+
+- O diff de `SarakShellLanguageSelector.tsx` contra o `HEAD` agora é **só** a troca da origem: saem a consulta ao
+  registro (`sarakGetLocalComponent`) e o `LANGUAGES` de `Discovery`; ficam os três hooks **antes** do bloco
+  `if (OverrideSelector)`, e o override é devolvido **dentro do mesmo invólucro**
+  (`relative isolate !overflow-visible sarak-language-override-wrapper` + `horizontal-variant`).
+- **Mutação, refeita por mim numa cópia fora do repositório:** tirar o invólucro → o teste
+  `continua lendo o override global do seletor` falha (1 de 9); sem a mutação, 9 de 9. Cópia removida,
+  `node_modules` do repositório intacto.
+- A tabela **Arquivos alterados do lote 1** bate com o meu `git status` agrupado, linha a linha (Shell 29 removidos,
+  Discovery 14, `shared/hooks` 4 removidos e 1 alterado, `Provider` 8/2, `Layout` 12, `atomic` 14, `dist` 7/13/13,
+  `bin/scaffold` 6/1/1, `sarak-ui` 7, `docs` 4…).
+
+**Regressão, rodada por mim** (sem outro `vitest`/`tsup` ativo): `npx tsc --noEmit` → 0 ·
+`check-audit-baseline --with-tsc` → **igual ao baseline** · `npx vitest run` → **388 arquivos, 2088 testes verdes**
+(555 s). Os gates estáticos (`kit-names`, `trail-citation`, `class-merge`, `prefix`, `barrel`, `public-types`,
+`catalog`, `guide`, `dev-kit`, `build-info`, `package`, `chrome-token-parity`) foram verdes na rodada anterior e esta
+correção não tocou nenhum arquivo gerado.
+
+**Critérios do lote 1, com a evidência acumulada nas três rodadas:** modo host removido (`git grep` vazio, as duas
+pastas inexistentes, 22 nomes cobertos um a um na nota `8.0.0`); preview com `SarakAppChrome` nas três geometrias e
+os 13 testes do renderizador com mutação; `init` gera `main.tsx` + `App.tsx` e o teste confere os imports contra o
+barril; paridade de cromo com um grupo e **15** casos (fronteira de palavra, `__tests__`, `extraFiles`, extração do
+schema, mutações); `README`, kit e `docs/` sem o modo host fora da nota; `tsc`, baseline e suíte verdes.
+
+**Liberação parcial.** O lote 1 está aprovado e **pode ser commitado**. A plan **não** está concluída: os lotes 2 e 3
+não foram iniciados. O `status` volta a `🟡 Em execução`; a síntese e a remoção só acontecem depois do veredito do
+lote 3.
 
 ---
 

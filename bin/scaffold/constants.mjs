@@ -1,7 +1,6 @@
 /**
- * Constantes do scaffolder (Spec 21; simplificado pela Spec 45 — starter padrão
- * módulos-plugin, sem backend). `typescript` fica travado em ^5 (achado real de
- * instalação com toolchains mais novas).
+ * Constantes do scaffolder. `typescript` fica travado em ^5 para manter a
+ * compatibilidade com as dependências do starter.
  */
 export const DEFAULT_FRONTEND_PORT = 5173;
 
@@ -12,13 +11,9 @@ export const DEFAULT_MODE = 'app';
 export const TYPESCRIPT_VERSION_RANGE = '^5.4.0';
 
 /**
- * Starter padrão (Spec 45): um front Vite puro — Provider + Shell + Design
- * Engine + módulo de exemplo registrado. Sem backend: persistência de tema é
- * localStorage (já embutido no `SarakUIProvider`); sem servidor Express/Next
- * para gerar. Substitui os antigos `GOLDEN_PATH_*`/`NEXT_*`/`FRONTEND_ONLY_*`
- * (3 stacks divergentes, cada uma com seu próprio backend) — a Spec 44 (Design
- * Engine sem backend) e a decisão de "importar e o front nascer no padrão"
- * eliminaram a necessidade de escolher stack de servidor no `init`.
+ * Starter padrão: front Vite com `SarakUIProvider`, `SarakAppChrome` e rotas
+ * controladas pela aplicação. Sem backend: o tema persiste em `localStorage`;
+ * não há servidor Express ou Next para gerar.
  */
 export const STARTER_DEV_DEPENDENCIES = {
     vite: '^5.4.0',
@@ -33,10 +28,8 @@ export const STARTER_DEV_DEPENDENCIES = {
 };
 
 /**
- * Skills que o `init` copia para o consumidor. Vazio desde a Spec 46 (removeu o
- * motor de manifesto e as 2 skills que o acompanhavam — `ui-integra-escrever-manifesto`/
- * `ui-auditoria-manifesto`); o modelo oficial (módulos-plugin) não tem skill de
- * consumo própria a copiar. Mantido como mecanismo para uma futura skill do gênero.
+ * Lista de skills copiadas diretamente pelo `init`. A skill de integração faz
+ * parte do kit do consumidor, copiado por `copyKit`.
  */
 export const SKILLS_TO_COPY = [];
 

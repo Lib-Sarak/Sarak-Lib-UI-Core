@@ -9,17 +9,6 @@ const customRender = (ui: React.ReactElement) => {
     return render(<SarakUIProvider>{ui}</SarakUIProvider>);
 };
 
-// Mock sarakGetRegisteredModules
-vi.mock('../../../../core/Discovery/registry', () => ({
-    sarakGetRegisteredModules: vi.fn(() => [
-        { id: 'app1', label: 'Dashboard App', category: 'Core' }
-    ]),
-    sarakRegisterLocalComponent: vi.fn(),
-    unregisterLocalComponent: vi.fn(),
-    registerSarakModule: vi.fn(),
-    sarakSubscribeToRegistry: vi.fn(() => () => {})
-}));
-
 describe('ShellSearchWidget', () => {
     it('renderiza na variante icon e chama onClick', () => {
         const onClickMock = vi.fn();
@@ -31,7 +20,7 @@ describe('ShellSearchWidget', () => {
     });
 
     it('renderiza na variante bar e permite busca', () => {
-        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} items={[{ id: 'app1', label: 'Dashboard App', category: 'Core' }]} />);
         const input = screen.getByPlaceholderText('Busca inteligente…');
         expect(input).toBeInTheDocument();
 

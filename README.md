@@ -1,6 +1,6 @@
-# 💠 Sarak-Lib-UI-Core (Design Engine & Módulos-Plugin)
+# 💠 Sarak-Lib-UI-Core (Design Engine & Cromo por-app)
 
-O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele combina um **Design Engine Data-Driven** (temas/tokens em JSON, sem backend) com um **modelo de consumo por módulos-plugin 100% React** (`SarakUIProvider` + `SarakShell` + `registerSarakModule`/`sarakRegisterLocalComponent`) — o consumidor escreve suas telas como componentes React comuns usando os átomos e os tokens públicos (`var(--sarak-*)`), sem manifesto JSON. *(O antigo motor de renderização de páginas por manifesto foi removido; o porquê está em [`specs/adr/002-remocao-motor-manifesto.md`](specs/adr/002-remocao-motor-manifesto.md).)*
+O **Sarak-Lib-UI-Core** combina um **Design Engine Data-Driven** (temas e tokens em JSON, sem backend) com um modelo de consumo React por aplicação: `SarakUIProvider`, `SarakAppChrome`, `navItems` e as rotas controladas pelo consumidor. As telas usam os átomos e tokens públicos (`var(--sarak-*)`). *(O antigo motor de renderização de páginas por manifesto foi removido; o porquê está em [`specs/adr/002-remocao-motor-manifesto.md`](specs/adr/002-remocao-motor-manifesto.md).)*
 
 ---
 
@@ -8,9 +8,9 @@ O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance d
 
 **Toda a instalação — do zero — é coberta por uma única skill.** Um prompt simples é suficiente:
 
-> "Baixe a biblioteca Sarak-UI `github.com/Lib-Sarak/Sarak-Lib-UI-Core`, ela será responsável pelo Shell e tema do sistema."
+> "Baixe a biblioteca Sarak-UI `github.com/Lib-Sarak/Sarak-Lib-UI-Core`, ela será responsável pelo cromo e tema do sistema."
 
-Isso deve disparar **[`ui-integra-consumidor`](.agents/skills/ui-integra-consumidor/SKILL.md)** — instala o pacote e as `peerDependencies`, roda o scaffolder (`npx sarak-ui init`) que gera `SarakUIProvider` + `SarakShell` + um módulo de exemplo registrado, e conduz o handoff para o consumidor escrever seus próprios módulos de negócio. **CSS é automático** — a lib injeta o próprio stylesheet em runtime ao ser importada; nenhum `import '...css'` manual é necessário no caso comum.
+Isso deve disparar **[`ui-integra-consumidor`](.agents/skills/ui-integra-consumidor/SKILL.md)** — instala o pacote e as `peerDependencies`, roda o scaffolder (`npx sarak-ui init`) que gera `SarakUIProvider` + `SarakAppChrome`, navegação de exemplo e roteamento local do app. **CSS é automático** — a lib injeta o próprio stylesheet em runtime ao ser importada; nenhum `import '...css'` manual é necessário no caso comum.
 
 Se preferir rodar manualmente, o comando de instalação (via GitHub, sem publish no npm registry) é:
 ```bash
@@ -55,9 +55,8 @@ Responsável por orquestrar a estética do sistema de maneira unificada e reativ
 - O componente `DesignInjector` pendura essas variáveis no `:root` e no `body` da aplicação de forma transparente.
 - Os componentes físicos e o Tailwind CSS (`@theme`) consomem essas variáveis passivamente, gerando mudanças globais instantâneas sem a necessidade de re-renderizações onerosas no React.
 
-### 2. O modelo de módulos-plugin (modelo oficial — [`adr/005`](specs/adr/005-modelo-modulos-plugin-e-apps-separados.md))
-Aplicações hosts registram cada módulo de negócio via `registerSarakModule({ id, label, icon, ... })` + `sarakRegisterLocalComponent(id, Component)` — componentes React comuns, escritos livremente, usando os átomos da biblioteca (`SarakButton`, `SarakCardGrid`, `SarakTable`, etc.) e os tokens públicos (`var(--sarak-*)`) para responderem à troca de tema.
-`SarakShell`, sob `SarakUIProvider`, resolve a navegação (Sidebar/Topbar/Dock, conforme o tema) e o roteamento entre os módulos registrados, sem rota declarada à mão. Ver `docs/component-catalog.md` para o catálogo gerado de componentes/props/tokens.
+### 2. Cromo e rotas do consumidor
+Cada aplicação monta `SarakAppChrome` com `navItems`; o aplicativo controla suas telas e entrega a rota selecionada ao próprio roteador por `onNavigate`. O cromo segue o tema ativo e se adapta a desktop, tablet e smartphone. Ver `docs/component-catalog.md` para o catálogo gerado de componentes, props e tokens.
 
 ---
 
@@ -72,22 +71,24 @@ Aplicações hosts registram cada módulo de negócio via `registerSarakModule({
 
 > ⚠️ **Não existe `npm run dev` neste repositório** — não há servidor de desenvolvimento local nem `vite.config`. A lib é validada por gates e pela suíte, e visualmente **num consumidor real** que a importe. A tabela viva de gates está no Apêndice B de [`sarak-dev/GUIA-MANUTENCAO.md`](sarak-dev/GUIA-MANUTENCAO.md).
 
-### Consumindo na Aplicação Host (módulos-plugin)
+### Montando o cromo da aplicação
 ```tsx
-import ReactDOM from 'react-dom/client';
-import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
-import { MeuModulo } from './modules/MeuModulo';
+import { SarakAppChrome, SarakUIProvider } from '@sarak/lib-ui-core';
 
-sarakRegisterLocalComponent('meu-modulo', MeuModulo);
-registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
+const navItems = [{ id: 'inicio', label: 'Início', href: '/' }];
+const navigate = (path: string) => window.history.pushState({}, '', path);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <SarakUIProvider>
-        <SarakShell />
-    </SarakUIProvider>,
-);
+<SarakUIProvider>
+    <SarakAppChrome
+        brand={{ name: 'Meu Sistema' }}
+        navItems={navItems}
+        onNavigate={navigate}
+    >
+        <MinhaRota />
+    </SarakAppChrome>
+</SarakUIProvider>
 ```
-Nenhum import de CSS é necessário — o `SarakUIProvider` injeta o stylesheet automaticamente. Veja a seção **Instalação num Sistema Consumidor** acima para o passo-a-passo completo (peerDependencies, scaffolder, modo embarcado).
+O consumidor mantém suas rotas. Nenhum import de CSS é necessário — o `SarakUIProvider` injeta o stylesheet automaticamente. Veja a seção **Instalação num Sistema Consumidor** acima para o passo-a-passo completo (peerDependencies, scaffolder, modo embarcado).
 
 ---
 

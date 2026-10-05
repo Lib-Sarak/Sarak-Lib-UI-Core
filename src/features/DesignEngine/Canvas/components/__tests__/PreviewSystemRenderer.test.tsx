@@ -1,278 +1,169 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import * as ComponentModule from '../PreviewSystemRenderer';
-import { PreviewSystemRenderer, arePreviewPropsEqual, PreviewSystemRendererProps } from '../PreviewSystemRenderer';
-import { SarakUIContextType, SarakDesignState } from '../../../../../core/Provider/types';
-
-// Mocks
-vi.mock('framer-motion', () => ({
-    motion: {
-        div: ({ children, ...props }: React.PropsWithChildren<unknown>) => <div {...props}>{children}</div>,
-        section: ({ children, ...props }: React.PropsWithChildren<unknown>) => <section {...props}>{children}</section>,
-        aside: ({ children, ...props }: React.PropsWithChildren<unknown>) => <aside {...props}>{children}</aside>
-    },
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
-}));
-
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
+import type { SarakUIContextType } from '../../../../../core/Provider/types';
+import {
+    arePreviewPropsEqual,
+    PreviewSystemRenderer,
+    type PreviewSystemRendererProps,
+} from '../PreviewSystemRenderer';
 
-describe('PreviewSystemRenderer', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-    });
+const apps = {
+    dashboard: <div>Dashboard preview</div>,
+    reports: <div>Reports preview</div>,
+};
 
-    it('should render and match snapshot', () => {
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer 
-                    previewDevice="desktop"
-                    previewNavVisible={true}
-                    setPreviewNavVisible={() => {}}
-                    previewMobileNavOpen={false}
-                    setPreviewMobileNavOpen={() => {}}
-                    isSidebar={true}
-                    isDock={false}
-                    isTopbar={false}
-                    parentContext={{} as unknown as SarakUIContextType}
-                    onUpdateDraft={() => {}}
-                    mockGroupedModules={{}}
-                    mockDiscoveredModules={[]}
-                    startResizingTopbar={() => {}}
-                    tokens={{}}
-                    sarak={{} as unknown as SarakUIContextType}
-                    startResizingSidebar={() => {}}
-                    apps={{ dashboard: <div>Mock App</div> }}
-                    activePreviewApp="dashboard"
-                    setActivePreviewApp={() => {}}
-                />
-            </SarakUIProvider>
-        );
-        expect(container).toMatchSnapshot();
-    });
+const makePreviewProps = (
+    overrides: Partial<PreviewSystemRendererProps> = {},
+): PreviewSystemRendererProps => ({
+    sarak: {} as SarakUIContextType,
+    tokens: {},
+    previewDevice: 'desktop',
+    activePreviewApp: 'dashboard',
+    setActivePreviewApp: () => undefined,
+    apps,
+    ...overrides,
 });
 
-describe('PreviewSystemRenderer — escala pela largura REAL do container (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
-    // Stub controlável: dispara o callback do ResizeObserver com a largura que o teste
-    // escolher, simulando o container-pai em duas larguras — NÃO usa `overrideDevice`/
-    // viewport (isto é container, não dispositivo; ver spec 07 §7.2 sobre a diferença).
-    let observedCallback: ResizeObserverCallback | null = null;
-    class ResizeObserverStub {
-        constructor(cb: ResizeObserverCallback) {
-            observedCallback = cb;
-        }
-        observe() {}
-        unobserve() {}
-        disconnect() {}
+const renderPreview = (
+    previewDevice: PreviewSystemRendererProps['previewDevice'],
+    overrides: Partial<PreviewSystemRendererProps> = {},
+) => {
+    const setActivePreviewApp = vi.fn();
+    const result = render(
+        <SarakUIProvider>
+            <PreviewSystemRenderer
+                {...makePreviewProps({ ...overrides, previewDevice, setActivePreviewApp })}
+            />
+        </SarakUIProvider>,
+    );
+
+    return { ...result, setActivePreviewApp };
+};
+
+let resizeObserverCallback: ResizeObserverCallback | undefined;
+
+class ResizeObserverStub implements ResizeObserver {
+    constructor(callback: ResizeObserverCallback) {
+        resizeObserverCallback = callback;
     }
 
-    const fireWidth = (width: number) => {
-        act(() => {
-            observedCallback?.(
-                [{ contentRect: { width } } as unknown as ResizeObserverEntry],
-                {} as ResizeObserver,
-            );
-        });
-    };
+    observe(_target: Element): void {}
+    unobserve(_target: Element): void {}
+    disconnect(): void {}
+}
 
-    const baseProps = {
-        previewDevice: 'desktop' as const,
-        previewNavVisible: true,
-        setPreviewNavVisible: () => {},
-        previewMobileNavOpen: false,
-        setPreviewMobileNavOpen: () => {},
-        isSidebar: true,
-        isDock: false,
-        isTopbar: false,
-        parentContext: {} as unknown as SarakUIContextType,
-        onUpdateDraft: () => {},
-        mockGroupedModules: {},
-        mockDiscoveredModules: [],
-        startResizingTopbar: () => {},
-        tokens: {},
-        sarak: {} as unknown as SarakUIContextType,
-        startResizingSidebar: () => {},
-        apps: { dashboard: <div>Mock App</div> },
-        activePreviewApp: 'dashboard',
-        setActivePreviewApp: () => {},
-    };
-
-    afterEach(() => {
-        observedCallback = null;
-        vi.unstubAllGlobals();
-    });
-
-    it('num container ESTREITO, reduz a escala proporcionalmente (mínimo 0.5)', async () => {
-        vi.stubGlobal('ResizeObserver', ResizeObserverStub);
-        const { SarakUIProvider } = await import('../../../../../core/Provider/SarakUIProvider');
-
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer {...baseProps} />
-            </SarakUIProvider>,
+const fireObservedWidth = (width: number): void => {
+    act(() => {
+        resizeObserverCallback?.(
+            [{ contentRect: { width } } as ResizeObserverEntry],
+            {} as ResizeObserver,
         );
-
-        fireWidth(320); // bem abaixo da referência (1280) — deve saturar no piso 0.5
-        // `.origin-top-left` é exclusivo do nó escalado — não colide com nenhum estilo
-        // inline de infraestrutura do Provider (DesignInjector/NoiseOverlay/etc.).
-        const scaledNode = container.querySelector('.origin-top-left') as HTMLElement | null;
-        expect(scaledNode).not.toBeNull();
-        expect(scaledNode?.style.transform).toBe('scale(0.5)');
     });
+};
 
-    it('num container LARGO, a escala fica no teto (0.95) — nunca ultrapassa', async () => {
+afterEach(() => {
+    resizeObserverCallback = undefined;
+    vi.unstubAllGlobals();
+});
+
+describe('PreviewSystemRenderer', () => {
+    it.each(['desktop', 'tablet', 'smartphone'] as const)(
+        'monta SarakAppChrome na geometria %s com navegação de exemplo',
+        (device) => {
+            const { container } = renderPreview(device);
+
+            expect(container.querySelector('.sarak-device-' + device)).not.toBeNull();
+            expect(screen.getByText('Dashboard preview')).toBeTruthy();
+            if (device === 'smartphone') {
+                fireEvent.click(screen.getByRole('button', { name: /Abrir menu/ }));
+            }
+            expect(screen.getByRole('button', { name: 'dashboard' })).toBeTruthy();
+            expect(screen.getByRole('button', { name: 'reports' })).toBeTruthy();
+        },
+    );
+
+    it('encaminha a seleção de navegação para o app ativo', () => {
+        const { setActivePreviewApp } = renderPreview('desktop');
+
+        fireEvent.click(screen.getByRole('button', { name: 'reports' }));
+
+        expect(setActivePreviewApp).toHaveBeenCalledWith('reports');
+    });
+});
+
+describe('PreviewSystemRenderer — escala pela largura real do contêiner', () => {
+    it('reduz a escala no contêiner estreito até o piso de 0.5', () => {
         vi.stubGlobal('ResizeObserver', ResizeObserverStub);
-        const { SarakUIProvider } = await import('../../../../../core/Provider/SarakUIProvider');
+        const { container } = renderPreview('desktop');
 
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer {...baseProps} />
-            </SarakUIProvider>,
-        );
+        fireObservedWidth(320);
 
-        fireWidth(2000); // bem acima da referência (1280) — deve saturar no teto 0.95
-        // `.origin-top-left` é exclusivo do nó escalado — não colide com nenhum estilo
-        // inline de infraestrutura do Provider (DesignInjector/NoiseOverlay/etc.).
-        const scaledNode = container.querySelector('.origin-top-left') as HTMLElement | null;
-        expect(scaledNode?.style.transform).toBe('scale(0.95)');
+        expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.5)');
     });
 
-    it('sem ResizeObserver no ambiente (SSR/jsdom sem polyfill), degrada para a constante de antes desta plan — nunca quebra', async () => {
+    it('mantém a escala no teto de 0.95 no contêiner largo', () => {
+        vi.stubGlobal('ResizeObserver', ResizeObserverStub);
+        const { container } = renderPreview('desktop');
+
+        fireObservedWidth(2000);
+
+        expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.95)');
+    });
+
+    it('usa o fallback dual-view sem ResizeObserver', () => {
         vi.stubGlobal('ResizeObserver', undefined);
-        const { SarakUIProvider } = await import('../../../../../core/Provider/SarakUIProvider');
+        const { container } = renderPreview('desktop', { isDualView: true });
 
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer {...baseProps} isDualView={true} />
-            </SarakUIProvider>,
-        );
-
-        // `.origin-top-left` é exclusivo do nó escalado — não colide com nenhum estilo
-        // inline de infraestrutura do Provider (DesignInjector/NoiseOverlay/etc.).
-        const scaledNode = container.querySelector('.origin-top-left') as HTMLElement | null;
-        expect(scaledNode?.style.transform).toBe('scale(0.75)'); // fallback dual-view de antes
+        expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.75)');
     });
 });
 
-// 06-painel-de-customizacao-e-preview.md §6 — se a mídia global aparece no Gêmeo
-// Digital. `PreviewSystemRenderer` já envolve o conteúdo em `DesignScope` com o
-// `tokens` (rascunho) intacto — SEM a exclusão de `globalBackgroundImageUrl` que
-// `PreviewCanvas.tsx` aplica no `DesignScope` EXTERNO (`outerScopeDesign`, que só
-// existe para não pintar o fundo atrás do cromo do PRÓPRIO painel). Este teste é a
-// evidência: a mídia aparece.
-describe('PreviewSystemRenderer — mídia global do rascunho no Gêmeo Digital', () => {
-    const mediaProps = {
-        previewDevice: 'desktop' as const,
-        previewNavVisible: true,
-        setPreviewNavVisible: () => {},
-        previewMobileNavOpen: false,
-        setPreviewMobileNavOpen: () => {},
-        isSidebar: true,
-        isDock: false,
-        isTopbar: false,
-        parentContext: {} as unknown as SarakUIContextType,
-        onUpdateDraft: () => {},
-        mockGroupedModules: {},
-        mockDiscoveredModules: [],
-        startResizingTopbar: () => {},
-        sarak: {} as unknown as SarakUIContextType,
-        startResizingSidebar: () => {},
-        apps: { dashboard: <div>Mock App</div> },
-        activePreviewApp: 'dashboard',
-        setActivePreviewApp: () => {},
-    };
+describe('PreviewSystemRenderer — mídia global', () => {
+    it('deixa o fundo transparente quando há mídia global', () => {
+        const imageUrl = 'https://example.com/preview-background.png';
+        const { container } = renderPreview('desktop', {
+            tokens: { globalBackgroundImageUrl: imageUrl },
+        });
 
-    it('aplicar uma mídia global ao rascunho a faz aparecer (SarakBackgroundRenderer real, sem mock)', () => {
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer
-                    {...mediaProps}
-                    tokens={{ globalBackgroundImageUrl: 'https://example.com/bg-plan78.png' } as unknown as Partial<SarakDesignState>}
-                />
-            </SarakUIProvider>,
-        );
-
-        const mediaLayer = container.querySelector('[style*="bg-plan78.png"]');
-        expect(mediaLayer).not.toBeNull();
-
-        // A raiz escalada e o container de fundo ficam transparentes para a mídia
-        // (z-index -1, dentro do mesmo DesignScope) aparecer por baixo.
-        const scaledNode = container.querySelector('.origin-top-left');
-        expect(scaledNode?.className).toMatch(/bg-transparent/);
+        expect(container.querySelector('[style*="preview-background.png"]')).not.toBeNull();
+        expect(container.querySelector<HTMLElement>('.absolute.inset-0.z-0')?.style.backgroundColor)
+            .toBe('transparent');
     });
 
-    it('sem mídia global, a raiz pinta o token de fundo do tema (nada transparente)', () => {
-        const { container } = render(
-            <SarakUIProvider>
-                <PreviewSystemRenderer {...mediaProps} tokens={{}} />
-            </SarakUIProvider>,
-        );
+    it('usa a variável de fundo do tema sem mídia global', () => {
+        const { container } = renderPreview('desktop', { tokens: {} });
 
-        // Nenhum `SarakBackgroundRenderer` monta sem `imageUrl` (retorna `null`) — o
-        // seletor busca só a URL de teste, não a textura do `NoiseOverlay` global
-        // (infraestrutura do `SarakUIProvider`, não relacionada à mídia de fundo).
-        expect(container.querySelector('[style*="bg-plan78.png"]')).toBeNull();
-        const scaledNode = container.querySelector('.origin-top-left');
-        expect(scaledNode?.className).not.toMatch(/bg-transparent/);
+        expect(container.querySelector('[style*="preview-background.png"]')).toBeNull();
+        expect(container.querySelector<HTMLElement>('.absolute.inset-0.z-0')?.style.backgroundColor)
+            .toBe('var(--sarak-bg-base)');
     });
 });
 
-describe('arePreviewPropsEqual — o comparador do React.memo (plan-36, corta a 2ª computação de computeColorVariants quando nada visual mudou)', () => {
-    const makeProps = (overrides: Partial<PreviewSystemRendererProps> = {}): PreviewSystemRendererProps => ({
-        sarak: {} as unknown as SarakUIContextType,
-        tokens: { mode: 'dark' } as unknown as Partial<SarakDesignState>,
-        previewDevice: 'desktop',
-        previewNavVisible: true,
-        setPreviewNavVisible: () => {},
-        previewMobileNavOpen: false,
-        setPreviewMobileNavOpen: () => {},
-        isSidebar: true,
-        isDock: false,
-        isTopbar: false,
-        parentContext: {} as unknown as SarakUIContextType,
-        activePreviewApp: 'dashboard',
-        setActivePreviewApp: () => {},
-        onUpdateDraft: () => {},
-        mockGroupedModules: {},
-        mockDiscoveredModules: [],
-        startResizingSidebar: () => {},
-        startResizingTopbar: () => {},
-        apps: {},
-        ...overrides,
+describe('arePreviewPropsEqual — comparador do React.memo', () => {
+    it('considera iguais props com as mesmas referências', () => {
+        const props = makePreviewProps();
+
+        expect(arePreviewPropsEqual(props, { ...props })).toBe(true);
     });
 
-    it('props IDÊNTICAS (mesmas referências) → true (React.memo bloqueia o re-render, pula a 2ª computação de variantes de cor)', () => {
-        const props = makeProps();
-        // Um clone RASO com as MESMAS referências internas — simula um re-render do pai
-        // por um motivo alheio ao rascunho (toggle de nav, resize), que recria o objeto
-        // de props mas não o conteúdo.
-        const sameContentProps = { ...props };
+    it('detecta uma nova referência dos tokens', () => {
+        const props = makePreviewProps();
 
-        expect(arePreviewPropsEqual(props, sameContentProps)).toBe(true);
+        expect(arePreviewPropsEqual(props, { ...props, tokens: { ...props.tokens } })).toBe(false);
     });
 
-    it('`tokens` com NOVA referência (o rascunho mudou de verdade) → false — não pode mascarar conteúdo obsoleto', () => {
-        const props = makeProps();
-        const next = makeProps({ tokens: { ...props.tokens } });
+    it('detecta uma nova referência da lista de apps', () => {
+        const props = makePreviewProps();
 
-        expect(arePreviewPropsEqual(props, next)).toBe(false);
+        expect(arePreviewPropsEqual(props, { ...props, apps: { ...props.apps } })).toBe(false);
     });
 
-    it('`mockGroupedModules`/`mockDiscoveredModules` com nova referência mas conteúdo invariante → ainda true (são ignoradas de propósito)', () => {
-        const props = makeProps();
-        // Só as duas props ignoradas trocam de referência — as demais (inclusive
-        // `sarak`/`parentContext`, objetos comparados por `===`) reusam a MESMA.
-        const next = { ...props, mockGroupedModules: {}, mockDiscoveredModules: [] };
+    it('detecta mudança do app ativo e da geometria', () => {
+        const props = makePreviewProps();
 
-        expect(arePreviewPropsEqual(props, next)).toBe(true);
-    });
-
-    it('qualquer prop de estado visual (previewNavVisible, activePreviewApp, isSidebar...) mudando → false', () => {
-        const props = makeProps();
-
-        expect(arePreviewPropsEqual(props, makeProps({ previewNavVisible: false }))).toBe(false);
-        expect(arePreviewPropsEqual(props, makeProps({ activePreviewApp: 'settings' }))).toBe(false);
-        expect(arePreviewPropsEqual(props, makeProps({ isSidebar: false, isTopbar: true }))).toBe(false);
-        expect(arePreviewPropsEqual(props, makeProps({ isDualView: true }))).toBe(false);
+        expect(arePreviewPropsEqual(props, { ...props, activePreviewApp: 'reports' })).toBe(false);
+        expect(arePreviewPropsEqual(props, { ...props, previewDevice: 'tablet' })).toBe(false);
     });
 });

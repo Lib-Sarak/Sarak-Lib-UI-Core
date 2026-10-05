@@ -198,6 +198,5 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     noiseIntensity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'], transform: (v: SarakTokenValue) => (parseFloat(String(v)) || 0) / 100 },
     
     // Configurações de Sistema
-    moduleBlacklist: { attr: 'data-module-blacklist' },
     industrialRegistry: { attr: 'data-industrial-registry' }
 };

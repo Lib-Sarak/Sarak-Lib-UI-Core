@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { sarakGetLocalComponent } from '../../../core/Discovery/registry';
-import { LANGUAGES } from '../../../core/Discovery/constants';
+import { LANGUAGES } from '../../../core/i18n/languages';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from '../Buttons/SarakButton';
@@ -20,7 +19,7 @@ interface ResolvedLanguage {
     flag: string;
 }
 
-/** Idioma habilitado que não bate com o catálogo curado (`Discovery/constants`)
+/** Idioma habilitado que não bate com o catálogo curado
  *  ainda conta para a regra de montagem — é o tema quem decide o conjunto,
  *  não o catálogo de rótulos/bandeiras conhecidos. */
 const resolveLanguage = (code: string): ResolvedLanguage => {
@@ -38,16 +37,15 @@ const resolveLanguage = (code: string): ResolvedLanguage => {
 export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProps> = ({
     variant = 'horizontal'
 }) => {
-    // Discovery Logic (v11.0): Procura no Registro e no Backup Global
-    const fromRegistry = sarakGetLocalComponent('shell-language-selector');
-    const fromGlobal = (typeof window !== 'undefined'
-        ? (window as Window & { __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>> }).__SARAK_OVERRIDES__?.['shell-language-selector']
-        : null);
-    const OverrideSelector = fromRegistry || fromGlobal;
-
     const { design, updatePreferences } = useSarakUI();
     const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
+
+    const OverrideSelector = typeof window !== 'undefined'
+        ? (window as Window & {
+            __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>>;
+        }).__SARAK_OVERRIDES__?.['shell-language-selector']
+        : null;
 
     if (OverrideSelector) {
         return (

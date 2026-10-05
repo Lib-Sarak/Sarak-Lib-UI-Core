@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { LIBRARY_TEXT_CATALOG } from '../catalog';
-import { LANGUAGES } from '../../Discovery/constants';
+import { LANGUAGES } from '../languages';
 
 const LANGUAGE_IDS = LANGUAGES.map((lang) => lang.id);
 

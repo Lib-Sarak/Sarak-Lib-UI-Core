@@ -6,7 +6,7 @@ import { SarakSearch } from '../atomic/Inputs/SarakSearch';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { SarakScrim } from '../atomic/Layouts/SarakScrim';
-import type { SarakShellUser } from '../../core/Shell/Components/types';
+import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
 import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';

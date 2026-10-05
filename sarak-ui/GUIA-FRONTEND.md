@@ -124,19 +124,11 @@ A partir daí, três peças **opcionais** e independentes:
 
 | Peça | O que dá | Quando usar |
 | --- | --- | --- |
-| **`SarakAppChrome`** | topbar/sidebar temáveis, navegação com ícone, drawer no celular — **apresentacional**, sem registro nem host | Quase sempre. É o cromo por-app: cada app renderiza o seu. |
+| **`SarakAppChrome`** | topbar/sidebar temáveis, navegação com ícone e drawer no celular; o consumidor controla as rotas | Quase sempre. É o cromo por-app: cada app renderiza o seu. |
 | **`SarakCustomizationPanel`** | o **Design Engine** — a central onde se troca tema/template e se exporta o JSON | Numa rota tipo `/design`, para quem administra a aparência. |
-| **`SarakShell` + `registerSarakModule`** | um **host de módulos-plugin**: a base gera navegação e roteamento a partir dos módulos registrados | Só quando o sistema é **um** app que hospeda vários módulos. Veja §2.1. |
 
-**Os dois modelos de consumo — escolha consciente:**
-
-- **Base como kit** (`Provider` + componentes + `SarakAppChrome` + `SarakCustomizationPanel`): você mantém
-  o seu roteador e a sua estrutura. É o modelo que serve às 4 topologias.
-- **Base como host** (`Provider` + `SarakShell` + módulos registrados): a base assume navegação e
-  roteamento. Mais barato de montar, mas amarra a estrutura do app à lib.
-
-Ambos partilham o mesmo núcleo (Provider + tokens + Design Engine central). Você pode começar por um
-e migrar para o outro sem reescrever componente nenhum.
+O consumidor mantém o próprio roteador e a própria estrutura em todas as quatro topologias. O cromo
+recebe os itens de navegação em `navItems` e entrega a rota selecionada por `onNavigate`.
 
 ---
 
@@ -164,8 +156,7 @@ Um `SarakUIProvider` na raiz, tudo embaixo dele. O cromo e a rota do Design Engi
 </SarakUIProvider>
 ```
 
-É a única topologia onde `SarakShell` + módulos-plugin faz sentido pleno: um app, vários módulos,
-navegação gerada pela base. Nas outras, cada app é dono da sua navegação.
+O `SarakAppChrome` fornece a navegação visual; o roteador da aplicação escolhe e renderiza cada tela.
 
 ## 2.2 Monorepo — vários apps no mesmo repositório
 
@@ -615,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **332** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **310** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (102)
+### A.1 Componentes públicos (99)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -636,12 +627,9 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Cards | **SarakExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
-| Core | **SarakComponent** | `children` |
 | Core | **SarakDesignScope** | `design` · `children` · `className` · `style` |
 | Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
-| Core | **SarakDynamicRenderer** | `contracts` · `module` |
-| Core | **SarakShell** | `children` · `brand` · `extraToolbarItems` · `user` · `logout` · `token` · `authApi` |
-| Core | **SarakUIProvider** | `children` · `discoveryEndpoints` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
+| Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
 | DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `className` |
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `className` |
@@ -697,7 +685,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakPagination** | `current` · `total` · `maxVisible` · `onChange` · `className` |
 | Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
-| Navigation | **SarakShellSearchWidget** | `variant` · `onClick` |
+| Navigation | **SarakShellSearchWidget** | `variant` · `items` · `onClick` |
 | Navigation | **SarakShellThemeToggle** | `variant` |
 | Navigation | **SarakShellUserWidget** | `user` · `logout` · `variant` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
@@ -732,7 +720,7 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 
 **Adaptam sozinhos** (leem o dispositivo no próprio código — você não escreve CSS nem media query):
 
-`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakShell` · `SarakSplitPane` · `SarakTable`
+`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakSplitPane` · `SarakTable`
 
 **Refino opcional por dispositivo** (`SarakResponsiveValue<T>` = `{ mob, tab, desk }`) — 2 props:
 

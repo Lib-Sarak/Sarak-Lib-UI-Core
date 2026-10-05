@@ -6,7 +6,7 @@ import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeContr
 import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
-import type { SarakShellUser } from '../../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';

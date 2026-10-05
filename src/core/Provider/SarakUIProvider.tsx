@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState, useContext, createContext } from 'react';
+import React, { ReactNode, useMemo, useState, useEffect, useContext, createContext } from 'react';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { injectSarakStyles } from './injectStyles';
 import { SARAK_CSS } from './__sarakCss';
@@ -11,8 +11,7 @@ import { SARAK_CSS } from './__sarakCss';
 injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, SarakThemeEntry } from './types';
-import { useRegistryManager } from './hooks/useRegistryManager';
+import { SarakUIContextType, SarakUIProviderProps, SarakThemePayload, SarakThemeEntry } from './types';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
@@ -81,12 +80,10 @@ export const useSarakUIOptional = (): (SarakUIContextType & SarakThemePayload) |
 };
 
 /**
- * SarakUIProvider Orchestrator (v10.1) — ponto de entrada principal da lib:
- * orquestra o estado do design, a descoberta de módulos e a injeção de estilos.
+ * Orquestra o estado do design, a hidratação da sessão e a injeção de estilos.
  */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     children,
-    discoveryEndpoints = [],
     config: initialPropsConfig = {},
     token,
     userId,
@@ -102,8 +99,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const mode = resolveSarakUIMode(options);
     const [scopeElement, setScopeElement] = useState<HTMLElement | null>(null);
     const isEmbedded = mode === 'embedded';
-    // 1. Gerenciamento do Registro e Discovery
-    const { registeredModules, isHydrated } = useRegistryManager(options);
+    const [isHydrated, setIsHydrated] = useState(false);
+    useEffect(() => setIsHydrated(true), []);
 
     // 1.5. Temas: fusão (GLOBAL_THEMES + customThemes + salvos em runtime) + porta única de escrita (ADR-011).
     const { allThemes, saveTheme, deleteTheme } = useThemeCollection(customThemes, options);
@@ -149,7 +146,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
-        discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design: effectiveDesign, // Estado EFETIVO — tema + preferências oferecidas sobrepostas
         systemDesign: design,    // Estado persistido (Sistema/tema), sem preferência nenhuma
         preferences,
@@ -165,8 +161,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         applyConfigRaw: applyConfig,
         applyFullConfigRaw: applyFullConfig,
         persistDesign,
-        registeredModules,
-        layouts: [],
         isHydrated,
         options,
         allThemes,
@@ -180,12 +174,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         onMediaUpload,
         activeDesign: effectiveDesign // já é o sistema (+ rascunho, se houver) + preferências
     }), [
-        discoveryEndpoints, design, effectiveDesign, preferences, updatePreferences,
+        design, effectiveDesign, preferences, updatePreferences,
         drafting.draftDesign, drafting.isDrafting,
         drafting.setIsDrafting, drafting.lockDrafting, setDesign,
         drafting.setDraftDesign, drafting.smartApplyConfig,
         drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
-        persistDesign, registeredModules, isHydrated, options,
+        persistDesign, isHydrated, options,
         allThemes, saveTheme, deleteTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
         token, branding, updateBranding, onMediaUpload
     ]);

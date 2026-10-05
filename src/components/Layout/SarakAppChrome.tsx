@@ -3,7 +3,7 @@ import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
 import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
-import type { SarakShellUser } from '../../core/Shell/Components/types';
+import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
@@ -16,19 +16,10 @@ export type { SarakNavItem } from './chrome/navItem';
 export type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /**
- * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
+ * SarakAppChrome — cromo temável do aplicativo (topbar/sidebar) com navegação por dados.
  *
- * A lacuna real do Teste Real (Spec 40.1 — L2): os tokens de cromo da Spec 18
- * (`--sarak-topbar-*`, `--sarak-sidebar-*`) ficavam SEM consumidor porque o único
- * consumidor era o `SarakShell`, que é um HOST de módulos-plugin (renderiza o
- * `activeModule` do Discovery, não `children`). Um consumidor de apps-separados (como
- * o ERP) não usa o modelo Shell/registro — então nada pintava a topbar/sidebar.
- *
- * `SarakAppChrome` fecha isso: é um cromo 100% PRESENTACIONAL — topbar/sidebar + área
- * de conteúdo (`children`) —, temável por tokens do Design Engine, que CADA app
- * renderiza sozinho. Sem `registerSarakModule`, sem Discovery, sem acoplar módulos.
- * A navegação é DADO (`navItems`/`nav`) e a seleção sai por callback (`onNavigate`) —
- * o host decide o que fazer (redirect de página inteira, router local, etc.).
+ * Cada aplicativo monta seu cromo com `children`, `navItems` e `onNavigate`; o
+ * aplicativo controla suas telas e escolhe como atualizar a rota.
  *
  * Multidispositivo por padrão (Spec 40.3 — L1), zero-config via `useSarakDevice`: em
  * **desktop** é o cromo configurado (sidebar/topbar); em **tablet** vira topbar compacta

@@ -63,7 +63,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                     de produção) em vez de montar um `style` inline com valores finais: o CSS real
                     de `.sarak-card` (incl. o "Nuclear Sovereignty Reset" de _atmosphere.css, que lê
                     as variáveis --sarak-card-* com !important a partir de QUALQUER ancestral com
-                    data-sx-texture — sempre presente no app real via SarakShell) consome essas
+                    data-sx-texture — sempre presente no app real via SarakAppChrome) consome essas
                     variáveis diretamente. Sobrescrever a propriedade final perde a briga de
                     especificidade; escopar a variável que a regra já lê, não.
                 */}

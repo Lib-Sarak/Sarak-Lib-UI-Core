@@ -51,38 +51,6 @@ apresentacional (sem host, sem registro). A `storageKey` compartilhada é o que 
 atravessar apps de mesma origem. Se o console mostrar `[Sarak] CSS não detectado...`, a injeção
 automática falhou (bundler removendo o side-effect); só nesse caso importe `@sarak/lib-ui-core/dist/sarak.css`.
 
-## Exemplo Bom — base como HOST (módulos-plugin), um app com vários módulos
-
-```tsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
-import { ClientesModule } from './modules/ClientesModule';
-
-function safeRegister(id: string, component: React.ComponentType | undefined) {
-    if (!component) {
-        console.warn(`[Sarak] Componente '${id}' é undefined. Verifique o import.`);
-        return;
-    }
-    sarakRegisterLocalComponent(id, component);
-}
-
-safeRegister('clientes', ClientesModule);
-registerSarakModule({ id: 'clientes', label: 'Clientes', icon: 'Users' });
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <SarakUIProvider>
-            <SarakShell />
-        </SarakUIProvider>
-    </React.StrictMode>,
-);
-```
-
-**Por que está correto:** o módulo é um componente React comum; a base resolve navegação e roteamento
-a partir do registro — sem rota declarada à mão, sem manifesto. `icon` precisa ser um nome do
-catálogo (`tokens.iconNames`).
-
 ## Exemplo Bom — SSR/Next.js (evitando FOUC)
 
 ```tsx
