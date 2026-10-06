@@ -80,6 +80,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos. **E** nenhum arquivo desse escopo importa `tailwind-merge` (por `import`, `require` ou `import()`) fora da porta `hooks/mergeSarakClasses.ts`; `__tests__/` fica livre | **R35** | ~0,2 s |
 | Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito d…` (*de*, *do*, *da*, *desta*, *dos*… — *veredito final* não casa) ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
+| Porta de ícones | `npm run icon-port:check` | Nenhum `.ts`/`.tsx` de `src/` importa `lucide-react`, `@phosphor-icons/react` ou `@tabler/icons-react` (por `import`, reexport, `require()` ou `import()`) fora de `components/atomic/Icon/families/`; o painel de autoria (`features/DesignEngine/`) fica fora, declarado | **R39** | ~0,9 s |
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
 | Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
@@ -166,6 +167,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
 | `prefix` · `kit-names` | — | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
+| `icon-port` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `agent-git-write` | **1º passo, antes do Anel 0** | — | — | **1º passo**, antes do anel de release | ⛔ **não roda** — o runner não tem sessão de agente, e a decisão é sobre quem digita o comando |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |

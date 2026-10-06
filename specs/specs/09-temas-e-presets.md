@@ -183,6 +183,10 @@ CSS Variable. Três comportamentos:
 | Chave é token, valor fora do contrato | **descartada** + `console.warn` "valor fora do contrato" (`:196-199`) |
 | Chave desconhecida (nem token, nem `ALLOWED_EXTRA_KEYS`) | **descartada** + `console.warn` "chave desconhecida" (`:213`) |
 
+**Ícone é token como os outros.** O tema declara `iconFamily` (`lucide`, `phosphor`, `tabler`), `iconWeight` e
+`iconStrokeWidth`, e os três valem para todo ícone que a lib desenha ([[03-superficie-publica]] §6.2). Não há
+mais pacote de ícone por tema: `emojiSet` deixou de ser chave aceita e cai na linha *chave desconhecida* acima.
+
 O detalhe do porquê de cada rejeição (padrões de cor, breakout de CSS) é matéria de segurança e mora em
 [[10-seguranca-e-acessibilidade]] §2.1. Para esta spec basta a garantia: **um tema inválido degrada
 campo a campo, nunca derruba a aplicação e nunca injeta o que não entendeu.**

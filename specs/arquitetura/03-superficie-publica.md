@@ -242,9 +242,27 @@ registradas ali: classe própria que nascer depois e **não** for registrada nã
 
 ## 6.2 Contrato de nomes de ícone
 
-`IconMap` (`src/components/atomic/Icon/IconMap.ts:26-31`) é construído a partir de `ICON_NAMES` — **100 nomes** curados, cobrindo três famílias de ícone. Nome fora do mapa emite `console.warn` (`SarakIcon.tsx:25-29`, chamado em `:38`), com deduplicação por `Set` para não poluir o console a cada render.
+**Todo ícone da lib passa por uma porta só, o `SarakIcon`** (`src/components/atomic/Icon/SarakIcon.tsx`).
+Nenhum componente importa uma família de ícones direto (R39). O ícone chega de três jeitos:
 
-O contrato é **fechado**: passar um nome que não está no mapa não quebra a tela — não desenha ícone. Confira o catálogo.
+- **Nome curado** — um dos `SARAK_ICON_NAMES`. O `IconMap` resolve cada nome nas três famílias (Lucide,
+  Phosphor, Tabler). A lista é fonte viva: leia-a no catálogo, não aqui.
+- **Nome registrado pelo consumidor** — `sarakRegisterIcons({ Nome: Componente })` acrescenta nomes e devolve a
+  função que desfaz o registro. Nome curado não pode ser substituído, e o mesmo nome não é registrado duas
+  vezes (os dois casos lançam erro).
+- **Elemento** — `icon={<MeuIcone />}`: passa direto, com o tamanho, a cor e a espessura do contexto.
+
+**O tema vale para todo ícone desenhado pela porta:** `iconFamily` escolhe a família dos nomes curados;
+`iconWeight` e `iconStrokeWidth` chegam ao traço (o Phosphor recebe o peso nativo; Lucide e Tabler, uma
+espessura derivada). Sem Provider, valem os padrões (Lucide, peso regular).
+
+**Nome desconhecido não quebra a tela:** desenha `AlertCircle` no lugar e emite um `console.warn` único por nome.
+
+**Ícone de marca não é nome curado.** `SarakSocialButton` recebe o logotipo por `icon` (obrigatório), e o item de
+navegação (`SarakNavItem.icon`, `SarakMenuItem.icon`) aceita nome ou elemento.
+
+**Fora da porta, de propósito:** o painel de autoria (`src/features/DesignEngine/`) mantém os próprios ícones.
+Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com a família que está sendo editada.
 
 ## 6.3 Templates de dado: `data` vence `endpoint`
 

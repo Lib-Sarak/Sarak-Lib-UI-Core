@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Tirar o domínio de dentro dos templates: dado e texto vêm do host"
 objetivo: "Fazer nenhum componente da lib conhecer URL, cliente HTTP, rota de dominio, texto fixo em portugues ou conceito de um produto, de modo que os templates sirvam a qualquer sistema"
 dominio: "Sarak-Lib-UI-Core / Templates / Genericidade"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "templates", "genericidade", "i18n", "auth", "dados"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]", "[[08-identidade-do-host-e-zero-marca]]", "[[003-remocao-backend-proprio]]"]
-depende_de: "plan-95-icones-por-uma-porta-aberta-ao-consumidor"
+depende_de: ""
 retida_por: ""
 destino_sintese: "arquitetura/03-superficie-publica.md + specs/10-seguranca-e-acessibilidade.md + specs/08-identidade-do-host-e-zero-marca.md + specs/00-regras-e-invariantes.md"
 ---

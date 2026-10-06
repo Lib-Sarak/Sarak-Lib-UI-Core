@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**38 regras: 35 verificáveis (§2) e 3 de conduta (§3).**
+**39 regras: 36 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
-| ⚠️ escopo menor que a regra | **12** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** |
+| ⚠️ escopo menor que a regra | **13** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -854,11 +854,11 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Os nomes de ícone que o consumidor pode escrever são os de `ICON_NAMES`, e **exatamente** eles: o catálogo gerado publica essa lista, e **as três famílias** (Lucide, Phosphor, Tabler) cobrem 1:1:1 os mesmos nomes.
+**Enunciado.** Os nomes **curados** de ícone são os de `SARAK_ICON_NAMES`, e **exatamente** eles: o catálogo gerado publica essa lista, e **as três famílias** (Lucide, Phosphor, Tabler) cobrem 1:1:1 os mesmos nomes. O consumidor acrescenta os seus por `sarakRegisterIcons` ([[03-superficie-publica]] §6.2): esses são dele e não entram no catálogo.
 
 **Por quê.** O ícone era a exceção não documentada da regra dura de tokens — *todo valor que o consumidor escreve tem de estar no catálogo*. E o defeito de nome de ícone é da pior classe: ele **não quebra a tela**, ele silenciosamente não desenha nada. Paridade entre famílias é o que permite trocar a família inteira num tema sem descobrir buracos um a um.
 
-**Cobrada por:** dois gates de suíte — `src/components/atomic/Icon/__tests__/iconCatalogParity.test.ts` (o `docs/component-catalog.json` publica exatamente `ICON_NAMES`, **na mesma ordem**; é a versão em suíte do `catalog:check`, que pega a defasagem sem depender de alguém rodar o build) e `iconContract.test.tsx` (cada família cobre exatamente `ICON_NAMES`, e nome desconhecido **degrada com aviso** em vez de estourar).
+**Cobrada por:** dois gates de suíte — `src/components/atomic/Icon/__tests__/iconCatalogParity.test.ts` (o `docs/component-catalog.json` publica exatamente `SARAK_ICON_NAMES`, **na mesma ordem**; é a versão em suíte do `catalog:check`, que pega a defasagem sem depender de alguém rodar o build) e `iconContract.test.tsx` (cada família cobre exatamente `SARAK_ICON_NAMES`, e nome desconhecido **degrada com aviso**, desenhando `AlertCircle`, em vez de estourar).
 
 ---
 
@@ -1326,6 +1326,41 @@ lugar só. Custo medido: ~60 ms.
 
 ---
 
+## R39 — Todo ícone da lib passa pela porta de ícones
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só `.ts`/`.tsx` de `src/`, só nome de pacote estático,
+e não vê o painel de autoria.
+
+**Enunciado.** Nenhum arquivo da lib importa uma família de ícones (`lucide-react`, `@phosphor-icons/react`,
+`@tabler/icons-react`) fora da porta, `src/components/atomic/Icon/families/`. Componente desenha ícone por
+`SarakIcon`, com nome curado, nome registrado pelo consumidor ou elemento ([[03-superficie-publica]] §6.2).
+
+**Por quê.** O painel oferece `iconFamily`, `iconWeight` e `iconStrokeWidth`, e o catálogo promete que trocar a
+família repinta todos os ícones. Em 2026-10-02, 34 arquivos de `src/components` importavam `lucide-react` direto
+e ignoravam os três tokens: a promessa valia para metade da tela. Import direto também prende a lib aos nomes de
+uma versão do fornecedor (a linha 1.x do `lucide-react` removeu os ícones de marca).
+
+**Certo × Errado.**
+
+```
+ERRADO   import { Search } from 'lucide-react';         ← fora da porta: não segue o tema
+CERTO    <SarakIcon name="Search" />                     ← família, peso e espessura do tema
+CERTO    <SarakIcon icon={<LogoDoConsumidor />} />        ← elemento do consumidor, com o tamanho do contexto
+```
+
+**Cobrada por:** `check-icon-port.mjs` (`npm run icon-port:check`, em `gates/scripts/contrato/`), no `build`
+(depois do `prefix:check`) e no Anel 1 do `.githooks/pre-commit`; a CI o roda pelo `gates:full` → `build`.
+Lê import, reexport, `require()` e `import()` por AST, e o teste dele tem um caso de fixture por limite.
+
+**O vão.**
+- **O painel de autoria fica fora.** `src/features/DesignEngine/` mantém os próprios ícones, por desenho.
+- **Só `.ts`/`.tsx` de `src/`.** `.js`, `.jsx` e o que mora fora de `src/` não são lidos.
+- **Só nome estático.** Um nome de pacote montado em runtime, ou uma família reexportada por um módulo local,
+  escapa.
+- **Só os três nomes de pacote e seus subcaminhos.** Uma quarta família com outro nome não é reconhecida.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1466,6 +1501,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
 | **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
 | **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
+| **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1500,6 +1536,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
 | **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
 | **`check-trail-citation.mjs`** | **R36** | `gates/scripts/contrato/` | ✅ Anel 1 do `pre-commit` (`--staged`) · `npm run trail-citation:check` para revisão — **só local**, sem CI; allowlist em `gates/allowlists/trailCitationExclusions.mjs` |
+| **`check-icon-port.mjs`** | **R39** | `gates/scripts/contrato/` | ✅ `npm run icon-port:check` — no `build` (e por ele no `gates:full` e na CI) e no Anel 1 do `pre-commit` |
 | **`check-agent-git-write.mjs`** | **R38** | `gates/scripts/contrato/` | ✅ **primeiro passo** do `pre-commit` e do `pre-push`, antes do Anel 0 — **só local**, sem CI; lê o ambiente de quem digita o comando |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.

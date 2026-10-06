@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ligar os três tokens de layout sem consumidor e medir o cromo por token em navegador"
 objetivo: "Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo"
 dominio: "Sarak-Lib-UI-Core / Cromo / Tokens de layout"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "cromo", "tokens", "layout", "browser-tests"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-contrato-de-tokens-e-paridade]]", "[[07-responsividade-e-multidispositivo]]", "[[11-testes-e-cobertura]]"]
