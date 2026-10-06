@@ -291,6 +291,14 @@ formato do dado persistido, em `docs/persistencia-de-tema.md`.
 
 Os nomes e tipos exatos são fonte viva — leia-os em `dist/index.d.ts`, não aqui.
 
+## 6.6 O selo de build exportado
+
+`SARAK_BUILD_INFO` é uma **constante** (espécie `SARAK_`, §4.3) com a tríade do build que o código executa:
+`libVersion`, `baseCommitShort` e `builtAt`. É gerada a cada `npm run build` e não deve ser comparada com
+literal dentro da lib. O mesmo valor está no atributo `data-sarak-build-info` da página, e a origem dele está em
+[[05-build-e-distribuicao]] §6. Ela não responde *"estou atualizado?"*: isso é do `sarak-ui check`
+([[13-instalacao-e-atualizacao]] §10).
+
 
 # 7. Fronteiras de bundle — a parte MEDIDA
 

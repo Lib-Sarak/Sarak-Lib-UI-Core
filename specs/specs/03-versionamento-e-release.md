@@ -200,7 +200,7 @@ npm version <major|minor|patch>
 | Gancho | Quando o npm roda | O que faz aqui |
 | --- | --- | --- |
 | `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
-| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` |
+| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` — **mais** `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`, os arquivos gerados do selo de build ([[05-build-e-distribuicao]] §6): sem eles a tag sairia com `src/` diferente do `dist/` e a árvore suja |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.

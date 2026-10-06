@@ -1,6 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, X, ArrowRight } from 'lucide-react';
+
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from './SarakInput';
@@ -93,7 +94,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                         className="flex items-center border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-title,#ffffff)]/[0.02]"
                         style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
                     >
-                        <Search className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
+                        <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
                         <SarakInput
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
@@ -112,7 +113,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                             className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"
                             style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
                         >
-                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><Command size={10} /></span>
+                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><SarakIcon name="Command" size={10} /></span>
                             <span>K</span>
                         </div>
                     </div>
@@ -136,21 +137,21 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                                         >
                                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                                                 <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
-                                                    <Command size={16} />
+                                                    <SarakIcon name="Command" size={16} />
                                                 </div>
                                                 <div className="flex" style={{ flexDirection: 'column' }}>
                                                     <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{item.label}</span>
                                                     <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
                                                 </div>
                                             </div>
-                                            <ArrowRight className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                            <SarakIcon name="ArrowRight" className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                         </Row>
                                     );
                                 })}
                             </div>
                         ) : (
                             <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                                <Search className="w-12 h-12 text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                                <SarakIcon name="Search" className="w-12 h-12 text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
                                 <span className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]">{t('searchNoResultsFor', { query })}</span>
                             </div>
                         )}

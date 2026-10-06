@@ -1,5 +1,6 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState } from 'react';
-import { Globe, Check, ChevronDown } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { LANGUAGES } from '../../../core/i18n/languages';
@@ -100,7 +101,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                                     : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                             }`}
                         >
-                            {currentLang.id === lang.id && <Check size={10} />}
+                            {currentLang.id === lang.id && <SarakIcon name="Check" size={10} />}
                         </SarakMenuItem>
                     ))}
                 </motion.div>
@@ -121,7 +122,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                         <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
                             {currentLang.id}
                         </span>
-                        <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        <SarakIcon name="ChevronDown" size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </div>
                 </SarakButton>
                 {dropdown}
@@ -134,7 +135,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
             <SarakMenuItem
                 onClick={() => setIsOpen(!isOpen)}
                 className="group font-tab"
-                icon={<Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                icon={<SarakIcon name="Globe" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
                 label={t('languageSelectorLabel')}
             >
                 <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.id.toUpperCase()}</span>

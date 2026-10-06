@@ -24,7 +24,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | Componente | Prop | Valores aceitos |
 | --- | --- | --- |
 | `SarakAppChrome` | `navigationStyle` | `sidebar` · `topbar` · `auto` |
-| `SarakAuthScreen` | `socialConfig` | `compact` · `full` · `glass` · `sovereign` |
 | `SarakAuthScreen` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakAuthScreen` | `density` | `compact` · `standard` · `spacious` |
 | `SarakAuthScreen` | `importance` | `hero` · `base` · `subtle` |
@@ -84,13 +83,13 @@ Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak
 
 `--sarak-accent-color` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
-### Ícones (100 nomes válidos)
+### Ícones (117 nomes válidos)
 
 Valores aceitos por `<SarakIcon name>`, por `navItems[].icon` (`SarakAppChrome`/`SarakShellNav`) e por `mapping.icon` nos cards. O nome é o MESMO nas três famílias (`iconFamily`: `lucide` · `phosphor` · `tabler`) — trocar a família repinta todos os ícones sem mexer em nome nenhum.
 
 Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no console (`console.warn`, uma vez por nome) e desenha `AlertCircle` no lugar — degradação visível, nunca tela quebrada.
 
-`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
+`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
 ## Componentes públicos (96)
 
@@ -233,7 +232,7 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `isPending` | `boolean` | não |  |
 | `onSubmit` | `(e: React.FormEvent) => void` | não |  |
 | `onSocialLogin` | `(provider: string) => void` | não |  |
-| `socialConfig` | `{ enabled: boolean; display: 'compact' \| 'full'; providers: Array<{ id: string; variant: 'glass' \| 'sovereign' }>; }` | não |  |
+| `socialConfig` | `SarakSocialConfig` | não |  |
 | `onForgot` | `() => void` | não |  |
 | `onMasterLogin` | `() => void` | não |  |
 | `onChange` | `(event: SarakAuthScreenEvent) => void` | não | Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. |
@@ -706,12 +705,6 @@ Props (`SarakIconProps` — `src/components/atomic/Icon/SarakIcon.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `name` | `SarakIconName \| string` | sim | Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. |
-| `size` | `number \| string` | não | Define a dimensão SVG; sem a prop, usa 24 px. |
-| `className` | `string` | não | Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. |
-| `color` | `string` | não | Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. |
-| `style` | `React.CSSProperties` | não | Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. |
-| `onClick` | `() => void` | não | Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. |
 
 ### SarakIconButton
 
@@ -841,7 +834,7 @@ Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `icon` | `React.ReactNode` | não | Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). |
+| `icon` | `string \| React.ReactNode` | não | Nome registrado ou elemento renderizado à esquerda do rótulo. |
 | `label` | `React.ReactNode` | sim | Rótulo do item; trunca em vez de transbordar (orientação vertical). |
 | `active` | `boolean` | não | Item corresponde à rota/seção corrente. |
 | `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
@@ -1106,12 +1099,13 @@ Props (`SarakSocialButtonProps` — `src/components/atomic/Buttons/SarakSocialBu
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `provider` | `'google' \| 'github'` | sim | Escolhe o ícone e o rótulo padrão do provedor; obrigatória. |
-| `variant` | `'glass' \| 'sovereign'` | sim | Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`. |
-| `onClick` | `(provider: 'google' \| 'github') => void` | não | Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação. |
-| `label` | `string` | não | Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor. |
-| `hideLabel` | `boolean` | não | Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão. |
-| `className` | `string` | não | Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas. |
+| `provider` | `'google' \| 'github'` | sim | Provedor usado no rótulo e callback. |
+| `icon` | `React.ReactNode` | sim | Elemento de marca fornecido pelo consumidor. |
+| `variant` | `'glass' \| 'sovereign'` | sim | Acabamento visual; o tema `sovereign` também prevalece sobre `glass`. |
+| `onClick` | `(provider: 'google' \| 'github') => void` | não | Recebe o provedor clicado; omitido, o botão não executa ação. |
+| `label` | `string` | não | Substitui o rótulo e o título acessível; omitido, usa o texto padrão. |
+| `hideLabel` | `boolean` | não | Esconde o texto e mantém o título acessível. |
+| `className` | `string` | não | Acrescenta classes com resolução de conflitos Tailwind. |
 
 ### SarakSparkline
 

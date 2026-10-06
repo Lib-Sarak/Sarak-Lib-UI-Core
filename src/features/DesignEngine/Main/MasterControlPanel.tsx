@@ -5,6 +5,8 @@ import {
     ChevronRight, ChevronDown, Layers, Palette, Layout, Type
 } from 'lucide-react';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
+import { TokenCatalog } from '../../../core/Design/catalog';
+import { searchTokens, buildCatalogMap } from '../utils/token-search';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
 import { SarakDesignState } from '../../../core/Provider/types';
@@ -36,12 +38,12 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
 
     // 1. Processamento de Dados (Planilha)
     const allTokens = useMemo(() => {
-        const tokens: (SarakDesignToken & { pilarName: string, pilarId: string })[] = [];
+        const tokens: (SarakDesignToken & { componentLabel: string, pilarId: string })[] = [];
         MASTER_DESIGN_MAP.components.forEach(comp => {
             comp.tokens.forEach(token => {
                 tokens.push({
                     ...token,
-                    pilarName: comp.label,
+                    componentLabel: comp.label,
                     pilarId: comp.id
                 });
             });
@@ -50,14 +52,12 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
     }, []);
 
     // 2. Filtros e Busca
+    const searchCatalog = useMemo(() => buildCatalogMap(TokenCatalog), []);
+
     const filteredTokens = useMemo(() => {
-        return allTokens.filter(t => {
-            const matchesSearch = t.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                 t.id.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = activeCategory ? t.pilarId === activeCategory : true;
-            return matchesSearch && matchesCategory;
-        });
-    }, [allTokens, searchQuery, activeCategory]);
+        const inCategory = allTokens.filter(t => !activeCategory || t.pilarId === activeCategory);
+        return searchQuery ? searchTokens(searchQuery, inCategory, searchCatalog) : inCategory;
+    }, [allTokens, searchQuery, activeCategory, searchCatalog]);
 
     const categories = useMemo(() => {
         return MASTER_DESIGN_MAP.components.map(c => ({ id: c.id, label: c.label }));

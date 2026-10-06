@@ -1,5 +1,6 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState } from "react";
-import { X, HelpCircle } from "lucide-react";
+
 import { SarakButton, SarakIconButton } from '../Buttons';
 
 const SarakHelpButton = ({ text }: { text: string }) => {
@@ -9,7 +10,7 @@ const SarakHelpButton = ({ text }: { text: string }) => {
         <>
             <SarakIconButton
                 onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-                icon={<HelpCircle size={14} />}
+                icon={<SarakIcon name="HelpCircle" size={14} />}
                 variant="ghost"
                 className="w-5 h-5 rounded-full z-20 relative border border-[var(--border-color,#334155)]"
             />
@@ -32,7 +33,7 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                             </h3>
                             <SarakIconButton
                                 onClick={() => setIsOpen(false)}
-                                icon={<X size={20} />}
+                                icon={<SarakIcon name="X" size={20} />}
                                 variant="ghost"
                                 className="text-slate-400 hover:text-white"
                             />

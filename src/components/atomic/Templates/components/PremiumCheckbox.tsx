@@ -1,6 +1,6 @@
 import React from 'react';
-import { Check, X } from 'lucide-react';
 
+import { SarakIcon } from "../../Icon/SarakIcon";
 export const PremiumCheckbox: React.FC<{ checked: boolean; onChange: () => void; isSmall?: boolean }> = ({ checked, onChange, isSmall }) => (
     <div 
         onClick={(e) => { e.stopPropagation(); onChange(); }}
@@ -12,6 +12,6 @@ export const PremiumCheckbox: React.FC<{ checked: boolean; onChange: () => void;
             : 'bg-[var(--text-muted,#94a3b8)]/10 text-[var(--text-muted,#94a3b8)]/50 hover:bg-[var(--text-muted,#94a3b8)]/20 hover:text-[var(--text-muted,#94a3b8)]'
         }`}
     >
-        {checked ? <Check size={isSmall ? 10 : 12} strokeWidth={3} /> : <X size={isSmall ? 8 : 10} />}
+        {checked ? <SarakIcon name="Check" size={isSmall ? 10 : 12} strokeWidth={3} /> : <SarakIcon name="X" size={isSmall ? 8 : 10} />}
     </div>
 );

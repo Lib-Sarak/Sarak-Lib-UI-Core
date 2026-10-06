@@ -26,8 +26,7 @@ Dois lotes, **um por conversa de execução**, veredito entre eles.
 **Pedido do dono (2026-10-05):** gestão de projetos completa, com o SellersGO como referência: o módulo de
 tarefas dele tem **Calendário** (grade mensal feita à mão, 195 linhas, navegação mês anterior/seguinte) e
 **Gantt** (166 linhas, usa as dependências entre cartões). **Aceito:** calendário mensal **próprio** sobre a
-matemática que a lib já tem; Gantt **conforme o ADR-020** (casca própria, salvo se a avaliação da `plan-102`
-provar o `@svar-ui/react-gantt`).
+matemática que a lib já tem; Gantt **casca própria**, decidido pela avaliação medida da `plan-102` ([[020-gantt-casca-propria]]).
 
 **O que a lib tem hoje (medido em 2026-10-05):**
 
@@ -59,9 +58,7 @@ provar o `@svar-ui/react-gantt`).
   `GanttDependencies.tsx` (setas em SVG), `ganttScale.ts` (datas ↔ pixels, escala dia/semana/mês), `index.ts`.
 - Barris, i18n, registro, testes, artefatos — como no lote 1.
 
-> **Se o ADR-020 escolher o `@svar-ui/react-gantt`**, o **revisor reescreve o lote 2** antes de despachá-lo
-> (um invólucro que veste o componente do fornecedor com o tema, no lugar da casca própria). O lote 1 não
-> depende disso.
+> O [[020-gantt-casca-propria]] escolheu a **casca própria** (2026-10-05): este lote a constrói, sem dependência de terceiro.
 
 ## 3.2 Fora (o que NÃO pode ser tocado)
 
@@ -81,7 +78,7 @@ provar o `@svar-ui/react-gantt`).
 | Spec fixa | `specs/specs/10-seguranca-e-acessibilidade.md` | §2.4 (teclado e ARIA: grade de dias, barras focáveis) e §3.6 (tradução) |
 | Spec fixa | `specs/specs/07-responsividade-e-multidispositivo.md` | as três faixas; container query |
 | Spec fixa | `specs/specs/00-regras-e-invariantes.md` | R9, R36, R37, zero hardcode, paridade do registro |
-| Decisão | o **ADR-020** (Gantt: casca própria × biblioteca), que **nasce da síntese da `plan-102`** | **a decisão do lote 2** — enquanto ele não existir, o lote 2 **não é despachado** |
+| Decisão | o [[020-gantt-casca-propria]] (Gantt: **casca própria**), escrito em 2026-10-05 a partir do lote 1 da `plan-102` | **a decisão do lote 2** — enquanto ele não existir, o lote 2 **não é despachado** |
 | Contexto | `specs/00-contexto.md` · `specs/00-knowledge.md` | sempre |
 | **Skill** | `padrao-escrita` + `padrao-typescript` | sempre |
 | **Skill** | `test-unitario` | os dois componentes |

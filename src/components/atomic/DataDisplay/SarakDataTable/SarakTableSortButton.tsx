@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { SarakButton } from '../../Buttons/SarakButton';
 import type { SarakTableSort } from './columnModel';
 
@@ -12,7 +13,7 @@ export interface SarakTableSortButtonProps {
 
 export function SarakTableSortButton({ columnId, label, sort, onSort }: SarakTableSortButtonProps) {
     const activeSort = sort?.columnId === columnId ? sort.direction : null;
-    const icon = activeSort === 'asc' ? <ArrowUp size={12} /> : activeSort === 'desc' ? <ArrowDown size={12} /> : <ArrowUpDown size={12} />;
+    const icon = activeSort === 'asc' ? <SarakIcon name="ArrowUp" size={12} /> : activeSort === 'desc' ? <SarakIcon name="ArrowDown" size={12} /> : <SarakIcon name="ArrowUpDown" size={12} />;
 
     return (
         <SarakButton

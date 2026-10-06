@@ -1,7 +1,8 @@
 import React from 'react';
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { motion } from 'framer-motion';
 import { mergeSarakClasses } from '../../hooks/mergeSarakClasses';
-import { Cloud, Plus, Settings2, ToggleRight, ToggleLeft, Trash2 } from 'lucide-react';
+
 import { SarakIconButton } from '../../Buttons';
 
 interface ManagementGroupCardProps<TItem extends Record<string, unknown>> {
@@ -48,7 +49,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
             <div className="border-b border-[var(--border-color,#334155)] flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                     <div className="rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2.5)', borderRadius: 'var(--sarak-card-radius,12px)', backgroundColor: isConfigured ? 'var(--sarak-shadow-glow,rgba(59,130,246,0.5))' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--sarak-primary-color,#3b82f6)' : 'rgba(255,255,255,0.2)' }}>
-                        <Cloud className="w-4 h-4" />
+                        <SarakIcon name="Cloud" className="w-4 h-4" />
                     </div>
                     <h3 className="font-black text-white uppercase text-xs" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{groupName}</h3>
                 </div>
@@ -57,7 +58,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                         <SarakIconButton
                             key={action.label}
                             onClick={() => handleAction(action.action, groupName)}
-                            icon={action.icon === 'plus' ? <Plus size={18} /> : <Settings2 size={16} />}
+                            icon={action.icon === 'plus' ? <SarakIcon name="Plus" size={18} /> : <SarakIcon name="Settings2" size={16} />}
                             variant="ghost"
                             title={action.label}
                         />
@@ -89,7 +90,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                                     </div>
                                     <SarakIconButton 
                                         onClick={() => handleToggle(itemId)}
-                                        icon={isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
+                                        icon={isActive ? <SarakIcon name="ToggleRight" size={28} /> : <SarakIcon name="ToggleLeft" size={28} />}
                                         variant="ghost"
                                         className="hover:scale-110"
                                         style={{ color: isActive ? 'var(--sarak-status-success-color,#22c55e)' : 'rgba(255,255,255,0.2)' }}
@@ -110,7 +111,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                                     </div>
                                     <SarakIconButton 
                                         onClick={() => handleDelete(itemId)}
-                                        icon={<Trash2 size={14} />}
+                                        icon={<SarakIcon name="Trash2" size={14} />}
                                         variant="ghost"
                                         className="hover:text-[var(--sarak-status-error-color,#ef4444)]"
                                     />
@@ -125,7 +126,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                     })
                 ) : (
                     <div className={mergeSarakClasses("items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, paddingTop: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)', paddingBottom: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)' }}>
-                        <Settings2 className="w-10 h-10" />
+                        <SarakIcon name="Settings2" className="w-10 h-10" />
                         <p className="text-2xs font-black uppercase" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Offline</p>
                     </div>
                 )}

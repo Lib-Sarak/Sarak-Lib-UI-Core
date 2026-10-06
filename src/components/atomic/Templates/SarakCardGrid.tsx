@@ -1,15 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Search, 
-    RefreshCw, 
-    AlertCircle, 
-    LayoutGrid, 
-    ExternalLink,
-    Box,
-    Filter,
-    XCircle
-} from 'lucide-react';
+
 import { useCardGridState } from './hooks/useCardGridState';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../Cards/SarakTitleCard';
@@ -165,7 +157,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
                                 placeholder="Pesquisar..." 
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                leftIcon={<Search size={16} />}
+                                leftIcon={<SarakIcon name="Search" size={16} />}
                             />
                         </div>
                     </div>
@@ -221,13 +213,13 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
                     ))
                 ) : error ? (
                     <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                        <AlertCircle className="w-12 h-12 text-rose-500/50" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                        <SarakIcon name="AlertCircle" className="w-12 h-12 text-rose-500/50" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
                         <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Falha na Sincronização</h4>
                         <p className="text-white/30 text-xs uppercase tracking-widest">{error}</p>
                     </div>
                 ) : filteredData.length === 0 ? (
                     <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                        <XCircle className="w-12 h-12 text-white/10" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                        <SarakIcon name="XCircle" className="w-12 h-12 text-white/10" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
                         <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Nenhum Registro</h4>
                         <p className="text-white/30 text-xs uppercase tracking-widest">Ajuste os filtros ou a pesquisa</p>
                     </div>
@@ -240,6 +232,5 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
         </div>
     );
 };
-
 
 

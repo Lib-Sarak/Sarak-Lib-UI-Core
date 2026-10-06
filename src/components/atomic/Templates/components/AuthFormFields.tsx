@@ -1,5 +1,6 @@
 import React from 'react';
-import { User, Lock, Eye, EyeOff, ShieldCheck, ChevronRight } from 'lucide-react';
+
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { SarakInput } from '../../Inputs';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
@@ -50,7 +51,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="seu@email.com"
                             autoComplete="off"
-                            leftIcon={<User className="h-5 w-5" />}
+                            leftIcon={<SarakIcon name="User" className="h-5 w-5" />}
                             fullWidth
                         />
                     </div>
@@ -76,11 +77,11 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                             onChange={(e) => setPassword?.(e.target.value)}
                             placeholder="••••••••"
                             autoComplete="new-password"
-                            leftIcon={<Lock className="h-5 w-5" />}
+                            leftIcon={<SarakIcon name="Lock" className="h-5 w-5" />}
                             rightIcon={setShowPassword ? (
                                 <SarakIconButton
                                     onClick={() => setShowPassword(!showPassword)}
-                                    icon={showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    icon={showPassword ? <SarakIcon name="EyeOff" className="h-5 w-5" /> : <SarakIcon name="Eye" className="h-5 w-5" />}
                                     variant="ghost"
                                     className="text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] hover:text-theme-text"
                                     style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}
@@ -103,7 +104,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                         autoFocus
                         className="text-center text-2xl"
                         style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}
-                        leftIcon={<ShieldCheck className="h-5 w-5" />}
+                        leftIcon={<SarakIcon name="ShieldCheck" className="h-5 w-5" />}
                         fullWidth
                     />
                     <SarakButton 
@@ -123,7 +124,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                 variant="primary"
                 fullWidth
                 style={{ marginTop: 'var(--sarak-layout-gap-md,16px)' }}
-                rightIcon={!isPending ? <ChevronRight className="w-4 h-4" /> : undefined}
+                rightIcon={!isPending ? <SarakIcon name="ChevronRight" className="w-4 h-4" /> : undefined}
             >
                 {mfaStep ? 'Confirmar Acesso' : (isRegistering ? 'Criar Minha Conta' : 'Acessar Sistema')}
             </SarakButton>

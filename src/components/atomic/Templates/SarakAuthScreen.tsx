@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { AuthHero } from './components/AuthHero';
 import { AuthForm } from './components/AuthForm';
+import type { SarakSocialConfig } from './components/AuthSocialLogin';
 
 /**
  * Evento estruturado emitido por `onChange` (Spec 20) — o canal declarativo único
@@ -38,11 +39,7 @@ export interface SarakAuthScreenProps {
     isPending?: boolean;
     onSubmit?: (e: React.FormEvent) => void;
     onSocialLogin?: (provider: string) => void;
-    socialConfig?: {
-        enabled: boolean;
-        display: 'compact' | 'full';
-        providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>;
-    };
+    socialConfig?: SarakSocialConfig;
     onForgot?: () => void;
     onMasterLogin?: () => void;
     /** Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. */

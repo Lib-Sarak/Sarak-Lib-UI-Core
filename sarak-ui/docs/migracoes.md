@@ -92,6 +92,26 @@ Migre `username` para `name` com o nome que deve aparecer no cromo e substitua `
 quando houver um rótulo apropriado para o consumidor. Não converta números de nível em nomes de produto;
 omita `role` se o aplicativo não tiver um papel para exibir.
 
+### Ícones passam pela porta do consumidor
+
+**Classificação: MAJOR.** A família, o peso e a espessura configurados no tema passam a ser aplicados aos
+ícones da biblioteca por `SarakIcon`. Os ícones de marca deixam de fazer parte da lista curada; o consumidor
+entrega a marca por elemento, ou registra seu componente com `sarakRegisterIcons`.
+
+| Nome removido | Antes | Depois |
+|---|---|---|
+| `emojiSet` | Chave opcional no payload do tema, usada para escolher um conjunto de emojis na prévia. | Não é mais uma chave aceita pelo Provider. Remova-a dos temas e passe um ícone por elemento ou registro quando precisar de um desenho próprio. |
+| `Chrome` | Nome público de `SarakIcon`, ligado ao glifo de marca da família Lucide. | Removido de `SarakIconName`. Passe o logotipo ao `SarakSocialButton` por `icon`, ou registre um componente com outro nome no consumidor. |
+| `Github` | Nome público de `SarakIcon`, ligado ao glifo de marca das famílias Lucide, Phosphor e Tabler. | Removido de `SarakIconName`. Passe o logotipo ao `SarakSocialButton` por `icon`, ou registre um componente com outro nome no consumidor. |
+
+`SarakSocialButton` agora exige `icon: ReactNode`; as entradas de `socialConfig.providers` usadas por
+`SarakAuthScreen` também recebem esse elemento. O `SarakNavItem.icon` e o `SarakMenuItem.icon` aceitam um nome
+registrado ou um elemento. O peer `lucide-react` passa a aceitar `>=0.284.0 <1.0.0`.
+
+```tsx
+<SarakSocialButton provider="github" icon={<GithubMark />} variant="glass" />
+```
+
 ---
 
 ## A persistência do tema ativo restaura também o id

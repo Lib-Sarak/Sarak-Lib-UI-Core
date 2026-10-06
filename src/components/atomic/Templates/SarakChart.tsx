@@ -1,6 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Activity } from 'lucide-react';
+
 import api from '../../../shared/services/api';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
@@ -49,7 +50,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
             <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                     <div className="bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] rounded-2xl border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
-                        <TrendingUp size={16} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                        <SarakIcon name="TrendingUp" size={16} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                     </div>
                     <div>
                         <h3 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label}</h3>
@@ -57,7 +58,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     </div>
                 </div>
                 <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/5 rounded-[var(--sarak-card-radius,12px)] border border-[var(--border-color,#334155)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 3) calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
-                    <Activity size={12} className="text-[var(--sarak-status-success-color,#22c55e)] animate-pulse" />
+                    <SarakIcon name="Activity" size={12} className="text-[var(--sarak-status-success-color,#22c55e)] animate-pulse" />
                     <span className="text-2xs font-black text-[var(--text-muted,#94a3b8)] uppercase tracking-tighter">Live Monitor</span>
                 </div>
             </div>

@@ -1,13 +1,21 @@
 import React from 'react';
-import { SarakSocialButton } from '../../Buttons/SarakSocialButton';
+import { SarakSocialButton, type SarakSocialProviderId } from '../../Buttons/SarakSocialButton';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
+export interface SarakSocialProviderConfig {
+    id: SarakSocialProviderId;
+    icon: React.ReactNode;
+    variant: 'glass' | 'sovereign';
+}
+
+export interface SarakSocialConfig {
+    enabled: boolean;
+    display: 'compact' | 'full';
+    providers: SarakSocialProviderConfig[];
+}
+
 interface AuthSocialLoginProps {
-    socialConfig?: {
-        enabled: boolean;
-        display: 'compact' | 'full';
-        providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>;
-    };
+    socialConfig?: SarakSocialConfig;
     onSocialLogin?: (provider: string) => void;
 }
 
@@ -32,7 +40,8 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
                 {socialConfig.providers.map((p) => (
                     <SarakSocialButton
                         key={p.id} 
-                        provider={p.id as React.ComponentProps<typeof SarakSocialButton>['provider']}
+                        provider={p.id}
+                        icon={p.icon}
                         variant={p.variant} 
                         hideLabel={socialConfig.display === 'compact'}
                         onClick={() => onSocialLogin?.(p.id)} 

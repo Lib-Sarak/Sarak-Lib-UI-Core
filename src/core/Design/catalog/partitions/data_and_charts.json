@@ -783,7 +783,6 @@
     "tags": ["design-engine", "kbd", "shortcuts"],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["ShortcutsTab"],
     "cssVariables": ["--sarak-kbd-min-w"],
     "allowedValues": { "min": 16, "max": 48, "step": 2 },
     "relatedTokens": []

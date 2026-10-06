@@ -1,12 +1,13 @@
 import React from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
+import { SarakIcon } from '../Icon/SarakIcon';
 
 export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
 
 export interface SarakMenuItemProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'> {
-    /** Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). */
-    icon?: React.ReactNode;
+    /** Nome registrado ou elemento renderizado à esquerda do rótulo. */
+    icon?: string | React.ReactNode;
     /** Rótulo do item; trunca em vez de transbordar (orientação vertical). */
     label: React.ReactNode;
     /** Item corresponde à rota/seção corrente. */
@@ -99,12 +100,13 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     const isSafeHref = typeof href === 'string' && sarakIsSafeLinkHref(href);
     const isNavigable = isSafeHref && !disabled;
     const accessibleTitle = title ?? (typeof label === 'string' ? label : undefined);
+    const renderedIcon = typeof icon === 'string' ? <SarakIcon name={icon} size={18} /> : icon;
     const accessibleLabel = typeof label === 'string' || typeof label === 'number'
         ? `${label}${badge !== undefined ? ` ${badge}` : ''}`
         : props['aria-label'];
     const content = (
         <>
-            {icon ? <span aria-hidden="true" className="shrink-0 inline-flex items-center justify-center">{icon}</span> : null}
+            {renderedIcon ? <span aria-hidden="true" className="shrink-0 inline-flex items-center justify-center">{renderedIcon}</span> : null}
             {collapsed ? null : <span className={isVertical ? 'flex-1 min-w-0 truncate text-left' : 'truncate'}>{label}</span>}
             {badge !== undefined && (
                 <span

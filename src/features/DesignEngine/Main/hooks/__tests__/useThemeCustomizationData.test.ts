@@ -27,4 +27,26 @@ describe('useThemeCustomizationData', () => {
         expect(result.current.dynamicEssentialTokens.has('cardPaddingMd')).toBe(true);
         expect(result.current.dynamicEssentialTokens.has('cardRadiusTL')).toBe(false);
     });
+    it('filteredResults é nulo sem busca e usa a busca por sentido quando há consulta', () => {
+        expect(renderHook(() => useThemeCustomizationData('')).result.current.filteredResults).toBeNull();
+
+        const { result } = renderHook(() => useThemeCustomizationData('escrita'));
+        const found = (result.current.filteredResults ?? []).map((token) => token.id);
+        expect(found).toEqual(expect.arrayContaining(['headingFont', 'bodyFont', 'monoFont']));
+    });
+
+    it('filteredResults acha pelo `name` do catálogo e traz os tokens da composição da barra', () => {
+        const byLogo = renderHook(() => useThemeCustomizationData('logo')).result.current.filteredResults ?? [];
+        expect(byLogo.map((token) => token.id)).toContain('identityAlignment');
+
+        ['chrome', 'barra'].forEach((query) => {
+            const { result } = renderHook(() => useThemeCustomizationData(query));
+            const chromeIds = (result.current.catalogMap.size ? [...result.current.catalogMap.values()] : [])
+                .filter((entry) => (entry as { categories?: string[] }).categories?.includes('chrome-composition'))
+                .map((entry) => (entry as unknown as { tokenId: string }).tokenId);
+            const found = new Set((result.current.filteredResults ?? []).map((token) => token.id));
+            expect(chromeIds).toHaveLength(8);
+            chromeIds.forEach((id) => expect(found.has(id)).toBe(true));
+        });
+    });
 });

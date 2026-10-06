@@ -1,6 +1,7 @@
+import { SarakIcon } from "../../Icon/SarakIcon";
 import React, { RefObject } from 'react';
 import { motion } from 'framer-motion';
-import { Terminal } from 'lucide-react';
+
 import { Message } from './types';
 import { MessageBubble } from './MessageBubble';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
@@ -26,7 +27,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
         <div className={`${emptyStateStack.className} h-full text-center animate-in fade-in zoom-in duration-700`} style={emptyStateStack.style}>
           <div className="w-20 h-20 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative group/terminal" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>
              <div className="absolute inset-0 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] rounded-3xl blur-2xl opacity-0 group-hover/terminal:opacity-100 transition-opacity"></div>
-            <Terminal size={36} className="text-[var(--sarak-primary-color,#3b82f6)] relative z-10" />
+            <SarakIcon name="Terminal" size={36} className="text-[var(--sarak-primary-color,#3b82f6)] relative z-10" />
           </div>
           <h3 className="text-lg font-medium text-[var(--color-theme-title,#ffffff)]">Interface de Sistema Inicializada</h3>
           <p className="text-sm text-[var(--text-muted,#94a3b8)] max-w-sm">

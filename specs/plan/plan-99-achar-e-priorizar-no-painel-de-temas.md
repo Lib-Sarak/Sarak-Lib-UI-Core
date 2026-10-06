@@ -289,11 +289,160 @@ Texto pronto para transporte:
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-10-05 (Lote 1)
+
+**Resultado:** Concluído (só o lote 1, passos 1–9; o lote 2 não foi iniciado)
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- `utils/token-search.ts` (novo, 138 linhas) — `searchTokens(query, tokens, catalogMap)` única; indexa `label` do schema + `name` do catálogo, id em camelCase (e inteiro), `tags`, `categories`, `description` (schema e catálogo) e rótulo do componente; normaliza acento/caixa/palavras de ligação; palavra inteira (3) > conceito no nome (2) > palavra/conceito em tag, categoria, descrição, id ou componente (1) > prefixo (só no último termo, ≥2 caracteres). Exporta também `matchesText`, `locateToken`, `buildCatalogMap`, `normalizeText`, `tokenizeText`.
+- `config/token-search-concepts.json` (novo) — 18 grupos nomeados (os 14 pedidos + `brilho`, `tamanho`, `identidade`, `tabela`).
+- `Main/hooks/useThemeCustomizationData.ts` — `filteredResults` chama `searchTokens` (catálogo próprio via `buildCatalogMap`).
+- `Main/MasterControlPanel.tsx` — filtro de categoria por cima, busca por `searchTokens`; o campo `pilarName` virou `componentLabel` (só este arquivo o usava).
+- `Panels/hooks/useSovereignSearch.ts` — tokens por `searchTokens`; regra "componente casa pelo rótulo → mostra seus tokens" mantida via `matchesText`.
+- `Main/components/ThemeSidebarContent.tsx` — título `Resultados da busca (N)`, estado vazio (`role="status"`), linha `Pilar › Seção` por resultado via `locateToken` (`data-testid="search-result-path"`); ordem recebida = relevância. `ThemeSidebarHeader.tsx` não foi tocado.
+- Testes: `utils/__tests__/token-search.test.ts` (novo, 36 casos), e casos novos em `useThemeCustomizationData.test.ts`, `useSovereignSearch.test.ts` (o teste-esqueleto com TODO foi trocado por 5 casos), `ThemeSidebarContent.test.tsx`, `MasterControlPanel.test.tsx`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/utils/token-search.ts` | criado | função única de busca + helpers |
+| `src/features/DesignEngine/config/token-search-concepts.json` | criado | grupos de conceitos pt-BR/en |
+| `src/features/DesignEngine/utils/__tests__/token-search.test.ts` | criado | 36 casos (§6) |
+| `src/features/DesignEngine/Main/hooks/useThemeCustomizationData.ts` | alterado | `filteredResults` → `searchTokens` |
+| `src/features/DesignEngine/Main/MasterControlPanel.tsx` | alterado | busca → `searchTokens`; `pilarName`→`componentLabel` |
+| `src/features/DesignEngine/Panels/hooks/useSovereignSearch.ts` | alterado | busca → `searchTokens`/`matchesText` |
+| `src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx` | alterado | contagem, estado vazio, caminho |
+| `src/features/DesignEngine/Main/hooks/__tests__/useThemeCustomizationData.test.ts` | alterado | +2 casos (sentido, `logo`, `chrome`/`barra` → os 8) |
+| `src/features/DesignEngine/Panels/hooks/__tests__/useSovereignSearch.test.ts` | alterado | 5 casos no lugar do TODO |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx` | alterado | +3 casos (contagem/ordem, caminho, vazio) |
+| `src/features/DesignEngine/Main/__tests__/MasterControlPanel.test.tsx` | alterado | +1 caso (sentido + filtro de categoria) |
+
+**Verificações executadas**
+- `npx tsc --noEmit` → 0 erros.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- `trail-citation:check`, `class-merge:check`, `section-pointers:check`, `plan-index:check`, `kit-names:check` → todos `[OK]`.
+- `npx vitest run` (completo, sem outro vitest/tsup ativo — conferi por contagem de processos) → 392 arquivos, 2164 testes, todos passando.
+- Saída da busca medida por script fora do repositório (`tsx`, scratchpad), com a árvore real (`MASTER_DESIGN_MAP` + `TokenCatalog`), primeiros resultados:
+  - `cor texto` (26): cardTitleColor, cardSearchTextFocusColor, inputTextColor, cardActionBtnText, textColorMaster, textColorSecondary… — `cor do texto` devolve a mesma lista (o teste compara as listas inteiras).
+  - `cor do tex` (29): textureColor, cardTitleColor, cardSearchTextFocusColor, inputTextColor, surfaceColor, cardActionBtnText… — contém todos os que a busca antiga devolvia (o teste compara com o `includes('cor do tex')` sobre o schema) e os 3 da captura.
+  - `fonte` (88): bodyFont, identityFontFamily, headingFont, bodySize, monoFont, identityFontWeight…
+  - `escrita` (88): mesmo topo de `fonte` (um só conceito); `texto`, `letra` e `tipografia` idem — headingFont/bodyFont/monoFont entre os 5 primeiros em todos.
+  - `logo` (18): identityAlignment (1º), identityPadding, identityFontFamily, identityFontWeight, identityTracking, identityRedirectUrl…
+  - `cor` (145): surfaceColor, primaryColor, secondaryColor, tertiaryColor, accentColor, textureColor…
+  - `xyzq` → 0 resultados. `chrome` → 8 (os oito de `chrome-composition`); `barra` → 80, contendo os oito (teste afirma).
+- Mutação 1 (apagar o grupo `tipografia` do JSON): 5 testes falham — `escrita`, `texto`, `letra`, `tipografia` (fontes fora dos 10 primeiros) e `matchesText`. JSON restaurado (diff idêntico ao backup).
+- Mutação 2 (prefixo em todo termo, tirando `isLast`): falham `prefixo só vale no último termo: cor texto não acha corpo texto` e `matchesText`. O caso de um termo só (`cor` × `corpo`) não detecta essa mutação, porque `cor` já é o último termo; quem a detecta é o caso de dois termos. Arquivo restaurado (diff idêntico).
+- `grep "includes(query" src/features/DesignEngine` (fora de testes) → só `Panels/LanguageTab.tsx:37` (fora do escopo, §3.2).
+
+**Critérios de aceite**
+- [x] Uma função de busca; as três telas a chamam — `token-search.ts`; `useThemeCustomizationData.ts`, `MasterControlPanel.tsx`, `useSovereignSearch.ts`.
+- [x] `cor texto` = `cor do texto`; `cor do tex` ⊇ busca antiga e os 3 da captura; ordem nome > tag/descrição — casos de `token-search.test.ts` (inputTextColor antes de textColorMaster e tooltipTextColor).
+- [x] `fonte`, `escrita`, `texto`, `letra`, `tipografia` → as 3 fontes entre os 10 primeiros — `it.each` no teste.
+- [x] Acento/caixa — `Tipográfia` = `tipografia`.
+- [x] `cor` não põe só-prefixo acima de quem tem a palavra — teste com `Corpo do Texto` × `Cor Base`.
+- [x] `logo` acha `identityAlignment` (o label do schema não contém "logo": asserção no teste).
+- [x] Caminho `Pilar › Seção` (token num grupo / token fora de grupo) — `ThemeSidebarContent.test.tsx` e `locateToken`.
+- [x] Sem resultado → `[]` e estado vazio na tela; nenhum rótulo alterado (o diff só toca busca/exibição).
+- [x] Cada grupo do JSON tem ≥2 termos e casa ≥2 tokens (um caso por grupo; 18 casos).
+- [x] Nenhuma dependência nova; `token-search.ts` 138 linhas, nenhuma função acima de 40.
+
+**Decisões e suposições**
+- A pontuação literal do passo 4 não cumpria o critério "as 3 fontes entre os 10 primeiros" para `texto`/`escrita`/`letra`/`tipografia` (palavra inteira no nome vale 3, conceito 2; dezenas de tokens têm "texto" no nome; headingFont ficava em 11º–13º). Acrescentei duas regras, ambas mantendo a ordem nome > tag/descrição: (a) **conceito forte** — casamento por conceito no nome (nível 2) sobe a 3 quando o token tem ≥3 membros distintos do grupo no índice (headingFont: fonte, font, family, tipografia, typography); (b) **densidade** — +0,1 por membro do grupo presente (máx. 9). Conceito só em tag/categoria (como `textColorMaster` para `cor`) **não** é promovido.
+- Prefixo: 0,5 se o prefixo está no nome/rótulo e 0,25 se só em tag/descrição/id/componente (o plano dava 0,5 para ambos). Efeito medido: `cor do tex` põe "Cor da Textura" antes de "Cor do Texto…", por ser prefixo legítimo.
+- O caminho `Pilar › Seção` aparece **acima** do controle, não abaixo do rótulo: o rótulo vive dentro do widget (`TokenControl`/`DesignControls`), fora do escopo §3.1.
+- Mantive `tipo` no grupo `tipografia` (estava na lista mínima do plano); sozinho ele não promove nada (precisa de ≥3 membros).
+- Quatro grupos além dos pedidos (`brilho`, `tamanho`, `identidade`, `tabela`), todos com ≥2 tokens medidos pelo teste.
+- `componentLabel` é carregado por cópia rasa do token (`{...token, componentLabel}`) nos chamadores, para `searchTokens` ficar pura (sem importar o mapa mestre); `buildCatalogMap` monta o mapa de busca em cada tela (na de Sovereign, uma vez por módulo).
+- Não rodei `npm run build`: o lote 1 não toca barril, catálogo, schema nem nada que `dist/`, `sarak-ui/` ou `sarak-dev/` carimbem; nenhum arquivo gerado foi tocado.
+- Os arquivos editados mantêm CRLF (o Git avisa que os normaliza); os três novos foram criados em LF.
+- Não abri o painel no navegador (a verificação visual de layout fica para o lote 2, onde o seletor de modo entra).
+
+**Achados fora do escopo (não corrigidos)**
+- `Panels/LanguageTab.tsx:37` — `name.includes(query)`: busca ingênua de idioma (declarada fora do escopo na §3.2).
+
+**Pendências / riscos**
+- Lote 2 não iniciado (aguarda a plan-95 por tocar as partições do catálogo).
+- A lista de relevância foi validada contra o catálogo atual; o vocabulário é misto (pt/en) e o dicionário é a única manutenção manual (o teste reprova grupo que deixe de casar 2 tokens).
+- Sem verificação visual no navegador do estado vazio e da linha de caminho (cobertos só por teste de componente).
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-05 — 🔴 Reprovado (Lote 1)
+
+**Achados**
+
+1. `src/features/DesignEngine/utils/token-search.ts:48-51` e as quatro chamadas —
+   `Main/MasterControlPanel.tsx:55`, `Panels/hooks/useSovereignSearch.ts:16`,
+   `Main/hooks/useThemeCustomizationData.ts:45`, `utils/__tests__/token-search.test.ts:10` — o parâmetro de
+   `buildCatalogMap` é tipado como `readonly { tokenId: string }[]`, o que obriga cada chamada a um
+   `TokenCatalog as unknown as { tokenId: string }[]` e o corpo a um `entry as CatalogSearchEntry`. São cinco casts
+   que calam um tipo que **já está certo**. Medido numa cópia fora do repositório: com o parâmetro
+   `readonly (CatalogSearchEntry & { tokenId: string })[]`, o `map.set(entry.tokenId, entry)` sem cast e as quatro
+   chamadas como `buildCatalogMap(TokenCatalog)`, o `tsc --noEmit` dá **0 erros** em `src/features/DesignEngine/`.
+   Critério violado: sinal de atalho (cast para calar tipo) — `padrao-typescript`; valor de tipo conhecido não
+   passa por `unknown`. **Escopo:** só essas cinco linhas e a assinatura. Os casts que já existiam em
+   `useThemeCustomizationData.ts:27,34,40` **não** são deste achado: não os toque.
+
+**O que foi verificado e está correto** (não refazer)
+- Escopo: os 11 arquivos do resumo, todos no §3.1 do lote 1; nenhuma dependência nova. Os demais arquivos de
+  `src/features/DesignEngine/` modificados no worktree (`PreviewCanvas*`, `ThemeCustomizationTab.tsx`, as remoções
+  de `ThemeEditor`/`useThemePreview`/`LanguageTab`/`ShortcutsTab`) são da `plan-95` (remoção do `emojiSet` e dos
+  arquivos que ela apaga), não desta.
+- Busca medida por `tsx` sobre `MASTER_DESIGN_MAP` + `TokenCatalog` reais: `cor texto` = `cor do texto` (26, mesma
+  ordem); `cor do tex` contém os 4 da busca antiga nas posições 1, 2, 3 e 5, e os 3 da captura; `fonte`, `escrita`,
+  `texto`, `letra` trazem `bodyFont`, `headingFont` e `monoFont` entre os 5 primeiros; `logo` põe
+  `identityAlignment` em 1º; `xyzq` e `de` → 0.
+- Mutação (cópia fora do repositório): sem o grupo `tipografia` → 5 falhas; prefixo em todo termo → 2; sem o estado
+  vazio → 1; sem a linha de caminho → 1. A troca de `matchesText(comp.label)` por `false` em `useSovereignSearch`
+  não muda nada observável, porque o rótulo do componente já está indexado em cada token; não é lacuna.
+- Desvios declarados e aceitos: promoção do conceito forte e bônus de densidade (o critério das fontes no top 10
+  não se cumpria com a pontuação literal do passo 4; a ordem nome > tag/descrição continua valendo: 1 + 0,9 < 2); prefixo 0,25 fora do
+  nome; caminho acima do controle (o rótulo mora em `TokenControl`, fora do §3.1). O texto da síntese (§8) vai
+  descrever a ordenação **como ela é**, não a do passo 4.
+- `npx tsc --noEmit` → 0. Nenhum `skip`/`only`/`TODO`/comentário citando plan nas linhas adicionadas.
+- `npx vitest run` completo → 2126/2165; as **39 falhas estão todas em arquivos da `plan-95`**, ainda em execução
+  (átomos sem Provider, snapshots, contrato de ícones, a allowlist do `ZeroBrand` com o `LanguageTab.tsx` que ela
+  apagou). **Nenhuma** em arquivo desta plan. A suíte integrada e o baseline com `--with-tsc` serão repetidos
+  quando a 95 entregar, antes da liberação deste lote.
+
+## Resumo da execução (correção 1) — 2026-10-05
+
+**Achado 1 — casts em `buildCatalogMap`: corrigido.**
+- `utils/token-search.ts:48` — o parâmetro passou a `readonly (CatalogSearchEntry & { tokenId: string })[]`; `:50` — `map.set(entry.tokenId, entry)` sem cast.
+- As quatro chamadas viraram `buildCatalogMap(TokenCatalog)`: `Main/MasterControlPanel.tsx:55`, `Panels/hooks/useSovereignSearch.ts:16`, `Main/hooks/useThemeCustomizationData.ts:45` (saiu também o `?? []`, conforme o veredito) e `utils/__tests__/token-search.test.ts:10`.
+- Os casts pré-existentes de `useThemeCustomizationData.ts:27,34,40` não foram tocados.
+
+**Verificações**
+- `npx tsc --noEmit` → 0 erros.
+- `npx vitest run` só nos arquivos desta plan (`utils`, `Main/hooks`, `ThemeSidebarContent`, `MasterControlPanel`, `Panels/hooks`; sem outro vitest/tsup ativo) → 11 arquivos, 76 testes verdes.
+- `grep "as unknown as"` em `token-search.ts`, `token-search.test.ts` e `MasterControlPanel.tsx` → nada. `trail-citation:check` → `[OK]`.
+- A suíte completa e o baseline `--with-tsc` não foram repetidos: o veredito os adia para quando a plan-95 entregar.
+
+**Arquivos alterados nesta rodada:** `utils/token-search.ts`, `utils/__tests__/token-search.test.ts`, `Main/MasterControlPanel.tsx`, `Main/hooks/useThemeCustomizationData.ts`, `Panels/hooks/useSovereignSearch.ts` (só as linhas acima).
+
+## Veredito — 2026-10-05 — 🟢 Aprovado (Lote 1) · liberação parcial
+
+**Achado 1 — corrigido.** `utils/token-search.ts:48` tipa o parâmetro como
+`readonly (CatalogSearchEntry & { tokenId: string })[]`, `:50` grava sem cast, e as quatro chamadas são
+`buildCatalogMap(TokenCatalog)` (`MasterControlPanel.tsx:55`, `useSovereignSearch.ts:16`,
+`useThemeCustomizationData.ts:45`, `token-search.test.ts:10`). Os três casts pré-existentes de
+`useThemeCustomizationData.ts` seguem intactos (`grep -c "as unknown as"` → 3). O `--stat` dos quatro arquivos de
+código é o mesmo da rodada 1: nada além do achado mudou.
+
+**Verificado:** `npx tsc --noEmit` → 0 · os 11 arquivos de teste da plan → 76/76 ·
+`check-audit-baseline --with-tsc` → uma regressão, `auditor_composicaoatomica` 2 → 3, em
+`src/components/atomic/Buttons/SarakSocialButton.tsx:108`, arquivo da `plan-95` (em execução), não desta.
+
+**Liberação parcial:** o lote 1 está aprovado; a plan volta a `🟡` até o lote 2, que só se despacha com a
+`plan-95` aprovada. A suíte integrada fica para a revisão da 95, com os arquivos desta plan na árvore: uma
+falha neles ali reabre este lote.
 
 ---
 

@@ -1,6 +1,7 @@
 import React from 'react';
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { motion } from 'framer-motion';
-import { Cpu, ShieldCheck, Activity } from 'lucide-react';
+
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface AuthHeroProps {
@@ -45,7 +46,7 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                     {branding?.logo ? (
                         <img src={branding.logo} alt="Logo" className="w-12 h-12 object-contain" />
                     ) : (
-                        <Cpu className="w-12 h-12 text-theme-title" />
+                        <SarakIcon name="Cpu" className="w-12 h-12 text-theme-title" />
                     )}
                 </motion.div>
 
@@ -66,11 +67,11 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                     style={{ ...getFlexStyles('row', 'center', 'center', 'var(--sarak-layout-gap-md,16px)').style, marginTop: 'calc(var(--sarak-layout-gap-md,16px)*3)' }}
                 >
                     <div className="flex items-center rounded-full sarak-glass bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)', gap: 'var(--sarak-layout-gap-sm,8px)' }}>
-                        <ShieldCheck className="w-4 h-4 text-theme-secondary" />
+                        <SarakIcon name="ShieldCheck" className="w-4 h-4 text-theme-secondary" />
                         <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Secure</span>
                     </div>
                     <div className="flex items-center rounded-full sarak-glass bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)', gap: 'var(--sarak-layout-gap-sm,8px)' }}>
-                        <Activity className="w-4 h-4 text-theme-primary" />
+                        <SarakIcon name="Activity" className="w-4 h-4 text-theme-primary" />
                         <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Neural</span>
                     </div>
                 </motion.div>

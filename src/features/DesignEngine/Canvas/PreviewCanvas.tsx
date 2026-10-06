@@ -20,7 +20,6 @@ interface PreviewCanvasProps {
     activePreviewApp: string;
     setActivePreviewApp: (app: string) => void;
     previewAnimationStyle: string;
-    previewEmojiSet: string;
     config: SarakUIOptions;
     previewPrimaryColor: string;
     mode: string;
@@ -41,7 +40,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     activePreviewApp,
     setActivePreviewApp,
     previewAnimationStyle,
-    previewEmojiSet,
     config,
     previewPrimaryColor,
     mode,

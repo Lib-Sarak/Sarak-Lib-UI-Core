@@ -1,14 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Search, 
-    Filter,
-    LayoutGrid,
-    XCircle,
-    Database,
-    Zap,
-    Binary
-} from 'lucide-react';
+
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
@@ -59,7 +52,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
             <div className={`${loadingStack.className} min-h-[40vh]`} style={loadingStack.style}>
                 <div className="relative">
                     <div className="w-16 h-16 border-4 border-[var(--border-color,#334155)]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
-                    <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
+                    <SarakIcon name="Database" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
                 </div>
                 <p className="text-theme-muted font-black uppercase animate-pulse" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>
                     Carregando Catálogo...
@@ -76,13 +69,13 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
             {/* Header & Filter Section */}
             <section className={mergeSarakClasses("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                 <div className="absolute top-0 right-0 opacity-5 pointer-events-none" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
-                    <LayoutGrid size={240} />
+                    <SarakIcon name="LayoutGrid" size={240} />
                 </div>
 
                 <div className={`relative z-10 ${innerStack.className}`} style={innerStack.style}>
                     <div>
                         <div className="flex items-center text-theme-primary" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
-                            <Binary size={14} />
+                            <SarakIcon name="Binary" size={14} />
                             <span className="font-black uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>Sarak Catalog Engine</span>
                         </div>
                         <h1 className="text-4xl font-black text-theme-text tracking-tighter">
@@ -103,7 +96,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                     placeholder="Buscar..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    leftIcon={<Search size={16} />}
+                                    leftIcon={<SarakIcon name="Search" size={16} />}
                                 />
                             </div>
                             
@@ -132,7 +125,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                     variant="ghost"
                                     className="text-theme-muted hover:text-red-400"
                                 >
-                                    <XCircle size={14} /> Limpar Filtros
+                                    <SarakIcon name="XCircle" size={14} /> Limpar Filtros
                                 </SarakButton>
                             )}
                         </div>

@@ -1,0 +1,20 @@
+{
+    "tipografia": ["fonte", "fontes", "escrita", "texto", "letra", "tipografia", "tipo", "font", "typography", "family"],
+    "cor": ["cor", "cores", "color", "colors", "tom"],
+    "fundo": ["fundo", "background", "bg"],
+    "textura": ["textura", "texture", "padrao", "pattern", "ruido", "noise"],
+    "card": ["card", "cards", "cartao", "cartoes"],
+    "borda": ["borda", "bordas", "contorno", "moldura", "border", "stroke"],
+    "arredondamento": ["arredondamento", "raio", "radius", "cantos", "curvatura"],
+    "sombra": ["sombra", "shadow", "elevacao", "profundidade"],
+    "vidro": ["vidro", "glass", "blur", "desfoque", "transparencia"],
+    "brilho": ["brilho", "glow", "luz", "neon"],
+    "animacao": ["animacao", "animacoes", "movimento", "motion", "animation", "transicao", "duracao"],
+    "espaco": ["espaco", "espacamento", "gap", "padding", "margem", "spacing"],
+    "tamanho": ["tamanho", "escala", "size", "scale"],
+    "icone": ["icone", "icones", "icon", "icons"],
+    "botao": ["botao", "botoes", "button", "buttons", "cta"],
+    "navegacao": ["menu", "navegacao", "nav", "sidebar", "lateral", "topbar", "topo", "barra"],
+    "identidade": ["logo", "marca", "brand", "branding", "identidade"],
+    "tabela": ["tabela", "tabelas", "table", "grid", "grade"]
+}

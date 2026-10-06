@@ -224,7 +224,7 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Criar tema, ou preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-tema` · `ui-criar-preset` |
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
-| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as duas camadas de cache entre o `dist/` e o navegador | skill local `ui-integra-consumidor` |
+| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as três camadas de cache entre o `dist/` e o navegador, e o selo que diz qual build a página executa | skill local `ui-integra-consumidor` |
 | Mexer no cromo, nos slots, nos widgets da barra ou na navegação | `specs/05-cromo-e-slots` | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
 | **Operar Git**: commit, PR, merge na `main`, emitir release | `specs/17-contrato-de-operacao-git` (quem faz o quê) + `specs/03` + `specs/16` + `adr/008` | skill local **`git-ci-cd`** — ela **instrui, nunca executa** |
@@ -381,14 +381,17 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
   local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
   `github:…#semver:` vem depois. É um workspace pnpm com 13 projetos e lockfile canônico.
-- 🔴 **Entre o `dist/` da lib e a tela do consumidor existem DUAS camadas de cache, e as duas falham em
+- 🔴 **Entre o `dist/` da lib e a tela do consumidor existem TRÊS camadas de cache, e as três falham em
   silêncio.** É a armadilha mais cara desta base — já custou três rodadas de investigação **na lib**, que
   estava certa nas três. (1) `file:` no pnpm é **cópia no store, não link**: todo rebuild exige
   `pnpm install --force --filter <pacote>`. (2) O **pré-bundle do bundler** (Vite: `node_modules/.vite/`)
   re-otimiza por lockfile + versão + config, **nunca por conteúdo** — com dependência local nenhum dos três
-  muda, e o dev server segue servindo o build anterior. **Medir a lib por um consumidor não reinstalado, ou
-  com o cache do bundler quente, é medir o passado.** O `sarak-ui check` avisa da segunda camada com rótulo
-  próprio; o procedimento na ordem certa — inclusive **provar a deleção** — está em
+  muda, e o dev server segue servindo o build anterior. (3) O **cache HTTP do navegador** guarda esse
+  pré-bundle como `immutable`, sob uma chave `?v=` que também não vê o conteúdo. **Medir a lib por um
+  consumidor não reinstalado, ou com um cache quente, é medir o passado.** O `sarak-ui check` avisa da segunda
+  camada com rótulo próprio. Quem diz em que camada se está é o
+  **selo de build** (`data-sarak-build-info` na página) comparado com o `BUILD_INFO.json` instalado; o
+  procedimento na ordem certa — inclusive **provar a deleção** — está em
   [`specs/13-instalacao-e-atualizacao.md`](specs/13-instalacao-e-atualizacao.md) §9.1.
 - ⚠️ **Valor persistido vence default, por desenho.** Um consumidor que salvou tema não recebe mudança de
   `defaultValue` de token nenhum — e o painel de Design oferece cada valor do schema como opção clicável.

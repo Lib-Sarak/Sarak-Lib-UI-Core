@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { SarakDesignState } from '../../../../core/Provider/types';
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
+import { TokenCatalog } from '../../../../core/Design/catalog';
+import { searchTokens, matchesText, buildCatalogMap } from '../../utils/token-search';
 import { Fingerprint, Type, Layout, Waves, MousePointer2, Cpu } from 'lucide-react';
 
 export const SOVEREIGN_PILLARS = [
@@ -11,6 +13,8 @@ export const SOVEREIGN_PILLARS = [
     { id: 'action', label: 'Fluxo & Input', icon: MousePointer2, schemas: ['controls'] },
     { id: 'system', label: 'Core Engine', icon: Cpu, schemas: ['specialized', 'data', 'system'] },
 ];
+const searchCatalog = buildCatalogMap(TokenCatalog);
+
 export const useSovereignSearch = (draft: Partial<SarakDesignState>, searchQuery: string, activePillar: string) => {
     // IDENTIFICA QUAIS PILARES POSSUEM DRAFTS ATIVOS
     const pillarsWithDrafts = useMemo(() => {
@@ -25,17 +29,15 @@ export const useSovereignSearch = (draft: Partial<SarakDesignState>, searchQuery
 
     // FILTRAGEM INTELIGENTE (BUSCA OU PILAR)
     const filteredComponents = useMemo(() => {
-        const query = searchQuery.toLowerCase();
-        
+        const query = searchQuery;
+
         // Se houver busca, ignora os pilares e mostra tudo que der match
         if (query) {
             return MASTER_DESIGN_MAP.components.map(comp => {
-                const tokens = comp.tokens.filter(token => 
-                    token.label.toLowerCase().includes(query) || 
-                    token.id.toLowerCase().includes(query)
-                );
-                
-                if (tokens.length > 0 || comp.label.toLowerCase().includes(query)) {
+                const searchable = comp.tokens.map(token => ({ ...token, componentLabel: comp.label }));
+                const tokens = searchTokens(query, searchable, searchCatalog);
+
+                if (tokens.length > 0 || matchesText(query, comp.label)) {
                     return { ...comp, tokens: tokens.length > 0 ? tokens : comp.tokens };
                 }
                 return null;

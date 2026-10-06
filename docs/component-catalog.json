@@ -554,7 +554,7 @@
         },
         {
           "name": "socialConfig",
-          "type": "{ enabled: boolean; display: 'compact' | 'full'; providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>; }",
+          "type": "SarakSocialConfig",
           "optional": true,
           "doc": ""
         },
@@ -1929,44 +1929,7 @@
     "SarakIcon": {
       "propsInterface": "SarakIconProps",
       "source": "src/components/atomic/Icon/SarakIcon.tsx",
-      "props": [
-        {
-          "name": "name",
-          "type": "SarakIconName | string",
-          "optional": false,
-          "doc": "Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback."
-        },
-        {
-          "name": "size",
-          "type": "number | string",
-          "optional": true,
-          "doc": "Define a dimensão SVG; sem a prop, usa 24 px."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "optional": true,
-          "doc": "Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada."
-        },
-        {
-          "name": "color",
-          "type": "string",
-          "optional": true,
-          "doc": "Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente."
-        },
-        {
-          "name": "style",
-          "type": "React.CSSProperties",
-          "optional": true,
-          "doc": "Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados."
-        },
-        {
-          "name": "onClick",
-          "type": "() => void",
-          "optional": true,
-          "doc": "Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado."
-        }
-      ]
+      "props": []
     },
     "SarakIconButton": {
       "propsInterface": "SarakIconButtonProps",
@@ -2339,9 +2302,9 @@
       "props": [
         {
           "name": "icon",
-          "type": "React.ReactNode",
+          "type": "string | React.ReactNode",
           "optional": true,
-          "doc": "Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`)."
+          "doc": "Nome registrado ou elemento renderizado à esquerda do rótulo."
         },
         {
           "name": "label",
@@ -3137,37 +3100,43 @@
           "name": "provider",
           "type": "'google' | 'github'",
           "optional": false,
-          "doc": "Escolhe o ícone e o rótulo padrão do provedor; obrigatória."
+          "doc": "Provedor usado no rótulo e callback."
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Elemento de marca fornecido pelo consumidor."
         },
         {
           "name": "variant",
           "type": "'glass' | 'sovereign'",
           "optional": false,
-          "doc": "Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`."
+          "doc": "Acabamento visual; o tema `sovereign` também prevalece sobre `glass`."
         },
         {
           "name": "onClick",
           "type": "(provider: 'google' | 'github') => void",
           "optional": true,
-          "doc": "Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação."
+          "doc": "Recebe o provedor clicado; omitido, o botão não executa ação."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor."
+          "doc": "Substitui o rótulo e o título acessível; omitido, usa o texto padrão."
         },
         {
           "name": "hideLabel",
           "type": "boolean",
           "optional": true,
-          "doc": "Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão."
+          "doc": "Esconde o texto e mantém o título acessível."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": "Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas."
+          "doc": "Acrescenta classes com resolução de conflitos Tailwind."
         }
       ]
     },
@@ -3909,16 +3878,6 @@
       },
       {
         "component": "SarakAuthScreen",
-        "prop": "socialConfig",
-        "values": [
-          "compact",
-          "full",
-          "glass",
-          "sovereign"
-        ]
-      },
-      {
-        "component": "SarakAuthScreen",
         "prop": "role",
         "values": [
           "primary",
@@ -4499,9 +4458,11 @@
       "Bell",
       "Filter",
       "List",
+      "ListOrdered",
       "Grid",
       "Layout",
       "LayoutDashboard",
+      "LayoutGrid",
       "Home",
       "ChevronDown",
       "ChevronLeft",
@@ -4519,6 +4480,8 @@
       "Minimize2",
       "Loader2",
       "RefreshCw",
+      "ZoomIn",
+      "ZoomOut",
       "User",
       "UserPlus",
       "Users",
@@ -4526,7 +4489,9 @@
       "LogOut",
       "Lock",
       "Shield",
+      "ShieldCheck",
       "Eye",
+      "EyeOff",
       "File",
       "FileText",
       "FileSpreadsheet",
@@ -4543,6 +4508,8 @@
       "Save",
       "Edit",
       "Edit3",
+      "Bold",
+      "Italic",
       "Plus",
       "Trash2",
       "Type",
@@ -4562,6 +4529,7 @@
       "Cpu",
       "Cloud",
       "Terminal",
+      "Binary",
       "Thermometer",
       "History",
       "Calendar",
@@ -4573,7 +4541,9 @@
       "Bot",
       "Globe",
       "Link",
+      "Link2",
       "ExternalLink",
+      "Command",
       "Briefcase",
       "Building",
       "CreditCard",
@@ -4584,9 +4554,15 @@
       "Play",
       "Palette",
       "Settings",
+      "Settings2",
       "Zap",
-      "Chrome",
-      "Github"
+      "Sparkles",
+      "Compass",
+      "Sun",
+      "Moon",
+      "XCircle",
+      "ToggleLeft",
+      "ToggleRight"
     ]
   }
 }

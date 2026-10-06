@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Chrome, Github } from 'lucide-react';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakSocialButton } from '../../../../components/atomic/Buttons/SarakSocialButton';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
@@ -87,21 +89,8 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
 
             {/* Social Logins */}
-            <SarakButton 
-                variant="secondary"
-                leftIcon={<SarakIcon name="Chrome" size={14} />}
-                style={{ width: '100%' }}
-            >
-              Continue com Google
-            </SarakButton>
-            
-            <SarakButton 
-                variant="secondary"
-                leftIcon={<SarakIcon name="Github" size={14} />}
-                style={{ width: '100%' }}
-            >
-              Acessar com Github
-            </SarakButton>
+            <SarakSocialButton provider="google" icon={<Chrome size={16} />} variant="glass" />
+            <SarakSocialButton provider="github" icon={<Github size={16} />} variant="glass" />
 
             {/* Master Login */}
             <div className="mt-2">

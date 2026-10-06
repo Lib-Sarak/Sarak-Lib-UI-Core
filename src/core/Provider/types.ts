@@ -55,7 +55,6 @@ interface SarakThemePayloadExtras {
     mode?: string;
     layout?: string;
     animationStyle?: string;
-    emojiSet?: string;
     primaryColor?: string;
     secondaryColor?: string;
     flowGridStyle?: string;

@@ -5,6 +5,7 @@ import { SarakDesignToken, ComponentSchema } from '../../../../core/Design/types
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
 import { buildDynamicGroups } from '../../utils/dynamic-categories';
+import { searchTokens, buildCatalogMap } from '../../utils/token-search';
 import DesignPillars from '../../config/design-pillars.json';
 
 export function useThemeCustomizationData(searchQuery: string) {
@@ -41,13 +42,15 @@ export function useThemeCustomizationData(searchQuery: string) {
         return map;
     }, []);
 
+    const searchCatalog = useMemo(() => buildCatalogMap(TokenCatalog), []);
+
     const filteredResults = useMemo(() => {
         if (!searchQuery) return null;
-        const query = searchQuery.toLowerCase();
-        return MASTER_DESIGN_MAP.components.flatMap(c =>
-            c.tokens.filter(t => t.label.toLowerCase().includes(query) || t.id.toLowerCase().includes(query))
+        const searchable = MASTER_DESIGN_MAP.components.flatMap(c =>
+            c.tokens.map(t => ({ ...t, componentLabel: c.label }))
         );
-    }, [searchQuery]);
+        return searchTokens(searchQuery, searchable, searchCatalog);
+    }, [searchQuery, searchCatalog]);
 
     return {
         pillars,

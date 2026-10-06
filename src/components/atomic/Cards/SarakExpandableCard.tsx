@@ -1,7 +1,8 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
-import { Maximize2, Minimize2, X } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
@@ -66,7 +67,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                             className="text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                             title="Expandir Tela Cheia"
-                            icon={<Maximize2 className="w-4 h-4" />}
+                            icon={<SarakIcon name="Maximize2" className="w-4 h-4" />}
                         />
                     </div>
                 </div>
@@ -118,7 +119,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                                             className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg shrink-0"
                                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
-                                            icon={<X className="w-5 h-5 sm:w-6 sm:h-6" />}
+                                            icon={<SarakIcon name="X" className="w-5 h-5 sm:w-6 sm:h-6" />}
                                         />
                                     </div>
                                 </div>

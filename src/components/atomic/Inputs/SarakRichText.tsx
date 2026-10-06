@@ -1,3 +1,4 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 /**
  * SarakRichText — editor WYSIWYG blindado (Spec 11, Regra 4 · Onda 10)
  *
@@ -10,7 +11,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Bold, Italic, List, ListOrdered, Link2 } from 'lucide-react';
+
 import { sanitizeHtml } from '../../../core/Security/sanitizeHtml';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
@@ -42,10 +43,10 @@ interface ToolButton {
 }
 
 const TOOLS: ToolButton[] = [
-    { cmd: 'bold', icon: <Bold size={15} />, label: 'Negrito' },
-    { cmd: 'italic', icon: <Italic size={15} />, label: 'Itálico' },
-    { cmd: 'insertUnorderedList', icon: <List size={15} />, label: 'Lista' },
-    { cmd: 'insertOrderedList', icon: <ListOrdered size={15} />, label: 'Lista numerada' },
+    { cmd: 'bold', icon: <SarakIcon name="Bold" size={15} />, label: 'Negrito' },
+    { cmd: 'italic', icon: <SarakIcon name="Italic" size={15} />, label: 'Itálico' },
+    { cmd: 'insertUnorderedList', icon: <SarakIcon name="List" size={15} />, label: 'Lista' },
+    { cmd: 'insertOrderedList', icon: <SarakIcon name="ListOrdered" size={15} />, label: 'Lista numerada' },
 ];
 
 export const SarakRichText: React.FC<SarakRichTextProps> = ({
@@ -131,7 +132,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     variant="ghost"
                     size="sm"
                     aria-label="Inserir link"
-                    icon={<Link2 size={15} />}
+                    icon={<SarakIcon name="Link2" size={15} />}
                     disabled={disabled}
                     onClick={addLink}
                 />

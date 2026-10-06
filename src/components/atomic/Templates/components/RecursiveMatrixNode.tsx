@@ -1,6 +1,6 @@
+import { SarakIcon } from "../../Icon/SarakIcon";
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 
 import { PremiumSwitch } from './PremiumSwitch';
 import { PremiumCheckbox } from './PremiumCheckbox';
@@ -142,7 +142,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                                 animate={{ rotate: showChildren ? 180 : 0 }}
                                 className="text-[var(--text-muted,#94a3b8)]"
                             >
-                                <ChevronDown size={14} />
+                                <SarakIcon name="ChevronDown" size={14} />
                             </motion.div>
                         )}
                         {IconComponent && (
@@ -194,7 +194,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                                 animate={{ rotate: showChildren ? 180 : 0 }}
                                 className="text-[var(--text-muted,#94a3b8)]"
                             >
-                                <ChevronDown size={12} />
+                                <SarakIcon name="ChevronDown" size={12} />
                             </motion.div>
                         )}
                         <span className={`text-xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#3b82f6)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>

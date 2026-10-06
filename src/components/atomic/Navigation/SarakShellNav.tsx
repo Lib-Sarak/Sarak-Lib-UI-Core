@@ -1,5 +1,4 @@
 import React from 'react';
-import { SarakIcon } from '../Icon/SarakIcon';
 import { SarakMenuItem } from './SarakMenuItem';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -18,8 +17,8 @@ export interface SarakShellNavItem {
     label: string;
     /** Rota destino (comparada com `activeRoute` para o destaque). */
     route: string;
-    /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
-    icon?: string;
+    /** Nome registrado ou elemento do ícone fornecido pelo consumidor. */
+    icon?: string | React.ReactNode;
     /** Impede navegação e foco sem remover o item do menu. */
     disabled?: boolean;
     /** Informação visual que também integra o nome acessível. */
@@ -87,7 +86,7 @@ const NavEntry: React.FC<{
         active={isActive}
         collapsed={collapsed}
         orientation={horizontal ? 'horizontal' : 'vertical'}
-        icon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
+        icon={item.icon}
         label={item.label}
         className="relative"
     >

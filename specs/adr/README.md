@@ -58,6 +58,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [016](./016-preferencias-do-usuario-separadas-do-tema.md) | Preferência do usuário é uma camada separada do tema — sobreposta ao renderizar, nunca gravada nele | 🟢 Aceito |
 | [017](./017-porta-de-apagar-tema-simetrica-a-de-escrever.md) | Tema salvo em runtime também se apaga por uma porta — simétrica à de escrever | 🟢 Aceito |
 | [018](./018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md) | Um cromo só — o consumidor é dono das rotas, e a lib não é host | 🟢 Aceito |
+| [020](./020-gantt-casca-propria.md) | O Gantt da lib é casca própria, não componente de terceiro | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

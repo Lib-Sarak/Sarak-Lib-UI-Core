@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+
 import { SarakIcon } from '../../Icon/SarakIcon';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../../Cards/SarakTitleCard';
@@ -108,7 +108,6 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="border-beam-effect" />
 
-            
             <div className="p-theme relative z-10" style={{ padding: 'var(--sarak-layout-gap-lg,24px)' }}>
 
                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
@@ -164,7 +163,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         </SarakButton>
                     )}
                     <SarakIconButton 
-                        icon={<ExternalLink size={18} />}
+                        icon={<SarakIcon name="ExternalLink" size={18} />}
                         variant="primary"
                         className="shadow-lg"
                     />

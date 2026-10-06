@@ -1,8 +1,9 @@
 import React from 'react';
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cpu } from 'lucide-react';
+
 import { SarakButton } from '../../Buttons';
-import { AuthSocialLogin } from './AuthSocialLogin';
+import { AuthSocialLogin, type SarakSocialConfig } from './AuthSocialLogin';
 import { AuthFormFields } from './AuthFormFields';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
@@ -27,11 +28,7 @@ interface AuthFormProps {
     isPending?: boolean;
     onSubmit: (e: React.FormEvent) => void;
     onSocialLogin?: (provider: string) => void;
-    socialConfig?: {
-        enabled: boolean;
-        display: 'compact' | 'full';
-        providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>;
-    };
+    socialConfig?: SarakSocialConfig;
     onForgot?: () => void;
     onMasterLogin?: () => void;
 }
@@ -77,7 +74,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                         {branding?.logo ? (
                             <img src={branding.logo} alt="Logo" className="w-8 h-8 object-contain" />
                         ) : (
-                            <Cpu className="w-8 h-8 text-white" />
+                            <SarakIcon name="Cpu" className="w-8 h-8 text-white" />
                         )}
                     </div>
                     <h2 className="text-3xl font-black tracking-tighter text-white uppercase italic">{branding?.name}</h2>

@@ -86,7 +86,7 @@ Quatro observações que importam mais que o formato:
    cópia estática de fonte viva já nasce desatualizada (é literalmente o defeito que
    `generate_themes.ts` foi reescrito para eliminar, §6.3).
 
-3. **`ThemePresetId` é uma união fechada** (`index.ts:19-40`), espelho de `GLOBAL_THEMES`. Adicionar um
+3. **`ThemePresetId` é uma união fechada** (`index.ts:19-40`), espelho de `SARAK_GLOBAL_THEMES`. Adicionar um
    tema shippado = acrescentar o id ali **e** importá-lo na lista. Um tema do *consumidor* não precisa
    disso: ele entra por `customThemes` como dado, sem tocar no tipo da lib.
 
@@ -209,8 +209,8 @@ motivo legítimo para um tema parcial.
 > nunca lança**: cai no tema de referência do **modo pedido** — o de `config.mode` quando há um explícito,
 > senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
 > o id que não encontrou. `getThemePreset` (`presets/themes/reference.ts:18`) devolve `undefined` para id
-> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `THEME_PRESET_IDS`
-> e `GLOBAL_THEMES`.
+> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `SARAK_THEME_PRESET_IDS`
+> e `SARAK_GLOBAL_THEMES`.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
@@ -444,7 +444,7 @@ aplicação: `useSarakPreferences()`.
 
 A contagem de temas, presets e chaves do gabarito **não é fixada aqui** — é a lição do achado **32**
 ([[15-divida-conhecida]] §6): total em prosa envelhece a cada tema novo. A fonte viva é `npm run audit`
-(roda `auditor_presets`, que imprime temas globais (`GLOBAL_THEMES`), presets de componente, o total de
+(roda `auditor_presets`, que imprime temas globais (`SARAK_GLOBAL_THEMES`), presets de componente, o total de
 itens auditados e o gabarito vivo de `getScaffold()`).
 
 Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts` + `color-engine.ts`)
@@ -480,12 +480,12 @@ coisas.
 **O que a medição existe para impedir.** O catálogo já morou inteiro num canto só — escuro, primária neon,
 família ciano/magenta — e isso aconteceu **sem** nunca ter havido gerador de paleta. Homogeneização não
 precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se distribuem, não se escreve
-aqui:** é `THEME_PRESET_IDS`/`GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
+aqui:** é `SARAK_THEME_PRESET_IDS`/`SARAK_GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
 cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
 `navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
-todo `GLOBAL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
+todo `SARAK_GLOBAL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
 de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
@@ -495,7 +495,7 @@ de script.**
 > agora são **derivados dos temas existentes**, e um teste exige que cinco temas idênticos **reprovem**.
 
 > **A lista de temas e a lista de presets NÃO são transcritas aqui de propósito** (Regra 4 da campanha).
-> Elas se leem no código (`GLOBAL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
+> Elas se leem no código (`SARAK_GLOBAL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
 > documento continuaria dizendo "18" — que é exatamente como uma spec vira mentira.
 
 Nem todos os presets são escritos à mão: parte é **derivada** de listas de opções — `TEXTURE_PRESETS` e
@@ -519,7 +519,7 @@ o número que importa é o de órfãs, não o total auditado. Roda dentro de `ru
 ## 6.2 `tokenContractParity.test.ts` — valor fora do próprio contrato
 
 `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` audita **todo valor shippado pela lib**
-(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `GLOBAL_THEMES`) com `auditTokenContract`
+(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `SARAK_GLOBAL_THEMES`) com `auditTokenContract`
 (`validation.ts:170-182`) — a função **pura** que reusa `coerceTokenValue`, o mesmo predicado do runtime.
 Por isso a auditoria **nunca diverge do comportamento real**.
 
@@ -536,7 +536,7 @@ Por isso a auditoria **nunca diverge do comportamento real**.
 ## 6.3 `shippedThemesConsoleClean.test.ts` — a propagação de fato
 
 `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` carrega cada tema shippado
-(`it.each(GLOBAL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
+(`it.each(SARAK_GLOBAL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
 "fora do contrato". É a prova de que a correção chegou ao caminho que o consumidor executa — não só ao
 predicado testado em isolamento.
 
@@ -554,12 +554,14 @@ verde com **12 dos 18** reprovando AA, e ninguém sabia.
 
 `verify_contrast.ts` mede **36 pares texto/fundo reais**, a **4,5:1 em todos** (a WCAG só permite 3:1 para
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
-cadeia de fundo, não pulada. **Duas passadas**: o modo nativo do tema e a contraparte gerada. Baseline: **0
-e 0**.
+cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
+superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
+contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado.
 
-> ⚠️ **`pulado` não é `aprovado`.** 25 pares-tema não são medidos — fundo em `hsl()`, `var()`, gradiente, ou
-> cadeia que não resolve opaca. O gate **declara** em vez de chutar uma cor. É por isso que a **R31** segue
-> **⚠️** mesmo com todos os temas shippados verdes: conformidade verde não é cobertura plena.
+> ⚠️ **`pulado` não é `aprovado`.** Um par só é pulado quando o valor não se resolve (`hsl()`, `var()`,
+> gradiente) ou quando o tema declara o **próprio** `colorBgBody` translúcido: o gate **declara** em vez de
+> chutar uma cor. A **R31** segue **⚠️** mesmo com todos os temas shippados verdes porque o par de texto de
+> status continua fora da lista: conformidade verde não é cobertura plena.
 
 **O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos temas shippados; dado
 de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
@@ -581,7 +583,7 @@ O critério de aceite desta spec, como procedimento:
 5. **Confira a completude:** `findMissingThemeAxes(seuTema)` tem de devolver `[]`. Se devolver `chrome`,
    trocar de tema não vai mudar a topbar — e alguém vai reportar isso como bug da lib.
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
-   `THEME_PRESET_IDS` e importe em `GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
+   `SARAK_THEME_PRESET_IDS` e importe em `SARAK_GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
    (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
    shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
    navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não

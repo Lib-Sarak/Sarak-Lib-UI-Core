@@ -1,6 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, Globe, MessageSquare, Zap } from 'lucide-react';
+
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
@@ -62,7 +63,6 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
         });
     };
 
-
     return (
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
@@ -117,7 +117,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
 
                 {/* Highly tactile input search field */}
                 <SarakInput 
-                    leftIcon={<Search className="w-3.5 h-3.5" />}
+                    leftIcon={<SarakIcon name="Search" className="w-3.5 h-3.5" />}
                     value={searchText}
                     onChange={handleSearch}
                     onFocus={() => setFocused(true)}
@@ -142,7 +142,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <Eye size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                            <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Visão Computacional</span>
                         </div>
                         <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
@@ -155,7 +155,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <Globe size={12} className="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" />
+                            <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Navegação Web</span>
                         </div>
                         <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />
@@ -168,7 +168,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <MessageSquare size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                            <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Modo Conversacional</span>
                         </div>
                             <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />

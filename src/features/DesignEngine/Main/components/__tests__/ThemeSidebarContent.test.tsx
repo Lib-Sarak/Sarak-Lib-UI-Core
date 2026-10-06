@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeSidebarContent } from '../ThemeSidebarContent';
 
@@ -105,5 +106,40 @@ describe('ThemeSidebarContent', () => {
         expect(captured?.resetComponent).toBe(resetComponent);
         expect(captured?.resetToken).toBe(resetToken);
         expect(captured?.toast).toBe(toast);
+    });
+    describe('busca por sentido', () => {
+        const token = (id: string, label: string) => ({ id, label, type: 'text', defaultValue: '' });
+        const searchProps = (filteredResults: unknown[]) => ({
+            ...baseProps(),
+            searchQuery: 'fonte',
+            filteredResults,
+            pillars: [{ id: 'typography', title: '2. Tipografia e Escala', index: 2 }],
+            groupedStructure: { typography: { Fontes: [token('headingFont', 'Fonte de Títulos')] } },
+        }) as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+
+        it('mostra a contagem no título e os resultados na ordem recebida (relevância)', () => {
+            const results = [token('zeta', 'Zeta Texto'), token('alfa', 'Alfa Texto')];
+            render(<ThemeSidebarContent {...searchProps(results)} />);
+
+            expect(screen.getByText('Resultados da busca (2)')).toBeInTheDocument();
+            const labels = screen.getAllByText(/Texto$/).map((node) => node.textContent);
+            expect(labels).toEqual(['Zeta Texto', 'Alfa Texto']);
+        });
+
+        it('mostra `Pilar › Seção` do token que mora num grupo e nada para o que não mora', () => {
+            const results = [token('headingFont', 'Fonte de Títulos'), token('semGrupo', 'Sem Grupo')];
+            render(<ThemeSidebarContent {...searchProps(results)} />);
+
+            const paths = screen.getAllByTestId('search-result-path');
+            expect(paths).toHaveLength(1);
+            expect(paths[0]).toHaveTextContent('Tipografia e Escala › Fontes');
+        });
+
+        it('busca sem resultado mostra o estado vazio com a consulta', () => {
+            render(<ThemeSidebarContent {...searchProps([])} />);
+
+            expect(screen.getByText('Resultados da busca (0)')).toBeInTheDocument();
+            expect(screen.getByRole('status')).toHaveTextContent('Nenhum controle encontrado para “fonte”.');
+        });
     });
 });

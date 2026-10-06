@@ -13,7 +13,7 @@ export const PAYLOAD_EXTRA_KEYS = [
     'animationSpeed', 'secondaryModuleId', 'emptyStateId', 'logoPosition', 'logoScale',
     'atmosphere', 'specialized', 'schema_version',
     // SarakThemePayloadExtras
-    'systemName', 'logoUrl', 'mode', 'layout', 'animationStyle', 'emojiSet',
+    'systemName', 'logoUrl', 'mode', 'layout', 'animationStyle',
     'primaryColor', 'secondaryColor', 'flowGridStyle', 'flowNodeRadius', 'chatBubbleStyle',
     'chatAnimationSpeed', 'chartType', 'chartShowGrid', 'cardHoverStyle', 'cardTextureType',
     'cardGeometricCut', 'cardVariant', 'imageOverlay', 'imageCardHoverZoom', 'imageCardOverlayOpacity',

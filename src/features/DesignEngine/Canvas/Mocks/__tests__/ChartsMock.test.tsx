@@ -5,7 +5,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { MockCharts } from '../ChartsMock';
 
 vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
+    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} })),
+    useSarakUIOptional: vi.fn(() => undefined),
 }));
 
 // Ignorar animações do framer-motion no teste para simplificar e focar no DOM puro

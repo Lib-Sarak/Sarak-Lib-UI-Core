@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer todo ícone passar por uma porta só, aberta ao consumidor"
 objetivo: "Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada"
 dominio: "Sarak-Lib-UI-Core / Átomos / Ícones"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "icones", "iconFamily", "lucide", "consumidor"]
 relacionados: ["[[03-superficie-publica]]", "[[09-temas-e-presets]]", "[[01-gates-e-baseline]]"]
@@ -150,11 +150,166 @@ consumidor cobre o caso.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+### Rodada de 2026-10-05
+
+**Resultado:** Concluído e entregue para revisão.
+
+**Fotografia inicial, antes da primeira edição:**
+
+```text
+ M src/features/DesignEngine/Main/MasterControlPanel.tsx
+ M src/features/DesignEngine/Main/__tests__/MasterControlPanel.test.tsx
+ M src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx
+ M src/features/DesignEngine/Main/hooks/__tests__/useThemeCustomizationData.test.ts
+ M src/features/DesignEngine/Main/hooks/useThemeCustomizationData.ts
+ M src/features/DesignEngine/Panels/hooks/__tests__/useSovereignSearch.test.ts
+ M src/features/DesignEngine/Panels/hooks/useSovereignSearch.ts
+ ?? .claude/settings.local.json
+ ?? src/features/DesignEngine/config/token-search-concepts.json
+ ?? src/features/DesignEngine/utils/__tests__/token-search.test.ts
+ ?? src/features/DesignEngine/utils/token-search.ts
+```
+
+Os arquivos da fotografia foram preservados. A regra de importação de ícones cobre `src/`, exceto `src/components/atomic/Icon/families/**` e `src/features/DesignEngine/**`; o segundo caminho permanece como ferramenta de autoria.
+
+**O que foi feito:**
+
+- `SarakIcon` aceita nome curado ou elemento React, aplica família/peso/espessura do tema e aceita registros do consumidor com `sarakRegisterIcons`; nome desconhecido usa `AlertCircle` com aviso deduplicado. Sem Provider, usa os defaults Lucide.
+- Os 34 consumidores inventariados abaixo passaram pela porta. Um import adicional com aspas duplas em `SarakHelpButton.tsx` também foi migrado. Navegação aceita nome registrado ou elemento.
+- `Chrome` e `Github` saíram das famílias e da lista pública. `SarakSocialButton` agora exige `icon: React.ReactNode`, fornecido pelo consumidor, e compõe `SarakButton`.
+- `emojiSet` foi removido de `src/core/Provider/types.ts`, `payloadExtraKeys.ts` e da prévia. A chave já não existia nas três fontes de paridade (schema, partições JSON e `theme_table_mapping.json`), portanto elas permaneceram sem essa chave; a paridade final valida 430 tokens.
+- Schema de `iconFamily`, `iconWeight` e `iconStrokeWidth` está em `src/core/Design/schema/icons.ts`. Os controles existentes tratam `select` e `slider`, incluindo o painel de personalização.
+- Foram removidos `icon-packs`, `ThemeEditor`, `useThemePreview`, `ShortcutsTab` e `LanguageTab`, com testes/snapshots órfãos. A busca dos nomes removidos em `src/` ficou vazia.
+- Foi criado somente um gate: `icon-port:check`. Ele entra em `npm run build` depois de `prefix:check`, no Anel 1 do `.githooks/pre-commit`; a CI o executa via `gates:full` → `npm run build`. O cabeçalho registra os quatro limites R18, evidenciados mais abaixo.
+- `docs/migracoes.md` recebeu uma subseção MAJOR dentro da seção existente `## 8.0.0 — um cromo por aplicação`, com antes/depois de `emojiSet`, `Chrome` e `Github`; nenhuma versão nova foi criada. O peer de `lucide-react` ficou `>=0.284.0 <1.0.0` em `package.json` e `package-lock.json`, mantendo a API compatível da faixa 0.x e evitando atravessar a major 1.x.
+
+**Arquivos alterados:**
+
+| Área | Arquivos e efeito |
+|---|---|
+| Porta e superfície pública | `src/components/atomic/Icon/SarakIcon.tsx`, `iconNames.ts`, mapas de `families/`, `src/components/atomic/Navigation/SarakMenuItem.tsx`, `SarakShellNav.tsx`, `src/components/Layout/chrome/navItem.ts`, `src/index.ts`; props públicas e navegação aceitam a nova forma. |
+| Consumidores | Os 34 arquivos da tabela de inventário e o extra `src/components/atomic/Templates/SarakHelpButton.tsx`; imports diretos de famílias foram substituídos por `SarakIcon`. |
+| Marca social | `SarakSocialButton.tsx` e teste; `AuthSocialLogin.tsx` e teste; `SarakAuthScreen.tsx` e teste; `AuthMock.tsx`; configurações tipadas agora recebem o elemento de marca. |
+| Tokens e prévia | `src/core/Design/schema/icons.ts` (novo), `schema/system.ts`, `catalog/partitions/data_and_charts.json`, `src/core/Provider/types.ts`, `payloadExtraKeys.ts`, `ThemeCustomizationTab.tsx`, `PreviewCanvas.tsx` e testes. `theme_table_mapping.json` já não continha `emojiSet`. |
+| Gate e integração | `gates/scripts/contrato/check-icon-port.mjs` e `__tests__/check-icon-port.test.mjs` (novos); `check-minor-no-removal.mjs` e seu teste; `check-zero-brand.mjs`; `package.json`, `package-lock.json`, `.githooks/pre-commit`. |
+| Migração e código morto | `docs/migracoes.md`; exclusões e testes correspondentes de `src/constants/icon-packs`, `DesignEngine/Library/ThemeEditor`, `DesignEngine/Context/useThemePreview` e `DesignEngine/Panels/{ShortcutsTab,LanguageTab}`. |
+| Compatibilidade dos testes | `src/features/DesignEngine/Canvas/Mocks/__tests__/{ChartsMock,SettingsMock}.test.tsx` agora mockam também `useSarakUIOptional`. |
+| Gerados por comando | `src/core/Provider/generated/`, `src/core/Provider/buildInfo.ts`, `dist/`, `sarak-ui/`, `sarak-dev/` e `docs/component-catalog.{json,md}` foram atualizados apenas pelos geradores/build. |
+
+**Inventário dos 34 arquivos previstos:**
+
+| Arquivo | Ícones usados |
+|---|---|
+| `src/components/atomic/Cards/SarakActionCard.tsx` | `ChevronDown`, `ExternalLink` |
+| `src/components/atomic/Cards/SarakExpandableCard.tsx` | `Maximize2`, `X` |
+| `src/components/atomic/Cards/SarakSearchCard.tsx` | `Eye`, `Globe`, `MessageSquare`, `Search` |
+| `src/components/atomic/DataDisplay/SarakDataTable/SarakTableSortButton.tsx` | `ArrowDown`, `ArrowUp`, `ArrowUpDown` |
+| `src/components/atomic/Feedback/SarakEmptyState.tsx` | `Box`, `Compass`, `Sparkles` |
+| `src/components/atomic/Inputs/SarakRichText.tsx` | `Bold`, `Italic`, `Link2`, `List`, `ListOrdered` |
+| `src/components/atomic/Inputs/SarakSearch.tsx` | `ArrowRight`, `Command`, `Search` |
+| `src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx` | `ChevronLeft`, `ChevronRight`, `Download`, `ZoomIn`, `ZoomOut` |
+| `src/components/atomic/Modals/SarakModal.tsx` | `X` |
+| `src/components/atomic/Navigation/SarakLink.tsx` | `ExternalLink` |
+| `src/components/atomic/Navigation/SarakShellLanguageSelector.tsx` | `Check`, `ChevronDown`, `Globe` |
+| `src/components/atomic/Navigation/SarakShellSearchWidget.tsx` | `ArrowRight`, `Command`, `Search` |
+| `src/components/atomic/Navigation/SarakShellThemeToggle.tsx` | `Moon`, `Sun` |
+| `src/components/atomic/Templates/Chat/ChatHeader.tsx` | `Bot`, `Settings2`, `Sparkles`, `Trash2` |
+| `src/components/atomic/Templates/Chat/ChatInput.tsx` | `ChevronDown`, `Cpu`, `FileIcon` → `File`, `Paperclip`, `Send`, `X` |
+| `src/components/atomic/Templates/Chat/MessageBubble.tsx` | `Bot`, `Cpu`, `Search` |
+| `src/components/atomic/Templates/Chat/MessageList.tsx` | `Terminal` |
+| `src/components/atomic/Templates/Chat/ModelPicker.tsx` | `Check`, `Search` |
+| `src/components/atomic/Templates/SarakCardGrid.tsx` | `AlertCircle`, `Search`, `XCircle` |
+| `src/components/atomic/Templates/SarakCatalogGrid.tsx` | `Binary`, `Database`, `LayoutGrid`, `Search`, `XCircle` |
+| `src/components/atomic/Templates/SarakChart.tsx` | `Activity`, `TrendingUp` |
+| `src/components/atomic/Templates/SarakExpandableMatrix.tsx` | `ChevronDown`, `Info`, `Search`, `Shield` |
+| `src/components/atomic/Templates/SarakForm.tsx` | `AlertCircle`, `Save`, `Settings`, `ShieldCheck` |
+| `src/components/atomic/Templates/SarakManagementGrid.tsx` | `Plus`, `X` |
+| `src/components/atomic/Templates/SarakStats.tsx` | `Activity` |
+| `src/components/atomic/Templates/SarakTable.tsx` | `AlertCircle`, `MoreHorizontal`, `RefreshCw`, `Search` |
+| `src/components/atomic/Templates/components/AuthForm.tsx` | `Cpu` |
+| `src/components/atomic/Templates/components/AuthFormFields.tsx` | `ChevronRight`, `Eye`, `EyeOff`, `Lock`, `ShieldCheck`, `User` |
+| `src/components/atomic/Templates/components/AuthHero.tsx` | `Activity`, `Cpu`, `ShieldCheck` |
+| `src/components/atomic/Templates/components/ManagementGroupCard.tsx` | `Cloud`, `Plus`, `Settings2`, `ToggleLeft`, `ToggleRight`, `Trash2` |
+| `src/components/atomic/Templates/components/PremiumCheckbox.tsx` | `Check`, `X` |
+| `src/components/atomic/Templates/components/RecursiveMatrixNode.tsx` | `ChevronDown` |
+| `src/components/atomic/Templates/components/SarakCoreCard.tsx` | `ExternalLink` |
+| `src/components/engines/chat/SarakChatEngine.tsx` | `Bot`, `Paperclip`, `Send`, `Sparkles`, `User` |
+
+Extra migrado fora dos 34: `src/components/atomic/Templates/SarakHelpButton.tsx` (`HelpCircle`, `X`). Não houve import direto de família em `src/core/`.
+
+**Evidência dos quatro limites R18 de `check-icon-port.mjs`:**
+
+| Limite declarado | Entrada exata e resultado da fixture |
+|---|---|
+| Só `.ts`/`.tsx` dentro de `src/` | Passam `components/Legacy.js`, `components/Legacy.jsx` e `../outside/Legacy.tsx`, cada um com `import { Search } from 'lucide-react';`. A mesma linha em `components/Example.tsx` dentro da raiz analisada falha. |
+| Só caminhos de pacote estáticos em import, reexport, `require()` e `import()` | Falham, nas linhas 1–4 de `components/Example.tsx`: `import { Search } from 'lucide-react';`; `export { Icon } from '@phosphor-icons/react';`; `const icons = require('@tabler/icons-react');`; `const lazy = import('lucide-react');` — quatro violações. Passa `const packageName = 'lucide-react'; import(packageName);`, pois o nome é calculado em runtime. |
+| Exclui `components/atomic/Icon/families/**` e `features/DesignEngine/**` | Passam `components/atomic/Icon/families/lucideIcons.ts` e `features/DesignEngine/Panel.tsx`, ambos com `import { Search } from 'lucide-react';`. `core/Provider.ts` com `import { Search } from '@tabler/icons-react';` falha fora das exceções. |
+| Reconhece somente os três nomes de pacote e seus subpaths | `import { Search } from 'lucide-react/dynamic';` falha. `import { Search } from 'vendor-lucide-react';` passa. |
+
+**Verificações finais:**
+
+- `npx tsc --noEmit`: código 0.
+- `npx vitest run`: 389 arquivos e 2.168 testes passaram. Os três testes que falharam na execução anterior eram os mocks de `ChartsMock` e `SettingsMock`; após completar os mocks, os dois arquivos focados passaram (3/3) e a suíte completa passou.
+- `npm run build`: passou; ESM, CJS, declarações, CSS, `public-types:check`, `prefix:check`, `icon-port:check` e demais etapas do encadeamento concluíram.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc`: igual ao baseline de 2026-08-11, nenhuma regressão.
+- Verdes: `kit-names:check`, `trail-citation:check`, `class-merge:check`, `section-pointers:check`, `barrel:check`, `prefix:check`, `public-types:check`, `catalog:check`, `guide:check`, `dev-kit:check`, `token-types:check`, `zero-brand:check`, `migration-anchor:check`, `gate-limits:check` (42 scripts) e `icon-port:check`.
+- `git grep -l -E "from '(lucide-react|@phosphor-icons/react|@tabler/icons-react)'" -- src ':!src/features/DesignEngine'` devolveu exatamente os três mapas em `src/components/atomic/Icon/families/`. A busca por `emojiSet|icon-packs|ThemeEditor|ShortcutsTab|LanguageTab|useThemePreview` em `src/` devolveu vazio.
+- `npm run audit` ainda sai com código 1 por itens do baseline: uma variável fantasma `--x` e `<input>` nativo em `SarakMultiSelect.tsx` e `SarakUploader.tsx`. O comparador obrigatório confirmou igualdade com o baseline.
+- `migration-anchor:check` passou e ancora `7.0.0`. `minor-no-removal:check` fica vermelho enquanto a versão ainda é `7.0.0`: a comparação detecta 24 nomes removidos, incluindo `Chrome` e `Github`; os outros 22 pertencem a alterações simultâneas fora deste escopo (`SarakComponent`, `SarakComponentProps`, `SarakDiscoveredModule`, `SarakDynamicRenderer`, `SarakDynamicRendererProps`, `SarakFilterDescriptor`, `SarakModule`, `SarakModuleManifest`, `SarakRouterState`, `SarakShell`, `SarakShellProps`, `SarakVisualContract`, `SarakVisualContractType`, `getSarakModule`, `registerSarakModule`, `sarakGetLocalComponent`, `sarakGetLocalComponentIds`, `sarakGetRegisteredModules`, `sarakRegisterLocalComponent`, `sarakSubscribeToRegistry`, `useModuleDiscovery`, `useSarakRouter`).
+- Todos os arquivos de código modificados nesta execução ficaram com até 250 linhas. Nenhum commit foi criado.
+
+**Decisões e limites:**
+
+- Os dois ícones de marca são elementos do consumidor em `SarakSocialButton`; a faixa peer escolhida é `lucide-react >=0.284.0 <1.0.0`.
+- O painel de autoria continua fora do gate por declaração R18, e os arquivos já sujos na fotografia inicial foram preservados. Não foram editados à mão artefatos gerados.
+- A regra de tamanho se aplica aos arquivos de código tocados; nenhum arquivo Markdown de documentação foi alterado fora desta síntese e da nota de migração solicitada.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-06 — 🟢 Aprovado
+
+**Antes de gravar:** a §10 foi relida no disco e estava vazia.
+
+**Critérios, com a evidência medida por mim:**
+- **Critério 1** — `git grep -l -E "from ['\"](lucide-react|@phosphor-icons/react|@tabler/icons-react)['\"]" -- src ':!src/features/DesignEngine'`
+  devolve só os três mapas de `src/components/atomic/Icon/families/`.
+- **Critérios 2 a 4** — `iconPort.test.tsx`, com mutação numa cópia fora do repositório:
+  - família fixada em `lucide` → falham os casos do `SarakModal` e do `SarakTable`;
+  - escala do `iconStrokeWidth` anulada → falham o caso da espessura e o do elemento direto;
+  - registro ignorado → falha o caso de `sarakRegisterIcons`;
+  - elemento ignorado → falha o caso de `icon={<svg/>}`.
+- **Critério 5** — o `icon-port:check` sobre a base real dá 0. Fixtures minhas: import de `lucide-react` em
+  `components/atomic/Cards/` → acusado; reexport de `@phosphor-icons/react` em `core/` → acusado; o mesmo import em
+  `features/DesignEngine/` → livre, como o limite 3 do cabeçalho declara.
+- **Critério 6** — o grep de `emojiSet|icon-packs|ThemeEditor|ShortcutsTab|LanguageTab|useThemePreview` em `src/`
+  está vazio; `token-types`, `catalog` e `barrel` verdes.
+- **Critério 7** — `docs/migracoes.md` ganhou a subseção `###` dentro de `## 8.0.0`, com antes e depois de
+  `emojiSet`, `Chrome` e `Github`, e o novo `icon` obrigatório do `SarakSocialButton`. `Chrome` e `Github` não
+  aparecem mais em `dist/index.d.ts`; `sarakRegisterIcons` aparece.
+- **Critério 8** — `npx tsc --noEmit` → 0. `check-audit-baseline --with-tsc` → igual ao baseline: a regressão
+  `auditor_composicaoatomica` 2 → 3 em `SarakSocialButton.tsx`, vista por mim durante a execução, sumiu, porque o
+  botão passou a compor `SarakButton`. `npx vitest run` → **389 arquivos, 2168 testes verdes**, com as plans 95 e 99
+  juntas na árvore; os 389 são todos os que o `vitest list --filesOnly` descobre. Verdes também: `build-info`,
+  `package` (95 arquivos), `dev-kit`, `guide`, `kit-names`, `zero-brand`, `gate-limits`, `class-merge`,
+  `trail-citation`, `section-pointers`, `plan-index` e `migration-anchor`.
+
+**Fora do §3.1, aceito com o motivo:**
+- **`check-minor-no-removal.mjs`** passou a comparar o conteúdo da tupla `SARAK_ICON_NAMES`. Sem isso a verificação
+  que a §7 manda fazer não acontece: `Chrome` e `Github` são strings da tupla, não identificadores exportados, e o
+  gate não os veria. A mudança tem caso de fixture e o limite 1 do cabeçalho reescrito.
+- **`check-zero-brand.mjs`** perdeu a exceção de `LanguageTab.tsx`, que deixou de existir.
+- **`schema/icons.ts`** (novo) recebe os três tokens de ícone, com os mesmos valores e as descrições ajustadas.
+  `system.ts` cai de 274 para 236 linhas (R9).
+- **`catalog/partitions/data_and_charts.json`** perdeu o `digitalTwins` do `ShortcutsTab` removido.
+
+**Para depois, com dono:** o Anel 1 do `.githooks/pre-commit` rotula o gate novo como `R18`, a regra dos
+limites declarados, e não a regra que ele cobra. A regra ainda não tem número: ele nasce na síntese, em
+`00-regras-e-invariantes`. A troca do rótulo vira tarefa direta logo depois da síntese.
 
 ---
 

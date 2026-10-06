@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { ThemePillarsList } from './ThemePillarsList';
 import { TokenControl } from './TokenControl';
+import { locateToken } from '../../utils/token-search';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
 import { HyperGranularityTab } from '../../Panels/HyperGranularityTab';
@@ -68,12 +69,19 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
             <AnimatePresence mode="wait">
                 {searchQuery ? (
                     <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
-                        <div className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da Busca</div>
+                        <div className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da busca ({filteredResults?.length ?? 0})</div>
+                        {!filteredResults?.length && (
+                            <div role="status" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">Nenhum controle encontrado para &ldquo;{searchQuery}&rdquo;.</div>
+                        )}
                         {filteredResults?.map(token => {
                             const meta = catalogMap.get(token.id);
                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
+                            const path = locateToken(token.id, groupedStructure, pillars);
                             return (
-                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                <div key={enhancedToken.id} className="space-y-1">
+                                    {path && <div data-testid="search-result-path" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">{path}</div>}
+                                    <TokenControl token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                </div>
                             );
                         })}
                     </motion.div>

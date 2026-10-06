@@ -1,17 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Plus, 
-    Trash2, 
-    ToggleLeft, 
-    ToggleRight, 
-    Settings2, 
-    AlertCircle, 
-    RefreshCw,
-    ShieldCheck,
-    Cloud,
-    X
-} from 'lucide-react';
+
 import api from '../../../shared/services/api';
 import { SarakForm } from './SarakForm';
 import { SarakButton, SarakIconButton } from '../Buttons';
@@ -110,7 +100,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
                         >
                             <SarakIconButton 
                                 onClick={() => setActiveModal(null)} 
-                                icon={<X size={24} />}
+                                icon={<SarakIcon name="X" size={24} />}
                                 variant="ghost"
                                 className="absolute hover:bg-white/5 text-white/20 hover:text-white transition-all z-50" 
                                 style={{ top: 'var(--sarak-layout-gap-md,16px)', right: 'var(--sarak-layout-gap-md,16px)' }} 
@@ -148,7 +138,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
                                 className="shadow-lg"
                                 style={{ boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
                             >
-                                <Plus size={16} />
+                                <SarakIcon name="Plus" size={16} />
                                 {action.label}
                             </SarakButton>
                         ))}

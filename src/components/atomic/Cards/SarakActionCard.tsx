@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, ChevronDown } from 'lucide-react';
+
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
@@ -124,7 +124,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                     <SarakButton 
                         variant="primary"
                         onClick={() => onAction && onAction(item)}
-                        rightIcon={<ExternalLink size={10} className="stroke-[3]" />}
+                        rightIcon={<SarakIcon name="ExternalLink" size={10} className="stroke-[3]" />}
                         className="flex-1 text-3xs font-black uppercase tracking-widest"
                     >
                         {actionLabel}
@@ -141,7 +141,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                             borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-card-radius,12px)'
                         }}
                     >
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}`} />
+                        <SarakIcon name="ChevronDown" className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}`} />
                     </motion.button>
                 </div>
 

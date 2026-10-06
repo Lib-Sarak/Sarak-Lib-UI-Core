@@ -71,13 +71,14 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Deep import | `npm run deep-import:check` | `package.json.exports` só expõe raiz + subcaminhos `.css` | **R27** | ~0,3 s |
 | Limites de gate | `npm run gate-limits:check` | Todo gate declara, no cabeçalho, o que não vê | **R18** | ~0,3 s |
 | Tipos de token | `npm run token-types:check` | `design-token-ids.ts` commitado == gerado agora a partir do schema | **R4 · R29** | precisa do schema |
-| Sincronia plan × índice | roda no Anel 1, condicional | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] | — *(vão 12, fechado)* |
+| Sincronia plan × índice | `npm run plan-index:check` (no Anel 1, condicional) | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]], **e** toda referência da §4 de cada plan ativa — caminho em crase com barra, relativo à raiz ou a `specs/`, e `[[wikilink]]` — existe. Linha do tipo *Skill* não é resolvida (limite declarado) | **R23** *(vão 12, fechado)* |
+| Nomes do kit × barril | `npm run kit-names:check` | Todo nome importado de `@sarak/lib-ui-core` em `README.md`, `docs/*.md`, `sarak-ui/**` (`.md`/`.ts`/`.tsx`) e no `main.tsx`/`ExampleModule.tsx` que o `init` gera existe no barril; em crase, acusa o nome antigo de uma renomeação de `docs/migracoes.md` e o nome de formato público (`Sarak*`, `useSarak*`, `SARAK_*`) que não existe em `src/`. Todo arquivo chamado `migracoes.md` fica fora — cita nomes velhos de propósito. Prosa sem crase não é lida | **R23** | precisa de `dist/` |
 | Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | — *(plan-39 · endurecido pela plan-44)* | ~0,3 s |
 | Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
-| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
-| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
+| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos. **E** nenhum arquivo desse escopo importa `tailwind-merge` (por `import`, `require` ou `import()`) fora da porta `hooks/mergeSarakClasses.ts`; `__tests__/` fica livre | **R35** | ~0,2 s |
+| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito d…` (*de*, *do*, *da*, *desta*, *dos*… — *veredito final* não casa) ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
@@ -164,7 +165,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
-| `prefix` | — | ✅ *(via `build`)* | ✅ | — | ✅ | 
+| `prefix` · `kit-names` | — | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
 | `agent-git-write` | **1º passo, antes do Anel 0** | — | — | **1º passo**, antes do anel de release | ⛔ **não roda** — o runner não tem sessão de agente, e a decisão é sobre quem digita o comando |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
@@ -185,15 +186,16 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 
 **Onde a CI roda cada coisa** é [[16-integracao-continua]] §3 — esta coluna diz apenas *se* roda.
 
-## 2.3 `npm run build` — os quatro gates encadeados + a compilação
+## 2.3 `npm run build` — os gates encadeados + a compilação
 
 ```
 npm run build
 ```
 
-Encadeia `catalog:check → barrel:check → zero-brand:check → guide:check → build:js → build:css → build:css:scoped → copy-base-css → inject-css → generate-build-info`.
+A ordem é a do script `build` do `package.json` — a fonte, que cresce a cada gate novo. Em fases: os gates de
+fonte, a compilação, os gates que leem `dist/index.d.ts`, o CSS e o carimbo final.
 
-**Os gates vêm antes de compilar de propósito**: build vermelho por documentação defasada é comportamento desejado, não incômodo. Detalhe de cada etapa em [[05-build-e-distribuicao]].
+**Os gates de fonte vêm antes de compilar de propósito**: build vermelho por documentação defasada é comportamento desejado, não incômodo. Detalhe de cada etapa em [[05-build-e-distribuicao]].
 
 ## 2.4 `npx vitest run` — a suíte completa
 
@@ -272,7 +274,7 @@ depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cob
 | ↳ `auditor_authcoupling` (R32) | | ✅ **0** — nasceu verde e continua |
 | ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
-| ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto**, 23 temas · **18 isentos** de contraparte (os legados) · **25 pares-tema pulados**, que não são aprovação. Nasceu em 188 |
+| ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto · 0 pares-tema pulados** — toda cadeia de fundo termina em base opaca (§9.8). Quantos temas e quantos isentos de contraparte, só a saída do comando diz. Nasceu em 188 |
 | `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **0 faltas**, e todo nome **resolve** para o valor do componente. *(A contagem de componentes é fonte viva: o próprio comando a imprime — publicá-la aqui é o padrão que o achado **32** cataloga.)* |
 | `catalog:check` **(R17·R29)** | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **363 arquivos varridos, 0 violações** — o número que importa é o de violações |
@@ -752,3 +754,17 @@ de `as` como o importável, de modo que mudança de formato do bundler exige mud
 **O que ele fecha:** antes dele, a convenção vivia só na skill `ui-novo-componente` — metade da superfície
 nasceu antes dela e nada cobrava. Era o caso clássico de regra sem gate, que o §8 do [[00-contexto]]
 cataloga.
+
+## 9.8 Seis gates que passaram a ver o que a regra já cobrava
+
+Cada um destes alcances tem um caso de fixture que falha no teste do próprio gate, e o limite novo está
+declarado no cabeçalho dele (R18).
+
+| Gate | O que passa a ver | O que continua fora |
+|---|---|---|
+| `plan-index:check` (R23) | As referências da §4 de cada plan ativa: caminho em crase com barra (raiz ou `specs/`) e `[[wikilink]]` (um `<nome>.md` em qualquer pasta de `specs/`) | A linha *Skill*, que é nome e não caminho; as outras seções da plan |
+| `kit-names:check` (R23, novo) | Nome público importado de `@sarak/lib-ui-core`, ou citado em crase, no que o consumidor recebe: `README.md`, `docs/*.md`, `sarak-ui/**` e o texto que o `init` gera | Todo arquivo chamado `migracoes.md`; prosa sem crase; nome em crase de formato não público, ou que exista em algum lugar de `src/` |
+| `trail-citation:check` (R36) | *veredito* seguido de *d* e qualquer letra: *de*, *do*, *da*, *desta*, *deste*, *dessa*, *dos*, *das* | *veredito final* e outras formas sem *d*; tudo que a R36 já declarava |
+| `auditor_ghostvars` (R7) | O registro conta só `id` de **token**, o objeto do schema que declara `type:` entre as próprias chaves; `id` de opção de `select` e de grupo do schema não emitem mais variável | O registro continua permissivo por desenho (expande sufixo em toda base) e **não** serve de lista pública de variáveis; essa lista é a do kit ([[12-kit-do-consumidor]]) |
+| `auditor_contraste` (R31) | Toda cadeia de fundo de `PAIRS` termina em `colorBgBody`, então barra, botão ou superfície translúcidos são compostos sobre o corpo em vez de pulados | O par só volta a ser pulado se o tema declarar o **próprio** `colorBgBody` translúcido ou não parseável; o botão primário é medido sobre o corpo mesmo quando senta num card |
+| `class-merge:check` (R35) | Import de `tailwind-merge` em `src/components/atomic/**` fora da porta `hooks/mergeSarakClasses.ts` | `__tests__/`; tudo fora de `atomic/`; a ordem dos argumentos do merge |

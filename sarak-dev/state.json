@@ -7,7 +7,7 @@
   },
   "design": {
     "schemaFiles": {
-      "count": 29,
+      "count": 30,
       "files": [
         "advanced.ts",
         "animations.ts",
@@ -23,6 +23,7 @@
         "data.ts",
         "engineering.ts",
         "global.ts",
+        "icons.ts",
         "inputs.ts",
         "layers.ts",
         "media.ts",
@@ -249,6 +250,10 @@
       "comando": "node scripts/generate-consumer-kit.mjs --check"
     },
     {
+      "nome": "npm run icon-port:check",
+      "comando": "node gates/scripts/contrato/check-icon-port.mjs"
+    },
+    {
       "nome": "npm run kit-names:check",
       "comando": "node gates/scripts/contrato/check-kit-names.mjs"
     },
@@ -384,7 +389,8 @@
       "015-metrica-do-item-de-navegacao-horizontal.md",
       "016-preferencias-do-usuario-separadas-do-tema.md",
       "017-porta-de-apagar-tema-simetrica-a-de-escrever.md",
-      "018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md"
+      "018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md",
+      "020-gantt-casca-propria.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

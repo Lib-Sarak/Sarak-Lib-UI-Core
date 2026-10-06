@@ -1,4 +1,5 @@
 import { ComponentSchema } from '../types';
+import { ICON_TOKENS } from './icons';
 
 /**
  * SCHEMA: CONFIGURAÇÕES GLOBAIS
@@ -200,46 +201,7 @@ export const SystemSchema: ComponentSchema = {
             defaultValue: { mob: 24, tab: 32, desk: 36 },
             cssVars: ['--sarak-layout-gap-lg']
         },
-        // --- ÍCONES ---
-        {
-            id: 'iconFamily',
-            label: 'Família de Ícones',
-            type: 'select',
-            description: 'Biblioteca de ícones usada em toda a aplicação. Lucide é o padrão (traço uniforme, neutro); Phosphor e Tabler têm caráter visual próprio — trocar a família muda a "personalidade" de todos os ícones de uma vez.',
-            axis: 'texture',
-            defaultValue: 'lucide',
-            options: [
-                { value: 'lucide', label: 'Lucide (Padrão)' },
-                { value: 'phosphor', label: 'Phosphor' },
-                { value: 'tabler', label: 'Tabler Icons' }
-            ]
-        },
-        {
-            id: 'iconWeight',
-            label: 'Peso / Estilo do Ícone',
-            type: 'select',
-            description: 'Peso visual dos ícones — Thin/Light para um clima delicado/editorial, Regular é o padrão equilibrado, Bold/Fill para mais presença/contraste, Duotone para um estilo bicolor decorativo. Nem toda família de ícones suporta todos os pesos.',
-            axis: 'density',
-            defaultValue: 'regular',
-            options: [
-                { value: 'thin', label: 'Thin' },
-                { value: 'light', label: 'Light' },
-                { value: 'regular', label: 'Regular' },
-                { value: 'bold', label: 'Bold' },
-                { value: 'fill', label: 'Fill (Preenchido)' },
-                { value: 'duotone', label: 'Duotone' }
-            ]
-        },
-        {
-            id: 'iconStrokeWidth',
-            label: 'Espessura do Ícone',
-            type: 'slider',
-            description: 'Espessura do traço dos ícones vetoriais, em unidades relativas do SVG — valores altos dão ícones mais "gordos"/impactantes; valores baixos, mais finos/técnicos.',
-            axis: 'geometry',
-            constraints: { min: 1, max: 4, step: 0.5 },
-            defaultValue: 2,
-            cssVars: ['--sarak-icon-stroke', '--theme-icon-stroke']
-        },
+        ...ICON_TOKENS,
         // --- SCROLLBARS ---
         {
             id: 'scrollbarWidth',

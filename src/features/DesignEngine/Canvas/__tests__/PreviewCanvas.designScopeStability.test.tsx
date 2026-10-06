@@ -44,7 +44,6 @@ const baseProps = (draftTokens: Record<string, unknown>) => ({
     activePreviewApp: 'dashboard',
     setActivePreviewApp: () => {},
     previewAnimationStyle: 'none',
-    previewEmojiSet: 'apple',
     config: {},
     previewPrimaryColor: '#000',
     mode: 'light',

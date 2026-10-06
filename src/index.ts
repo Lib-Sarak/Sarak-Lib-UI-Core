@@ -145,6 +145,7 @@ export type { SarakAccept } from './components/atomic/Inputs/SarakUploader';
 // RichText WYSIWYG blindado (Spec 11 / Onda 10) — contentEditable + sanitizeHtml.
 export * from './components/atomic/Inputs/SarakRichText';
 export * from './components/atomic/Templates';
+export type { SarakSocialConfig, SarakSocialProviderConfig } from './components/atomic/Templates/components/AuthSocialLogin';
 export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
 export { SarakAlert } from './components/atomic/Feedback/SarakAlert';

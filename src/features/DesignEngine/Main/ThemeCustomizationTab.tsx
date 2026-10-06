@@ -212,7 +212,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewLayoutId={draft.layout || sarak.layout || 'glass'}
                     setActivePreviewApp={setActivePreviewApp}
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
-                    previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
                     previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #00f2ff)'}
                     draftTokens={draft}
                     activeSectionId={activeSectionId}

@@ -57,7 +57,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > reprovados. Na mesma síntese nasceu **R33** (payload de tema é contrato público). **A fila de ⏳ zerou.**
 >
 > ✅ **E ficou verde em 2026-08-11 (`plan-24-1`): 188 → 0**, nos dois modos. **R31 continua ⚠️, e de
-> propósito** — 25 pares-tema seguem pulados por fundo não determinístico. **Conformidade verde não é
+> propósito** — o par de texto de status segue fora da lista medida (R31, item 2). **Conformidade verde não é
 > cobertura plena**, e o marcador descreve a segunda.
 >
 > 🔴 **Recontagem de 2026-08-09 — seis linhas desta tabela descreviam gates que já não existiam assim.** O
@@ -799,7 +799,16 @@ ERRADO   "edite `src/core/Manifest/Registry/nativeComponents.ts`" → arquivo re
 
 Metavariável (`<Categoria>`) e glob (`*`) são **ignorados de propósito** (`:49-60`): um verificador que adivinha produz falso-positivo, e gate com falso-positivo é gate que se aprende a contornar — o autor simplesmente para de usar crase, que é o que dá poder a este gate.
 
-> ⚠️ **Os dois vãos declarados.** (1) **Só `sarak-dev/` é varrido** por este gate — `docs/`, `sarak-ui/` e as specs não são. (2) **Ponteiro de seção (`§N.N`) não é validado por ele**: quem cobre isso é o `auditor_sectionpointers.mjs`, e só a **autorreferência** — ponteiro `§N` que aponta para outro documento fica fora, declarado no cabeçalho do script. O achado **29**, que era a instância viva deste vão (um `§5.1` inexistente saindo em dois artefatos gerados), **fechou** — ver [[15-divida-conhecida]].
+**Dois alcances além do kit do mantenedor**, com a mesma regra:
+
+- **A §4 das plans ativas** — `npm run plan-index:check` exige que todo caminho em crase com barra e todo
+  `[[wikilink]]` da tabela de referências exista. A linha *Skill* não é resolvida.
+- **Os nomes públicos do que o consumidor recebe** — `npm run kit-names:check` (no `build`) exige que todo
+  nome importado de `@sarak/lib-ui-core`, em `README.md`, `docs/*.md`, `sarak-ui/**` e no texto gerado pelo
+  `init`, exista no barril; em crase, acusa o nome antigo de uma renomeação e o nome de formato público
+  inexistente em `src/`. Todo `migracoes.md` fica fora, e prosa sem crase não é lida.
+
+> ⚠️ **Os dois vãos declarados.** (1) **Caminho e comando só são validados em `sarak-dev/`** — em `docs/`, `sarak-ui/` e nas specs fora da §4 de uma plan, nada confere que o arquivo citado existe. (2) **Ponteiro de seção (`§N.N`) não é validado por ele**: quem cobre isso é o `auditor_sectionpointers.mjs`, e só a **autorreferência** — ponteiro `§N` que aponta para outro documento fica fora, declarado no cabeçalho do script. O achado **29**, que era a instância viva deste vão (um `§5.1` inexistente saindo em dois artefatos gerados), **fechou** — ver [[15-divida-conhecida]].
 
 ---
 
@@ -833,11 +842,11 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `GLOBAL_THEMES`, e o teste itera sobre ele — não sobre uma lista fixada aqui.
+**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `SARAK_GLOBAL_THEMES`, e o teste itera sobre ele — não sobre uma lista fixada aqui.
 
 **Por quê.** É o teste de coerência entre R5 e R6: se um tema **da lib** dispara o descarte de R6, a lib está entregando ao consumidor um ponto de partida que o próprio motor rejeita — e o consumidor vê o aviso, não sabe que é nosso, e vai caçar o defeito no código dele. Aviso que aparece sempre também vira aviso que ninguém lê, e aí o dia em que o warn for **dele** já não terá efeito.
 
-**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(GLOBAL_THEMES)`.
+**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(SARAK_GLOBAL_THEMES)`.
 
 ---
 
@@ -968,16 +977,15 @@ dois modos** — baseline `0` no nativo e `0` no oposto, valor corrente em `npm 
 > **vermelho com 188**, por desenho). ⚠️ desde então — ⏳ significa *"a verificação ainda não foi
 > construída"* (§1.2), e ela foi.
 >
-> **Por que NÃO subiu para ✅ quando os temas ficaram verdes** *(revisor, `plan-24-1`)*. A `plan-24-1`
-> previa ✅ na sua meta, e o resultado não autoriza: **25 pares-tema seguem PULADOS** — fundo não
-> determinístico, declarado em vez de chutado — e o par de texto de status continua fora. O gate **não vê**
-> parte do que a regra exige, que é a definição literal de ⚠️ (§1.2). Marcar ✅ aqui seria o *"✅ falso"* que
-> esta spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a
-> conformidade, hoje, está verde.
+> **Por que NÃO sobe para ✅ com os temas verdes.** Nenhum par-tema é mais pulado por cadeia de fundo
+> incompleta, mas o par de texto de status continua fora de `PAIRS` (item 2 abaixo). O gate **não vê** parte
+> do que a regra exige, que é a definição literal de ⚠️ (§1.2). Marcar ✅ aqui seria o *"✅ falso"* que esta
+> spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a conformidade,
+> hoje, está verde.
 
-**Enunciado.** **Todo tema shippado** (o conjunto `GLOBAL_THEMES`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
+**Enunciado.** **Todo tema shippado** (o conjunto `SARAK_GLOBAL_THEMES`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
 
-> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `GLOBAL_THEMES` inteiro, e cresce. *"Os **18** legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Escrever "18" onde se quer dizer "shippados" é o erro que esta regra já cometeu.
+> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `SARAK_GLOBAL_THEMES` inteiro, e cresce. *"Os legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Os dois tamanhos estão na saída do comando, nunca nesta prosa.
 
 **Por quê.** É o caminho do meio, e as duas metades importam. A metade que **não** se promete já estava registrada em [[10-seguranca-e-acessibilidade]] §2.4d: *"o tema é dado do consumidor; prometer AA exigiria a lib recusar valores dele, o que contradiz o contrato de tema"* (R6 descarta o que está **fora do contrato**, não o que está feio). Isso está certo — e **não cobre os temas que são da lib**, entregues como ponto de partida. Aquela spec chegou a admitir que a lib não sabia dizer se os próprios temas passavam AA. R31 fecha essa metade, e só ela.
 
@@ -997,7 +1005,9 @@ gate mede **duas passadas**, o modo nativo do tema e a contraparte gerada.
 `src/core/Design/catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
 componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem relaxamento: a WCAG só permite 3:1
 para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
-cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
+cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada. **Toda cadeia termina em
+`colorBgBody`**, a base que a pilha real de superfícies sempre tem por baixo: barra, botão, superfície ou item
+ativo translúcidos são compostos sobre o corpo.
 
 **Dois vãos FECHARAM na `plan-24-1` (2026-08-11)** — e os dois eram do motor, não do gate:
 
@@ -1013,12 +1023,13 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
 
 **O que o gate ainda NÃO vê** — e é por isso que a linha segue ⚠️:
 
-1. **25 pares-tema PULADOS.** Valor em `hsl()`, `var()` ou gradiente, ou cadeia cujo elo final segue
-   translúcido: o gate **declara** em vez de chutar um fundo. **Pulado não é aprovado** — é não medido.
-2. **`statusErrorColor`/`statusSuccessColor` ficam fora**, declarados com número (**7/18** e **5/18**,
-   medidos antes da correção dos temas): o fundo real deles é `--sarak-status-*-color-bg`, que **nunca é
-   emitida** — cobrar isso do tema seria acusar o autor por defeito de componente. Achado **38** em
-   [[15-divida-conhecida]] §3.1.
+1. **Valor que não se resolve é declarado, não chutado.** `hsl()`, `var()`, gradiente, ou um `colorBgBody`
+   do próprio tema translúcido: o par sai como **pulado**, e **pulado não é aprovado** — é não medido. Nos
+   temas shippados, hoje, nenhum par cai aqui (contagem na saída do comando).
+2. **`statusErrorColor`/`statusSuccessColor` ficam fora de `PAIRS`.** O motivo escrito no cabeçalho do gate —
+   o fundo `--sarak-status-*-color-bg` nunca seria emitido — **não se reproduz** desde 2026-08-12 (achado **38**,
+   fechado, em [[15-divida-conhecida]]): a variável é emitida. O par é cobertura que falta, não isenção
+   justificada.
 3. **O tema do consumidor não é coberto** — por desenho: a regra promete AA nos **temas shippados**, não no
    dado de terceiro. Ver a nota de migração de D em `docs/migracoes.md`.
 
@@ -1178,7 +1189,10 @@ ERRADO   extendTailwindMerge(...) dentro do átomo       // a configuração tem
 
 **Cobrada por:** `check-class-merge.mjs` (`npm run class-merge:check`), no Anel 1 do `.githooks/pre-commit`
 **e** no passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`. **Os dois lugares são
-obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O
+obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O mesmo gate
+cobra a **porta única**: nenhum arquivo de `src/components/atomic/**` importa `tailwind-merge` fora de
+`hooks/mergeSarakClasses.ts` (`__tests__/` à parte) — o `twMerge` cru não conhece as utilitárias próprias
+da tabela acima. O
 comportamento resultante tem teste próprio (`mergeSarakClasses.test.ts`, uma asserção por utilitária
 própria; `SarakButton.test.tsx`, `SarakIconButton.test.tsx`).
 
@@ -1218,7 +1232,8 @@ CERTO    // achado 40, 15-divida-conhecida               ← spec fixa, numeraç
 **Cobrada por:** `check-trail-citation.mjs` (`npm run trail-citation:check`), no Anel 1 do
 `.githooks/pre-commit`, sobre as linhas **adicionadas** do staged (`--staged`). Sem flag, o mesmo gate lê o
 worktree contra o `HEAD` **mais os arquivos não rastreados** — é o modo de quem revisa. Caminho com acento é
-lido sem escape. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
+lido sem escape. O padrão de veredito é *veredito* seguido de *d* e qualquer letra — *de*, *do*, *da*,
+*desta*, *dos*… —, e *veredito final* não casa. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
 motivo, os arquivos cujo domínio é o próprio identificador de plan. O gate também reprova entrada **sem
 motivo** ou de arquivo que **não existe mais**.
 

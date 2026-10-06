@@ -293,7 +293,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ### B.1 Design — as fontes que a paridade cruza
 
-`MASTER_DESIGN_MAP` v13.0.0 · **29 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
+`MASTER_DESIGN_MAP` v13.0.0 · **30 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
 
 | Fonte | Medida | Valor |
 | --- | --- | --- |
@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 96** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (29)
+### B.3 Gates registrados (30)
 
 | Comando | O que roda |
 | --- | --- |
@@ -335,6 +335,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
+| `npm run icon-port:check` | `node gates/scripts/contrato/check-icon-port.mjs` |
 | `npm run kit-names:check` | `node gates/scripts/contrato/check-kit-names.mjs` |
 | `npm run migration-anchor:check` | `node gates/scripts/contrato/check-migration-anchor.mjs` |
 | `npm run minor-no-removal:check` | `node gates/scripts/contrato/check-minor-no-removal.mjs` |
@@ -380,7 +381,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (18)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md`
+**ADR (19)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `020-gantt-casca-propria.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

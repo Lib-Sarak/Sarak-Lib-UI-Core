@@ -5,7 +5,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { MockSettings } from '../SettingsMock';
 
 vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
+    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} })),
+    useSarakUIOptional: vi.fn(() => undefined),
 }));
 
 vi.mock('framer-motion', async () => {

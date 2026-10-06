@@ -1,5 +1,6 @@
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+
+import { SarakIcon } from "../Icon/SarakIcon";
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
 
@@ -76,7 +77,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
             {children}
             {external && (
                 <>
-                    <ExternalLink size={12} aria-hidden="true" className="shrink-0" />
+                    <SarakIcon name="ExternalLink" size={12} aria-hidden="true" className="shrink-0" />
                     <span className="sr-only">{t('linkExternalHint')}</span>
                 </>
             )}

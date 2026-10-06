@@ -1,11 +1,7 @@
 import React from 'react';
+import { SarakIcon } from "../Icon/SarakIcon";
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Search, 
-    MoreHorizontal, 
-    RefreshCw,
-    AlertCircle
-} from 'lucide-react';
+
 import { SarakInput } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -58,7 +54,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
     if (error) {
         return (
             <div className={mergeSarakClasses("rounded-3xl items-center border", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)', backgroundColor: 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))', borderColor: 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))', color: 'var(--sarak-status-error-color,#ef4444)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                <AlertCircle size={24} />
+                <SarakIcon name="AlertCircle" size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
                     <p className="text-xs opacity-60">{error}</p>
@@ -91,11 +87,11 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                             placeholder="Pesquisar..." 
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            leftIcon={<Search size={16} />}
+                            leftIcon={<SarakIcon name="Search" size={16} />}
                         />
                     </div>
                     <SarakIconButton 
-                        icon={<RefreshCw size={16} className={loading ? 'animate-spin' : ''} />} 
+                        icon={<SarakIcon name="RefreshCw" size={16} className={loading ? 'animate-spin' : ''} />}
                         onClick={fetchData} 
                         variant="secondary"
                     />
@@ -204,7 +200,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                                             ))}
                                             <td className={`flex items-center ${actionColumnAlignmentClass} ${cellDensityClass}`}>
                                                 <SarakIconButton 
-                                                    icon={<MoreHorizontal size={16} />}
+                                                    icon={<SarakIcon name="MoreHorizontal" size={16} />}
                                                     variant="ghost"
                                                 />
                                             </td>
@@ -220,7 +216,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                 {filteredData.length === 0 && !loading && (
                     <div className={mergeSarakClasses("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <div className="inline-flex bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <AlertCircle className="text-white/10" size={32} />
+                            <SarakIcon name="AlertCircle" className="text-white/10" size={32} />
                         </div>
                         <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nenhum dado encontrado</p>
                     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
+import { SarakIcon } from "../Icon/SarakIcon";
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
@@ -142,7 +143,7 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                                     )}
                                     style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                                     aria-label={t('modalCloseAriaLabel')}
-                                    icon={<X size={18} />}
+                                    icon={<SarakIcon name="X" size={18} />}
                                 />
                             )}
                         </div>

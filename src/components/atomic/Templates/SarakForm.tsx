@@ -1,6 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Settings, ShieldCheck, AlertCircle } from 'lucide-react';
+
 import api from '../../../shared/services/api';
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
@@ -96,7 +97,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
             <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                     <div className="bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] rounded-2xl border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                        <Settings size={20} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                        <SarakIcon name="Settings" size={20} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label}</h3>
@@ -104,7 +105,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                     </div>
                 </div>
                 <div className="flex items-center bg-[var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))] rounded-xl border border-[var(--sarak-status-success-color-border,rgba(34,197,94,0.2))] text-[var(--sarak-status-success-color,#22c55e)] text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 3) calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
-                    <ShieldCheck size={12} /> Sincronização Segura
+                    <SarakIcon name="ShieldCheck" size={12} /> Sincronização Segura
                 </div>
             </div>
 
@@ -139,7 +140,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                         color: status.type === 'success' ? 'var(--sarak-status-success-color,#22c55e)' : 'var(--sarak-status-error-color,#ef4444)'
                     }}
                 >
-                    {status.type === 'success' ? <ShieldCheck size={16} /> : <AlertCircle size={16} />}
+                    {status.type === 'success' ? <SarakIcon name="ShieldCheck" size={16} /> : <SarakIcon name="AlertCircle" size={16} />}
                     <span className="text-xs font-bold">{status.message}</span>
                 </motion.div>
             )}
@@ -155,7 +156,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                     {saving ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                        <Save size={16} />
+                        <SarakIcon name="Save" size={16} />
                     )}
                     {saving ? 'Sincronizando...' : 'Salvar Alterações'}
                 </SarakButton>

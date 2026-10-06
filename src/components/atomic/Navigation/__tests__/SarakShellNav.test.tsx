@@ -19,6 +19,12 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
         expect(screen.getByText('Sistema')).toBeInTheDocument();
     });
 
+    it('aceita um elemento fornecido pelo consumidor como ícone de navegação', () => {
+        render(<SarakShellNav items={[{ label: 'Início', route: '/', icon: <svg data-testid="consumer-nav-icon" /> }]} />);
+
+        expect(screen.getByTestId('consumer-nav-icon')).toBeInTheDocument();
+    });
+
     it('destaca o item ativo via aria-current (estado vindo de {{$route}})', () => {
         render(<SarakShellNav items={ITEMS} activeRoute="/relatorios" />);
         const active = screen.getByRole('link', { name: 'Relatórios' });

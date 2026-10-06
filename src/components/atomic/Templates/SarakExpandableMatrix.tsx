@@ -1,6 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ChevronDown, Check, X, Shield, Info } from 'lucide-react';
+
 import { SarakInput } from '../Inputs';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { RecursiveMatrixNode } from './components/RecursiveMatrixNode';
@@ -59,7 +60,6 @@ export interface SarakExpandableMatrixProps<TData extends SarakMatrixParentData>
     /** Manifesto opcional de mapeamento recursivo para layout IAM/RBAC avançado */
     manifest?: SarakMatrixManifest;
 }
-
 
 
 export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
@@ -130,7 +130,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                     placeholder="Filtrar matriz de permissões..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    leftIcon={<Search size={18} />}
+                    leftIcon={<SarakIcon name="Search" size={18} />}
                 />
             </div>
 
@@ -157,7 +157,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                 ) : (
                                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                                         <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] flex items-center justify-center text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)]">
-                                            <Shield size={20} />
+                                            <SarakIcon name="Shield" size={20} />
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-tight">{item.name || item.id}</h4>
@@ -171,7 +171,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                     animate={{ rotate: expandedId === item.id ? 180 : 0 }}
                                     className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--text-muted,#94a3b8)]/10 text-[var(--text-muted,#94a3b8)]"
                                 >
-                                    <ChevronDown size={16} />
+                                    <SarakIcon name="ChevronDown" size={16} />
                                 </motion.div>
                             </div>
                         </div>
@@ -205,7 +205,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                         </div>
                                         {filteredSubItems.length === 0 && (
                                             <div className={`${emptyStateStack.className} text-[var(--text-muted,#94a3b8)] italic`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 2)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
-                                                <Info size={24} className="opacity-50" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
+                                                <SarakIcon name="Info" size={24} className="opacity-50" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
                                                 <span className="text-xs">Nenhum item encontrado para o filtro aplicado.</span>
                                             </div>
                                         )}

@@ -48,7 +48,7 @@ describe('SarakAuthScreen (Spec 20 — canal declarativo onChange)', () => {
         renderWithProvider(
             <SarakAuthScreen
                 onChange={onChange}
-                socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', variant: 'glass' }] }}
+                socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', icon: <svg />, variant: 'glass' }] }}
             />,
         );
 
@@ -118,7 +118,7 @@ describe('SarakAuthScreen (Spec 20 — canal declarativo onChange)', () => {
     // query casar é prova de browser real, plan-40).
     it('planta @container na raiz — ancestral do grid de provedores sociais em AuthSocialLogin', () => {
         const { container } = renderWithProvider(
-            <SarakAuthScreen socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', variant: 'glass' }] }} />,
+            <SarakAuthScreen socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', icon: <svg />, variant: 'glass' }] }} />,
         );
 
         expect(container.querySelector('[class*="@container"]')).not.toBeNull();

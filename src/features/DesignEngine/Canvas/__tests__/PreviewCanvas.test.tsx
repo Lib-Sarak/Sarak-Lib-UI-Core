@@ -36,7 +36,6 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 activePreviewApp="dashboard"
                 setActivePreviewApp={() => {}}
                 previewAnimationStyle="none"
-                previewEmojiSet="apple"
                 config={{}}
                 previewPrimaryColor="#000"
                 mode="light"
@@ -71,7 +70,6 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     activePreviewApp="dashboard"
                     setActivePreviewApp={() => {}}
                     previewAnimationStyle="none"
-                    previewEmojiSet="apple"
                     config={{}}
                     previewPrimaryColor="#000"
                     mode="light"

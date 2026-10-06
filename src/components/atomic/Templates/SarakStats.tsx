@@ -1,12 +1,7 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-    TrendingUp, 
-    TrendingDown, 
-    Activity, 
-    RefreshCw,
-    AlertCircle
-} from 'lucide-react';
+
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
@@ -95,7 +90,7 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
                                     const level = levels[idx % levels.length];
                                     return (
                                         <div className="rounded-[var(--sarak-card-radius,12px)] transition-colors" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)', backgroundColor: `var(--sarak-primary-color-bg,rgba(59,130,246,0.1))`, transitionDuration: 'var(--duration-normal, 0.3s)' }}>
-                                            <Activity size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
+                                            <SarakIcon name="Activity" size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
                                         </div>
                                     );
                                 })()}

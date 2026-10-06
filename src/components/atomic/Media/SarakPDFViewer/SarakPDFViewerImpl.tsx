@@ -1,3 +1,4 @@
+import { SarakIcon } from "../../Icon/SarakIcon";
 /**
  * SarakPDFViewer (Spec 15, Regra 2) — implementação pesada (lazy).
  *
@@ -11,7 +12,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ZoomIn, ZoomOut, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { usePdfDocument, type SarakPdfSource } from './usePdfDocument';
 import { SarakIconButton } from '../../Buttons/SarakIconButton';
 
@@ -118,22 +119,22 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
                     nativo por baixo — não há armadilha de foco própria aqui (o viewer não
                     usa useFocusTrap), então não há seletor de DOM para reconferir. */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <SarakIconButton variant="ghost" aria-label="Diminuir zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(-ZOOM_STEP)} disabled={scale <= ZOOM_MIN} icon={<ZoomOut size={16} />} />
+                    <SarakIconButton variant="ghost" aria-label="Diminuir zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(-ZOOM_STEP)} disabled={scale <= ZOOM_MIN} icon={<SarakIcon name="ZoomOut" size={16} />} />
                     <span style={{ minWidth: 44, textAlign: 'center', fontSize: 12, color: 'var(--text-muted,#94a3b8)' }}>
                         {Math.round(scale * 100)}%
                     </span>
-                    <SarakIconButton variant="ghost" aria-label="Aumentar zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(ZOOM_STEP)} disabled={scale >= ZOOM_MAX} icon={<ZoomIn size={16} />} />
+                    <SarakIconButton variant="ghost" aria-label="Aumentar zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(ZOOM_STEP)} disabled={scale >= ZOOM_MAX} icon={<SarakIcon name="ZoomIn" size={16} />} />
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <SarakIconButton variant="ghost" aria-label="Página anterior" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page - 1)} disabled={page <= 1} icon={<ChevronLeft size={16} />} />
+                    <SarakIconButton variant="ghost" aria-label="Página anterior" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page - 1)} disabled={page <= 1} icon={<SarakIcon name="ChevronLeft" size={16} />} />
                     <span aria-live="polite" style={{ fontSize: 12, color: 'var(--text-muted,#94a3b8)', minWidth: 64, textAlign: 'center' }}>
                         {total ? `${page} / ${total}` : '—'}
                     </span>
-                    <SarakIconButton variant="ghost" aria-label="Próxima página" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page + 1)} disabled={page >= total} icon={<ChevronRight size={16} />} />
+                    <SarakIconButton variant="ghost" aria-label="Próxima página" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page + 1)} disabled={page >= total} icon={<SarakIcon name="ChevronRight" size={16} />} />
                 </div>
 
-                <SarakIconButton variant="ghost" aria-label="Baixar PDF" className={controlBtn} style={controlBtnStyle} onClick={handleDownload} icon={<Download size={16} />} />
+                <SarakIconButton variant="ghost" aria-label="Baixar PDF" className={controlBtn} style={controlBtnStyle} onClick={handleDownload} icon={<SarakIcon name="Download" size={16} />} />
             </div>
 
             {/* Área de renderização. */}

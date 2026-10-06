@@ -1,6 +1,7 @@
 import React from 'react';
+import { SarakIcon } from "../Icon/SarakIcon";
 import { motion } from 'framer-motion';
-import { Sparkles, Zap, Box, Compass } from 'lucide-react';
+
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
@@ -39,7 +40,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 style={{ flexDirection: 'column' }}
             >
                 <motion.div variants={itemVariants} className="pointer-events-none" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                    <Compass size={64} strokeWidth={1} />
+                    <SarakIcon name="Compass" size={64} strokeWidth={1} />
                 </motion.div>
                 <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase" style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}>{systemName || t('genericSystemLabel')}</motion.h2>
                 <motion.p variants={itemVariants} className="text-2xs uppercase tracking-widest italic" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{t('emptyStateMinimalCaption')}</motion.p>
@@ -74,7 +75,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
 
                 <div className="absolute z-10 text-center">
                     <motion.div variants={itemVariants} className="text-[var(--sarak-primary-color,#3b82f6)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                        <Box size={40} strokeWidth={1} />
+                        <SarakIcon name="Box" size={40} strokeWidth={1} />
                     </motion.div>
                     <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase text-white/10" style={{ letterSpacing: 'var(--sarak-tracking-ultra, 0.8em)', marginLeft: 'var(--sarak-empty-state-void-letter-offset, 0.8em)' }}>{t('emptyStateGeometricTitle')}</motion.h2>
                     <motion.p variants={itemVariants} className="text-2xs uppercase text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('emptyStateGeometricCaption')}</motion.p>
@@ -103,7 +104,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
             
             <motion.div variants={itemVariants} className="relative" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 2)' }}>
                 <div className="relative z-10 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl" style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                    <Sparkles size={48} className="text-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
+                    <SarakIcon name="Sparkles" size={48} className="text-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                 </div>
                 <motion.div 
                     animate={{ rotate: -360 }}
