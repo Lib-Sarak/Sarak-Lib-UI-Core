@@ -62,9 +62,9 @@ depois**, e sempre em cima de outra pessoa.
 | | Quantidade | Quem instala |
 | --- | --- | --- |
 | `dependencies` | **3** — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` | a lib traz junto |
-| `peerDependencies` | **19** — 10 obrigatórias e 9 opcionais (`peerDependenciesMeta`) | o consumidor instala as obrigatórias; motores opcionais só são necessários quando usados |
+| `peerDependencies` | **18** — 9 obrigatórias e 9 opcionais (`peerDependenciesMeta`) | o consumidor instala as obrigatórias; motores opcionais só são necessários quando usados |
 
-As obrigatórias são `@tanstack/react-virtual`, `axios`, `clsx`, `date-fns`, `framer-motion`,
+As obrigatórias são `@tanstack/react-virtual`, `clsx`, `date-fns`, `framer-motion`,
 `lucide-react`, `react`, `react-dom`, `react-dropzone` e `tailwind-merge`. São importadas pelo
 barril ou por código eager. As opcionais são `echarts`, `echarts-for-react`, `pdfjs-dist`,
 `react-markdown`, `react-syntax-highlighter`, `reactflow` e `recharts`, usadas por motores lazy;

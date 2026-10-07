@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Dar ao painel de temas um caminho simples: escolher um tema, ajustar o que pesa, aplicar"
 objetivo: "Fazer o painel de temas contar um caminho de tres passos sem jargao, com poucos botoes, uma galeria que abre sob demanda, preview que acompanha o que se edita e um unico jeito de aplicar"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel de customização"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "design-engine", "painel", "ux", "preview"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]"]
-depende_de: "plan-99-achar-e-priorizar-no-painel-de-temas"
+depende_de: ""
 retida_por: ""
 destino_sintese: "specs/06-painel-de-customizacao-e-preview.md"
 ---

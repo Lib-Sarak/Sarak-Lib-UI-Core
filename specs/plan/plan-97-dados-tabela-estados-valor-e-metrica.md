@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Exibir dado: tabela com célula própria e estados, paginação com resumo, valor formatado e cartão de métrica"
 objetivo: "Dar a lib o que quatro sistemas refizeram a mao para exibir dado: tabela semantica com celula customizada e os tres estados, paginacao com tamanho e resumo, valor numerico formatado com cor por sinal e cartao de metrica completo"
 dominio: "Sarak-Lib-UI-Core / Átomos / Exibição de dado"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "tabela", "paginacao", "formatacao", "metrica", "componentes"]
 relacionados: ["[[03-superficie-publica]]", "[[11-testes-e-cobertura]]", "[[07-responsividade-e-multidispositivo]]"]
-depende_de: "plan-96-templates-sem-dominio-embutido"
+depende_de: ""
 retida_por: ""
 destino_sintese: "arquitetura/03-superficie-publica.md"
 ---

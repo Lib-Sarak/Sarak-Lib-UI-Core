@@ -63,29 +63,66 @@ cola que faz a folksonomia funcionar e é o único ponto que precisa de manuten�
 inventa um rótulo novo de categoria. Categoria não reconhecida cai em `'Geral'` (`:18`) — degrada, não
 quebra.
 
-## 2.1 Essencial × Avançado — os dois modos, e o dado que os separa
+## 2.1 Impacto × Essencial × Completo — os três modos, e o dado que os separa
 
-O painel expõe **dois modos nomeados**, e a separação não é uma lista curada à mão: sai do mesmo campo que
-a folksonomia já usa.
+O painel expõe **três modos nomeados**, escolhidos por um seletor no cabeçalho (grupo de rádio "Modo de
+edição": setas movem a seleção). O padrão é **Essencial**, e o modo não persiste. Nenhum modo é lista curada
+num arquivo de configuração: o dado que os separa mora **na entrada do token no catálogo**
+(`src/core/Design/catalog/partitions/`), não no schema.
 
 | Modo | O que mostra | Como é derivado |
 | --- | --- | --- |
-| **Essencial** | os tokens de maior importância no catálogo | `importance >= 80` na entrada do token **no catálogo** (`src/core/Design/catalog/partitions/`), não no schema |
-| **Avançado** | o dicionário inteiro | sem filtro |
+| **Impacto** | poucos controles que, sozinhos, mudam o visual inteiro, numa **lista plana** de cinco blocos abertos — Fontes, Cores, Fundo e textura, Cards, Forma e estrutura —, sem acordeão de pilar | o token declara `visualImpact` com o grupo (`fontes`, `cores`, `fundo`, `cards` ou `forma`). Cada um marcado tem efeito visível provado (um consumidor que lê o valor e muda o que se vê). Bloco sem token não aparece |
+| **Essencial** | os tokens de maior importância | `importance >= 80` |
+| **Completo** | o dicionário inteiro | sem filtro |
 
-O corte por `importance` é o que mantém o Essencial **honesto ao crescer**: token novo de alto impacto
-entra sozinho, sem ninguém lembrar de atualizar uma lista. E é o que impede o modo de virar uma seleção
-arbitrária que envelhece — o mesmo princípio da §2.
+**Por que o Impacto tem campo próprio:** `importance` **não** mede impacto visual — tokens como z-index e
+breakpoint estão acima de `texture` nele. Um corte mais alto em `importance` não daria o modo.
 
-**O Command Center tem entrada própria**, separada dos dois modos: é acesso direto por busca, não uma
-terceira curadoria.
+O corte por campo é o que mantém os modos **honestos ao crescer**: token novo entra sozinho, declarando o campo
+onde nasce, sem ninguém lembrar de atualizar uma lista — o mesmo princípio da §2.
+
+O modo filtra os **pilares** e a lista plana; o bloco global e o da barra de preferências aparecem em todos os
+modos, e a **busca ignora o modo** (§2.2).
+
+**O Command Center tem entrada própria**, separada dos três modos: é acesso direto por busca, não outra
+curadoria.
 
 ### 2.1.1 A seção "Composição da Barra"
 
 No pilar de **navegação** mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
 
-- **Aparece no modo padrão.** Os oito têm `importance: 80` no catálogo, então entram no **Essencial**; a seção não exige abrir o modo Avançado.
+- **Aparece no modo padrão.** Os oito têm `importance: 80` no catálogo, então entram no **Essencial**; a seção não exige abrir o modo Completo.
 - **É do sistema, não do tema.** Escolher um tema no painel **não** altera essa seção: nenhum tema distribuído declara token de composição.
+
+## 2.2 A busca de token — por sentido, não por substring
+
+As três telas que buscam token — a aba de tema, a planilha do `MasterControlPanel` e o Command Center —
+chamam **uma função só**, `searchTokens` (`src/features/DesignEngine/utils/token-search.ts`). Ela não muda
+rótulo nenhum: decide o que aparece e em que ordem.
+
+**O que ela indexa:** o `label` do schema **e** o `name` do catálogo (a tela mostra um, o schema guarda o outro,
+e eles diferem em muitos tokens), o id quebrado em `camelCase`, `tags`, `categories`, `description` e o rótulo do
+componente de origem. Um token sem entrada no catálogo cai no `label` do schema.
+
+**Como casa:** acento e caixa são normalizados, e palavras de ligação (`de`, `do`, `da`, `com`…) são ignoradas.
+**Todo** termo precisa casar, de um destes jeitos:
+- palavra inteira;
+- **conceito** — o termo pertence a um grupo de `config/token-search-concepts.json` (`fonte`, `escrita`,
+  `texto`, `letra`, `tipografia`, `font`… são um grupo), e qualquer membro do grupo está no índice;
+- **prefixo, só no último termo** (busca enquanto digita: `cor do tex` alcança `texto`), com 2 ou mais caracteres.
+
+**A ordem:** palavra inteira no nome > conceito no nome > palavra ou conceito em tag, categoria, descrição, id
+ou componente > só prefixo (que vale mais no nome que fora dele). Um conceito no nome sobe ao nível de palavra
+inteira quando o token tem três ou mais membros do grupo, e cada membro presente soma um bônus pequeno de
+densidade. Os dois ajustes põem as fontes no topo de `texto` e `escrita` sem inverter "nome antes de tag".
+Empate segue a ordem do schema.
+
+**Na aba de tema:** o título mostra a contagem, busca sem resultado tem estado vazio, e cada resultado mostra
+onde o controle mora no modo Completo (`Pilar › Seção`; token fora de grupo não ganha caminho).
+
+**Limite:** o vocabulário do catálogo é misto (português e inglês) e ralo, e o dicionário de conceitos é a única
+manutenção manual da busca. O teste reprova grupo com menos de dois termos ou que não case ao menos dois tokens.
 
 # 3. Controles polimórficos
 
@@ -433,6 +470,8 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Verificação | Onde | Situação |
 | --- | --- | --- |
 | Folksonomia: sanitização de categoria e montagem de grupos | `src/features/DesignEngine/utils/__tests__/dynamic-categories.test.ts` | ✅ suíte |
+| Busca de token: sentido, ordem, prefixo só no último termo, grupos de conceito vivos | `src/features/DesignEngine/utils/__tests__/token-search.test.ts` | ✅ suíte |
+| Os três modos: padrão Essencial, seletor por setas, `visualImpact` válido e entre 20 e 30 ids, lista plana do Impacto | `Main/hooks/__tests__/usePreviewUIState.test.ts` · `useThemeCustomizationData.test.ts` · `Main/components/__tests__/ThemeSidebarHeader.test.tsx` · `ThemeImpactList.test.tsx` | ✅ suíte |
 | Rascunho: inicialização nula, resolução para o sistema, comparação profunda | `src/features/DesignEngine/hooks/__tests__/useDesignDraft.test.tsx` | ✅ suíte |
 | Export completo (não subconjunto) e slug estável | `Main/utils/__tests__/exportTheme.test.ts` | ✅ suíte |
 | Escopo do preview não vaza variável para o host | `src/core/Design/components/__tests__/DesignScope.test.tsx` | ✅ suíte |

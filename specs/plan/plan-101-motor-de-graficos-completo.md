@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "graficos", "echarts", "tema", "engine"]
 relacionados: ["[[03-superficie-publica]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[04-contrato-de-tokens-e-paridade]]"]
-depende_de: "plan-96-templates-sem-dominio-embutido"
+depende_de: ""
 retida_por: ""
 destino_sintese: "arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md"
 ---

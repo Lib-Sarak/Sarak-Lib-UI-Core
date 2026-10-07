@@ -267,19 +267,25 @@ existe hoje** — §5.2.
 
 **A lib NÃO autentica ninguém.** `SarakAuthScreen`
 (`src/components/atomic/Templates/SarakAuthScreen.tsx`) **renderiza a tela de acesso**: é um componente
-React autocontido — campos e alternância de modo (login/registro/MFA) funcionam em **estado interno**, e
-**todos** os pares `value`/`setValue` são opcionais, então o host pode controlar o que quiser
-(`:53-58`, com o motivo escrito). Os dados de interação saem por callbacks/`onChange`
-(`SarakAuthScreenEvent`, `:11-18`).
+React autocontido, com os campos em **estado interno**, e **todos** os pares `value`/`setValue` são
+opcionais, então o host pode controlar o que quiser. Os dados de interação saem por `onSubmit` e `onChange`
+(`SarakAuthScreenEvent`).
+
+**Por padrão, só o login.** Cadastro (`allowRegistration`), MFA (`allowMfa`), login social
+(`socialConfig.enabled`) e "esqueci a senha" (`onForgot`) aparecem só quando o host os liga. Os rótulos vêm do
+catálogo de tradução e podem ser trocados por `labels`. O `autoComplete` é o do navegador (`username` e
+`current-password` no login, `new-password` no cadastro). A gravidade da mensagem de erro vem de `errorVariant`,
+não do texto. A tela não carrega conceito de produto nem recurso buscado na raiz do host
+([[08-identidade-do-host-e-zero-marca]]).
 
 **O que é 100% do consumidor:** provider de identidade, emissão e validação de token, onde o token mora,
 refresh, expiração, redirect de 401, logout.
 
 **A mudança real, e ela é BREAKING silenciosa:** dois hooks legados leram token de `localStorage` num
 esquema de chaves fixo, e **foram removidos**. Quem dependia da injeção automática de `Authorization`
-deixou de tê-la sem erro de compilação — o request simplesmente vai sem o header. O cliente HTTP dos
-templates (`src/shared/services/api.ts:1-25`) declara isso no cabeçalho: **não injeta `Authorization`
-sozinho**; quem precisa de request autenticado compõe o header no ponto de chamada.
+deixou de tê-la sem erro de compilação — o request simplesmente vai sem o header. Hoje a lib não tem cliente
+HTTP nenhum (§3.2): o request autenticado é do host, dentro do `load`/`onSubmit`/`onSend` que ele entrega aos
+templates.
 
 **Estado verificado hoje** (varredura desta entrega, `src/` sem testes):
 
@@ -288,24 +294,18 @@ sozinho**; quem precisa de request autenticado compõe o header no ponto de cham
 | SDK de auth importado (`supabase`, `cognito`, `keycloak`, `firebase/auth`, `@auth0`) | **0 ocorrências** ✅ |
 | Token lido de storage | **0 ocorrências** ✅ — os usos de `localStorage` em `src/` são persistência de **tema** (`useDesignManager`, `useDesignSync`, `useDesignStorageSync`) e idioma (`Controls.tsx:26,30`) |
 
-> ### ⚠️ A propriedade é verdadeira e NÃO é guardada
->
-> `plan/20-fronteira-de-autenticacao.md` §2.3 previu um **gate anti-acoplamento** e o critério de aceite
-> foi marcado concluído ("2 violações reais achadas e corrigidas"). **Esse gate não existe no
-> repositório**: não há script em `scripts/`, não há `AuthCouplingGate.test.ts`, não há varredura em
-> `run_audit`. O `AuthFlow.integration.test.tsx` citado no mesmo plano também não existe — morreu com o
-> motor de manifesto, que era o que ele exercitava.
->
-> Ou seja: hoje **nada impede** um PR de reintroduzir leitura de token ou um SDK de auth em `src/`. A
-> correção de 2026-07-19 foi feita; a **trava** que a manteria, não. Registrado em §5.3.
+**A propriedade é guardada por gate:** `auditor_authcoupling.mjs`, dentro do `run_audit` ([[00-regras-e-invariantes]]
+R32), acusa sink de credencial (`localStorage`/`sessionStorage`/cookie com chave de autenticação, header
+`Authorization` literal) e rota de autenticação embutida (`/auth`, `/login`, `/mfa`, `/oauth`, `/token`, `/sso`) em
+**qualquer** arquivo de `src/`.
 
 ## 3.2 Rede
 
-A lib **nunca chama a rede por conta própria** e **nunca embute segredo**. O cliente axios de
-`src/shared/services/api.ts` existe para os hooks de dados dos templates pesados e fixa `baseURL = '/api'`
-(`:20-24`) — quem chama é o componente que o consumidor montou, com os dados que ele passou. Não há
-telemetria, não há phone-home, não há endpoint da lib (o backend próprio foi removido —
-[[003-remocao-backend-proprio]]).
+A lib **não faz rede** e **nunca embute segredo**: não há `fetch`, `XMLHttpRequest`, cliente HTTP nem rota
+`/api` em `src/`, e `axios` não é dependência nem peer. Os templates recebem o dado pronto (`data`) ou uma
+função do host (`load`, `onSubmit`, `onSend`), que é quem chama a rede, com a autenticação dele
+([[03-superficie-publica]] §6.3). Não há telemetria, não há phone-home, não há endpoint da lib (o backend
+próprio foi removido — [[003-remocao-backend-proprio]]).
 
 ## 3.3 Roteamento
 

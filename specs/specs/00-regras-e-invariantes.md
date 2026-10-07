@@ -1044,7 +1044,7 @@ ativo translúcidos são compostos sobre o corpo.
 
 **Enunciado.** A lib **constrói a tela** de autenticação e **entrega o evento**. Nenhum componente lê ou escreve credencial, token ou sessão, e **nenhum impõe rota, verbo ou payload de autenticação** ao importador.
 
-**Por quê.** Autenticação é do host, e só ele sabe onde o token vive. Uma lib de UI que lê `localStorage` atrás de um token, ou que decide que o endpoint de MFA é `POST {endpoint}/mfa/enable`, deixa de ser infraestrutura e vira **acoplamento**: o importador passa a ter de construir o backend no formato que a lib inventou. É a mesma família de R13 e R16 — a lib não impõe identidade, não impõe CSS, e não impõe protocolo. A prática já era essa e está escrita em voz alta no código: `src/shared/services/api.ts:7-13` diz que *"a Sarak NUNCA lê nem escreve token de autenticação"*, e o `SarakAuthScreen` só emite `onSubmit`.
+**Por quê.** Autenticação é do host, e só ele sabe onde o token vive. Uma lib de UI que lê `localStorage` atrás de um token, ou que decide que o endpoint de MFA é `POST {endpoint}/mfa/enable`, deixa de ser infraestrutura e vira **acoplamento**: o importador passa a ter de construir o backend no formato que a lib inventou. É a mesma família de R13 e R16 — a lib não impõe identidade, não impõe CSS, e não impõe protocolo. A prática é essa no código: a lib não tem cliente HTTP, os templates recebem o dado ou uma função do host ([[03-superficie-publica]] §6.3), e o `SarakAuthScreen` só emite `onSubmit`.
 
 **Certo × Errado.**
 
@@ -1052,16 +1052,16 @@ ativo translúcidos são compostos sobre o corpo.
 // CERTO — a lib desenha e devolve o evento; quem sabe o protocolo é o host
 <SarakAuthScreen onSubmit={(credenciais) => meuBackend.login(credenciais)} />
 
-// CERTO — template de dados: recebe `endpoint` e é AGNÓSTICO sobre o que há atrás
-<SarakTable endpoint="/api/clientes" />
+// CERTO — template de dados: recebe a função do host, que faz a rede com a autenticação dele
+<SarakTable load={() => meuBackend.clientes()} />
 
 // ERRADO — a lib dita o protocolo do importador
 await api.post(`${endpoint}/mfa/enable`, { code });
 ```
 
-**Cobrada por:** `node gates/scripts/audit/auditor_authcoupling.mjs` (construído pela `plan-12`, 2026-08-05 — 9º/depois 10º auditor de `run_audit.mjs`). Detecção por AST: sinks de credencial (`localStorage`/`sessionStorage`/cookie com chave auth-ish) + header `Authorization` literal + rota embutida (string iniciada em `/` contendo `/mfa|login|oauth2?|token|auth|sso|2fa/`). **Hoje: 0 violações.**
+**Cobrada por:** `node gates/scripts/audit/auditor_authcoupling.mjs` (construído pela `plan-12`, 2026-08-05 — 9º/depois 10º auditor de `run_audit.mjs`). Varre **todo `src/`**. Detecção por AST: sinks de credencial (`localStorage`/`sessionStorage`/cookie com chave auth-ish) + header `Authorization` literal + rota embutida (string iniciada em `/` contendo `/mfa|login|oauth2?|token|auth|sso|2fa/`). **Hoje: 0 violações.**
 
-> **O gate não pode ser burro, e isto vai escrito para quem for construí-lo.** Proibir `fetch`/`axios` em `src/components/` derrubaria **12 arquivos legítimos**: os templates de dados (`SarakTable`, `SarakChart`, `SarakForm`, `SarakManagementGrid`, …) recebem um `endpoint` e são agnósticos sobre o que existe atrás dele. O que se cobra é outra coisa — **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`).
+> **O que o gate cobra é acoplamento, não rede.** Ele procura **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`). Que a lib não faça rede nenhuma é outra propriedade, verdadeira hoje ([[10-seguranca-e-acessibilidade]] §3.2) e **sem gate**: um `fetch` sem rota de autenticação passaria por este.
 
 > ✅ **A violação com que a regra nascia foi removida.** `useSecurityOrchestratorState.ts` chamava `GET {endpoint}/mfa/status`, `GET {endpoint}/mfa/setup`, `POST {endpoint}/mfa/enable` e `POST {endpoint}/mfa/disable` — a lib ditava o protocolo de autenticação do importador. A `plan-09` (2026-08-05, operação 4) removeu o `SarakSecurityOrchestrator` inteiro (10 arquivos) do contrato público, no major. Quando o gate `auditor_authcoupling.mjs` nasceu, na `plan-12`, o único violador já não existia mais — confirmado: **0 violações** desde o primeiro dia do gate.
 

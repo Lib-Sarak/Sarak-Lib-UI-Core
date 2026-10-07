@@ -226,6 +226,14 @@ marca do consumidor (systemName / brand.name)
 E **nunca heading vazio**: um componente sem nome de marca precisa mostrar o rótulo de função, não uma
 lacuna visual. Foi o que motivou `'System Core Engine'` em vez de string vazia no `SarakEmptyState`.
 
+**Marca não é só o nome da lib: é também o conceito de um produto.** Um template que carrega o vocabulário de
+um sistema (um papel "Master", um selo "Neural" ou "Secure", um protocolo com nome próprio, um recurso buscado na
+raiz do host como `/noise.png`) impõe a identidade daquele sistema a qualquer outro que o use. Por isso o
+`SarakAuthScreen` e o `SarakSocialButton` não carregam texto fixo nem conceito de produto: os rótulos vêm do
+catálogo de tradução, o host os troca por `labels`, e o logotipo de cada provedor social é um elemento que o
+host entrega ([[10-seguranca-e-acessibilidade]] §3.1). O `zero-brand:check` não vê esse caso: ele procura a
+marca **da lib**, não o vocabulário de outro produto.
+
 # 9. Backlog
 
 | Item | Origem | Cuidado obrigatório |

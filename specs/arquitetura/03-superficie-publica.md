@@ -264,18 +264,28 @@ navegação (`SarakNavItem.icon`, `SarakMenuItem.icon`) aceita nome ou elemento.
 **Fora da porta, de propósito:** o painel de autoria (`src/features/DesignEngine/`) mantém os próprios ícones.
 Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com a família que está sendo editada.
 
-## 6.3 Templates de dado: `data` vence `endpoint`
+## 6.3 Templates de dado: o dado vem do host
 
-`SarakTable`, `SarakCardGrid` e `SarakStats` (`src/components/atomic/Templates/`) aceitam o dado de duas
-formas, e as duas props são opcionais:
+**Nenhum template da lib faz rede.** Não há cliente HTTP em `src/`, nem prop `endpoint`.
+`SarakTable`, `SarakCardGrid`, `SarakStats`, `SarakChart`, `SarakForm` e `SarakManagementGrid`
+(`src/components/atomic/Templates/`) recebem o dado de um de dois jeitos, ambos opcionais:
 
-- **com `data`**, renderizam o dado recebido e **não fazem nenhuma chamada de rede**, nem no mount nem
-  para revalidar;
-- **sem `data`**, buscam por `endpoint`.
+- **`data`** — o dado já carregado. O template o renderiza e **não chama `load`**;
+- **`load`** — uma função do host que devolve uma `Promise` com o dado. O template mostra carregamento enquanto
+  ela não resolve, e o estado de erro se ela rejeita.
 
-`SarakTable` e `SarakCardGrid` recebem `data` como lista de itens; `SarakStats`, como um objeto de métricas.
-Sem nenhuma das duas props, `SarakTable` e `SarakCardGrid` não buscam e não ficam presos em carregamento.
-A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridState`, `useSarakStatsData`).
+`SarakForm` entrega os valores por `onSubmit`, sem campo de envio quando o host não o passa. `SarakChat` envia
+por `onSend` (a função do host recebe a mensagem e um `onToken` para resposta em fluxo) e lista modelos por
+`loadModels`, opcional: sem ela, a lista fica vazia. As ações de `SarakManagementGrid` e de `SarakTable` também
+são callbacks do host, e **sem callback não há controle**: nenhum botão sem ação.
+
+**O que o template não supõe sobre o dado:** nenhuma chave de produto (`isActive`, `status === 'active'`),
+nenhum rótulo de domínio para booleano, nenhuma abreviação de número (`0` renderiza `0`, `1500` renderiza `1500`).
+O candlestick desenha o OHLC (`open`, `high`, `low`, `close`) e o boxplot os cinco valores que o host entrega;
+sem dado, não desenham.
+
+A decisão de "data ou load" mora nos hooks de dado de cada template (`useSarakTableData`, `useCardGridState`,
+`useSarakStatsData`, `useChartData`, `useFormData`, `useManagementGrid`).
 
 ## 6.4 O contrato de valor dos átomos de escolha
 
