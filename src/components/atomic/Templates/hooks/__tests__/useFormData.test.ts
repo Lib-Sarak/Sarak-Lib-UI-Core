@@ -1,63 +1,54 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { useFormData } from '../useFormData';
-import api from '../../../../../shared/services/api';
 
-vi.mock('../../../../../shared/services/api', () => ({
-    default: {
-        get: vi.fn(),
-        post: vi.fn(),
-        patch: vi.fn(),
-    }
-}));
+describe('useFormData', () => {
+    it('uses initial data and mapping in create mode', () => {
+        const { result } = renderHook(() => useFormData({
+            initialData: { id: 1 },
+            mode: 'create',
+            mapping: { name: 'Name', email: 'Email' },
+        }));
 
-describe('useFormData characterization', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    it('mode create with mapping populates formData initially', () => {
-        const initialData = { id: 1 };
-        const mapping = { name: 'name', email: 'email' };
-        const { result } = renderHook(() => useFormData('/api/test', 'create', initialData, mapping));
-        
         expect(result.current.formData).toEqual({ id: 1, name: '', email: '' });
         expect(result.current.loading).toBe(false);
     });
 
-    it('mode edit triggers fetch and populates formData', async () => {
-        (api.get as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: { id: 2, name: 'Loaded' } });
-        const { result } = renderHook(() => useFormData('/api/test', 'edit', {}));
-        
-        expect(result.current.loading).toBe(true);
-        
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
-        });
-        
+    it('loads edit data through the host callback', async () => {
+        const load = vi.fn(async () => ({ id: 2, name: 'Loaded' }));
+        const { result } = renderHook(() => useFormData({ initialData: { id: 0, name: '' }, mode: 'edit', load }));
+
+        await waitFor(() => expect(result.current.formData).toEqual({ id: 2, name: 'Loaded' }));
         expect(result.current.loading).toBe(false);
-        expect(result.current.formData).toEqual({ id: 2, name: 'Loaded' });
     });
 
-    it('handleChange updates field', () => {
-        const { result } = renderHook(() => useFormData('/api/test', 'create', { name: 'A' }));
-        
-        act(() => {
-            result.current.handleChange('name', 'B');
-        });
-        
-        expect(result.current.formData).toEqual({ name: 'B' });
+    it('updates a field and submits through the host callback', async () => {
+        const onSubmit = vi.fn();
+        const onSuccess = vi.fn();
+        const { result } = renderHook(() => useFormData({
+            initialData: { name: 'A' },
+            mode: 'create',
+            onSubmit,
+            onSuccess,
+        }));
+
+        act(() => result.current.handleChange('name', 'B'));
+        await act(async () => result.current.handleSave());
+
+        expect(onSubmit).toHaveBeenCalledWith({ name: 'B' });
+        expect(onSuccess).toHaveBeenCalledOnce();
+        expect(result.current.status?.type).toBe('success');
     });
 
-    it('handleSave triggers POST in create mode', async () => {
-        (api.post as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: 'ok' });
-        const { result } = renderHook(() => useFormData('/api/test', 'create', { name: 'A' }));
-        
-        await act(async () => {
-            await result.current.handleSave();
-        });
-        
-        expect(api.post).toHaveBeenCalledWith('/api/test', { name: 'A' });
-        expect(result.current.status).toEqual({ type: 'success', message: 'Configurações sincronizadas com sucesso.' });
+    it('surfaces submit failures', async () => {
+        const { result } = renderHook(() => useFormData({
+            initialData: { name: 'A' },
+            mode: 'create',
+            onSubmit: async () => { throw new Error('Rejected'); },
+        }));
+
+        await act(async () => result.current.handleSave());
+        expect(result.current.status).toEqual({ type: 'error', message: 'Rejected' });
+        expect(result.current.saving).toBe(false);
     });
 });

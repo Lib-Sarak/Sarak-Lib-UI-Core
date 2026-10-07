@@ -117,7 +117,7 @@ describe('checkChromeTokenParity', () => {
     });
 
     it('mantém a lista de órfãos e verifica os tokens cobertos no repositório', () => {
-        expect(ORPHAN_TOKENS).toEqual(['layoutDensity', 'maxContentWidth', 'isSplitViewEnabled']);
+        expect(ORPHAN_TOKENS).toEqual(['isSplitViewEnabled']);
         const coveredTokens = getChromeTokens().filter((token) => !ORPHAN_TOKENS.includes(token.id));
 
         expect(checkChromeTokenParity({ tokens: coveredTokens })).toEqual([]);

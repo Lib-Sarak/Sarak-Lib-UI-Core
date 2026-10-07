@@ -38,7 +38,7 @@ describe('SarakChart', () => {
 
     it('matches snapshot to ensure no layout regressions during type fixes', () => {
         const { asFragment } = render(
-            <SarakChart endpoint="/api/test" label="Test Chart" />
+            <SarakChart data={[{ value: 50, date: '2023-01-01' }]} label="Test Chart" />
         );
         expect(asFragment()).toMatchSnapshot();
     });

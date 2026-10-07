@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SarakToastProvider, useToast, type SarakToastController } from '../SarakToast';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 const Harness: React.FC<{ onReady: (c: SarakToastController) => void }> = ({ onReady }) => {
     const controller = useToast();
@@ -65,6 +66,20 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
         expect(screen.getByText('Fecha manual')).toBeInTheDocument();
         fireEvent.click(screen.getByRole('button', { name: 'Fechar notificação' }));
         expect(screen.queryByText('Fecha manual')).not.toBeInTheDocument();
+    });
+
+    it('traduz o nome acessível do controle de fechar pelo idioma ativo', () => {
+        let api!: SarakToastController;
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakToastProvider>
+                    <Harness onReady={(controller) => (api = controller)} />
+                </SarakToastProvider>
+            </SarakUIProvider>,
+        );
+        act(() => { api.notify({ message: 'Dismissible', duration: 10000 }); });
+
+        expect(screen.getByRole('button', { name: 'Dismiss notification' })).toBeInTheDocument();
     });
 
     it('useToast() sem Provider degrada para no-op (não quebra a árvore)', () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { SarakCheckbox } from '../Inputs/SarakCheckbox';
 import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakTableSelectionCheckboxProps {
     label: string;
@@ -46,11 +47,7 @@ export interface SarakTableCardsProps<T extends Record<string, unknown>> {
     onToggleAll?: (checked: boolean) => void;
 }
 
-/** Valor exibido de uma célula — booleano vira Ativo/Inativo (paridade com a tabela). */
-const displayValue = (value: unknown): string => {
-    if (typeof value === 'boolean') return value ? 'Ativo' : 'Inativo';
-    return String(value ?? '');
-};
+const displayValue = (value: unknown): string => String(value ?? '');
 
 const cardStyle: React.CSSProperties = {
     display: 'flex',
@@ -80,15 +77,16 @@ export function SarakTableCards<T extends Record<string, unknown>>({
     onToggleRow,
     onToggleAll,
 }: SarakTableCardsProps<T>) {
+    const text = useLibraryText();
     const items = loading ? Array.from({ length: 3 }, (_, index) => ({ __skeleton: index } as unknown as T)) : rows;
     const canSelect = selectable && !loading;
 
     return (
         <div data-sarak-tablecards="true" style={{ maxWidth: '100%' }}>
             {selectable && (
-                <div role="group" aria-label="Seleção das linhas visíveis">
+                <div role="group" aria-label={text('tableSelectionGroup')}>
                     <SarakTableSelectionCheckbox
-                        label="Selecionar todas as linhas visíveis"
+                        label={text('selectAllVisibleRows')}
                         checked={allVisibleSelected}
                         indeterminate={partiallySelected}
                         disabled={loading || rows.length === 0}
@@ -97,7 +95,7 @@ export function SarakTableCards<T extends Record<string, unknown>>({
                 </div>
             )}
             {sortableColumns.length > 0 && (
-                <div role="group" aria-label="Ordenação por coluna" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                <div role="group" aria-label={text('tableSortGroup')} style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                     {sortableColumns.map((columnId) => (
                         <SarakTableSortButton
                             key={columnId}
@@ -118,17 +116,17 @@ export function SarakTableCards<T extends Record<string, unknown>>({
                         <div key={rowKey} role="listitem" style={cardStyle}>
                             {canSelect && (
                                 <SarakTableSelectionCheckbox
-                                    label={`Selecionar linha ${String(rowKey)}`}
+                                    label={text('selectRow', { row: String(rowKey) })}
                                     checked={selectedKeys.has(rowKey)}
                                     onChange={(checked) => onToggleRow?.(rowKey, checked)}
                                 />
                             )}
                             {columns.map((columnId) => (
                                 <div key={columnId} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
-                                    <span className="text-2xs font-black uppercase tracking-widest text-white/30">
+                                    <span className="text-2xs font-black uppercase tracking-widest text-theme-muted">
                                         {columnLabels[columnId]}
                                     </span>
-                                    <span className="text-sm break-words min-w-0 text-white/70">
+                                    <span className="text-sm break-words min-w-0 text-theme-text">
                                         {loading ? '' : displayValue(row[columnId])}
                                     </span>
                                 </div>

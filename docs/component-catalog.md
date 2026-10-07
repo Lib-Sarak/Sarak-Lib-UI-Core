@@ -24,6 +24,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | Componente | Prop | Valores aceitos |
 | --- | --- | --- |
 | `SarakAppChrome` | `navigationStyle` | `sidebar` · `topbar` · `auto` |
+| `SarakAuthScreen` | `errorVariant` | `error` · `warning` |
 | `SarakAuthScreen` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakAuthScreen` | `density` | `compact` · `standard` · `spacious` |
 | `SarakAuthScreen` | `importance` | `hero` · `base` · `subtle` |
@@ -50,13 +51,11 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
 | `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
 | `SarakForm` | `mode` | `create` · `edit` |
-| `SarakForm` | `actions` | `POST` · `PATCH` · `DELETE` |
 | `SarakForm` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakForm` | `density` | `compact` · `standard` · `spacious` |
 | `SarakForm` | `importance` | `hero` · `base` · `subtle` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
-| `SarakManagementGrid` | `groupActions` | `plus` · `settings` |
 | `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
 | `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
@@ -65,8 +64,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakShellSearchWidget` | `variant` | `bar` · `icon` |
 | `SarakShellThemeToggle` | `variant` | `horizontal` · `vertical` · `mini` |
 | `SarakShellUserWidget` | `variant` | `horizontal` · `vertical` · `mini` |
-| `SarakSocialButton` | `provider` | `google` · `github` |
-| `SarakSocialButton` | `variant` | `glass` · `sovereign` |
+| `SarakSocialButton` | `variant` | `glass` · `solid` |
 | `SarakSpinner` | `size` | `sm` · `md` · `lg` |
 | `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakStats` | `density` | `compact` · `standard` · `spacious` |
@@ -216,6 +214,9 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `branding` | `{ name: string; logo?: string; }` | não |  |
+| `allowRegistration` | `boolean` | não | Permite alternar entre login e cadastro; desativado por padrão. |
+| `allowMfa` | `boolean` | não | Permite renderizar a etapa MFA quando controlada pelo host; desativado por padrão. |
+| `labels` | `Partial<Record<SarakAuthScreenLabelKey, string>>` | não | Sobrescreve títulos, descrições e rótulos com texto do host. |
 | `isRegistering` | `boolean` | não |  |
 | `setIsRegistering` | `(val: boolean) => void` | não |  |
 | `mfaStep` | `boolean` | não |  |
@@ -234,7 +235,7 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `onSocialLogin` | `(provider: string) => void` | não |  |
 | `socialConfig` | `SarakSocialConfig` | não |  |
 | `onForgot` | `() => void` | não |  |
-| `onMasterLogin` | `() => void` | não |  |
+| `errorVariant` | `'error' \| 'warning'` | não |  |
 | `onChange` | `(event: SarakAuthScreenEvent) => void` | não | Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
@@ -342,8 +343,8 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
-| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
+| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. |
+| `load` | `() => Promise<TData[]>` | não | Carrega os registros pelo mecanismo escolhido pelo host. |
 | `label` | `string` | não |  |
 | `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `SarakFilterConfig[]` | não |  |
@@ -385,12 +386,13 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido. |
-| `label` | `string` | não | Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão. |
-| `mapping` | `Record<string, string>` | não | Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData[]>` | não | Carrega os pontos pelo mecanismo escolhido pelo host. |
+| `label` | `string` | não | Rótulo opcional fornecido pelo host. |
+| `mapping` | `{ value?: string; date?: string }` | não | Chaves dos campos de valor e rótulo; os defaults são value e date. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakChartEngine
 
@@ -408,8 +410,8 @@ Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. |
-| `modelsEndpoint` | `string` | não | Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. |
+| `onSend` | `SarakChatOnSend` | sim | O host envia a mensagem e encaminha cada token recebido ao callback. |
+| `loadModels` | `SarakChatModelLoader` | não | Carrega modelos do host; omitido, a lista permanece vazia. |
 | `label` | `string` | não | Nome exibido no cabeçalho; omitido, usa `AI Chat`. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
@@ -472,7 +474,7 @@ Props (`SarakDataEmptyProps` — `src/components/atomic/Feedback/SarakDataEmpty.
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `message` | `string` | não | Mensagem exibida (default: "Nenhum dado encontrado."). |
+| `message` | `string` | não | Mensagem exibida; omitida, usa o texto do catálogo no idioma ativo. |
 
 ### SarakDataGrid
 
@@ -650,16 +652,17 @@ Props (`SarakFormProps` — `src/components/atomic/Templates/SarakForm.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento. |
-| `label` | `string` | não | Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto. |
-| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio. |
-| `mode` | `'create' \| 'edit'` | não | Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`. |
-| `initialData` | `TData` | não | Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário. |
-| `actions` | `Array<{ label: string; endpoint: string; method: 'POST' \| 'PATCH' \| 'DELETE'; }>` | não | Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo. |
-| `onSuccess` | `() => void` | não | Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual. |
+| `data` | `TData` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData>` | não | Carrega o formulário pelo mecanismo escolhido pelo host. |
+| `label` | `string` | não | Rótulo opcional fornecido pelo host. |
+| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos dos campos. |
+| `mode` | `'create' \| 'edit'` | não | Seleciona o modo de preenchimento; create não carrega dado. |
+| `initialData` | `TData` | não | Valor inicial usado no modo create ou até load concluir. |
+| `onSubmit` | `(data: TData) => void \| Promise<void>` | não | Envia os valores ao host; sem callback, o botão de envio não é exibido. |
+| `onSuccess` | `() => void \| Promise<void>` | não | Chamado após um envio bem-sucedido. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakFormGroup
 
@@ -793,16 +796,23 @@ Props (`SarakManagementGridProps` — `src/components/atomic/Templates/SarakMana
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. |
-| `groupBy` | `string` | sim | Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. |
-| `ghostGroups` | `string[]` | não | Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. |
-| `mapping` | `{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }` | sim | Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. |
-| `headerActions` | `{ label: string; action: string; }[]` | não | Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. |
-| `groupActions` | `{ label: string; icon?: 'plus' \| 'settings'; action: string; }[]` | não | Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. |
-| `formMapping` | `Record<string, string>` | não | Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TItem[]` | não | Records already loaded by the host; takes precedence over load. |
+| `load` | `() => Promise<TItem[]>` | não | Loads records through the host's chosen transport. |
+| `groupBy` | `string` | sim | Path to the grouping value; supports nested fields. |
+| `ghostGroups` | `string[]` | não | Empty groups to display alongside groups found in the records. |
+| `mapping` | `{ id: string; title: string; status?: string; isActive?: string; description?: string; error?: string; }` | sim | Maps record paths to fields displayed by each item card. |
+| `label` | `string` | não |  |
+| `description` | `string` | não |  |
+| `headerActions` | `SarakManagementAction[]` | não |  |
+| `groupActions` | `SarakManagementAction[]` | não |  |
+| `formMapping` | `Record<string, string>` | não |  |
+| `onAction` | `(action: string, group?: string) => void \| Promise<void>` | não |  |
+| `onToggle` | `(item: TItem) => void \| Promise<void>` | não |  |
+| `onDelete` | `(item: TItem) => void \| Promise<void>` | não |  |
+| `onCreate` | `(data: Record<string, unknown>, group?: string) => void \| Promise<void>` | não |  |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakMarkdownRenderer
 
@@ -1099,10 +1109,10 @@ Props (`SarakSocialButtonProps` — `src/components/atomic/Buttons/SarakSocialBu
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `provider` | `'google' \| 'github'` | sim | Provedor usado no rótulo e callback. |
+| `provider` | `string` | sim | Provedor usado no rótulo e callback. |
 | `icon` | `React.ReactNode` | sim | Elemento de marca fornecido pelo consumidor. |
-| `variant` | `'glass' \| 'sovereign'` | sim | Acabamento visual; o tema `sovereign` também prevalece sobre `glass`. |
-| `onClick` | `(provider: 'google' \| 'github') => void` | não | Recebe o provedor clicado; omitido, o botão não executa ação. |
+| `variant` | `'glass' \| 'solid'` | sim | Acabamento visual fornecido pelo consumidor. |
+| `onClick` | `(provider: string) => void` | não | Recebe o provedor clicado; omitido, o botão não executa ação. |
 | `label` | `string` | não | Substitui o rótulo e o título acessível; omitido, usa o texto padrão. |
 | `hideLabel` | `boolean` | não | Esconde o texto e mantém o título acessível. |
 | `className` | `string` | não | Acrescenta classes com resolução de conflitos Tailwind. |
@@ -1129,7 +1139,7 @@ Props (`SarakSpinnerProps` — `src/components/atomic/Feedback/SarakSpinner.tsx`
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `size` | `'sm' \| 'md' \| 'lg'` | não | Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema. |
-| `label` | `string` | não | Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado. |
+| `label` | `string` | não | Nome acessível do progresso indeterminado; omitido ou vazio, usa o catálogo no idioma ativo. |
 | `className` | `string` | não | Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido. |
 
 ### SarakSplitPane
@@ -1164,13 +1174,13 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. |
-| `data` | `TData` | não | Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. |
-| `label` | `string` | não | Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. |
-| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TData` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData>` | não | Carrega as métricas pelo mecanismo escolhido pelo host. |
+| `label` | `string` | não | Título opcional fornecido pelo host. |
+| `mapping` | `Record<string, string>` | não | Define os rótulos exibidos; omitido, usa as chaves do dado recebido. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakStepper
 
@@ -1200,8 +1210,8 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTableProps.ts
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
-| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
+| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. |
+| `load` | `() => Promise<TData[]>` | não | Carrega as linhas pelo mecanismo escolhido pelo host. |
 | `label` | `string` | não |  |
 | `mapping` | `Record<string, string>` | não |  |
 | `getRowKey` | `(row: TData, index: number) => Key` | não | Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. |
@@ -1214,6 +1224,8 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTableProps.ts
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 | `responsive` | `boolean` | não | No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes. |
+| `showSearch` | `boolean` | não | Exibe o campo de busca; omitido, fica visível. |
+| `showRefresh` | `boolean` | não | Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`. |
 
 ### SarakTabs
 

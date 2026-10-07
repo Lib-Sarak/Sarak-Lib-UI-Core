@@ -1,9 +1,9 @@
-import React from 'react';
-import { SarakIcon } from "../Icon/SarakIcon";
 import { motion, AnimatePresence } from 'framer-motion';
-
+import { SarakIcon } from '../Icon/SarakIcon';
 import { SarakInput } from '../Inputs';
-import { SarakButton, SarakIconButton } from '../Buttons';
+import { SarakIconButton } from '../Buttons';
+import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
@@ -13,31 +13,46 @@ import { SarakTableCards, SarakTableSelectionCheckbox } from './SarakTableCards'
 import type { SarakTableProps } from './SarakTableProps';
 import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
 import { useTableInteractions } from '../DataDisplay/SarakDataTable/useTableInteractions';
-import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
-import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { SarakTableErrorState } from './SarakTableErrorState';
 
 export type { SarakTableProps } from './SarakTableProps';
 
-/** Generated columns are sortable; selection and sort controls mirror SarakDataTable. */
-export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard', responsive = true, getRowKey, sort, onSortChange, selectable = false, selectedKeys, onSelectionChange }: SarakTableProps<TData>) => {
+export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({
+    data,
+    load,
+    label,
+    mapping,
+    role = 'neutral',
+    density = 'standard',
+    responsive = true,
+    getRowKey,
+    sort,
+    onSortChange,
+    selectable = false,
+    selectedKeys,
+    onSelectionChange,
+    showSearch = true,
+    showRefresh = true,
+}: SarakTableProps<TData>) => {
     const { design } = useSarakUI();
+    const text = useLibraryText();
     const device = useSarakDevice();
     const collapseToCards = responsive && device === 'smartphone';
-    const { cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
+    const { cellDensityClass } = useTableLayoutStyles(design);
     const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
-    
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
-
+    const tableData = useSarakTableData<TData>(data, load);
+    const canRefresh = showRefresh && data === undefined && Boolean(load);
     const {
-        data,
+        data: rows,
         filteredData,
         loading,
         error,
         search,
         setSearch,
-        fetchData
-    } = useSarakTableData<TData>(endpoint, initialData);
+        loadData,
+    } = tableData;
     const interactions = useTableInteractions({
         rows: filteredData,
         getRowKey,
@@ -48,61 +63,78 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
         getSortValue: (row, columnId) => row[columnId],
     });
 
-    const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);
-    const columnLabels = mapping || columns.reduce((acc: Record<string, string>, col) => ({ ...acc, [col]: col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ') }), {} as Record<string, string>);
+    const columns = mapping
+        ? Object.keys(mapping)
+        : rows.length > 0
+            ? Object.keys(rows[0]).filter((key) => !key.startsWith('_'))
+            : [];
+    const columnLabels = mapping ?? columns.reduce<Record<string, string>>((labels, column) => {
+        labels[column] = column.charAt(0).toUpperCase() + column.slice(1).replace(/_/g, ' ');
+        return labels;
+    }, {});
+    const headingClass = [
+        'font-black',
+        'text-theme-title',
+        'tracking-tight',
+        density === 'spacious' ? 'text-2xl' : 'text-xl',
+    ].join(' ');
 
     if (error) {
-        return (
-            <div className={mergeSarakClasses("rounded-3xl items-center border", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)', backgroundColor: 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))', borderColor: 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))', color: 'var(--sarak-status-error-color,#ef4444)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                <SarakIcon name="AlertCircle" size={24} />
-                <div>
-                    <h4 className="font-bold">Erro ao carregar dados</h4>
-                    <p className="text-xs opacity-60">{error}</p>
-                    <SarakButton onClick={fetchData} variant="ghost" className="text-2xs font-black uppercase tracking-widest hover:underline" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)', padding: 0 }}>Tentar novamente</SarakButton>
-                </div>
-            </div>
-        );
+        return <SarakTableErrorState
+            containerClassName={containerLayout.className}
+            error={error}
+            onRetry={canRefresh ? () => void loadData() : undefined}
+        />;
     }
 
     return (
-        <div className={`@container ${containerLayout.className}`} style={containerLayout.style}>
-            <div className={headerLayout.className} style={headerLayout.style}>
-                <div>
-                    <h3 
-                        className={`font-black text-white tracking-tight ${density === 'spacious' ? 'text-2xl' : 'text-xl'}`} 
-                        style={{ 
-                            fontWeight: 'var(--sarak-h1-weight,700)',
-                            color: role === 'primary' ? 'var(--sarak-primary-color,#3b82f6)' : 'white'
-                        }}
-                    >
-                        {label || 'Listagem de Dados'}
-                    </h3>
-                    <p className="text-white/30 text-xs">{filteredData.length} registros encontrados</p>
-                </div>
-                
-                <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
-                    <div className="w-full md:w-64">
-                        <SarakInput 
-                            type="text" 
-                            placeholder="Pesquisar..." 
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            leftIcon={<SarakIcon name="Search" size={16} />}
-                        />
+        <div className="@container" style={containerLayout.style}>
+            {(label || showSearch || canRefresh) && (
+                <div className={headerLayout.className} style={headerLayout.style}>
+                    <div>
+                        {label && (
+                            <h3
+                                className={headingClass}
+                                style={{
+                                    fontWeight: 'var(--sarak-h1-weight,700)',
+                                    color: role === 'primary'
+                                        ? 'var(--sarak-primary-color,#3b82f6)'
+                                        : 'var(--color-theme-title,currentColor)',
+                                }}
+                            >
+                                {label}
+                            </h3>
+                        )}
+                        <p className="text-theme-muted text-xs">
+                            {text('tableRowsFound', { count: filteredData.length })}
+                        </p>
                     </div>
-                    <SarakIconButton 
-                        icon={<SarakIcon name="RefreshCw" size={16} className={loading ? 'animate-spin' : ''} />}
-                        onClick={fetchData} 
-                        variant="secondary"
-                    />
+                    <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
+                        {showSearch && (
+                            <div className="w-full md:w-64">
+                                <SarakInput
+                                    type="text"
+                                    placeholder={text('searchPlaceholder')}
+                                    value={search}
+                                    onChange={(event) => setSearch(event.target.value)}
+                                    leftIcon={<SarakIcon name="Search" size={16} />}
+                                />
+                            </div>
+                        )}
+                        {canRefresh && (
+                            <SarakIconButton
+                                icon={<SarakIcon name="RefreshCw" size={16} className={loading ? 'animate-spin' : ''} />}
+                                onClick={() => void loadData()}
+                                variant="secondary"
+                                aria-label={text('retry')}
+                            />
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className="relative bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden rounded-[var(--sarak-card-radius,12px)]">
                 {collapseToCards ? (
-                    // L3 (Spec 40.3): no celular a tabela larga colapsa para cards empilhados
-                    // (mesmas colunas/rótulos), sem overflow horizontal da página. O consumidor
-                    // desliga com `responsive={false}` quando a tabela colunar é o requisito.
                     <SarakTableCards
                         rows={interactions.entries.map(({ row }) => row)}
                         rowKeys={interactions.entries.map(({ key }) => key)}
@@ -120,109 +152,94 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                         onToggleAll={interactions.toggleAll}
                     />
                 ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
-                                {selectable && (
-                                    <th className={cellDensityClass}>
-                                        <SarakTableSelectionCheckbox
-                                            label="Selecionar todas as linhas visíveis"
-                                            checked={interactions.allVisibleSelected}
-                                            indeterminate={interactions.partiallySelected}
-                                            onChange={interactions.toggleAll}
-                                        />
-                                    </th>
-                                )}
-                                {columns.map(col => (
-                                    <th
-                                        key={col}
-                                        className={`text-2xs font-black text-white/30 uppercase ${cellDensityClass}`}
-                                        style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}
-                                    >
-                                        <SarakTableSortButton columnId={col} label={columnLabels[col]} sort={interactions.sort} onSort={interactions.changeSort} />
-                                    </th>
-                                ))}
-                                <th className={cellDensityClass}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <AnimatePresence mode="popLayout">
-                                {loading ? (
-                                    [...Array(5)].map((_, i) => (
-                                        <tr key={`skeleton-${i}`} className="animate-pulse">
-                                            {columns.map(col => (
-                                                <td key={`cell-sk-${col}`} className={cellDensityClass}>
-                                                    <div className="h-4 bg-white/5 rounded-md w-3/4"></div>
-                                                </td>
-                                            ))}
-                                            <td className={cellDensityClass}></td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    interactions.entries.map(({ row, key }, idx) => (
-                                        <motion.tr 
-                                            key={key}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: idx * 0.05 }}
-                                            className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group"
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
+                                    {selectable && (
+                                        <th className={cellDensityClass}>
+                                            <SarakTableSelectionCheckbox
+                                                label={text('selectAllVisibleRows')}
+                                                checked={interactions.allVisibleSelected}
+                                                indeterminate={interactions.partiallySelected}
+                                                onChange={interactions.toggleAll}
+                                            />
+                                        </th>
+                                    )}
+                                    {columns.map((column) => (
+                                        <th
+                                            key={column}
+                                            className={'text-2xs font-black text-theme-muted uppercase ' + cellDensityClass}
+                                            style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}
                                         >
-                                            {selectable && (
-                                                <td className={cellDensityClass}>
-                                                    <SarakTableSelectionCheckbox
-                                                        label={`Selecionar linha ${String(key)}`}
-                                                        checked={interactions.selectedKeys.has(key)}
-                                                        onChange={(checked) => interactions.toggleRow(key, checked)}
-                                                    />
-                                                </td>
-                                            )}
-                                            {columns.map(col => (
-                                                <td 
-                                                    key={col} 
-                                                    className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'} ${cellDensityClass}`}
-                                                >
-                                                    {typeof row[col] === 'boolean' ? (
-                                                        <span
-                                                            className="rounded-[var(--sarak-card-radius,12px)] text-2xs font-black uppercase"
-                                                            style={{
-                                                                padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)',
-                                                                backgroundColor: row[col] ? 'var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))' : 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))',
-                                                                color: row[col] ? 'var(--sarak-status-success-color,#22c55e)' : 'var(--sarak-status-error-color,#ef4444)'
-                                                            }}
-                                                        >
-                                                            {row[col] ? 'Ativo' : 'Inativo'}
-                                                        </span>
-                                                    ) : (
-                                                        String(row[col])
-                                                    )}
-                                                </td>
-                                            ))}
-                                            <td className={`flex items-center ${actionColumnAlignmentClass} ${cellDensityClass}`}>
-                                                <SarakIconButton 
-                                                    icon={<SarakIcon name="MoreHorizontal" size={16} />}
-                                                    variant="ghost"
-                                                />
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                )}
-                            </AnimatePresence>
-                        </tbody>
-                    </table>
-                </div>
+                                            <SarakTableSortButton
+                                                columnId={column}
+                                                label={columnLabels[column]}
+                                                sort={interactions.sort}
+                                                onSort={interactions.changeSort}
+                                            />
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <AnimatePresence mode="popLayout">
+                                    {loading ? (
+                                        Array.from({ length: 5 }, (_, rowIndex) => (
+                                            <tr key={'skeleton-' + rowIndex} className="animate-pulse">
+                                                {selectable && <td className={cellDensityClass} />}
+                                                {columns.map((column) => (
+                                                    <td key={'skeleton-' + column} className={cellDensityClass}>
+                                                        <div className="h-4 bg-white/5 rounded-md w-3/4" />
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        interactions.entries.map(({ row, key }, index) => (
+                                            <motion.tr
+                                                key={key}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                                className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group"
+                                            >
+                                                {selectable && (
+                                                    <td className={cellDensityClass}>
+                                                        <SarakTableSelectionCheckbox
+                                                            label={text('selectRow', { row: String(key) })}
+                                                            checked={interactions.selectedKeys.has(key)}
+                                                            onChange={(checked) => interactions.toggleRow(key, checked)}
+                                                        />
+                                                    </td>
+                                                )}
+                                                {columns.map((column) => (
+                                                    <td
+                                                        key={column}
+                                                        className={[
+                                                            'font-medium',
+                                                            'text-theme-text',
+                                                            density === 'compact' ? 'text-xs' : 'text-sm',
+                                                            cellDensityClass,
+                                                        ].join(' ')}
+                                                    >
+                                                        {String(row[column] ?? '')}
+                                                    </td>
+                                                ))}
+                                            </motion.tr>
+                                        ))
+                                    )}
+                                </AnimatePresence>
+                            </tbody>
+                        </table>
+                    </div>
                 )}
-
                 {filteredData.length === 0 && !loading && (
-                    <div className={mergeSarakClasses("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                        <div className="inline-flex bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <SarakIcon name="AlertCircle" className="text-white/10" size={32} />
-                        </div>
-                        <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nenhum dado encontrado</p>
+                    <div className="flex items-center justify-center text-center" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                        <SarakDataEmpty />
                     </div>
                 )}
             </div>
         </div>
     );
 };
-

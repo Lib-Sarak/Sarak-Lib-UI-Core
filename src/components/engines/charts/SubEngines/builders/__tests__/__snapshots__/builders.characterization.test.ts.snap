@@ -567,35 +567,12 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
 {
   "series": [
     {
-      "data": [
-        [
-          200,
-          300,
-          400,
-          500,
-          700,
-        ],
-        [
-          300,
-          450,
-          550,
-          650,
-          850,
-        ],
-        [
-          150,
-          250,
-          350,
-          450,
-          650,
-        ],
-      ],
+      "data": [],
       "itemStyle": {
         "borderColor": "#3b82f6",
         "borderWidth": 2,
         "color": "rgba(59, 130, 246, 0.2)",
       },
-      "name": "BoxPlot",
       "type": "boxplot",
     },
   ],
@@ -608,22 +585,22 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
     {
       "data": [
         [
-          90,
-          110,
-          80,
-          120,
+          98,
+          105,
+          95,
+          108,
         ],
         [
-          190,
-          210,
-          180,
-          220,
+          105,
+          109,
+          101,
+          112,
         ],
         [
-          290,
-          310,
-          280,
-          320,
+          109,
+          107,
+          103,
+          116,
         ],
       ],
       "itemStyle": {

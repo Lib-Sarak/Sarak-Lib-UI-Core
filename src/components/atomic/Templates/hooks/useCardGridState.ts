@@ -1,55 +1,64 @@
-import { useState, useEffect, useCallback } from 'react';
-import api from '../../../../shared/services/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-export const useCardGridState = <T extends Record<string, unknown>>(endpoint?: string, initialData?: T[]) => {
-    const [state, setState] = useState({
-        data: initialData || ([] as T[]),
-        loading: !initialData && Boolean(endpoint),
-        error: null as string | null,
+type CardGridState<T> = {
+    data: T[];
+    loading: boolean;
+    error: string | null;
+    search: string;
+    activeFilters: Record<string, string>;
+};
+
+type LoadData<T> = () => Promise<T[]>;
+
+export const useCardGridState = <T extends Record<string, unknown>>(
+    data?: T[],
+    load?: LoadData<T>,
+) => {
+    const [state, setState] = useState<CardGridState<T>>({
+        data: data ?? [],
+        loading: data === undefined && Boolean(load),
+        error: null,
         search: '',
-        activeFilters: {} as Record<string, string>
+        activeFilters: {},
     });
+    const loadRef = useRef(load);
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    loadRef.current = load;
+    textRef.current = text;
+    const hasLoad = Boolean(load);
 
-    const fetchData = useCallback(async () => {
-        if (!endpoint) return;
-        try {
-            setState(prev => ({ ...prev, loading: true, error: null }));
-            const response = await api.get(endpoint);
-            const rawData = response.data.items || response.data || [];
-            setState(prev => ({ ...prev, data: Array.isArray(rawData) ? rawData : [], loading: false }));
-        } catch (err: unknown) {
-            console.error(`[SarakCardGrid] Erro:`, err);
-            const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar';
-            setState(prev => ({ ...prev, error: errorMessage, loading: false }));
-        }
-    }, [endpoint]);
-
-    useEffect(() => {
-        // Dado pronto vence endpoint (mesmo contrato de `useSarakStatsData`): com
-        // `data`, nunca há chamada de rede — nem para revalidar, nem no mount.
-        if (initialData) {
-            setState(prev => {
-                if (JSON.stringify(prev.data) === JSON.stringify(initialData)) return prev;
-                return { ...prev, data: initialData, loading: false };
-            });
+    const loadData = useCallback(async () => {
+        if (data !== undefined) {
+            setState((current) => ({ ...current, data, loading: false, error: null }));
             return;
         }
-        if (endpoint) {
-            fetchData();
+        const loadFromHost = loadRef.current;
+        if (!loadFromHost) {
+            setState((current) => ({ ...current, loading: false }));
+            return;
         }
-    }, [fetchData, initialData, endpoint]);
+        setState((current) => ({ ...current, loading: true, error: null }));
+        try {
+            const nextData = await loadFromHost();
+            setState((current) => ({ ...current, data: nextData, loading: false, error: null }));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, loading: false, error: message }));
+        }
+    }, [data, hasLoad]);
+
+    useEffect(() => {
+        void loadData();
+    }, [loadData]);
 
     const setSearch = useCallback((search: string) => {
-        setState(prev => ({ ...prev, search }));
+        setState((current) => ({ ...current, search }));
+    }, []);
+    const setActiveFilters = useCallback((update: (current: Record<string, string>) => Record<string, string>) => {
+        setState((current) => ({ ...current, activeFilters: update(current.activeFilters) }));
     }, []);
 
-    const setActiveFilters = useCallback((updater: (prev: Record<string, string>) => Record<string, string>) => {
-        setState(prev => ({ ...prev, activeFilters: updater(prev.activeFilters) }));
-    }, []);
-
-    return {
-        ...state,
-        setSearch,
-        setActiveFilters
-    };
+    return { ...state, setSearch, setActiveFilters, loadData };
 };

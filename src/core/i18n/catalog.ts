@@ -1,6 +1,8 @@
 import { CATALOG_PART_1 } from './catalogEntries.part1';
 import { CATALOG_PART_2 } from './catalogEntries.part2';
 import { CATALOG_PART_3 } from './catalogEntries.part3';
+import { CATALOG_PART_4 } from './catalogEntries.part4';
+import { CATALOG_PART_5 } from './catalogEntries.part5';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -18,13 +20,15 @@ type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
  * administrador.
  *
  * Chaves com `{nome}` aceitam interpolação via `useLibraryText()`. O conteúdo mora
- * em três companions (`catalogEntries.part{1,2,3}.ts`) por causa do teto de 250
+ * em companions `catalogEntries.part*.ts` por causa do teto de 250
  * linhas do Clean Code — ver o cabeçalho de `catalogEntries.part1.ts`.
  */
 export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_PART_1,
     ...CATALOG_PART_2,
     ...CATALOG_PART_3,
+    ...CATALOG_PART_4,
+    ...CATALOG_PART_5,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

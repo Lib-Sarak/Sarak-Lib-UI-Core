@@ -99,8 +99,6 @@ export function getChromeTokens({ root = ROOT } = {}) {
  * consumidor no SarakAppChrome.
  */
 export const ORPHAN_TOKENS = [
-    'layoutDensity', // src/core/Design/schema/system.ts:26 — sem consumidor nos dois cromos.
-    'maxContentWidth', // src/core/Design/schema/system.ts:39 — sem consumidor nos dois cromos.
     'isSplitViewEnabled', // src/core/Shell/Components/ShellContent.tsx:26 — consumido só pelo Shell; falta no AppChrome.
 ];
 

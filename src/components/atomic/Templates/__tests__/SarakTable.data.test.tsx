@@ -1,45 +1,65 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { SarakTable } from '../SarakTable';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import api from '../../../../shared/services/api';
 
-vi.mock('../../../../shared/services/api', () => ({
-    default: { get: vi.fn() }
-}));
+const MAPPING = { name: 'Name' };
 
-const MAPPING = { nome: 'Nome' };
-
-// Prova ponta a ponta — com `data`, o consumidor que já tem o dado (cache,
-// SSR, outra chamada) não precisa fingir um `endpoint`, e nenhuma chamada de rede
-// ocorre; sem `data`, o comportamento por `endpoint` é o de hoje.
-describe('SarakTable — aceita dado pronto', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    it('com `data`, renderiza o dado direto e NÃO chama a rede', () => {
+describe('SarakTable host data contract', () => {
+    it('renders provided data without invoking load', () => {
+        const load = vi.fn(async () => [{ id: 2, name: 'Loaded' }]);
         render(
             <SarakUIProvider>
-                <SarakTable data={[{ id: 1, nome: 'Ana' }]} mapping={MAPPING} />
-            </SarakUIProvider>
+                <SarakTable data={[{ id: 1, name: 'Ana' }]} load={load} mapping={MAPPING} />
+            </SarakUIProvider>,
         );
 
         expect(screen.getByText('Ana')).toBeInTheDocument();
-        expect(api.get).not.toHaveBeenCalled();
+        expect(load).not.toHaveBeenCalled();
     });
 
-    it('sem `data`, continua buscando por `endpoint` — comportamento de hoje', async () => {
-        (api.get as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: [{ id: 1, nome: 'Bia' }] });
-
+    it('renders rows returned by the host loader', async () => {
+        const load = vi.fn(async () => [{ id: 1, name: 'Bia' }]);
         render(
             <SarakUIProvider>
-                <SarakTable endpoint="/mock" mapping={MAPPING} />
-            </SarakUIProvider>
+                <SarakTable load={load} mapping={MAPPING} />
+            </SarakUIProvider>,
         );
 
         expect(await screen.findByText('Bia')).toBeInTheDocument();
-        expect(api.get).toHaveBeenCalledWith('/mock');
+        expect(load).toHaveBeenCalledOnce();
+    });
+
+    it('shows host load failures', async () => {
+        render(
+            <SarakUIProvider>
+                <SarakTable load={async () => { throw new Error('Unavailable'); }} mapping={MAPPING} />
+            </SarakUIProvider>,
+        );
+
+        expect(await screen.findByText('Unavailable')).toBeInTheDocument();
+    });
+
+    it('lets the host hide search and does not show refresh without a loader', () => {
+        render(
+            <SarakUIProvider>
+                <SarakTable data={[{ id: 1, name: 'Ana' }]} mapping={MAPPING} showSearch={false} showRefresh />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Tentar novamente' })).not.toBeInTheDocument();
+    });
+
+    it('does not invent action buttons for row data', () => {
+        render(
+            <SarakUIProvider>
+                <SarakTable data={[{ id: 1, name: 'Ana', action: 'Open' }]} mapping={{ name: 'Name', action: 'Action' }} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('Open')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Open' })).not.toBeInTheDocument();
     });
 });

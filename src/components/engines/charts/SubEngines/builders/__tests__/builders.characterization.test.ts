@@ -12,9 +12,9 @@ import type { ChartTheme } from '../types';
  */
 
 const data = [
-    { name: 'A', value: 10, v: 100 },
-    { name: 'B', value: 20, v: 200 },
-    { name: 'C', value: 30, v: 300 },
+    { name: 'A', value: 10, v: 100, open: 98, high: 108, low: 95, close: 105, boxplot: [1, 2, 3, 4, 5] },
+    { name: 'B', value: 20, v: 200, open: 105, high: 112, low: 101, close: 109, boxplot: [2, 3, 4, 5, 6] },
+    { name: 'C', value: 30, v: 300, open: 109, high: 116, low: 103, close: 107, boxplot: [3, 4, 5, 6, 7] },
 ];
 
 const config = { dataKey: 'value', xAxisKey: 'name' };
@@ -52,8 +52,31 @@ describe('chart builders — caracterização da saída', () => {
     it('statisticalCharts.buildCandlestickSeries', () => {
         expect(statistical.buildCandlestickSeries(data, config, theme)).toMatchSnapshot();
     });
+    it('statisticalCharts.buildCandlestickSeries ignores records without OHLC values', () => {
+        const result = statistical.buildCandlestickSeries([{ name: 'A', value: 10 }], config, theme);
+        expect(result.xAxis).toEqual({ data: [] });
+        expect(result.series).toEqual([expect.objectContaining({ type: 'candlestick', data: [] })]);
+    });
+    it('statisticalCharts.buildCandlestickSeries maps host OHLC values to the chart order', () => {
+        const item = { name: 'Sample', open: 10, high: 15, low: 8, close: 13 };
+        const result = statistical.buildCandlestickSeries([item], config, theme);
+
+        expect(result.xAxis).toEqual({ data: ['Sample'] });
+        expect(result.series).toEqual([expect.objectContaining({ data: [[10, 13, 8, 15]] })]);
+    });
     it('statisticalCharts.buildBoxPlotSeries', () => {
         expect(statistical.buildBoxPlotSeries(data, config, theme)).toMatchSnapshot();
+    });
+    it('statisticalCharts.buildBoxPlotSeries has no fabricated data when input is empty', () => {
+        expect(statistical.buildBoxPlotSeries([], config, theme).series).toEqual([
+            expect.objectContaining({ type: 'boxplot', data: [] }),
+        ]);
+    });
+    it('statisticalCharts.buildBoxPlotSeries accepts five host-provided summary values', () => {
+        const item = { min: 1, q1: 2, median: 3, q3: 4, max: 5 };
+        const result = statistical.buildBoxPlotSeries([item], config, theme);
+
+        expect(result.series).toEqual([expect.objectContaining({ data: [[1, 2, 3, 4, 5]] })]);
     });
     it('statisticalCharts.buildHistogramSeries', () => {
         expect(statistical.buildHistogramSeries(data, config, theme)).toMatchSnapshot();

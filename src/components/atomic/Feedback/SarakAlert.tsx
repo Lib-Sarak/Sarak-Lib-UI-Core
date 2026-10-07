@@ -3,6 +3,7 @@ import { SarakButton } from '../Buttons/SarakButton';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
 import type { SarakIconName } from '../Icon/iconNames';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export type SarakAlertVariant = 'success' | 'error' | 'warning' | 'info';
 
@@ -84,14 +85,14 @@ function renderAlertAction(action: SarakAlertProps['action']): React.ReactElemen
     );
 }
 
-function renderAlertCloseButton(onClose: SarakAlertProps['onClose']): React.ReactElement | null {
+function renderAlertCloseButton(onClose: SarakAlertProps['onClose'], closeLabel: string): React.ReactElement | null {
     if (!onClose) return null;
     return (
         <SarakIconButton
             type="button"
             variant="ghost"
             size="xs"
-            aria-label="Fechar aviso"
+            aria-label={closeLabel}
             onClick={onClose}
             style={{ color: 'var(--sarak-text-main, #ffffff)', lineHeight: 1, borderRadius: 0 }}
             icon={<SarakIcon name="X" size="var(--sarak-body-size, 14px)" />}
@@ -107,6 +108,7 @@ export const SarakAlert = ({
     onClose,
 }: SarakAlertProps): React.ReactElement => {
     const presentation = ALERT_PRESENTATION[variant];
+    const text = useLibraryText();
     const titleId = useId();
     const messageId = useId();
 
@@ -128,7 +130,7 @@ export const SarakAlert = ({
                 <p id={messageId} style={{ margin: 0 }}>{message}</p>
                 {renderAlertAction(action)}
             </div>
-            {renderAlertCloseButton(onClose)}
+            {renderAlertCloseButton(onClose, text('alertClose'))}
         </div>
     );
 };

@@ -5,12 +5,20 @@ import { MessageList } from './Chat/MessageList';
 import { ChatInput } from './Chat/ChatInput';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import type { SarakChatModelLoader, SarakChatOnSend } from './Chat/types';
+
+export type {
+  SarakChatModelLoader,
+  SarakChatModelRoute,
+  SarakChatOnSend,
+  SarakChatSendRequest,
+} from './Chat/types';
 
 export interface SarakChatProps {
-  /** Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. */
-  endpoint: string;
-  /** Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. */
-  modelsEndpoint?: string;
+  /** O host envia a mensagem e encaminha cada token recebido ao callback. */
+  onSend: SarakChatOnSend;
+  /** Carrega modelos do host; omitido, a lista permanece vazia. */
+  loadModels?: SarakChatModelLoader;
   /** Nome exibido no cabeçalho; omitido, usa `AI Chat`. */
   label?: string;
   /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
@@ -22,11 +30,11 @@ export interface SarakChatProps {
 }
 
 export const SarakChat: React.FC<SarakChatProps> = ({ 
-  endpoint, 
-  modelsEndpoint = '/llm-test-chat/models',
+  onSend,
+  loadModels,
   label = 'AI Chat'
 }) => {
-  const chat = useSarakChat(endpoint, modelsEndpoint);
+  const chat = useSarakChat(onSend, loadModels);
   const { design } = useSarakUI();
   const { getFlexStyles } = useStructuralStyles();
   const cardTextureType = design?.cardTextureType || 'none';
@@ -78,4 +86,3 @@ export const SarakChat: React.FC<SarakChatProps> = ({
     </div>
   );
 };
-

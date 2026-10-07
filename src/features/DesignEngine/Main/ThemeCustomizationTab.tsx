@@ -55,7 +55,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         activeSectionId, setActiveSectionId,
         viewMode, setViewMode,
         searchQuery, setSearchQuery,
-        isEssentialMode, setIsEssentialMode,
+        editMode, setEditMode,
         isPreviewStacked, setIsPreviewStacked,
         currentThemeName, setCurrentThemeName,
         isSaveModalOpen, setIsSaveModalOpen,
@@ -119,10 +119,11 @@ export const ThemeCustomizationTab: React.FC = () => {
         pillars,
         globalComponent,
         groupedStructure,
-        dynamicEssentialTokens,
+        visualImpactTokens,
+        isTokenVisible,
         catalogMap,
         filteredResults
-    } = useThemeCustomizationData(searchQuery);
+    } = useThemeCustomizationData(searchQuery, editMode);
 
     const handleInspectComponent = useCallback((schemaId: string) => {
         const foundPillar = Object.keys(groupedStructure).find(p =>
@@ -159,8 +160,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     setPreviewDevice={setPreviewDevice}
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
-                    isEssentialMode={isEssentialMode}
-                    setIsEssentialMode={setIsEssentialMode}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
                     isPreviewStacked={isPreviewStacked}
                     setIsPreviewStacked={setIsPreviewStacked}
                     handleApplyGlobalChanges={handleApplyGlobalChanges}
@@ -191,8 +192,9 @@ export const ThemeCustomizationTab: React.FC = () => {
                     sarak={sarak}
                     pillars={pillars}
                     groupedStructure={groupedStructure}
-                    isEssentialMode={isEssentialMode}
-                    dynamicEssentialTokens={dynamicEssentialTokens}
+                    editMode={editMode}
+                    visualImpactTokens={visualImpactTokens}
+                    isTokenVisible={isTokenVisible}
                     setActivePreviewApp={setActivePreviewApp}
                 />
             </div>

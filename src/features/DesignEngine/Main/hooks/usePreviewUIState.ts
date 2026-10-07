@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 
+export type ThemeEditMode = 'impact' | 'essential' | 'complete';
+
 export function usePreviewUIState() {
     const [state, setState] = useState({
         activePreviewApp: 'dashboard',
@@ -8,7 +10,7 @@ export function usePreviewUIState() {
         activeSectionId: null as string | null,
         viewMode: 'preview' as 'preview' | 'catalog' | 'templates' | 'command-center',
         searchQuery: '',
-        isEssentialMode: true,
+        editMode: 'essential' as ThemeEditMode,
         isPreviewStacked: false
     });
 
@@ -51,8 +53,8 @@ export function usePreviewUIState() {
         setViewMode: (v: 'preview' | 'catalog' | 'templates' | 'command-center') => updateState({ viewMode: v }),
         searchQuery: state.searchQuery,
         setSearchQuery: (v: string) => updateState({ searchQuery: v }),
-        isEssentialMode: state.isEssentialMode,
-        setIsEssentialMode: (v: boolean) => updateState({ isEssentialMode: v }),
+        editMode: state.editMode,
+        setEditMode: (v: ThemeEditMode) => updateState({ editMode: v }),
         isPreviewStacked: state.isPreviewStacked,
         setIsPreviewStacked: (v: boolean) => updateState({ isPreviewStacked: v })
     };

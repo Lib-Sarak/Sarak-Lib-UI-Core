@@ -17,38 +17,58 @@ export const buildScatterSeries = (data: SarakChartDataItem[], config: ChartBuil
     }]
 });
 
-export const buildCandlestickSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
-    xAxis: { data: data.map(item => item.name) },
-    series: [{
-        type: 'candlestick',
-        data: data.map(item => {
-            const v = item.v as number;
-            return [v - 10, v + 10, v - 20, v + 20];
-        }),
-        itemStyle: {
-            color: theme.primaryColor,
-            color0: '#ef4444',
-            borderColor: theme.primaryColor,
-            borderColor0: '#ef4444'
-        }
-    }]
-});
+function finiteNumber(value: unknown): value is number {
+    return typeof value === 'number' && Number.isFinite(value);
+}
+
+function getCandlestickValues(item: SarakChartDataItem): number[] | null {
+    const values = [item.open, item.close, item.low, item.high];
+    return values.every(finiteNumber) ? values : null;
+}
+
+export const buildCandlestickSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => {
+    const xAxisKey = config?.xAxisKey ?? 'name';
+    const validItems = data.flatMap((item) => {
+        const values = getCandlestickValues(item);
+        return values ? [{ item, values }] : [];
+    });
+
+    return {
+        xAxis: { data: validItems.map(({ item }) => item[xAxisKey]) },
+        series: [{
+            type: 'candlestick',
+            data: validItems.map(({ values }) => [values[0], values[1], values[2], values[3]]),
+            itemStyle: {
+                color: theme.primaryColor,
+                color0: '#ef4444',
+                borderColor: theme.primaryColor,
+                borderColor0: '#ef4444',
+            },
+        }],
+    };
+};
+
+function getBoxPlotValues(item: SarakChartDataItem, dataKey: string): number[] | null {
+    const rawValues = item[dataKey] ?? item.boxplot;
+    if (Array.isArray(rawValues) && rawValues.length === 5 && rawValues.every(finiteNumber)) return rawValues;
+
+    const values = [item.min, item.q1, item.median, item.q3, item.max];
+    return values.every(finiteNumber) ? values : null;
+}
 
 export const buildBoxPlotSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
-        name: 'BoxPlot',
         type: 'boxplot',
-        data: [
-            [200, 300, 400, 500, 700],
-            [300, 450, 550, 650, 850],
-            [150, 250, 350, 450, 650]
-        ],
+        data: data.flatMap((item) => {
+            const values = getBoxPlotValues(item, config?.dataKey ?? 'boxplot');
+            return values ? [values] : [];
+        }),
         itemStyle: {
             borderColor: theme.primaryColor,
             borderWidth: 2,
-            color: `rgba(${theme.primaryRGB}, 0.2)`
-        }
-    }]
+            color: `rgba(${theme.primaryRGB}, 0.2)`,
+        },
+    }],
 });
 
 export const buildHistogramSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({

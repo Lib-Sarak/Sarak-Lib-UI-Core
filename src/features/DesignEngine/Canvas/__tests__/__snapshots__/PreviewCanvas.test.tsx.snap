@@ -1970,7 +1970,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                     <main
                       class="relative flex-1 min-w-0 min-h-0 overflow-auto "
                       data-sarak-content="true"
-                      style="color: var(--text-main, var(--color-theme-title, inherit)); padding: var(--sarak-layout-padding, 16px);"
+                      style="color: var(--text-main, var(--color-theme-title, inherit)); width: 100%; max-width: 1440px; margin-inline: auto; padding: var(--sarak-layout-padding, 16px);"
                     >
                       <div
                         data-testid="mock-dashboard"

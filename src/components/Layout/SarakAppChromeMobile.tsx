@@ -13,7 +13,7 @@ import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
-import { resolveChromeContentAlignmentClass } from './chrome/chromeStructuralStyles';
+import { resolveChromeContentAlignmentClass, resolveChromeContentStyle } from './chrome/chromeStructuralStyles';
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
@@ -101,7 +101,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
-    const { contentAlignment, searchPositionSidebar } = useChromeDesignTokens();
+    const { contentAlignment, layoutDensity, maxContentWidth, searchPositionSidebar } = useChromeDesignTokens();
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -210,7 +210,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             <main
                 data-sarak-content
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
             </main>

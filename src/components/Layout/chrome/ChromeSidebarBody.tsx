@@ -12,7 +12,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } fr
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass } from './chromeStructuralStyles';
+import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass, resolveChromeContentStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -55,7 +55,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { sidebarPosition, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const { sidebarPosition, contentAlignment, layoutDensity, maxContentWidth, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -169,7 +169,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 <main
                     data-sarak-content
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >
                     {children}
                 </main>

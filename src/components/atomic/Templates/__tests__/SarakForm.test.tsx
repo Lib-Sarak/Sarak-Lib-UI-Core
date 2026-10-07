@@ -1,6 +1,6 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import * as ComponentModule from '../SarakForm';
 import { SarakForm } from '../SarakForm';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
@@ -27,7 +27,7 @@ describe('SarakForm', () => {
     // (medição real em Chromium, no resumo da plan-47).
     it('o grid de campos do formulário NÃO emite mais a forma quebrada (col-12) — emite auto-fit', () => {
         const { container } = render(
-            <SarakForm endpoint="/mock" mapping={{ name: 'Nome' }} mode="create" />
+            <SarakForm mapping={{ name: 'Nome' }} mode="create" />
         );
 
         const grid = container.querySelector('[class*="@container"]')?.firstElementChild as HTMLElement;
@@ -40,12 +40,34 @@ describe('SarakForm', () => {
     // classe emitida; NÃO prova largura real (medição em Chromium no resumo da plan-49).
     it('sob col-12 (escolha explícita de tema), o grid de campos emite o default de span — não mais a forma sem span nenhum', () => {
         const { container } = render(
-            <SarakForm endpoint="/mock" mapping={{ name: 'Nome' }} mode="create" />,
+            <SarakForm mapping={{ name: 'Nome' }} mode="create" />,
             { wrapper: withColTwelveTheme },
         );
 
         const grid = container.querySelector('[class*="@container"]')?.firstElementChild as HTMLElement;
         expect(grid.className).toContain('grid-cols-12');
         expect(grid.className).toContain('[:where(&)>*]:col-span-6');
+    });
+
+    it('does not show submit controls without a host callback', () => {
+        render(<SarakForm mapping={{ name: 'Name' }} mode="create" />);
+
+        expect(screen.queryByRole('button', { name: 'Salvar alterações' })).not.toBeInTheDocument();
+    });
+
+    it('submits form values through the host callback', async () => {
+        const onSubmit = vi.fn();
+        render(<SarakForm mapping={{ name: 'Name' }} mode="create" onSubmit={onSubmit} />);
+
+        fireEvent.change(screen.getByPlaceholderText('Digite Name…'), { target: { value: 'Ada' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Salvar alterações' }));
+
+        expect(onSubmit).toHaveBeenCalledWith({ name: 'Ada' });
+    });
+
+    it('displays load failures returned by the host', async () => {
+        render(<SarakForm load={async () => { throw new Error('Unavailable'); }} />);
+
+        expect(await screen.findByText('Unavailable')).toBeInTheDocument();
     });
 });

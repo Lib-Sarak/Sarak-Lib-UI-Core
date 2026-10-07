@@ -46,8 +46,9 @@ const baseProps = () => ({
     sarak: { branding: {}, updateBranding: vi.fn() },
     pillars: [],
     groupedStructure: {},
-    isEssentialMode: false,
-    dynamicEssentialTokens: new Set<string>(),
+    editMode: 'essential',
+    visualImpactTokens: [],
+    isTokenVisible: () => true,
     setActivePreviewApp: vi.fn()
 });
 
@@ -56,6 +57,36 @@ describe('ThemeSidebarContent', () => {
         const FinalProps = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
         const { container } = render(<ThemeSidebarContent {...FinalProps} />);
         expect(container).toMatchSnapshot();
+    });
+
+    it('no modo Impacto mostra os cinco blocos abertos e só os controles marcados, sem pilares', () => {
+        const impactProps = {
+            ...baseProps(),
+            editMode: 'impact',
+            visualImpactTokens: [
+                { token: { id: 'headingFont', label: 'Fonte de títulos', type: 'text' }, group: 'fontes' },
+                { token: { id: 'primaryColor', label: 'Cor primária', type: 'text' }, group: 'cores' },
+                { token: { id: 'texture', label: 'Textura', type: 'text' }, group: 'fundo' },
+                { token: { id: 'cardVariant', label: 'Tipo de card', type: 'text' }, group: 'cards' },
+                { token: { id: 'btnStyleType', label: 'Estilo do botão', type: 'text' }, group: 'forma' }
+            ],
+            pillars: [{ id: 'typography', title: 'Pilar não exibido', icon: () => <div />, index: 1 }],
+            groupedStructure: { typography: { Fontes: [{ id: 'headingFont', label: 'Fonte de títulos' }] } }
+        } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        const { container } = render(<ThemeSidebarContent {...impactProps} />);
+
+        expect(screen.getByRole('heading', { name: 'Fontes' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Cores' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Fundo e textura' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Cards' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Forma e estrutura' })).toBeInTheDocument();
+        expect(container.querySelectorAll('[data-visual-impact-token]')).toHaveLength(5);
+        expect(container.querySelector('[data-visual-impact-token=headingFont]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=primaryColor]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=texture]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=cardVariant]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=btnStyleType]')).toBeInTheDocument();
+        expect(screen.queryByText('Pilar não exibido')).toBeNull();
     });
 
     it('plan-36: no modo catalog, passa draft/updateDraft/resetToken (a MESMA instância de useDesignDraft de ThemeCustomizationTab) para MasterControlPanel — sem instância paralela', () => {

@@ -18,8 +18,8 @@ describe('ThemeSidebarHeader', () => {
         setPreviewDevice: vi.fn(),
         searchQuery: '',
         setSearchQuery: vi.fn(),
-        isEssentialMode: true,
-        setIsEssentialMode: vi.fn(),
+        editMode: 'essential' as const,
+        setEditMode: vi.fn(),
         isPreviewStacked: false,
         setIsPreviewStacked: vi.fn(),
         handleApplyGlobalChanges: vi.fn(),
@@ -27,20 +27,14 @@ describe('ThemeSidebarHeader', () => {
         onUndoLastApply: vi.fn()
     });
 
-    // plan-37: o switch dizia "Modo Avançado (Hyper-Granular)" com a posição LIGADA
-    // correspondendo a !isEssentialMode — comunicava o oposto do estado Essencial.
-    it('plan-37: rotula o switch como "Modo Essencial" quando isEssentialMode=true, com aria-checked coerente', () => {
-        render(<ThemeSidebarHeader {...baseProps()} isEssentialMode={true} />);
+    it('expõe três opções de modo num grupo de rádio nomeado e marca a seleção', () => {
+        render(<ThemeSidebarHeader {...baseProps()} />);
 
-        expect(screen.getByText('Modo Essencial')).toBeDefined();
-        expect(screen.getByRole('switch', { name: /Modo Essencial ativo/i })).toHaveAttribute('aria-checked', 'true');
-    });
-
-    it('plan-37: rotula o switch como "Modo Avançado" quando isEssentialMode=false, com aria-checked coerente', () => {
-        render(<ThemeSidebarHeader {...baseProps()} isEssentialMode={false} />);
-
-        expect(screen.getByText('Modo Avançado')).toBeDefined();
-        expect(screen.getByRole('switch', { name: /Modo Avançado ativo/i })).toHaveAttribute('aria-checked', 'false');
+        expect(screen.getByRole('radiogroup', { name: 'Modo de edição' })).toBeInTheDocument();
+        expect(screen.getAllByRole('radio')).toHaveLength(3);
+        expect(screen.getByRole('radio', { name: 'Impacto' })).toHaveAttribute('aria-checked', 'false');
+        expect(screen.getByRole('radio', { name: 'Essencial' })).toHaveAttribute('aria-checked', 'true');
+        expect(screen.getByRole('radio', { name: 'Completo' })).toHaveAttribute('aria-checked', 'false');
     });
 
     // plan-37: o HyperGranularityTab (Command Center) ganha entrada própria e nomeada no
@@ -60,27 +54,31 @@ describe('ThemeSidebarHeader', () => {
         expect(setViewMode).toHaveBeenCalledWith('command-center');
     });
 
-    // plan-37 (correção, achado 1): o role="switch" tinha sido posto num <div> sem
-    // tabIndex/onKeyDown — leitor de tela anunciava "switch" que nenhum teclado alcançava.
-    // O conserto é um <input type="checkbox" role="switch"> real, visualmente oculto
-    // (padrão de src/components/atomic/Inputs/SarakSwitch.tsx) — Espaço alterna nativamente.
-    it('plan-37 (correção): Espaço alterna o switch Essencial/Avançado — é um <input> real e focável', async () => {
+    it('seta para a direita muda a seleção do grupo de rádio', async () => {
         const user = userEvent.setup();
-        const setIsEssentialMode = vi.fn();
-        render(<ThemeSidebarHeader {...baseProps()} isEssentialMode={true} setIsEssentialMode={setIsEssentialMode} />);
+        const setEditMode = vi.fn();
+        render(<ThemeSidebarHeader {...baseProps()} setEditMode={setEditMode} />);
 
-        const toggle = screen.getByRole('switch', { name: /Modo Essencial ativo/i });
-        expect(toggle.tagName).toBe('INPUT');
+        const selectedMode = screen.getByRole('radio', { name: 'Essencial' });
+        selectedMode.focus();
+        expect(selectedMode).toHaveFocus();
 
-        toggle.focus();
-        expect(toggle).toHaveFocus();
+        await user.keyboard('{ArrowRight}');
 
-        await user.keyboard(' ');
-
-        expect(setIsEssentialMode).toHaveBeenCalledWith(false);
+        expect(setEditMode).toHaveBeenCalledWith('complete');
     });
 
-    it('plan-37 (correção): Espaço alterna o switch "Empilhar Previews" — mesma estrutura do irmão', async () => {
+    it('mantém o mesmo input de busca ao trocar de modo', () => {
+        const props = baseProps();
+        const { rerender } = render(<ThemeSidebarHeader {...props} />);
+        const searchInput = screen.getByPlaceholderText('BUSCAR TOKEN...');
+
+        rerender(<ThemeSidebarHeader {...props} editMode="impact" />);
+
+        expect(screen.getByPlaceholderText('BUSCAR TOKEN...')).toBe(searchInput);
+    });
+
+    it('Espaço alterna o switch "Empilhar Previews"', async () => {
         const user = userEvent.setup();
         const setIsPreviewStacked = vi.fn();
         render(<ThemeSidebarHeader {...baseProps()} isPreviewStacked={false} setIsPreviewStacked={setIsPreviewStacked} />);

@@ -6,12 +6,12 @@ import * as ComponentModule from '../SarakTable';
 vi.mock('../hooks/useSarakTableData', () => ({
     useSarakTableData: () => ({
         data: [
-            { id: 1, nome: 'Beto', ativo: true },
-            { id: 2, nome: 'Ana', ativo: false },
+            { id: 1, nome: 'Beto', active: true },
+            { id: 2, nome: 'Ana', active: false },
         ],
         filteredData: [
-            { id: 1, nome: 'Beto', ativo: true },
-            { id: 2, nome: 'Ana', ativo: false },
+            { id: 1, nome: 'Beto', active: true },
+            { id: 2, nome: 'Ana', active: false },
         ],
         loading: false,
         error: null,
@@ -36,7 +36,7 @@ describe('SarakTable', () => {
     it('planta @container na raiz — ancestral do cabeçalho responsivo', () => {
         const { container } = render(
             <SarakUIProvider>
-                <SarakTable endpoint="/mock" mapping={{ nome: 'Nome' }} />
+                <SarakTable mapping={{ nome: 'Nome' }} />
             </SarakUIProvider>
         );
 
@@ -46,7 +46,7 @@ describe('SarakTable', () => {
     it('ordena localmente em crescente, decrescente e sem ordenação', () => {
         const { container } = render(
             <SarakUIProvider>
-                <SarakTable mapping={{ nome: 'Nome', ativo: 'Ativo' }} />
+                <SarakTable mapping={{ nome: 'Nome', active: 'Flag' }} />
             </SarakUIProvider>,
         );
         const readNames = () => Array.from(container.querySelectorAll('tbody tr td:first-child'))
@@ -67,7 +67,7 @@ describe('SarakTable', () => {
         render(
             <SarakUIProvider>
                 <SarakTable
-                    mapping={{ nome: 'Nome', ativo: 'Ativo' }}
+                    mapping={{ nome: 'Nome', active: 'Flag' }}
                     sort={{ columnId: 'nome', direction: 'asc' }}
                     onSortChange={onSortChange}
                     selectable

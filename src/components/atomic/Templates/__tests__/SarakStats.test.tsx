@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import * as ComponentModule from '../SarakStats';
 import { SarakStats } from '../SarakStats';
 
@@ -22,5 +22,12 @@ describe('SarakStats', () => {
         const grid = wrapper.firstElementChild as HTMLElement;
         expect(grid.className).toContain('grid');
         expect(grid.className).not.toContain('@container');
+    });
+
+    it('preserves zero and large values without formatting them as product metrics', () => {
+        render(<SarakStats data={{ total: 0, volume: 1500 }} />);
+
+        expect(screen.getByText('0')).toBeInTheDocument();
+        expect(screen.getByText('1500')).toBeInTheDocument();
     });
 });

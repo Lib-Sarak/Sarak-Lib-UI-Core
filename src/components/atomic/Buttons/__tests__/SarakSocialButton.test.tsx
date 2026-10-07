@@ -13,7 +13,7 @@ describe('SarakSocialButton', () => {
         );
 
         expect(screen.getByTestId('brand-mark')).toBeInTheDocument();
-        expect(screen.getByTitle('Continue com Google')).toBeInTheDocument();
+        expect(screen.getByTitle('Continuar com google')).toBeInTheDocument();
     });
 
     it('encaminha ao consumidor o provedor acionado', () => {
@@ -24,7 +24,7 @@ describe('SarakSocialButton', () => {
             </SarakUIProvider>,
         );
 
-        fireEvent.click(screen.getByTitle('Acessar com GitHub'));
+        fireEvent.click(screen.getByTitle('Continuar com github'));
         expect(onClick).toHaveBeenCalledWith('github');
     });
 });

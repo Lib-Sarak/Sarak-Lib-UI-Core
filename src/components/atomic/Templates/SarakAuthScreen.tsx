@@ -2,6 +2,26 @@ import React, { useCallback, useState } from 'react';
 import { AuthHero } from './components/AuthHero';
 import { AuthForm } from './components/AuthForm';
 import type { SarakSocialConfig } from './components/AuthSocialLogin';
+export type SarakAuthScreenLabelKey =
+    | 'authTitleLogin'
+    | 'authTitleRegister'
+    | 'authTitleMfa'
+    | 'authDescriptionLogin'
+    | 'authDescriptionRegister'
+    | 'authDescriptionMfa'
+    | 'authEmailLabel'
+    | 'authEmailPlaceholder'
+    | 'authPasswordLabel'
+    | 'authMfaLabel'
+    | 'authForgotPassword'
+    | 'authBackToPassword'
+    | 'authSubmitLogin'
+    | 'authSubmitRegister'
+    | 'authSubmitMfa'
+    | 'authHasAccount'
+    | 'authNoAccount'
+    | 'authToggleLogin'
+    | 'authToggleRegister';
 
 /**
  * Evento estruturado emitido por `onChange` (Spec 20) — o canal declarativo único
@@ -10,7 +30,7 @@ import type { SarakSocialConfig } from './components/AuthSocialLogin';
  * emitido vira `{{$event}}` para a cadeia (ex.: `api_call` com `params: "{{$event}}"`).
  */
 export interface SarakAuthScreenEvent {
-    intent: 'submit' | 'social' | 'forgot' | 'masterLogin' | 'toggleRegister' | 'backToPassword';
+    intent: 'submit' | 'social' | 'forgot' | 'toggleRegister' | 'backToPassword';
     username?: string;
     password?: string;
     mfaCode?: string;
@@ -23,6 +43,12 @@ export interface SarakAuthScreenProps {
         name: string;
         logo?: string;
     };
+    /** Permite alternar entre login e cadastro; desativado por padrão. */
+    allowRegistration?: boolean;
+    /** Permite renderizar a etapa MFA quando controlada pelo host; desativado por padrão. */
+    allowMfa?: boolean;
+    /** Sobrescreve títulos, descrições e rótulos com texto do host. */
+    labels?: Partial<Record<SarakAuthScreenLabelKey, string>>;
     isRegistering?: boolean;
     setIsRegistering?: (val: boolean) => void;
     mfaStep?: boolean;
@@ -41,7 +67,7 @@ export interface SarakAuthScreenProps {
     onSocialLogin?: (provider: string) => void;
     socialConfig?: SarakSocialConfig;
     onForgot?: () => void;
-    onMasterLogin?: () => void;
+    errorVariant?: 'error' | 'warning';
     /** Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. */
     onChange?: (event: SarakAuthScreenEvent) => void;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
@@ -73,18 +99,20 @@ function useControllableState<T>(
 }
 
 /**
- * SarakAuthScreen (Industrial Template v10 — Spec 20)
+ * SarakAuthScreen is a host-configured template with no built-in network behavior.
  *
  * Template soberano para fluxos de autenticação. Autocontido por padrão: campos e
  * alternância de modo vivem em estado interno quando o host não os controla; o único
  * canal que o host PRECISA injetar é `onChange` (ou os callbacks imperativos
  * individuais, para uso direto em TSX) para saber o que aconteceu. A lib nunca decide
  * onde o token vive nem chama rede — só entrega o evento (receita canônica de sessão:
- * Spec 08 §6.2-b).
+ * The host owns the authentication flow and transport.
  */
 export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
-    const [isRegistering, setIsRegistering] = useControllableState(props.isRegistering, props.setIsRegistering, false);
-    const [mfaStep, setMfaStep] = useControllableState(props.mfaStep, props.setMfaStep, false);
+    const [isRegisteringState, setIsRegistering] = useControllableState(props.isRegistering, props.setIsRegistering, false);
+    const isRegistering = Boolean(props.allowRegistration && isRegisteringState);
+    const [mfaStepState, setMfaStep] = useControllableState(props.mfaStep, props.setMfaStep, false);
+    const mfaStep = Boolean(props.allowMfa && mfaStepState);
     const [username, setUsername] = useControllableState(props.username, props.setUsername, '');
     const [password, setPassword] = useControllableState(props.password, props.setPassword, '');
     const [mfaCode, setMfaCode] = useControllableState(props.mfaCode, props.setMfaCode, '');
@@ -109,9 +137,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
         emit({ intent: 'social', provider });
     };
 
-    // "Esqueceu?"/"Master" só aparecem se o host se importa com o evento — TSX direto
-    // (props.onForgot/onMasterLogin) OU manifesto (props.onChange). Preserva o
-    // comportamento visual original (botão ausente quando ninguém reage a ele).
+    // A recuperação só aparece quando o host fornece um callback para tratá-la.
     const handleForgot = (props.onForgot || props.onChange)
         ? (): void => {
               props.onForgot?.();
@@ -119,14 +145,8 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
           }
         : undefined;
 
-    const handleMasterLogin = (props.onMasterLogin || props.onChange)
-        ? (): void => {
-              props.onMasterLogin?.();
-              emit({ intent: 'masterLogin' });
-          }
-        : undefined;
-
     const handleSetIsRegistering = (next: boolean): void => {
+        if (!props.allowRegistration) return;
         setIsRegistering(next);
         emit({ intent: 'toggleRegister', isRegistering: next });
     };
@@ -145,6 +165,8 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
             <AuthForm
                 branding={props.branding}
                 isRegistering={isRegistering}
+                allowRegistration={Boolean(props.allowRegistration)}
+                labels={props.labels}
                 setIsRegistering={handleSetIsRegistering}
                 mfaStep={mfaStep}
                 setMfaStep={handleSetMfaStep}
@@ -157,12 +179,12 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
                 error={props.error}
+                errorVariant={props.errorVariant ?? 'error'}
                 isPending={props.isPending}
                 onSubmit={handleSubmit}
                 onSocialLogin={handleSocialLogin}
                 socialConfig={props.socialConfig}
                 onForgot={handleForgot}
-                onMasterLogin={handleMasterLogin}
             />
         </div>
     );

@@ -89,7 +89,6 @@
     },
     "peerDependencies": {
         "@tanstack/react-virtual": ">=3.0.0",
-        "axios": "^1.6.0",
         "clsx": ">=2.1.0",
         "date-fns": ">=3.3.0",
         "echarts": ">=5.5.0",

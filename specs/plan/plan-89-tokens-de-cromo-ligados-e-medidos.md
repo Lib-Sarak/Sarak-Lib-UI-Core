@@ -88,6 +88,11 @@ que não existe.
 - **Os temas shippados** (`src/core/Design/presets/themes/`).
 - `isAutoHideEnabled`, `layoutPadding` e qualquer outro token de `system.ts`.
 - Os casos que já existem em `cromo-css-real.spec.ts` — têm de continuar verdes **sem edição**.
+  *(Emenda do revisor, 2026-10-06:)* **uma exceção, e só ela.** Desde a `plan-94`, o item de navegação com `href`
+  renderiza `<a>` (link), e os casos antigos que localizam **item de navegação** por `getByRole('button', …)` não
+  o acham mais. Nesses casos, e só nesses, troque o papel do localizador para `link`. Nada mais muda neles:
+  nem asserção, nem viewport, nem nome. Localizador de controle que continua sendo botão (gaveta, botões de
+  prova) fica como está.
 - `src/styles/` — é da `plan-90`.
 - `browser-tests/playwright.config.ts` e o ciclo de vida do harness — foram da `plan-86`.
 - A presença e a composição dos widgets da barra (busca inclusive) — foram do cromo único ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]); aqui só os três tokens de layout.
@@ -218,11 +223,313 @@ exceções** dele. O efeito na tela é provado por caso de navegador e por teste
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-10-06
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```text
+ M .githooks/pre-commit
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Adicionei recortes nomeados para `topbarColor` (cor), `tabGap` (gap), `tabSectionMargin` (margem) e `isNavHidden` (estrutura) em `browser-tests/fixtures/harness-entry.tsx:45-58`.
+- Acrescentei medições relacionais para os quatro recortes e um diagnóstico do tablet em 20 tentativas em `browser-tests/cromo-css-real.spec.ts:303-364`.
+- Atualizei o limite 3 do cabeçalho para declarar os novos recortes (`browser-tests/cromo-css-real.spec.ts:42-46`) e troquei o ponteiro inexistente do harness pela spec de medição (`browser-tests/fixtures/harness-entry.tsx:1`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | Quatro variantes de token de cromo e ponteiro corrigido. |
+| `browser-tests/cromo-css-real.spec.ts` | alterado | Limites atualizados, quatro casos de token e medição do tablet. |
+
+**Verificações executadas**
+- `node --input-type=module -e "import { getChromeTokens } from './gates/scripts/contrato/check-chrome-token-parity.mjs'; ..."` → inventário confirmou `topbarColor`, `tabGap`, `tabSectionMargin` e `isNavHidden` como representantes das quatro famílias.
+- `git diff --check -- browser-tests/cromo-css-real.spec.ts browser-tests/fixtures/harness-entry.tsx` → sem erros de whitespace.
+- `npm.cmd run build` → código 0; gates de tokens, catálogo, barril, marca, tipos públicos e prefixo passaram nessa execução.
+- `npm.cmd run cromo-css-real:check` → iniciou 27 casos; 13 terminaram antes da interrupção (8 passaram, 5 falharam). Nos casos novos, cor, margem e estrutura passaram; a primeira medição de gap comparou `23px` do token com `12px` de `column-gap` na topbar; o diagnóstico do tablet encontrou zero itens rotulados com o seletor inicial restrito a botões. A suíte foi interrompida após três casos preexistentes excederem o timeout de quatro minutos.
+- `npm.cmd run cromo-css-real:check -- --grep "topbarColor|tabGap|tabSectionMargin|isNavHidden|nenhum item visível"` → o build parou em `catalog:check`, que declarou `docs/component-catalog.{json,md}` defasados; nenhum caso focado foi executado.
+
+**Critérios de aceite — lote 1**
+- [x] A fixture declara um token por família (cor, gap, margem e estrutura) — evidência: variantes em `browser-tests/fixtures/harness-entry.tsx:55-58`.
+- [x] `topbarColor`, `tabSectionMargin` e `isNavHidden` chegaram aos valores computados na primeira execução — evidência: casos 2, 4 e 5 da saída Playwright.
+- [ ] `tabGap` chega ao espaçamento computado — motivo: a primeira escolha de propriedade/viewport não acompanhou o token (`12px` versus `23px`); o caso foi movido para `row-gap` da navegação desktop e aguarda reexecução.
+- [ ] O resultado do tablet foi medido em 20 tentativas — motivo: o seletor inicial contou apenas botões e retornou zero rótulos; o leitor agora inclui links, mas a nova medição não rodou porque `catalog:check` bloqueou o build.
+- [x] `harness-entry.tsx` não aponta mais para arquivo inexistente — evidência: linha 1 aponta para `specs/specs/11-testes-e-cobertura.md §7.3`.
+- [ ] Todos os casos preexistentes ficaram verdes sem edição — motivo: três casos sem alteração excederam o timeout esperando nomes via `getByRole('button', ...)`.
+
+**Decisões e suposições**
+- `isNavHidden` representa a família estrutural: a medição verifica que a topbar seleciona a altura computada de `--sarak-topbar-collapsed-height`.
+- O caso de `tabGap` foi movido para desktop e mede `row-gap`, pois a tentativa inicial na topbar mediu `column-gap` diferente do token; essa escolha ainda aguarda confirmação.
+- O leitor do tablet trata links e botões como itens de navegação e considera visíveis apenas elementos cujas caixas intersectam a navegação e o viewport.
+- A execução parou no lote 1, conforme solicitado; lotes 2 e 3 não foram iniciados.
+
+**Achados fora do escopo (não corrigidos)**
+- `docs/component-catalog.{json,md}` — `catalog:check` reportou defasagem durante alterações concorrentes; os arquivos não foram lidos nem regenerados.
+- `browser-tests/cromo-css-real.spec.ts:389` — o caso preexistente da sidebar extensa excedeu quatro minutos esperando `button` chamado `Seção 30`; não foi editado.
+- `browser-tests/cromo-css-real.spec.ts:438,452` — os casos preexistentes de métrica mobile/tablet excederam quatro minutos esperando `button` chamado `Início`; não foram editados.
+
+**Pendências / riscos**
+- A validação final dos cinco casos novos depende de o gate `catalog:check` voltar a passar após a execução concorrente atualizar o catálogo.
+- A suíte completa não terminou; além dos três timeouts antigos, gap e tablet ainda aguardam reexecução focada.
+
+**Complemento factual**
+- `specs/plan/plan-89-tokens-de-cromo-ligados-e-medidos.md` também foi alterado: o status passou a `🟠 Em revisão` e este resumo foi acrescentado de forma append-only.
+- O comando completo do inventário foi `node --input-type=module -e "import { getChromeTokens } from './gates/scripts/contrato/check-chrome-token-parity.mjs'; console.log(JSON.stringify(getChromeTokens().map(({id, cssVars}) => ({id, cssVars})), null, 2));"`.
+
+## Correção após o veredito — 2026-10-06
+
+Este adendo preserva o resumo anterior e registra exclusivamente as correções dos quatro achados do veredito.
+
+**Achados corrigidos**
+- **Gap:** o caso mede `gap` no contêiner flex de abas dentro da navegação da topbar a 900 px. Com `cromo-gap`, o computado foi `23px`, igual a `--sarak-tab-gap`; sem o recorte, o caso falhou na comparação com o tema padrão (`8px`). O recorte foi restaurado e o caso passou.
+- **Tablet:** o leitor considera links e botões. O diagnóstico encontrou 32 itens de navegação no DOM e `Início` como rótulo visível na primeira tentativa; as 20 tentativas passaram sem item visível sem rótulo entre itens rotulados. Saída aplicada: não reproduz, caso mantido como regressão.
+- **Localizadores antigos:** os casos de navegação agora usam `link` para `Seção 30` e `Início` (métrica mobile, métrica e raio tablet, métrica desktop); `SarakButton` e o toggle do drawer seguem como `button`. O comentário do harness foi atualizado para refletir o papel `link`.
+- **Suíte:** `npx.cmd playwright test --config=browser-tests/playwright.config.ts` terminou com 27/27 casos verdes, incluindo os localizadores de navegação corrigidos.
+
+**Gate externo, registrado sem correção nesta plan:** `npm run catalog:check` passou sozinho antes da medição. `npm run build` e o wrapper `npm run cromo-css-real:check` pararam em `public-types:check`, que aponta `AuthLabelKey` e `LibraryTextKey` em `dist/index.d.ts` como não exportados em `src/index.ts` (alteração da execução paralela). O wrapper, portanto, não chegou a iniciar Playwright; os mesmos 27 casos foram executados diretamente após gerar os artefatos JS/CSS necessários. `src/index.ts` e arquivos das outras execuções permaneceram intocados.
+
 ---
+
+## Resumo da execução — 2026-10-06 (lote 2)
+
+**Resultado:** lote 2 entregue para veredito; lote 3 não iniciado.
+
+**Estado do worktree ao iniciar:** `git status --short` foi registrado antes da primeira edição. Já havia alterações do lote 1 aprovado, de `plan-96`/`plan-99`, de `.githooks/pre-commit`, de arquivos gerados e de outras tarefas; esse conteúdo pré-existente não foi revertido nem formatado. Em `docs/migracoes.md`, só foi inserida a subseção deste lote dentro de `## 8.0.0 — um cromo por aplicação`.
+
+**O que foi feito**
+- O hook `useChromeDesignTokens` lê `maxContentWidth` e `layoutDensity`; um estilo compartilhado aplica largura de 100%, limite máximo centralizado e escala o padding responsivo. `comfortable` conserva a expressão de padding anterior. O estilo é usado nos corpos sidebar, topbar e mobile.
+- Atualizei apenas as descrições desses dois tokens, removi ambos de `ORPHAN_TOKENS` e acrescentei testes do hook, do estilo e da integração nos três modos.
+- A fixture ganhou dois recortes de largura e três de densidade. A medição de navegador cobre limite/centralização, `100%`, a ordem da densidade nos quatro lados e igualdade completa do estilo computado em `comfortable`.
+- A nota de migração explica o efeito visual e como voltar à largura fluida (`maxContentWidth: '100%'`) e ao respiro anterior (`layoutDensity: 'comfortable'`).
+
+**Verificações**
+- `npm run catalog:check`, executado isoladamente antes de build/navegador → verde; o catálogo não foi regenerado.
+- `npm run chrome-token-parity:check` → verde: 42 tokens cobertos; `isSplitViewEnabled` segue órfão para o lote 3.
+- `npx vitest run` nos três arquivos de teste do cromo → 16/16 casos verdes.
+- `npm run build` → verde após repetição com permissão de leitura ampliada; todos os gates do build passaram. A primeira tentativa no sandbox falhou ao resolver diretórios e shims do `tsup`.
+- `npm run cromo-css-real:check` → 31/31 casos verdes. A primeira medição apontou que `max-width` sem `width: 100%` deixava a região encolher pelo conteúdo; após a correção, as duas medições de largura também passaram.
+- `git diff --check` dos arquivos de código deste lote → limpo. A auditoria TypeScript não apontou violações nas novas funções; os avisos remanescentes ficaram nas funções/tipagens já existentes dos corpos consumidores e em heurísticas de hardcode de valores de schema e do cenário de teste (baixa confiança).
+
+**Handoff:** status 🟠 Em revisão. Aguardar o veredito do lote 2; não iniciar o lote 3.
+
+## Correção do veredito — 2026-10-06 (lote 2)
+
+**Escopo:** somente o achado do último veredito, sobre a prova circular de `comfortable`.
+
+- O caso circular foi substituído por uma comparação dos quatro paddings computados com um elemento de prova
+  irmão que aplica `padding: var(--sarak-layout-padding, 16px)`, nos breakpoints mobile, tablet e desktop.
+- O caso também mede a largura fluida (`maxContentWidth: '100%'`) contra a caixa do contêiner. O caso próprio de
+  largura fluida passou a fazer a mesma comparação.
+- **Mutação negativa:** numa cópia fora do repositório, multipliquei apenas o ramo `comfortable` por `1.25`.
+  O novo caso falhou na primeira faixa, mobile: recebeu `40px` contra os `32px` do elemento de prova. A cópia e
+  os artefatos temporários foram removidos.
+
+**Verificações:**
+- `npm run catalog:check` isolado passou antes das execuções de navegador; nenhum catálogo foi regenerado.
+- `npm run cromo-css-real:check` foi tentado com contagem de processos em zero e parou em `guide:check`, que
+  reportou `sarak-ui/docs/migracoes.md` defasado. Nenhum arquivo dessa execução paralela foi alterado.
+- Após a falha do gate externo, `npx.cmd playwright test --config=browser-tests/playwright.config.ts` passou
+  **31/31** usando o `dist/` da última build aprovada do lote 2. A correção não alterou o código do cromo; o
+  build oficial desta rodada não chegou a compilar por causa do bloqueio acima.
+
+**Handoff:** status 🟠 Em revisão. Aguardar o veredito desta correção; não iniciar o lote 3.
+
+## Correção do veredito — 2026-10-06 (correção 2 do lote 2)
+
+**Escopo:** exclusivamente os achados 2, 3 e 4 do último veredito.
+
+- **Achado 2:** a expectativa de `ORPHAN_TOKENS` em
+  `gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs` agora é `['isSplitViewEnabled']`.
+- **Achado 3:** atualizei a única linha divergente do snapshot de `PreviewCanvas`, incluindo largura fluida,
+  limite de 1440 px e centralização:
+
+  ```diff
+  - style="color: var(--text-main, var(--color-theme-title, inherit)); padding: var(--sarak-layout-padding, 16px);"
+  + style="color: var(--text-main, var(--color-theme-title, inherit)); width: 100%; max-width: 1440px; margin-inline: auto; padding: var(--sarak-layout-padding, 16px);"
+  ```
+
+- **Achado 4 — artefatos e gates:** `npm run guide`, `npm run catalog` e `npm run dev-kit` concluíram; o catálogo
+  foi verificado separadamente com `npm run catalog:check` verde, sem regeneração para destravar gate.
+
+**Verificações:**
+- `npm run build` → verde, incluindo os gates de tipos públicos e os bundles JS, DTS e CSS.
+- `npm run cromo-css-real:check` → verde, **31/31** casos de navegador.
+- `npx tsc --noEmit` → verde.
+- `npx vitest run` completo → **392/392 arquivos e 2.209/2.209 testes** verdes. Houve avisos de CSS/GLib do ambiente, sem falhas.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → baseline de 2026-08-11 preservado, sem regressões.
+
+**Handoff:** status 🟠 Em revisão. Aguardar o veredito; não iniciar o lote 3.
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-06 — 🔴 Reprovado (lote 1)
+
+**Antes de gravar:** a §10 foi relida no disco e estava vazia.
+
+**O que está certo, e foi verificado por mim:**
+- Escopo: só `browser-tests/fixtures/harness-entry.tsx` e `browser-tests/cromo-css-real.spec.ts`. No `.spec.ts`,
+  o diff só remove o texto antigo do limite 3; nenhum caso antigo foi editado.
+- O ponteiro da linha 1 do harness aponta para `specs/specs/11-testes-e-cobertura.md` §7.3, que existe.
+- Os recortes de cor (`topbarColor`), margem (`tabSectionMargin`) e estrutura (`isNavHidden`) passaram na
+  execução do executor; o inventário pelo `getChromeTokens()` está no resumo.
+
+**A causa dos três timeouts não é desta plan.** Os itens de navegação do harness têm `href`
+(`harness-entry.tsx`, `NAV_ITEMS`), e desde o `1093f51e` (`plan-94`) o `SarakMenuItem` com `href` seguro
+renderiza `<a>`. Os casos antigos procuram `getByRole('button', { name: 'Seção 30' | 'Início' })` e não acham. **A
+medição de navegador está vermelha desde aquele commit**, em casos que esta plan não podia editar. A §3.2 foi
+**emendada nesta data**: nos casos que localizam item de navegação, e só neles, o papel passa a `link`.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **O recorte de gap não está provado.** A primeira medição comparou `23px` do token com `12px` de
+   `column-gap`, e o caso foi trocado para `row-gap` na navegação desktop **sem ter rodado**. Critério violado:
+   §6, *"cada um provando que o valor do tema chega ao computado"*. Rode o caso verde e mostre que ele **falha**
+   sem o recorte (ou com o valor do tema igual ao padrão).
+2. **O caso do tablet não foi medido.** Rode as 20 tentativas do passo 2 com o leitor que inclui links e
+   registre o resultado, aplicando a saída correspondente do passo 2.
+3. **Os casos antigos que acham item de navegação por `button`.** Aplique a emenda da §3.2: troque o papel
+   para `link` só neles (são ao menos os de `Seção 30` e `Início`; `grep -n "getByRole('button'"` mostra os
+   localizadores). Para cada um: falha antes da troca, passa depois.
+4. **A suíte de navegador inteira não terminou.** Ao fim, `npm run cromo-css-real:check` completo e verde: os
+   27 casos, os antigos e os novos.
+
+**Circunstância, que não é achado:** o `build` desta medição para no `catalog:check`, porque a `plan-96`, em
+execução, mexe nos componentes e só regenera o catálogo no fim. A correção só pode **medir** quando o
+`catalog:check` estiver verde. Edite antes, se quiser, mas rode o `build` e o navegador depois disso, e nunca
+regenere o catálogo você mesmo para destravar.
+
+## Veredito — 2026-10-06 (correção 1) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: só o bloco de reprovação desta data, escrito por este revisor.
+
+**Os quatro achados fecharam, medidos por mim:**
+
+1. **Gap.** O caso `tablet (900px): tabGap chega ao gap computado dos itens da navegação` passa. Mutação numa
+   cópia fora do repositório, com a fixture trocada para `'cromo-gap': {}`: o caso **falha** na asserção
+   `cromo-gap precisa chegar ao estilo computado`. Ele tem dente.
+2. **Tablet.** As 20 tentativas foram medidas com o leitor que inclui links, sem item visível sem rótulo entre
+   itens rotulados. Saída "não reproduz": o caso fica como regressão.
+3. **Localizadores antigos.** O diff só troca o papel. `readComputedMetric` ganhou o parâmetro
+   `role: 'button' | 'link'` (padrão `button`), os quatro casos de métrica de item de navegação passam `'link'`,
+   e o de `Seção 30` usa `getByRole('link')`. Asserção, viewport e nome não mudaram. Gaveta e botões de prova
+   continuam `button`.
+4. **Suíte de navegador.** Rodei `npx playwright test --config=browser-tests/playwright.config.ts` sobre o
+   `dist/` atual: **27 de 27 verdes, em 1,2 min**. Os quatro casos que estavam vermelhos desde a `plan-94`
+   estão entre eles.
+
+**Circunstância registrada:** durante a correção, o `npm run cromo-css-real:check` completo não rodou, porque o
+`build` parou no `public-types:check` (`AuthLabelKey` e `LibraryTextKey` citados em `dist/index.d.ts` sem
+export no barril), na árvore da `plan-96`. A medição leu o `dist/` gerado só pelas etapas de JS e CSS. Sobre o
+`dist/` atual, o `public-types:check` passa. A verificação integrada repete o `build` completo e o
+`cromo-css-real:check` com as correções das plans 96 e 99 entregues.
+
+**Liberação parcial.** O lote 1 está aprovado; o status volta a `🟡 Em execução`. O lote 2 (largura e
+densidade) pode ser despachado.
+
+## Veredito — 2026-10-06 — 🔴 Reprovado (lote 2)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos do lote 1, escritos por este revisor.
+
+**O que está certo, e foi verificado por mim:**
+- `src/core/Design/schema/system.ts`: só as `description` de `layoutDensity` e `maxContentWidth` mudaram,
+  nenhum default nem opção. `src/core/Design/presets/themes/` não foi tocado.
+- `check-chrome-token-parity.mjs`: só as duas linhas de `ORPHAN_TOKENS` saíram; `chrome-token-parity:check` →
+  42 de 43 cobertos, com `isSplitViewEnabled` declarado para o lote 3.
+- `resolveChromeContentStyle` (`chrome/chromeStructuralStyles.ts`) é a única fonte do estilo da região de
+  conteúdo nos corpos sidebar, topbar e mobile; o fator de densidade é constante nomeada, e o ramo
+  `comfortable` devolve a mesma expressão de padding que o `ChromeSidebarBody.tsx` usava.
+- `npx tsc --noEmit` → 0 · `src/components/Layout` → 19 arquivos, 182 testes verdes ·
+  `npx playwright test --config=browser-tests/playwright.config.ts` → **31 de 31 verdes** (58 s).
+- A nota em `docs/migracoes.md` diz o que muda e como voltar (`maxContentWidth: '100%'`,
+  `layoutDensity: 'comfortable'`).
+
+**Achado — a correção é exclusivamente este:**
+
+1. **O caso `NÃO MUDA NADA: layoutDensity confortável preserva todo o estilo computado atual` é circular.** Ele
+   compara a página com tema padrão (`cromo-css-real.spec.ts:457-466`) contra a página com o recorte
+   `cromo-densidade-confortavel` (`harness-entry.tsx:64`, `{ layoutDensity: 'comfortable' }`). Como o padrão
+   do schema já é `comfortable` (`system.ts:32`), as duas páginas rodam o mesmo código com o mesmo valor, e o
+   caso **não tem como falhar**: se o ramo `comfortable` passasse a escalar o padding, as duas mudariam juntas.
+   Critério violado: §5 item 6 e §6 (*"`comfortable` computa exatamente os valores **de antes**"*). Faça o caso
+   comparar a região de conteúdo com o que ela computava antes, por relação: sob `comfortable`, o padding dos
+   quatro lados é igual ao valor computado de `--sarak-layout-padding` (lido por um elemento de prova com
+   `padding: var(--sarak-layout-padding, 16px)`), nos três breakpoints; e a largura da região, com
+   `maxContentWidth: '100%'`, é a do contêiner. Mostre no resumo que o caso **falha** com o ramo `comfortable`
+   multiplicado por qualquer fator diferente de 1 (mutação numa cópia fora do repositório).
+
+**Adendo ao mesmo veredito (2026-10-06): dois achados a mais, vindos da suíte completa.** Rodei `npx vitest run`
+na árvore integrada (392 arquivos). As duas únicas falhas são deste lote, e a correção passa a incluí-las:
+
+2. `gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs` — o caso
+   `checkChromeTokenParity mantém a lista de órfãos…` ainda espera `['layoutDensity', 'maxContentWidth',
+   'isSplitViewEnabled']`, e a lista agora é `['isSplitViewEnabled']`. O lote mudou o gate e não o teste dele
+   (o resumo rodou só os três testes do cromo). Atualize a expectativa para a lista real.
+3. `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` — o snapshot quebrou porque a região
+   de conteúdo do cromo ganhou `width: 100%; max-width: 1440px; margin-inline: auto`. É o efeito esperado do
+   lote (a prévia desenha o cromo real). Atualize o snapshot e diga no resumo que a única linha diferente é
+   essa, com o diff colado.
+
+Ao fim, `npx vitest run` **completo** e verde (não só os testes do cromo).
+
+## Veredito — 2026-10-06 (correção 1 do lote 2) — 🔴 Reprovado
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**Achado 1 (a prova circular do `comfortable`) — fechou.** O caso
+`layoutDensity confortável preserva o padding computado nos três breakpoints` (`cromo-css-real.spec.ts:475`)
+compara os quatro paddings da região de conteúdo com um elemento de prova que aplica
+`padding: var(--sarak-layout-padding, 16px)`, em mobile, tablet e desktop; e a largura fluida com a caixa do
+contêiner. O resumo registra a mutação (ramo `comfortable` × 1,25 → 40px contra 32px). A suíte de navegador,
+rodada por mim → **31 de 31 verdes** (1,4 min).
+
+**Os achados 2 e 3 do adendo continuam abertos.** O adendo está no mesmo bloco do veredito anterior, e o resumo
+desta correção declara ter tratado "somente o achado do último veredito". Rodado por mim agora:
+
+```
+FAIL  gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs > … mantém a lista de órfãos…
+FAIL  src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx > … custom properties fantasma
+```
+
+**A correção é exclusivamente estes:**
+
+2. `check-chrome-token-parity.test.mjs` — a expectativa de `ORPHAN_TOKENS` passa a ser a lista real
+   (`['isSplitViewEnabled']`).
+3. `PreviewCanvas.test.tsx` — atualize o snapshot, cuja única linha diferente é o estilo da região de conteúdo
+   do cromo (`width: 100%; max-width: 1440px; margin-inline: auto`). Cole o diff no resumo.
+4. **Fechamento, porque esta é a última execução aberta na árvore (as plans 96 e 99 já entregaram):** regenere os
+   artefatos pelos comandos (`npm run guide`, `npm run catalog`, `npm run dev-kit`) e rode `npm run build`,
+   `npm run cromo-css-real:check` (o wrapper, não o Playwright direto), `npx tsc --noEmit`, `npx vitest run`
+   **completo** e `node gates/scripts/release/check-audit-baseline.mjs --with-tsc`. Hoje o `guide:check` está
+   vermelho (`sarak-ui/docs/migracoes.md` defasado depois das notas de migração), e a regeneração pelo comando é
+   o conserto.
+
+## Veredito — 2026-10-07 (correção 2 do lote 2) — 🟢 Aprovado (lote 2 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**Os achados 2, 3 e 4 fecharam:**
+- **Achado 2:** `check-chrome-token-parity.test.mjs:120` espera `['isSplitViewEnabled']`.
+- **Achado 3:** o snapshot de `PreviewCanvas` mudou numa linha só, a do estilo da região de conteúdo; o diff
+  está no resumo.
+- **Achado 4:** os artefatos foram regenerados pelos comandos; `guide:check` voltou a verde.
+
+**Verificação integrada, rodada por mim** com as plans 96 e 99 entregues, nenhum outro processo de
+`vitest`/`build` ativo na largada da suíte, e a árvore inteira pronta para commit:
+- `npx vitest run` → **392 arquivos, 2209 de 2209 verdes**;
+- `npm run cromo-css-real:check` (o wrapper, com `build` completo) → **31 de 31**, e todos os gates do `build` `[OK]`;
+- `npx tsc --noEmit` → 0;
+- `check-audit-baseline --with-tsc` → igual ao baseline;
+- 17 gates de contrato verdes (`guide`, `catalog`, `dev-kit`, `barrel`, `zero-brand`, `kit-names`,
+  `token-types`, `icon-port`, `class-merge`, `gate-limits`, `section-pointers`, `build-info`, `deep-import`,
+  `public-types`, `prefix`, `chrome-token-parity`, `plan-index`);
+- a regra do Anel 0 sobre todas as linhas adicionadas do worktree → 0 achados.
+
+**Liberação parcial.** Os lotes 1 e 2 estão aprovados e podem ser commitados. O lote 3 (vista dividida, e
+`isSplitViewEnabled` fora de `ORPHAN_TOKENS`) não foi iniciado; o status volta a `🟡 Em execução`.
 
 ---
 

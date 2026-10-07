@@ -1,44 +1,53 @@
-import { useState, useEffect } from 'react';
-import api from '../../../../shared/services/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-export function useSarakStatsData<T extends Record<string, unknown>>(endpoint?: string, initialData?: T) {
-    const [state, setState] = useState({
-        stats: initialData || ({} as T),
-        loading: !initialData,
-        error: null as string | null
+type StatsDataState<T> = {
+    stats: T;
+    loading: boolean;
+    error: string | null;
+};
+
+type LoadStats<T> = () => Promise<T>;
+
+export function useSarakStatsData<T extends Record<string, unknown>>(
+    data?: T,
+    load?: LoadStats<T>,
+) {
+    const [state, setState] = useState<StatsDataState<T>>({
+        stats: data ?? ({} as T),
+        loading: data === undefined && Boolean(load),
+        error: null,
     });
+    const loadRef = useRef(load);
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    loadRef.current = load;
+    textRef.current = text;
+    const hasLoad = Boolean(load);
 
-    const updateState = (updates: Partial<typeof state>) => {
-        setState(prev => ({ ...prev, ...updates }));
-    };
-
-    const fetchData = async () => {
-        if (!endpoint) return;
-        try {
-            updateState({ error: null });
-            const response = await api.get(endpoint);
-            updateState({ stats: response.data as T });
-        } catch (err: unknown) {
-            console.error(`[SarakStats] Falha ao carregar ${endpoint}:`, err);
-            const errorMessage = err instanceof Error ? err.message : 'Erro';
-            updateState({ error: errorMessage });
-        } finally {
-            updateState({ loading: false });
-        }
-    };
-
-    useEffect(() => {
-        if (initialData) {
-            setState(prev => {
-                if (JSON.stringify(prev.stats) === JSON.stringify(initialData)) return prev;
-                return { ...prev, stats: initialData, loading: false };
-            });
+    const loadData = useCallback(async () => {
+        if (data !== undefined) {
+            setState((current) => ({ ...current, stats: data, loading: false, error: null }));
             return;
         }
-        if (endpoint) {
-            fetchData();
+        const loadFromHost = loadRef.current;
+        if (!loadFromHost) {
+            setState((current) => ({ ...current, loading: false }));
+            return;
         }
-    }, [endpoint, initialData]);
+        setState((current) => ({ ...current, loading: true, error: null }));
+        try {
+            const stats = await loadFromHost();
+            setState((current) => ({ ...current, stats, loading: false, error: null }));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, loading: false, error: message }));
+        }
+    }, [data, hasLoad]);
 
-    return { stats: state.stats, loading: state.loading, error: state.error };
+    useEffect(() => {
+        void loadData();
+    }, [loadData]);
+
+    return { ...state, loadData };
 }

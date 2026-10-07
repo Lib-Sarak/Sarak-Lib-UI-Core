@@ -1,4 +1,5 @@
-import type { ChromeContentAlignment, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
+import type { CSSProperties } from 'react';
+import type { ChromeContentAlignment, ChromeLayoutDensity, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
 
 /**
  * Converte os tokens estruturais de cromo em classes para `SarakAppChrome`.
@@ -36,6 +37,14 @@ const CONTENT_ALIGNMENT_CLASS: Record<ChromeContentAlignment, string> = {
     center: 'max-w-7xl mx-auto w-full px-4 @min-[640px]:px-6 @min-[1024px]:px-8',
 };
 
+const CONTENT_DENSITY_SCALE: Record<ChromeLayoutDensity, string> = {
+    compact: '0.75',
+    comfortable: '1',
+    spacious: '1.25',
+};
+
+const CONTENT_PADDING_CSS_VALUE = 'var(--sarak-layout-padding, 16px)';
+
 export const resolveChromeBodyDirectionClass = (position: ChromeSidebarPosition): string =>
     BODY_DIRECTION_CLASS[position] ?? BODY_DIRECTION_CLASS.left;
 
@@ -47,3 +56,15 @@ export const resolveChromeNavbarLayoutClass = (layout: ChromeNavbarLayout): stri
 
 export const resolveChromeContentAlignmentClass = (alignment: ChromeContentAlignment): string =>
     CONTENT_ALIGNMENT_CLASS[alignment] ?? CONTENT_ALIGNMENT_CLASS.stretch;
+
+export const resolveChromeContentStyle = (
+    layoutDensity: ChromeLayoutDensity,
+    maxContentWidth: string,
+): CSSProperties => ({
+    width: '100%',
+    maxWidth: maxContentWidth,
+    marginInline: 'auto',
+    padding: layoutDensity === 'comfortable'
+        ? CONTENT_PADDING_CSS_VALUE
+        : `calc(${CONTENT_PADDING_CSS_VALUE} * ${CONTENT_DENSITY_SCALE[layoutDensity]})`,
+});

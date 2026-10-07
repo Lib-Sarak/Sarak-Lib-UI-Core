@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { ThemePillarsList } from './ThemePillarsList';
+import { ThemeImpactList } from './ThemeImpactList';
 import { TokenControl } from './TokenControl';
 import { locateToken } from '../../utils/token-search';
 import { MasterControlPanel } from '../MasterControlPanel';
@@ -10,6 +11,8 @@ import { HyperGranularityTab } from '../../Panels/HyperGranularityTab';
 import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 import type { ComponentSchema, SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 import type { ThemePillar } from './ThemePillarsList';
+import type { ThemeEditMode } from '../hooks/usePreviewUIState';
+import type { VisualImpactToken } from '../hooks/useThemeCustomizationData';
 
 interface ThemeSidebarContentProps {
     searchQuery: string;
@@ -33,8 +36,9 @@ interface ThemeSidebarContentProps {
     sarak: SarakUIContextType;
     pillars: ThemePillar[];
     groupedStructure: Record<string, Record<string, SarakDesignToken[]>>;
-    isEssentialMode: boolean;
-    dynamicEssentialTokens: Set<string>;
+    editMode: ThemeEditMode;
+    visualImpactTokens: VisualImpactToken[];
+    isTokenVisible: (tokenId: string) => boolean;
     setActivePreviewApp: (app: string) => void;
 }
 
@@ -60,8 +64,9 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
     sarak,
     pillars,
     groupedStructure,
-    isEssentialMode,
-    dynamicEssentialTokens,
+    editMode,
+    visualImpactTokens,
+    isTokenVisible,
     setActivePreviewApp
 }) => {
     return (
@@ -105,25 +110,33 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             sarak={sarak}
                         />
 
-                        {/* DEMAIS PILARES */}
-                        <ThemePillarsList
-                            pillars={pillars}
-                            activePillarId={activePillarId}
-                            setActivePillarId={setActivePillarId}
-                            activeSectionId={activeSectionId}
-                            setActiveSectionId={setActiveSectionId}
-                            groupedStructure={groupedStructure}
-                            isEssentialMode={isEssentialMode}
-                            dynamicEssentialTokens={dynamicEssentialTokens}
-                            isComponentDirty={isComponentDirty}
-                            resetComponent={resetComponent}
-                            handleApplyComponent={handleApplyComponent}
-                            catalogMap={catalogMap}
-                            draft={draft}
-                            updateDraft={updateDraft}
-                            previewDevice={previewDevice}
-                            setActivePreviewApp={setActivePreviewApp}
-                        />
+                        {editMode === 'impact' ? (
+                            <ThemeImpactList
+                                tokens={visualImpactTokens}
+                                catalogMap={catalogMap}
+                                draft={draft}
+                                updateDraft={updateDraft}
+                                previewDevice={previewDevice}
+                            />
+                        ) : (
+                            <ThemePillarsList
+                                pillars={pillars}
+                                activePillarId={activePillarId}
+                                setActivePillarId={setActivePillarId}
+                                activeSectionId={activeSectionId}
+                                setActiveSectionId={setActiveSectionId}
+                                groupedStructure={groupedStructure}
+                                isTokenVisible={isTokenVisible}
+                                isComponentDirty={isComponentDirty}
+                                resetComponent={resetComponent}
+                                handleApplyComponent={handleApplyComponent}
+                                catalogMap={catalogMap}
+                                draft={draft}
+                                updateDraft={updateDraft}
+                                previewDevice={previewDevice}
+                                setActivePreviewApp={setActivePreviewApp}
+                            />
+                        )}
                     </motion.div>
                 ) : viewMode === 'catalog' ? (
                     <motion.div key="catalog" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">

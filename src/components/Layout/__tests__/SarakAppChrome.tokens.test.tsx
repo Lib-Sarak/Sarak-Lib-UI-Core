@@ -70,3 +70,32 @@ describe('SarakAppChrome — slot search (searchPositionSidebar/Topbar)', () => 
         expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
     });
 });
+
+describe('SarakAppChrome — largura e densidade da região de conteúdo', () => {
+    it.each(['desktop', 'tablet', 'smartphone'] as const)('aplica os tokens no modo %s', (device) => {
+        const navigationStyle = device === 'tablet' ? 'topbar' : undefined;
+        const { container } = renderAtDevice(
+            device,
+            <SarakAppChrome nav={[]} navigationStyle={navigationStyle}><div>conteúdo</div></SarakAppChrome>,
+            { maxContentWidth: '1200px', layoutDensity: 'spacious' },
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content).toHaveStyle({
+            width: '100%',
+            maxWidth: '1200px',
+            marginInline: 'auto',
+        });
+    });
+
+    it('mantém a largura fluida quando maxContentWidth é 100%', () => {
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome nav={[]}><div>conteúdo</div></SarakAppChrome>,
+            { maxContentWidth: '100%' },
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content).toHaveStyle({ width: '100%', maxWidth: '100%', marginInline: 'auto' });
+    });
+});

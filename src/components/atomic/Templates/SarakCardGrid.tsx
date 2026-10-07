@@ -1,15 +1,14 @@
-import { SarakIcon } from "../Icon/SarakIcon";
-import React, { useState, useEffect } from 'react';
+import { SarakIcon } from '../Icon/SarakIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useCardGridState } from './hooks/useCardGridState';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { SarakTitleCard } from '../Cards/SarakTitleCard';
-import { SarakActionCard } from '../Cards/SarakActionCard';
-import { SarakSearchCard } from '../Cards/SarakSearchCard';
 import { SarakInput, SarakSelect } from '../Inputs';
-import { SarakButton, SarakIconButton } from '../Buttons';
+import { SarakButton } from '../Buttons';
 import { SarakCoreCard } from './components/SarakCoreCard';
+import { SarakAlert } from '../Feedback/SarakAlert';
+import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 
@@ -23,10 +22,10 @@ export interface SarakFilterConfig {
 }
 
 export interface SarakCardGridProps<TData extends Record<string, unknown> = Record<string, unknown>> {
-    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
-    endpoint?: string;
-    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
+    /** Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. */
     data?: TData[];
+    /** Carrega os registros pelo mecanismo escolhido pelo host. */
+    load?: () => Promise<TData[]>;
     label?: string;
     /**
      * Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os
@@ -75,10 +74,11 @@ export interface SarakCardGridProps<TData extends Record<string, unknown> = Reco
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-export const SarakCardGrid = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, filters = [], variant }: SarakCardGridProps<TData>) => {
+export const SarakCardGrid = <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, label, mapping, filters = [], variant }: SarakCardGridProps<TData>) => {
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
-    const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint, initialData);
+    const text = useLibraryText();
+    const { data: records, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(data, load);
     const { getFlexStyles, getGridStyles } = useStructuralStyles();
     const { getResponsiveStackStyles } = useResponsiveStyles();
     const outerStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)');
@@ -91,27 +91,23 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
     // Utility for nested path resolution
     const getVal = (obj: TData, path: string | undefined): unknown => {
         if (!path) return undefined;
-        try {
-            return path.split('.').reduce((acc: unknown, part) => {
-                if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[part];
-                return undefined;
-            }, obj as unknown);
-        } catch (e) {
+        return path.split('.').reduce((acc: unknown, part) => {
+            if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[part];
             return undefined;
-        }
+        }, obj as unknown);
     };
 
     // Gera opções dinâmicas para filtros do tipo SELECT que as solicitam
     const getDynamicOptions = (field: string) => {
         const values = new Set<string>();
-        data.forEach(item => {
+        records.forEach(item => {
             const val = getVal(item, field);
             if (val) values.add(String(val));
         });
         return Array.from(values).sort().map(v => ({ label: v, value: v }));
     };
 
-    const filteredData = data.filter(item => {
+    const filteredData = records.filter(item => {
         const title = mapping ? String(getVal(item, mapping.title) || '') : '';
         const subtitle = mapping?.subtitle ? String(getVal(item, mapping.subtitle) || '') : '';
         const matchesSearch = title.toLowerCase().includes(search.toLowerCase()) || 
@@ -147,14 +143,14 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
             <div className={headerBlockStack.className} style={headerBlockStack.style}>
                 <div className={`${headerRow.className} md:items-center justify-between`} style={headerRow.style}>
                     <div>
-                        <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Sintonizando {filteredData.length} unidades disponíveis</p>
+                        {label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label}</h3>}
+                        <p className="text-[var(--text-muted,#94a3b8)] opacity-60 text-xs" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{text('tableRowsFound', { count: filteredData.length })}</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <div className="w-full md:w-80">
                             <SarakInput 
                                 type="text" 
-                                placeholder="Pesquisar..." 
+                                placeholder={text('searchPlaceholder')} 
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 leftIcon={<SarakIcon name="Search" size={16} />}
@@ -175,7 +171,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
                                     variant={(activeFilters[mainFilter.id] || 'all') === opt ? 'primary' : 'secondary'}
                                     className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}
                                 >
-                                    {opt === 'all' ? `Todos (${mainFilter.label})` : opt}
+                                    {opt === 'all' ? text('filterShowAll', { label: mainFilter.label }) : opt}
                                 </SarakButton>
                             ))}
                         </div>
@@ -190,7 +186,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}
                                         className="w-full text-2xs font-black text-[var(--text-muted,#94a3b8)] opacity-60 uppercase tracking-widest cursor-pointer"
                                     >
-                                        <option value="all">{filter.label}: Todos</option>
+                                        <option value="all">{text('filterShowAll', { label: filter.label })}</option>
                                         {(filter.options || (filter.dynamic ? getDynamicOptions(filter.field) : [])).map(opt => {
                                             const val = typeof opt === 'string' ? opt : opt.value;
                                             const lab = typeof opt === 'string' ? opt : opt.label;
@@ -212,16 +208,12 @@ export const SarakCardGrid = <TData extends Record<string, unknown> = Record<str
                         <div key={i} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />
                     ))
                 ) : error ? (
-                    <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                        <SarakIcon name="AlertCircle" className="w-12 h-12 text-rose-500/50" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
-                        <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Falha na Sincronização</h4>
-                        <p className="text-white/30 text-xs uppercase tracking-widest">{error}</p>
+                    <div className={`col-span-full ${emptyStateStack.className}`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                        <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />
                     </div>
                 ) : filteredData.length === 0 ? (
                     <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                        <SarakIcon name="XCircle" className="w-12 h-12 text-white/10" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
-                        <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Nenhum Registro</h4>
-                        <p className="text-white/30 text-xs uppercase tracking-widest">Ajuste os filtros ou a pesquisa</p>
+                        <SarakDataEmpty />
                     </div>
                 ) : (
                     filteredData.map((item, idx) => (

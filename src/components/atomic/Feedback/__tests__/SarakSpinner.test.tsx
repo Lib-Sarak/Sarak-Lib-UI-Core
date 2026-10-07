@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 import { SarakSpinner } from '../SarakSpinner';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 it('SarakSpinner expõe um progresso indeterminado com nome acessível padrão', () => {
     render(<SarakSpinner />);
@@ -43,4 +44,14 @@ it('SarakSpinner aceita classes extras e mantém animação compatível com movi
     render(<SarakSpinner className="text-sm" />);
 
     expect(screen.getByRole('progressbar')).toHaveClass('motion-safe:animate-spin', 'text-sm');
+});
+
+it('SarakSpinner traduz o nome acessível pelo idioma ativo', () => {
+    render(
+        <SarakUIProvider config={{ language: 'en' }}>
+            <SarakSpinner />
+        </SarakUIProvider>,
+    );
+
+    expect(screen.getByRole('progressbar', { name: 'Loading' })).toBeInTheDocument();
 });

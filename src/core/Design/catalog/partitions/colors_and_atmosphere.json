@@ -34,6 +34,7 @@
   },
   {
     "tokenId": "primaryColor",
+    "visualImpact": "cores",
     "name": "Cor Primária (Base)",
     "description": "Cor de destaque principal do sistema, usada em botões primários e ações ativas.",
     "type": "color",
@@ -67,6 +68,7 @@
   },
   {
     "tokenId": "secondaryColor",
+    "visualImpact": "cores",
     "name": "Cor Secundária",
     "description": "Segunda cor de destaque para suporte ou variações de UI.",
     "type": "color",
@@ -439,6 +441,7 @@
   },
   {
     "tokenId": "cardBackgroundColor",
+    "visualImpact": "cards",
     "name": "Background dos Cards",
     "description": "Cor de preenchimento padrão para cartões (Cards) do sistema.",
     "type": "color",
@@ -597,6 +600,7 @@
   },
   {
     "tokenId": "bgBaseColor",
+    "visualImpact": "fundo",
     "name": "Cor de Fundo Base",
     "description": "Cor de base mais profunda usada abaixo de qualquer textura ou padrão.",
     "type": "color",
@@ -693,6 +697,7 @@
   },
   {
     "tokenId": "surfaceMaterial",
+    "visualImpact": "fundo",
     "name": "Material da Superfície",
     "description": "Estilo ótico predominante para superfícies flutuantes (vidro fosco, polido, orgânico).",
     "type": "select",
@@ -762,6 +767,7 @@
   },
   {
     "tokenId": "borderType",
+    "visualImpact": "cards",
     "name": "Estilo da Moldura (Border)",
     "description": "Estilo visual de fronteiras do sistema (sólido, segmentado cyber, duplo, neon).",
     "type": "select",
@@ -798,6 +804,7 @@
   },
   {
     "tokenId": "systemTone",
+    "visualImpact": "fundo",
     "name": "Tom do Ambiente",
     "description": "Orientação do clima (dark profundo, claro cromado, cibernético verde).",
     "type": "select",
@@ -832,6 +839,7 @@
   },
   {
     "tokenId": "texture",
+    "visualImpact": "fundo",
     "name": "Textura Global",
     "description": "Estampa padrão para o fundo do sistema (grid, carbon, noise, hexagon).",
     "type": "select",
@@ -1256,6 +1264,7 @@
   },
   {
     "tokenId": "shadowIntensity",
+    "visualImpact": "cards",
     "name": "Intensidade da Sombra",
     "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",
     "type": "number",

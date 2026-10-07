@@ -103,6 +103,7 @@
   },
   {
     "tokenId": "cardBorderRadius",
+    "visualImpact": "cards",
     "name": "Raio da Borda do Card (Master)",
     "description": "Governa o arredondamento de todos os cartões. Pode ser substituído individualmente por cantos específicos.",
     "type": "number",
@@ -294,6 +295,7 @@
   },
   {
     "tokenId": "cardBackgroundColor",
+    "visualImpact": "cards",
     "name": "Cor de Fundo do Card",
     "description": "Cor primária de todas as superfícies de cartão. Em ambientes cyber, usar fundos semitransparentes com Glassmorphism.",
     "type": "color",
@@ -669,6 +671,7 @@
   },
   {
     "tokenId": "cardTextureType",
+    "visualImpact": "cards",
     "name": "Textura da Superfície do Card",
     "description": "Tipo de padrão (Grid, Dots, Scanlines) a ser sobreposto no cartão, dando vida ao material.",
     "type": "select",
@@ -1139,6 +1142,7 @@
   },
   {
     "tokenId": "cardVariant",
+    "visualImpact": "cards",
     "name": "Variante de Card",
     "description": "Estilo pré-definido arquitetural do cartão (Ex: Classic, Sleek Title, Action).",
     "type": "select",

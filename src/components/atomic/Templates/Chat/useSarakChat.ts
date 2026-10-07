@@ -1,7 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
-import { Message, Attachment, ModelRoute } from './types';
+import { useState, useRef, useEffect, type ChangeEvent } from 'react';
+import type {
+  Attachment,
+  Message,
+  ModelRoute,
+  SarakChatModelLoader,
+  SarakChatOnSend,
+  SarakChatSendRequest,
+} from './types';
 
-export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
+export const useSarakChat = (onSend: SarakChatOnSend, loadModels?: SarakChatModelLoader) => {
   const [state, setState] = useState({
     messages: [] as Message[],
     input: '',
@@ -24,25 +31,26 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchModels = async () => {
-      if (!modelsEndpoint) return;
-      try {
-        // Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak nunca lê token
-        // de storage. Requisição autenticada é responsabilidade do host.
-        const res = await fetch(`/api${modelsEndpoint}`);
-        if (res.ok) {
-          const data = await res.json();
-          updateState({
-              availableModels: data,
-              selectedRoute: (data.length > 0 && !state.selectedRoute) ? data[0] : state.selectedRoute
-          });
-        }
-      } catch (err) {
-        console.error("Erro ao carregar modelos:", err);
-      }
+    if (!loadModels) return;
+
+    let isActive = true;
+    void loadModels()
+      .then((models) => {
+        if (!isActive) return;
+        setState((current) => ({
+          ...current,
+          availableModels: models,
+          selectedRoute: current.selectedRoute ?? models[0] ?? null,
+        }));
+      })
+      .catch((error: unknown) => {
+        if (isActive) console.error('Erro ao carregar modelos:', error);
+      });
+
+    return () => {
+      isActive = false;
     };
-    fetchModels();
-  }, [modelsEndpoint, state.selectedRoute]);
+  }, [loadModels]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -50,14 +58,7 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
     }
   }, [state.messages]);
 
-  const toBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
-  });
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const newFiles = Array.from(e.target.files).map(f => ({
       file: f,
@@ -77,97 +78,43 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
 
     const userContent = state.input.trim();
     const userMessage: Message = { role: 'user', content: userContent || (state.attachments.length > 0 ? "[Anexo]" : "") };
-    
-    updateState({ 
-        messages: [...state.messages, userMessage],
-        input: '',
-        isLoading: true
-    });
 
     const assistantPlaceholder: Message = { 
       role: 'assistant', 
       content: '', 
       metadata: { model: state.mode === 'manual' ? state.selectedRoute?.model : 'Selecionando...' } 
     };
-    
-    // Precisamos de um estado local forte para as mensagens durante o stream
+
     let currentMessages = [...state.messages, userMessage, assistantPlaceholder];
-    updateState({ messages: currentMessages });
-    
     const assistantIndex = currentMessages.length - 1;
+    const request: SarakChatSendRequest = {
+      message: userContent,
+      attachments: state.attachments.map((attachment) => attachment.file),
+      mode: state.mode,
+      model: state.mode === 'manual' ? state.selectedRoute : null,
+      maxTokens: state.maxTokens,
+    };
+
+    updateState({
+      messages: currentMessages,
+      input: '',
+      isLoading: true,
+      isProcessingFiles: request.attachments.length > 0,
+      attachments: [],
+    });
 
     try {
-      updateState({ isProcessingFiles: true });
-      const blocks: Record<string, unknown>[] = [];
-      if (userContent) blocks.push({ text: userContent });
-
-      for (const att of state.attachments) {
-        if (att.type.startsWith('image/')) {
-          const b64 = await toBase64(att.file);
-          blocks.push({ image_url: { url: b64 } });
-        }
-      }
-      updateState({ isProcessingFiles: false, attachments: [] });
-
-      // Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak nunca lê token
-      // de storage. Requisição autenticada é responsabilidade do host.
-      const response = await fetch(`/api${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          blocks: blocks,
-          mode: state.mode,
-          manual_model: state.mode === 'manual' ? state.selectedRoute?.model : undefined,
-          manual_provider: state.mode === 'manual' ? state.selectedRoute?.provider : undefined,
-          max_tokens: state.maxTokens
-        })
+      let fullContent = '';
+      await onSend(request, (token) => {
+        if (!token) return;
+        fullContent += token;
+        currentMessages = [...currentMessages];
+        currentMessages[assistantIndex] = {
+          ...currentMessages[assistantIndex],
+          content: fullContent,
+        };
+        updateState({ messages: currentMessages });
       });
-
-      if (!response.ok) throw new Error(`Falha na conexão: ${response.statusText}`);
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullContent = "";
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6).trim();
-              if (data === '[DONE]') break;
-
-              try {
-                const payload = JSON.parse(data);
-                if (payload.token) {
-                  fullContent += payload.token;
-                  currentMessages = [...currentMessages];
-                  currentMessages[assistantIndex] = {
-                      ...currentMessages[assistantIndex],
-                      content: fullContent
-                  };
-                  updateState({ messages: currentMessages });
-                  continue;
-                }
-                
-                if (payload.error) {
-                   throw new Error(payload.error);
-                }
-              } catch (e) {
-                // Silenciando erro de chunk parcial SSE
-              }
-            }
-          }
-        }
-      }
-
     } catch (err: unknown) {
       console.error("Erro no Chat Lab Stream:", err);
       currentMessages = [...currentMessages];

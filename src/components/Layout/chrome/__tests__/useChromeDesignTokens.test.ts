@@ -18,6 +18,8 @@ describe('useChromeDesignTokens', () => {
             sidebarPosition: 'left',
             navbarLayout: 'sticky',
             contentAlignment: 'stretch',
+            layoutDensity: 'comfortable',
+            maxContentWidth: '1440px',
             isNavHidden: false,
             isAutoHideEnabled: false,
             searchPositionSidebar: 'top',
@@ -28,6 +30,8 @@ describe('useChromeDesignTokens', () => {
     it('sem o design definir o token, cai no default do schema (não em undefined)', () => {
         const { result } = renderHook(() => useChromeDesignTokens(), { wrapper: wrapperWithDesign({}) });
         expect(result.current.sidebarPosition).toBe('left');
+        expect(result.current.layoutDensity).toBe('comfortable');
+        expect(result.current.maxContentWidth).toBe('1440px');
         expect(result.current.isNavHidden).toBe(false);
     });
 
@@ -37,6 +41,8 @@ describe('useChromeDesignTokens', () => {
                 sidebarPosition: 'right',
                 navbarLayout: 'hidden',
                 contentAlignment: 'center',
+                layoutDensity: 'spacious',
+                maxContentWidth: '1200px',
                 isNavHidden: true,
                 isAutoHideEnabled: true,
                 searchPositionSidebar: 'bottom',
@@ -47,6 +53,8 @@ describe('useChromeDesignTokens', () => {
             sidebarPosition: 'right',
             navbarLayout: 'hidden',
             contentAlignment: 'center',
+            layoutDensity: 'spacious',
+            maxContentWidth: '1200px',
             isNavHidden: true,
             isAutoHideEnabled: true,
             searchPositionSidebar: 'bottom',

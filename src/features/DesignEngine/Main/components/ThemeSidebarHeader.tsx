@@ -2,6 +2,13 @@ import React from 'react';
 import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson, Command, Undo2 } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
+import type { ThemeEditMode } from '../hooks/usePreviewUIState';
+
+const THEME_EDIT_MODES: Array<{ value: ThemeEditMode; label: string }> = [
+    { value: 'impact', label: 'Impacto' },
+    { value: 'essential', label: 'Essencial' },
+    { value: 'complete', label: 'Completo' }
+];
 
 const VIEW_MODE_LABELS: Record<'preview' | 'catalog' | 'templates' | 'command-center', string> = {
     preview: 'Preview',
@@ -19,8 +26,8 @@ interface ThemeSidebarHeaderProps {
     setPreviewDevice: (device: 'desktop' | 'tablet' | 'smartphone') => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
-    isEssentialMode: boolean;
-    setIsEssentialMode: (mode: boolean) => void;
+    editMode: ThemeEditMode;
+    setEditMode: (mode: ThemeEditMode) => void;
     isPreviewStacked: boolean;
     setIsPreviewStacked: (stacked: boolean) => void;
     handleApplyGlobalChanges: () => void;
@@ -33,7 +40,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
     isDirty, setIsSaveModalOpen,
     previewDevice, setPreviewDevice,
     searchQuery, setSearchQuery,
-    isEssentialMode, setIsEssentialMode,
+    editMode, setEditMode,
     isPreviewStacked, setIsPreviewStacked,
     handleApplyGlobalChanges,
     canUndoLastApply, onUndoLastApply
@@ -96,7 +103,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                 ))}
             </div>
 
-            {/* Busca e Toggle Essencial */}
+            {/* Busca e modo de edição */}
             <div className="flex flex-col gap-3 mb-4">
                 <div className="relative group">
                     <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-all" />
@@ -108,26 +115,28 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale3xs,9px)] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)]"
                     />
                 </div>
-                <div className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                            type="checkbox"
-                            role="switch"
-                            className="sr-only"
-                            checked={isEssentialMode}
-                            onChange={() => setIsEssentialMode(!isEssentialMode)}
-                            aria-checked={isEssentialMode}
-                            aria-label={isEssentialMode ? 'Modo Essencial ativo — alternar para Avançado' : 'Modo Avançado ativo — alternar para Essencial'}
-                        />
-                        <div
-                            aria-hidden="true"
-                            className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}
-                        >
-                            <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
+                <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)]">Modo de edição</span>
+                        <div role="radiogroup" aria-label="Modo de edição" className="grid min-w-0 grid-cols-3 gap-1">
+                            {THEME_EDIT_MODES.map((mode) => (
+                                <label key={mode.value} className="min-w-0 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="theme-edit-mode"
+                                        value={mode.value}
+                                        className="peer sr-only"
+                                        checked={editMode === mode.value}
+                                        onChange={() => setEditMode(mode.value)}
+                                        aria-checked={editMode === mode.value}
+                                    />
+                                    <span className={`flex min-w-0 items-center justify-center rounded-lg border px-1 py-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-wider transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--theme-primary)] ${editMode === mode.value ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#ffffff)]' : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]'}`}>
+                                        {mode.label}
+                                    </span>
+                                </label>
+                            ))}
                         </div>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">{isEssentialMode ? 'Modo Essencial' : 'Modo Avançado'}</span>
-                    </label>
-
+                    </div>
                     <label className="flex items-center gap-2 cursor-pointer group">
                         <input
                             type="checkbox"

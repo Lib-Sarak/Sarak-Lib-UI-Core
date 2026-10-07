@@ -12,7 +12,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeContentAlignmentClass, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
+import { resolveChromeContentAlignmentClass, resolveChromeContentStyle, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -52,7 +52,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { navbarLayout, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
+    const { navbarLayout, contentAlignment, layoutDensity, maxContentWidth, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -150,7 +150,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             <main
                 data-sarak-content
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
             </main>

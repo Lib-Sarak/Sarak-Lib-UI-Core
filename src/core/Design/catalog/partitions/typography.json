@@ -1,6 +1,7 @@
 [
   {
     "tokenId": "headingFont",
+    "visualImpact": "fontes",
     "name": "Fonte de Títulos",
     "description": "Família tipográfica principal usada em Headers (H1, H2, etc).",
     "type": "font",
@@ -32,6 +33,7 @@
   },
   {
     "tokenId": "bodyFont",
+    "visualImpact": "fontes",
     "name": "Fonte de Corpo",
     "description": "Família tipográfica usada em textos normais, parágrafos e ui components.",
     "type": "font",
@@ -94,6 +96,7 @@
   },
   {
     "tokenId": "textColorMaster",
+    "visualImpact": "cores",
     "name": "Texto Principal",
     "description": "Cor de alto contraste usada em títulos e parágrafos focais.",
     "type": "color",
@@ -187,6 +190,7 @@
   },
   {
     "tokenId": "h1Size",
+    "visualImpact": "fontes",
     "name": "Tamanho (H1)",
     "description": "O tamanho da fonte principal do nível mais alto de hierarquia (H1).",
     "type": "number",

@@ -112,7 +112,30 @@ registrado ou um elemento. O peer `lucide-react` passa a aceitar `>=0.284.0 <1.0
 <SarakSocialButton provider="github" icon={<GithubMark />} variant="glass" />
 ```
 
+### Os templates deixam rede, domínio e fluxo de autenticação ao consumidor
+
+**Classificação: MAJOR.** `SarakCardGrid`, `SarakChart`, `SarakForm`, `SarakManagementGrid`, `SarakStats` e
+`SarakTable` deixam de aceitar `endpoint` e não fazem chamadas de rede. Passe os dados já carregados por
+`data` ou uma função do host por `load`; `SarakForm` envia os valores por `onSubmit`. As ações de
+`SarakManagementGrid` também passam por callbacks do host. Remova a dependência peer `axios` e o uso do
+cliente interno.
+
+`SarakAuthScreen` passa a exibir só o login por padrão. Habilite cadastro com `allowRegistration`, MFA com
+`allowMfa` e login social com `socialConfig.enabled`; rótulos podem ser substituídos por `labels`, e a
+gravidade da mensagem de erro é indicada por `errorVariant`. O host continua responsável por autenticar,
+carregar recursos e tratar cada evento.
+
+`SarakChat` também remove `endpoint` e `modelsEndpoint`. O host fornece `onSend`, que recebe mensagem,
+anexos, modo, modelo e limite de tokens e encaminha os tokens recebidos ao template; `loadModels` é opcional,
+e a lista permanece vazia sem o loader.
+
 ---
+
+### Largura máxima e densidade da região de conteúdo
+
+`maxContentWidth` agora limita e centraliza a região de conteúdo; o padrão `1440px` deixa de crescer em telas mais largas. `layoutDensity` escala o respiro: `compact` reduz, `spacious` aumenta e `comfortable` preserva o espaçamento anterior.
+
+Para voltar à largura fluida, defina `maxContentWidth: '100%'`. Para manter o respiro anterior, defina `layoutDensity: 'comfortable'`.
 
 ## A persistência do tema ativo restaura também o id
 

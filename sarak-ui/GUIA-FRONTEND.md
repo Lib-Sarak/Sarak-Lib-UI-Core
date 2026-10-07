@@ -606,7 +606,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **317** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **323** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (99)
 
@@ -697,19 +697,19 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Outros | **SarakHelpButton** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
-| Templates | **SarakAuthScreen** | `branding` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `onMasterLogin` · `onChange` · `role` · `density` · `importance` |
-| Templates | **SarakCardGrid** | `endpoint` · `data` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
+| Templates | **SarakAuthScreen** | `branding` · `allowRegistration` · `allowMfa` · `labels` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `errorVariant` · `onChange` · `role` · `density` · `importance` |
+| Templates | **SarakCardGrid** | `data` · `load` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
 | Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` · `role` · `density` · `importance` |
-| Templates | **SarakChart** | `endpoint` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakChat** | `endpoint` · `modelsEndpoint` · `label` · `role` · `density` · `importance` |
+| Templates | **SarakChart** | `data` · `load` · `label` · `mapping` · `role` · `density` · `importance` |
+| Templates | **SarakChat** | `onSend` · `loadModels` · `label` · `role` · `density` · `importance` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
-| Templates | **SarakForm** | `endpoint` · `label` · `mapping` · `mode` · `initialData` · `actions` · `onSuccess` · `role` · `density` · `importance` |
+| Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` · `role` · `density` · `importance` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
-| Templates | **SarakManagementGrid** | `endpoint` · `groupBy` · `ghostGroups` · `mapping` · `headerActions` · `groupActions` · `formMapping` · `role` · `density` · `importance` |
+| Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
-| Templates | **SarakStats** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `role` · `density` · `importance` · `responsive` |
+| Templates | **SarakStats** | `data` · `load` · `label` · `mapping` · `role` · `density` · `importance` |
+| Templates | **SarakTable** | `data` · `load` · `label` · `mapping` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `role` · `density` · `importance` · `responsive` · `showSearch` · `showRefresh` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `variant` · `fullWidth` · `className` · `listClassName` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |

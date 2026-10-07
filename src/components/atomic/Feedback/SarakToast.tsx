@@ -24,6 +24,7 @@ import React, {
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Variantes semânticas, mapeadas 1:1 ao Status Schema. */
 export type SarakToastVariant = 'success' | 'error' | 'warning' | 'info';
@@ -68,6 +69,7 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
     entry,
     onDismiss,
 }) => {
+    const text = useLibraryText();
     return (
         <div
             role="alert"
@@ -93,7 +95,7 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
             <SarakIconButton
                 variant="ghost"
                 size="xs"
-                aria-label="Fechar notificação"
+                aria-label={text('toastClose')}
                 onClick={() => onDismiss(entry.id)}
                 style={{ color: 'var(--text-muted,#94a3b8)', lineHeight: 1, borderRadius: 0 }}
                 icon="×"

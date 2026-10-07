@@ -146,12 +146,12 @@ anel1 "limites declarados dos gates" "R18 — Todo gate declara o que NÃO vê" 
 # plan-52: os três abaixo já existiam em package.json, verdes, e não rodavam em
 # lugar nenhum (nem hook, nem gates:full, nem run_audit). Custam o mesmo que os
 # gates acima (~0,7-0,9s) — entram pelo mesmo molde `anel1()`.
-anel1 "container query sem interpolação"   "— (plan-39 · endurecido pela plan-44)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
-anel1 "container query com boundary"       "— (plan-41)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
+anel1 "container query sem interpolação"   "— (07-responsividade-e-multidispositivo)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
+anel1 "container query com boundary"       "— (07-responsividade-e-multidispositivo §6.1)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
 anel1 "paridade doc × código de persistência" "R17 — Não transcrever fonte viva" "npm run persistence-doc:check" gates/scripts/contrato/check-persistence-doc-identifiers.mjs
-anel1 "merge de classe no átomo"           "— (plan-57)" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
-anel1 "porta única de ícones"             "R18 — Limites declarados do gate" "npm run icon-port:check" gates/scripts/contrato/check-icon-port.mjs
-anel1 "paridade token de cromo × consumidor" "— (plan-66)" "npm run chrome-token-parity:check" gates/scripts/contrato/check-chrome-token-parity.mjs
+anel1 "merge de classe no átomo"           "R35 — A classe do chamador vence a do átomo" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
+anel1 "porta única de ícones"             "R39 — Todo ícone da lib passa pela porta de ícones" "npm run icon-port:check" gates/scripts/contrato/check-icon-port.mjs
+anel1 "paridade token de cromo × consumidor" "— (05-cromo-e-slots §2.4)" "npm run chrome-token-parity:check" gates/scripts/contrato/check-chrome-token-parity.mjs
 anel1 "citação do rastro de execução"       "R36 — O código não cita o rastro de execução" "npm run trail-citation:check" gates/scripts/contrato/check-trail-citation.mjs --staged
 # `build-info:check` NÃO entra aqui, mesmo motivo do `package:check` (spec 02
 # §4.1): exige `dist/` buildado. Mora só no `gates:full`.

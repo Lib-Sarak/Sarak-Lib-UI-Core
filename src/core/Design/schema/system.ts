@@ -27,7 +27,7 @@ export const SystemSchema: ComponentSchema = {
             id: 'layoutDensity',
             label: 'Densidade Visual',
             type: 'select',
-            description: 'Densidade visual geral do sistema — Compacto reduz espaçamentos para caber mais informação; Espaçoso aumenta a "respiração" entre elementos para um visual mais premium/legível.',
+            description: 'Escala o espaçamento interno da região de conteúdo do cromo: compacto reduz, confortável mantém o atual e espaçoso aumenta.',
             axis: 'density',
             defaultValue: 'comfortable',
             options: [
@@ -40,7 +40,7 @@ export const SystemSchema: ComponentSchema = {
             id: 'maxContentWidth',
             label: 'Largura Máxima do Conteúdo',
             type: 'select',
-            description: 'Largura máxima do container de conteúdo principal antes de centralizar com margens laterais — Fluido (100%) usa toda a tela; valores fixos (1200-1600px) melhoram a legibilidade em monitores muito largos.',
+            description: 'Define a largura máxima da região de conteúdo do cromo e a centraliza; 100% ocupa a largura disponível.',
             axis: 'geometry',
             defaultValue: '1440px',
             options: [

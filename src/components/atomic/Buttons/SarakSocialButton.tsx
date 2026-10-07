@@ -2,6 +2,7 @@ import React from 'react';
 import { clsx } from 'clsx';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from './SarakButton';
 
 type ClassValue = string | false | null | undefined;
@@ -12,13 +13,13 @@ function cn(...inputs: ClassValue[]): string {
 
 export interface SarakSocialButtonProps {
     /** Provedor usado no rótulo e callback. */
-    provider: 'google' | 'github';
+    provider: string;
     /** Elemento de marca fornecido pelo consumidor. */
     icon: React.ReactNode;
-    /** Acabamento visual; o tema `sovereign` também prevalece sobre `glass`. */
-    variant: 'glass' | 'sovereign';
+    /** Acabamento visual fornecido pelo consumidor. */
+    variant: 'glass' | 'solid';
     /** Recebe o provedor clicado; omitido, o botão não executa ação. */
-    onClick?: (provider: 'google' | 'github') => void;
+    onClick?: (provider: string) => void;
     /** Substitui o rótulo e o título acessível; omitido, usa o texto padrão. */
     label?: string;
     /** Esconde o texto e mantém o título acessível. */
@@ -41,9 +42,9 @@ function getButtonClasses(
         'text-[var(--color-theme-text,rgba(255,255,255,0.5))]',
         'border border-white/5 hover:border-white/10',
         hideLabel ? 'w-12 h-12 justify-center' : 'w-full justify-start',
-        variant === 'sovereign' || designVariant === 'sovereign'
+        variant === 'solid' || designVariant === 'solid'
             ? 'shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20 hover:shadow-[var(--sarak-primary-color,#3b82f6)]/40 hover:-translate-y-0.5'
-            : 'hover:bg-white/[0.08] hover:text-white',
+            : 'hover:bg-white/[0.08] hover:text-theme-title',
         className,
     );
 }
@@ -71,7 +72,7 @@ const SocialButtonIcon = ({ icon, hideLabel, variant }: SocialButtonIconProps): 
         className={cn(
             'flex items-center justify-center transition-sarak',
             hideLabel ? 'w-full h-full' : 'w-8 h-8',
-            variant === 'sovereign' ? 'bg-white/20 group-hover/soc:rotate-[10deg]' : 'bg-white/5 group-hover/soc:bg-white/10',
+            variant === 'solid' ? 'bg-white/20 group-hover/soc:rotate-[10deg]' : 'bg-white/5 group-hover/soc:bg-white/10',
         )}
         style={{ borderRadius: 'calc(var(--radius-btn, 12px) * 0.8)' }}
     >
@@ -79,25 +80,9 @@ const SocialButtonIcon = ({ icon, hideLabel, variant }: SocialButtonIconProps): 
     </span>
 );
 
-interface SocialButtonLabelProps {
-    label: string;
-    variant: SarakSocialButtonProps['variant'];
-}
-
-const SocialButtonLabel = ({ label, variant }: SocialButtonLabelProps): React.ReactElement => (
-    <span className="flex items-start" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)' }}>
-        <span className="font-black uppercase transition-all" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-snug, 0.25em)' }}>
-            {label}
-        </span>
-        <span
-            className={cn(
-                'font-bold uppercase tracking-widest opacity-30',
-                variant === 'sovereign' ? 'text-white' : 'text-[var(--sarak-primary-color,#3b82f6)]',
-            )}
-            style={{ fontSize: 'var(--sarak-type-scale-micro, 7px)' }}
-        >
-            Sovereign SSO Protocol
-        </span>
+const SocialButtonLabel = ({ label }: { label: string }): React.ReactElement => (
+    <span className="font-black uppercase transition-all" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-snug, 0.25em)' }}>
+        {label}
     </span>
 );
 
@@ -112,8 +97,9 @@ export const SarakSocialButton = ({
     className,
 }: SarakSocialButtonProps): React.ReactElement => {
     const { design } = useSarakUI();
+    const text = useLibraryText();
     const designVariant = design?.socialButtonStyle || 'glass';
-    const defaultLabel = provider === 'google' ? 'Continue com Google' : 'Acessar com GitHub';
+    const defaultLabel = text('socialContinueWithProvider', { provider });
     const displayedLabel = label || defaultLabel;
 
     return (
@@ -130,7 +116,7 @@ export const SarakSocialButton = ({
         >
             <span className={cn('flex items-center', hideLabel ? 'w-full h-full justify-center' : 'gap-[var(--sarak-layout-gap-md,16px)]')}>
                 <SocialButtonIcon icon={icon} hideLabel={hideLabel} variant={variant} />
-                {!hideLabel && <SocialButtonLabel label={displayedLabel} variant={variant} />}
+                {!hideLabel && <SocialButtonLabel label={displayedLabel} />}
             </span>
         </SarakButton>
     );

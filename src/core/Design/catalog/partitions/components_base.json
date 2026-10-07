@@ -453,6 +453,7 @@
   },
   {
     "tokenId": "btnBorderRadius",
+    "visualImpact": "forma",
     "name": "Arredondamento do Botão (Master)",
     "description": "Controle master para arredondamento de todos os cantos dos botões base.",
     "type": "number",
@@ -801,6 +802,7 @@
   },
   {
     "tokenId": "btnStyleType",
+    "visualImpact": "forma",
     "name": "Estilo Base do Botão",
     "description": "Definição arquitetural visual (Matte, Neon, Frosted/Glass, Borderline) aplicada aos botões.",
     "type": "select",

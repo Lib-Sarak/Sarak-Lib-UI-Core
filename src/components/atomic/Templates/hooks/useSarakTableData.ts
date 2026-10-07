@@ -1,69 +1,66 @@
-import { useState, useEffect } from 'react';
-import api from '../../../../shared/services/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-export const useSarakTableData = <T extends Record<string, unknown>>(endpoint?: string, initialData?: T[]) => {
-    const [state, setState] = useState({
-        data: initialData || ([] as T[]),
-        loading: !initialData && Boolean(endpoint),
-        error: null as string | null,
-        search: ''
+type TableDataState<T> = {
+    data: T[];
+    loading: boolean;
+    error: string | null;
+    search: string;
+};
+
+type LoadData<T> = () => Promise<T[]>;
+
+export const useSarakTableData = <T extends Record<string, unknown>>(
+    data?: T[],
+    load?: LoadData<T>,
+) => {
+    const [state, setState] = useState<TableDataState<T>>({
+        data: data ?? [],
+        loading: data === undefined && Boolean(load),
+        error: null,
+        search: '',
     });
+    const loadRef = useRef(load);
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    loadRef.current = load;
+    textRef.current = text;
+    const hasLoad = Boolean(load);
 
-    const updateState = (updates: Partial<typeof state>) => {
-        setState(prev => ({ ...prev, ...updates }));
-    };
-
-    const fetchData = async () => {
-        if (!endpoint) return;
-        try {
-            updateState({ loading: true, error: null });
-            const response = await api.get(endpoint);
-            
-            if (Array.isArray(response.data)) {
-                updateState({ data: response.data, loading: false });
-                return;
-            }
-            if (response.data && Array.isArray(response.data.items)) {
-                updateState({ data: response.data.items, loading: false });
-                return;
-            }
-            
-            updateState({ data: [], loading: false });
-        } catch (err: unknown) {
-            console.error(`[SarakTable] Falha ao carregar ${endpoint}:`, err);
-            const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar dados';
-            updateState({ error: errorMessage, loading: false });
-        }
-    };
-
-    useEffect(() => {
-        // Dado pronto vence endpoint (mesmo contrato de `useSarakStatsData`): com
-        // `data`, nunca há chamada de rede — nem para revalidar, nem no mount.
-        if (initialData) {
-            setState(prev => {
-                if (JSON.stringify(prev.data) === JSON.stringify(initialData)) return prev;
-                return { ...prev, data: initialData, loading: false };
-            });
+    const loadData = useCallback(async () => {
+        if (data !== undefined) {
+            setState((current) => ({ ...current, data, loading: false, error: null }));
             return;
         }
-        if (endpoint) {
-            fetchData();
+        const loadFromHost = loadRef.current;
+        if (!loadFromHost) {
+            setState((current) => ({ ...current, loading: false }));
+            return;
         }
-    }, [endpoint, initialData]);
+        setState((current) => ({ ...current, loading: true, error: null }));
+        try {
+            const nextData = await loadFromHost();
+            setState((current) => ({ ...current, data: nextData, loading: false, error: null }));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, loading: false, error: message }));
+        }
+    }, [data, hasLoad]);
 
-    const filteredData = state.data.filter(item => 
-        Object.values(item).some(val => 
-            String(val).toLowerCase().includes(state.search.toLowerCase())
-        )
+    useEffect(() => {
+        void loadData();
+    }, [loadData]);
+
+    const filteredData = state.data.filter((item) =>
+        Object.values(item).some((value) =>
+            String(value).toLowerCase().includes(state.search.toLowerCase()),
+        ),
     );
 
     return {
-        data: state.data,
+        ...state,
         filteredData,
-        loading: state.loading,
-        error: state.error,
-        search: state.search,
-        setSearch: (v: string) => updateState({ search: v }),
-        fetchData
+        setSearch: (search: string) => setState((current) => ({ ...current, search })),
+        loadData,
     };
 };

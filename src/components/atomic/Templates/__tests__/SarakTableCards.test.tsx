@@ -14,10 +14,10 @@ describe('SarakTableCards (Spec 40.3 — L3, colapso mobile do denso genérico)'
         expect(screen.getAllByText('Nome')).toHaveLength(2); // rótulo repetido por card
     });
 
-    it('booleano vira Ativo/Inativo (paridade com a tabela)', () => {
+    it('exibe valores booleanos sem impor rótulos de domínio', () => {
         render(<SarakTableCards rows={ROWS} columns={COLUMNS} columnLabels={LABELS} />);
-        expect(screen.getByText('Ativo')).toBeInTheDocument();
-        expect(screen.getByText('Inativo')).toBeInTheDocument();
+        expect(screen.getByText('true')).toBeInTheDocument();
+        expect(screen.getByText('false')).toBeInTheDocument();
     });
 
     it('em loading mostra cards de esqueleto (sem valor)', () => {

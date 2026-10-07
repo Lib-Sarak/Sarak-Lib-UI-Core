@@ -457,6 +457,24 @@
           "doc": ""
         },
         {
+          "name": "allowRegistration",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Permite alternar entre login e cadastro; desativado por padrão."
+        },
+        {
+          "name": "allowMfa",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Permite renderizar a etapa MFA quando controlada pelo host; desativado por padrão."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<SarakAuthScreenLabelKey, string>>",
+          "optional": true,
+          "doc": "Sobrescreve títulos, descrições e rótulos com texto do host."
+        },
+        {
           "name": "isRegistering",
           "type": "boolean",
           "optional": true,
@@ -565,8 +583,8 @@
           "doc": ""
         },
         {
-          "name": "onMasterLogin",
-          "type": "() => void",
+          "name": "errorVariant",
+          "type": "'error' | 'warning'",
           "optional": true,
           "doc": ""
         },
@@ -845,16 +863,16 @@
       "source": "src/components/atomic/Templates/SarakCardGrid.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": true,
-          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
-        },
-        {
           "name": "data",
           "type": "TData[]",
           "optional": true,
-          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
+          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre `load`."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TData[]>",
+          "optional": true,
+          "doc": "Carrega os registros pelo mecanismo escolhido pelo host."
         },
         {
           "name": "label",
@@ -995,40 +1013,46 @@
       "source": "src/components/atomic/Templates/SarakChart.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": false,
-          "doc": "Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido."
+          "name": "data",
+          "type": "TData[]",
+          "optional": true,
+          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre load."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TData[]>",
+          "optional": true,
+          "doc": "Carrega os pontos pelo mecanismo escolhido pelo host."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão."
+          "doc": "Rótulo opcional fornecido pelo host."
         },
         {
           "name": "mapping",
-          "type": "Record<string, string>",
+          "type": "{ value?: string; date?: string }",
           "optional": true,
-          "doc": "Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`."
+          "doc": "Chaves dos campos de valor e rótulo; os defaults são value e date."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         }
       ]
     },
@@ -1061,16 +1085,16 @@
       "source": "src/components/atomic/Templates/SarakChat.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
+          "name": "onSend",
+          "type": "SarakChatOnSend",
           "optional": false,
-          "doc": "Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação."
+          "doc": "O host envia a mensagem e encaminha cada token recebido ao callback."
         },
         {
-          "name": "modelsEndpoint",
-          "type": "string",
+          "name": "loadModels",
+          "type": "SarakChatModelLoader",
           "optional": true,
-          "doc": "Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos."
+          "doc": "Carrega modelos do host; omitido, a lista permanece vazia."
         },
         {
           "name": "label",
@@ -1246,7 +1270,7 @@
           "name": "message",
           "type": "string",
           "optional": true,
-          "doc": "Mensagem exibida (default: \"Nenhum dado encontrado.\")."
+          "doc": "Mensagem exibida; omitida, usa o texto do catálogo no idioma ativo."
         }
       ]
     },
@@ -1785,64 +1809,70 @@
       "source": "src/components/atomic/Templates/SarakForm.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": false,
-          "doc": "URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento."
+          "name": "data",
+          "type": "TData",
+          "optional": true,
+          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre load."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TData>",
+          "optional": true,
+          "doc": "Carrega o formulário pelo mecanismo escolhido pelo host."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto."
+          "doc": "Rótulo opcional fornecido pelo host."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": "Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio."
+          "doc": "Define as chaves e os rótulos dos campos."
         },
         {
           "name": "mode",
           "type": "'create' | 'edit'",
           "optional": true,
-          "doc": "Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`."
+          "doc": "Seleciona o modo de preenchimento; create não carrega dado."
         },
         {
           "name": "initialData",
           "type": "TData",
           "optional": true,
-          "doc": "Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário."
+          "doc": "Valor inicial usado no modo create ou até load concluir."
         },
         {
-          "name": "actions",
-          "type": "Array<{ label: string; endpoint: string; method: 'POST' | 'PATCH' | 'DELETE'; }>",
+          "name": "onSubmit",
+          "type": "(data: TData) => void | Promise<void>",
           "optional": true,
-          "doc": "Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo."
+          "doc": "Envia os valores ao host; sem callback, o botão de envio não é exibido."
         },
         {
           "name": "onSuccess",
-          "type": "() => void",
+          "type": "() => void | Promise<void>",
           "optional": true,
-          "doc": "Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador."
+          "doc": "Chamado após um envio bem-sucedido."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação."
+          "doc": ""
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade."
+          "doc": ""
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": "Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual."
+          "doc": ""
         }
       ]
     },
@@ -2173,64 +2203,106 @@
       "source": "src/components/atomic/Templates/SarakManagementGrid.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": false,
-          "doc": "Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos."
+          "name": "data",
+          "type": "TItem[]",
+          "optional": true,
+          "doc": "Records already loaded by the host; takes precedence over load."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TItem[]>",
+          "optional": true,
+          "doc": "Loads records through the host's chosen transport."
         },
         {
           "name": "groupBy",
           "type": "string",
           "optional": false,
-          "doc": "Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`."
+          "doc": "Path to the grouping value; supports nested fields."
         },
         {
           "name": "ghostGroups",
           "type": "string[]",
           "optional": true,
-          "doc": "Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados."
+          "doc": "Empty groups to display alongside groups found in the records."
         },
         {
           "name": "mapping",
-          "type": "{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }",
+          "type": "{ id: string; title: string; status?: string; isActive?: string; description?: string; error?: string; }",
           "optional": false,
-          "doc": "Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item."
+          "doc": "Maps record paths to fields displayed by each item card."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         },
         {
           "name": "headerActions",
-          "type": "{ label: string; action: string; }[]",
+          "type": "SarakManagementAction[]",
           "optional": true,
-          "doc": "Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário."
+          "doc": ""
         },
         {
           "name": "groupActions",
-          "type": "{ label: string; icon?: 'plus' | 'settings'; action: string; }[]",
+          "type": "SarakManagementAction[]",
           "optional": true,
-          "doc": "Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário."
+          "doc": ""
         },
         {
           "name": "formMapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": "Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio."
+          "doc": ""
+        },
+        {
+          "name": "onAction",
+          "type": "(action: string, group?: string) => void | Promise<void>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onToggle",
+          "type": "(item: TItem) => void | Promise<void>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onDelete",
+          "type": "(item: TItem) => void | Promise<void>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onCreate",
+          "type": "(data: Record<string, unknown>, group?: string) => void | Promise<void>",
+          "optional": true,
+          "doc": ""
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         }
       ]
     },
@@ -3098,7 +3170,7 @@
       "props": [
         {
           "name": "provider",
-          "type": "'google' | 'github'",
+          "type": "string",
           "optional": false,
           "doc": "Provedor usado no rótulo e callback."
         },
@@ -3110,13 +3182,13 @@
         },
         {
           "name": "variant",
-          "type": "'glass' | 'sovereign'",
+          "type": "'glass' | 'solid'",
           "optional": false,
-          "doc": "Acabamento visual; o tema `sovereign` também prevalece sobre `glass`."
+          "doc": "Acabamento visual fornecido pelo consumidor."
         },
         {
           "name": "onClick",
-          "type": "(provider: 'google' | 'github') => void",
+          "type": "(provider: string) => void",
           "optional": true,
           "doc": "Recebe o provedor clicado; omitido, o botão não executa ação."
         },
@@ -3208,7 +3280,7 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado."
+          "doc": "Nome acessível do progresso indeterminado; omitido ou vazio, usa o catálogo no idioma ativo."
         },
         {
           "name": "className",
@@ -3307,46 +3379,46 @@
       "source": "src/components/atomic/Templates/SarakStats.tsx",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": true,
-          "doc": "Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento."
-        },
-        {
           "name": "data",
           "type": "TData",
           "optional": true,
-          "doc": "Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`."
+          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre load."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TData>",
+          "optional": true,
+          "doc": "Carrega as métricas pelo mecanismo escolhido pelo host."
         },
         {
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados."
+          "doc": "Título opcional fornecido pelo host."
         },
         {
           "name": "mapping",
           "type": "Record<string, string>",
           "optional": true,
-          "doc": "Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros."
+          "doc": "Define os rótulos exibidos; omitido, usa as chaves do dado recebido."
         },
         {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "density",
           "type": "'compact' | 'standard' | 'spacious'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         },
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
+          "doc": ""
         }
       ]
     },
@@ -3404,16 +3476,16 @@
       "source": "src/components/atomic/Templates/SarakTableProps.ts",
       "props": [
         {
-          "name": "endpoint",
-          "type": "string",
-          "optional": true,
-          "doc": "Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre."
-        },
-        {
           "name": "data",
           "type": "TData[]",
           "optional": true,
-          "doc": "Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede."
+          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre `load`."
+        },
+        {
+          "name": "load",
+          "type": "() => Promise<TData[]>",
+          "optional": true,
+          "doc": "Carrega as linhas pelo mecanismo escolhido pelo host."
         },
         {
           "name": "label",
@@ -3486,6 +3558,18 @@
           "type": "boolean",
           "optional": true,
           "doc": "No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes."
+        },
+        {
+          "name": "showSearch",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Exibe o campo de busca; omitido, fica visível."
+        },
+        {
+          "name": "showRefresh",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`."
         }
       ]
     },
@@ -3878,6 +3962,14 @@
       },
       {
         "component": "SarakAuthScreen",
+        "prop": "errorVariant",
+        "values": [
+          "error",
+          "warning"
+        ]
+      },
+      {
+        "component": "SarakAuthScreen",
         "prop": "role",
         "values": [
           "primary",
@@ -4136,15 +4228,6 @@
       },
       {
         "component": "SarakForm",
-        "prop": "actions",
-        "values": [
-          "POST",
-          "PATCH",
-          "DELETE"
-        ]
-      },
-      {
-        "component": "SarakForm",
         "prop": "role",
         "values": [
           "primary",
@@ -4189,14 +4272,6 @@
           "sm",
           "md",
           "lg"
-        ]
-      },
-      {
-        "component": "SarakManagementGrid",
-        "prop": "groupActions",
-        "values": [
-          "plus",
-          "settings"
         ]
       },
       {
@@ -4272,18 +4347,10 @@
       },
       {
         "component": "SarakSocialButton",
-        "prop": "provider",
-        "values": [
-          "google",
-          "github"
-        ]
-      },
-      {
-        "component": "SarakSocialButton",
         "prop": "variant",
         "values": [
           "glass",
-          "sovereign"
+          "solid"
         ]
       },
       {

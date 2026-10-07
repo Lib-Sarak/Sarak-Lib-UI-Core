@@ -1,11 +1,13 @@
 import React from 'react';
-import { SarakSocialButton, type SarakSocialProviderId } from '../../Buttons/SarakSocialButton';
+import { SarakSocialButton } from '../../Buttons/SarakSocialButton';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 export interface SarakSocialProviderConfig {
-    id: SarakSocialProviderId;
+    id: string;
     icon: React.ReactNode;
-    variant: 'glass' | 'sovereign';
+    variant: 'glass' | 'solid';
+    label?: string;
 }
 
 export interface SarakSocialConfig {
@@ -21,6 +23,7 @@ interface AuthSocialLoginProps {
 
 export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, onSocialLogin }) => {
     const { getFlexStyles, getGridStyles } = useStructuralStyles();
+    const text = useLibraryText();
 
     if (!socialConfig?.enabled) return null;
 
@@ -33,7 +36,7 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
                 <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/5"></div>
                 </div>
-                <span className="relative bg-theme-body font-black text-theme-muted uppercase" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', fontSize: 'var(--sarak-type-scale-tiny, 8px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Ou continue com</span>
+                <span className="relative bg-theme-body font-black text-theme-muted uppercase" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', fontSize: 'var(--sarak-type-scale-tiny, 8px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>{text('authSocialDivider')}</span>
             </div>
 
             <div className={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').className} style={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').style}>
@@ -43,6 +46,7 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
                         provider={p.id}
                         icon={p.icon}
                         variant={p.variant} 
+                        label={p.label}
                         hideLabel={socialConfig.display === 'compact'}
                         onClick={() => onSocialLogin?.(p.id)} 
                     />

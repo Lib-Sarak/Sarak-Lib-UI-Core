@@ -1,51 +1,33 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { useSarakTableData } from '../useSarakTableData';
-import api from '../../../../../shared/services/api';
 
-vi.mock('../../../../../shared/services/api', () => ({
-    default: {
-        get: vi.fn(),
-    }
-}));
-
-// Aceita dado pronto, no mesmo contrato de `useSarakStatsData`: dado vence
-// endpoint, sem chamada de rede — o consumidor que já tem o dado (cache, SSR,
-// outra chamada) não precisa fingir um endpoint.
 describe('useSarakTableData', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+    it('uses host data without calling load', () => {
+        const data = [{ id: 1, name: 'A' }];
+        const load = vi.fn(async () => []);
+        const { result } = renderHook(() => useSarakTableData(data, load));
 
-    it('com `data`, renderiza o dado pronto e NÃO chama a rede', () => {
-        const dado = [{ id: 1, nome: 'A' }];
-        const { result } = renderHook(() => useSarakTableData('/api/test', dado));
-
-        expect(result.current.data).toEqual(dado);
+        expect(result.current.data).toEqual(data);
         expect(result.current.loading).toBe(false);
-        expect(api.get).not.toHaveBeenCalled();
+        expect(load).not.toHaveBeenCalled();
     });
 
-    it('sem `data`, busca por `endpoint` — comportamento de hoje', async () => {
-        (api.get as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: [{ id: 1, nome: 'A' }] });
-        const { result } = renderHook(() => useSarakTableData('/api/test'));
+    it('loads data and filters it with local search', async () => {
+        const data = [{ id: 1, name: 'Ana' }, { id: 2, name: 'Beto' }];
+        const { result } = renderHook(() => useSarakTableData(undefined, async () => data));
 
-        expect(result.current.loading).toBe(true);
-
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 0));
-        });
-
-        expect(api.get).toHaveBeenCalledWith('/api/test');
-        expect(result.current.data).toEqual([{ id: 1, nome: 'A' }]);
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => expect(result.current.data).toEqual(data));
+        act(() => result.current.setSearch('ana'));
+        expect(result.current.filteredData).toEqual([data[0]]);
     });
 
-    it('sem `data` e sem `endpoint`, não busca nem trava em loading', () => {
-        const { result } = renderHook(() => useSarakTableData());
+    it('surfaces a load failure', async () => {
+        const { result } = renderHook(() => useSarakTableData(undefined, async () => {
+            throw new Error('Unavailable');
+        }));
 
-        expect(api.get).not.toHaveBeenCalled();
-        expect(result.current.data).toEqual([]);
+        await waitFor(() => expect(result.current.error).toBe('Unavailable'));
         expect(result.current.loading).toBe(false);
     });
 });

@@ -4,10 +4,15 @@ import { SarakIcon } from "../../Icon/SarakIcon";
 import { SarakInput } from '../../Inputs';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import type { LibraryTextKey } from '../../../../core/i18n/catalog';
+
+type AuthLabelKey = Extract<LibraryTextKey, `auth${string}`>;
 
 interface AuthFormFieldsProps {
     mfaStep: boolean;
     isRegistering: boolean;
+    labels?: Partial<Record<AuthLabelKey, string>>;
     username: string;
     setUsername: (val: string) => void;
     password?: string;
@@ -24,6 +29,7 @@ interface AuthFormFieldsProps {
 export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
     mfaStep,
     isRegistering,
+    labels,
     username,
     setUsername,
     password,
@@ -37,20 +43,22 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
     onForgot
 }) => {
     const { getFlexStyles } = useStructuralStyles();
+    const text = useLibraryText();
+    const authText = (key: AuthLabelKey): string => labels?.[key] ?? text(key);
 
     return (
         <>
             {!mfaStep ? (
                 <>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
-                        <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>E-mail de Acesso</label>
+                        <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authEmailLabel')}</label>
                         <SarakInput
                             type="email"
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            placeholder="seu@email.com"
-                            autoComplete="off"
+                            placeholder={authText('authEmailPlaceholder')}
+                            autoComplete="username"
                             leftIcon={<SarakIcon name="User" className="h-5 w-5" />}
                             fullWidth
                         />
@@ -58,7 +66,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
 
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
                         <div className="flex items-center justify-between" style={{ paddingLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', paddingRight: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
-                            <label className="text-xs font-bold text-theme-muted uppercase tracking-widest">Senha</label>
+                            <label className="text-xs font-bold text-theme-muted uppercase tracking-widest">{authText('authPasswordLabel')}</label>
                             {!isRegistering && onForgot && (
                                 <SarakButton 
                                     onClick={onForgot}
@@ -66,7 +74,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                                     className="text-xs font-bold text-theme-primary h-auto hover:opacity-80"
                                     style={{ padding: 0 }}
                                 >
-                                    Esqueceu?
+                                    {authText('authForgotPassword')}
                                 </SarakButton>
                             )}
                         </div>
@@ -76,7 +84,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                             value={password || ''}
                             onChange={(e) => setPassword?.(e.target.value)}
                             placeholder="••••••••"
-                            autoComplete="new-password"
+                            autoComplete={isRegistering ? 'new-password' : 'current-password'}
                             leftIcon={<SarakIcon name="Lock" className="h-5 w-5" />}
                             rightIcon={setShowPassword ? (
                                 <SarakIconButton
@@ -93,7 +101,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                 </>
             ) : (
                 <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
-                    <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Código de Segurança</label>
+                    <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authMfaLabel')}</label>
                     <SarakInput
                         type="text"
                         required
@@ -101,6 +109,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                         value={mfaCode || ''}
                         onChange={(e) => setMfaCode?.(e.target.value.replace(/\D/g, ''))}
                         placeholder="000000"
+                        autoComplete="one-time-code"
                         autoFocus
                         className="text-center text-2xl"
                         style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}
@@ -113,7 +122,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                         className="text-xs font-bold text-theme-muted hover:text-theme-primary h-auto"
                         style={{ marginTop: 'var(--sarak-layout-gap-sm,8px)', paddingLeft: 0, paddingRight: 0 }}
                     >
-                        ← Voltar para senha
+                        {authText('authBackToPassword')}
                     </SarakButton>
                 </div>
             )}
@@ -126,7 +135,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                 style={{ marginTop: 'var(--sarak-layout-gap-md,16px)' }}
                 rightIcon={!isPending ? <SarakIcon name="ChevronRight" className="w-4 h-4" /> : undefined}
             >
-                {mfaStep ? 'Confirmar Acesso' : (isRegistering ? 'Criar Minha Conta' : 'Acessar Sistema')}
+                {authText(mfaStep ? 'authSubmitMfa' : isRegistering ? 'authSubmitRegister' : 'authSubmitLogin')}
             </SarakButton>
         </>
     );

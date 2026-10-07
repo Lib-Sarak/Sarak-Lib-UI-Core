@@ -1,122 +1,136 @@
-import { SarakIcon } from "../Icon/SarakIcon";
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-import api from '../../../shared/services/api';
+import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SarakIcon } from '../Icon/SarakIcon';
+import { SarakAlert } from '../Feedback/SarakAlert';
 import { SarakForm } from './SarakForm';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { ManagementGroupCard } from './components/ManagementGroupCard';
 import { useManagementGrid } from './hooks/useManagementGrid';
 
+export interface SarakManagementAction {
+    label: string;
+    action: string;
+    icon?: 'plus' | 'settings';
+    /** Opens the host-submitted creation form when onCreate is provided. */
+    opensCreateForm?: boolean;
+}
+
 export interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
-    /** Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. */
-    endpoint: string;
-    /** Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. */
+    /** Records already loaded by the host; takes precedence over load. */
+    data?: TItem[];
+    /** Loads records through the host's chosen transport. */
+    load?: () => Promise<TItem[]>;
+    /** Path to the grouping value; supports nested fields. */
     groupBy: string;
-    /** Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. */
+    /** Empty groups to display alongside groups found in the records. */
     ghostGroups?: string[];
-    /** Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. */
+    /** Maps record paths to fields displayed by each item card. */
     mapping: {
         id: string;
         title: string;
-        status: string;
-        isActive: string;
+        status?: string;
+        isActive?: string;
         description?: string;
         error?: string;
     };
-    /** Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. */
-    headerActions?: {
-        label: string;
-        action: string;
-    }[];
-    /** Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. */
-    groupActions?: {
-        label: string;
-        icon?: 'plus' | 'settings';
-        action: string;
-    }[];
-    /** Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. */
+    label?: string;
+    description?: string;
+    headerActions?: SarakManagementAction[];
+    groupActions?: SarakManagementAction[];
     formMapping?: Record<string, string>;
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
+    onAction?: (action: string, group?: string) => void | Promise<void>;
+    onToggle?: (item: TItem) => void | Promise<void>;
+    onDelete?: (item: TItem) => void | Promise<void>;
+    onCreate?: (data: Record<string, unknown>, group?: string) => void | Promise<void>;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     density?: 'compact' | 'standard' | 'spacious';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
     importance?: 'hero' | 'base' | 'subtle';
 }
 
-export const SarakManagementGrid = <TItem extends Record<string, unknown> = Record<string, unknown>>({ 
-    endpoint, 
-    groupBy, 
+function getValueAtPath<T extends Record<string, unknown>>(item: T, path: string): unknown {
+    if (!path) return undefined;
+    return path.split('.').reduce<unknown>((value, part) => {
+        if (!value || typeof value !== 'object') return undefined;
+        return (value as Record<string, unknown>)[part];
+    }, item);
+}
+
+export const SarakManagementGrid = <TItem extends Record<string, unknown> = Record<string, unknown>>({
+    data,
+    load,
+    groupBy,
     ghostGroups = [],
     mapping,
+    label,
+    description,
     headerActions = [],
     groupActions = [],
-    formMapping
+    formMapping,
+    onAction,
+    onToggle,
+    onDelete,
+    onCreate,
 }: SarakManagementGridProps<TItem>) => {
     const { getContainerStyles, getHeaderStyles, getGridStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
     const gridLayout = getGridStyles();
-
-    const getVal = (obj: TItem, path: string): unknown => {
-        if (!path) return undefined;
-        return path.split('.').reduce((acc: unknown, part) => {
-            if (acc && typeof acc === 'object') {
-                return (acc as Record<string, unknown>)[part];
-            }
-            return undefined;
-        }, obj as unknown);
-    };
-
+    const text = useLibraryText();
+    const [activeModal, setActiveModal] = useState<{ group?: string } | null>(null);
+    const [actionError, setActionError] = useState<string | null>(null);
     const {
         groups,
         loading,
-        activeModal,
-        setActiveModal,
-        load,
+        error,
+        load: loadData,
         handleToggle,
         handleDelete,
-        handleAction
-    } = useManagementGrid(endpoint, groupBy, ghostGroups, getVal);
+    } = useManagementGrid<TItem>({ data, load, groupBy, ghostGroups, getVal: getValueAtPath, onToggle, onDelete });
 
-    // plan-41: `@container` plantado na raiz — `headerLayout`/`gridLayout` abaixo usam
-    // classe `@min-[…]` (container query), que precisa de um ancestral com
-    // `container-type` para casar (achado real em consumidor, `plan-40`).
+    const runAction = async (action: SarakManagementAction, group?: string): Promise<void> => {
+        setActionError(null);
+        try {
+            await onAction?.(action.action, group);
+            if (action.opensCreateForm && onCreate) setActiveModal({ group });
+        } catch (actionFailure: unknown) {
+            setActionError(actionFailure instanceof Error ? actionFailure.message : text('genericLoadError'));
+        }
+    };
+
+    const canShowAction = (action: SarakManagementAction): boolean => Boolean(onAction || (action.opensCreateForm && onCreate));
+
     return (
         <div className={`@container ${containerLayout.className}`} style={containerLayout.style}>
+            {actionError && <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={actionError} />}
+            {error && <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />}
             <AnimatePresence>
-                {activeModal && (
+                {activeModal && onCreate && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.4 }}
                             className="w-full max-w-lg bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] shadow-2xl relative rounded-[var(--sarak-card-radius,12px)]"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}
                         >
-                            <SarakIconButton 
-                                onClick={() => setActiveModal(null)} 
+                            <SarakIconButton
+                                onClick={() => setActiveModal(null)}
                                 icon={<SarakIcon name="X" size={24} />}
                                 variant="ghost"
-                                className="absolute hover:bg-white/5 text-white/20 hover:text-white transition-all z-50" 
-                                style={{ top: 'var(--sarak-layout-gap-md,16px)', right: 'var(--sarak-layout-gap-md,16px)' }} 
+                                className="absolute z-50"
+                                style={{ top: 'var(--sarak-layout-gap-md,16px)', right: 'var(--sarak-layout-gap-md,16px)' }}
                             />
-                            <h3 className="text-xl font-black text-white uppercase tracking-wider" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)', fontWeight: 'var(--sarak-h1-weight,700)' }}>
-                                {activeModal.group ? `Configurar ${activeModal.group}` : 'Nova Identidade'}
-                            </h3>
-                            <SarakForm 
-                                endpoint={endpoint} 
-                                label={activeModal.group ? `Conectar ${activeModal.group}` : "Identidade Universal"}
-                                mapping={formMapping || {}} 
+                            {label && <h3 className="text-xl font-bold text-theme-title" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }}>{label}</h3>}
+                            <SarakForm<Record<string, unknown>>
+                                label={activeModal.group}
+                                mapping={formMapping}
                                 mode="create"
-                                initialData={activeModal.group ? { service: activeModal.group } : {}}
-                                onSuccess={() => {
+                                onSubmit={(formData) => onCreate(formData, activeModal.group)}
+                                onSuccess={async () => {
                                     setActiveModal(null);
-                                    load();
+                                    await loadData();
                                 }}
                             />
                         </motion.div>
@@ -124,21 +138,16 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
                 )}
             </AnimatePresence>
 
-            {headerActions.length > 0 && (
+            {(label || description || headerActions.some(canShowAction)) && (
                 <div className={`${headerLayout.className} bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]`} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: headerLayout.style.gap }}>
                     <div>
-                        <h2 className="text-xl font-black text-white" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>Gestão Operacional</h2>
-                        <p className="text-xs text-white/30 font-medium">Configurações granulares de identidades e provedores.</p>
+                        {label && <h2 className="text-xl font-bold text-theme-title">{label}</h2>}
+                        {description && <p className="text-sm text-theme-muted">{description}</p>}
                     </div>
                     <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
-                        {headerActions.map(action => (
-                            <SarakButton
-                                key={action.label}
-                                onClick={() => handleAction(action.action)}
-                                className="shadow-lg"
-                                style={{ boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
-                            >
-                                <SarakIcon name="Plus" size={16} />
+                        {headerActions.filter(canShowAction).map((action) => (
+                            <SarakButton key={action.label} onClick={() => void runAction(action)}>
+                                {action.icon === 'plus' && <SarakIcon name="Plus" size={16} />}
                                 {action.label}
                             </SarakButton>
                         ))}
@@ -148,31 +157,26 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
 
             <div className={gridLayout.className} style={gridLayout.style}>
                 {loading ? (
-                    [...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
+                    [...Array(6)].map((_, index) => (
+                        <div key={`skeleton-${index}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
                     ))
                 ) : (
-                    (Object.entries(groups) as [string, TItem[]][]).map(([groupName, items]) => {
-                        const isConfigured = items.length > 0;
-                        return (
-                            <ManagementGroupCard 
-                                key={groupName}
-                                groupName={groupName}
-                                items={items}
-                                isConfigured={isConfigured}
-                                containerLayout={containerLayout}
-                                groupActions={groupActions}
-                                mapping={mapping}
-                                handleAction={handleAction}
-                                handleToggle={handleToggle}
-                                handleDelete={handleDelete}
-                                getVal={getVal}
-                            />
-                        );
-                    })
+                    (Object.entries(groups) as [string, TItem[]][]).map(([groupName, items]) => (
+                        <ManagementGroupCard
+                            key={groupName}
+                            groupName={groupName}
+                            items={items}
+                            containerLayout={containerLayout}
+                            groupActions={groupActions.filter(canShowAction)}
+                            mapping={mapping}
+                            onAction={(action) => runAction(action, groupName)}
+                            onToggle={onToggle ? handleToggle : undefined}
+                            onDelete={onDelete ? handleDelete : undefined}
+                            getVal={getValueAtPath}
+                        />
+                    ))
                 )}
             </div>
         </div>
     );
 };
-

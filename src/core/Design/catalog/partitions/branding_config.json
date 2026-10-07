@@ -218,6 +218,7 @@
   },
   {
     "tokenId": "bgBaseColor",
+    "visualImpact": "fundo",
     "name": "Cor de Fundo Base",
     "description": "A cor de fundo absoluta e mais profunda do sistema. Ela afeta o contraste global. Use tons escuros para Dark Mode e claros para Light Mode.",
     "type": "color",

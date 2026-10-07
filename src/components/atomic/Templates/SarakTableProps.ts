@@ -2,10 +2,10 @@ import type { Key } from 'react';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
 
 export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
-    /** Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. */
-    endpoint?: string;
-    /** Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. */
+    /** Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. */
     data?: TData[];
+    /** Carrega as linhas pelo mecanismo escolhido pelo host. */
+    load?: () => Promise<TData[]>;
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
     /** Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. */
@@ -29,4 +29,8 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
      * públicos de tabela não tenham APIs divergentes.
      */
     responsive?: boolean;
+    /** Exibe o campo de busca; omitido, fica visível. */
+    showSearch?: boolean;
+    /** Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`. */
+    showRefresh?: boolean;
 }

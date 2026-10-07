@@ -1,31 +1,91 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { useThemeCustomizationData } from '../useThemeCustomizationData';
+import { TokenCatalog } from '../../../../../core/Design/catalog';
+import type { ThemeEditMode } from '../usePreviewUIState';
+
+const VISUAL_IMPACT_GROUPS = ['fontes', 'cores', 'fundo', 'cards', 'forma'];
+const getMarkedCatalogEntries = () => TokenCatalog.flatMap((entry) => {
+    if (!('visualImpact' in entry) || typeof entry.visualImpact !== 'string') return [];
+    return [{ tokenId: entry.tokenId, visualImpact: entry.visualImpact }];
+});
 
 describe('useThemeCustomizationData', () => {
     it('should export the hook correctly', () => {
         expect(useThemeCustomizationData).toBeDefined();
     });
 
-    // plan-37: components_base.json tinha 28 tokens sem `importance` — ficavam SEMPRE fora do
-    // modo Essencial (`t.importance || 0` resolvia para 0). Preenchido o campo, o token entra
-    // ou fica de fora pelo mesmo critério `>= 80` de qualquer outro token do catálogo.
-    it('plan-37: lê o importance preenchido dos 28 tokens antes órfãos de components_base.json', () => {
+    it('mantém a visibilidade Essencial determinada por importance >= 80', () => {
         const { result } = renderHook(() => useThemeCustomizationData(''));
 
-        // inputErrorColor recebeu importance 85 (>= 80) — passa a aparecer no modo Essencial.
-        expect(result.current.dynamicEssentialTokens.has('inputErrorColor')).toBe(true);
-
-        // multiSelectInputMinWidth recebeu importance 30 (< 80) — continua fora do Essencial,
-        // agora por critério explícito, não por ausência de dado.
-        expect(result.current.dynamicEssentialTokens.has('multiSelectInputMinWidth')).toBe(false);
+        expect(result.current.isTokenVisible('inputErrorColor')).toBe(true);
+        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(false);
     });
 
-    it('plan-37: mantém a curadoria pré-existente de outras partições (cards_engine)', () => {
+    it('mantém a curadoria Essencial pré-existente de outras partições', () => {
         const { result } = renderHook(() => useThemeCustomizationData(''));
 
-        expect(result.current.dynamicEssentialTokens.has('cardPaddingMd')).toBe(true);
-        expect(result.current.dynamicEssentialTokens.has('cardRadiusTL')).toBe(false);
+        expect(result.current.isTokenVisible('cardPaddingMd')).toBe(true);
+        expect(result.current.isTokenVisible('cardRadiusTL')).toBe(false);
+    });
+
+    it('marca entre 20 e 30 ids únicos, em grupos válidos e presentes no schema', () => {
+        const markedEntries = getMarkedCatalogEntries();
+        const markedIds = new Set(markedEntries.map((entry) => entry.tokenId));
+        const { result } = renderHook(() => useThemeCustomizationData('', 'impact'));
+        const schemaIds = new Set(result.current.visualImpactTokens.map(({ token }) => token.id));
+
+        expect(markedIds.size).toBeGreaterThanOrEqual(20);
+        expect(markedIds.size).toBeLessThanOrEqual(30);
+        markedEntries.forEach((entry) => expect(VISUAL_IMPACT_GROUPS).toContain(entry.visualImpact));
+        expect(schemaIds).toEqual(markedIds);
+        expect(result.current.visualImpactTokens).toHaveLength(markedIds.size);
+    });
+
+    it('preserva âncoras e exclui candidatos sem efeito independente provado', () => {
+        const markedEntries = getMarkedCatalogEntries();
+        const groupFor = (tokenId: string) => markedEntries.find((entry) => entry.tokenId === tokenId)?.visualImpact;
+
+        expect(groupFor('headingFont')).toBe('fontes');
+        expect(groupFor('bodyFont')).toBe('fontes');
+        expect(groupFor('primaryColor')).toBe('cores');
+        expect(groupFor('texture')).toBe('fundo');
+        expect(groupFor('cardVariant')).toBe('cards');
+        expect(groupFor('bgBaseColor')).toBe('fundo');
+        [
+            'layoutDensity',
+            'maxContentWidth',
+            'isSplitViewEnabled',
+            'colorBgBody',
+            'accentColor',
+            'colorPalette',
+            'bgGradientMode'
+        ].forEach((tokenId) => {
+            expect(groupFor(tokenId)).toBeUndefined();
+        });
+    });
+
+    it.each([
+        ['cardBackgroundColor', 'cards'],
+        ['bgBaseColor', 'fundo']
+    ])('marca todas as entradas duplicadas de %s no mesmo grupo', (tokenId, group) => {
+        const entries = getMarkedCatalogEntries().filter((entry) => entry.tokenId === tokenId);
+
+        expect(entries).toHaveLength(2);
+        expect(entries.map((entry) => entry.visualImpact)).toEqual([group, group]);
+    });
+
+    it('aplica os três modos de visibilidade e mantém Completo abrangente', () => {
+        const { result, rerender } = renderHook(({ mode }) => useThemeCustomizationData('', mode), {
+            initialProps: { mode: 'essential' as ThemeEditMode }
+        });
+
+        expect(result.current.isTokenVisible('inputErrorColor')).toBe(true);
+        rerender({ mode: 'impact' });
+        expect(result.current.isTokenVisible('primaryColor')).toBe(true);
+        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(false);
+        rerender({ mode: 'complete' });
+        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(true);
     });
     it('filteredResults é nulo sem busca e usa a busca por sentido quando há consulta', () => {
         expect(renderHook(() => useThemeCustomizationData('')).result.current.filteredResults).toBeNull();

@@ -1,6 +1,7 @@
 [
   {
     "tokenId": "navigationStyle",
+    "visualImpact": "forma",
     "name": "Estrutura de Navegação",
     "description": "Altera o esqueleto principal da aplicação, movendo os menus primários para a lateral (Sidebar), para o topo (Topbar) ou como uma doca flutuante.",
     "type": "select",

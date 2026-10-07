@@ -24,7 +24,7 @@ const renderAt = (device: SarakDeviceType, responsive?: boolean, selectable = fa
     render(
         <SarakUIProvider>
             <SarakDeviceProvider overrideDevice={device}>
-                <SarakTable endpoint="/x" mapping={MAPPING} responsive={responsive} selectable={selectable} />
+                <SarakTable mapping={MAPPING} responsive={responsive} selectable={selectable} />
             </SarakDeviceProvider>
         </SarakUIProvider>,
     );
