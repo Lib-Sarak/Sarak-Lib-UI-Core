@@ -14,7 +14,7 @@ export const CategoryLabel: React.FC<{
     onReset?: () => void,
     onApply?: () => void,
     pillarId?: string
-}> = ({ icon: Icon, title, index, isOpen, onToggle, isDualView, onToggleDual, isDirty, onReset, onApply, pillarId }) => (
+}> = ({ icon: Icon, title, index, isOpen, onToggle, isDualView, onToggleDual, isDirty, onReset, pillarId }) => (
     <div className={`w-full flex border-y border-[var(--theme-border)] transition-all ${isOpen ? 'bg-[var(--color-theme-card,#1e293b)]' : 'bg-transparent hover:bg-[var(--theme-surface)]'}`}>
     <div 
         role="button"
@@ -29,15 +29,9 @@ export const CategoryLabel: React.FC<{
         className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#1e293b)]"
     >
         <div className="flex items-center gap-3">
-            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)]'}`}>
-                {index}
-                {isDirty && !isOpen && (
-                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[var(--theme-primary)] rounded-full border-2 border-[var(--theme-bg)] animate-pulse" />
-                )}
-            </div>
             <div className="flex items-center gap-2">
                 <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
-                <span className={`text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all ${isOpen ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
+                <span className={`text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all ${isOpen ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
             </div>
         </div>
         <div className="flex items-center gap-3">
@@ -49,21 +43,11 @@ export const CategoryLabel: React.FC<{
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
                             onClick={(e) => { e.stopPropagation(); onReset?.(); }}
-                            title="Descartar Alterações neste Pilar"
+                            title={pillarId === 'global' ? 'Descartar alterações globais' : 'Descartar alterações deste pilar'}
+                            aria-label={pillarId === 'global' ? 'Descartar alterações globais' : 'Descartar alterações deste pilar'}
                             className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all active:scale-90"
                         >
                             <RotateCcw size={10} />
-                        </motion.button>
-                        
-                        <motion.button
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            onClick={(e) => { e.stopPropagation(); onApply?.(); }}
-                            title={`Aplicar apenas o pilar ${title} ao sistema`}
-                            className="px-3 py-1.5 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-tighter transition-all active:scale-95 flex items-center gap-1.5"
-                        >
-                            <span>Commit {title}</span>
                         </motion.button>
                     </div>
                 )}
@@ -95,7 +79,7 @@ export const Section: React.FC<{ id: string, icon: React.ElementType, title: str
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">
                 <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}><Icon size={14} /></div>
-                <span className={`text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}>{title}</span>
+                <span className={`text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}>{title}</span>
             </div>
             <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
         </button>
@@ -108,7 +92,7 @@ export const Section: React.FC<{ id: string, icon: React.ElementType, title: str
                     transition={{ duration: 0.3, ease: "circOut" }} 
                     className={`bg-[var(--color-theme-card,#1e293b)] ${activeSection === id ? 'overflow-visible' : 'overflow-hidden'}`}
                 >
-                    <div className="p-6 pt-2">{children}</div>
+                    <div className="p-[var(--sarak-layout-gap-sm,12px)] pt-2">{children}</div>
                 </motion.div>
             )}
         </AnimatePresence>

@@ -87,6 +87,21 @@ describe('useThemeCustomizationData', () => {
         rerender({ mode: 'complete' });
         expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(true);
     });
+
+    it('publica os sete títulos de pilar sem prefixos numéricos', () => {
+        const { result } = renderHook(() => useThemeCustomizationData(''));
+
+        expect(result.current.pillars.map(({ id, title }) => [id, title])).toEqual([
+            ['brand', 'Marca e cores'],
+            ['typography', 'Fontes e texto'],
+            ['surfaces', 'Superfícies e cards'],
+            ['interaction', 'Botões, campos e animação'],
+            ['navigation', 'Navegação e layout'],
+            ['systems', 'Dados e gráficos'],
+            ['advanced', 'Avançado']
+        ]);
+    });
+
     it('filteredResults é nulo sem busca e usa a busca por sentido quando há consulta', () => {
         expect(renderHook(() => useThemeCustomizationData('')).result.current.filteredResults).toBeNull();
 

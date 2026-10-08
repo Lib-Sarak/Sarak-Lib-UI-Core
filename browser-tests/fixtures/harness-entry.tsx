@@ -34,6 +34,12 @@ const searchParams = new URLSearchParams(window.location.search);
 const hasGlobalBackground = searchParams.get('bg') === '1';
 const navigationStyle = searchParams.get('chrome') === 'topbar' ? 'topbar' : 'sidebar';
 const embeddedStyle = searchParams.get('embedded') === '1' ? { height: '320px' } : undefined;
+// Mantém a viewport fixa e varia a largura do host para distinguir container query de breakpoint de janela.
+const hostWidth = searchParams.get('host') === 'narrow'
+    ? '50vw'
+    : searchParams.get('host') === 'wide'
+        ? '90vw'
+        : undefined;
 
 /**
  * `?tema=<nome>` troca a `config` do Provider por um recorte de tokens nomeado — o mesmo
@@ -48,6 +54,7 @@ const embeddedStyle = searchParams.get('embedded') === '1' ? { height: '320px' }
  *   - `cromo-estrutura`: `isNavHidden` seleciona a geometria compacta da topbar.
  *   - `cromo-largura-limitada` / `cromo-largura-fluida`: `maxContentWidth` limita ou libera a região.
  *   - `cromo-densidade-*`: `layoutDensity` escala o respiro da região de conteúdo.
+ *   - `cromo-vista-dividida`: `isSplitViewEnabled` habilita o slot `secondaryContent`.
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -63,6 +70,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'cromo-densidade-compacta': { layoutDensity: 'compact' },
     'cromo-densidade-confortavel': { layoutDensity: 'comfortable' },
     'cromo-densidade-espacosa': { layoutDensity: 'spacious' },
+    'cromo-vista-dividida': { isSplitViewEnabled: true },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -100,21 +108,36 @@ const ElementDefaultProbes: React.FC = () => (
     </div>
 );
 
-const App: React.FC = () => (
-    <SarakUIProvider config={resolveHarnessConfig()}>
+const App: React.FC = () => {
+    const chrome = (
         <SarakAppChrome
             navItems={NAV_ITEMS}
             brand={{ name: 'Harness' }}
             className="sarak-chrome-root"
             navigationStyle={navigationStyle}
             style={embeddedStyle}
+            secondaryContent={(
+                <div data-harness-secondary-content style={{ minHeight: '2400px' }}>
+                    Painel secundário longo
+                </div>
+            )}
         >
             <SarakButton>Referência</SarakButton>
             <ElementDefaultProbes />
             <div data-harness-long-content style={{ minHeight: '2400px' }}>Conteúdo longo</div>
         </SarakAppChrome>
-    </SarakUIProvider>
-);
+    );
+
+    return (
+        <SarakUIProvider config={resolveHarnessConfig()}>
+            {hostWidth ? (
+                <div data-harness-host style={{ width: hostWidth, height: '100dvh' }}>
+                    {chrome}
+                </div>
+            ) : chrome}
+        </SarakUIProvider>
+    );
+};
 
 const container = document.getElementById('root');
 if (!container) throw new Error('harness-entry: #root ausente no HTML do harness.');

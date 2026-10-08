@@ -137,6 +137,19 @@ e a lista permanece vazia sem o loader.
 
 Para voltar à largura fluida, defina `maxContentWidth: '100%'`. Para manter o respiro anterior, defina `layoutDensity: 'comfortable'`.
 
+### Vista dividida do conteúdo
+
+Com `isSplitViewEnabled: true` no design e `secondaryContent` preenchido em `SarakAppChrome`, o conteúdo
+passa a exibir dois painéis lado a lado em desktop e empilhados em tablet e celular. Sem o token ligado ou
+sem o slot secundário, a região continua com um único painel. Para manter a composição anterior, omita
+`secondaryContent` ou defina `isSplitViewEnabled: false`.
+
+### Exibição de dados: tabelas, paginação e valores formatados (plan-97)
+
+- `SarakTable` aceita renderização e alinhamento por coluna, ativação de linha e estados de carregamento, erro com nova tentativa e vazio; no celular, os cartões preservam a renderização, o alinhamento e a ativação da linha. `SarakDataTable` também aceita altura variável por linha e os mesmos estados.
+- `SarakPagination` aceita tamanho de página, callback de alteração e resumo traduzido do intervalo exibido.
+- Os formatadores públicos de número, moeda, percentual e data acompanham o idioma configurado, com override local. `SarakValue` aplica os tokens de status para valores positivos, negativos e neutros; `SarakStats` aceita configuração por métrica para ícone, variação, formato, rótulo e dica.
+
 ## A persistência do tema ativo restaura também o id
 
 **Compatibilidade.** As assinaturas antigas de `onSave(design)` e `onLoad()` que devolve somente o

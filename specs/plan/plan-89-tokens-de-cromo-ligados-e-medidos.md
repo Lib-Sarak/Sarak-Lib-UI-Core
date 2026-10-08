@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ligar os três tokens de layout sem consumidor e medir o cromo por token em navegador"
 objetivo: "Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo"
 dominio: "Sarak-Lib-UI-Core / Cromo / Tokens de layout"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "cromo", "tokens", "layout", "browser-tests"]
 relacionados: ["[[05-cromo-e-slots]]", "[[04-contrato-de-tokens-e-paridade]]", "[[07-responsividade-e-multidispositivo]]", "[[11-testes-e-cobertura]]"]
@@ -362,6 +362,136 @@ Este adendo preserva o resumo anterior e registra exclusivamente as correções 
 
 **Handoff:** status 🟠 Em revisão. Aguardar o veredito; não iniciar o lote 3.
 
+## Resumo da execução — 2026-10-07 (lote 3)
+
+**Resultado:** implementação do lote 3 entregue para veredito; as verificações integradas ficaram pendentes
+pelos gates e pela execução paralela descritos abaixo.
+
+**Estado do worktree ao iniciar:** `git status --short` não mostrou alterações.
+
+**O que foi feito**
+- `SarakAppChrome` ganhou a prop pública opcional `secondaryContent`. Uma região compartilhada preserva o
+  `main[data-sarak-content]` e só envolve os painéis quando `isSplitViewEnabled` está ligado e o slot contém
+  conteúdo; sem qualquer condição, os `children` continuam diretos no `main`.
+- O layout usa uma coluna até a faixa tablet e duas colunas a partir do breakpoint desktop (`lg`, 1024 px).
+  Os três modos (sidebar, topbar e celular) leem o mesmo token pelo hook de design; a rolagem segue no painel
+  de conteúdo.
+- `isSplitViewEnabled` saiu de `ORPHAN_TOKENS`; a expectativa do teste do gate agora é lista vazia.
+- A fixture recebeu `cromo-vista-dividida`, com conteúdo longo nos dois painéis. O caso de navegador mede a
+  relação das caixas no desktop/celular e verifica rolagem interna e documento sem rolagem.
+- Acrescentei a subseção de migração da vista dividida dentro de `## 8.0.0 — um cromo por aplicação`.
+- `src/index.ts` não precisou mudar: já exporta `SarakAppChromeProps`, portanto a nova prop integra o tipo
+  público existente.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/Layout/SarakAppChrome.tsx` | alterado | Prop `secondaryContent` e passagem aos três modos. |
+| `src/components/Layout/SarakAppChromeMobile.tsx` | alterado | Consumo da vista dividida no celular. |
+| `src/components/Layout/chrome/ChromeContentRegion.tsx` | novo | Região comum, slots dos painéis e preservação do conteúdo antigo quando inativo. |
+| `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `ChromeTopbarBody.tsx` | alterados | Integração comum e leitura do token estrutural. |
+| `src/components/Layout/chrome/chromeStructuralStyles.ts` · `useChromeDesignTokens.ts` | alterados | Geometria em classes estáticas e leitura de `isSplitViewEnabled`. |
+| `src/components/Layout/__tests__/SarakAppChrome.tokens.test.tsx` · `chrome/__tests__/useChromeDesignTokens.test.ts` | alterados | Cobertura pública nos três modos, casos de degradação e contrato do hook. |
+| `gates/scripts/contrato/check-chrome-token-parity.mjs` · `__tests__/check-chrome-token-parity.test.mjs` | alterados | Lista de órfãos vazia e expectativa correspondente. |
+| `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cromo-css-real.spec.ts` | alterados | Variante, painéis de prova, medição relacional e verificação de rolagem. |
+| `docs/migracoes.md` | alterado | Subparte de migração para a vista dividida, dentro de 8.0.0. |
+| `specs/plan/plan-89-tokens-de-cromo-ligados-e-medidos.md` | alterado | Este resumo append-only e status de revisão. |
+
+**Verificações executadas**
+- `npx tsc --noEmit` → código 0.
+- `npm run chrome-token-parity:check` → 43/43 tokens cobertos; nenhuma dívida declarada.
+- `git diff --check` nos arquivos deste lote → sem erros de whitespace.
+- `npm run catalog:check` → **vermelho**, reportou `docs/component-catalog.{json,md}` defasados. Não regenerei o
+  catálogo, conforme a instrução desta execução; por isso `npm run build` e o navegador não foram iniciados.
+- `npx vitest run` no sandbox falhou antes da coleta em 393 suítes por `EPERM` ao renomear diretórios
+  temporários. A repetição fora desse bloqueio executou 395 arquivos: 387 passaram; 8 arquivos falharam,
+  com 2.224/2.232 testes passando. Duas falhas eram as expectativas do hook agora atualizadas para
+  `isSplitViewEnabled: false` no default e `true` quando definido; ainda falta repetir a suíte após esse ajuste.
+  As demais falhas do resultado vieram das áreas paralelas: import de `SarakTable`, allowlist de
+  `SarakPagination`, expectativas de `SarakStats`/`SarakTable`, `useDesignDraft` e snapshots de
+  `ThemePillarsList`/`ThemeSidebarContent`; não foram inspecionadas nem alteradas.
+- A repetição final do Vitest aguarda a contagem prescrita chegar a zero; as contagens consultadas oscilaram
+  entre 3 e 5 processos `vitest`/`tsup`/`playwright`.
+
+**Critérios de aceite — lote 3**
+- [x] Slot público e efeito condicional implementados nos modos sidebar, topbar e celular.
+- [x] Testes de integração cobrem os três modos e a ausência do token ou do segundo conteúdo.
+- [x] `ORPHAN_TOKENS` vazia e gate de paridade verde.
+- [ ] Medição browser desktop/celular executada — bloqueada até `catalog:check` ficar verde e contagem de
+      processos chegar a zero.
+- [ ] Build/catálogo, `npm run dev-kit` e suíte Vitest completa verde — catálogo continua defasado; a suíte
+      completa ainda não foi repetida após atualizar as expectativas do hook e teve falhas paralelas acima.
+
+**Handoff:** status 🟠 Em revisão. Parar para o veredito do lote 3.
+
+## Complemento de execução — 2026-10-07
+
+- Depois do resumo acima, novas consultas oscilaram entre 1 e 8 processos `vitest`/`tsup`/`playwright`; a
+  última contagem foi 7. Não iniciei outra rodada durante essa atividade compartilhada.
+- `npm run catalog:check` foi repetido e continua vermelho para `docs/component-catalog.{json,md}`. Não
+  regenerei os artefatos, nem rodei build ou navegador.
+- As expectativas de `isSplitViewEnabled` no teste de `useChromeDesignTokens` foram ajustadas depois da
+  suíte completa registrada acima. A repetição pós-ajuste ainda aguarda contagem zero.
+
+# Resumo da execução — 2026-10-07 (correção do lote 3)
+
+**Escopo:** somente os quatro achados do último veredito do lote 3.
+
+**Achados 1 e 2 corrigidos**
+- `ChromeContentRegion.test.tsx` cobre os dois painéis com token e slot ativos, `children` diretos com o token
+  desligado e slot vazio (`null`, `false` e fragmento vazio). O componente agora trata fragmentos vazios como
+  slot sem conteúdo.
+- `main[data-sarak-content]` planta `@container`; a vista dividida empilha por padrão e aplica duas colunas a
+  partir de `@min-[1024px]` **na largura disponível da região**.
+- A fixture mantém a mesma viewport de 1920 px e varia a largura do host (`?host=narrow`/`?host=wide`). O caso
+  mede a largura computada da região com sidebar aberta e compara a geometria empilhada com a lado a lado, sem
+  asserção de largura fixa em pixels. O limiar escolhido para a região é 1024 px.
+
+**Verificações**
+- `npx vitest run src/components/Layout/chrome/__tests__/ChromeContentRegion.test.tsx` → **1 arquivo, 5/5
+  testes verdes**. O processo foi iniciado após contagem CIM zerada; `TEMP`, `TMP` e `NODE_COMPILE_CACHE`
+  apontaram para fora do repositório. A primeira tentativa isolada falhou antes da coleta por `EPERM` no cache;
+  a repetição fora desse bloqueio passou.
+- `npm run catalog:check` → **vermelho**, `docs/component-catalog.{json,md}` defasados. Não regenerei o
+  catálogo. Por essa condição, não rodei `npm run build`, `npm run cromo-css-real:check`, navegador, suíte
+  Vitest completa, `npx tsc --noEmit` nem `check-audit-baseline --with-tsc`.
+- As duas pastas `.vitest-temp-*` tinham `node-compile-cache` e diretórios temporários `sarak-*` das suítes; os
+  horários coincidem com as duas execuções Vitest anteriores. A leitura de `os.tmpdir()` indica que `TEMP`/`TMP`
+  resolveram para essas pastas durante aquelas rodadas. Removi as duas raízes exatas após confirmar contagem CIM
+  zerada e ausência de reparse points. A repetição dirigida desta correção usou diretório temporário externo e
+  não criou novas pastas na raiz.
+
+**Estado:** os achados 1, 2 e 4 foram corrigidos. A medição integrada e a suíte completa do achado 3 aguardam
+`catalog:check` verde e processos `vitest`/`tsup`/`playwright` zerados; não iniciar até ambas as condições.
+
+## Complemento de execução — 2026-10-07 (correção 2 do lote 3)
+
+**Escopo:** exclusivamente os achados 5 e 3 do último veredito.
+
+**Achado 5 corrigido:** `ChromeContentRegion` só acrescenta `@container` ao `main` quando o token está ligado e
+`secondaryContent` tem conteúdo renderizável. Com o token desligado ou slot vazio (`null`, `false` ou fragmento
+vazio), o `main` preserva a classe anterior; com ambos ativos, continua plantando o container para a query da
+vista dividida. O teste próprio do componente passou: **1 arquivo, 5/5 testes**.
+
+**Achado 3 — medição executada após `catalog:check` verde e contagem CIM zerada:**
+- `npm run build` e `npm run cromo-css-real:check` passaram pelos gates até `build:css`, mas falharam quando
+  `npx @tailwindcss/cli` tentou buscar o pacote no registry: `ENOTFOUND registry.npmjs.org`. O wrapper não
+  chegou a iniciar o Playwright; não rodei o navegador diretamente.
+- `npx vitest run` → **404 arquivos; 400 passaram, 4 falharam; 2.251 passaram, 6 falharam**. As três falhas
+  de `SarakAppChrome.tokens.test.tsx` eram a expectativa antiga `lg:grid-cols-2`; atualizei-a para
+  `@min-[1024px]:grid-cols-2`, conforme a geometria por container query, e a validação direcionada posterior
+  passou (**14/14**). As demais falhas observadas foram um timeout no teste de PDF e dois snapshots de
+  `DesignEngine` pertencentes ao trabalho paralelo; não foram inspecionados nem alterados.
+- `npx tsc --noEmit` → **0**.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → **igual ao baseline de 2026-08-11**, sem
+  regressão.
+- `npm run catalog:check` → **verde** (`catálogo em dia`). Não regenerei o catálogo para destravar etapas.
+
+**Estado:** o achado 5 foi corrigido. O achado 3 permanece parcialmente medido: typecheck e baseline passaram;
+build e wrapper de navegador estão bloqueados pela indisponibilidade de rede para obter `@tailwindcss/cli`, e a
+suíte completa registrou as falhas acima antes da atualização da expectativa de container query. O navegador
+permanece sem medição.
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -530,6 +660,103 @@ FAIL  src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx > … cu
 
 **Liberação parcial.** Os lotes 1 e 2 estão aprovados e podem ser commitados. O lote 3 (vista dividida, e
 `isSplitViewEnabled` fora de `ORPHAN_TOKENS`) não foi iniciado; o status volta a `🟡 Em execução`.
+
+## Veredito — 2026-10-07 — 🔴 Reprovado (lote 3)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**O que está certo, e foi verificado por mim:**
+- `secondaryContent` é prop pública opcional do `SarakAppChrome`, documentada no JSDoc, e entra pelo tipo
+  `SarakAppChromeProps`, já exportado. `ChromeContentRegion` mantém `main[data-sarak-content]` e só envolve os
+  painéis com o token ligado **e** o slot com conteúdo; sem um dos dois, os `children` ficam diretos no `main`.
+- `ORPHAN_TOKENS` está vazia, e o resumo registra o `chrome-token-parity:check` com 43 de 43.
+- `SarakAppChrome.tsx` tem 249 linhas, dentro do teto de 250.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **`src/components/Layout/chrome/ChromeContentRegion.tsx` (novo) não tem teste próprio.** A cobertura exige
+   teste 1:1 por arquivo de componente (R8), e o baseline barra regressão no Anel 2 (`auditor_coverage.orfaos`).
+   É o mesmo defeito que reabriu a `plan-99`. Crie `chrome/__tests__/ChromeContentRegion.test.tsx`: dois
+   painéis com token e slot; `children` diretos sem o token; `children` diretos com slot vazio (`null`,
+   `false`, fragmento vazio).
+2. **A vista dividida decide pela largura da janela, não pela da região de conteúdo.**
+   `CHROME_SPLIT_CONTENT_LAYOUT_CLASS` (`chrome/chromeStructuralStyles.ts:48`) usa `lg:grid-cols-2`, um breakpoint
+   de **viewport**. A região de conteúdo não tem a largura da janela: no modo sidebar, a barra ocupa parte dela,
+   e no modo embarcado a lib vive dentro de um painel do host. Com a sidebar aberta numa janela de 1024 px, a
+   região tem cerca de 744 px e mesmo assim divide em dois. Regra violada: [[07-responsividade-e-multidispositivo]]
+   §6.1, camada 3 (o que mora **dentro** do conteúdo reage à largura **disponível**). O próprio
+   `chromeStructuralStyles.ts:37` já usa container query (`@min-[1024px]:`). Faça a geometria por container
+   query da região de conteúdo, com o `main` plantando o `@container` (§6.1, regra 1), e declare no resumo o
+   limiar escolhido. O caso de navegador mede pela largura da região: com a sidebar aberta, uma região estreita
+   empilha e uma larga divide.
+3. **A medição de navegador e a suíte completa não rodaram.** O critério do lote (§6: lado a lado no desktop,
+   empilhados no celular; §5 item 16) só fecha medido. Quando o `catalog:check` estiver verde por conta própria e
+   os processos zerarem, rode `npm run build`, `npm run cromo-css-real:check` (o wrapper), `npx vitest run`
+   **completo**, `npx tsc --noEmit` e `check-audit-baseline --with-tsc`, e cole os números.
+4. **Dois diretórios `.vitest-temp-*` na raiz do repositório**, com centenas de arquivos de
+   `node-compile-cache` não rastreados. Se nasceram de uma rodada sua (o resumo cita a repetição do `vitest`
+   "fora do bloqueio" de `EPERM`), apague-os e diga no resumo qual variável ou opção os criou ali. Se não são
+   seus, diga isso, e não os toque.
+
+## Veredito — 2026-10-07 (correção 1 do lote 3) — 🔴 Reprovado
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**Fecharam, verificados por mim:**
+- **Achado 1:** `chrome/__tests__/ChromeContentRegion.test.tsx` existe, e o resumo dá 5 de 5 casos.
+- **Achado 2:** `CHROME_SPLIT_CONTENT_LAYOUT_CLASS` é `grid … grid-cols-1 @min-[1024px]:grid-cols-2`, sem breakpoint
+  de viewport no cromo (`grep "lg:grid-cols" src/components/Layout` → vazio).
+- **Achado 4:** não há mais `.vitest-temp-*` na raiz.
+
+**Segue aberto, e não é falha do executor:** o achado 3. O `catalog:check` continua vermelho (confirmado agora,
+com 0 processos ativos) por causa das plans 97 e 100 em execução, e por isso o `build` não roda.
+
+**Achado novo desta rodada — a correção é este e o 3:**
+
+5. **O `main` passou a plantar `@container` sempre, inclusive com a vista dividida desligada**
+   (`ChromeContentRegion.tsx:30`: `` className={`${className} @container`} ``). No `HEAD`, nenhum elemento do cromo
+   plantava container. Duas consequências, as duas com o token ou o slot ausentes:
+   - o `container-type` computado do `main` muda;
+   - toda container query do conteúdo do consumidor que não plante o próprio container passa a medir o `main`,
+     e não mais o ancestral que media antes.
+
+   Critério violado: §6, *"sem um dos dois, o computado é o de antes"*. Faça uma destas duas coisas:
+   - **(a)** plante o `@container` só quando a vista dividida estiver ativa (é onde a query mora: §6.1, regra 1
+     da [[07-responsividade-e-multidispositivo]]);
+   - **(b)** mantenha o `main` sempre como container, declare a mudança na nota de `docs/migracoes.md` e prove
+     por caso de navegador que, com a vista desligada, o padding e a largura do `main` e de um filho com
+     container query própria seguem iguais ao `HEAD`.
+
+   Recomendo (a).
+
+**Quando o catálogo ficar verde por conta própria** (as plans 97 e 100 regeneram ao entregar), rode o achado 3
+completo: `npm run build`, `npm run cromo-css-real:check`, `npx vitest run`, `npx tsc --noEmit` e
+`check-audit-baseline --with-tsc`.
+
+## Veredito — 2026-10-07 (correção 2 do lote 3) — 🟢 Aprovado (plan concluída)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**Achado 5 (o `@container` sempre ligado) — fechou.** `ChromeContentRegion.tsx` só acrescenta `@container` ao
+`main` quando a vista dividida está ativa e o slot tem conteúdo renderizável (`shouldRenderSplitView`); fora
+disso, o `main` recebe a mesma `className` de antes. Os testes do componente cobrem token desligado e slot vazio.
+
+**Achado 3 (navegador e suíte) — fechou, medido por mim.** O `build` do executor falhou por rede (`ENOTFOUND` ao
+baixar o `@tailwindcss/cli`, item 12 do [[00-backlog]]); daqui a rede respondeu:
+- `npm run cromo-css-real:check` (wrapper, com `build` completo e todos os gates `[OK]`) → **32 de 32 verdes**,
+  com o caso novo da vista dividida;
+- `src/components/Layout` + `check-chrome-token-parity.test.mjs` + `PreviewCanvas.test.tsx` → 22 arquivos,
+  209 testes verdes;
+- `npx tsc --noEmit` → 0 · `check-audit-baseline --with-tsc` → igual ao baseline;
+- `chrome-token-parity:check` → 43 de 43, sem dívida declarada.
+
+As falhas da suíte completa do executor que não eram da vista dividida (o snapshot de `DesignEngine`, da
+`plan-100` em correção, e um timeout de PDF) não tocam arquivo desta plan. A suíte completa da árvore integrada
+será repetida quando as plans 97 e 100 entregarem; uma falha em arquivo desta plan ali reabre o lote 3.
+
+**Conclusão:** os três lotes estão aprovados, e a plan está concluída. Commit **por caminho**, depois da
+verificação integrada. A síntese vai para `specs/05-cromo-e-slots.md`, `specs/11-testes-e-cobertura.md`,
+`specs/01-gates-e-baseline.md` e `specs/07-responsividade-e-multidispositivo.md`, com a autorização do dono.
 
 ---
 

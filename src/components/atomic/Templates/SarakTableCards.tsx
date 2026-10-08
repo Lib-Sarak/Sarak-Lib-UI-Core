@@ -3,6 +3,7 @@ import { SarakCheckbox } from '../Inputs/SarakCheckbox';
 import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import type { SarakTableColumn } from './SarakTableProps';
 
 export interface SarakTableSelectionCheckboxProps {
     label: string;
@@ -32,7 +33,7 @@ export function SarakTableSelectionCheckbox({
 
 export interface SarakTableCardsProps<T extends Record<string, unknown>> {
     rows: T[];
-    columns: string[];
+    columns: Array<string | SarakTableColumn<T>>;
     columnLabels: Record<string, string>;
     loading?: boolean;
     rowKeys?: React.Key[];
@@ -45,9 +46,23 @@ export interface SarakTableCardsProps<T extends Record<string, unknown>> {
     partiallySelected?: boolean;
     onToggleRow?: (key: React.Key, checked: boolean) => void;
     onToggleAll?: (checked: boolean) => void;
+    onRowClick?: (row: T) => void;
 }
 
 const displayValue = (value: unknown): string => String(value ?? '');
+
+const isInteractiveTarget = (target: EventTarget): boolean =>
+    target instanceof Element && Boolean(target.closest('button,input,a,select,textarea,[role="button"],[role="checkbox"]'));
+
+const handleCardClick = <T,>(event: React.MouseEvent<HTMLDivElement>, row: T, onRowClick?: (row: T) => void): void => {
+    if (!isInteractiveTarget(event.target)) onRowClick?.(row);
+};
+
+const handleCardKeyDown = <T,>(event: React.KeyboardEvent<HTMLDivElement>, row: T, onRowClick?: (row: T) => void): void => {
+    if (event.target !== event.currentTarget || !['Enter', ' '].includes(event.key)) return;
+    event.preventDefault();
+    onRowClick?.(row);
+};
 
 const cardStyle: React.CSSProperties = {
     display: 'flex',
@@ -76,6 +91,7 @@ export function SarakTableCards<T extends Record<string, unknown>>({
     partiallySelected = false,
     onToggleRow,
     onToggleAll,
+    onRowClick,
 }: SarakTableCardsProps<T>) {
     const text = useLibraryText();
     const items = loading ? Array.from({ length: 3 }, (_, index) => ({ __skeleton: index } as unknown as T)) : rows;
@@ -112,8 +128,9 @@ export function SarakTableCards<T extends Record<string, unknown>>({
                     const rowId = row.id;
                     const rowKey = rowKeys?.[index]
                         ?? (typeof rowId === 'string' || typeof rowId === 'number' ? rowId : index);
+                    const handleRowClick = loading ? undefined : onRowClick;
                     return (
-                        <div key={rowKey} role="listitem" style={cardStyle}>
+                        <div key={rowKey} role="listitem" tabIndex={handleRowClick ? 0 : undefined} onClick={(event) => handleCardClick(event, row, handleRowClick)} onKeyDown={(event) => handleCardKeyDown(event, row, handleRowClick)} style={{ ...cardStyle, cursor: handleRowClick ? 'pointer' : undefined }}>
                             {canSelect && (
                                 <SarakTableSelectionCheckbox
                                     label={text('selectRow', { row: String(rowKey) })}
@@ -121,16 +138,21 @@ export function SarakTableCards<T extends Record<string, unknown>>({
                                     onChange={(checked) => onToggleRow?.(rowKey, checked)}
                                 />
                             )}
-                            {columns.map((columnId) => (
+                            {columns.map((column) => {
+                                const columnId = typeof column === 'string' ? column : column.key;
+                                const label = typeof column === 'string' ? columnLabels[columnId] : column.label;
+                                const align = typeof column === 'string' ? 'left' : column.align ?? 'left';
+                                return (
                                 <div key={columnId} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
                                     <span className="text-2xs font-black uppercase tracking-widest text-theme-muted">
-                                        {columnLabels[columnId]}
+                                        {label}
                                     </span>
-                                    <span className="text-sm break-words min-w-0 text-theme-text">
-                                        {loading ? '' : displayValue(row[columnId])}
+                                    <span className="text-sm break-words min-w-0 text-theme-text" style={{ textAlign: align }}>
+                                        {loading ? '' : typeof column === 'string' || !column.render ? displayValue(row[columnId]) : column.render(row)}
                                     </span>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     );
                 })}

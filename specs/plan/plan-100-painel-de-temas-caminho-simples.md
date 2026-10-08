@@ -252,7 +252,11 @@ caminho e a lista plana do modo Impacto foram para a plan-99. Duas decisões del
 
 - `git status` + `git diff --stat` → só o §3.1 de cada lote; `design-pillars.json` com mudança só em `title` e
   na numeração.
-- **No navegador, por mim** (servidor de desenvolvimento, não só testes): abrir o painel e medir — (a) a altura
+- *(Emenda de 2026-10-07: o repositório não tem servidor de desenvolvimento. O que dá para provar sem navegador
+  vira teste — nenhum `vh`/`vw` no preview, altura das prévias empilhadas expressa em relação ao contêiner,
+  galeria fechada ocupando o preview inteiro, troca de tela por pilar, barra de ações fora da área que rola —, e a
+  medição do painel em navegador real é da `plan-90`.)* **No navegador, por mim**, quando houver como: abrir o
+  painel e medir — (a) a altura
   do cabeçalho da barra lateral antes e depois (era ≈ 40 % da altura); (b) com a galeria **aberta e empilhada**,
   as duas prévias com **altura próxima de metade do contêiner** e, **dentro de um contêiner menor que a
   janela**, o mesmo (é o que o `vh` errava); (c) com a galeria fechada, o preview em tela cheia; (d) clicar em
@@ -293,11 +297,222 @@ Texto pronto para transporte:
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-10-07
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+
+```text
+ M browser-tests/cromo-css-real.spec.ts
+ M browser-tests/fixtures/harness-entry.tsx
+ M docs/migracoes.md
+ M gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs
+ M gates/scripts/contrato/check-chrome-token-parity.mjs
+ M src/components/Layout/SarakAppChrome.tsx
+ M src/components/Layout/SarakAppChromeMobile.tsx
+ M src/components/Layout/__tests__/SarakAppChrome.tokens.test.tsx
+ M src/components/Layout/chrome/ChromeSidebarBody.tsx
+ M src/components/Layout/chrome/ChromeTopbarBody.tsx
+ M src/components/Layout/chrome/chromeStructuralStyles.ts
+ M src/components/Layout/chrome/useChromeDesignTokens.ts
+?? src/components/Layout/chrome/ChromeContentRegion.tsx
+```
+
+**O que foi feito**
+- Coloquei `PreviewToolbar` acima do preview em `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:129`, usando os estados já compartilhados de dispositivo e empilhamento.
+- Criei `ThemeActionBar` em `src/features/DesignEngine/Main/components/ThemeActionBar.tsx:22`; `useDesignDraft` calcula a quantidade de tokens alterados em `src/features/DesignEngine/hooks/useDesignDraft.ts:108` e descarta o rascunho inteiro em `:197`.
+- Removi a ação de aplicar por pilar e `handleApplyComponent`; o descarte por pilar mantém o rótulo acessível em `src/features/DesignEngine/components/controls/LayoutControls.tsx:46`.
+- Ajustei os rótulos dos controles para caixa normal e tipografia tokenizada, e reduzi o espaçamento de seção com `--sarak-layout-gap-sm`.
+- Retirei selos e título antigo de `CustomizationPanelImpl`; atualizei os sete títulos de pilar sem alterar `id` ou `categories`.
+- Acrescentei testes 1:1 para os dois componentes novos e cobertura para contagem, descarte, rótulos, títulos, ações e troca de dispositivo.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/components/PreviewToolbar.tsx` | criado | Controles de dispositivo e empilhamento do preview. |
+| `src/features/DesignEngine/Canvas/components/__tests__/PreviewToolbar.test.tsx` | criado | Teste 1:1 da barra de preview. |
+| `src/features/DesignEngine/Main/components/ThemeActionBar.tsx` | criado | Aplicar com contagem, descartar, exportar e desfazer condicional. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeActionBar.test.tsx` | criado | Teste 1:1 para ações e contagens 0, 1 e 3. |
+| `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` | alterado | Encaixe das barras; 170 linhas. |
+| `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx` | alterado | Verifica o encaminhamento da troca de dispositivo e as ações globais. |
+| `src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx` | alterado | Cabeçalho reduzido a Design, busca, modo e navegação acessível. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarHeader.test.tsx` | alterado | Verifica os quatro acessos e a ausência das ações movidas. |
+| `src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx` | alterado | Remove aplicação por pilar e ajusta espaçamento da busca. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx` | alterado | Remove prop obsoleta e atualiza cobertura/snapshot. |
+| `src/features/DesignEngine/Main/components/__tests__/__snapshots__/ThemeSidebarContent.test.tsx.snap` | alterado | Snapshot do conteúdo atualizado. |
+| `src/features/DesignEngine/Main/components/ThemePillarsList.tsx` | alterado | Remove ação de aplicar por pilar e passa o identificador para o descarte. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemePillarsList.test.tsx` | alterado | Remove prop obsoleta e verifica o resultado renderizado. |
+| `src/features/DesignEngine/Main/components/__tests__/__snapshots__/ThemePillarsList.test.tsx.snap` | alterado | Snapshot atualizado. |
+| `src/features/DesignEngine/Main/components/ThemeGlobalSettings.tsx` | alterado | Remove aplicar por pilar e mantém descarte global. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeGlobalSettings.test.tsx` | alterado | Remove prop de aplicar obsoleta. |
+| `src/features/DesignEngine/Main/hooks/__tests__/useThemeCustomizationData.test.ts` | alterado | Verifica os sete títulos sem numeração. |
+| `src/features/DesignEngine/config/design-pillars.json` | alterado | Atualiza apenas títulos dos pilares. |
+| `src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl.tsx` | alterado | Remove os dois selos e troca o título para “Personalizar o tema”. |
+| `src/features/DesignEngine/hooks/useDesignDraft.ts` | alterado | Adiciona contagem de tokens diferentes e descarte integral; 249 linhas. |
+| `src/features/DesignEngine/hooks/__tests__/useDesignDraft.test.tsx` | alterado | Testa contagem 1/3, draft parcial e descarte integral. |
+| `src/features/DesignEngine/components/controls/LayoutControls.tsx` | alterado | Remove badge/aplicar individual, normaliza rótulos e usa espaçamento tokenizado. |
+| `src/features/DesignEngine/components/controls/__tests__/LayoutControls.test.tsx` | alterado | Verifica descarte do pilar e ausência de aplicar individual. |
+| `src/features/DesignEngine/components/controls/BasicControls.tsx` | alterado | Normaliza rótulos dos controles básicos. |
+| `src/features/DesignEngine/components/controls/__tests__/BasicControls.test.tsx` | alterado | Verifica caixa, tracking e token de tamanho dos rótulos. |
+| `src/features/DesignEngine/components/controls/ColorControl.tsx` | alterado | Normaliza rótulo do controle de cor. |
+| `src/features/DesignEngine/components/controls/__tests__/ColorControl.test.tsx` | alterado | Verifica o rótulo do controle de cor. |
+| `src/features/DesignEngine/components/controls/MediaUploaderControl.tsx` | alterado | Normaliza rótulo e ações de upload. |
+| `src/features/DesignEngine/components/controls/__tests__/MediaUploaderControl.test.tsx` | criado | Verifica o rótulo do upload. |
+| `src/features/DesignEngine/components/controls/HelpTooltip.tsx` | alterado | Normaliza o título do tooltip. |
+| `specs/plan/plan-100-painel-de-temas-caminho-simples.md` | alterado | Atualiza status e acrescenta este resumo. |
+
+**Verificações executadas**
+- `npx vitest run` → execução completa: 1.493 testes passaram e 11 falharam; 190 suites falharam ao carregar com erro de caminho temporário (`ENOENT`). A execução não ficou verde.
+- Testes focados após as correções: `useDesignDraft` 16/16; pilares/sidebar/cabeçalho 15/15; PreviewCanvas/PreviewToolbar 11/11 durante a atualização do snapshot; `ThemeCustomizationTab` 8/8; controles e ações passaram no lote focado. O snapshot de PreviewCanvas foi devolvido ao estado inicial para não alterar o lote 2.
+- `npx tsc --noEmit` → exit code 0.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → exit code 1; baseline ainda registra `ghostvars` 1→2 e órfãos de cobertura 0→2.
+- `git diff --check -- src/features/DesignEngine` → exit code 0.
+- `Get-CimInstance Win32_Process` → indisponível por acesso CIM negado; `Get-Process` alternativo contou 0 processos antes das execuções de Vitest.
+
+**Critérios de aceite**
+- [x] Dispositivo e empilhamento ficam na barra acima do preview e usam estado compartilhado — `ThemeCustomizationTab.test.tsx`, `PreviewToolbar.test.tsx` e `TokenControl.test.tsx`.
+- [x] Barra de ações cobre contagens 0/1/3, descarte global, Exportar estável e desfazer condicional — `ThemeActionBar.test.tsx` e `useDesignDraft.test.tsx`.
+- [x] Não há texto `Commit ` nem `handleApplyComponent` na superfície do lote; descarte por pilar permanece acessível — busca sem resultados e `LayoutControls.test.tsx`.
+- [x] Rótulos de controle usam caixa normal/tamanho tokenizado e seções usam espaçamento menor por token — testes de controles e `LayoutControls.tsx`.
+- [x] Selos/título antigo foram removidos e os sete títulos novos são verificados — `useThemeCustomizationData.test.ts`.
+- [x] `ThemeCustomizationTab.tsx` tem 170 linhas; ambos os componentes novos têm teste 1:1.
+- [ ] Suíte completa verde — execução completa terminou com falhas; correções do lote foram verificadas em testes focados, sem nova execução completa.
+- [ ] Baseline de auditoria igual ao baseline — permanecem uma variável-fantasma e dois componentes órfãos fora do lote.
+
+**Decisões e suposições**
+- Encaixei `PreviewToolbar` em `ThemeCustomizationTab`, não em `PreviewCanvas`, para manter a implementação no lote 1; `PreviewCanvas.tsx` permaneceu sem diff.
+- Usei `--sarak-layout-gap-sm` e `--sarak-type-scale-xl`, tokens reconhecidos pela auditoria.
+- A conferência visual foi feita por código e testes, conforme a instrução de que não há servidor de desenvolvimento.
+
+**Achados fora do escopo (não corrigidos)**
+- `auditor_coverage.mjs` aponta `src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts` e `src/components/atomic/Templates/useSarakTableViewModel.ts` sem testes correspondentes; são arquivos da plan-97 e não foram lidos nem alterados.
+- `auditor_ghostvars.mjs` aponta mais um consumo de `--x`, sem indicar arquivo/linha no relatório; não atribuí a origem por suposição.
+- A suíte completa também marcou testes de `SarakTable`, `SarakPagination` e kit consumidor em arquivos da plan-97, além de testes de scaffold que não criaram symlinks por `EPERM` no ambiente.
+- Alterações paralelas de plan-89/plan-97 que surgiram após a fotografia foram preservadas; não abri nem reverti os arquivos indicados pelo usuário.
+
+**Pendências / riscos**
+- Reexecutar a suíte completa e o baseline quando as execuções paralelas tiverem terminado e a pasta temporária estiver estável.
+- O relatório não identifica o arquivo que consome `--x`; a regressão permanece sem atribuição.
+
+## Resumo da execução (correção 1) — 2026-10-07
+
+**Resultado:** Achados corrigidos; lote 1 aguardando novo veredito.
+
+**Escopo:** exclusivamente os achados 1 e 2 do veredito da §10. As alterações paralelas das plans 89 e 97 foram preservadas; nenhum arquivo do escopo delas foi alterado nesta correção.
+
+1. **Variável-fantasma:** troquei `--sarak-type-scale-lg` por `--sarak-type-scale-xl` em
+   `CustomizationPanelImpl.tsx`. A auditoria deixou de listar `--sarak-type-scale-lg`.
+2. **Piso tipográfico dos rótulos:** os controles do painel e o cabeçalho agora usam
+   `--sarak-type-scale-caption`. Os testes conferem essa classe e o `defaultValue >= 12` do token
+   `typeScaleCaption` no `TypographySchema`.
+
+**Verificações**
+- Testes focados do painel: 5 arquivos, 16 testes passaram. O Vitest precisou usar uma pasta temporária externa ao repositório; a primeira tentativa no diretório temporário padrão falhou ao renomear arquivos (`EPERM`). A pasta externa foi removida ao final.
+- `npx tsc --noEmit` → exit code 0.
+- `node gates/scripts/audit/auditor_ghostvars.mjs` → exit code 1 por `--x`; `--sarak-type-scale-lg` não aparece mais. A origem de `--x` não foi investigada por estar fora deste escopo.
+- `git diff --check` nos arquivos corrigidos → exit code 0.
+- `Get-CimInstance Win32_Process` continuou indisponível por acesso CIM negado; o fallback contou 0 processos Node antes das execuções do Vitest. Nenhuma execução concorrente foi iniciada por esta correção.
+
+**Estado do worktree**
+- O worktree já continha alterações do lote 1 e das execuções paralelas. Elas foram preservadas; somente os arquivos ligados aos dois achados foram editados nesta correção.
+
+## Resumo da execução (correção 2) — 2026-10-07
+
+**Resultado:** Achado corrigido; lote 1 aguardando novo veredito.
+
+**Escopo:** exclusivamente os snapshots apontados no veredito da correção 1. Não alterei código de componente nem arquivos das plans 89 e 97.
+
+**Correção:** atualizei as seis ocorrências da classe antiga nos snapshots de `ThemePillarsList` e `ThemeSidebarContent` para acompanhar `LayoutControls.tsx`.
+
+```diff
+- --sarak-type-scale-xs,12px
++ --sarak-type-scale-caption,12px
+```
+
+**Verificação**
+- `npx vitest run src/features/DesignEngine --maxWorkers=1 --fileParallelism=false` → 76 arquivos e 291 testes passaram.
+- Vitest usou diretório temporário externo ao repositório; a pasta foi removida ao final.
+- `Get-CimInstance Win32_Process` não ficou disponível por acesso CIM negado; o fallback contou 0 processos Node antes da execução.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-07 — 🔴 Reprovado (lote 1)
+
+**Antes de gravar:** a §10 foi relida no disco e estava vazia.
+
+**O que está certo, e foi verificado por mim:**
+- `design-pillars.json`: só mudam os sete `title` (`Marca e cores` … `Avançado`), sem número; `id` e
+  `categories` não foram tocados (0 linhas fora de `title`).
+- O texto "Commit " não aparece mais como interface (`useDebouncedDraftCommit` é identificador);
+  `handleApplyComponent` não existe mais em `src/`.
+- O cabeçalho tem os quatro acessos de tela com `title` e `aria-label`, o grupo de rádio do modo, a busca e o
+  título; dispositivo, "Empilhar", Exportar e Aplicar saíram dele para `PreviewToolbar` e `ThemeActionBar`.
+  Os dois componentes novos têm teste 1:1.
+- Tamanhos: `ThemeCustomizationTab.tsx` 170 linhas, `useDesignDraft.ts` 249, `ThemeActionBar.tsx` 70,
+  `PreviewToolbar.tsx` 63.
+
+**Achados — a correção é exclusivamente estes:**
+
+1. **Variável-fantasma nova:** `src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl.tsx:18`
+   usa `--sarak-type-scale-lg`, que **não existe** no schema (a escala tem `micro`, `tiny`, `3xs`, `2xs`, `caption`,
+   `xs`, `xl`, `display`). O título cai sempre no fallback de 18 px e não segue o tema. É a regressão
+   `auditor_ghostvars` 1 → 2 que o resumo deixou sem atribuição: `node gates/scripts/audit/auditor_ghostvars.mjs`
+   aponta `1x --sarak-type-scale-lg`. Use um token que exista (por exemplo `--sarak-type-scale-xl`).
+2. **Os rótulos dos controles saem a 11 px, abaixo do piso do critério.** Eles usam
+   `text-[var(--sarak-type-scale-xs,12px)]`, mas o `typeScaleXs` tem **padrão 11** (`schema/typography.ts:428`,
+   faixa 8–14). O fallback de 12 px só vale com a variável ausente, e o Design Engine a emite. Critério violado:
+   §5 item 5 e §6 (*"tamanho ≥ 12 px pelos tokens de tipografia"*). Use um degrau com padrão ≥ 12 (o
+   `--sarak-type-scale-caption` tem padrão 12, faixa 10–16). O teste de classe passa a afirmar também que o
+   token usado tem `defaultValue >= 12` no schema: a classe sozinha é o que deixou o erro passar.
+
+**Fica para a verificação integrada (não é achado):** a suíte completa e o `check-audit-baseline --with-tsc`. A
+regressão de cobertura que o resumo cita (`useSarakDataTableViewModel.ts`, `useSarakTableViewModel.ts`) é da
+`plan-97`, em execução.
+
+## Veredito — 2026-10-07 (correção 1) — 🔴 Reprovado
+
+**Antes de gravar:** a §10 foi relida no disco: só o bloco anterior, deste revisor.
+
+**Fecharam, verificados por mim:**
+- **Achado 1:** `CustomizationPanelImpl.tsx:18` usa `--sarak-type-scale-xl`, e
+  `node gates/scripts/audit/auditor_ghostvars.mjs` não lista mais `--sarak-type-scale-lg` (sobra só o `--x` do
+  baseline).
+- **Achado 2, no código:** os rótulos usam `--sarak-type-scale-caption` (`BasicControls`, `ColorControl`,
+  `HelpTooltip`, `LayoutControls`, `MediaUploaderControl`, `ThemeSidebarHeader`), e os testes de `BasicControls`,
+  `ColorControl` e `MediaUploaderControl` afirmam `defaultValue >= 12` do token no schema.
+
+**Achado — a correção é exclusivamente este:**
+
+1. **Dois snapshots ficaram com a classe antiga.** `Main/components/__tests__/__snapshots__/ThemePillarsList.test.tsx.snap`
+   e `…/ThemeSidebarContent.test.tsx.snap` gravam `text-[var(--sarak-type-scale-xs,12px)]` nos títulos de seção,
+   mas o código que os gera agora emite `--sarak-type-scale-caption` (`components/controls/LayoutControls.tsx:34`
+   e `:82`). Snapshot e código divergem, e os dois testes falham. A rodada rodou só os 5 arquivos dos controles,
+   que não os incluem. Atualize os dois snapshots (a única diferença é essa classe; cole o diff) e rode **toda** a
+   pasta `src/features/DesignEngine`, não só os arquivos tocados.
+
+## Veredito — 2026-10-07 (correção 2) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**O achado fechou.** Os snapshots de `ThemePillarsList` e `ThemeSidebarContent` não têm mais
+`--sarak-type-scale-xs` (0 ocorrências) e batem com o código, que emite `--sarak-type-scale-caption`.
+
+**Rodado por mim**, com 0 processos de outras execuções ativos:
+- `npx vitest run src/features/DesignEngine` → **76 arquivos, 291 testes verdes**;
+- `npx tsc --noEmit` → 0;
+- `auditor_ghostvars` → só o `--x` do baseline.
+
+Com os dois achados do lote 1 já verificados nas rodadas anteriores (título por `--sarak-type-scale-xl` e rótulos
+por um token de padrão ≥ 12 com teste sobre o schema), o lote 1 está aprovado. A suíte completa e o
+`check-audit-baseline --with-tsc` da árvore integrada serão repetidos quando a `plan-97` entregar.
+
+**Liberação parcial.** O status volta a `🟡 Em execução`; o lote 2 (começar por um tema, preview que acompanha,
+telas com nome) pode ser despachado.
 
 ---
 

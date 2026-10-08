@@ -83,7 +83,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 96,
+      "count": 97,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -180,7 +180,8 @@
         "SarakTooltip",
         "SarakTreeView",
         "SarakTypography",
-        "SarakUploader"
+        "SarakUploader",
+        "SarakValue"
       ]
     }
   },

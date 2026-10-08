@@ -8,6 +8,7 @@ import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMe
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
+import { ChromeContentRegion } from './ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
@@ -30,6 +31,7 @@ export interface ChromeSidebarBodyProps {
     endSlot?: React.ReactNode;
     sidebarHeader?: React.ReactNode;
     sidebarFooter?: React.ReactNode;
+    secondaryContent?: React.ReactNode;
     search?: React.ReactNode;
     banner?: React.ReactNode;
     footer?: React.ReactNode;
@@ -52,10 +54,10 @@ export interface ChromeSidebarBodyProps {
  * dos tokens de cromo que faltavam.
  */
 export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { sidebarPosition, contentAlignment, layoutDensity, maxContentWidth, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const { sidebarPosition, contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -166,13 +168,14 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         )}
                     </aside>
                 )}
-                <main
-                    data-sarak-content
+                <ChromeContentRegion
+                    secondaryContent={secondaryContent}
+                    isSplitViewEnabled={isSplitViewEnabled}
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
                     style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >
                     {children}
-                </main>
+                </ChromeContentRegion>
             </div>
             {w.showSearchOffered && (
                 <SarakSearch

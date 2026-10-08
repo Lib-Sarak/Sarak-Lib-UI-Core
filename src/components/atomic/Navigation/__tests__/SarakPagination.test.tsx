@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakPagination, sarakBuildPaginationRange } from '../SarakPagination';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
@@ -52,6 +52,26 @@ describe('Spec 14 — SarakPagination', () => {
     });
 });
 
+describe('Spec 97 — SarakPagination: tamanho e resumo', () => {
+    it('muda o tamanho da página e mostra o intervalo e a página atual', () => {
+        const onPageSizeChange = vi.fn();
+        render(
+            <SarakPagination
+                current={2}
+                pageSize={10}
+                pageSizeOptions={[10, 20]}
+                totalItems={95}
+                onPageSizeChange={onPageSizeChange}
+                onChange={() => {}}
+            />,
+        );
+
+        expect(screen.getByText('11–20 de 95 · Página 2 de 10')).toBeInTheDocument();
+        fireEvent.click(within(screen.getByRole('group', { name: 'Itens por página' })).getByRole('button', { name: '20' }));
+        expect(onPageSizeChange).toHaveBeenCalledWith(20);
+    });
+});
+
 // os textos da própria lib seguem o idioma que vale (R34: sem Provider, sai em português).
 describe('SarakPagination — idioma que vale', () => {
     it('sem Provider, os rótulos saem em português', () => {
@@ -70,5 +90,15 @@ describe('SarakPagination — idioma que vale', () => {
         expect(screen.getByLabelText('Pagination')).toBeInTheDocument();
         expect(screen.getByLabelText('Previous page')).toBeInTheDocument();
         expect(screen.getByLabelText('Next page')).toBeInTheDocument();
+    });
+
+    it('traduz os resumos para o idioma selecionado', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakPagination current={2} total={10} pageSize={10} totalItems={95} onChange={() => {}} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('11–20 of 95 · Page 2 of 10')).toBeInTheDocument();
     });
 });

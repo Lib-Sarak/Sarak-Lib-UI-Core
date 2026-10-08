@@ -82,6 +82,15 @@ export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme
 // `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
 export { SarakCustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
+export { SarakValue } from './components/atomic/Atoms/SarakValue';
+export type { SarakValueProps } from './components/atomic/Atoms/SarakValue';
+export {
+    sarakFormatCurrency,
+    sarakFormatDate,
+    sarakFormatNumber,
+    sarakFormatPercent,
+} from './shared/format';
+export type { SarakValueFormat } from './shared/format';
 export * from './components/atomic/Cards';
 // API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
 // barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).
@@ -154,6 +163,8 @@ export * from './components/atomic/UX';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
 export * from './components/atomic/DataDisplay';
+export type { SarakColumnAlignment } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
+export type { SarakDataTableRowHeight } from './components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl';
 export type { SarakPinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';

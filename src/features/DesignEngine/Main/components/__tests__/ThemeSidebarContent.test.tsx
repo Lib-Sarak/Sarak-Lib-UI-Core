@@ -39,7 +39,6 @@ const baseProps = () => ({
     isComponentDirty: vi.fn(() => false),
     resetComponent: vi.fn(),
     resetToken: vi.fn(),
-    handleApplyComponent: vi.fn(),
     handleApplyToSystem: vi.fn(),
     toast: null,
     globalComponent: { tokens: [] },

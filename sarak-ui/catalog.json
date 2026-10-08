@@ -89,6 +89,7 @@
     "SarakChromeWidgets",
     "SarakColorModePreference",
     "SarakColumn",
+    "SarakColumnAlignment",
     "SarakContextMenu",
     "SarakContextMenuPosition",
     "SarakContextMenuProps",
@@ -103,6 +104,7 @@
     "SarakDataTable",
     "SarakDataTableImpl",
     "SarakDataTableProps",
+    "SarakDataTableRowHeight",
     "SarakDateLocale",
     "SarakDatePicker",
     "SarakDatePickerProps",
@@ -262,6 +264,7 @@
     "SarakSpotlight",
     "SarakSpotlightProps",
     "SarakStats",
+    "SarakStatsMetricConfig",
     "SarakStatsProps",
     "SarakStepConfig",
     "SarakStepper",
@@ -271,6 +274,7 @@
     "SarakSwitchProps",
     "SarakTabItem",
     "SarakTable",
+    "SarakTableColumn",
     "SarakTableProps",
     "SarakTableSort",
     "SarakTabs",
@@ -309,12 +313,19 @@
     "SarakUploader",
     "SarakUploaderProps",
     "SarakUserPreferences",
+    "SarakValue",
+    "SarakValueFormat",
+    "SarakValueProps",
     "SarakWeekStart",
     "sarakBuildPaginationRange",
     "sarakComputeOffsets",
     "sarakDeriveThemeFromReference",
     "sarakDeviceForWidth",
     "sarakFindMissingThemeAxes",
+    "sarakFormatCurrency",
+    "sarakFormatDate",
+    "sarakFormatNumber",
+    "sarakFormatPercent",
     "sarakGetAllDesignTokens",
     "sarakGetDefaultDesignState",
     "sarakGetThemePreset",
@@ -509,6 +520,12 @@
           "doc": "Conteúdo do app (a tela do próprio módulo)."
         },
         {
+          "name": "secondaryContent",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado."
+        },
+        {
           "name": "brand",
           "type": "{ name?: string; logoUrl?: string }",
           "optional": true,
@@ -656,6 +673,12 @@
           "name": "children",
           "type": "React.ReactNode",
           "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "secondaryContent",
+          "type": "React.ReactNode",
+          "optional": true,
           "doc": ""
         },
         {
@@ -1674,7 +1697,7 @@
         },
         {
           "name": "rowHeight",
-          "type": "number",
+          "type": "SarakDataTableRowHeight<T>",
           "optional": true,
           "doc": ""
         },
@@ -1749,6 +1772,36 @@
           "type": "boolean",
           "optional": true,
           "doc": "L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Exibe os estados de carregamento, erro e vazio recebidos pelo host."
+        },
+        {
+          "name": "error",
+          "type": "string | null",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onRowClick",
+          "type": "(row: T) => void",
+          "optional": true,
+          "doc": "Disparado ao ativar uma linha."
         },
         {
           "name": "className",
@@ -3057,8 +3110,32 @@
         {
           "name": "total",
           "type": "number",
-          "optional": false,
-          "doc": "Total de páginas."
+          "optional": true,
+          "doc": "Total de páginas, quando o total de itens e o tamanho não derivam o valor."
+        },
+        {
+          "name": "pageSize",
+          "type": "number",
+          "optional": true,
+          "doc": "Quantidade de registros por página."
+        },
+        {
+          "name": "pageSizeOptions",
+          "type": "number[]",
+          "optional": true,
+          "doc": "Opções de quantidade de registros por página."
+        },
+        {
+          "name": "totalItems",
+          "type": "number",
+          "optional": true,
+          "doc": "Quantidade total de registros para os resumos e o cálculo de páginas."
+        },
+        {
+          "name": "onPageSizeChange",
+          "type": "(pageSize: number) => void",
+          "optional": true,
+          "doc": "Disparado ao escolher outra quantidade de registros por página."
         },
         {
           "name": "maxVisible",
@@ -3791,6 +3868,12 @@
           "doc": "Define os rótulos exibidos; omitido, usa as chaves do dado recebido."
         },
         {
+          "name": "metrics",
+          "type": "Partial<Record<keyof TData & string, SarakStatsMetricConfig>>",
+          "optional": true,
+          "doc": "Configuração visual e de formato por chave de métrica."
+        },
+        {
           "name": "role",
           "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
           "optional": true,
@@ -3861,103 +3944,32 @@
     },
     "SarakTable": {
       "propsInterface": "SarakTableProps",
-      "source": "src/components/atomic/Templates/SarakTableProps.ts",
+      "source": "src/components/atomic/Templates/SarakTable.tsx",
+      "extends": "BaseSarakTableProps<TData>",
       "props": [
         {
-          "name": "data",
-          "type": "TData[]",
+          "name": "onRetry",
+          "type": "() => void",
           "optional": true,
-          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre `load`."
+          "doc": ""
         },
         {
-          "name": "load",
-          "type": "() => Promise<TData[]>",
-          "optional": true,
-          "doc": "Carrega as linhas pelo mecanismo escolhido pelo host."
-        },
-        {
-          "name": "label",
+          "name": "emptyMessage",
           "type": "string",
           "optional": true,
           "doc": ""
         },
         {
-          "name": "mapping",
-          "type": "Record<string, string>",
+          "name": "loading",
+          "type": "boolean",
           "optional": true,
           "doc": ""
         },
         {
-          "name": "getRowKey",
-          "type": "(row: TData, index: number) => Key",
-          "optional": true,
-          "doc": "Chave estável da linha para seleção; por padrão, usa row.id ou o índice original."
-        },
-        {
-          "name": "sort",
-          "type": "SarakTableSort | null",
-          "optional": true,
-          "doc": "Omitido, ordena localmente; passe null para controlar o estado sem ordenação."
-        },
-        {
-          "name": "onSortChange",
-          "type": "(sort: SarakTableSort | null) => void",
-          "optional": true,
-          "doc": "Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas."
-        },
-        {
-          "name": "selectable",
-          "type": "boolean",
-          "optional": true,
-          "doc": "Habilita a seleção de linhas e a caixa das linhas visíveis."
-        },
-        {
-          "name": "selectedKeys",
-          "type": "Key[]",
-          "optional": true,
-          "doc": "Chaves selecionadas controladas; omitido, a tabela gerencia a seleção."
-        },
-        {
-          "name": "onSelectionChange",
-          "type": "(selectedKeys: Key[]) => void",
-          "optional": true,
-          "doc": "Recebe as chaves selecionadas atualizadas."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
+          "name": "error",
+          "type": "string | null",
           "optional": true,
           "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "responsive",
-          "type": "boolean",
-          "optional": true,
-          "doc": "No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes."
-        },
-        {
-          "name": "showSearch",
-          "type": "boolean",
-          "optional": true,
-          "doc": "Exibe o campo de busca; omitido, fica visível."
-        },
-        {
-          "name": "showRefresh",
-          "type": "boolean",
-          "optional": true,
-          "doc": "Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`."
         }
       ]
     },
@@ -4392,6 +4404,48 @@
           "type": "(rejections: SarakFileRejection[]) => void",
           "optional": true,
           "doc": "Recebe as rejeições (ex.: arquivo maior que `maxSize`)."
+        }
+      ]
+    },
+    "SarakValue": {
+      "propsInterface": "SarakValueProps",
+      "source": "src/components/atomic/Atoms/SarakValue.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "number | Date | string | null | undefined",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "format",
+          "type": "SarakValueFormat",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "signColor",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     }
@@ -4845,34 +4899,6 @@
         ]
       },
       {
-        "component": "SarakTable",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakTable",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakTable",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
         "component": "SarakTabs",
         "prop": "variant",
         "values": [
@@ -4888,6 +4914,15 @@
           "none",
           "uppercase",
           "capitalize"
+        ]
+      },
+      {
+        "component": "SarakValue",
+        "prop": "size",
+        "values": [
+          "sm",
+          "md",
+          "lg"
         ]
       }
     ],
@@ -8007,8 +8042,7 @@
       "SarakFlex",
       "SarakGrid",
       "SarakHidden",
-      "SarakSplitPane",
-      "SarakTable"
+      "SarakSplitPane"
     ],
     "responsiveProps": [
       {
@@ -8024,6 +8058,10 @@
     ]
   },
   "chromeSlots": [
+    {
+      "slot": "secondaryContent",
+      "doc": "Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado."
+    },
     {
       "slot": "topbarActions",
       "doc": "Conteúdo à direita da topbar (ações, avatar, seletor de tema…). Alias legado de `topbarEnd`."
@@ -8094,6 +8132,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "acfaefd63723"
+    "kitHash": "1784591a773f"
   }
 }

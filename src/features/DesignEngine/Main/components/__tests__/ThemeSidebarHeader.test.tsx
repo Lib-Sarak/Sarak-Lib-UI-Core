@@ -3,53 +3,58 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeSidebarHeader } from '../ThemeSidebarHeader';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
+
+const baseProps = () => ({
+    viewMode: 'preview' as const,
+    setViewMode: vi.fn(),
+    searchQuery: '',
+    setSearchQuery: vi.fn(),
+    editMode: 'essential' as const,
+    setEditMode: vi.fn()
+});
 
 describe('ThemeSidebarHeader', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ThemeSidebarHeader).toBeDefined();
-    });
-
-    const baseProps = () => ({
-        viewMode: 'preview' as const,
-        setViewMode: vi.fn(),
-        isDirty: false,
-        setIsSaveModalOpen: vi.fn(),
-        previewDevice: 'desktop' as const,
-        setPreviewDevice: vi.fn(),
-        searchQuery: '',
-        setSearchQuery: vi.fn(),
-        editMode: 'essential' as const,
-        setEditMode: vi.fn(),
-        isPreviewStacked: false,
-        setIsPreviewStacked: vi.fn(),
-        handleApplyGlobalChanges: vi.fn(),
-        canUndoLastApply: false,
-        onUndoLastApply: vi.fn()
-    });
-
-    it('expõe três opções de modo num grupo de rádio nomeado e marca a seleção', () => {
+    it('mantém o título curto, busca, modos e os quatro acessos nomeados', () => {
         render(<ThemeSidebarHeader {...baseProps()} />);
 
+        expect(screen.getByText('Design')).toBeInTheDocument();
+        expect(screen.queryByText('Design Engine')).toBeNull();
+        expect(screen.getByPlaceholderText('Buscar token...')).toBeInTheDocument();
         expect(screen.getByRole('radiogroup', { name: 'Modo de edição' })).toBeInTheDocument();
         expect(screen.getAllByRole('radio')).toHaveLength(3);
-        expect(screen.getByRole('radio', { name: 'Impacto' })).toHaveAttribute('aria-checked', 'false');
-        expect(screen.getByRole('radio', { name: 'Essencial' })).toHaveAttribute('aria-checked', 'true');
-        expect(screen.getByRole('radio', { name: 'Completo' })).toHaveAttribute('aria-checked', 'false');
+        expect(screen.getByRole('button', { name: 'Preview' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Catálogo' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Templates' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Buscar token (avançado)' })).toBeInTheDocument();
     });
 
-    // plan-37: o HyperGranularityTab (Command Center) ganha entrada própria e nomeada no
-    // seletor de viewMode, separada do toggle Essencial/Avançado.
-    it('plan-37: expõe um botão nomeado "Buscar token (avançado)" para o Command Center', () => {
+    it('usa escala com padrão de pelo menos 12 px nos rótulos e controles do cabeçalho', () => {
         render(<ThemeSidebarHeader {...baseProps()} />);
 
-        expect(screen.getByTitle('Buscar token (avançado)')).toBeDefined();
+        const captionToken = TypographySchema.tokens.find(({ id }) => id === 'typeScaleCaption');
+        expect(Number(captionToken?.defaultValue)).toBeGreaterThanOrEqual(12);
+        expect(screen.getByPlaceholderText('Buscar token...').className).toContain('--sarak-type-scale-caption');
+        expect(screen.getByText('Modo de edição').className).toContain('--sarak-type-scale-caption');
+        expect(screen.getByText('Essencial').className).toContain('--sarak-type-scale-caption');
     });
 
-    it('plan-37: clicar no botão do Command Center chama setViewMode("command-center")', () => {
+    it('deixa dispositivo, empilhamento, exportação e aplicação fora do cabeçalho', () => {
+        render(<ThemeSidebarHeader {...baseProps()} />);
+
+        expect(screen.queryByRole('button', { name: 'Desktop' })).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Tablet' })).toBeNull();
+        expect(screen.queryByRole('switch')).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Exportar' })).toBeNull();
+        expect(screen.queryByRole('button', { name: /Aplicar/ })).toBeNull();
+    });
+
+    it('clicar no acesso do Command Center chama setViewMode', async () => {
+        const user = userEvent.setup();
         const setViewMode = vi.fn();
         render(<ThemeSidebarHeader {...baseProps()} setViewMode={setViewMode} />);
 
-        screen.getByTitle('Buscar token (avançado)').click();
+        await user.click(screen.getByRole('button', { name: 'Buscar token (avançado)' }));
 
         expect(setViewMode).toHaveBeenCalledWith('command-center');
     });
@@ -61,8 +66,6 @@ describe('ThemeSidebarHeader', () => {
 
         const selectedMode = screen.getByRole('radio', { name: 'Essencial' });
         selectedMode.focus();
-        expect(selectedMode).toHaveFocus();
-
         await user.keyboard('{ArrowRight}');
 
         expect(setEditMode).toHaveBeenCalledWith('complete');
@@ -71,45 +74,10 @@ describe('ThemeSidebarHeader', () => {
     it('mantém o mesmo input de busca ao trocar de modo', () => {
         const props = baseProps();
         const { rerender } = render(<ThemeSidebarHeader {...props} />);
-        const searchInput = screen.getByPlaceholderText('BUSCAR TOKEN...');
+        const searchInput = screen.getByPlaceholderText('Buscar token...');
 
         rerender(<ThemeSidebarHeader {...props} editMode="impact" />);
 
-        expect(screen.getByPlaceholderText('BUSCAR TOKEN...')).toBe(searchInput);
-    });
-
-    it('Espaço alterna o switch "Empilhar Previews"', async () => {
-        const user = userEvent.setup();
-        const setIsPreviewStacked = vi.fn();
-        render(<ThemeSidebarHeader {...baseProps()} isPreviewStacked={false} setIsPreviewStacked={setIsPreviewStacked} />);
-
-        const toggle = screen.getByRole('switch', { name: /Empilhar Previews inativo/i });
-        expect(toggle.tagName).toBe('INPUT');
-
-        toggle.focus();
-        await user.keyboard(' ');
-
-        expect(setIsPreviewStacked).toHaveBeenCalledWith(true);
-    });
-
-    // O controle "Desfazer última aplicação" só existe quando há o que desfazer,
-    // e aciona o mesmo caminho de "Aplicar" (via `onUndoLastApply`).
-    describe('"Desfazer última aplicação"', () => {
-        it('não aparece quando `canUndoLastApply` é false', () => {
-            render(<ThemeSidebarHeader {...baseProps()} canUndoLastApply={false} />);
-
-            expect(screen.queryByText('Desfazer última aplicação')).toBeNull();
-        });
-
-        it('aparece quando `canUndoLastApply` é true, e clicar chama `onUndoLastApply`', async () => {
-            const user = userEvent.setup();
-            const onUndoLastApply = vi.fn();
-            render(<ThemeSidebarHeader {...baseProps()} canUndoLastApply={true} onUndoLastApply={onUndoLastApply} />);
-
-            const botao = screen.getByText('Desfazer última aplicação');
-            await user.click(botao);
-
-            expect(onUndoLastApply).toHaveBeenCalledTimes(1);
-        });
+        expect(screen.getByPlaceholderText('Buscar token...')).toBe(searchInput);
     });
 });

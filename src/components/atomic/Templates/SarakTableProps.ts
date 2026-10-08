@@ -1,5 +1,12 @@
-import type { Key } from 'react';
+import type { Key, ReactNode } from 'react';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
+
+export interface SarakTableColumn<TData> {
+    key: string;
+    label: string;
+    render?: (row: TData) => ReactNode;
+    align?: 'left' | 'center' | 'right';
+}
 
 export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     /** Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. */
@@ -20,6 +27,10 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
     selectedKeys?: Key[];
     /** Recebe as chaves selecionadas atualizadas. */
     onSelectionChange?: (selectedKeys: Key[]) => void;
+    /** Colunas semânticas compartilhadas pela tabela desktop e pelos cartões mobile. */
+    columns?: SarakTableColumn<TData>[];
+    /** Recebe a linha acionada tanto na tabela quanto no cartão mobile. */
+    onRowClick?: (row: TData) => void;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';

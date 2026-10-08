@@ -20,6 +20,7 @@ describe('useChromeDesignTokens', () => {
             contentAlignment: 'stretch',
             layoutDensity: 'comfortable',
             maxContentWidth: '1440px',
+            isSplitViewEnabled: false,
             isNavHidden: false,
             isAutoHideEnabled: false,
             searchPositionSidebar: 'top',
@@ -32,6 +33,7 @@ describe('useChromeDesignTokens', () => {
         expect(result.current.sidebarPosition).toBe('left');
         expect(result.current.layoutDensity).toBe('comfortable');
         expect(result.current.maxContentWidth).toBe('1440px');
+        expect(result.current.isSplitViewEnabled).toBe(false);
         expect(result.current.isNavHidden).toBe(false);
     });
 
@@ -43,6 +45,7 @@ describe('useChromeDesignTokens', () => {
                 contentAlignment: 'center',
                 layoutDensity: 'spacious',
                 maxContentWidth: '1200px',
+                isSplitViewEnabled: true,
                 isNavHidden: true,
                 isAutoHideEnabled: true,
                 searchPositionSidebar: 'bottom',
@@ -55,6 +58,7 @@ describe('useChromeDesignTokens', () => {
             contentAlignment: 'center',
             layoutDensity: 'spacious',
             maxContentWidth: '1200px',
+            isSplitViewEnabled: true,
             isNavHidden: true,
             isAutoHideEnabled: true,
             searchPositionSidebar: 'bottom',

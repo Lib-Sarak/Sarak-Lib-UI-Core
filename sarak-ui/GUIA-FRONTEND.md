@@ -606,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **323** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **334** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (99)
+### A.1 Componentes públicos (100)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -616,6 +616,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | --- | --- | --- |
 | Atoms | **SarakAvatar** | `name` · `src` · `alt` · `size` |
 | Atoms | **SarakTypography** | `variant` · `color` · `as` · `transform` · `content` · `children` |
+| Atoms | **SarakValue** | `value` · `format` · `locale` · `signColor` · `size` · `className` |
 | Buttons | **SarakButton** | `variant` · `isLoading` · `leftIcon` · `rightIcon` · `fullWidth` · `size` |
 | Buttons | **SarakIconButton** | `variant` · `size` · `isLoading` · `icon` |
 | Buttons | **SarakSocialButton** | `provider` · `icon` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
@@ -631,7 +632,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
 | Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
-| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `className` |
+| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `loading` · `error` · `emptyMessage` · `onRetry` · `onRowClick` · `className` |
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `className` |
 | DataDisplay | **SarakSparkline** | `data` · `variant` · `height` · `strokeWidth` · `fillOpacity` · `label` · `className` · `style` |
 | DataDisplay | **SarakTreeView** | `data` · `manifest` · `lazyLoadingIcon` · `onExpand` · `selectedIds` · `onSelect` · `className` |
@@ -664,8 +665,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakTimePicker** | `label` · `value` · `minuteStep` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakUploader** | `label` · `accept` · `maxSize` · `multiple` · `disabled` · `hint` · `error` · `className` · `style` · `onChange` · `onReject` |
 | Layout | **SarakAnalyticalPage** | `navBar` · `mainContent` · `sidePanel` · `sidePanelAsDrawerOnMobile` · `centeredOnDesktop` |
-| Layout | **SarakAppChrome** | `children` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `style` |
-| Layout | **SarakAppChromeMobile** | `children` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `rootStyle` |
+| Layout | **SarakAppChrome** | `children` · `secondaryContent` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `style` |
+| Layout | **SarakAppChromeMobile** | `children` · `secondaryContent` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `rootStyle` |
 | Layout | **SarakHidden** | `children` · `on` |
 | Layouts | **SarakAccordion** | `title` · `children` · `defaultOpen` · `className` |
 | Layouts | **SarakDivider** | `orientation` · `label` · `decorative` |
@@ -682,7 +683,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakBreadcrumbs** | `items` · `separator` · `onNavigate` · `className` |
 | Navigation | **SarakLink** | `href` · `external` · `target` · `rel` · `onNavigate` · `onClick` · `children` |
 | Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `href` · `onNavigate` · `badge` · `target` · `type` · `disabled` · `onClick` · `className` |
-| Navigation | **SarakPagination** | `current` · `total` · `maxVisible` · `onChange` · `className` |
+| Navigation | **SarakPagination** | `current` · `total` · `pageSize` · `pageSizeOptions` · `totalItems` · `onPageSizeChange` · `maxVisible` · `onChange` · `className` |
 | Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
 | Navigation | **SarakShellSearchWidget** | `variant` · `items` · `onClick` · `onSelect` |
@@ -708,8 +709,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
-| Templates | **SarakStats** | `data` · `load` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakTable** | `data` · `load` · `label` · `mapping` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `role` · `density` · `importance` · `responsive` · `showSearch` · `showRefresh` |
+| Templates | **SarakStats** | `data` · `load` · `label` · `mapping` · `metrics` · `role` · `density` · `importance` |
+| Templates | **SarakTable** | `onRetry` · `emptyMessage` · `loading` · `error` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `variant` · `fullWidth` · `className` · `listClassName` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |
@@ -720,7 +721,7 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 
 **Adaptam sozinhos** (leem o dispositivo no próprio código — você não escreve CSS nem media query):
 
-`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakSplitPane` · `SarakTable`
+`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakSplitPane`
 
 **Refino opcional por dispositivo** (`SarakResponsiveValue<T>` = `{ mob, tab, desk }`) — 2 props:
 
@@ -729,12 +730,13 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 | `SarakFlex` | `direction` |
 | `SarakGrid` | `templateColumns` |
 
-### A.3 Slots do `SarakAppChrome` (10)
+### A.3 Slots do `SarakAppChrome` (11)
 
 Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente animado).
 
 | Slot | O que é |
 | --- | --- |
+| `secondaryContent` | Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. |
 | `topbarActions` | Conteúdo à direita da topbar (ações, avatar, seletor de tema…). Alias legado de `topbarEnd`. |
 | `logo` | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |

@@ -40,7 +40,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
     return (
         <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-theme-card,#1e293b)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
             <div className="flex flex-col gap-0.5">
-                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>

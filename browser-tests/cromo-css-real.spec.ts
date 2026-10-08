@@ -39,12 +39,13 @@
  *    stack de fallback do sistema; `font-weight` computado é o que importa aqui, não
  *    o glifo renderizado.
  * 3. Cobre os tokens DEFAULT (`SarakUIProvider` sem `config`) mais `?bg=1` (mídia
- *    global, item 7) e treze recortes NOMEADOS de `?tema=`: `respiro-responsivo`,
+ *    global, item 7) e quatorze recortes NOMEADOS de `?tema=`: `respiro-responsivo`,
  *    `respiro-compacto`, `botao-cantos`, `borda-tracejada` e os tokens de cromo
  *    `topbarColor` (cor), `tabGap` (gap), `tabSectionMargin` (margem) e
- *    `isNavHidden` (estrutura), `maxContentWidth` (limitada/fluida) e `layoutDensity`
- *    (compacta/confortável/espaçosa). NÃO varre temas nem mede os demais tokens de cromo —
- *    o conjunto continua deliberadamente pequeno e nomeado.
+ *    `isNavHidden` (estrutura), `maxContentWidth` (limitada/fluida), `layoutDensity`
+ *    (compacta/confortável/espaçosa) e `isSplitViewEnabled` (vista dividida, mantendo
+ *    a viewport fixa enquanto varia a largura do host). NÃO varre temas nem mede os demais
+ *    tokens de cromo — o conjunto continua deliberadamente pequeno e nomeado.
  * 4. NÃO substitui a suíte `jsdom`: não prova estrutura de DOM, não prova
  *    comportamento de evento além do necessário para revelar o drawer, não roda em
  *    `npx vitest run` (arquivo `.spec.ts`, fora do `include` do Vitest — ver
@@ -289,6 +290,13 @@ async function readBox(target: Locator): Promise<{ height: number; top: number }
     });
 }
 
+async function readPanelBounds(target: Locator): Promise<{ left: number; right: number; top: number; bottom: number }> {
+    return target.evaluate((element) => {
+        const { left, right, top, bottom } = element.getBoundingClientRect();
+        return { left, right, top, bottom };
+    });
+}
+
 /** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
 async function readRootBackgroundColor(page: Page): Promise<string> {
     return page.locator(CHROME_ROOT_SELECTOR).first().evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -310,11 +318,17 @@ test.afterAll(async () => {
 });
 
 /** `tema` escolhe um recorte de tokens nomeado da fixture (`TOKEN_VARIANTS`); omitido, vale o default. */
-async function openHarness(viewport: { width: number; height: number }, tema?: string, chrome?: 'topbar'): Promise<Page> {
+async function openHarness(
+    viewport: { width: number; height: number },
+    tema?: string,
+    chrome?: 'topbar',
+    host?: 'narrow' | 'wide',
+): Promise<Page> {
     const page = await browser.newPage({ viewport });
     const searchParams = new URLSearchParams();
     if (tema) searchParams.set('tema', tema);
     if (chrome) searchParams.set('chrome', chrome);
+    if (host) searchParams.set('host', host);
     const query = searchParams.toString();
     await page.goto(query ? `${harnessUrl}?${query}` : harnessUrl);
     const drawerToggle = page.getByRole('button', { name: DRAWER_TOGGLE_NAME });
@@ -498,6 +512,52 @@ test('layoutDensity confortável preserva o padding computado nos três breakpoi
     } finally {
         await Promise.all([...pages.map((page) => page.close()), fluidPage.close()]);
     }
+});
+
+test('isSplitViewEnabled responde à largura da região com sidebar aberta e empilha no celular', async () => {
+    const cases = [
+        { name: 'região estreita com sidebar', viewport: WIDE_VIEWPORT, host: 'narrow', shouldSplit: false },
+        { name: 'região larga com sidebar', viewport: WIDE_VIEWPORT, host: 'wide', shouldSplit: true },
+        { name: 'celular', viewport: BREAKPOINTS.mobile, host: undefined, shouldSplit: false },
+    ] as const;
+    const regionWidths = { narrow: 0, wide: 0 };
+
+    for (const { name, viewport, host, shouldSplit } of cases) {
+        const page = await openHarness(viewport, 'cromo-vista-dividida', undefined, host);
+
+        try {
+            const primary = page.locator('[data-sarak-split-panel="primary"]');
+            const secondary = page.locator('[data-sarak-slot="secondaryContent"]');
+            const content = page.locator(CONTENT_SELECTOR);
+            const contentWidth = await content.evaluate((element) => element.getBoundingClientRect().width);
+            const [primaryBounds, secondaryBounds] = await Promise.all([
+                readPanelBounds(primary),
+                readPanelBounds(secondary),
+            ]);
+
+            if (host) {
+                expect(await page.locator('aside').isVisible()).toBe(true);
+                regionWidths[host] = contentWidth;
+            }
+
+            if (shouldSplit) {
+                expect(primaryBounds.right).toBeLessThanOrEqual(secondaryBounds.left);
+                expect(primaryBounds.top).toBeCloseTo(secondaryBounds.top);
+            } else {
+                expect(primaryBounds.bottom).toBeLessThanOrEqual(secondaryBounds.top);
+            }
+
+            expect(await content.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+            expect(await page.evaluate(() => {
+                const documentRoot = document.scrollingElement;
+                return Boolean(documentRoot && documentRoot.scrollHeight <= documentRoot.clientHeight);
+            }), `${name}: a rolagem deve permanecer na região de conteúdo`).toBe(true);
+        } finally {
+            await page.close();
+        }
+    }
+
+    expect(regionWidths.narrow).toBeLessThan(regionWidths.wide);
 });
 
 test('sidebar ocupa a viewport, enquanto apenas o painel de conteúdo rola', async () => {

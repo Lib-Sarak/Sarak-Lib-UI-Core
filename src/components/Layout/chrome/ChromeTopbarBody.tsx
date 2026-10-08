@@ -8,6 +8,7 @@ import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMe
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
+import { ChromeContentRegion } from './ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
@@ -32,6 +33,7 @@ export interface ChromeTopbarBodyProps {
     banner?: React.ReactNode;
     footer?: React.ReactNode;
     decoration?: React.ReactNode;
+    secondaryContent?: React.ReactNode;
     /** Identidade exibida no widget de usuário default (fora do slot `topbarEnd`). */
     user?: SarakShellUser;
     logout?: () => void;
@@ -49,10 +51,10 @@ export interface ChromeTopbarBodyProps {
  * pelo mesmo motivo do `ChromeSidebarBody` (teto de 250 linhas, R9).
  */
 export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { navbarLayout, contentAlignment, layoutDensity, maxContentWidth, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
+    const { navbarLayout, contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -147,13 +149,14 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                     )}
                 </header>
             )}
-            <main
-                data-sarak-content
+            <ChromeContentRegion
+                secondaryContent={secondaryContent}
+                isSplitViewEnabled={isSplitViewEnabled}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
                 style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
-            </main>
+            </ChromeContentRegion>
             {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}

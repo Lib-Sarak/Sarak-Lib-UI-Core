@@ -40,6 +40,18 @@ vi.mock('../../Canvas/PreviewCanvas', () => ({
     )
 }));
 
+vi.mock('../../Canvas/components/PreviewToolbar', () => ({
+    PreviewToolbar: ({ setPreviewDevice, setIsPreviewStacked }: {
+        setPreviewDevice: (device: 'desktop' | 'tablet' | 'smartphone') => void;
+        setIsPreviewStacked: (stacked: boolean) => void;
+    }) => (
+        <div data-testid="preview-toolbar">
+            <button data-testid="preview-device-tablet" onClick={() => setPreviewDevice('tablet')}>Tablet</button>
+            <button data-testid="preview-stack" onClick={() => setIsPreviewStacked(true)}>Empilhar</button>
+        </div>
+    )
+}));
+
 vi.mock('../MasterControlPanel', () => ({
     MasterControlPanel: () => <div data-testid="master-control-panel" />
 }));
@@ -124,10 +136,11 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: false,
+            dirtyTokenCount: 0,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: vi.fn()
@@ -137,7 +150,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
     it('renderiza os componentes principais no modo de preview', () => {
         render(<ThemeCustomizationTab />);
 
-        expect(screen.getByText('Design Engine')).toBeInTheDocument();
+        expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
         expect(fetchSpy).not.toHaveBeenCalled();
     });
@@ -183,16 +196,30 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
+    it('encaminha a escolha de dispositivo do preview para o estado compartilhado', () => {
+        const setPreviewDevice = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...baseThemeEngineState,
+            setPreviewDevice
+        } as any);
+
+        render(<ThemeCustomizationTab />);
+        fireEvent.click(screen.getByTestId('preview-device-tablet'));
+
+        expect(setPreviewDevice).toHaveBeenCalledWith('tablet');
+    });
+
     it('aplicar um tema completo pelo catálogo só atualiza o rascunho — não comita nem persiste', () => {
         const mockPreview = vi.fn();
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: false,
+            dirtyTokenCount: 0,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: mockPreview
@@ -222,10 +249,11 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: true,
+            dirtyTokenCount: 1,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: vi.fn()
@@ -233,7 +261,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         render(<ThemeCustomizationTab />);
 
-        const applyBtn = screen.getByText('Aplicar Alterações Globais');
+        const applyBtn = screen.getByRole('button', { name: 'Aplicar (1)' });
         fireEvent.click(applyBtn);
 
         expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);

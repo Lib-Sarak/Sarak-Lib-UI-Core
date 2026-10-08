@@ -14,7 +14,6 @@ interface ThemeGlobalSettingsProps {
     setActiveSectionId: (id: string | null) => void;
     isDirty: boolean;
     onReset: () => void;
-    onApply: () => void;
     globalComponent: ComponentSchema | undefined;
     catalogMap: Map<string, { name?: string; description?: string }>;
     draft: SarakDesignState;
@@ -30,7 +29,6 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
     setActiveSectionId,
     isDirty,
     onReset,
-    onApply,
     globalComponent,
     catalogMap,
     draft,
@@ -42,13 +40,13 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
         <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
             <CategoryLabel
                 icon={Globe}
-                title="0. Configurações Globais (3)"
+                title="Configurações globais (3)"
                 index={0}
+                pillarId="global"
                 isOpen={activePillarId === 'global'}
                 onToggle={() => setActivePillarId(activePillarId === 'global' ? null : 'global')}
                 isDirty={isDirty}
                 onReset={onReset}
-                onApply={onApply}
             />
             <AnimatePresence>
                 {activePillarId === 'global' && (

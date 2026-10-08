@@ -14,19 +14,9 @@ export const CustomizationPanel: React.FC = () => {
     return (
         <div className="flex flex-col h-full animate-in fade-in zoom-in duration-500 overflow-hidden">
             {/* Header */}
-            <div className="p-8 pb-4 shrink-0">
-                <div className="flex items-center justify-between mb-6">
-                    <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 uppercase tracking-tighter">
-                        Central de Comando
-                    </div>
-                    <div className="flex gap-2">
-                        <div className="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-[var(--sarak-type-scale2xs,10px)] font-black text-red-400 uppercase tracking-widest animate-pulse">
-                            v13.9 - AUDIT ACTIVE
-                        </div>
-                        <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[var(--sarak-type-scale2xs,10px)] font-black text-blue-400 uppercase tracking-widest">
-                            v12.0 Sovereign
-                        </div>
-                    </div>
+            <div className="p-4 pb-2 shrink-0">
+                <div className="mb-3 text-[var(--sarak-type-scale-xl,18px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
+                    Personalizar o tema
                 </div>
             </div>
 

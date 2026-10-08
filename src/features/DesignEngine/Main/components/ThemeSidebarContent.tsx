@@ -29,7 +29,6 @@ interface ThemeSidebarContentProps {
     isComponentDirty: (id: string) => boolean;
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (id: string) => void;
-    handleApplyComponent: (id: string) => void;
     handleApplyToSystem: () => void;
     toast: { type: 'success' | 'warning'; message: string } | null;
     globalComponent: ComponentSchema | undefined;
@@ -57,7 +56,6 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
     isComponentDirty,
     resetComponent,
     resetToken,
-    handleApplyComponent,
     handleApplyToSystem,
     toast,
     globalComponent,
@@ -73,7 +71,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-[var(--theme-bg)]/30">
             <AnimatePresence mode="wait">
                 {searchQuery ? (
-                    <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
+                    <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-[var(--sarak-layout-gap-sm,12px)] space-y-[var(--sarak-layout-gap-sm,12px)]">
                         <div className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da busca ({filteredResults?.length ?? 0})</div>
                         {!filteredResults?.length && (
                             <div role="status" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">Nenhum controle encontrado para &ldquo;{searchQuery}&rdquo;.</div>
@@ -91,7 +89,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                         })}
                     </motion.div>
                 ) : viewMode === 'preview' ? (
-                    <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2 pb-20">
+                    <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2">
 
                         {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
                         <ThemeGlobalSettings
@@ -101,7 +99,6 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             setActiveSectionId={setActiveSectionId}
                             isDirty={isComponentDirty('global')}
                             onReset={() => resetComponent('global')}
-                            onApply={() => handleApplyComponent('global')}
                             globalComponent={globalComponent}
                             catalogMap={catalogMap}
                             draft={draft}
@@ -129,7 +126,6 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                                 isTokenVisible={isTokenVisible}
                                 isComponentDirty={isComponentDirty}
                                 resetComponent={resetComponent}
-                                handleApplyComponent={handleApplyComponent}
                                 catalogMap={catalogMap}
                                 draft={draft}
                                 updateDraft={updateDraft}

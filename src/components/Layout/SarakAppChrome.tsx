@@ -41,6 +41,8 @@ export type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget
 export interface SarakAppChromeProps {
     /** Conteúdo do app (a tela do próprio módulo). */
     children: React.ReactNode;
+    /** Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. */
+    secondaryContent?: React.ReactNode;
     /** Identidade exibida no cromo (topo da sidebar / início da topbar). */
     brand?: { name?: string; logoUrl?: string };
     /**
@@ -131,6 +133,7 @@ export interface SarakAppChromeProps {
  */
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,
+    secondaryContent,
     brand,
     navItems,
     nav = [],
@@ -218,6 +221,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
                 notifications={notifications}
                 onNotificationSelect={onNotificationSelect}
                 widgets={widgets}
+                secondaryContent={secondaryContent}
                 className={className}
                 rootStyle={rootStyle}
             >
@@ -233,6 +237,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
         topbarStart, endSlot, search, banner, footer, decoration, user, logout, notifications,
         onNotificationSelect, widgets, className, rootStyle,
+        secondaryContent,
     };
 
     if (mode === 'topbar') {

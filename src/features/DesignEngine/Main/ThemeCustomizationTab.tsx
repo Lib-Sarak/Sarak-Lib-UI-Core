@@ -1,52 +1,20 @@
 import React, { useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-    Zap, Check, Monitor, Tablet, Smartphone,
-    Palette, Moon, Sun, Globe, AlertCircle, Sparkles, Command, RotateCcw,
-    Shield, Layout, Menu, Box, MousePointer2, Type, Hash, BarChart, Layers,
-    MessageSquare, Bell, Cpu, ExternalLink, Table, Settings, FileJson, ChevronDown, Search, Activity
-} from 'lucide-react';
-
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
-import type { SarakUIOptions, SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
+import { PreviewToolbar } from '../Canvas/components/PreviewToolbar';
+import type { SarakDesignState, SarakUIOptions } from '../../../core/Provider/types';
 import type { SarakDesignToken } from '../../../core/Design/types';
-
-import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
-import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
-
-
-
-// Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
-import { useThemeEngineState } from './hooks/useThemeEngineState';
-import { useThemePersistenceHandlers } from './hooks/useThemePersistenceHandlers';
 import { useResizable } from '../hooks/useResizable';
-import { TokenControl } from './components/TokenControl';
-import {
-    CategoryLabel,
-    Section,
-    ColorControl,
-    SliderControl,
-    SelectControl,
-    SwitchControl,
-    InputControl,
-    MediaUploaderControl
-} from '../components/DesignControls';
-import { MasterControlPanel } from './MasterControlPanel';
-import { TemplatesTab } from './TemplatesTab';
-import { SaveThemeModal } from './components/SaveThemeModal';
-import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { ThemeActionBar } from './components/ThemeActionBar';
 import { ThemeSidebarHeader } from './components/ThemeSidebarHeader';
 import { ThemeSidebarContent } from './components/ThemeSidebarContent';
 import { ThemeFeedbackToast } from './components/ThemeFeedbackToast';
+import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
+import { useThemeEngineState } from './hooks/useThemeEngineState';
+import { useThemePersistenceHandlers } from './hooks/useThemePersistenceHandlers';
+import { SaveThemeModal } from './components/SaveThemeModal';
 
-/**
- * ThemeCustomizationTab (v14.0 - Sovereign 6-Pillar Architecture)
- * Refatorado para a nova taxonomia de 6 pilares de soberania.
- */
 export const ThemeCustomizationTab: React.FC = () => {
-    // 1) Puxamos o estado visual e métodos globais de persistência do Theme Engine
     const {
         sarak,
         activePreviewApp, setActivePreviewApp,
@@ -61,115 +29,66 @@ export const ThemeCustomizationTab: React.FC = () => {
         isSaveModalOpen, setIsSaveModalOpen,
         isSaving, setIsSaving
     } = useThemeEngineState();
-
     const {
-        draft,
-        updateDraft,
-        handleApplyToSystem,
-        handleApplyComponent,
-        isComponentDirty,
-        resetComponent,
-        resetToken,
-        isDirty,
-        toast,
-        showToast,
-        handleThemePreview,
-        canUndoLastApply,
-        undoLastApply
+        draft, updateDraft, handleApplyToSystem, isComponentDirty, resetComponent, resetToken,
+        isDirty, dirtyTokenCount, discardDraft, toast, showToast, handleThemePreview,
+        canUndoLastApply, undoLastApply
     } = useDesignDraft(sarak);
-
-    const handleApplyToSystemWrapper = useCallback(() => {
-        handleApplyToSystem();
-    }, [handleApplyToSystem]);
-
     const { handleExportTheme, handleSaveTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
         draft,
         setCurrentThemeName,
-        setIsSaveModalOpen, setIsSaving,
+        setIsSaveModalOpen,
+        setIsSaving,
         showToast,
-        handleApplyToSystem: handleApplyToSystemWrapper,
+        handleApplyToSystem,
         saveTheme: sarak.saveTheme
     });
-
-    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }, themeId?: string) => {
-        setCurrentThemeName(design.systemName || 'Novo Tema');
-
-        // Escolher um tema no catálogo alimenta só o rascunho, como qualquer outro
-        // token: o preview repinta na hora porque lê o rascunho, não o sistema. O
-        // design da aplicação e o armazenamento só mudam pela confirmação explícita
-        // do usuário (`handleApplyToSystemWrapper`), o mesmo caminho que qualquer
-        // outro token já usa — sem essa simetria, experimentar um tema seria
-        // irreversível sempre que a conversão de modo claro/escuro não for exata.
-        // `themeId` acompanha o rascunho — só vira `resolvedThemeId` do Provider
-        // quando `handleApplyToSystemWrapper` comitar.
-        if (handleThemePreview) {
-            handleThemePreview(design, undefined, themeId);
-        }
-    }, [handleThemePreview, setCurrentThemeName]);
-
-    // 0. Redimensionamento da Barra Design Engine
-    const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
+    const { size: sidebarWidth, startResizing: startSidebarResize, isResizing } = useResizable({
         initialSize: 320,
         minSize: 280,
         maxSize: 600,
         direction: 'horizontal'
     });
-
     const {
-        pillars,
-        globalComponent,
-        groupedStructure,
-        visualImpactTokens,
-        isTokenVisible,
-        catalogMap,
-        filteredResults
+        pillars, globalComponent, groupedStructure, visualImpactTokens, isTokenVisible, catalogMap, filteredResults
     } = useThemeCustomizationData(searchQuery, editMode);
 
     const handleInspectComponent = useCallback((schemaId: string) => {
-        const foundPillar = Object.keys(groupedStructure).find(p =>
-            Object.values(groupedStructure[p]).some(comps =>
-                (comps as SarakDesignToken[]).some(c => c.id === schemaId)
+        const matchingPillar = Object.keys(groupedStructure).find((pillarId) =>
+            Object.values(groupedStructure[pillarId]).some((tokens) =>
+                (tokens as SarakDesignToken[]).some((token) => token.id === schemaId)
             )
         );
-        if (foundPillar) setActivePillarId(foundPillar);
+        if (matchingPillar) setActivePillarId(matchingPillar);
         setTimeout(() => setActiveSectionId(schemaId), 100);
-        toast && toast.message ? null : null; // Suppress unused var warning
-    }, [groupedStructure, toast, setActivePillarId, setActiveSectionId]);
+    }, [groupedStructure, setActivePillarId, setActiveSectionId]);
+
+    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }, themeId?: string) => {
+        setCurrentThemeName(design.systemName || 'Novo Tema');
+        handleThemePreview(design, undefined, themeId);
+    }, [handleThemePreview, setCurrentThemeName]);
+
+    const handleDiscardChanges = useCallback(() => {
+        discardDraft();
+        const activeTheme = sarak.allThemes?.find((theme) => theme.id === sarak.resolvedThemeId);
+        setCurrentThemeName(activeTheme?.name || '');
+    }, [discardDraft, sarak.allThemes, sarak.resolvedThemeId, setCurrentThemeName]);
 
     return (
-        // Altura relativa ao container-pai (plan-35), não à viewport: `CustomizationPanel`
-        // (Library/CustomizationPanel/CustomizationPanelImpl.tsx) já entrega `h-full` até
-        // aqui — quem hospeda o painel precisa dar altura definida ao host (pré-requisito,
-        // não altura mágica). `min-h-0` é o que permite este flex item ENCOLHER dentro do
-        // espaço real em vez de sempre crescer para caber o conteúdo (a causa da
-        // sobreposição relatada: `h-screen` forçava a altura da JANELA, não do container).
-        <div className="flex flex-1 h-full min-h-0 bg-[var(--theme-bg)] overflow-hidden">
-            {/* Sidebar de Configuração */}
+        <div className="flex h-full min-h-0 flex-1 overflow-hidden bg-[var(--theme-bg)]">
             <div
-                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
-                style={{ width: `${engineSidebarWidth}px` } as React.CSSProperties}
+                className={'relative z-10 flex h-full max-h-full min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] shrink-0 flex-col overflow-hidden border-r border-[var(--theme-border)] bg-[var(--theme-card)] ' + (isResizing ? 'transition-none' : 'transition-all duration-300')}
+                style={{ width: sidebarWidth }}
             >
-                <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
-
+                <div onMouseDown={startSidebarResize} className="absolute right-0 top-0 z-50 h-full w-1.5 cursor-col-resize transition-colors hover:bg-[var(--theme-primary)]/50 active:bg-[var(--theme-primary)]" />
                 <ThemeSidebarHeader
                     viewMode={viewMode}
                     setViewMode={setViewMode}
-                    isDirty={isDirty}
-                    setIsSaveModalOpen={setIsSaveModalOpen}
-                    previewDevice={previewDevice}
-                    setPreviewDevice={setPreviewDevice}
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                     editMode={editMode}
                     setEditMode={setEditMode}
-                    isPreviewStacked={isPreviewStacked}
-                    setIsPreviewStacked={setIsPreviewStacked}
-                    handleApplyGlobalChanges={handleApplyGlobalChanges}
-                    canUndoLastApply={canUndoLastApply}
-                    onUndoLastApply={undoLastApply}
                 />
-
-                {/* Área de Conteúdo (Scrollable) */}
                 <ThemeSidebarContent
                     searchQuery={searchQuery}
                     filteredResults={filteredResults || []}
@@ -185,8 +104,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isComponentDirty={isComponentDirty}
                     resetComponent={resetComponent}
                     resetToken={resetToken}
-                    handleApplyComponent={handleApplyComponent}
-                    handleApplyToSystem={handleApplyToSystemWrapper}
+                    handleApplyToSystem={handleApplyToSystem}
                     toast={toast}
                     globalComponent={globalComponent}
                     sarak={sarak}
@@ -197,13 +115,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isTokenVisible={isTokenVisible}
                     setActivePreviewApp={setActivePreviewApp}
                 />
+                <ThemeActionBar
+                    isDirty={isDirty}
+                    dirtyTokenCount={dirtyTokenCount}
+                    onApply={handleApplyGlobalChanges}
+                    onDiscard={handleDiscardChanges}
+                    onExport={() => setIsSaveModalOpen(true)}
+                    canUndoLastApply={canUndoLastApply}
+                    onUndoLastApply={undoLastApply}
+                />
             </div>
-
-            {/* Canvas de Preview */}
-            {/* `min-w-0`: a sidebar irmã tem largura MÍNIMA fixa (280px) — sem isto, este
-                flex-1 nunca encolhe abaixo do conteúdo e estoura por cima da sidebar
-                (receita clássica de overflow em flexbox, plan-35). */}
-            <div className="flex-1 min-w-0 relative bg-[var(--theme-bg)] flex flex-col">
+            <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[var(--theme-bg)]">
+                <PreviewToolbar
+                    previewDevice={previewDevice}
+                    setPreviewDevice={setPreviewDevice}
+                    isPreviewStacked={isPreviewStacked}
+                    setIsPreviewStacked={setIsPreviewStacked}
+                />
+                <div className="flex min-h-0 min-w-0 flex-1">
                 <PreviewCanvas
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}
@@ -223,11 +152,9 @@ export const ThemeCustomizationTab: React.FC = () => {
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={handleApplyFullTheme}
                 />
-
-                {/* Toasts de Feedback */}
+                </div>
                 <ThemeFeedbackToast toast={toast} />
             </div>
-
             <SaveThemeModal
                 isOpen={isSaveModalOpen}
                 themeName={currentThemeName}
@@ -236,7 +163,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                 onSave={handleSaveTheme}
                 isSaving={isSaving}
             />
-
         </div>
     );
 };

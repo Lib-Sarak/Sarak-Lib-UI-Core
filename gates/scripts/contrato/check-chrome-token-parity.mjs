@@ -92,15 +92,7 @@ export function getChromeTokens({ root = ROOT } = {}) {
     ];
 }
 
-/**
- * Dívida MEDIDA e DECLARADA (limite 1 acima) — tokens fora do conjunto que o dono
- * decidiu ligar até agora. Cada um tem o motivo e o consumidor ausente; o gate os
- * ignora até uma entrega futura ligá-los. O schema `navigation` inteiro tem
- * consumidor no SarakAppChrome.
- */
-export const ORPHAN_TOKENS = [
-    'isSplitViewEnabled', // src/core/Shell/Components/ShellContent.tsx:26 — consumido só pelo Shell; falta no AppChrome.
-];
+export const ORPHAN_TOKENS = [];
 
 const SHARED_MENU_ITEM = 'src/components/atomic/Navigation/SarakMenuItem.tsx';
 const SHARED_SEARCH = 'src/components/atomic/Inputs/SarakSearch.tsx';

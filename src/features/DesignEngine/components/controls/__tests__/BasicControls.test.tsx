@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SliderControl, InputControl, SwitchControl, SelectControl } from '../BasicControls';
 import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
 
 // Os átomos (SarakSlider/SarakInput/SarakSwitch/SarakSelect) leem `useSarakUI()`
 // (porta obrigatória, lança fora do Provider) — mesmo padrão de PreviewCanvas.test.tsx.
@@ -111,5 +112,27 @@ describe('SwitchControl e SelectControl — permanecem SÍNCRONOS (interação d
         fireEvent.change(screen.getByRole('combobox'), { target: { value: 'b' } });
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith('b');
+    });
+});
+
+describe('rótulos dos controles', () => {
+    it('usa o tamanho tipográfico mínimo e mantém caixa e espaçamento normais', () => {
+        renderWithProvider(
+            <>
+                <SliderControl label="Rótulo do slider" value={1} onChange={vi.fn()} />
+                <InputControl label="Rótulo do campo" value="" onChange={vi.fn()} />
+                <SwitchControl label="Rótulo da opção" value={false} onChange={vi.fn()} />
+                <SelectControl label="Rótulo da lista" options={['a']} value="a" onChange={vi.fn()} />
+            </>,
+        );
+
+        ['Rótulo do slider', 'Rótulo do campo', 'Rótulo da opção', 'Rótulo da lista'].forEach((label) => {
+            const labelElement = screen.getByText(label);
+            expect(labelElement).toHaveClass('normal-case', 'tracking-normal');
+            expect(labelElement.className).toContain('--sarak-type-scale-caption');
+        });
+
+        const captionToken = TypographySchema.tokens.find(({ id }) => id === 'typeScaleCaption');
+        expect(Number(captionToken?.defaultValue)).toBeGreaterThanOrEqual(12);
     });
 });

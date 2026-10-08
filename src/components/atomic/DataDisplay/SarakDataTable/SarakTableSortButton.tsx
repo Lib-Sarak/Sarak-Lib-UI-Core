@@ -11,7 +11,7 @@ export interface SarakTableSortButtonProps {
     onSort: (columnId: string) => void;
 }
 
-export function SarakTableSortButton({ columnId, label, sort, onSort }: SarakTableSortButtonProps) {
+export function SarakTableSortButton({ columnId, label, sort, onSort }: SarakTableSortButtonProps): React.ReactElement {
     const activeSort = sort?.columnId === columnId ? sort.direction : null;
     const icon = activeSort === 'asc' ? <SarakIcon name="ArrowUp" size={12} /> : activeSort === 'desc' ? <SarakIcon name="ArrowDown" size={12} /> : <SarakIcon name="ArrowUpDown" size={12} />;
 

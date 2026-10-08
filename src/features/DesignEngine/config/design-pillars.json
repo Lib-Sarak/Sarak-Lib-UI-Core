@@ -1,49 +1,49 @@
 [
     {
       "id": "brand",
-      "title": "1. Marca e Identidade",
+      "title": "Marca e cores",
       "icon": "Shield",
       "index": 1,
       "categories": ["Cores e Marca"]
     },
     {
       "id": "typography",
-      "title": "2. Tipografia e Escala",
+      "title": "Fontes e texto",
       "icon": "Type",
       "index": 2,
       "categories": ["Tipografia"]
     },
     {
       "id": "surfaces",
-      "title": "3. Superfícies e Profundidade",
+      "title": "Superfícies e cards",
       "icon": "Layout",
       "index": 3,
       "categories": ["Cards e Superfícies", "Efeitos e Superfície", "Geometria e Bordas"]
     },
     {
       "id": "interaction",
-      "title": "4. Interação e Estado",
+      "title": "Botões, campos e animação",
       "icon": "MousePointer2",
       "index": 4,
       "categories": ["Botões e Interação", "Formulários", "Animações"]
     },
     {
       "id": "navigation",
-      "title": "5. Navegação e Estrutura",
+      "title": "Navegação e layout",
       "icon": "Activity",
       "index": 5,
       "categories": ["Layout e Navegação", "Composição da Barra"]
     },
     {
       "id": "systems",
-      "title": "6. Sistemas e Experiência",
+      "title": "Dados e gráficos",
       "icon": "Cpu",
       "index": 6,
       "categories": ["Dados e Gráficos"]
     },
     {
       "id": "advanced",
-      "title": "7. Componentes Avançados",
+      "title": "Avançado",
       "icon": "Sparkles",
       "index": 7,
       "categories": ["Especializado"]

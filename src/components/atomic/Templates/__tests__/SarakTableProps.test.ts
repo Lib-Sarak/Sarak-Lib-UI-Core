@@ -9,6 +9,8 @@ describe('SarakTableProps', () => {
             sort: { columnId: 'name', direction: 'asc' as const },
             selectable: true,
             selectedKeys: ['row-1'],
+            columns: [{ key: 'name', label: 'Nome', align: 'right', render: (row: { id: string; name: string }) => row.name }],
+            onRowClick: (row: { id: string; name: string }) => row.id,
             onSortChange: (_sort: SarakTableProps['sort']) => undefined,
             onSelectionChange: () => undefined,
         } satisfies SarakTableProps<{ id: string; name: string }>;
@@ -17,5 +19,8 @@ describe('SarakTableProps', () => {
         expect(props.sort).toEqual({ columnId: 'name', direction: 'asc' });
         expect(props.selectedKeys).toEqual(['row-1']);
         expect(props.selectable).toBe(true);
+        expect(props.columns[0].align).toBe('right');
+        expect(props.columns[0].render?.(props.data[0])).toBe('Ada');
+        expect(props.onRowClick).toBeDefined();
     });
 });

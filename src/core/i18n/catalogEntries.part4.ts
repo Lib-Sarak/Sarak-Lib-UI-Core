@@ -28,6 +28,18 @@ export const CATALOG_PART_4 = {
         pt: '{count} registros encontrados', en: '{count} records found', es: '{count} registros encontrados',
         fr: '{count} enregistrements trouvés', de: '{count} Einträge gefunden', it: 'Trovati {count} record',
     },
+    paginationRangeSummary: {
+        pt: '{start}–{end} de {total}', en: '{start}–{end} of {total}', es: '{start}–{end} de {total}',
+        fr: '{start}–{end} sur {total}', de: '{start}–{end} von {total}', it: '{start}–{end} di {total}',
+    },
+    paginationPageSummary: {
+        pt: 'Página {current} de {total}', en: 'Page {current} of {total}', es: 'Página {current} de {total}',
+        fr: 'Page {current} sur {total}', de: 'Seite {current} von {total}', it: 'Pagina {current} di {total}',
+    },
+    paginationPageSizeLabel: {
+        pt: 'Itens por página', en: 'Items per page', es: 'Elementos por página',
+        fr: 'Éléments par page', de: 'Elemente pro Seite', it: 'Elementi per pagina',
+    },
     selectAllVisibleRows: {
         pt: 'Selecionar todas as linhas visíveis', en: 'Select all visible rows', es: 'Seleccionar todas las filas visibles',
         fr: 'Sélectionner toutes les lignes visibles', de: 'Alle sichtbaren Zeilen auswählen', it: 'Seleziona tutte le righe visibili',

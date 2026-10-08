@@ -45,6 +45,8 @@ const CONTENT_DENSITY_SCALE: Record<ChromeLayoutDensity, string> = {
 
 const CONTENT_PADDING_CSS_VALUE = 'var(--sarak-layout-padding, 16px)';
 
+export const CHROME_SPLIT_CONTENT_LAYOUT_CLASS = 'grid min-h-full min-w-0 grid-cols-1 @min-[1024px]:grid-cols-2';
+
 export const resolveChromeBodyDirectionClass = (position: ChromeSidebarPosition): string =>
     BODY_DIRECTION_CLASS[position] ?? BODY_DIRECTION_CLASS.left;
 

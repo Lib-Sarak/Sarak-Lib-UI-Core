@@ -1,6 +1,5 @@
 import React from 'react';
-import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson, Command, Undo2 } from 'lucide-react';
-import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { Command, FileJson, Monitor, Search, Table, Zap } from 'lucide-react';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 import type { ThemeEditMode } from '../hooks/usePreviewUIState';
 
@@ -20,163 +19,85 @@ const VIEW_MODE_LABELS: Record<'preview' | 'catalog' | 'templates' | 'command-ce
 interface ThemeSidebarHeaderProps {
     viewMode: 'preview' | 'catalog' | 'templates' | 'command-center';
     setViewMode: (mode: 'preview' | 'catalog' | 'templates' | 'command-center') => void;
-    isDirty: boolean;
-    setIsSaveModalOpen: (open: boolean) => void;
-    previewDevice: 'desktop' | 'tablet' | 'smartphone';
-    setPreviewDevice: (device: 'desktop' | 'tablet' | 'smartphone') => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     editMode: ThemeEditMode;
     setEditMode: (mode: ThemeEditMode) => void;
-    isPreviewStacked: boolean;
-    setIsPreviewStacked: (stacked: boolean) => void;
-    handleApplyGlobalChanges: () => void;
-    canUndoLastApply: boolean;
-    onUndoLastApply: () => void;
 }
 
 export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
-    viewMode, setViewMode,
-    isDirty, setIsSaveModalOpen,
-    previewDevice, setPreviewDevice,
-    searchQuery, setSearchQuery,
-    editMode, setEditMode,
-    isPreviewStacked, setIsPreviewStacked,
-    handleApplyGlobalChanges,
-    canUndoLastApply, onUndoLastApply
-}) => {
-    return (
-        <div className="p-5 pb-4 shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)]">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center">
-                        <Zap className="text-white w-3.5 h-3.5" />
-                    </div>
-                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black text-[var(--color-theme-title,#ffffff)] tracking-tight uppercase">
-                        Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span>
-                    </div>
+    viewMode,
+    setViewMode,
+    searchQuery,
+    setSearchQuery,
+    editMode,
+    setEditMode
+}) => (
+    <div className="shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)] p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--theme-primary)]">
+                    <Zap className="h-3.5 w-3.5 text-white" />
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="flex gap-1 p-0.5 bg-[var(--color-theme-card,#1e293b)] rounded-lg border border-[var(--theme-border)]">
-                        {(['preview', 'catalog', 'templates', 'command-center'] as const).map((m) => (
-                            <SarakIconButton
-                                key={m}
-                                onClick={() => setViewMode(m)}
-                                variant={viewMode === m ? 'primary' : 'ghost'}
-                                size="sm"
-                                title={VIEW_MODE_LABELS[m]}
-                                aria-label={VIEW_MODE_LABELS[m]}
-                                icon={m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : m === 'templates' ? <FileJson size={10} /> : <Command size={10} />}
-                            />
-                        ))}
-                    </div>
-
-                    <SarakButton
-                        onClick={() => setIsSaveModalOpen(true)}
-                        disabled={!isDirty}
-                        variant={isDirty ? 'secondary' : 'ghost'}
-                        size="xs"
-                        title={isDirty ? "Exportar o tema atual como JSON" : "Nenhuma alteração para exportar"}
-                    >
-                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest">{isDirty ? 'Exportar' : 'Exportado'}</span>
-                    </SarakButton>
-                </div>
+                <span className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
+                    Design
+                </span>
             </div>
-
-            {/* Device Switcher (Responsive Engine) */}
-            <div className="flex bg-[var(--color-theme-card,#1e293b)] rounded-xl border border-[var(--theme-border)] p-1 mb-4">
-                {([
-                    { id: 'desktop', icon: Monitor, label: 'Desktop' },
-                    { id: 'tablet', icon: Tablet, label: 'Tablet' },
-                    { id: 'smartphone', icon: Smartphone, label: 'Mobile' }
-                ] as const).map((device) => (
-                    <SarakButton
-                        key={device.id}
-                        onClick={() => setPreviewDevice(device.id)}
-                        variant={previewDevice === device.id ? 'primary' : 'ghost'}
-                        size="xs"
-                        leftIcon={<device.icon size={12} />}
-                        className="flex-1"
-                    >
-                        {device.label}
-                    </SarakButton>
+            <div role="group" aria-label="Telas avançadas" className="flex gap-1 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,#1e293b)] p-0.5">
+                {(['preview', 'catalog', 'templates', 'command-center'] as const).map((mode) => (
+                    <SarakIconButton
+                        key={mode}
+                        onClick={() => setViewMode(mode)}
+                        variant={viewMode === mode ? 'primary' : 'ghost'}
+                        size="sm"
+                        title={VIEW_MODE_LABELS[mode]}
+                        aria-label={VIEW_MODE_LABELS[mode]}
+                        icon={mode === 'preview' ? <Monitor size={14} /> : mode === 'catalog' ? <Table size={14} /> : mode === 'templates' ? <FileJson size={14} /> : <Command size={14} />}
+                    />
                 ))}
             </div>
-
-            {/* Busca e modo de edição */}
-            <div className="flex flex-col gap-3 mb-4">
-                <div className="relative group">
-                    <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-all" />
-                    <input
-                        type="text"
-                        placeholder="BUSCAR TOKEN..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale3xs,9px)] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)]"
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)]">Modo de edição</span>
-                        <div role="radiogroup" aria-label="Modo de edição" className="grid min-w-0 grid-cols-3 gap-1">
-                            {THEME_EDIT_MODES.map((mode) => (
-                                <label key={mode.value} className="min-w-0 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="theme-edit-mode"
-                                        value={mode.value}
-                                        className="peer sr-only"
-                                        checked={editMode === mode.value}
-                                        onChange={() => setEditMode(mode.value)}
-                                        aria-checked={editMode === mode.value}
-                                    />
-                                    <span className={`flex min-w-0 items-center justify-center rounded-lg border px-1 py-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-wider transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--theme-primary)] ${editMode === mode.value ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#ffffff)]' : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]'}`}>
-                                        {mode.label}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                            type="checkbox"
-                            role="switch"
-                            className="sr-only"
-                            checked={isPreviewStacked}
-                            onChange={() => setIsPreviewStacked(!isPreviewStacked)}
-                            aria-checked={isPreviewStacked}
-                            aria-label={isPreviewStacked ? 'Empilhar Previews ativo — desativar' : 'Empilhar Previews inativo — ativar'}
-                        />
-                        <div aria-hidden="true" className={`w-6 h-3 rounded-full relative transition-all ${isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
-                            <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${isPreviewStacked ? 'left-3.5' : 'left-0.5'}`} />
-                        </div>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Empilhar Previews</span>
-                    </label>
+        </div>
+        <div className="flex flex-col gap-3">
+            <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" />
+                <input
+                    type="text"
+                    placeholder="Buscar token..."
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50 focus:outline-none"
+                />
+            </div>
+            <div className="flex flex-col gap-1.5">
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-medium text-[var(--theme-muted)]">
+                    Modo de edição
+                </span>
+                <div role="radiogroup" aria-label="Modo de edição" className="grid min-w-0 grid-cols-3 gap-1">
+                    {THEME_EDIT_MODES.map((mode) => (
+                        <label key={mode.value} className="min-w-0 cursor-pointer">
+                            <input
+                                type="radio"
+                                name="theme-edit-mode"
+                                value={mode.value}
+                                className="peer sr-only"
+                                checked={editMode === mode.value}
+                                onChange={() => setEditMode(mode.value)}
+                                aria-checked={editMode === mode.value}
+                            />
+                            <span
+                                className={[
+                                    'flex min-w-0 items-center justify-center rounded-lg border px-1 py-2 text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--theme-primary)]',
+                                    editMode === mode.value
+                                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#ffffff)]'
+                                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]'
+                                ].join(' ')}
+                            >
+                                {mode.label}
+                            </span>
+                        </label>
+                    ))}
                 </div>
             </div>
-
-            <SarakButton
-                onClick={handleApplyGlobalChanges}
-                variant="primary"
-                fullWidth
-                size="md"
-                leftIcon={<Check size={12} />}
-            >
-                Aplicar Alterações Globais
-            </SarakButton>
-
-            {canUndoLastApply && (
-                <SarakButton
-                    onClick={onUndoLastApply}
-                    variant="ghost"
-                    fullWidth
-                    size="sm"
-                    leftIcon={<Undo2 size={12} />}
-                    className="mt-2"
-                >
-                    Desfazer última aplicação
-                </SarakButton>
-            )}
         </div>
-    );
-};
+    </div>
+);

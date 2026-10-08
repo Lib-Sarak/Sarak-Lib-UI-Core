@@ -13,6 +13,7 @@ export interface ChromeDesignTokens {
     contentAlignment: ChromeContentAlignment;
     layoutDensity: ChromeLayoutDensity;
     maxContentWidth: string;
+    isSplitViewEnabled: boolean;
     isNavHidden: boolean;
     isAutoHideEnabled: boolean;
     searchPositionSidebar: ChromeSearchPositionSidebar;
@@ -40,6 +41,7 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
         contentAlignment: (design?.contentAlignment as ChromeContentAlignment) || 'stretch',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),
         maxContentWidth: (design?.maxContentWidth as string) || '1440px',
+        isSplitViewEnabled: design?.isSplitViewEnabled ?? false,
         isNavHidden: design?.isNavHidden ?? false,
         isAutoHideEnabled: design?.isAutoHideEnabled ?? false,
         searchPositionSidebar: resolveSidebarSearchPosition(design?.searchPositionSidebar),

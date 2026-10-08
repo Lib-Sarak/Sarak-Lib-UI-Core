@@ -60,6 +60,29 @@ describe('SarakTable — colapso mobile por padrão (Spec 40.3 — L3)', () => {
         fireEvent.click(screen.getByRole('checkbox', { name: 'Selecionar todas as linhas visíveis' }));
         expect(screen.getByRole('checkbox', { name: 'Selecionar linha 2' })).toBeChecked();
     });
+
+    it('no celular mantém render, alinhamento e clique da coluna semântica', () => {
+        const onRowClick = vi.fn();
+        const { container } = render(
+            <SarakUIProvider>
+                <SarakDeviceProvider overrideDevice="smartphone">
+                    <SarakTable
+                        data={[{ id: 1, nome: 'Beto', ativo: true }, { id: 2, nome: 'Ana', ativo: false }]}
+                        columns={[{ key: 'nome', label: 'Pessoa', render: (row) => <strong>{String(row.nome)}</strong>, align: 'right' }]}
+                        onRowClick={onRowClick}
+                        showSearch={false}
+                    />
+                </SarakDeviceProvider>
+            </SarakUIProvider>,
+        );
+
+        const value = screen.getByText('Beto');
+        expect(value.tagName).toBe('STRONG');
+        expect((value.parentElement as HTMLElement).style.textAlign).toBe('right');
+        fireEvent.click(value);
+        expect(onRowClick).toHaveBeenCalledWith({ id: 1, nome: 'Beto', ativo: true });
+        expect(container.querySelector('table')).toBeNull();
+    });
 });
 
 /**

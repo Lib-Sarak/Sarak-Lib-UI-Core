@@ -24,7 +24,7 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
     return (
         <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
@@ -54,7 +54,7 @@ export const SwitchControl: React.FC<SwitchControlProps> = ({ label, value, onCh
         checked={!!value}
         onChange={(e) => onChange(e.target.checked)}
         label={
-            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest flex items-center gap-1.5">
+            <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal flex items-center gap-1.5">
                 {label}
                 <HelpTooltip label={label} description={description} />
             </span>
@@ -80,7 +80,7 @@ interface SelectControlProps {
 
 export const SelectControl: React.FC<SelectControlProps> = ({ label, description, options, value, onChange, isFont = false }) => (
     <div className="mb-3">
-        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
+        <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
             {label}
             <HelpTooltip label={label} description={description} />
         </span>
@@ -120,7 +120,7 @@ export const InputControl: React.FC<InputControlProps> = ({ label, description, 
     return (
         <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
@@ -144,7 +144,7 @@ export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: 
                 : 'bg-[var(--color-theme-card,#1e293b)] border-[var(--theme-border)] text-[var(--theme-muted)] hover:bg-[var(--theme-border)]'
         }`}
     >
-        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-wider">{label}</span>
+        <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal">{label}</span>
         <div className={`w-8 h-4 rounded-full relative transition-all ${active ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
             <div className={`absolute top-0.5 w-3 h-3 bg-[var(--theme-surface)] rounded-full transition-all ${active ? 'left-4.5' : 'left-0.5'}`} />
         </div>

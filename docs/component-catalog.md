@@ -69,11 +69,9 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakStats` | `density` | `compact` · `standard` · `spacious` |
 | `SarakStats` | `importance` | `hero` · `base` · `subtle` |
-| `SarakTable` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakTable` | `density` | `compact` · `standard` · `spacious` |
-| `SarakTable` | `importance` | `hero` · `base` · `subtle` |
 | `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
+| `SarakValue` | `size` | `sm` · `md` · `lg` |
 
 ### CSS Variables públicas (namespace `--sarak-*`)
 
@@ -89,7 +87,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (96)
+## Componentes públicos (97)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -155,6 +153,7 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim | Conteúdo do app (a tela do próprio módulo). |
+| `secondaryContent` | `React.ReactNode` | não | Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. |
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no cromo (topo da sidebar / início da topbar). |
 | `navItems` | `SarakNavItem[]` | não | Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados. |
 | `nav` | `SarakShellNavItem[]` | não | Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`. |
@@ -186,6 +185,7 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
+| `secondaryContent` | `React.ReactNode` | não |  |
 | `brand` | `{ name?: string; logoUrl?: string }` | não |  |
 | `logo` | `React.ReactNode` | não |  |
 | `nav` | `SarakShellNavItem[]` | sim |  |
@@ -501,7 +501,7 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | --- | --- | --- | --- |
 | `columns` | `Array<SarakColumn<T>>` | sim | Definição declarativa das colunas (ordem inicial = ordem do array). |
 | `rows` | `T[]` | sim | Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. |
-| `rowHeight` | `number` | não |  |
+| `rowHeight` | `SarakDataTableRowHeight<T>` | não |  |
 | `headerHeight` | `number` | não |  |
 | `height` | `number \| string` | não |  |
 | `overscan` | `number` | não |  |
@@ -514,6 +514,11 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `onColumnResize` | `(columnId: string, width: number) => void` | não |  |
 | `onColumnReorder` | `(fromId: string, toId: string) => void` | não |  |
 | `responsive` | `boolean` | não | L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. |
+| `loading` | `boolean` | não | Exibe os estados de carregamento, erro e vazio recebidos pelo host. |
+| `error` | `string \| null` | não |  |
+| `emptyMessage` | `string` | não |  |
+| `onRetry` | `() => void` | não |  |
+| `onRowClick` | `(row: T) => void` | não | Disparado ao ativar uma linha. |
 | `className` | `string` | não |  |
 
 ### SarakDataTableImpl
@@ -928,7 +933,11 @@ Props (`SarakPaginationProps` — `src/components/atomic/Navigation/SarakPaginat
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `current` | `number` | sim | Página atual (1-based). |
-| `total` | `number` | sim | Total de páginas. |
+| `total` | `number` | não | Total de páginas, quando o total de itens e o tamanho não derivam o valor. |
+| `pageSize` | `number` | não | Quantidade de registros por página. |
+| `pageSizeOptions` | `number[]` | não | Opções de quantidade de registros por página. |
+| `totalItems` | `number` | não | Quantidade total de registros para os resumos e o cálculo de páginas. |
+| `onPageSizeChange` | `(pageSize: number) => void` | não | Disparado ao escolher outra quantidade de registros por página. |
 | `maxVisible` | `number` | não | Máximo de botões numéricos antes de compactar com reticências (default: 7). |
 | `onChange` | `(page: number) => void` | sim | Disparado ao escolher uma página válida (diferente da atual). |
 | `className` | `string` | não |  |
@@ -1178,6 +1187,7 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 | `load` | `() => Promise<TData>` | não | Carrega as métricas pelo mecanismo escolhido pelo host. |
 | `label` | `string` | não | Título opcional fornecido pelo host. |
 | `mapping` | `Record<string, string>` | não | Define os rótulos exibidos; omitido, usa as chaves do dado recebido. |
+| `metrics` | `Partial<Record<keyof TData & string, SarakStatsMetricConfig>>` | não | Configuração visual e de formato por chave de métrica. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
@@ -1206,26 +1216,16 @@ Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
 ### SarakTable
 
-Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTableProps.ts`):
+Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. |
-| `load` | `() => Promise<TData[]>` | não | Carrega as linhas pelo mecanismo escolhido pelo host. |
-| `label` | `string` | não |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `getRowKey` | `(row: TData, index: number) => Key` | não | Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. |
-| `sort` | `SarakTableSort \| null` | não | Omitido, ordena localmente; passe null para controlar o estado sem ordenação. |
-| `onSortChange` | `(sort: SarakTableSort \| null) => void` | não | Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. |
-| `selectable` | `boolean` | não | Habilita a seleção de linhas e a caixa das linhas visíveis. |
-| `selectedKeys` | `Key[]` | não | Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. |
-| `onSelectionChange` | `(selectedKeys: Key[]) => void` | não | Recebe as chaves selecionadas atualizadas. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
-| `responsive` | `boolean` | não | No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes. |
-| `showSearch` | `boolean` | não | Exibe o campo de busca; omitido, fica visível. |
-| `showRefresh` | `boolean` | não | Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`. |
+| `onRetry` | `() => void` | não |  |
+| `emptyMessage` | `string` | não |  |
+| `loading` | `boolean` | não |  |
+| `error` | `string \| null` | não |  |
+
+Estende: `BaseSarakTableProps<TData>`
 
 ### SarakTabs
 
@@ -1342,4 +1342,17 @@ Props (`SarakUploaderProps` — `src/components/atomic/Inputs/SarakUploader.tsx`
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(files: File[]) => void` | não | Recebe os arquivos aceitos (Spec 32: `onChange(value)`). |
 | `onReject` | `(rejections: SarakFileRejection[]) => void` | não | Recebe as rejeições (ex.: arquivo maior que `maxSize`). |
+
+### SarakValue
+
+Props (`SarakValueProps` — `src/components/atomic/Atoms/SarakValue.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `value` | `number \| Date \| string \| null \| undefined` | sim |  |
+| `format` | `SarakValueFormat` | não |  |
+| `locale` | `string` | não |  |
+| `signColor` | `boolean` | não |  |
+| `size` | `'sm' \| 'md' \| 'lg'` | não |  |
+| `className` | `string` | não |  |
 

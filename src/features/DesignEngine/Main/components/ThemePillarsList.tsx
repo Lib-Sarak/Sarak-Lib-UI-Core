@@ -23,7 +23,6 @@ interface ThemePillarsListProps {
     isTokenVisible: (tokenId: string) => boolean;
     isComponentDirty: (id: string) => boolean;
     resetComponent: (id: string) => void;
-    handleApplyComponent: (id: string) => void;
     catalogMap: Map<string, { name?: string; description?: string }>;
     draft: SarakDesignState;
     updateDraft: (id: string, val: SarakTokenValue) => void;
@@ -132,7 +131,7 @@ const ThemePillarItem: React.FC<PillarItemProps> = (props) => {
                 onToggle={handleToggle}
                 isDirty={props.isComponentDirty(pillar.id)}
                 onReset={() => props.resetComponent(pillar.id)}
-                onApply={() => props.handleApplyComponent(pillar.id)}
+                pillarId={pillar.id}
             />
             <AnimatePresence>
                 {isOpen && (

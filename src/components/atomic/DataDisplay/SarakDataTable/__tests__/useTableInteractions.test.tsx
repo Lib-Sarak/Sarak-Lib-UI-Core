@@ -13,9 +13,9 @@ const rows: Row[] = [
     { id: 2, name: 'Ana', score: 1 },
 ];
 
-const getSortValue = (row: Row, columnId: string) => row[columnId as keyof Row];
+const getSortValue = (row: Row, columnId: string): unknown => row[columnId as keyof Row];
 
-describe('useTableInteractions', () => {
+describe('useTableInteractions sorting', () => {
     it('ordena localmente e percorre os três estados do cabeçalho', () => {
         const { result } = renderHook(() => useTableInteractions({ rows, getSortValue }));
 
@@ -43,7 +43,9 @@ describe('useTableInteractions', () => {
         expect(onSortChange).toHaveBeenCalledWith({ columnId: 'name', direction: 'desc' });
         expect(result.current.entries.map(({ row }) => row.name)).toEqual(['Beto', 'Ana']);
     });
+});
 
+describe('useTableInteractions selection', () => {
     it('seleciona uma linha e sinaliza seleção parcial', () => {
         const onSelectionChange = vi.fn();
         const { result } = renderHook(() => useTableInteractions({ rows, getSortValue, onSelectionChange }));

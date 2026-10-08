@@ -20,9 +20,35 @@ describe('SarakTableCards (Spec 40.3 — L3, colapso mobile do denso genérico)'
         expect(screen.getByText('false')).toBeInTheDocument();
     });
 
+    it('renderiza colunas semânticas, aplica alinhamento e aciona a linha por clique e teclado', () => {
+        const onRowClick = vi.fn();
+        const { container } = render(
+            <SarakTableCards
+                rows={ROWS}
+                columns={[{ key: 'nome', label: 'Pessoa', render: (row) => <strong>{row.nome}</strong>, align: 'right' }]}
+                columnLabels={{}}
+                onRowClick={onRowClick}
+            />,
+        );
+
+        const value = screen.getByText('Ana');
+        const card = value.closest('[role="listitem"]') as HTMLElement;
+        expect(value.tagName).toBe('STRONG');
+        expect((value.parentElement as HTMLElement).style.textAlign).toBe('right');
+
+        fireEvent.click(value);
+        expect(onRowClick).toHaveBeenLastCalledWith(ROWS[0]);
+        fireEvent.keyDown(card, { key: 'Enter' });
+        expect(onRowClick).toHaveBeenLastCalledWith(ROWS[0]);
+        expect(onRowClick).toHaveBeenCalledTimes(2);
+    });
+
     it('em loading mostra cards de esqueleto (sem valor)', () => {
-        const { container } = render(<SarakTableCards rows={[]} columns={COLUMNS} columnLabels={LABELS} loading />);
+        const onRowClick = vi.fn();
+        const { container } = render(<SarakTableCards rows={[]} columns={COLUMNS} columnLabels={LABELS} loading onRowClick={onRowClick} />);
         expect(container.querySelectorAll('[role="listitem"]')).toHaveLength(3);
+        fireEvent.click(screen.getAllByRole('listitem')[0]);
+        expect(onRowClick).not.toHaveBeenCalled();
     });
 
     it('o container não estoura horizontalmente (maxWidth 100%)', () => {

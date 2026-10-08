@@ -10,6 +10,7 @@ import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { renderShellPreferenceRow } from '../atomic/Navigation/shellPreferenceRow';
 import { useLibraryText } from '../../core/i18n/useLibraryText';
 import { ChromeFrame } from './chrome/ChromeFrame';
+import { ChromeContentRegion } from './chrome/ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
@@ -41,6 +42,7 @@ import { getSarakSearchItems } from './chrome/navItem';
  */
 export interface SarakAppChromeMobileProps {
     children: React.ReactNode;
+    secondaryContent?: React.ReactNode;
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
     nav: SarakShellNavItem[];
@@ -77,6 +79,7 @@ const DRAWER_ID = 'sarak-chrome-drawer';
 
 export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     children,
+    secondaryContent,
     brand,
     logo,
     nav,
@@ -101,7 +104,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
-    const { contentAlignment, layoutDensity, maxContentWidth, searchPositionSidebar } = useChromeDesignTokens();
+    const { contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -207,13 +210,14 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 </React.Fragment>
             )}
 
-            <main
-                data-sarak-content
+            <ChromeContentRegion
+                secondaryContent={secondaryContent}
+                isSplitViewEnabled={isSplitViewEnabled}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
                 style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
-            </main>
+            </ChromeContentRegion>
             {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
