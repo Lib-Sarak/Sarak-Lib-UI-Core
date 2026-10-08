@@ -83,7 +83,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Porta de ícones | `npm run icon-port:check` | Nenhum `.ts`/`.tsx` de `src/` importa `lucide-react`, `@phosphor-icons/react` ou `@tabler/icons-react` (por `import`, reexport, `require()` ou `import()`) fora de `components/atomic/Icon/families/`; o painel de autoria (`features/DesignEngine/`) fica fora, declarado | **R39** | ~0,9 s |
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
-| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida ficaria declarada em `ORPHAN_TOKENS`, hoje vazia | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -731,6 +731,10 @@ schema inteiro e o gate valia para um arquivo. O escopo passou a incluir a seç�
 **O segundo vão, da mesma família, fechado junto:** um mapeamento de variável em `src/styles/` contava como
 consumo do cromo. Contava um cromo que **nunca lê o token** como consumidor dele — o gate ficava verde por
 cima da própria violação que existe para pegar. CSS global saiu do escopo de arquivo dos dois grupos.
+
+**A lista de exceções zerou:** `ORPHAN_TOKENS` está vazia. Os três tokens de layout que o painel oferecia sem
+efeito (`layoutDensity`, `maxContentWidth`, `isSplitViewEnabled`) passaram a ter consumidor no cromo
+([[05-cromo-e-slots]] §2.4), e o gate cobre todos os tokens do recorte.
 
 **O que ele continua sem ver, e está declarado no cabeçalho dele (R18):**
 

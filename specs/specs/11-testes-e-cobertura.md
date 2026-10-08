@@ -376,7 +376,9 @@ sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
 - o **contrato de altura e rolagem** do cromo ([[05-cromo-e-slots]] §5.1);
 - o **respiro do conteúdo** por token, nos quatro lados ([[05-cromo-e-slots]] §2.4);
 - a **classe utilitária vencendo o padrão de elemento** — e o padrão valendo quando não há classe;
-- o **fundo da raiz** do cromo, com e sem mídia global.
+- o **fundo da raiz** do cromo, com e sem mídia global;
+- **tema que sobrescreve token de cromo**, por recorte nomeado de cada família (cor, gap, margem, estrutura),
+  mais largura máxima, densidade e a vista dividida medida pela largura do host com a janela fixa.
 
 **Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
 de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
@@ -387,8 +389,8 @@ elementos são alcançados por **âncora de contrato** (`getByRole` + nome acess
 interna.
 
 **O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18 — a lista completa é a de lá): pixel ·
-fonte carregada · tema que sobrescreva **token de cromo** (ela cobre o default e recortes **nomeados** de
-`config`, nunca uma varredura de temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
+fonte carregada · **varredura de temas** (ela cobre o default e recortes **nomeados** de `config`, um por família de
+token, nunca todos os temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
 `src/` quando o `dist/` está velho · qualquer navegador que não seja Chromium headless · `input`, `select` e
 `textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `body` e o
 `transform !important` do botão ativo).

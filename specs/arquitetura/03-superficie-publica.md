@@ -287,6 +287,28 @@ sem dado, não desenham.
 A decisão de "data ou load" mora nos hooks de dado de cada template (`useSarakTableData`, `useCardGridState`,
 `useSarakStatsData`, `useChartData`, `useFormData`, `useManagementGrid`).
 
+### 6.3.1 Exibir dado: tabela, grade, paginação, valor e métrica
+
+O que um sistema precisa para mostrar dado, sem refazer à mão:
+
+- **`SarakTable`** continua `<table>` semântica. Cada coluna é `{ key, label, render?, align? }`: `render(row)` desenha
+  a célula, e `align` alinha. `onRowClick` torna a linha acionável. Os três estados — carregando, vazio (com
+  mensagem) e erro (com `onRetry`) — têm texto traduzido. No celular, a mesma tabela reflui em cartões, e
+  `render`, `align` e `onRowClick` valem neles também.
+- **`SarakDataTable`** (a grade virtualizada) aceita `rowHeight` fixo, por função da linha ou `'auto'`, os mesmos três
+  estados, `onRowClick` e `align`.
+- **`SarakPagination`** recebe `pageSize`, `pageSizeOptions`, `totalItems` e `onPageSizeChange`, e mostra o resumo
+  "X–Y de N" traduzido.
+- **Formatadores públicos**: `sarakFormatNumber`, `sarakFormatCurrency`, `sarakFormatPercent` e `sarakFormatDate`
+  (`src/shared/format/`). Recebem o locale por parâmetro, e sem ele usam o do runtime; não há locale nem moeda
+  fixos no código.
+- **`SarakValue`** compõe valor, formatador e cor por sinal (`signColor`, padrão ligado): positivo pelo token
+  `statusSuccessColor`, negativo pelo `statusErrorColor`, neutro pelo `textColorMuted`, sempre por variável CSS.
+  Formata no idioma da preferência da lib, com override por `locale`; `size` é `sm`, `md` ou `lg`.
+- **`SarakStats`**, por métrica: `icon`, `delta` (com sinal e cor, pelo `SarakValue`), `format`, `label` e `hint`.
+
+Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
+
 ## 6.4 O contrato de valor dos átomos de escolha
 
 `SarakCheckbox` e `SarakRadio` seguem o contrato do React, e o seguem **inteiro**:

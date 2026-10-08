@@ -116,6 +116,7 @@ Item com `href` é uma **âncora** (`<a href>`); item sem `href` continua `<butt
 | `banner` | faixa **full-width**, primeira do cromo | idem |
 | `footer` | faixa **full-width**, última do cromo | idem |
 | `decoration` | camada decorativa **atrás** do conteúdo do cromo | idem |
+| `secondaryContent` | **segundo painel** da região de conteúdo, só com o token `isSplitViewEnabled` ligado: lado a lado com os `children` a partir de 1024 px de largura **disponível na região** (container query, não a janela), empilhado abaixo disso. Com a vista ativa, o `main` planta o `@container`; fora dela, não planta | os `children` seguem diretos no `main` — nada muda |
 
 **Verificado no gate:** `npm run catalog:check` verde, com **todos** os slots presentes nas props publicadas
 de `SarakAppChrome` em `docs/component-catalog.json` (+ `topbarActions`, o alias). O contrato está
@@ -235,6 +236,9 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `searchPositionSidebar` | `top` ou `bottom` para o slot `search` na sidebar/drawer |
 | `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
+| `maxContentWidth` | largura máxima da região de conteúdo, centralizada; `100%` ocupa tudo. O respiro de `layoutPadding` continua nos quatro lados |
+| `layoutDensity` | escala o respiro da região de conteúdo: `compact` < `comfortable` < `spacious`. `comfortable` é a identidade: o respiro é exatamente o de `--sarak-layout-padding` |
+| `isSplitViewEnabled` | liga a vista dividida, que só aparece com o slot `secondaryContent` preenchido (§2.2) |
 | `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
 | `navItemActiveColor` | **texto e ícone** do item ativo, nas duas orientações e nos dois cromos — é o token que carrega o sinal visível |
 | `sidebarHoverColor` · `topbarHoverColor` | fundo do item sob o ponteiro, cada orientação o seu; o texto também muda, de `--text-muted` para `--sarak-text-main` |
@@ -289,8 +293,7 @@ fora, e é limite declarado, não descuido.
 
 **A contagem é fonte viva: o próprio comando a imprime.** O que esta spec fixa é a *relação* — todo token
 coberto tem consumidor no cromo, e o que não tem está em `ORPHAN_TOKENS`, cada um com origem
-`arquivo:linha`. A dívida declarada hoje são tokens de layout que o painel oferece e o
-cromo não lê.
+`arquivo:linha`. **Hoje a lista está vazia**: todo token coberto tem consumidor.
 
 `SarakMenuItem`, `SarakSearch` e `SarakShellNav` contam como parte do cromo, porque ele os compõe. **CSS global não conta:** mapear uma variável em `src/styles/` não é
 consumo do cromo — se contasse, o gate aprovaria um cromo que nunca lê o token, que é exatamente a lacuna
