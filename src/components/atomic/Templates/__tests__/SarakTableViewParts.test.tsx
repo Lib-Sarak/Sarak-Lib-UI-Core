@@ -42,13 +42,12 @@ const createViewProps = (onRowClick: (row: Row) => void): SarakTableViewProps<Ro
         onRowClick,
         cellDensityClass: 'cell',
         containerClassName: 'container',
-        headerClassName: 'header',
     };
 };
 
 describe('SarakTableToolbar', () => {
     it('apresenta o título e a contagem atual de linhas', () => {
-        render(<SarakUIProvider><SarakTableToolbar {...createViewProps(vi.fn())} label="Pessoas" /></SarakUIProvider>);
+        render(<SarakUIProvider><SarakTableToolbar {...createViewProps(vi.fn())} headerClassName="header" label="Pessoas" /></SarakUIProvider>);
 
         expect(screen.getByRole('heading', { name: 'Pessoas' })).toBeInTheDocument();
         expect(screen.getByText(/1/)).toBeInTheDocument();

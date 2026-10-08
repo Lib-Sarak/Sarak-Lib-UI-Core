@@ -37,14 +37,15 @@ export interface SarakTableViewProps<TData extends Record<string, unknown>> {
     cellDensityClass: string;
     containerClassName: string;
     containerStyle?: CSSProperties;
-    headerClassName: string;
-    headerStyle?: CSSProperties;
 }
 
 type SarakTableToolbarProps<TData extends Record<string, unknown>> = Pick<
     SarakTableViewProps<TData>,
-    'label' | 'role' | 'density' | 'filteredData' | 'loading' | 'showSearch' | 'canRefresh' | 'search' | 'onSearchChange' | 'onRefresh' | 'headerClassName' | 'headerStyle'
->;
+    'label' | 'role' | 'density' | 'filteredData' | 'loading' | 'showSearch' | 'canRefresh' | 'search' | 'onSearchChange' | 'onRefresh'
+> & {
+    headerClassName: string;
+    headerStyle?: CSSProperties;
+};
 
 const TableHeading = <TData extends Record<string, unknown>>({ label, role, density, filteredData }: SarakTableToolbarProps<TData>): ReactElement => {
     const text = useLibraryText();

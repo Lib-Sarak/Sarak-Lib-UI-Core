@@ -206,6 +206,56 @@ reprova: o código não muda.
 **Conclusão:** a plan está concluída. Commit **por caminho**. A síntese vai para o destino declarado na plan, com
 a autorização do dono.
 
+## Veredito — 2026-10-08 (commit barrado) — 🔴 Reprovado (reaberto)
+
+**Antes de gravar:** a §10 foi relida no disco: só o bloco anterior, deste revisor.
+
+O veredito anterior aprovou a plan **sem rodar todos os gates do Anel 1** (rodei dez, e faltou o
+`container-query-boundary:check`), falha deste revisor. O commit do dono foi barrado por ele:
+
+```
+[ERROR] 1 arquivo(s) chama(m) função que emite container query (@min-[…]) sem plantar @container no mesmo arquivo:
+  - src/components/atomic/Templates/useSarakTableViewModel.ts — usa getHeaderStyles
+```
+
+Rodei os 16 gates do Anel 1 sobre o worktree: só este falha.
+
+**Achado — a correção é exclusivamente este:**
+
+1. `src/components/atomic/Templates/useSarakTableViewModel.ts:38-40` chama `getHeaderStyles()`, que emite classe
+   `@min-[…]`, mas o `@container` está em outro arquivo (`SarakTableView.tsx:17`). O resultado na tela está certo
+   (o container é ancestral do cabeçalho), mas a regra é por arquivo, e o gate a cobra assim
+   ([[07-responsividade-e-multidispositivo]] §6.1, regra 1: quem emite a container query planta o container). Mova
+   a chamada de `getHeaderStyles` para o componente que planta o `@container` (`SarakTableView.tsx`) e tire do
+   view model o campo `headerStyle` que só a repassava. **Não** mexa no gate nem na allowlist dele.
+   `npm run container-query-boundary:check` → verde, e os testes de `SarakTable*` e `useSarakTableViewModel`
+   continuam passando.
+
+Ao fim, rode **os 16 gates do Anel 1** (a lista está em `.githooks/pre-commit`), `npx tsc --noEmit` e os testes de
+`src/components/atomic/Templates/`.
+
+## Veredito — 2026-10-08 (correção 1) — 🟢 Aprovado (plan concluída)
+
+**Antes de gravar:** a §10 foi relida no disco: só os blocos deste revisor.
+
+**Sobre o resumo:** o executor entregou o resumo da correção **na conversa**, não na §9. O ambiente dele bloqueou
+a edição de Markdown sem autorização expressa. O que ele declarou: `getHeaderStyles()` passou a ser chamado em
+`SarakTableView.tsx`, no mesmo arquivo do `@container`; `headerClassName` e `headerStyle` saíram do view model,
+com os tipos e testes da tabela e da barra ajustados; 16 de 16 gates, `tsc` e 45 arquivos de `Templates` verdes.
+Cada afirmação foi conferida abaixo contra o worktree.
+
+**O achado fechou, verificado por mim:**
+- `SarakTableView.tsx:13-14` chama `getHeaderStyles()`, e `:20` planta `@container`. `useSarakTableViewModel.ts`
+  não tem mais `getHeaderStyles`, `headerStyle` nem `headerClassName` (0 ocorrências).
+- Os **16 gates do Anel 1** de `.githooks/pre-commit`, rodados um a um → todos `OK`, inclusive o
+  `container-query-boundary:check`.
+- `npx tsc --noEmit` → 0 · `check-audit-baseline --with-tsc` → igual ao baseline.
+- `npx vitest run` → **404 arquivos, 2262 de 2262 verdes**, com 0 outros processos ativos na largada.
+- Sem `.vitest-temp-*` na raiz; o staged que o dono deixou (138 arquivos) não foi tocado.
+
+**Conclusão:** a plan está concluída. Commit **por caminho**. A síntese vai para `arquitetura/03-superficie-publica.md`,
+com a autorização do dono.
+
 ---
 
 # 11. Síntese

@@ -42,8 +42,6 @@ const createViewProps = (row: Row, onRowClick: (row: Row) => void): SarakTableVi
     cellDensityClass: 'cell',
     containerClassName: 'container',
     containerStyle: {},
-    headerClassName: 'header',
-    headerStyle: {},
 });
 
 describe('SarakTableView', () => {
@@ -52,11 +50,13 @@ describe('SarakTableView', () => {
         const onRowClick = vi.fn();
         const { container } = render(
             <SarakUIProvider>
-                <SarakTableView {...createViewProps(row, onRowClick)} />
+                <SarakTableView {...createViewProps(row, onRowClick)} label="Pessoas" />
             </SarakUIProvider>,
         );
 
         expect(screen.getByText('Beto').tagName).toBe('STRONG');
+        const toolbar = screen.getByRole('heading', { name: 'Pessoas' }).parentElement?.parentElement;
+        expect(toolbar?.className).toContain('@min-[768px]:flex-row');
         expect((container.querySelector('tbody td') as HTMLElement).style.textAlign).toBe('right');
         fireEvent.click(container.querySelector('tbody tr') as HTMLElement);
         expect(onRowClick).toHaveBeenCalledWith(row);

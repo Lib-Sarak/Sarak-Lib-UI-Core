@@ -13,8 +13,6 @@ interface SarakTableLayout {
     cellDensityClass: string;
     containerClassName: string;
     containerStyle: ReturnType<ReturnType<typeof useStructuralStyles>['getContainerStyles']>['style'];
-    headerClassName: string;
-    headerStyle: ReturnType<ReturnType<typeof useStructuralStyles>['getHeaderStyles']>['style'];
 }
 
 interface SarakTableColumns<TData> {
@@ -35,10 +33,9 @@ const useSarakTableLayout = (responsive: boolean): SarakTableLayout => {
     const { design } = useSarakUI();
     const device = useSarakDevice();
     const { cellDensityClass } = useTableLayoutStyles(design);
-    const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
+    const { getContainerStyles } = useStructuralStyles();
     const container = getContainerStyles();
-    const header = getHeaderStyles();
-    return { collapseToCards: responsive && device === 'smartphone', cellDensityClass, containerClassName: container.className, containerStyle: container.style, headerClassName: header.className, headerStyle: header.style };
+    return { collapseToCards: responsive && device === 'smartphone', cellDensityClass, containerClassName: container.className, containerStyle: container.style };
 };
 
 const createSarakTableColumns = <TData extends Record<string, unknown>>(
@@ -69,7 +66,7 @@ const createSarakTableViewProps = <TData extends Record<string, unknown>>({ prop
         search: tableData.search, onSearchChange: tableData.setSearch, onRefresh: () => void tableData.loadData(),
         onRetry: props.onRetry ?? (canRefresh ? () => void tableData.loadData() : undefined), onRowClick: props.onRowClick,
         emptyMessage: props.emptyMessage, cellDensityClass: layout.cellDensityClass, containerClassName: layout.containerClassName,
-        containerStyle: layout.containerStyle, headerClassName: layout.headerClassName, headerStyle: layout.headerStyle,
+        containerStyle: layout.containerStyle,
     };
 };
 
