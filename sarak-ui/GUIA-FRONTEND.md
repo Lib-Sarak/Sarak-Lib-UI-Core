@@ -606,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **359** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **364** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (105)
+### A.1 Componentes públicos (106)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -632,6 +632,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
 | Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
 | DataDisplay | **SarakActivityFeed** | `entries` · `label` · `className` |
+| DataDisplay | **SarakCalendar** | `events` · `month` · `onMonthChange` · `defaultMonth` · `weekStartsOn` · `onEventClick` · `onDayClick` · `renderEvent` · `maxEventsPerDay` · `label` · `className` |
 | DataDisplay | **SarakChecklist** | `items` · `onToggle` · `onAdd` · `onRemove` · `showProgress` · `label` · `className` |
 | DataDisplay | **SarakCommentThread** | `comments` · `onSubmit` · `onDelete` · `label` · `className` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |

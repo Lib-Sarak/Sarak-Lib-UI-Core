@@ -23,6 +23,7 @@ import {
     SarakAccordion,
     SarakAppChrome,
     SarakButton,
+    SarakCalendar,
     SarakCustomizationPanel,
     SarakInput,
     SarakRangeSlider,
@@ -163,6 +164,8 @@ const App: React.FC = () => {
  *   - `atomos`: os átomos de formulário e botão que escrevem estilo inline.
  *   - `select-grade`: `SarakSelect` sem e com `fullWidth`, cada um numa célula de grade que estica.
  *   - `painel`: um botão que monta o painel de customização carregado sob demanda.
+ *   - `calendario`: o `SarakCalendar` em dois contêineres, um largo e um estreito, para medir a
+ *     container query dele (ponto × título) e o texto do chip.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -215,12 +218,30 @@ const PanelScene: React.FC = () => {
     );
 };
 
+const CALENDAR_MONTH = new Date(2026, 9, 1);
+const CALENDAR_EVENTS = [
+    { id: 'sprint', title: 'Sprint review longo', start: '2026-10-07', end: '2026-10-09' },
+    { id: 'entrega', title: 'Entrega', start: '2026-10-14', tone: 'success' as const },
+];
+
+const CalendarScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="calendario-largo" style={{ width: '1000px' }}>
+            <SarakCalendar events={CALENDAR_EVENTS} defaultMonth={CALENDAR_MONTH} />
+        </div>
+        <div data-probe="calendario-estreito" style={{ width: '340px' }}>
+            <SarakCalendar events={CALENDAR_EVENTS} defaultMonth={CALENDAR_MONTH} />
+        </div>
+    </div>
+);
+
 const SCENES: Record<string, React.FC> = {
     textura: TextureScene,
     'sem-provider': NoProviderScene,
     atomos: AtomsScene,
     'select-grade': SelectGridScene,
     painel: PanelScene,
+    calendario: CalendarScene,
 };
 
 function renderScene(Scene: React.FC): React.ReactElement {

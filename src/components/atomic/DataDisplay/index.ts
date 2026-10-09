@@ -18,3 +18,5 @@ export * from './SarakChecklist';
 export * from './SarakCommentThread';
 export * from './SarakActivityFeed';
 export type { SarakTimestamp } from './relativeTime';
+// Calendário mensal de eventos.
+export * from './SarakCalendar';

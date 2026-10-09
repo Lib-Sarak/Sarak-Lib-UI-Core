@@ -2,7 +2,7 @@ import type { SarakLibraryLanguage } from './catalog.types';
 
 type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
-/** Blocos de detalhe do cartão: checklist, comentários, histórico e seletor de responsável. */
+/** Blocos de detalhe do cartão (checklist, comentários, histórico, responsável) e o calendário mensal. */
 export const CATALOG_PART_6 = {
     checklistLabel: {
         pt: 'Lista de verificação', en: 'Checklist', es: 'Lista de verificación',
@@ -71,5 +71,41 @@ export const CATALOG_PART_6 = {
     assigneeClear: {
         pt: 'Remover responsável {name}', en: 'Remove assignee {name}', es: 'Quitar responsable {name}',
         fr: 'Retirer le responsable {name}', de: 'Zuständigkeit von {name} entfernen', it: 'Rimuovi il responsabile {name}',
+    },
+    calendarLabel: {
+        pt: 'Calendário de {month}', en: 'Calendar for {month}', es: 'Calendario de {month}',
+        fr: 'Calendrier de {month}', de: 'Kalender für {month}', it: 'Calendario di {month}',
+    },
+    calendarPrevious: {
+        pt: 'Mês anterior', en: 'Previous month', es: 'Mes anterior',
+        fr: 'Mois précédent', de: 'Vorheriger Monat', it: 'Mese precedente',
+    },
+    calendarNext: {
+        pt: 'Próximo mês', en: 'Next month', es: 'Mes siguiente',
+        fr: 'Mois suivant', de: 'Nächster Monat', it: 'Mese successivo',
+    },
+    calendarToday: {
+        pt: 'Hoje', en: 'Today', es: 'Hoy',
+        fr: 'Aujourd’hui', de: 'Heute', it: 'Oggi',
+    },
+    calendarDayNoEvents: {
+        pt: '{date}, sem eventos', en: '{date}, no events', es: '{date}, sin eventos',
+        fr: '{date}, aucun événement', de: '{date}, keine Termine', it: '{date}, nessun evento',
+    },
+    calendarDayOneEvent: {
+        pt: '{date}, 1 evento', en: '{date}, 1 event', es: '{date}, 1 evento',
+        fr: '{date}, 1 événement', de: '{date}, 1 Termin', it: '{date}, 1 evento',
+    },
+    calendarDayEvents: {
+        pt: '{date}, {count} eventos', en: '{date}, {count} events', es: '{date}, {count} eventos',
+        fr: '{date}, {count} événements', de: '{date}, {count} Termine', it: '{date}, {count} eventi',
+    },
+    calendarMore: {
+        pt: '+{count}', en: '+{count}', es: '+{count}',
+        fr: '+{count}', de: '+{count}', it: '+{count}',
+    },
+    calendarMoreLabel: {
+        pt: 'Ver todos os eventos de {date}', en: 'See all events on {date}', es: 'Ver todos los eventos del {date}',
+        fr: 'Voir tous les événements du {date}', de: 'Alle Termine am {date} anzeigen', it: 'Vedi tutti gli eventi del {date}',
     },
 } satisfies Record<string, LibraryTextEntry>;

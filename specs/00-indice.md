@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🟡 Em execução | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre

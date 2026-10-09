@@ -888,6 +888,78 @@
         }
       ]
     },
+    "SarakCalendar": {
+      "propsInterface": "SarakCalendarProps",
+      "source": "src/components/atomic/DataDisplay/SarakCalendar/SarakCalendar.tsx",
+      "props": [
+        {
+          "name": "events",
+          "type": "SarakCalendarEvent[]",
+          "optional": false,
+          "doc": "Eventos do mês (e de fora dele: só os que tocam a grade visível aparecem). Vazio mostra a grade sem chips."
+        },
+        {
+          "name": "month",
+          "type": "Date",
+          "optional": true,
+          "doc": "Mês exibido, no modo controlado: a navegação chama `onMonthChange` e quem chama atualiza esta prop."
+        },
+        {
+          "name": "onMonthChange",
+          "type": "(month: Date) => void",
+          "optional": true,
+          "doc": "Chamado a cada troca de mês com o primeiro dia do novo mês, nos dois modos."
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "optional": true,
+          "doc": "Mês inicial no modo não controlado (sem `month`). Omitido, abre no mês de hoje."
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "SarakWeekStart",
+          "optional": true,
+          "doc": "Primeira coluna da semana: `0` domingo, `1` segunda. Omitido, `0`."
+        },
+        {
+          "name": "onEventClick",
+          "type": "(event: SarakCalendarEvent) => void",
+          "optional": true,
+          "doc": "Clique ou `Enter` num chip de evento."
+        },
+        {
+          "name": "onDayClick",
+          "type": "(date: Date) => void",
+          "optional": true,
+          "doc": "Clique ou `Enter` num dia, toque no dia em contêiner estreito, e o \"+N\" do dia cheio."
+        },
+        {
+          "name": "renderEvent",
+          "type": "(event: SarakCalendarEvent) => React.ReactNode",
+          "optional": true,
+          "doc": "Conteúdo do chip no lugar do título. O nome acessível do chip continua sendo o título."
+        },
+        {
+          "name": "maxEventsPerDay",
+          "type": "number",
+          "optional": true,
+          "doc": "Quantos chips um dia mostra antes do \"+N\". Omitido, `3`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da grade. Omitido, usa o texto traduzido \"Calendário de <mês e ano>\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakCard": {
       "propsInterface": "SarakCardProps",
       "source": "src/components/atomic/Cards/SarakCard.tsx",

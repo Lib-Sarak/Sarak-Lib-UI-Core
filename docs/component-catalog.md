@@ -90,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (102)
+## Componentes públicos (103)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -336,6 +336,24 @@ Props (`SarakButtonProps` — `src/components/atomic/Buttons/SarakButton.tsx`):
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | não | Define a escala de altura, espaçamento e texto; sem a prop, usa `md`. |
 
 Estende: `ButtonHTMLAttributes<HTMLButtonElement>`
+
+### SarakCalendar
+
+Props (`SarakCalendarProps` — `src/components/atomic/DataDisplay/SarakCalendar/SarakCalendar.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `events` | `SarakCalendarEvent[]` | sim | Eventos do mês (e de fora dele: só os que tocam a grade visível aparecem). Vazio mostra a grade sem chips. |
+| `month` | `Date` | não | Mês exibido, no modo controlado: a navegação chama `onMonthChange` e quem chama atualiza esta prop. |
+| `onMonthChange` | `(month: Date) => void` | não | Chamado a cada troca de mês com o primeiro dia do novo mês, nos dois modos. |
+| `defaultMonth` | `Date` | não | Mês inicial no modo não controlado (sem `month`). Omitido, abre no mês de hoje. |
+| `weekStartsOn` | `SarakWeekStart` | não | Primeira coluna da semana: `0` domingo, `1` segunda. Omitido, `0`. |
+| `onEventClick` | `(event: SarakCalendarEvent) => void` | não | Clique ou `Enter` num chip de evento. |
+| `onDayClick` | `(date: Date) => void` | não | Clique ou `Enter` num dia, toque no dia em contêiner estreito, e o "+N" do dia cheio. |
+| `renderEvent` | `(event: SarakCalendarEvent) => React.ReactNode` | não | Conteúdo do chip no lugar do título. O nome acessível do chip continua sendo o título. |
+| `maxEventsPerDay` | `number` | não | Quantos chips um dia mostra antes do "+N". Omitido, `3`. |
+| `label` | `string` | não | Nome acessível da grade. Omitido, usa o texto traduzido "Calendário de <mês e ano>". |
+| `className` | `string` | não |  |
 
 ### SarakCard
 

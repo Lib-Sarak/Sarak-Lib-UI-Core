@@ -83,7 +83,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 102,
+      "count": 103,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -101,6 +101,7 @@
         "SarakBadge",
         "SarakBreadcrumbs",
         "SarakButton",
+        "SarakCalendar",
         "SarakCard",
         "SarakCardBody",
         "SarakCardFooter",

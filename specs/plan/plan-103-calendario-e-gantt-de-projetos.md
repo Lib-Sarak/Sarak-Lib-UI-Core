@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar à lib as visões de calendário mensal e de Gantt para a gestão de projetos"
 objetivo: "Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao"
 dominio: "Sarak-Lib-UI-Core / DataDisplay / Gestão de projetos"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "calendario", "gantt", "gestao-de-projetos", "visoes"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -193,11 +193,288 @@ recorrência, sem fuso; `onTaskChange` reservado.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — Lote 1 (calendário mensal) — 2026-10-09
+
+**Resultado:** Concluído com pendências (a medição em contêiner estreito é do revisor, no navegador; o lote 2 não foi tocado)
+
+**Estado do worktree ao iniciar**
+(limpo) — `git status --short` vazio.
+
+> A plan chegou em `🔴 A executar`, não em `🟡`. O dono despachou o lote 1 explicitamente na conversa; segui sem
+> mover o status para `🟡` e o passo agora a `🟠`, como pedido.
+
+**O que foi feito**
+- `SarakCalendar/calendarEvents.ts` (novo): lógica pura. `parseCalendarDay` lê `AAAA-MM-DD` como meia-noite LOCAL
+  (`new Date(y, m-1, d)`, não `new Date('AAAA-MM-DD')`, que é UTC) e rejeita dia inexistente (`2026-02-30`);
+  `distributeCalendarEvents` põe um item por dia coberto com `isStart`/`isEnd`, recorta nas bordas da grade,
+  trata `end < start` como um dia só e descarta início ilegível; `calendarToneColor` mapeia os 6 tons para
+  `var(--sarak-…, var(--theme-…, currentColor))` (sem hexadecimal); `moveCalendarFocus` (setas ±1/±7 dias,
+  PageUp/PageDown ±1 mês) usa `Map` para a tecla não alcançar `Object.prototype`.
+- `SarakCalendar/CalendarDayCell.tsx` (novo): `role="gridcell"` com `aria-label` = data por extenso + contagem
+  (`dayAriaLabel`: zero/um/vários), `aria-current="date"` em hoje, `data-outside` esmaecido, foco itinerante
+  (só o dia ativo e os chips dele têm `tabIndex=0`). Chip = `SarakButton` (composição atômica) com
+  `data-event-start`/`data-event-end`; clique e `Enter` no chip chamam `onEventClick` e param a propagação (o
+  `Enter` não vira `onDayClick`). "+N" acima de `maxEvents` chama `onDayClick`.
+- `SarakCalendar/calendarLayout.ts` (novo): as 4 classes literais de container query (altura do dia, chip
+  ponto×título, toque) a partir de `@min-[768px]` (= `BREAKPOINT_TABLET`). Ver *Decisões*.
+- `SarakCalendar/SarakCalendar.tsx` (novo): grade de `buildMonthMatrix`; `role="grid"` → `role="row"` →
+  `columnheader`/`gridcell`; mês/ano, dias da semana e data por extenso por `Intl.DateTimeFormat` no idioma de
+  `resolveLibraryLanguage(useSarakUIOptional()?.design?.language)` (R34: sem Provider, português); cabeçalho
+  com `SarakIconButton` + `SarakIcon` (`ChevronLeft`/`ChevronRight`) e `SarakButton` "Hoje"; modo controlado
+  (`month` + `onMonthChange`) e não controlado (`defaultMonth`, avisando `onMonthChange` também); o foco do DOM
+  só se move por teclado (ref `pendingFocus`), e cruzar a borda do mês vira a página. Planta `@container` na raiz.
+- `SarakCalendar/index.ts` (novo) e `DataDisplay/index.ts:17-18`: exportam `SarakCalendar`, `SarakCalendarProps`,
+  `SarakCalendarEvent`, `SarakCalendarTone`, `SarakCalendarDate`. A célula, o layout e a lógica pura ficam internos.
+- `src/core/i18n/catalogEntries.part6.ts`: 9 chaves `calendar*` nos 6 idiomas (rótulo da grade, anterior,
+  próximo, hoje, contagem zero/um/vários, "+N" e o rótulo dele).
+- Testes 1:1 em `SarakCalendar/__tests__/`: `SarakCalendar.test.tsx` (12), `CalendarDayCell.test.tsx` (7),
+  `calendarEvents.test.ts` (12), `calendarLayout.test.ts` (3, amarra o literal à forma interpolada com
+  `BREAKPOINT_TABLET`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakCalendar/SarakCalendar.tsx` | criado | componente (221 linhas) |
+| `src/components/atomic/DataDisplay/SarakCalendar/CalendarDayCell.tsx` | criado | célula do dia e chip (194 linhas) |
+| `src/components/atomic/DataDisplay/SarakCalendar/calendarEvents.ts` | criado | lógica pura (105 linhas) |
+| `src/components/atomic/DataDisplay/SarakCalendar/calendarLayout.ts` | criado | classes de container query (21 linhas) |
+| `src/components/atomic/DataDisplay/SarakCalendar/index.ts` | criado | barril da pasta |
+| `src/components/atomic/DataDisplay/SarakCalendar/__tests__/*` (4) | criado | testes |
+| `src/components/atomic/DataDisplay/index.ts` | alterado | `export * from './SarakCalendar'` |
+| `src/core/i18n/catalogEntries.part6.ts` | alterado | 9 chaves `calendar*` + cabeçalho |
+| `docs/component-catalog.{json,md}` | regenerado | `npm run catalog` (103 componentes) |
+| `sarak-ui/*` (4) | regenerado | `npm run guide` (106 componentes) |
+| `sarak-dev/*` (3) | regenerado | `npm run dev-kit` |
+| `dist/` (39 entradas) · `src/buildInfo.ts` · `src/core/Provider/buildInfo.ts` | regenerado | `npm run build` (chunks com hash novo, carimbo de build) |
+
+`calendarGrid.ts`, `src/index.ts` e `package.json`: **não alterados** — `buildMonthMatrix` e `SarakWeekStart` já eram
+exportados, e `src/index.ts` já reexporta `DataDisplay` inteiro.
+
+**Verificações executadas** (uma por vez; contagem de processos = 0 antes de cada build/vitest)
+- `npx vitest run src/components/atomic/DataDisplay/SarakCalendar` → 4 arquivos, 34/34.
+- **Mutação do lote 1** (`const to = from;` em `distributeCalendarEvents`, cópia salva e restaurada, `cmp` idêntico) →
+  3 falhas: os dois testes de 3 dias (`calendarEvents` e `SarakCalendar`) e o de recorte na borda.
+- `npm run catalog` → 103 componentes · `npm run guide` → 106 componentes, 437 tokens, 117 ícones · `npm run dev-kit` → 30 gates.
+- `npm run build` → exit 0. Conferido no `dist/sarak.css`: as classes `@min-[768px]` (`pointer-events-auto`, `block`,
+  `hidden`, `w-full`, `min-h-[calc(…*6)]`) e `min-h-[calc(…*3)]` foram geradas.
+- `npx vitest run` → **426 arquivos, 2536 testes, 0 falhas** (707 s). Os avisos `Could not parse CSS stylesheet` do jsdom
+  aparecem em vários arquivos da suíte.
+- `npx tsc --noEmit` → 0 erros.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+  Antes da extração do `calendarLayout.ts` deu **regressão** `auditor_hardcoded.valor: 0 -> 4` (o `768px` das classes
+  dentro do `.tsx`); ver *Decisões*.
+- Gates do `.githooks/pre-commit`, um a um: `plan-index-sync`, `dev-kit --check`, `barrel-parity --check`,
+  `catalog --check`, `zero-brand --check`, `consumer-kit --check`, `no-deep-import`, `gate-limits`,
+  `container-query-literal`, `container-query-boundary`, `persistence-doc-identifiers`, `class-merge`, `icon-port`,
+  `chrome-token-parity`, `trail-citation --staged`, `verificar_commit.py`, `generate-token-types --check` → todos OK.
+  `check-agent-git-write` → FAIL, por definição em sessão de agente. `trail-citation --staged` não vê nada sem
+  staged; conferido à mão: `grep -rniE "plan-?[0-9]|veredito"` na pasta nova → vazio.
+- `grep -rnE "#[0-9a-fA-F]{3,8}\b" src/components/atomic/DataDisplay/SarakCalendar` → vazio.
+
+**Critérios de aceite (lote 1)**
+- [x] Evento de 3 dias em 3 dias, primeiro e último marcados; "+N" acima de `maxEventsPerDay` chama `onDayClick` —
+  `SarakCalendar.test.tsx` ("um evento de 3 dias…", "acima de maxEventsPerDay…"), `CalendarDayCell.test.tsx` ("+N").
+- [x] Anterior / hoje / próximo: não controlado muda sozinho e avisa; controlado só chama `onMonthChange` — testes
+  "não controlado…" e "controlado…".
+- [x] Setas movem o foco; `Enter` no dia → `onDayClick`, no chip → `onEventClick` (sem `onDayClick`); `role="grid"`;
+  `aria-label` com data e contagem — testes "teclado: …" (3) e "cada dia tem aria-label…".
+- [x] `weekStartsOn` 0 e 1 mudam a 1.ª coluna (`2026-09-27` × `2026-09-28`) e os nomes saem de `Intl` — teste "weekStartsOn…".
+- [ ] Contêiner estreito: ponto e nada rolando na horizontal — **não medido em navegador** (fica para o revisor, como a
+  plan define). O que existe: `@container` na raiz (teste), classes literais amarradas ao breakpoint (teste), regras
+  geradas no CSS publicado (conferido), grade `repeat(7, minmax(0, 1fr))` com `minWidth: 0` e chip com `overflow: hidden`.
+- [x] Nenhum hexadecimal no componente — grep vazio; tons testados em `calendarEvents.test.ts`.
+- [x] `SarakDatePicker` segue verde — `calendarGrid.ts` intocado; suíte completa verde.
+
+**Decisões e suposições**
+- **`calendarLayout.ts`, um 5.º arquivo além dos quatro do §3.1** (dentro da pasta nova, que o despacho deu como
+  território). Com as classes de container query no `.tsx`, o `auditor_hardcoded` acusava o `768px` da condição
+  (0 → 4). A base inteira guarda essas classes literais em `.ts` (`kanbanLayout.ts`, hooks de layout): nenhum `.tsx`
+  de produção carrega `@min-[768px]` literal. Segui esse idioma. **Para o revisor julgar:** isso coincide com o ponto
+  cego declarado do auditor (ele só varre `.tsx`); a condição não pode ser `var()` (07 §6.1, limite do Tailwind).
+- Breakpoint do estreito = `BREAKPOINT_TABLET` (768), a fronteira mobile/tablet das três faixas.
+- No estreito o chip fica `pointer-events: none`, para que o toque em cima do ponto chame `onDayClick` (plan §5.5);
+  pelo teclado o chip continua focável.
+- `onMonthChange` também é avisado no modo não controlado (é notificação); `month` aceita só `Date`.
+- `meta?: unknown`: dado opaco de quem chama, devolvido intacto em `onEventClick`.
+- O foco do DOM só se move por teclado: montar o calendário ou trocar de mês pelos botões não rouba o foco. Com o mês
+  trocado pelos botões, o dia tabulável vira o 1.º do mês.
+- "+N" visível vem do catálogo (`calendarMore`), igual nos 6 idiomas; o nome acessível é `calendarMoreLabel`.
+
+**Achados fora do escopo (não corrigidos)**
+- `gates/scripts/audit/auditor_hardcoded.mjs`: só varre `.tsx` (a nota no próprio arquivo diz que é efeito do filtro de
+  extensão e não uma isenção documentada). O idioma "classe de container query em `.ts`" depende disso.
+- `src/components/atomic/Feedback/SarakBadge.tsx:57-70`: cores Tailwind fixas (`green-500`, `red-500`…), não tokens.
+  Por isso o `tone` do calendário não reusa o `SarakBadge`.
+
+**Pendências / riscos**
+- Não medido em navegador real: contêiner estreito (ponto, nenhuma rolagem horizontal, toque no dia), a aparência dos
+  chips sobre o preset `xs` do `SarakButton` (o `style` passado substitui o `dynamicStyle` do átomo, e o `<span>` interno
+  dele não é alcançável, daí o `overflow: hidden`), o anel de foco das células e a leitura por leitor de tela. Também não
+  conferi a renderização em temas diferentes.
+- Lote 2 (Gantt) não iniciado, como pedido.
+
+## Resumo da execução (correção 1 do lote 1) — 2026-10-09
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/plan/plan-103-calendario-e-gantt-de-projetos.md
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/index.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/i18n/catalogEntries.part6.ts
+?? src/components/atomic/DataDisplay/SarakCalendar/
+```
+(mais as entradas de `dist/` do build do lote 1). `specs/00-backlog.md` e `specs/00-indice.md` são do revisor e não foram tocados.
+
+**Um item por achado**
+
+1. **Ponto visível no largo.** Tirei o `display: 'inline-block'` do estilo inline do ponto (`CalendarDayCell.tsx:95-96`,
+   com o motivo no comentário). Quem decide o `display` agora é a classe, nos dois tamanhos:
+   `CALENDAR_CHIP_DOT_CLASS = 'inline-block @min-[768px]:hidden'` (`calendarLayout.ts:26`). O `inline-block` de base
+   continua necessário: sem ele o `span` é inline, ignora a largura, e o ponto sumiria no estreito com caixa vazia.
+   Conferi os outros estilos inline do chip contra as classes de container query: o `chipStyle` (padding, altura e largura
+   mínimas, alinhamento, fundo, borda, cor, fonte, `overflow`), o `labelStyle` (padding, alinhamento, fundo, bordas, raios)
+   e o `cellStyle` (sem `minHeight`) não declaram `display`, `width`, `min-height` nem `pointer-events`, que são as
+   propriedades das classes `@min-[768px]` (`w-full`, `pointer-events-auto`, `block`, `hidden`, `min-h-[…]`). Nenhuma
+   contradição restante.
+2. **Caixa alta, peso e espaçamento herdados do botão.** `CALENDAR_CHIP_CLASS` (`calendarLayout.ts:19-20`) passou a abrir
+   com `normal-case tracking-normal font-normal`. O `SarakButton` emite `font-black uppercase tracking-widest` sem condição
+   (`SarakButton.tsx:57`), e o `mergeSarakClasses` faz a classe do chamador vencer (R35). Teste em jsdom
+   (`CalendarDayCell.test.tsx:85`): as três classes do átomo não estão no chip e as três comuns estão.
+3. **"Outubro De 2026".** Tirei o `textTransform: 'capitalize'` do título do cabeçalho. O texto exibido agora é
+   `capitalizeFirst(monthText, formats.language)` (`SarakCalendar.tsx:93`, `:187`): maiúscula só na primeira letra, com
+   `toLocaleUpperCase` no idioma da lib. O `aria-label` da grade usa o texto cru do `Intl` (`:192`), para não ficar
+   "Calendário de Outubro de 2026". Conferido nos seis idiomas do catálogo (`node`, `Intl`, outubro de 2026):
+   pt `Outubro de 2026` · en `October 2026` · es `Octubre de 2026` · fr `Octobre 2026` · de `Oktober 2026` ·
+   it `Ottobre 2026`. Os mesmos seis estão no teste (`SarakCalendar.test.tsx:39`), mais o caso que recusa
+   `Outubro De 2026` (`:33`). O `capitalize` dos nomes dos dias da semana (`SarakCalendar.tsx:57`) ficou: cada um é
+   uma palavra só, e o achado é do título.
+4. **Caso de navegador.** Criei a cena `?cena=calendario` em `browser-tests/fixtures/harness-entry.tsx:227-244`, com o
+   `SarakCalendar` dentro do `SarakUIProvider` em dois contêineres (`data-probe="calendario-largo"`, 1000 px, e
+   `"calendario-estreito"`, 340 px), mês fixo (outubro de 2026) e dois eventos, um deles de 3 dias. O spec irmão novo é
+   `browser-tests/calendario.spec.ts`, com limites declarados (R18). No estreito ele cobra: `scrollWidth ≤ clientWidth`,
+   ponto com `display` diferente de `none` **e largura > 0**, título com `display: none`. No largo: ponto com
+   `display: none`, título visível e `text-transform: none` no chip. Os casos existentes não foram editados.
+   - **Vermelho**, contra o `dist/` do lote 1 (gerado às 16:27, antes da correção):
+     `npx playwright test --config=browser-tests/playwright.config.ts browser-tests/calendario.spec.ts` → **2 failed,
+     2 passed**. Largo, ponto: `Expected: "none"`, `Received: "inline-block"`. Largo, chip: `Expected: "none"`,
+     `Received: "uppercase"`. Os dois do estreito passaram, como no navegador do revisor.
+   - **Verde**, depois de `npm run build`: `npx playwright test --config=browser-tests/playwright.config.ts` (o diretório
+     inteiro) → **55 passed**, os 4 do calendário entre eles.
+
+**Arquivos alterados nesta rodada**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakCalendar/CalendarDayCell.tsx` | alterado | sem `display` inline no ponto |
+| `src/components/atomic/DataDisplay/SarakCalendar/calendarLayout.ts` | alterado | chip com texto comum; ponto `inline-block` de base |
+| `src/components/atomic/DataDisplay/SarakCalendar/SarakCalendar.tsx` | alterado | `capitalizeFirst`; título sem `text-transform`; `aria-label` com o texto cru |
+| `src/components/atomic/DataDisplay/SarakCalendar/__tests__/{SarakCalendar,CalendarDayCell}.test.tsx`, `calendarLayout.test.ts` | alterado | literais novos, título capitalizado, 3 casos novos |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cena `calendario` |
+| `browser-tests/calendario.spec.ts` | criado | 4 casos de navegador |
+| `dist/` · `src/buildInfo.ts` · `src/core/Provider/buildInfo.ts` | regenerado | `npm run build` |
+
+**Verificações executadas** (uma por vez; contagem de processos = 0 antes de cada vitest, build e playwright)
+- `npx vitest run src/components/atomic/DataDisplay/SarakCalendar` → 4 arquivos, **37/37** (eram 34).
+- `npm run build` → exit 0.
+- Playwright: vermelho e verde, como no item 4.
+- Superfície pública sem mudança (`capitalizeFirst` não sai pelo barril): `catalog --check`, `consumer-kit --check`,
+  `dev-kit --check` e `barrel-parity --check` → OK, sem regenerar.
+- `container-query-literal`, `class-merge` e `gate-limits` → OK.
+- `npx tsc --noEmit` → 0 erros.
+- `check-audit-baseline --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- R36 (`grep -rniE "plan-?[0-9]|veredito"` nos arquivos tocados) e hexadecimal na pasta → vazios.
+- Suíte completa do vitest **não** rodada nesta rodada; o prompt pediu só a pasta do calendário.
+
+**Decisões e suposições**
+- Peso comum = `font-normal`.
+- O "+N" também é um `SarakButton` e herda as mesmas classes, mas não tem letra. O achado 2 nomeia o chip, então o "+N"
+  ficou como estava.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo.
+
+**Pendências / riscos**
+- O caso de navegador mede só o tema default e o Chromium (limites declarados no spec). Teclado, foco e toque seguem
+  medidos só em jsdom.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-09 (lote 1) — 🔴 Reprovado
+
+**Medido pelo revisor no navegador (§7), sem tocar o repositório:** um harness numa pasta temporária, empacotado
+pelo esbuild contra o `dist/` do executor, com o `SarakCalendar` dentro do `SarakUIProvider`, 12 eventos (2 de 3
+dias, 4 no mesmo dia), em dois contêineres — 1000 px e 340 px —, no Chromium do Playwright.
+
+- **Estreito (340 px), o que a plan pede:** nenhuma rolagem horizontal (`scrollWidth` 340 = `clientWidth` 340); o
+  chip vira um ponto de 9 px com `pointer-events: none`; tocar em cima dele chama `onDayClick` com o dia. "+2" acima
+  do limite; hoje marcado. ✅
+- **Largo (1000 px):** sem rolagem; o clique no chip chama `onEventClick` com o evento; os eventos de 3 dias cobrem
+  os 3 dias. ✅
+- A lógica (`calendarEvents.ts`), o teclado, o `role="grid"`, o idioma por `Intl`, o modo controlado e não
+  controlado e a mutação do lote 1 (3 falhas) conferem com o resumo. O `calendarLayout.ts` em `.ts` segue o idioma
+  da base (`kanbanLayout.ts`) e o limite do `auditor_hardcoded` (só `.tsx`) — aceito; o limite vai ao backlog.
+
+**Achados — os três vistos só em navegador**
+
+1. **O ponto não some no contêiner largo.** O ponto tem a classe `@min-[768px]:hidden` (`CALENDAR_CHIP_DOT_CLASS`),
+   mas o próprio estilo inline dele declara `display: 'inline-block'` (`CalendarDayCell.tsx:96`), e o estilo inline
+   vence a classe: no largo, o ponto (9 px) aparece junto do título em todo chip — acima do chip, nos eventos de
+   vários dias. O título, que não tem `display` inline, obedece à container query. Tire o `display` do estilo
+   inline e deixe a classe decidir nos dois tamanhos.
+2. **O título do evento sai em caixa alta, negrito pesado e espaçamento largo, e corta cedo** ("SPRINT REVIEW LO"
+   em 137 px). O chip é um `SarakButton`, e herda `font-black uppercase tracking-widest` do átomo. Título de evento é
+   conteúdo, não ação: o chip passa `normal-case tracking-normal` e um peso de texto comum por `className` (a classe
+   do chamador vence a do átomo — R35), como o painel faz nos rótulos.
+3. **O cabeçalho escreve "Outubro De 2026".** O `textTransform: 'capitalize'` (`SarakCalendar.tsx:102`) põe em
+   maiúscula **cada** palavra do texto do `Intl` ("outubro de 2026"); em português a preposição fica minúscula.
+   Capitalize só a primeira letra, no texto — e confira que o mesmo não ocorre em outro idioma do catálogo.
+4. **Prova durável.** Os três escaparam do `jsdom`. Acrescente um caso de navegador para o calendário em
+   `browser-tests/` (cena nova no `harness-entry.tsx` por `?cena=`, num `.spec.ts` irmão ou no
+   `css-que-so-o-navegador-mede.spec.ts`), com o calendário dentro do Provider em dois contêineres: no estreito,
+   nenhuma rolagem horizontal, ponto visível e título escondido; no largo, ponto escondido, título visível e
+   `text-transform: none` no chip. Mostre o caso **vermelho** contra o `dist/` de antes da correção e verde depois.
+   Autorizado tocar `browser-tests/` só para isso; os casos que já existem continuam sem edição.
+
+**Para o backlog:** itens 21 (`auditor_hardcoded` só varre `.tsx`) e 22 (`SarakBadge` com cores Tailwind fixas).
+
+Status: `🔵 Em correção`.
+
+## Veredito — 2026-10-09 (lote 1, correção 1) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Medido de novo pelo revisor no navegador**, com o mesmo harness temporário (calendário dentro do Provider, 1000 e
+340 px), contra o `dist/` desta rodada: no largo, o ponto não aparece mais entre os elementos visíveis do dia, e o
+chip computa `text-transform: none`, sem `font-black` nem `tracking-widest` (os títulos leem "Sprint review longa");
+o cabeçalho diz "Outubro de 2026". O estreito segue certo: nenhuma rolagem horizontal (340 = 340), ponto de 9 px com
+`pointer-events: none`, toque no ponto chama `onDayClick`; no largo, o clique no chip chama `onEventClick`.
+`browser-tests/calendario.spec.ts` → **4/4**. O executor mostrou o caso vermelho contra o `dist/` anterior (largo: o
+ponto `inline-block` e o chip `uppercase`) e 55/55 no diretório inteiro depois.
+
+**Os quatro achados fecharam.** O `display` saiu do estilo inline do ponto, e a classe decide nos dois tamanhos
+(`inline-block @min-[768px]:hidden`); o chip passa `normal-case tracking-normal font-normal` (R35), com teste em
+jsdom; o título capitaliza só a primeira letra no idioma da lib (os seis idiomas testados), e o `aria-label` usa o
+texto cru do `Intl`; o caso de navegador ficou como regressão.
+
+**Aviso, sem achado:** o evento de tom `neutral` desenha só o texto, sem fundo nem marca lateral de chip — fica
+distinto dos outros cinco tons. Avaliar no lote 2, se o Gantt reusar os tons.
+
+**Liberação parcial.** Status volta a `🟡 Em execução`; o lote 2 (o Gantt) pode ser despachado.
 
 ---
 
