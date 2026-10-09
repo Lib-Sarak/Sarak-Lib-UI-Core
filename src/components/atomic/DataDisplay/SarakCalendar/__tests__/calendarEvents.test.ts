@@ -84,6 +84,13 @@ describe('calendarToneColor', () => {
         }
         expect(calendarToneColor(undefined)).toBe(calendarToneColor('primary'));
     });
+
+    it('tom fora da união (dado solto) cai em primary, sem alcançar Object.prototype', () => {
+        const loose = (value: string) => value as SarakCalendarTone;
+        expect(calendarToneColor(loose('neutral'))).toBe(calendarToneColor('primary'));
+        expect(calendarToneColor(loose('constructor'))).toBe(calendarToneColor('primary'));
+        expect(calendarToneColor(loose('toString'))).toBe(calendarToneColor('primary'));
+    });
 });
 
 describe('moveCalendarFocus', () => {

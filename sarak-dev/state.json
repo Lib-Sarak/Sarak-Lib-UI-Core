@@ -83,7 +83,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 103,
+      "count": 104,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -134,6 +134,7 @@
         "SarakFlowEngine",
         "SarakForm",
         "SarakFormGroup",
+        "SarakGantt",
         "SarakGrid",
         "SarakHelpButton",
         "SarakHidden",

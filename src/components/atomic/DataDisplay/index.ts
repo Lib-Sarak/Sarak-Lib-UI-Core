@@ -20,3 +20,5 @@ export * from './SarakActivityFeed';
 export type { SarakTimestamp } from './relativeTime';
 // Calendário mensal de eventos.
 export * from './SarakCalendar';
+// Cronograma (Gantt).
+export * from './SarakGantt';

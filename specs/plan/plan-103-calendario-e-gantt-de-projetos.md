@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar à lib as visões de calendário mensal e de Gantt para a gestão de projetos"
 objetivo: "Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao"
 dominio: "Sarak-Lib-UI-Core / DataDisplay / Gestão de projetos"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "calendario", "gantt", "gestao-de-projetos", "visoes"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -410,6 +410,322 @@ exportados, e `src/index.ts` já reexporta `DataDisplay` inteiro.
 - O caso de navegador mede só o tema default e o Chromium (limites declarados no spec). Teclado, foco e toque seguem
   medidos só em jsdom.
 
+## Resumo da execução — Lote 2 (Gantt) — 2026-10-09
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+(limpo) — `git status --short` vazio (o lote 1 já estava commitado, `b995e291`).
+
+**O que foi feito**
+- `SarakGantt/ganttScale.ts` (novo, função pura): `ganttDateToPixel` conta **dias de calendário**
+  (`differenceInCalendarDays`, imune a horário de verão) × pixels por dia (`GANTT_DAY_WIDTH`: dia 32, semana 12,
+  mês 4); `ganttPixelToDate` devolve o dia que **contém** o pixel (`Math.floor`). Também `ganttBarGeometry` (fim
+  inclusive), `ganttRangeWidth`, `resolveGanttRange` (margem por escala: ±2 dias, semanas inteiras de segunda com
+  1 de folga, meses inteiros; `rangeStart`/`rangeEnd` vencem; sem tarefas, parte de hoje), `buildGanttTicks`
+  (recortadas nas bordas) e `ganttToneColor`, que reusa as cores do calendário e faz **todo tom desconhecido**
+  (o `neutral` do aviso do veredito, ou `constructor`) cair em `primary`. A barra nunca fica sem cor.
+- `SarakGantt/ganttTasks.ts` (novo, puro): tipo público `SarakGanttTask`; `normalizeGanttTasks` (dia local, início
+  ilegível descartado, fim ilegível ou invertido vira o dia do início); `resolveGanttDependencies` devolve **pares**
+  término → início, descarta dependência de si mesma e repetida, e põe id inexistente em `missing`. Nada percorre o
+  grafo, então um ciclo desenha duas setas e termina. `ganttProgress` recorta em 0–100.
+- `SarakGantt/GanttDependencies.tsx` (novo): setas em SVG (`aria-hidden`). O `x` vem da escala, em pixels; o `y` vem
+  em **porcentagem** da altura das linhas (`(i + 0,5) / n`), porque toda linha tem a mesma altura de token. Assim
+  nenhuma altura é medida em JS. O marcador da ponta tem id por instância (`useId`).
+- `SarakGantt/GanttTimeline.tsx` (novo): cabeçalho de datas `sticky` no topo; uma linha por tarefa; barra =
+  `SarakButton` com `GANTT_BAR_CLASS` (`normal-case tracking-normal font-normal`), posição e largura em números
+  (o React escreve px), preenchimento de `progress` e `aria-label` com título, início, fim e progresso; clique e
+  `Enter` chamam `onTaskClick`. Fim de semana esmaecido só na escala de dia; marcador de hoje no meio do dia; setas
+  **antes** das linhas no DOM; `role="group"` com rótulo "Linha do tempo de … a …".
+- `SarakGantt/SarakGantt.tsx` (novo): **uma** área de rolagem (`role="region"`, `tabIndex=0`, nome "Cronograma") com a
+  lista e a linha do tempo lado a lado. Com isso a rolagem vertical é uma só (as duas andam juntas por construção),
+  a lista fica presa à esquerda (`sticky left`) e o cabeçalho ao topo. A lista é `<ul aria-label="Tarefas">`, com
+  título, grupo e as datas em `sr-only`. O aviso de dependência inexistente sai uma vez por combinação, só fora de
+  produção (`useEffect` + `Set`, no idioma do `useChromeDefaultWidgets`). Estado vazio traduzido; planta
+  `@container`; JSDoc com "até 500 tarefas sem virtualização" e `onTaskChange` reservado.
+- `SarakGantt/ganttLayout.ts` (novo): alturas por token (`--sarak-layout-gap-md`), as classes literais de container
+  query (lista estreita → larga em `@min-[768px]`; grupo só no largo) e `GANTT_STICKY_SURFACE` (ver *Decisões*).
+- `SarakGantt/useGanttFormats.ts` (novo): datas pelo `Intl` no idioma da lib, sem `text-transform`. Na escala de dia
+  a marca mostra o número do dia, e o mês vai numa linha de cima, na 1.ª marca e no dia 1.
+- `SarakGantt/index.ts` e `DataDisplay/index.ts:23-24`: exportam `SarakGantt`, `SarakGanttProps`, `SarakGanttTask`,
+  `SarakGanttScale`, `SarakGanttTone`.
+- `catalogEntries.part6.ts`: 7 chaves `gantt*` nos 6 idiomas.
+- Testes 1:1 em `SarakGantt/__tests__/` (56): `ganttScale` 16, `GanttTimeline` 11, `SarakGantt` 9, `ganttTasks` 6,
+  `GanttDependencies` 5, `ganttLayout` 5, `useGanttFormats` 4.
+- `browser-tests/fixtures/harness-entry.tsx`: cena `?cena=gantt` (Provider; 30 tarefas com datas a partir de hoje;
+  7 dependências válidas + 1 para tarefa inexistente; escala de dia em 1000 px e de semana em 340 px).
+  `browser-tests/gantt.spec.ts` (novo, limites R18): 10 casos. Os casos existentes não foram editados.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx` | criado | componente e lista (114 linhas) |
+| `src/components/atomic/DataDisplay/SarakGantt/GanttTimeline.tsx` | criado | cabeçalho, barras, fundo (200 linhas) |
+| `src/components/atomic/DataDisplay/SarakGantt/GanttDependencies.tsx` | criado | setas SVG (88) |
+| `src/components/atomic/DataDisplay/SarakGantt/ganttScale.ts` | criado | escala pura (122) |
+| `src/components/atomic/DataDisplay/SarakGantt/ganttTasks.ts` | criado | tarefas e dependências (75) |
+| `src/components/atomic/DataDisplay/SarakGantt/ganttLayout.ts` | criado | medidas, classes, superfície (39) |
+| `src/components/atomic/DataDisplay/SarakGantt/useGanttFormats.ts` | criado | datas por `Intl` (41) |
+| `src/components/atomic/DataDisplay/SarakGantt/index.ts` · `__tests__/*` (7) | criado | barril e testes |
+| `src/components/atomic/DataDisplay/index.ts` | alterado | `export * from './SarakGantt'` |
+| `src/core/i18n/catalogEntries.part6.ts` | alterado | 7 chaves `gantt*` + cabeçalho |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cena `gantt` |
+| `browser-tests/gantt.spec.ts` | criado | 10 casos de navegador |
+| `docs/component-catalog.*` · `sarak-ui/*` (4) · `sarak-dev/*` (3) | regenerado | catalog (104) · guide (107) · dev-kit |
+| `dist/` (39) · `src/buildInfo.ts` · `src/core/Provider/buildInfo.ts` | regenerado | `npm run build` |
+
+**Verificações executadas** (uma por vez; contagem de processos = 0 antes de cada vitest, build e playwright)
+- `npx vitest run src/components/atomic/DataDisplay/SarakGantt` → 7 arquivos, **56/56**.
+- **Mutação do §7** (`Math.floor` → `Math.round` em `ganttPixelToDate`, cópia salva e restaurada, `cmp` idêntico) →
+  `ganttScale.test.ts` **2 failed / 14 passed**: "pixel → data, com os números…" e "ida e volta: todo pixel de cada
+  dia…" (`expected 2026-10-09… to deeply equal 2026-10-08…`).
+- **Navegador, 1.ª rodada** (`browser-tests/gantt.spec.ts`, 8 casos) → 8/8 verdes. Uma captura da cena mostrou três
+  defeitos que esses 8 não cobravam: a lista presa **translúcida** (barras e marcador de hoje apareciam por trás dela
+  ao rolar; o `--sarak-card-bg` do tema default é `rgba(15, 23, 42, 0.6)`); a 1.ª marca e a do dia 1 **cortadas**
+  ("de ou", "de no": "2 de out." não cabe em 32 px); setas por cima do texto das barras.
+- **Vermelho**, com 2 casos novos contra o `dist/` daquele momento → **2 failed, 8 passed**: fundo opaco
+  (`Expected: 1`, `Received: 0.6`) e marcas sem corte (4 rótulos cortados).
+- Correções (ver *Decisões*) → `npm run build` → **verde 10/10**; nova captura confirma lista opaca, mês na linha de
+  cima ("out. / 2", "nov. / 1") e setas sob as barras.
+- Passo 15: `npm run catalog` → 104 componentes · `npm run guide` → 107 componentes · `npm run dev-kit` → 30 gates ·
+  `npx tsc --noEmit` → 0 · `npm run build` → exit 0 · `npx vitest run` → **433 arquivos, 2595 testes, 0 falhas** ·
+  `check-audit-baseline --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- `npx playwright test --config=browser-tests/playwright.config.ts` (diretório inteiro) → **65 passed**.
+- Gates do `.githooks/pre-commit`, um a um: `plan-index-sync`, `dev-kit --check`, `barrel-parity --check`,
+  `catalog --check`, `zero-brand --check`, `consumer-kit --check`, `no-deep-import`, `gate-limits`,
+  `container-query-literal`, `container-query-boundary`, `persistence-doc-identifiers`, `class-merge`, `icon-port`,
+  `chrome-token-parity`, `trail-citation --staged`, `verificar_commit.py`, `generate-token-types --check` → OK.
+  `check-agent-git-write` → FAIL, por definição em sessão de agente.
+- `grep` na pasta nova: hexadecimal → vazio; `plan-?[0-9]|veredito` (R36, também no spec e no diff do harness) → vazio;
+  `else if` → vazio. `git diff --stat package.json` → vazio (nenhuma dependência nova). Maior arquivo: 200 linhas.
+
+**Critérios de aceite (lote 2)**
+- [x] `ganttScale` data ↔ pixel nos três níveis e volta — `ganttScale.test.ts` (números explícitos; todo pixel de cada
+  dia por 120 dias, nas 3 escalas) e a mutação acima.
+- [x] Duas tarefas com `dependsOn` → **uma** seta; id inexistente não lança e avisa uma vez; ciclo não trava —
+  `SarakGantt.test.tsx` (3 casos), `ganttTasks.test.ts`; no navegador, 7 setas para 7 válidas + 1 inexistente.
+- [x] `progress` visível, `tone` pelas cores do design, marcador de hoje na faixa visível — `GanttTimeline.test.tsx`
+  e navegador ("o marcador de hoje existe, dentro da linha do tempo").
+- [x] `Enter` na barra → `onTaskClick` (jsdom, com `userEvent`); lista e linha do tempo com a mesma rolagem vertical
+  (navegador: depois de rolar, o topo da linha `t20` na lista e na linha do tempo difere ≤ 1 px).
+- [x] Nenhuma medida solta nem texto fixo; nenhuma dependência nova — greps acima, `auditor_hardcoded` no baseline.
+- [x] `tsc` 0; baseline igual; build e vitest verdes — acima.
+- Pedidos do despacho, todos cobertos em `gantt.spec.ts`: rola na horizontal e a página não; rolagem vertical junta;
+  cabeçalho fixo (e lista fixa ao rolar na horizontal); barra de 3 dias com 3 larguras da marca de dia; hoje existe;
+  340 px sem rolagem de página (e a lista estreita, sem o grupo); `text-transform: none` na barra.
+
+**Decisões e suposições**
+- **Arquivos além dos cinco do §3.1**, todos dentro da pasta nova: `ganttTasks.ts` (tarefa e dependências não são
+  escala), `ganttLayout.ts` (classes de container query em `.ts`, o idioma aceito no lote 1) e `useGanttFormats.ts`
+  (formatos compartilhados pela lista e pela linha do tempo).
+- **"`rowHeight` por token":** não existe token de altura de linha, e criar um seria expansão do dicionário (três
+  fontes, fora do território). A altura vem de `--sarak-layout-gap-md` × 2,5, e não há prop `rowHeight`.
+- **Uma área de rolagem só**, no lugar de duas sincronizadas por evento: a sincronia vertical vem por construção, e o
+  `sticky` do cabeçalho continua funcionando (com duas áreas, a da linha do tempo rolaria na horizontal e prenderia o
+  `sticky` dela).
+- **Fundo do que fica preso:** a cor do cartão em camada (`linear-gradient`) sobre `--color-theme-body`, que é
+  variável real do tema (`src/styles/_theme.css:7`). Só a cor do cartão não basta quando o tema a deixa translúcida.
+- `progress` é percentual 0–100. A semana da escala começa na segunda (ISO 8601), sem prop. A tarefa com início
+  ilegível não aparece, como no calendário.
+- Escala de mês: o rótulo é o texto do `Intl` como vem ("out. de 2026"), sem capitalizar.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/atomic/DataDisplay/SarakCalendar/calendarEvents.ts:92` (`calendarToneColor`): um tom fora da união
+  (`neutral`) devolve `undefined`, e o chip fica sem fundo nem marca. É a causa do aviso do veredito do lote 1. No Gantt
+  o fallback foi feito por cima (`ganttToneColor`); o calendário segue como está.
+- `--sarak-card-bg`/`--color-theme-card` são translúcidos no tema default. Outro componente da lib que prenda algo
+  com `sticky` sobre conteúdo rolando, usando só essa cor, mostrará o conteúdo por trás.
+
+**Pendências / riscos**
+- Não medido em navegador: outros temas além do default, as escalas de semana e mês no contêiner largo, toque e gesto
+  em aparelho, leitor de tela real, e volume perto de 500 tarefas (a cena tem 30).
+- O marcador de hoje depende do relógio da máquina: a cena monta as datas a partir de hoje para o caso não envelhecer.
+
+## Resumo da execução (correção 1 do lote 2) — 2026-10-09
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M browser-tests/fixtures/harness-entry.tsx
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M specs/00-indice.md
+ M specs/plan/plan-103-calendario-e-gantt-de-projetos.md
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/index.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/i18n/catalogEntries.part6.ts
+?? browser-tests/gantt.spec.ts
+?? src/components/atomic/DataDisplay/SarakGantt/
+```
+(mais as 39 entradas de `dist/` do build do lote 2). `specs/00-indice.md` é do revisor e não foi tocado.
+
+**Um item por achado**
+
+1. **Altura do host.** A raiz passou a ser coluna flex com `height: 100%` (`SarakGantt.tsx:99`), e a área que rola
+   recebe `GANTT_SCROLL_HEIGHT = { flex: '1 1 auto', minHeight: '100%', maxHeight: GANTT_MAX_HEIGHT }`
+   (`ganttLayout.ts:37`, aplicado em `SarakGantt.tsx:104`). Com host de altura definida, o `min-height: 100%` resolve
+   para a altura dele e vence o teto; sem altura no host, o percentual não resolve e o teto manda. **Medi o desenho
+   antes de escolher**, no Chromium, numa página `<!doctype html>` com conteúdo de 2000 px:
+   - `max-height: max(teto, 100%)` → no host sem altura vira `none` e cresce até 2000. Descartado.
+   - `max-height: teto` (o de antes) → no host de 420 fica no teto. Descartado.
+   - `min-height: 100%` + `max-height: teto` → host 420 → 420; 1000 → 1000; sem altura → o teto; sem altura e conteúdo
+     de 50 px → 50. **Escolhido.**
+
+   Depois da correção, na cena `gantt-altura`: host 1000 × 420 → raiz 420, área 420; host 340 × 360 → raiz 360, área 360.
+2. **Contraste do título da barra — caminho: rótulo fora do preenchimento.** Uma cor "sobre" por tom não existe no
+   dicionário (só há `--color-theme-on-primary`), e criar seis seria expansão de token fora do território. Então:
+   - o progresso virou uma **faixa fina na base** da barra (`insetBlockEnd: 0`, altura
+     `calc(var(--sarak-layout-gap-sm) * 0.375)`, `GanttTimeline.tsx:44`), e não fica mais por trás do título;
+   - a trilha da barra ficou **opaca**: o tom a 22% misturado à cor de fundo do tema
+     (`color-mix(in srgb, <tom> 22%, var(--color-theme-body, Canvas))`, `GanttTimeline.tsx:117`). O título fica sobre
+     uma cor que está perto do fundo do tema, e o texto principal do tema já contrasta com esse fundo.
+
+   Medido depois: escuro, texto `rgb(255, 255, 255)` sobre trilha `color(srgb 0.015 0.224 0.235)`; claro, texto
+   `rgb(15, 23, 42)` sobre `color(srgb 0.776 0.785 0.801)`. Todas as barras visíveis ≥ 4,5:1 nos dois temas (caso 4b).
+3. **Tom desconhecido no calendário.** `calendarToneColor` (`calendarEvents.ts:96`) cai em `primary` quando o tom não é
+   chave **própria** do mapa (`Object.prototype.hasOwnProperty.call`). Assim `neutral`, `constructor` e `toString`
+   viram `primary`. Teste em `calendarEvents.test.ts`. O `ganttToneColor` ficou como estava (já fazia o fallback).
+4. **Casos de navegador**, em dois specs irmãos novos (os existentes não foram editados):
+   `browser-tests/gantt-altura-e-contraste.spec.ts` (5 casos) e `browser-tests/calendario-tom.spec.ts` (1 caso), com
+   limites R18. Harness: cenas `gantt-altura` (hosts 1000 × 420 e 340 × 360) e `calendario-tom` (um evento de tom
+   `neutral` lido de JSON e um `primary`), mais o parâmetro `?tema-ativo=<id>` → `activeThemeId` do Provider
+   (`harness-entry.tsx:311-312`); ausente, é `undefined`, como antes. O contraste é medido pela pilha de
+   `elementsFromPoint` sob 5 pontos do rótulo, compondo os `background-color` computados até ficar opaco, com a
+   luminância da WCAG 2.x; vale o pior ponto. Um caso de pré-condição prova que o tema claro foi de fato ligado.
+   - **Vermelho**, contra o `dist/` do lote 2 (gerado às 17:33) → **4 failed, 2 passed**:
+     (a) altura: `root − host` = **300** (720 num host de 420);
+     (b) contraste no **escuro**: 10 barras abaixo de 4,5, a pior **1,39:1** (`t6`); no **claro**: 2 barras, a pior
+     **1,01:1** (`t6`) e `t5` com 3,58:1;
+     (c) calendário: fundo do chip de tom desconhecido `rgba(0, 0, 0, 0)`.
+     Passaram: o teto sem altura no host e a pré-condição do tema claro.
+   - **Verde**, depois de `npm run build`: os 6 casos passam; Playwright do diretório inteiro → **71 passed**.
+
+**Arquivos alterados nesta rodada**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx` | alterado | raiz em coluna com `height: 100%`; área com `GANTT_SCROLL_HEIGHT` |
+| `src/components/atomic/DataDisplay/SarakGantt/ganttLayout.ts` | alterado | `GANTT_SCROLL_HEIGHT` |
+| `src/components/atomic/DataDisplay/SarakGantt/GanttTimeline.tsx` | alterado | progresso em faixa na base; trilha opaca |
+| `src/components/atomic/DataDisplay/SarakCalendar/calendarEvents.ts` | alterado | fallback de tom para `primary` |
+| `…/SarakGantt/__tests__/{SarakGantt,GanttTimeline}.test.tsx`, `ganttLayout.test.ts`, `…/SarakCalendar/__tests__/calendarEvents.test.ts` | alterado | 4 casos novos |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cenas `gantt-altura`, `calendario-tom`; `?tema-ativo=` |
+| `browser-tests/gantt-altura-e-contraste.spec.ts` · `browser-tests/calendario-tom.spec.ts` | criado | 6 casos de navegador |
+| `dist/` · `src/buildInfo.ts` · `src/core/Provider/buildInfo.ts` | regenerado | `npm run build` |
+
+**Verificações executadas** (uma por vez; contagem de processos = 0 antes de cada vitest, build e playwright)
+- `npx vitest run src/components/atomic/DataDisplay/SarakGantt src/components/atomic/DataDisplay/SarakCalendar` →
+  11 arquivos, **97/97**.
+- `npm run build` → exit 0.
+- Playwright: vermelho e verde, como no item 4; diretório inteiro → **71 passed**.
+- `npx tsc --noEmit` → 0 erros.
+- `check-audit-baseline --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- Superfície pública sem mudança: `catalog --check`, `consumer-kit --check` e `dev-kit --check` → OK, sem regenerar.
+  `container-query-literal` e `gate-limits` → OK.
+- Hexadecimal e R36 nos arquivos tocados → vazios.
+- Suíte completa do vitest **não** rodada nesta rodada; o prompt pediu as duas pastas.
+
+**Decisões e suposições**
+- Contraste pelo caminho "rótulo fora do preenchimento" (item 2), porque não há cor "sobre" por tom no dicionário.
+- Com host de altura definida e pouco conteúdo, a área ocupa o host inteiro (sobra espaço vazio embaixo). É a leitura
+  literal de "ocupam a altura do host".
+- O spec de contraste lê só `background-color` (declarado no limite 1); na cena não há imagem nem gradiente atrás das
+  barras.
+
+**Achados fora do escopo (não corrigidos)**
+- **No `minimalist-airy` o marcador de hoje some, e as linhas divisórias do Gantt também.** O tema define
+  `--sarak-border-width: 0px` (medido), e o marcador usa `calc(var(--sarak-border-width) * 2)` como espessura
+  (`GanttTimeline.tsx`, `GanttBackdrop`). Medido: escuro → 2px; claro → **0px**. Vi isso na captura do tema claro desta
+  rodada. O caso de navegador "o marcador de hoje existe" mede só caixa e altura no tema escuro, por isso não pegou.
+  É defeito do lote 2, mas não está entre os quatro achados.
+
+**Pendências / riscos**
+- Contraste medido só nos dois temas nomeados e na posição inicial de rolagem; os demais temas de referência não
+  foram medidos.
+
+## Resumo da execução (correção 2 do lote 2) — 2026-10-09
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M browser-tests/fixtures/harness-entry.tsx
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M specs/00-indice.md
+ M specs/plan/plan-103-calendario-e-gantt-de-projetos.md
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/SarakCalendar/__tests__/calendarEvents.test.ts
+ M src/components/atomic/DataDisplay/SarakCalendar/calendarEvents.ts
+ M src/components/atomic/DataDisplay/index.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/i18n/catalogEntries.part6.ts
+?? browser-tests/calendario-tom.spec.ts
+?? browser-tests/gantt-altura-e-contraste.spec.ts
+?? browser-tests/gantt.spec.ts
+?? src/components/atomic/DataDisplay/SarakGantt/
+```
+(mais as 39 entradas de `dist/` do build da correção 1). `specs/00-indice.md` é do revisor e não foi tocado.
+
+**Achado 1 — marcador de hoje com espessura própria**
+- **Escolha: piso sobre o token, declarado como exceção.** `GANTT_TODAY_THICKNESS =
+  'max(2px, calc(var(--sarak-border-width, 1px) * 2))'` (`GanttTimeline.tsx:49`), usado em `GanttTimeline.tsx:176`. O
+  marcador segue o dobro da borda do tema quando ela existe (um tema de borda grossa engrossa o marcador), e nunca
+  fica abaixo de 2 px. O `2px` carrega o marcador `sarak-allow-hardcode` com o motivo (`GanttTimeline.tsx:48`), no
+  idioma de exceção que o `auditor_hardcoded` aceita. O JSDoc da constante explica por que o marcador não pode zerar
+  e as linhas divisórias podem.
+- As linhas divisórias continuam seguindo `--sarak-border-width`, sem mudança (somem no `minimalist-airy`, como o tema quer).
+- jsdom (`GanttTimeline.test.tsx`): a constante tem o piso e o token, e o estilo do marcador a usa.
+- **Caso de navegador novo** em `browser-tests/gantt-altura-e-contraste.spec.ts`: o mesmo caso nos dois temas
+  (`?tema-ativo=minimalist-airy` e o padrão). Ele cobra `border-inline-start-width` computada > 0, largura da caixa
+  > 0 e a caixa dentro de `[data-gantt-timeline]`. Acrescentei também uma linha no cabeçalho do spec. O caso
+  "o marcador de hoje existe" (`gantt.spec.ts`) não foi editado.
+  - **Vermelho**, contra o `dist/` da correção 1 (gerado às 18:12), filtrando só esses casos: **1 failed, 1 passed**. No
+    claro, espessura `Expected: > 0`, `Received: 0`; o escuro passou (2 px).
+  - **Verde**, depois de `npm run build`: os dois passam.
+
+**Arquivos alterados nesta rodada**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakGantt/GanttTimeline.tsx` | alterado | `GANTT_TODAY_THICKNESS` (piso declarado) no marcador |
+| `src/components/atomic/DataDisplay/SarakGantt/__tests__/GanttTimeline.test.tsx` | alterado | 1 caso novo |
+| `browser-tests/gantt-altura-e-contraste.spec.ts` | alterado | 2 casos novos (claro e escuro) e uma linha no cabeçalho |
+| `dist/` · `src/buildInfo.ts` · `src/core/Provider/buildInfo.ts` | regenerado | `npm run build` |
+
+**Verificações executadas** (uma por vez; contagem de processos = 0 antes de cada vitest, build e playwright)
+- `npx vitest run src/components/atomic/DataDisplay/SarakGantt src/components/atomic/DataDisplay/SarakCalendar` →
+  11 arquivos, **98/98**.
+- `npm run build` → exit 0.
+- `npx playwright test --config=browser-tests/playwright.config.ts` (diretório inteiro) → **73 passed**.
+- `npx vitest run` (suíte completa) → **433 arquivos, 2600 testes, 0 falhas**.
+- `npx tsc --noEmit` → 0 erros.
+- `check-audit-baseline --with-tsc` → "igual ao baseline de 2026-08-11 — nenhuma regressão".
+- `node gates/scripts/audit/auditor_hardcoded.mjs` → nenhum apontamento em `SarakGantt/`. R36 nos arquivos tocados → vazio.
+
+**Decisões e suposições**
+- Piso de 2 px, o mesmo valor que o marcador tinha no tema padrão (`1px × 2`); acima disso, vale o token.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo.
+
+**Pendências / riscos**
+- O piso foi medido nos dois temas da cena; os demais temas de referência não foram medidos.
+
 ---
 
 # 10. Veredito
@@ -475,6 +791,88 @@ texto cru do `Intl`; o caso de navegador ficou como regressão.
 distinto dos outros cinco tons. Avaliar no lote 2, se o Gantt reusar os tons.
 
 **Liberação parcial.** Status volta a `🟡 Em execução`; o lote 2 (o Gantt) pode ser despachado.
+
+## Veredito — 2026-10-09 (lote 2) — 🔴 Reprovado
+
+**Medido pelo revisor no navegador (§7):** harness temporário contra o `dist/` desta rodada, `SarakGantt` dentro do
+`SarakUIProvider` com 30 tarefas e 8 dependências, nas três escalas (hosts de 1000 × 420 px) e num host estreito
+(340 × 360 px), em **dois temas** — o padrão (`sarak-sovereign`, escuro) e o `minimalist-airy` (claro), cada um numa
+página.
+
+- **O que confere, nos dois temas:** a página não rola na horizontal (1200 = 1200); a linha do tempo rola sozinha nas
+  escalas de dia e semana e cabe na de mês; a barra de uma tarefa de 3 dias mede 3 dias em cada escala (96 = 3 × 32,
+  36 = 3 × 12, 12 = 3 × 4); as setas aparecem; a barra tem `text-transform: none` e o clique chama `onTaskClick`; a
+  lista presa é opaca (cor do cartão em camada sobre a cor do corpo); nenhum erro no console.
+- Pelo executor, conferido no resumo: mutação do §7 (2 falhas), 56 testes da pasta, suíte 433/2595, 65 casos de
+  navegador, `tsc` 0, baseline igual, nenhuma dependência nova, maior arquivo com 200 linhas. Os três defeitos visuais
+  que o próprio caso de navegador achou (lista translúcida, marcas cortadas, setas por cima) foram consertados com
+  caso vermelho antes.
+
+**Achados — os dois vistos só em navegador, e só fora do caso do executor (que mede um tema e um host sem altura)**
+
+1. **O Gantt não cabe no contêiner do host.** A região de rolagem tem altura própria — `maxHeight` de
+   `GANTT_MAX_HEIGHT` (`calc(16px × 30)` = 720 px, `ganttLayout.ts:29`) — e ignora a altura do pai: num host de 420 px,
+   a raiz e a região medem **720 px**, e o Gantt invade o que vem abaixo (no host estreito de 360 px, idem). O
+   componente se adapta ao contêiner ([[07-responsividade-e-multidispositivo]] §6.1), não impõe a própria medida:
+   com host de altura definida, a raiz e a região ocupam **a altura do host** e rolam por dentro; sem altura no host,
+   vale o teto de hoje.
+2. **No tema claro, o título some sobre a parte preenchida da barra.** A cor do texto da barra é fixa
+   (`var(--sarak-text-main, …)`, `GanttTimeline.tsx:114`) e não acompanha o preenchimento: no `minimalist-airy` a
+   primária é quase preta e o texto também é escuro — em "Tarefa 6 do projeto" só aparece "ojeto", na parte fora do
+   progresso. No tema escuro o mesmo texto é legível por acaso (primária ciano, texto claro). O texto sobre o
+   preenchimento precisa contrastar **com a cor do tom** em qualquer tema (por exemplo, a cor "sobre" do tom, ou um
+   rótulo fora do preenchimento); prove o contraste ≥ 4,5:1 no tema claro **e** no escuro.
+3. **O calendário fica sem cor para tom desconhecido** (o próprio executor apontou, `calendarEvents.ts:92`): o Gantt já
+   cai em `primary` quando o tom não é da união; o `SarakCalendar` devolve `undefined`, e o chip fica sem fundo nem
+   marca. É desta plan e é o mesmo caso: dê ao calendário o mesmo fallback.
+4. **Os casos de navegador cobrem os dois achados acima.** No `gantt.spec.ts` (ou irmão): um host com altura fixa →
+   a raiz não passa da altura do host; e a cena num tema claro (por `activeThemeId`) → contraste do texto da barra
+   sobre o preenchimento ≥ 4,5:1, também no escuro. No `calendario.spec.ts`: um evento com tom fora da união tem fundo
+   visível. Mostre cada caso **vermelho** contra o `dist/` atual e verde depois; os casos existentes seguem sem edição.
+
+Status: `🔵 Em correção`.
+
+
+## Veredito — 2026-10-09 (lote 2, correção 1) — 🔴 Reprovado
+
+**Medido de novo pelo revisor no navegador**, com o mesmo harness temporário (30 tarefas, 8 dependências, três
+escalas, hosts de 1000 × 420 e 340 × 360, temas `sarak-sovereign` e `minimalist-airy`), contra o `dist/` desta rodada:
+
+- **Os quatro achados do veredito anterior fecharam.** A raiz mede a altura do host nos dois temas (420 = 420, 360 = 360)
+  e a página não rola na horizontal; no tema claro, os títulos são legíveis sobre a trilha da barra (o progresso virou
+  uma faixa fina na base, e a trilha é o tom misturado à cor do corpo); o calendário cai em `primary` para tom fora da
+  união. O executor mostrou os seis casos de navegador novos **vermelhos** contra o `dist/` anterior (altura +300 px;
+  contraste pior 1,39:1 no escuro e 1,01:1 no claro; chip sem fundo) e verdes depois, com 71/71 no diretório inteiro.
+  O desenho da altura foi **medido antes de escolhido** (três alternativas, com números) — é o que se espera.
+
+**Achado** (o próprio executor o encontrou e o relatou fora do escopo da rodada; é deste lote):
+
+1. **O marcador de hoje some num tema que zera a borda.** A espessura dele é `calc(var(--sarak-border-width, 1px) * 2)`
+   (`GanttTimeline.tsx:169`), e o `minimalist-airy` declara `--sarak-border-width: 0px`: medido pelo revisor, o
+   marcador tem **2 px** no tema escuro e **0 px** no claro, e não aparece. As linhas divisórias somem pelo mesmo
+   motivo — essas, por desenho do tema (ele não quer borda) —, mas o marcador é **informação**, não decoração: não pode
+   depender de um token que o tema tem direito de zerar. Dê a ele uma espessura própria que não chegue a zero (uma
+   hairline declarada, como as que a base já aceita como exceção, ou um piso sobre o token) e prove com um caso de
+   navegador: no `minimalist-airy`, a largura computada do marcador é > 0 e ele fica dentro da linha do tempo —
+   **vermelho** contra o `dist/` atual, verde depois. O caso "o marcador de hoje existe" que já existe fica sem edição.
+
+Status: `🔵 Em correção`.
+
+
+## Veredito — 2026-10-09 (lote 2, correção 2) — 🟢 Aprovado
+
+**Medido de novo pelo revisor no navegador**, com o mesmo harness temporário, contra o `dist/` desta rodada: o marcador
+de hoje tem `border-inline-start-width` de **2 px** nos dois temas (`sarak-sovereign` e `minimalist-airy`), nas três
+escalas e no host estreito (era 0 px no claro); a raiz segue na altura do host (420 = 420, 360 = 360) e a página não
+rola na horizontal.
+
+**O achado fechou.** `GANTT_TODAY_THICKNESS = max(2px, calc(var(--sarak-border-width, 1px) * 2))`: o marcador segue o
+dobro da borda do tema quando ela existe e nunca fica abaixo de 2 px; o `2px` carrega o marcador de exceção com o
+motivo, e as divisórias continuam seguindo o token. O caso de navegador novo ficou **vermelho** no claro contra o
+`dist/` anterior (`Received: 0`) e verde depois; pelo executor, 73/73 no diretório de navegador, suíte completa
+433/2600, `tsc` 0, baseline igual e `auditor_hardcoded` sem apontamento na pasta.
+
+**A plan está completa** (lotes 1 e 2). Status: `🟢 Aprovada`. A síntese (§8) espera o commit e o seu sinal.
 
 ---
 

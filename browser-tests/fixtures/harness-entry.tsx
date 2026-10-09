@@ -24,6 +24,7 @@ import {
     SarakAppChrome,
     SarakButton,
     SarakCalendar,
+    SarakGantt,
     SarakCustomizationPanel,
     SarakInput,
     SarakRangeSlider,
@@ -166,6 +167,11 @@ const App: React.FC = () => {
  *   - `painel`: um botão que monta o painel de customização carregado sob demanda.
  *   - `calendario`: o `SarakCalendar` em dois contêineres, um largo e um estreito, para medir a
  *     container query dele (ponto × título) e o texto do chip.
+ *   - `gantt`: o `SarakGantt` com 30 tarefas e 8 dependências (uma para tarefa inexistente), na escala de dia
+ *     num contêiner largo e na de semana num estreito. As datas partem de hoje, para o marcador de hoje existir.
+ *   - `gantt-altura`: as mesmas tarefas em dois hosts de ALTURA definida (1000 × 420 e 340 × 360).
+ *   - `calendario-tom`: o calendário com um evento de tom fora da união (`neutral`, como vem de dado solto)
+ *     ao lado de um evento `primary`.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -235,6 +241,59 @@ const CalendarScene: React.FC = () => (
     </div>
 );
 
+const GANTT_TODAY = new Date();
+const ganttDay = (offset: number): Date =>
+    new Date(GANTT_TODAY.getFullYear(), GANTT_TODAY.getMonth(), GANTT_TODAY.getDate() + offset);
+const GANTT_TONES = ['primary', 'success', 'warning', 'danger', 'info', 'muted'] as const;
+// `t0` dura 3 dias; `t1`..`t7` dependem da anterior (7 setas); `t9` depende de uma tarefa que não existe.
+const GANTT_TASKS = Array.from({ length: 30 }, (_, index) => ({
+    id: `t${index}`,
+    title: `Tarefa ${index}`,
+    start: ganttDay(index - 5),
+    end: ganttDay(index - 3),
+    progress: (index * 7) % 101,
+    tone: GANTT_TONES[index % GANTT_TONES.length],
+    group: `Fase ${Math.floor(index / 10) + 1}`,
+    dependsOn: index >= 1 && index <= 7 ? [`t${index - 1}`] : index === 9 ? ['tarefa-inexistente'] : undefined,
+}));
+
+const GanttScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="gantt-largo" style={{ width: '1000px' }}>
+            <SarakGantt tasks={GANTT_TASKS} scale="day" />
+        </div>
+        <div data-probe="gantt-estreito" style={{ width: '340px' }}>
+            <SarakGantt tasks={GANTT_TASKS} scale="week" />
+        </div>
+    </div>
+);
+
+const GanttHeightScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="gantt-host-largo" style={{ width: '1000px', height: '420px' }}>
+            <SarakGantt tasks={GANTT_TASKS} scale="day" />
+        </div>
+        <div data-probe="gantt-host-estreito" style={{ width: '340px', height: '360px' }}>
+            <SarakGantt tasks={GANTT_TASKS} scale="week" />
+        </div>
+    </div>
+);
+
+// O tom chega como dado solto (JSON de uma API, por exemplo): fora da união que o tipo descreve.
+const LOOSE_TONE = JSON.parse('"neutral"') as 'primary';
+const CALENDAR_TONE_EVENTS = [
+    { id: 'sem-tom', title: 'Tom desconhecido', start: '2026-10-07', tone: LOOSE_TONE },
+    { id: 'primario', title: 'Tom primário', start: '2026-10-14', tone: 'primary' as const },
+];
+
+const CalendarToneScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="calendario-tom" style={{ width: '1000px' }}>
+            <SarakCalendar events={CALENDAR_TONE_EVENTS} defaultMonth={CALENDAR_MONTH} />
+        </div>
+    </div>
+);
+
 const SCENES: Record<string, React.FC> = {
     textura: TextureScene,
     'sem-provider': NoProviderScene,
@@ -242,11 +301,16 @@ const SCENES: Record<string, React.FC> = {
     'select-grade': SelectGridScene,
     painel: PanelScene,
     calendario: CalendarScene,
+    gantt: GanttScene,
+    'gantt-altura': GanttHeightScene,
+    'calendario-tom': CalendarToneScene,
 };
 
 function renderScene(Scene: React.FC): React.ReactElement {
     if (searchParams.get('cena') === 'sem-provider') return <Scene />;
-    return <SarakUIProvider config={resolveHarnessConfig()}><Scene /></SarakUIProvider>;
+    // `?tema-ativo=<id>` liga um tema de referência inteiro (ex.: `minimalist-airy`, claro); ausente, nada muda.
+    const activeThemeId = searchParams.get('tema-ativo') ?? undefined;
+    return <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={activeThemeId}><Scene /></SarakUIProvider>;
 }
 
 const SceneComponent = SCENES[searchParams.get('cena') ?? ''];

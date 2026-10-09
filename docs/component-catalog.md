@@ -90,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (103)
+## Componentes públicos (104)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -760,6 +760,20 @@ Props (`SarakFormGroupProps` — `src/components/atomic/Layouts/SarakFormGroup.t
 | `gap` | `string` | não | Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. |
 
 Estende: `React.HTMLAttributes<HTMLDivElement>`
+
+### SarakGantt
+
+Props (`SarakGanttProps` — `src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `tasks` | `SarakGanttTask[]` | sim | Tarefas, uma por linha, na ordem recebida. Vazio mostra o estado vazio traduzido. |
+| `scale` | `SarakGanttScale` | não | Quanto cabe em cada coluna do cabeçalho: um dia, uma semana ou um mês. Omitido, `week`. |
+| `onTaskClick` | `(task: SarakGanttTask) => void` | não | Clique ou `Enter` numa barra. |
+| `rangeStart` | `SarakCalendarDate` | não | Primeiro dia exibido. Omitido, o início das tarefas com uma margem da escala. |
+| `rangeEnd` | `SarakCalendarDate` | não | Último dia exibido, inclusive. Omitido, o fim das tarefas com uma margem da escala. |
+| `label` | `string` | não | Nome acessível do cronograma. Omitido, usa o texto traduzido "Cronograma". |
+| `className` | `string` | não |  |
 
 ### SarakGrid
 

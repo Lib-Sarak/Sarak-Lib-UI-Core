@@ -2225,6 +2225,54 @@
         }
       ]
     },
+    "SarakGantt": {
+      "propsInterface": "SarakGanttProps",
+      "source": "src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx",
+      "props": [
+        {
+          "name": "tasks",
+          "type": "SarakGanttTask[]",
+          "optional": false,
+          "doc": "Tarefas, uma por linha, na ordem recebida. Vazio mostra o estado vazio traduzido."
+        },
+        {
+          "name": "scale",
+          "type": "SarakGanttScale",
+          "optional": true,
+          "doc": "Quanto cabe em cada coluna do cabeçalho: um dia, uma semana ou um mês. Omitido, `week`."
+        },
+        {
+          "name": "onTaskClick",
+          "type": "(task: SarakGanttTask) => void",
+          "optional": true,
+          "doc": "Clique ou `Enter` numa barra."
+        },
+        {
+          "name": "rangeStart",
+          "type": "SarakCalendarDate",
+          "optional": true,
+          "doc": "Primeiro dia exibido. Omitido, o início das tarefas com uma margem da escala."
+        },
+        {
+          "name": "rangeEnd",
+          "type": "SarakCalendarDate",
+          "optional": true,
+          "doc": "Último dia exibido, inclusive. Omitido, o fim das tarefas com uma margem da escala."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do cronograma. Omitido, usa o texto traduzido \"Cronograma\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakGrid": {
       "propsInterface": "SarakGridProps",
       "source": "src/components/atomic/Layouts/SarakGrid.tsx",

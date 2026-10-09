@@ -606,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **364** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **369** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (106)
+### A.1 Componentes públicos (107)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -637,6 +637,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | DataDisplay | **SarakCommentThread** | `comments` · `onSubmit` · `onDelete` · `label` · `className` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
 | DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `loading` · `error` · `emptyMessage` · `onRetry` · `onRowClick` · `className` |
+| DataDisplay | **SarakGantt** | `tasks` · `scale` · `onTaskClick` · `rangeStart` · `rangeEnd` · `label` · `className` |
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `onCardClick` · `onCardAdd` · `onColumnAdd` · `onColumnRename` · `onColumnDelete` · `className` |
 | DataDisplay | **SarakSparkline** | `data` · `variant` · `height` · `strokeWidth` · `fillOpacity` · `label` · `className` · `style` |
 | DataDisplay | **SarakTreeView** | `data` · `manifest` · `lazyLoadingIcon` · `onExpand` · `selectedIds` · `onSelect` · `className` |

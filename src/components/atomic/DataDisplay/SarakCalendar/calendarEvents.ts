@@ -89,7 +89,12 @@ const TONE_COLOR: Record<SarakCalendarTone, string> = {
     muted: 'var(--sarak-text-muted, var(--theme-muted, currentColor))',
 };
 
-export const calendarToneColor = (tone: SarakCalendarTone | undefined): string => TONE_COLOR[tone ?? 'primary'];
+/**
+ * Tom fora dos seis (um `neutral` que chega de dado solto, por exemplo) ou ausente cai em `primary`: o chip
+ * nunca fica sem cor. A checagem é por chave PRÓPRIA, para `constructor` e afins não alcançarem `Object.prototype`.
+ */
+export const calendarToneColor = (tone: SarakCalendarTone | undefined): string =>
+    tone !== undefined && Object.prototype.hasOwnProperty.call(TONE_COLOR, tone) ? TONE_COLOR[tone] : TONE_COLOR.primary;
 
 // `Map`, não objeto literal: a tecla vem do evento, e `obj[key]` alcançaria `Object.prototype`.
 const KEY_STEP = new Map<string, (date: Date) => Date>([

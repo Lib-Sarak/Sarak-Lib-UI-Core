@@ -2,7 +2,7 @@ import type { SarakLibraryLanguage } from './catalog.types';
 
 type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
-/** Blocos de detalhe do cartão (checklist, comentários, histórico, responsável) e o calendário mensal. */
+/** Blocos de detalhe do cartão (checklist, comentários, histórico, responsável), o calendário mensal e o Gantt. */
 export const CATALOG_PART_6 = {
     checklistLabel: {
         pt: 'Lista de verificação', en: 'Checklist', es: 'Lista de verificación',
@@ -107,5 +107,34 @@ export const CATALOG_PART_6 = {
     calendarMoreLabel: {
         pt: 'Ver todos os eventos de {date}', en: 'See all events on {date}', es: 'Ver todos los eventos del {date}',
         fr: 'Voir tous les événements du {date}', de: 'Alle Termine am {date} anzeigen', it: 'Vedi tutti gli eventi del {date}',
+    },
+    ganttLabel: {
+        pt: 'Cronograma', en: 'Schedule', es: 'Cronograma',
+        fr: 'Planning', de: 'Zeitplan', it: 'Cronoprogramma',
+    },
+    ganttTaskListLabel: {
+        pt: 'Tarefas', en: 'Tasks', es: 'Tareas',
+        fr: 'Tâches', de: 'Aufgaben', it: 'Attività',
+    },
+    ganttTimelineLabel: {
+        pt: 'Linha do tempo de {start} a {end}', en: 'Timeline from {start} to {end}', es: 'Línea de tiempo del {start} al {end}',
+        fr: 'Chronologie du {start} au {end}', de: 'Zeitleiste vom {start} bis {end}', it: 'Sequenza temporale dal {start} al {end}',
+    },
+    ganttTaskRange: {
+        pt: 'de {start} a {end}', en: 'from {start} to {end}', es: 'del {start} al {end}',
+        fr: 'du {start} au {end}', de: 'vom {start} bis {end}', it: 'dal {start} al {end}',
+    },
+    ganttTaskBar: {
+        pt: '{title}, de {start} a {end}', en: '{title}, from {start} to {end}', es: '{title}, del {start} al {end}',
+        fr: '{title}, du {start} au {end}', de: '{title}, vom {start} bis {end}', it: '{title}, dal {start} al {end}',
+    },
+    ganttTaskBarProgress: {
+        pt: '{title}, de {start} a {end}, {progress}% concluído', en: '{title}, from {start} to {end}, {progress}% complete',
+        es: '{title}, del {start} al {end}, {progress}% completado', fr: '{title}, du {start} au {end}, {progress} % terminé',
+        de: '{title}, vom {start} bis {end}, {progress} % erledigt', it: '{title}, dal {start} al {end}, {progress}% completato',
+    },
+    ganttEmpty: {
+        pt: 'Nenhuma tarefa', en: 'No tasks', es: 'Sin tareas',
+        fr: 'Aucune tâche', de: 'Keine Aufgaben', it: 'Nessuna attività',
     },
 } satisfies Record<string, LibraryTextEntry>;
