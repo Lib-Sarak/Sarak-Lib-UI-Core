@@ -186,7 +186,7 @@ Os 3, com onde moram:
 | `Atoms` | Primitivas de base — os menores blocos reutilizáveis, incluindo tipografia |
 | `Buttons` | Botões e botão-ícone |
 | `Cards` | Cartões de conteúdo, ação, busca e título. Os tokens de direção e alinhamento de cartão valem para os cartões de domínio (lidos por `useCardLayoutStyles(design)`); o cartão composto (`SarakCard` e peças) **não** os lê — as peças dele são explícitas, e o layout é uma classe fixa (`compositeCardLayoutClassName`) |
-| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban e os blocos de detalhe do cartão (§6.10), árvore, sparkline |
+| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban e os blocos de detalhe do cartão (§6.10), calendário mensal e Gantt (§6.11), árvore, sparkline |
 | `Feedback` | Comunicação de estado — toast, alerta, carregamento, estado vazio |
 | `Icon` | O sistema de ícones (`SarakIcon`, `IconMap`) |
 | `Inputs` | Entrada de dados, do básico ao denso (pickers, multiselect, rich text, uploader) |
@@ -452,6 +452,37 @@ referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulá
 
 Todos renderizam sem Provider (R34) e têm estado vazio. Datas aceitam `string`, `number` ou `Date`
 (`SarakTimestamp`); data inválida não vira texto quebrado — o horário some.
+
+## 6.11 Calendário mensal e Gantt
+
+Duas visões de projeto em `DataDisplay/`, sem dependência de terceiro. As duas leem a data `AAAA-MM-DD` como dia
+**local** (não UTC), descartam o que tem início ilegível, desenham mês e dias pelo `Intl` no idioma da lib, tiram cor
+do `tone` — `primary`, `success`, `warning`, `danger`, `info` ou `muted`, pelas cores do design; tom desconhecido cai
+em `primary` — e renderizam sem Provider (R34).
+
+**`SarakCalendar`** — calendário mensal de eventos.
+- `events { id, title, start, end?, tone?, meta? }[]`: um evento de vários dias aparece em cada dia que cobre, com o
+  primeiro e o último marcados; `meta` volta intacto em `onEventClick`.
+- Mês controlado (`month` + `onMonthChange`) ou não (`defaultMonth`, que também avisa `onMonthChange`); anterior, hoje e
+  próximo no cabeçalho; `weekStartsOn` muda a primeira coluna; `maxEventsPerDay` resume o excesso em "+N", que chama
+  `onDayClick`; `renderEvent` substitui o chip.
+- Teclado: `role="grid"` com foco itinerante — setas (±1 dia, ±1 semana), PageUp/PageDown (±1 mês); `Enter` no dia chama
+  `onDayClick` e, no evento, `onEventClick`. Cada dia tem `aria-label` com a data por extenso e a contagem.
+- **Contêiner estreito** (container query, a partir de 768 px de largura disponível): o evento vira um ponto colorido, e
+  o toque em cima dele chama `onDayClick`; nada rola na horizontal. O título do evento sai em caixa normal.
+
+**`SarakGantt`** — cronograma em casca própria ([[020-gantt-casca-propria]]).
+- `tasks { id, title, start, end, progress?, dependsOn?, tone?, group? }[]`, `scale` (`day` | `week` | `month`, padrão
+  `week`), `rangeStart`/`rangeEnd` (padrão: o intervalo das tarefas com margem), `onTaskClick`.
+- À esquerda a lista de tarefas (título e grupo), presa ao rolar; à direita a linha do tempo, com o cabeçalho de datas
+  preso, o marcador de hoje (nunca abaixo de 2 px, mesmo num tema que zera a borda) e o fim de semana esmaecido na
+  escala de dia. A rolagem vertical é uma só para as duas.
+- A barra: posição e largura pela escala (dias de calendário), progresso em faixa na base, título legível sobre ela
+  em tema claro e escuro; foco e `Enter` chamam `onTaskClick`. `dependsOn` desenha uma seta término → início;
+  dependência para tarefa inexistente é ignorada com aviso em desenvolvimento, e ciclo não trava.
+- **Altura:** com o host de altura definida, o Gantt ocupa essa altura e rola por dentro; sem ela, cresce até um teto.
+- **Limites declarados:** até 500 tarefas sem virtualização; sem arrastar nem redimensionar barra (`onTaskChange` fica
+  reservado), sem grade de horas, sem recorrência, sem fuso, sem caminho crítico, auto-agendamento ou exportação.
 
 
 # 7. Fronteiras de bundle — a parte MEDIDA

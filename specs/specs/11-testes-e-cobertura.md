@@ -368,9 +368,11 @@ em `jsdom`, como a local ([[16-integracao-continua]] §5).
 
 ## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
 
-Dois arquivos em `browser-tests/`, rodando juntos por `npm run cromo-css-real:check` — que **builda antes**,
-sempre, porque o harness lê `dist/`: `cromo-css-real.spec.ts` (o cromo e o padrão de elemento) e
-`css-que-so-o-navegador-mede.spec.ts` (o CSS dos átomos e da atmosfera que o `jsdom` não resolve). **Quantos
+Os arquivos `browser-tests/*.spec.ts`, rodando juntos por `npm run cromo-css-real:check` — que **builda antes**,
+sempre, porque o harness lê `dist/` (quais são: `ls browser-tests/*.spec.ts`): o cromo e o padrão de elemento
+(`cromo-css-real.spec.ts`), o CSS dos átomos e da atmosfera que o `jsdom` não resolve
+(`css-que-so-o-navegador-mede.spec.ts`) e as visões de projeto — calendário e Gantt, em contêiner largo e estreito,
+em tema claro e escuro (`calendario*.spec.ts`, `gantt*.spec.ts`). **Quantos
 casos são, os arquivos dizem** (`grep -c "^test(" browser-tests/*.spec.ts`). O harness escolhe a cena pela URL
 (`?cena=`), e sem ela monta o cromo de sempre. O que os casos cobrem cabe nestas famílias:
 
@@ -389,7 +391,11 @@ casos são, os arquivos dizem** (`grep -c "^test(" browser-tests/*.spec.ts`). O 
   switch, intervalo, acordeão) — a propriedade computada é a pretendida, e não o valor inicial do navegador;
 - a **seta do `SarakSelect`** dentro da caixa do campo numa célula de grade que estica;
 - a **busca de token do painel** recebe a digitação inteira em 20 aberturas seguidas (regressão de um relato que não
-  se reproduziu).
+  se reproduziu);
+- as **visões de projeto**: o calendário em contêiner largo e estreito (ponto no estreito, sem rolagem horizontal, título
+  em caixa normal, tom desconhecido com fundo) e o Gantt (rolagem só na linha do tempo, rolagem vertical única, cabeçalho
+  e lista presos, largura da barra por dia, altura do host respeitada, contraste do título ≥ 4,5:1 e marcador de hoje
+  visível em tema claro e escuro).
 
 **Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
 de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de

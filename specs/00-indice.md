@@ -42,7 +42,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre
@@ -59,7 +58,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | 5 | ~~**90** ‖ **97**~~ ✅ *sintetizadas e removidas (97 em 2026-10-08, 90 em 2026-10-09)* | A 90 mediu o campo de busca do painel depois da 100 | — |
 > | 6 | ~~**91** ‖ **98**~~ ✅ *sintetizadas e removidas em 2026-10-09* | A 91 esperou a 90 | — |
 > | 7 | ~~**101** ‖ **102**~~ ✅ *sintetizadas e removidas em 2026-10-09 (a 102 sem a medição em aparelho, por decisão do dono: `00-backlog` item 20)* | A 101 tocou só `engines/charts/` e a 102, `DataDisplay/SarakKanban/` e componentes novos | — |
-> | 8 | **103** | O ADR-020 já existe ([[020-gantt-casca-propria]], 2026-10-05); a 102 saiu (sintetizada) | Sozinha na árvore desde a síntese da 91 e da 102 |
+> | 8 | ~~**103**~~ ✅ *sintetizada e removida em 2026-10-09* | O ADR-020 ([[020-gantt-casca-propria]]) decidiu o Gantt antes do lote 2 | — |
 >
 > 🧪 **O lote 1 da 102 (a avaliação das bibliotecas de arrastar e soltar e de Gantt) não toca o repositório** e pode ser
 > despachado em **qualquer onda**, em paralelo a qualquer plan — é o que antecipa o ADR-019 e o ADR-020. O resultado
@@ -113,6 +112,12 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,
 > pelo último a terminar.
+
+> ⚪ **A `plan-103` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **103** | [[03-superficie-publica]] **§6.11 (nova)** — `SarakCalendar` (eventos de vários dias, mês controlado ou não, teclado em grade, "+N", ponto no contêiner estreito) e `SarakGantt` (casca própria, escalas, lista e cabeçalho presos, dependências término→início, altura do host, contraste do título e marcador de hoje em qualquer tema), os tons comuns e os limites declarados (500 tarefas, sem arrastar, sem horas, sem fuso); linha `DataDisplay` da §6 · [[11-testes-e-cobertura]] §7.3 — os arquivos de `browser-tests/` passam a ser listados pelo comando, e a família "visões de projeto" entra. Ficou de fora: nada (o Gantt já tinha o [[020-gantt-casca-propria]]) |
 
 > ⚪ **As `plan-91` e `plan-102` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
 >
