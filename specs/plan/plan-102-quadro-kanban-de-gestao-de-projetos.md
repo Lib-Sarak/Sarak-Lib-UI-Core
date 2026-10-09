@@ -493,6 +493,185 @@ acima do teto de 80).
 **Liberação parcial.** O lote 1 está aprovado. O lote 2 continua dependendo da `plan-98` (§1). O `status` volta
 a `🟡 Em execução`.
 
+## Resumo da execução — Lote 2 (o quadro) — 2026-10-09
+
+**Resultado:** Concluído com pendências — a medição do toque em aparelho (passo 9) é do dono, no primeiro sistema importador atualizado, e não foi feita. Não declaro o critério de toque em aparelho atendido.
+
+**Estado do worktree ao iniciar** (`git status --short`, antes da primeira edição)
+```
+ M src/components/engines/charts/SarakChartEngine.tsx
+ M src/components/engines/charts/SubEngines/axisOptions.ts
+ M src/components/engines/charts/SubEngines/builders/types.ts
+ M src/components/engines/charts/SubEngines/optionBuilders.ts
+ M src/components/engines/charts/SubEngines/seriesModel.ts
+ M src/components/engines/charts/SubEngines/useEChartsTheme.ts
+ M src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx
+ M src/features/DesignEngine/Main/components/TokenControl.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemeSidebarHeader.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/TokenControl.test.tsx
+?? src/components/engines/charts/SubEngines/builders/calendarCharts.ts
+?? src/components/engines/charts/SubEngines/builders/flowCharts.ts
+?? src/components/engines/charts/SubEngines/builders/waterfallCharts.ts
+?? src/components/engines/charts/__tests__/SarakChartEngine.formats.test.tsx
+?? src/features/DesignEngine/Main/components/ThemeAdvancedMenu.tsx
+?? src/features/DesignEngine/Main/components/__tests__/ThemeAdvancedMenu.test.tsx
+```
+Nada disso é meu e nada foi revertido nem formatado. O `00-indice.md` e as plans 100/101 aparecem modificados no fim; não toquei neles.
+
+**O que foi feito**
+- `npm install --save-dev @dnd-kit/core@^6.3.1 @dnd-kit/sortable@^10.0.0` (a primeira ação, com a contagem de vitest/tsup em 0 confirmada em chamada separada) → `package.json:143-144`. Em seguida, por substituição exata, o peer opcional: `peerDependencies` `@dnd-kit/core >=6.3.0` e `@dnd-kit/sortable >=10.0.0` e as duas entradas em `peerDependenciesMeta` com `optional: true`. `npm install --package-lock-only` sincronizou a raiz do lockfile.
+- `useKanbanDrag.ts` — o único arquivo que importa `@dnd-kit`. Expõe o quadro (espelho local), o cartão ativo, a raiz de arrasto (`DndContext` + `DragOverlay`), `KanbanSortableList`, `useKanbanColumnDrop` e `useKanbanCardDrag`. Sensores: `MouseSensor` (distância 4), `TouchSensor` (atraso 250 ms, tolerância 5) e `KeyboardSensor` (Espaço levanta e solta, Esc cancela; Enter fica livre para abrir o cartão). `autoScroll` do `DndContext` com limiar 0,1. Anúncios e instruções pelo catálogo (`kanban*`). Os mesmos números do protótipo do lote 1. O arquivo usa `createElement` para continuar `.ts`, como a plan lista.
+- `kanbanModel.ts` (lógica pura, fora do lazy): `sarakPreviewOver`, `sarakApplyDrop`, `sarakDescribeMove`, `sarakLocateCard`, `sarakIsOverdue`, `sarakParseDueDate`; `sarakMoveCard` mantém a assinatura pública original. `kanbanTypes.ts`: `SarakKanbanCard` ganha `code`, `assignee`, `priority`, `dueDate`, `subtasks`; `SarakCardMove` ganha `fromIndex`, `beforeCardId`, `afterCardId`.
+- O destino é o índice onde se soltou: pré-visualização ao passar por cima de outra coluna, índice do cartão-alvo ao soltar na mesma coluna, e `onCardMove` só se o lugar mudou.
+- `KanbanCard.tsx` + `KanbanCardContent.tsx`: cartão padrão (código, título, descrição, `SarakAvatar`, `SarakBadge` de prioridade — a média não aparece —, prazo com a cor de `--sarak-status-error-color` quando atrasado, contador de subtarefas). `renderCard` vence.
+- `KanbanColumn.tsx`, `KanbanAddForm.tsx`: coluna com menu (`SarakContextMenu`, `SarakIconButton`, `SarakButton`) e campo de criação rápida. Cada controle só existe se o evento correspondente (`onCardClick`, `onCardAdd`, `onColumnAdd`, `onColumnRename`, `onColumnDelete`) foi passado.
+- `kanbanLayout.ts`: classes de layout literais, mobile-first com container query — `@container` no quadro, coluna `basis-[88cqi]` e, de `@min-[768px]`, `basis-[calc(var(--sarak-layout-gap-md,16px)*17)]`; `snap-x snap-mandatory` no celular. Saíram `minWidth: 260` e `fontSize: 13`.
+- `SarakKanban.tsx`: `React.lazy` + `Suspense` interno com fallback traduzido; `index.ts` exporta o componente, os tipos e `sarakMoveCard`. `SarakKanbanImpl.tsx` ficou com 77 linhas.
+- `catalogEntries.part4.ts`: 22 chaves `kanban*`, nos seis idiomas.
+- `docs/migracoes.md`: seção nova do Kanban, inserida antes da de `8.0.0 — um cromo por aplicação`, depois de reler o arquivo (a seção da plan-101 já estava no topo e foi preservada).
+- Geradores, só pelos comandos e depois da última edição de código: `npm run catalog`, `npm run guide`, `npm run dev-kit`, `npm run build`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `package.json`, `package-lock.json` | alterado | Só as duas libs do ADR: devDependency, peer e `peerDependenciesMeta` opcional; lockfile pela instalação |
+| `src/components/atomic/DataDisplay/SarakKanban/SarakKanbanImpl.tsx` | alterado | Reescrito sobre o adaptador; props novas; sem HTML5 nativo |
+| `.../SarakKanban/kanbanModel.ts` | alterado | Funções puras de destino, vizinhos e prazo; tipos movidos |
+| `.../SarakKanban/index.ts` | alterado | Barril lazy, tipos novos |
+| `.../SarakKanban/kanbanTypes.ts`, `kanbanLayout.ts`, `useKanbanDrag.ts`, `SarakKanban.tsx`, `KanbanCard.tsx`, `KanbanCardContent.tsx`, `KanbanColumn.tsx`, `KanbanAddForm.tsx` | criado | Ver acima |
+| `.../SarakKanban/__tests__/` | 2 alterados, 6 criados | Um teste por arquivo novo; `SarakKanbanImpl.test.tsx` reescrito (o teste de DnD HTML5 não vale mais) |
+| `src/core/i18n/catalogEntries.part4.ts` | alterado | Chaves `kanban*` |
+| `docs/migracoes.md` | alterado | Nota do Kanban |
+| `docs/component-catalog.{json,md}`, `sarak-ui/*`, `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerado | Pelos comandos; `sarak-dev/` não mudou (hash igual) |
+
+**Verificações executadas**
+- `npx vitest run src/components/atomic/DataDisplay/SarakKanban` → 8 arquivos, 56 testes verdes.
+- `npx vitest run` (suíte inteira, por último) → **416 arquivos, 2.434 testes, todos verdes**, 564,85 s.
+- Mutação pedida em §7: troquei o destino da pré-visualização (`overCard.index + …`) por "fim da coluna" → 3 testes falharam (`kanbanModel` e dois de `useKanbanDrag`); revertido e conferido por `grep` (0 ocorrências do mutante).
+- `npx tsc --noEmit` → 0 erros. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline, nenhuma regressão". Houve uma regressão intermediária minha (hardcode 0→3: as classes `@min-[768px]` dentro de `.tsx`; composição atômica 2→5: três `<button>` crus); corrigida movendo as classes para `kanbanLayout.ts` e usando `SarakButton`/`SarakIconButton`.
+- Gates do pre-commit, todos exit 0: `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`, `deep-import:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`, `persistence-doc:check`, `class-merge:check`, `icon-port:check`, `chrome-token-parity:check`, `trail-citation:check`, `plan-index:check`, `token-types:check` (`npx tsx scripts/generate-token-types.ts --check`), `dev-kit:check`. Pós-build: `package:check`, `build-info:check`, `public-types:check`. **Não rodei** o `agent-git-write` (falha em sessão de agente por definição) nem o Anel 0 de segredos (`verificar_commit.py` varre só o staged, e não há nada staged).
+- `npm run build:js` e `npm run build` → verdes. **Boot (medido):** antes, `dist/index.js` 140.005 B / 37.080 B gzip e nenhum chunk com `@dnd-kit`; depois, 133.152 B / 35.324 B gzip, com **0 referências a `@dnd-kit` em `index.js`** — só um `import("./SarakKanbanImpl-….js")` dinâmico. O chunk `SarakKanbanImpl` tem 9.601 B / 3.659 B gzip e é o único com `from "@dnd-kit/core"` e `from "@dnd-kit/sortable"` (as duas libs seguem externas). No `index.cjs` o `require("@dnd-kit/core")` está dentro de inicializador preguiçoso. A diferença de −6,8 KB no `index.js` não é só do Kanban (o build também carrega o trabalho das plans 100/101 no worktree).
+- `dist/index.d.ts`: `declare function SarakKanban<C extends SarakKanbanCard = SarakKanbanCard>(props: SarakKanbanProps<C>): JSX.Element` — o tipo público segue genérico e sem `Suspense` do consumidor. As classes `basis-[88cqi]`, `@min-[768px]:basis-[calc(…*17)]`, `snap-mandatory`, `snap-start` e `@min-[768px]:snap-none` foram geradas no `dist/sarak.css`.
+
+**Critérios de aceite**
+- [x] Soltar no meio de outra coluna põe o cartão naquele índice; reordenar dentro da coluna; `onCardMove` com `fromIndex`, `toIndex`, `beforeCardId`, `afterCardId` — evidência: `useKanbanDrag.test.tsx` (índice 1 entre `x` e `y`; índice 2 na metade de baixo; reordenação `0→2` com vizinhos `c`/`null`) e `kanbanModel.test.ts`.
+- [x] Soltar no mesmo lugar não chama `onCardMove` — `useKanbanDrag.test.tsx` ("soltar no mesmo lugar").
+- [x] Teclado levanta, move, solta e cancela; anúncios pelo catálogo — **com ressalva**: anúncios (4) e instruções conferidos por texto exato; levantar (Espaço) e cancelar (Esc) pelo sensor real. O **movimento por setas** não foi exercido pelo sensor real (jsdom não mede layout); o índice de destino é provado pelos manipuladores do `DndContext` com eventos sintéticos. Isso pede conferência no navegador.
+- [ ] Toque — **parcial**. Provado por ponteiro simulado: o arrasto só ativa após a pressão longa (nada em 100 ms, ativo após 300 ms), o `touchmove` na espera não recebe `preventDefault` e o cartão não declara `touch-action: none`. **Não provado**: que mover o dedo na espera cancele o arrasto (tentei, mas o jsdom não reproduziu; o teste só afirma o que passa) e tudo em aparelho — medição do dono, bloqueante para o aprovação do lote.
+- [x] Cartão padrão mostra código, título, avatar, prioridade (sem a média), prazo atrasado e contador; `renderCard` o substitui — `KanbanCardContent.test.tsx`, `SarakKanbanImpl.test.tsx`.
+- [x] Cada evento novo, ausente, não renderiza o controle; presente, renderiza e dispara — `SarakKanbanImpl.test.tsx` (um teste por evento) e `KanbanColumn.test.tsx`.
+- [x] Carregado sob demanda: boot sem a biblioteca (números acima), tipo público igual, peer opcional — build e `public-types:check`.
+- [x] Nenhuma medida solta no componente nem texto fixo em português — o auditor de hardcode e o de composição ficaram no baseline. Exceções que o auditor não acusa e que o revisor deve olhar: glifo `⋯` do botão do menu (a descrição acessível é traduzida), `opacity` 0,4 do cartão em arrasto, e o deslocamento `translate3d(Xpx, …)` que o dnd-kit calcula em `useKanbanDrag.ts`.
+- [x] `<SarakKanban columns onCardMove renderCard />` do uso anterior segue funcionando — `SarakKanbanImpl.test.tsx` ("compatibilidade").
+
+**Decisões e suposições**
+- **Desvio do passo 7:** usei `Suspense` direto, não o `LazyEngineWrapper`. Ele chama `useSarakUI()`, que lança sem Provider; o quadro anterior renderizava sem Provider (R34) e passaria a quebrar. O teste `SarakKanban.test.tsx` renderiza sem Provider e sem `Suspense` do consumidor e passou. O fallback é traduzido (`kanbanLoading`).
+- Sensor de mouse separado (`MouseSensor`) em vez de `PointerSensor`: o de ponteiro também recebe o toque, sem o atraso, e brigaria com a rolagem.
+- A classificação da nota de migração é MINOR com ação do consumidor (instalar as duas libs). Reordenar na mesma coluna passa a disparar `onCardMove`, e os campos novos do cartão podem colidir com tipos de consumidor — está na nota. O revisor decide o nível do bump.
+- Intervalos de peer `>=6.3.0` e `>=10.0.0` (os mínimos testados); `devDependencies` `^6.3.1` e `^10.0.0`. Não mexi no `--external` do script `build:js`: o tsup externaliza as peers sozinho, confirmado no chunk.
+- A mensagem "levantado" do leitor de tela é trocada pela de posição quase em seguida, porque o dnd-kit dispara `onDragOver` logo após o início. É comportamento da biblioteca (o texto exato de cada anúncio está testado em separado).
+- Arquivos extras dentro da pasta autorizada: `kanbanLayout.ts`, `KanbanCardContent.tsx` e `KanbanAddForm.tsx` (além dos listados no §3.1), para respeitar o teto de 250 linhas e o auditor de hardcode.
+
+**Achados fora do escopo (não corrigidos)**
+- `tsx` não está declarado no `package.json` (só aparece como peer opcional de outras libs), mas `scripts/consumer-kit/collectEmittedSarakCssVars.mjs:5` o importa direto. Depois do meu `npm install`, `npm run guide` falhou com `ERR_MODULE_NOT_FOUND`. Não consigo provar se o meu install podou o pacote (a linha do npm foi "added 5 packages", sem remoção) ou se ele já estava ausente. Reinstalei com `npm install --no-save tsx@^4.21.0` (`package.json` e lockfile com hash idêntico antes e depois; saída "added 127 packages, removed 1 package"). O próximo `npm install` sem `--no-save` pode podá-lo de novo; a lacuna é do repositório (gerador depende de pacote não declarado).
+- O `npm install` do dnd-kit também re-resolveu `@emnapi/wasi-threads` de 1.2.1 para 1.2.3 no lockfile, mais cópias aninhadas em `@rolldown/binding-wasm32-wasi` (dependência opcional de WASM). É efeito colateral do npm, não escolha minha.
+- Os testes imprimem "Could not parse CSS stylesheet" (jsdom); não investiguei se é anterior a esta execução.
+- `dist/` já estava modificado antes (`BUILD_INFO.json` e chunks removidos na fotografia indireta); o `npm run build` o regenerou por inteiro a partir da árvore compartilhada.
+
+**Pendências / riscos**
+- **Bloqueante:** medir o toque em aparelho no primeiro sistema importador atualizado (pressão longa de 250 ms, índice certo entre colunas, rolagem da página sem briga) — é do dono, antes do veredito final do lote 2. Falhou: lote reprova e a biblioteca volta ao dono.
+- Conferir no navegador, por mouse e por teclado, arrastar entre e dentro das colunas e as setas do teclado (§7 da plan, por conta do revisor): não consegui exercitar o movimento por setas no jsdom.
+- Quem usa `SarakKanban` precisa instalar `@dnd-kit/core` e `@dnd-kit/sortable`; sem elas o quadro não carrega (peer opcional, como `echarts`). Está na nota de migração.
+- O lote 3 (blocos de detalhe do cartão) não foi tocado.
+
+## Veredito — 2026-10-09 (lote 2) — 🔴 Reprovado
+
+**Rodado pelo revisor**, com 0 processos de outras execuções: em cópia fora do repositório (HEAD `fbaa2d6c` +
+worktree), `npx vitest run src/components/atomic/DataDisplay/SarakKanban` → **56/56**; **mutação:** emitir evento ao
+soltar no mesmo lugar derruba 3, `beforeCardId` sempre `null` derruba 5. No worktree: `tsc` → 0,
+`check-audit-baseline --with-tsc` → igual, `icon-port:check` → OK. `dist/index.js` sem nenhuma referência a
+`@dnd-kit`; só o chunk `SarakKanbanImpl-*.js` a importa; no código-fonte só `useKanbanDrag.ts` importa a lib (as
+menções em `index.ts` e `SarakKanban.tsx` são comentário).
+
+**O que está certo:** adaptador único (`useKanbanDrag.ts`) com os sensores e números do lote 1; destino = índice
+onde se soltou, com `fromIndex`/`toIndex`/`beforeCardId`/`afterCardId`, e nada emitido no mesmo lugar; cartão
+padrão por i18n e por token (atrasado pela cor de erro); cada controle só existe com o seu evento; container query
+mobile-first, sem `minWidth`/`fontSize` à mão; lazy com o tipo público genérico preservado; peer opcional das duas
+libs do ADR. **Desvio aceito:** `Suspense` direto em vez do `LazyEngineWrapper` — o wrapper chama `useSarakUI()`,
+que lança sem Provider, e o quadro renderizava sem Provider (R34); há teste disso.
+
+**Achado**
+
+1. **O botão do menu da coluna usa um glifo de texto como ícone.** `KanbanColumn.tsx:52` passa `icon="⋯"` ao
+   `SarakIconButton`. A R39 manda todo ícone da lib passar pela porta de ícones — é por ela que família e traço do
+   tema chegam ao ícone, e o glifo ignora os dois (o `icon-port:check` não vê isso: ele só olha nomes de pacote).
+   Use `<SarakIcon name="MoreHorizontal" />` (existe em `iconNames.ts`).
+
+**Avisos, sem achado:** `opacity: 0.4` do cartão em arrasto (`KanbanCard.tsx:25`) é valor de apresentação sem
+token — declarado pelo executor; fica para quando houver token de estado de arrasto. O `tsx` foi reposto com
+`npm install --no-save`: o `node_modules` voltou a funcionar, mas o pacote continua **não declarado**, e o próximo
+`npm install` pode podá-lo de novo (decisão do dono pendente).
+
+**Pendente antes do veredito final do lote 2 (§5 item 9, emendado em 2026-10-05):** a medição do toque em
+aparelho, pelo dono, no primeiro sistema importador atualizado — e, na mesma sessão, o arrasto por mouse e pelas
+setas do teclado, entre colunas e dentro da coluna, que o jsdom não exercita. Falhou: o lote 2 reprova e a escolha
+da biblioteca volta ao dono.
+
+Status: `🔵 Em correção`.
+
+## Resumo da execução (correção 1 do lote 2) — 2026-10-09
+
+**Resultado:** Concluído — o achado 1 foi corrigido. Segue pendente, e não é do executor, a medição do toque em aparelho (e do arrasto por mouse e setas no navegador) citada no veredito.
+
+**Estado do worktree ao iniciar:** os arquivos do lote 2 e os das plans 100/101 já estavam modificados; não toquei em nada fora de `SarakKanban/`.
+
+**O que foi feito**
+- Achado 1 — `KanbanColumn.tsx:53`: `icon="⋯"` virou `icon={<SarakIcon name="MoreHorizontal" />}`, com o import de `../../Icon/SarakIcon` (`KanbanColumn.tsx:8`). O `aria-label` traduzido (`kanbanColumnMenu`) ficou como estava.
+- `__tests__/KanbanColumn.test.tsx`: teste novo "o botão do menu renderiza o ícone da porta de ícones, não um glifo de texto". Renderiza `<SarakIcon name="MoreHorizontal" />` à parte, pega o `outerHTML` do `svg` e exige que o `svg` dentro do botão do menu da coluna seja idêntico, e que o texto do botão não contenha `⋯`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakKanban/KanbanColumn.tsx` | alterado | Ícone do botão do menu pela porta de ícones |
+| `src/components/atomic/DataDisplay/SarakKanban/__tests__/KanbanColumn.test.tsx` | alterado | Teste do ícone da porta |
+| `specs/plan/plan-102-quadro-kanban-de-gestao-de-projetos.md` | alterado | Este bloco e o status |
+
+**Verificações executadas** (contagem de vitest/tsup em 0, conferida em chamada separada antes de rodar)
+- `npx vitest run src/components/atomic/DataDisplay/SarakKanban` → 8 arquivos, **57 testes** verdes (eram 56; o novo é o 57º).
+- Mutação do teste novo: voltei `icon="⋯"` e rodei só `KanbanColumn.test.tsx` → 1 falha (`o botão do menu renderiza o ícone da porta…`), 5 passaram; restaurei o ícone e reconfirmei por `Select-String` (`KanbanColumn.tsx:53`) e por nova rodada da pasta (57/57).
+- `npx tsc --noEmit` → exit 0, sem saída.
+- `npm run icon-port:check` → OK. `npm run catalog:check` → "catálogo em dia" (não precisou regenerar: a mudança não altera props nem exports).
+- Conferências extras, por segurança: `npm run guide:check` e `npm run dev-kit:check` em dia; `check-audit-baseline --with-tsc` → igual ao baseline.
+
+**Critérios de aceite**
+- [x] Achado 1 — evidência: `KanbanColumn.tsx:53` e o teste que falha com o glifo.
+
+**Decisões e suposições**
+- O teste compara o `svg` com o que o `SarakIcon` renderiza sozinho, em vez de procurar uma classe do pacote de ícones: assim o teste não depende de qual família ou traço o tema usa, e quebra se o botão deixar de passar pela porta.
+- Não rodei a suíte inteira: a correção é de uma linha dentro do Kanban, e o escopo pedia a pasta, `tsc`, `icon-port:check` e `catalog:check`.
+
+**Achados fora do escopo (não corrigidos):** nenhum novo.
+
+**Pendências / riscos**
+- O `dist/` e o `sarak-ui/` foram gerados na rodada anterior e **não foram regenerados**: o chunk `SarakKanbanImpl-*.js` ainda traz o glifo antigo até o próximo `npm run build`. Não fiz o build porque a correção não o pediu; ele é necessário antes de emitir o release.
+- Continuam abertos os avisos do veredito (`opacity: 0.4` sem token; `tsx` não declarado) e a medição em aparelho pelo dono.
+
+## Veredito — 2026-10-09 (lote 2, correção 1) — 🟢 Aprovado no código (lote 2 — liberação parcial)
+
+**O achado fechou.** `KanbanColumn.tsx:53` passa `<SarakIcon name="MoreHorizontal" />` (porta de ícones, R39), com
+o `aria-label` traduzido intacto. O teste novo compara o `svg` do botão com o que o `SarakIcon` desenha sozinho —
+não depende da família do tema — e exige que o texto do botão não tenha `⋯`; o executor provou o dente (volta do
+glifo → 1 falha). Lido pelo revisor; não repetido: havia 11 processos de teste de outra execução, e a troca é de
+uma linha.
+
+**O que ainda falta para o veredito final do lote 2** (§5 item 9): a medição em aparelho pelo dono, no primeiro
+sistema importador atualizado — toque (pressão longa de 250 ms, índice certo entre colunas, rolagem sem briga) e,
+na mesma sessão, arrasto por mouse e pelas setas do teclado. Para isso o código precisa sair em commit e tag. O
+`dist/` ainda traz o glifo antigo até o próximo `npm run build` (o fecho da onda o regenera).
+
+**Liberação parcial.** Status volta a `🟡 Em execução`. O lote 3 (blocos de detalhe do cartão) não depende da
+biblioteca de arrastar e pode ser despachado; se a medição em aparelho falhar, só o lote 2 volta ao dono.
+
 ---
 
 # 11. Síntese

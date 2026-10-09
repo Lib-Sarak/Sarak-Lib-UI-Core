@@ -5,6 +5,43 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## O motor de gráficos obedece ao tema do painel, desenha várias séries e ganha waterfall, sankey e calendário de calor
+
+**Classificação: MINOR visual.** Nenhuma prop foi removida nem mudou de tipo: `type`, `data` e `config` continuam
+valendo como antes. O que muda é o **desenho** que o consumidor vê, porque o `SarakChartEngine` passou a ler o
+tema que o painel de Design oferece.
+
+| Antes | Depois |
+|---|---|
+| Cor, eixo, grade, tooltip e fonte do gráfico vinham de `primaryColor`, `secondaryColor`, `mode` e `bodyFont`, com três cores escritas à mão. | Os sete tokens de gráfico (`chartColorPalette`, `chartGridOpacity`, `chartTooltipBg`, `chartType`, `chartShowGrid`, `chartThickness`, `chartSmoothing`) e as cores do próprio tema mandam no desenho. **Um tema com cores ou espessura diferentes do padrão antigo muda o aspecto dos gráficos existentes.** |
+| `type` obrigatório. | `type` é opcional: omitido, vale `chartType` do tema. A prop explícita continua vencendo. |
+| `title`, `showGradients`, `showAnimation` e `thickness` existiam no tipo sem efeito. | Passam a ter efeito. O padrão preserva o desenho anterior, exceto a espessura da linha, que agora é `chartThickness` do tema. |
+| `data` vazio desenhava um gráfico em branco. | Mostra o estado vazio (`SarakDataEmpty`), sem erro no console. O gráfico ganha `role="img"` e `aria-label` (prop `ariaLabel`, com padrão traduzido). |
+| Uma série por gráfico. | Props novas e opcionais: `series`, `stacked`, `orientation`, `legend` e `onPointClick`. Sem `series`, o comportamento é o de antes; pizza, radar, funil e demais formatos não cartesianos as ignoram. |
+| 14 formatos em `type`. | Mais três: `waterfall` (`{ name, value, total? }`), `sankey` (`{ source, target, value }`) e `calendar` (`{ date, value }`). Dado inválido nos três cai no estado vazio, nunca em exceção. |
+
+O motor `recharts` segue uma alternativa limitada: recebendo uma prop que só o ECharts honra, avisa uma vez no
+console de desenvolvimento.
+
+---
+
+## O `SarakKanban` reordena dentro da coluna, funciona em toque e teclado, e passa a ser carregado sob demanda
+
+**Classificação: MINOR com ação do consumidor.** `<SarakKanban columns onCardMove renderCard />` continua
+compilando e renderizando, mas o arrasto trocou de motor e **quem usa o quadro precisa instalar duas dependências**.
+
+| Antes | Depois |
+|---|---|
+| Arrastar pela API HTML5 nativa, sem dependência. Não respondia a toque. | `@dnd-kit/core` e `@dnd-kit/sortable` (peers **opcionais**: só quem renderiza um quadro precisa delas). **Instale as duas** ao usar `SarakKanban`; sem elas o quadro não carrega. |
+| Carregado junto com o resto, e sempre síncrono. | Carregado sob demanda: o chunk de boot não contém a biblioteca de arrastar. `<SarakKanban />` segue sem exigir `Suspense` do consumidor (mostra um estado de carga próprio). |
+| Soltar sempre punha o cartão **no fim** da coluna; soltar na mesma coluna não fazia nada e não emitia evento. | O cartão vai ao **índice onde foi solto**, também dentro da própria coluna. Soltar no mesmo lugar não emite evento. |
+| `onCardMove({ cardId, fromColumn, toColumn, toIndex })`. | Os mesmos campos mais `fromIndex`, `beforeCardId` e `afterCardId` (vizinhos finais, `null` nas pontas), para calcular a ordem sem reler o quadro. **Reordenar na mesma coluna agora dispara o evento**: o handler que assumia `fromColumn !== toColumn` deve tratar os dois casos. |
+| Testes do consumidor simulavam `dragStart`/`dragOver`/`drop` HTML5. | Esses eventos não movem mais nada. O toque entra por pressão longa; o teclado, por Espaço (levanta e solta) e Esc (cancela). |
+| `SarakKanbanCard` só com `id`, `title` e `description`. | Campos opcionais novos: `code`, `assignee`, `priority` (`'low' \| 'medium' \| 'high' \| 'urgent'`), `dueDate` e `subtasks`. **Um cartão do consumidor que já tenha um campo com um desses nomes e outro tipo passa a dar erro de tipo.** |
+| Sem criar cartão, abrir cartão nem gerir coluna. | Eventos opcionais `onCardClick`, `onCardAdd`, `onColumnAdd`, `onColumnRename` e `onColumnDelete`: cada um, quando passado, liga o controle dele. Sem o evento, sem o controle. |
+
+---
+
 ## 8.0.0 — um cromo por aplicação
 
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.

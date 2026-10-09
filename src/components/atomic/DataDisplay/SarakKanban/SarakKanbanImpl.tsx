@@ -1,136 +1,75 @@
 /**
- * SarakKanban — quadro de colunas com drag-and-drop (Spec 12, Regra 3 · Onda 10)
- *
- * DnD via API HTML5 NATIVA (`draggable` + `onDragOver`/`onDrop`) — **zero dependência
- * nova**. No `drop`, o modelo local é atualizado IMEDIATAMENTE (o card salta de coluna sem
- * recarregar — Critério de Aceite) e o `onCardMove` é emitido com origem→destino. Zero
- * Hardcode: superfícies, bordas e o realce de drag-over saem de tokens `[--sarak-*]`.
+ * SarakKanban — quadro de colunas que arrasta entre e DENTRO das colunas, por mouse, toque e
+ * teclado. A biblioteca de arrastar vive atrás de `useKanbanDrag`; aqui só se monta o
+ * quadro. O modelo local move o cartão no ato da soltura (sem esperar o consumidor) e o
+ * `onCardMove` leva índices e vizinhos finais. Medidas, superfícies e bordas saem de tokens.
  */
 
-import React, { useEffect, useState } from 'react';
-import { SarakKanbanCard, SarakKanbanColumn, SarakCardMove, sarakMoveCard } from './kanbanModel';
+import React from 'react';
+import { KanbanAddForm } from './KanbanAddForm';
+import { KanbanCardShell } from './KanbanCard';
+import { KanbanColumn } from './KanbanColumn';
+import { KANBAN_BOARD_CLASS, KANBAN_COLUMN_CLASS } from './kanbanLayout';
+import { useKanbanDrag } from './useKanbanDrag';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import type { SarakCardMove, SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
 
 export interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     /** Colunas e seus cards (a ordem do array é a ordem visual). */
     columns: Array<SarakKanbanColumn<C>>;
-    /** Disparado ao soltar um card numa coluna (origem → destino). */
+    /** Disparado ao soltar um card em outro lugar: coluna e índice de origem e destino, mais os vizinhos finais. Soltar no mesmo lugar não dispara. */
     onCardMove?: (move: SarakCardMove) => void;
-    /** Render customizado do card (default: título + descrição). */
+    /** Render customizado do card (default: o cartão padrão com código, título, avatar, prioridade, prazo e subtarefas). */
     renderCard?: (card: C, columnId: string) => React.ReactNode;
+    /** Ao clicar (ou Enter) num card. Omitido, o card não é clicável. */
+    onCardClick?: (card: C, columnId: string) => void;
+    /** Criação rápida no rodapé da coluna. Omitido, o campo não aparece. */
+    onCardAdd?: (columnId: string, title: string) => void;
+    /** Nova coluna, ao fim do quadro. Omitido, o campo não aparece. */
+    onColumnAdd?: (title: string) => void;
+    /** Renomear coluna pelo menu dela. Omitido, o item não aparece. */
+    onColumnRename?: (id: string, title: string) => void;
+    /** Excluir coluna pelo menu dela. Omitido, o item não aparece. */
+    onColumnDelete?: (id: string) => void;
     className?: string;
 }
-
-/** Interação de DnD: card sendo arrastado + coluna sob o cursor (um só estado p/ enxugar). */
-interface DragState {
-    drag: { cardId: string; fromColumn: string } | null;
-    over: string | null;
-}
-
-const IDLE: DragState = { drag: null, over: null };
 
 function SarakKanbanImpl<C extends SarakKanbanCard>({
     columns,
     onCardMove,
     renderCard,
+    onColumnAdd,
     className,
+    ...columnHandlers
 }: SarakKanbanProps<C>) {
-    // Espelho local para mover o card no ato do drop (sem esperar o consumidor).
-    const [board, setBoard] = useState<Array<SarakKanbanColumn<C>>>(columns);
-    const [io, setIo] = useState<DragState>(IDLE);
-
-    // Ressincroniza quando o consumidor troca as colunas (fonte de verdade externa).
-    useEffect(() => setBoard(columns), [columns]);
-
-    const handleDrop = (toColumn: string) => {
-        const { drag } = io;
-        setIo(IDLE);
-        if (!drag) return;
-        const target = board.find((col) => col.id === toColumn);
-        const toIndex = target ? target.cards.length : 0;
-        setBoard((prev) => sarakMoveCard(prev, drag.cardId, drag.fromColumn, toColumn, toIndex));
-        if (drag.fromColumn !== toColumn) {
-            onCardMove?.({ cardId: drag.cardId, fromColumn: drag.fromColumn, toColumn, toIndex });
-        }
-    };
+    const text = useLibraryText();
+    const { board, activeCard, root } = useKanbanDrag(columns, onCardMove);
+    const activeColumn = activeCard ? board.find((col) => col.cards.some((c) => c.id === activeCard.id)) : undefined;
 
     return (
         <div
             data-sarak-kanban="true"
-            className={className}
-            style={{ display: 'flex', gap: 'var(--sarak-layout-gap-md,16px)', alignItems: 'flex-start', overflowX: 'auto' }}
+            className={`${KANBAN_BOARD_CLASS} ${className ?? ''}`.trim()}
+            style={{ display: 'flex', gap: 'var(--sarak-layout-gap-md, 16px)', alignItems: 'flex-start', overflowX: 'auto' }}
         >
-            {board.map((column) => {
-                const isOver = io.over === column.id;
-                return (
-                    <section
-                        key={column.id}
-                        data-column-id={column.id}
-                        aria-label={column.title}
-                        onDragOver={(e) => { e.preventDefault(); setIo((s) => ({ ...s, over: column.id })); }}
-                        onDragLeave={() => setIo((s) => (s.over === column.id ? { ...s, over: null } : s))}
-                        onDrop={() => handleDrop(column.id)}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 'var(--sarak-layout-gap-sm,8px)',
-                            minWidth: 260,
-                            padding: 'var(--sarak-layout-gap-sm,8px)',
-                            borderRadius: 'var(--sarak-card-radius,12px)',
-                            background: 'var(--color-theme-card,#1e293b)',
-                            border: `var(--sarak-border-width, 1px) solid ${isOver ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--border-color,#334155)'}`,
-                            transition: 'border-color 120ms',
-                        }}
-                    >
-                        <header
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: 'var(--sarak-kanban-header-padding-y, 4px) var(--sarak-layout-gap-sm, 8px)',
-                                fontWeight: 600,
-                                fontSize: 13,
-                                textTransform: 'uppercase',
-                                letterSpacing: 'var(--sarak-kanban-header-tracking, 0.04em)',
-                                color: 'var(--color-theme-title,#ffffff)',
-                            }}
-                        >
-                            <span>{column.title}</span>
-                            <span style={{ color: 'var(--text-muted,#94a3b8)' }}>{column.cards.length}</span>
-                        </header>
-
-                        {column.cards.map((card) => (
-                            <article
-                                key={card.id}
-                                draggable
-                                data-card-id={card.id}
-                                onDragStart={() => setIo((s) => ({ ...s, drag: { cardId: card.id, fromColumn: column.id } }))}
-                                onDragEnd={() => setIo(IDLE)}
-                                style={{
-                                    padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)',
-                                    borderRadius: 'var(--sarak-kanban-card-radius, 8px)',
-                                    background: 'var(--color-theme-card,#1e293b)',
-                                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
-                                    cursor: 'grab',
-                                    opacity: io.drag?.cardId === card.id ? 0.5 : 1,
-                                }}
-                            >
-                                {renderCard ? renderCard(card, column.id) : (
-                                    <div>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-theme-title,#ffffff)' }}>
-                                            {card.title ?? card.id}
-                                        </div>
-                                        {card.description && (
-                                            <div style={{ fontSize: 12, color: 'var(--text-muted,#94a3b8)', marginTop: 2 }}>
-                                                {card.description}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </article>
-                        ))}
-                    </section>
-                );
-            })}
+            {root(
+                <>
+                    {board.map((column) => (
+                        <KanbanColumn key={column.id} column={column} renderCard={renderCard} {...columnHandlers} />
+                    ))}
+                </>,
+                activeCard && activeColumn ? <KanbanCardShell card={activeCard} columnId={activeColumn.id} renderCard={renderCard} /> : null,
+            )}
+            {onColumnAdd && (
+                <div className={KANBAN_COLUMN_CLASS}>
+                    <KanbanAddForm
+                        formKind="column"
+                        placeholder={text('kanbanColumnAddPlaceholder')}
+                        submitLabel={text('kanbanColumnAddSubmit')}
+                        onSubmit={onColumnAdd}
+                    />
+                </div>
+            )}
         </div>
     );
 }

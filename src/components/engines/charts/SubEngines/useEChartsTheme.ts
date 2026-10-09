@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { CHART_COLOR_TOKENS } from './builders/types';
 
 const CHART_THEME_FALLBACK_COLOR = '#3b82f6';
 const DEFAULT_CHART_GRID_OPACITY = 0.05;
@@ -62,11 +63,7 @@ function resolveDesignColor(value: unknown): string {
 }
 
 function resolvePalette(design: ResolvedDesign): string[] {
-    return [
-        design.chartColorPalette, design.secondaryColor, design.accentColor,
-        design.statusSuccessColor, design.statusWarningColor, design.statusErrorColor,
-        design.statusInfoColor, design.tertiaryColor,
-    ].map(resolveDesignColor);
+    return CHART_COLOR_TOKENS.map((token) => resolveDesignColor(design[token]));
 }
 
 function resolveThemeSettings(design: ResolvedDesign): ChartThemeSettings {

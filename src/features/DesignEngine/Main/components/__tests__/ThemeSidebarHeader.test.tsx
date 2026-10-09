@@ -15,7 +15,7 @@ const baseProps = () => ({
 });
 
 describe('ThemeSidebarHeader', () => {
-    it('mantém o título curto, busca, modos e os quatro acessos nomeados', () => {
+    it('mantém o título curto, busca, modos e um único botão Avançado', () => {
         render(<ThemeSidebarHeader {...baseProps()} />);
 
         expect(screen.getByText('Design')).toBeInTheDocument();
@@ -23,10 +23,11 @@ describe('ThemeSidebarHeader', () => {
         expect(screen.getByPlaceholderText('Buscar token...')).toBeInTheDocument();
         expect(screen.getByRole('radiogroup', { name: 'Modo de edição' })).toBeInTheDocument();
         expect(screen.getAllByRole('radio')).toHaveLength(3);
-        expect(screen.getByRole('button', { name: 'Preview' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Catálogo' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Templates' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Buscar token (avançado)' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Avançado/ })).toBeInTheDocument();
+        for (const name of ['Preview', 'Catálogo', 'Templates', 'Buscar token (avançado)']) {
+            expect(screen.queryByRole('button', { name })).toBeNull();
+        }
+        expect(screen.getAllByRole('button')).toHaveLength(1);
     });
 
     it('usa escala com padrão de pelo menos 12 px nos rótulos e controles do cabeçalho', () => {
@@ -49,12 +50,13 @@ describe('ThemeSidebarHeader', () => {
         expect(screen.queryByRole('button', { name: /Aplicar/ })).toBeNull();
     });
 
-    it('clicar no acesso do Command Center chama setViewMode', async () => {
+    it('escolher Busca por pilar no menu Avançado chama setViewMode com command-center', async () => {
         const user = userEvent.setup();
         const setViewMode = vi.fn();
         render(<ThemeSidebarHeader {...baseProps()} setViewMode={setViewMode} />);
 
-        await user.click(screen.getByRole('button', { name: 'Buscar token (avançado)' }));
+        await user.click(screen.getByRole('button', { name: /Avançado/ }));
+        await user.click(screen.getByRole('menuitem', { name: 'Busca por pilar' }));
 
         expect(setViewMode).toHaveBeenCalledWith('command-center');
     });

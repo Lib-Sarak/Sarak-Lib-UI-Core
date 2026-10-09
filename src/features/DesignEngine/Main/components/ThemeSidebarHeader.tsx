@@ -1,6 +1,6 @@
 import React from 'react';
-import { Command, FileJson, Monitor, Search, Table, Zap } from 'lucide-react';
-import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
+import { Search, Zap } from 'lucide-react';
+import { ThemeAdvancedMenu, type ThemeViewMode } from './ThemeAdvancedMenu';
 import type { ThemeEditMode } from '../hooks/usePreviewUIState';
 
 const THEME_EDIT_MODES: Array<{ value: ThemeEditMode; label: string }> = [
@@ -9,16 +9,9 @@ const THEME_EDIT_MODES: Array<{ value: ThemeEditMode; label: string }> = [
     { value: 'complete', label: 'Completo' }
 ];
 
-const VIEW_MODE_LABELS: Record<'preview' | 'catalog' | 'templates' | 'command-center', string> = {
-    preview: 'Preview',
-    catalog: 'Catálogo',
-    templates: 'Templates',
-    'command-center': 'Buscar token (avançado)'
-};
-
 interface ThemeSidebarHeaderProps {
-    viewMode: 'preview' | 'catalog' | 'templates' | 'command-center';
-    setViewMode: (mode: 'preview' | 'catalog' | 'templates' | 'command-center') => void;
+    viewMode: ThemeViewMode;
+    setViewMode: (mode: ThemeViewMode) => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     editMode: ThemeEditMode;
@@ -43,19 +36,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                     Design
                 </span>
             </div>
-            <div role="group" aria-label="Telas avançadas" className="flex gap-1 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,#1e293b)] p-0.5">
-                {(['preview', 'catalog', 'templates', 'command-center'] as const).map((mode) => (
-                    <SarakIconButton
-                        key={mode}
-                        onClick={() => setViewMode(mode)}
-                        variant={viewMode === mode ? 'primary' : 'ghost'}
-                        size="sm"
-                        title={VIEW_MODE_LABELS[mode]}
-                        aria-label={VIEW_MODE_LABELS[mode]}
-                        icon={mode === 'preview' ? <Monitor size={14} /> : mode === 'catalog' ? <Table size={14} /> : mode === 'templates' ? <FileJson size={14} /> : <Command size={14} />}
-                    />
-                ))}
-            </div>
+            <ThemeAdvancedMenu viewMode={viewMode} setViewMode={setViewMode} />
         </div>
         <div className="flex flex-col gap-3">
             <div className="relative">

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao painel de temas um caminho simples: escolher um tema, ajustar o que pesa, aplicar"
 objetivo: "Fazer o painel de temas contar um caminho de tres passos sem jargao, com poucos botoes, uma galeria que abre sob demanda, preview que acompanha o que se edita e um unico jeito de aplicar"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel de customização"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "design-engine", "painel", "ux", "preview"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -807,6 +807,117 @@ reescrito pela plan-101, cuja suíte do motor passa com ele (veredito da 101); (
 **Liberação parcial.** Status volta a `🟡 Em execução`; o lote 3 (selo de dispositivo e menu "Avançado") pode ser
 despachado. Os lotes 1 e 2 não se commitam antes do fecho da onda (catálogo e `PreviewCanvas` se regeneram uma vez,
 pelo último a terminar).
+
+## Resumo da execução — lote 3 — 2026-10-09
+
+**Resultado:** Concluído com pendências (`guide` e `build` não executados: `tsx` ausente do `node_modules`)
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- Selo de dispositivo em `Main/components/TokenControl.tsx`: só para token `isResponsive`; "Só no Mobile" / "Só no Tablet" / "Desktop" conforme `previewDevice`, com o `title` da plan. Tamanho por `--sarak-type-scale-caption`.
+- Menu "Avançado" em `Main/components/ThemeAdvancedMenu.tsx` (novo): Tabela de tokens → `catalog`, Busca por pilar → `command-center`, Temas e JSON → `templates`, mais "Voltar ao modo normal" → `preview`. Enter/Espaço abre e foca a primeira entrada; setas, Home e End navegam; Esc, Tab e clique fora fecham; Esc e a escolha devolvem o foco ao botão.
+- `Main/components/ThemeSidebarHeader.tsx`: os quatro botões de ícone saíram, entrou o `ThemeAdvancedMenu`. O botão "Preview" deixou de existir (o modo normal é o padrão e a volta está no menu).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Main/components/TokenControl.tsx` | alterado | Selo de dispositivo. |
+| `src/features/DesignEngine/Main/components/__tests__/TokenControl.test.tsx` | alterado | Selo nos 3 dispositivos, ausência em token fixo, piso de 12 px pelo schema. |
+| `src/features/DesignEngine/Main/components/ThemeAdvancedMenu.tsx` | criado | Menu Avançado. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeAdvancedMenu.test.tsx` | criado | Teste 1:1: teclado, foco, mapeamento das entradas, clique fora, `aria-current`. |
+| `src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx` | alterado | Troca dos botões pelo menu. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarHeader.test.tsx` | alterado | Um único botão; os quatro antigos ausentes; escolha pelo menu chama `setViewMode`. |
+| `specs/plan/plan-100-painel-de-temas-caminho-simples.md` | alterado | Este resumo e o status. |
+
+**Verificações executadas**
+- `npx tsc --noEmit` → exit 0.
+- `npx vitest run src/features/DesignEngine` → 78 arquivos, 357 testes verdes.
+- `npx vitest run` (completo, 0 processos alheios antes) → 409 arquivos passaram, 1 falhou ao carregar; 2368 testes passaram, 0 falharam. A suíte que falhou é `scripts/consumer-kit/__tests__/kitGenerator.test.mjs`: `Cannot find package 'tsx/esm/api'`.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline, nenhuma regressão.
+- Gates do pre-commit, todos verdes: `barrel`, `zero-brand`, `deep-import`, `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc`, `class-merge`, `icon-port`, `chrome-token-parity`, `trail-citation`, `token-types`, `plan-index`, scan de segredos (`verificar_commit.py`). `catalog:check` e `dev-kit:check` verdes ao fim, depois da minha última edição. O `agent-git-write` não foi rodado, conforme a instrução.
+- `npm run catalog` e `npm run dev-kit` rodados. O diff do catálogo em `docs/` vem só da plan-101 (tipos `waterfall`, `sankey`, `calendar`); este lote não adiciona componente público. Nenhum check ficou defasado por edição de outra plan no fim.
+- **Não executados:** `npm run guide` (falha com `tsx/esm/api` ausente) e `npm run build` (roda `guide:check` antes de compilar).
+- Nenhum `-u` foi usado; nenhum snapshot foi alterado.
+
+**Critérios de aceite**
+- [x] Controle `isResponsive` mostra o selo certo nos três dispositivos; token fixo não mostra — `TokenControl.test.tsx`.
+- [x] O cabeçalho não tem os três botões de ícone; o menu tem as três entradas, abre e fecha por teclado e devolve o foco; cada entrada chama o mesmo `setViewMode` que o botão chamava — `ThemeAdvancedMenu.test.tsx`, `ThemeSidebarHeader.test.tsx`.
+- [x] `npx tsc --noEmit` → 0; `check-audit-baseline --with-tsc` → igual.
+- [ ] `npm run build` verde — não executado (ver pendências).
+- [ ] `npx vitest run` verde — 2368/2368 testes passam; 1 suíte não carrega por `tsx` ausente.
+
+**Decisões e suposições**
+- O selo fica numa linha acima do controle, não ao lado do rótulo: o canto direito do slider já mostra o valor, e o selo colidiria com ele.
+- O botão "Preview" também saiu do cabeçalho; "Voltar ao modo normal" é a quarta entrada do menu e cumpre a "volta explícita".
+- O menu é próprio (`role=menu`); a lib não tem átomo de menu suspenso reutilizável aqui.
+- Textos em constantes do módulo, em pt-BR, como nos lotes 1 e 2. O painel não usa `useLibraryText`, então `catalogEntries.part5.ts` não foi tocado.
+- `min-w-48` no painel do menu é medida estrutural de Tailwind; o baseline da auditoria não piorou.
+
+**Achados fora do escopo (não corrigidos)**
+- `node_modules` foi reinstalado por outra execução às 23:35 de 2026-10-08 e o pacote `tsx` sumiu. Ele não está no `package.json` (só aparece como peer opcional no lockfile). Isso derruba `guide`, `guide:check`, `build` e `kitGenerator.test.mjs`. Não instalei nada.
+- `package-lock.json` e `docs/migracoes.md` estão modificados por outras execuções; não são meus.
+
+**Pendências / riscos**
+- Restaurar o `tsx` e então rodar `npm run guide`, `npm run build` e o `kitGenerator.test.mjs`. O kit do consumidor (`sarak-ui/`) não foi regenerado nem conferido por mim.
+- A medição do painel em navegador real (selo e menu) é da plan-90.
+
+## Veredito — 2026-10-09 (lote 3) — 🔴 Reprovado
+
+**Rodado pelo revisor**, com 0 processos de outras execuções, em cópia fora do repositório (HEAD `fbaa2d6c` +
+worktree): `npx vitest run src/features/DesignEngine/Main/components` → 62/62. **Mutação:** trocar o selo do
+Mobile pelo do Tablet (1 falha), mostrar o selo em token fixo (1), não devolver o foco ao botão (5) — com dente.
+
+**O que está certo:** selo só em token `isResponsive`, com o texto e o `title` da plan e tamanho pelo
+`--sarak-type-scale-caption` (12 px no schema); os botões de ícone saíram do cabeçalho e entrou um único
+"Avançado" com `role="menu"`, as três entradas mais a volta ao modo normal, Enter/Espaço abre e foca a primeira,
+Esc e a escolha devolvem o foco, clique fora fecha. As variáveis de cor usadas (`--color-theme-title`,
+`--color-theme-card`) são emitidas. Nenhum snapshot alterado.
+
+**Achado**
+
+1. **O teste das setas não distingue a direção.** Trocar `ArrowUp: () => moveFocus(index, -1)` por `+1` deixa os
+   62 verdes: com quatro entradas, sair da 2.ª e apertar duas vezes para cima ou duas para baixo cai no mesmo item
+   (a 4.ª). Acrescente um passo que só a direção certa satisfaz — por exemplo, da 1.ª entrada, **uma** seta para
+   cima foca a última ("Voltar ao modo normal") e **uma** para baixo, a 2.ª. Prove em cópia que a mutação acima
+   derruba o teste.
+
+**Não é desta plan:** `npm run guide` e o build completo não rodaram por causa do `tsx` ausente do `node_modules`
+(dívida de dependência não declarada; ver o veredito do lote 3 da plan-101).
+
+Status: `🔵 Em correção`.
+
+## Resumo da execução (correção 1 do lote 3) — 2026-10-09
+
+**Resultado:** Achado 1 corrigido; aguardando novo veredito.
+
+**Escopo:** exclusivamente o achado 1 do veredito do lote 3. `ThemeAdvancedMenu.tsx` não foi alterado no worktree. O worktree já tinha alterações de outras execuções (`dist/`, `package.json`, plan-101 e outras); não toquei nelas.
+
+**Achado 1 — o teste das setas não distinguia a direção**
+- Acrescentei em `Main/components/__tests__/ThemeAdvancedMenu.test.tsx` o teste `uma seta para cima na primeira entrada foca a última; uma para baixo, a segunda`: com o foco na 1.ª entrada, **uma** `ArrowUp` foca "Voltar ao modo normal"; depois `Home` e **uma** `ArrowDown` focam "Busca por pilar".
+- **Dente provado** em `C:\tmp\plan100-l3c1` (`git archive HEAD` + os 6 arquivos de `Main/components` do lote 3 + junção `node_modules`):
+  - sem mutação: `ThemeAdvancedMenu.test.tsx` → 13/13 passam;
+  - com `moveFocus(index, -1)` trocado por `moveFocus(index, 1)` em `ThemeAdvancedMenu.tsx` da cópia → 12 passam e **1 falha**, justamente o teste novo.
+- Limpeza: junção removida antes da pasta, saída da pasta antes de apagá-la; `Test-Path node_modules` do repositório → `True`; a pasta temporária não existe mais.
+
+**Verificações**
+- `npx vitest run src/features/DesignEngine/Main/components` (0 processos alheios antes) → 10 arquivos, 63 testes verdes (eram 62).
+- `npx tsc --noEmit` → exit 0.
+
+**Observação de processo**
+- O contador de processos só chegou a 0 depois de eu encerrar meus próprios monitores de espera, cujo comando continha as palavras buscadas e se contava a si mesmo.
+
+## Veredito — 2026-10-09 (lote 3, correção 1) — 🟢 Aprovado
+
+**O achado fechou.** O teste novo parte da 1.ª entrada: **uma** `ArrowUp` tem de focar a última e, depois de
+`Home`, **uma** `ArrowDown` a 2.ª. Com `ArrowUp` invertida o foco iria para a 2.ª entrada e a primeira asserção
+cai — o dente decorre da própria asserção, e o executor o provou em cópia (1 falha, exatamente o teste novo). O
+`ThemeAdvancedMenu.tsx` não foi alterado (só o teste). O revisor não repetiu a mutação: havia 7 processos de
+teste de outra execução na máquina, e a prova por leitura é completa para uma troca de sinal.
+
+**A plan está completa** (lotes 1, 2 e 3 aprovados). Status: `🟢 Aprovada`. `npm run guide` e o build completo
+ficam para o fecho da onda, depois de o `tsx` voltar declarado (veredito do lote 3 da plan-101).
 
 ---
 

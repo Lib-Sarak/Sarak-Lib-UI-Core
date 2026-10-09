@@ -14,7 +14,15 @@ export type SarakChartDataItem = Record<string, unknown>;
 export type SarakChartType =
     | 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter'
     | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst'
-    | 'histogram' | 'boxplot';
+    | 'histogram' | 'boxplot' | 'waterfall' | 'sankey' | 'calendar';
+
+/** Tokens de cor do design que formam a paleta categórica, na ordem em que as séries os recebem. */
+export const CHART_COLOR_TOKENS = [
+    'chartColorPalette', 'secondaryColor', 'accentColor', 'statusSuccessColor',
+    'statusWarningColor', 'statusErrorColor', 'statusInfoColor', 'tertiaryColor',
+] as const;
+
+export type ChartColorToken = typeof CHART_COLOR_TOKENS[number];
 
 /** Subset da config de chart lido pelos builders (chaves de leitura de série). */
 export interface ChartBuilderConfig {

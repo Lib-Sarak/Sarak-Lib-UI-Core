@@ -1,20 +1,17 @@
 import * as builders from './optionBuilders';
 import { buildAxisOptions, buildTitleOption, buildTooltipOption } from './axisOptions';
+import { CHART_COLOR_TOKENS } from './builders/types';
 import type {
-    ChartBuilderConfig, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartType,
+    ChartBuilderConfig, ChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartType,
 } from './builders/types';
 
 const SERIES_CHART_TYPES = ['bar', 'line', 'area'] as const;
 const DEFAULT_STACK_NAME = 'chart-stack';
-const CHART_COLOR_TOKENS = [
-    'chartColorPalette', 'secondaryColor', 'accentColor', 'statusSuccessColor',
-    'statusWarningColor', 'statusErrorColor', 'statusInfoColor', 'tertiaryColor',
-] as const;
+const SELF_CONTAINED_TYPES: readonly SarakChartType[] = ['waterfall', 'sankey', 'calendar'];
 const COLOR_TOKEN_NOT_FOUND = -1;
 const DEFAULT_SERIES_INDEX = 0;
 
 type SeriesChartType = typeof SERIES_CHART_TYPES[number];
-type SeriesColorToken = typeof CHART_COLOR_TOKENS[number];
 type SeriesAxis = 'left' | 'right';
 type ChartOrientation = 'vertical' | 'horizontal';
 type LegendSetting = boolean | 'top' | 'bottom';
@@ -26,7 +23,7 @@ export interface ChartSeriesDefinition {
     stack?: string;
     axis?: SeriesAxis;
     dashed?: boolean;
-    color?: SeriesColorToken;
+    color?: ChartColorToken;
 }
 
 interface ChartSeriesOptions {
@@ -82,9 +79,9 @@ export function hasRenderableSeriesData(data: unknown, series: readonly ChartSer
     return data.some((item) => isRecord(item) && keys.some((key) => isFiniteNumber(item[key])));
 }
 
-function resolveSeriesColor(color: SeriesColorToken | undefined, index: number, theme: ChartTheme): string {
+function resolveSeriesColor(color: ChartColorToken | undefined, index: number, theme: ChartTheme): string {
     if (theme.palette.length === 0) return theme.primaryColor;
-    const tokenIndex = color ? CHART_COLOR_TOKENS.indexOf(color as SeriesColorToken) : COLOR_TOKEN_NOT_FOUND;
+    const tokenIndex = color ? CHART_COLOR_TOKENS.indexOf(color) : COLOR_TOKEN_NOT_FOUND;
     const paletteIndex = tokenIndex === COLOR_TOKEN_NOT_FOUND ? index : tokenIndex;
     return theme.palette[paletteIndex % theme.palette.length] ?? theme.primaryColor;
 }
@@ -110,6 +107,9 @@ function buildTypeOption(
         case 'sunburst': return builders.buildSunburstSeries(data, config, theme);
         case 'histogram': return builders.buildHistogramSeries(data, config, theme);
         case 'boxplot': return builders.buildBoxPlotSeries(data, config, theme);
+        case 'waterfall': return builders.buildWaterfallSeries(data, config, theme);
+        case 'sankey': return builders.buildSankeySeries(data, config, theme);
+        case 'calendar': return builders.buildCalendarSeries(data, config, theme);
     }
 }
 
@@ -226,7 +226,7 @@ export function buildChartOption(input: ChartOptionInput): ChartOptionFragment {
         tooltip: buildTooltipOption(input.type, input.theme),
         ...buildTitleOption(input.config?.title, input.theme),
         ...seriesOption,
-        ...buildLegend(input.legend, seriesCount, input.theme),
+        ...buildLegend(SELF_CONTAINED_TYPES.includes(input.type) ? false : input.legend, seriesCount, input.theme),
         animation: input.config?.showAnimation ?? true,
     };
 }

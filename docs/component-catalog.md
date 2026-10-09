@@ -40,7 +40,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakChart` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChart` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChart` | `importance` | `hero` · `base` · `subtle` |
-| `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` |
+| `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` · `waterfall` · `sankey` · `calendar` |
 | `SarakChartEngine` | `config` | `recharts` · `echarts` |
 | `SarakChartEngine` | `series` | `bar` · `line` · `area` · `left` · `right` · `chartColorPalette` · `secondaryColor` · `accentColor` · `statusSuccessColor` · `statusWarningColor` · `statusErrorColor` · `statusInfoColor` · `tertiaryColor` |
 | `SarakChartEngine` | `orientation` | `vertical` · `horizontal` |
@@ -403,13 +403,13 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | não | Seleciona o formato; omitido, usa `chartType` do design resolvido. |
+| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot' \| 'waterfall' \| 'sankey' \| 'calendar'` | não | Seleciona o formato; omitido, usa `chartType` do design resolvido. `waterfall` lê `{ name, value, total? }`, `sankey` lê `{ source, target, value }` e `calendar` lê `{ date, value }`. |
 | `data` | `SarakChartDataItem[]` | sim | Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. |
 | `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. |
-| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
-| `stacked` | `boolean` | não | Formatos não cartesianos ignoram esta prop. |
-| `orientation` | `'vertical' \| 'horizontal'` | não | Formatos não cartesianos ignoram esta prop. |
-| `legend` | `boolean \| 'top' \| 'bottom'` | não | Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade. |
+| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
+| `stacked` | `boolean` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
+| `orientation` | `'vertical' \| 'horizontal'` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
+| `legend` | `boolean \| 'top' \| 'bottom'` | não | Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade; `waterfall`, `sankey` e `calendar` ignoram esta prop. |
 | `onPointClick` | `(event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void` | não | Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. |
 | `ariaLabel` | `string` | não | Texto acessível do gráfico; omitido, usa o catálogo de i18n. |
 
@@ -776,8 +776,13 @@ Props (`SarakKanbanProps` — `src/components/atomic/DataDisplay/SarakKanban/Sar
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `columns` | `Array<SarakKanbanColumn<C>>` | sim | Colunas e seus cards (a ordem do array é a ordem visual). |
-| `onCardMove` | `(move: SarakCardMove) => void` | não | Disparado ao soltar um card numa coluna (origem → destino). |
-| `renderCard` | `(card: C, columnId: string) => React.ReactNode` | não | Render customizado do card (default: título + descrição). |
+| `onCardMove` | `(move: SarakCardMove) => void` | não | Disparado ao soltar um card em outro lugar: coluna e índice de origem e destino, mais os vizinhos finais. Soltar no mesmo lugar não dispara. |
+| `renderCard` | `(card: C, columnId: string) => React.ReactNode` | não | Render customizado do card (default: o cartão padrão com código, título, avatar, prioridade, prazo e subtarefas). |
+| `onCardClick` | `(card: C, columnId: string) => void` | não | Ao clicar (ou Enter) num card. Omitido, o card não é clicável. |
+| `onCardAdd` | `(columnId: string, title: string) => void` | não | Criação rápida no rodapé da coluna. Omitido, o campo não aparece. |
+| `onColumnAdd` | `(title: string) => void` | não | Nova coluna, ao fim do quadro. Omitido, o campo não aparece. |
+| `onColumnRename` | `(id: string, title: string) => void` | não | Renomear coluna pelo menu dela. Omitido, o item não aparece. |
+| `onColumnDelete` | `(id: string) => void` | não | Excluir coluna pelo menu dela. Omitido, o item não aparece. |
 | `className` | `string` | não |  |
 
 ### SarakLightbox

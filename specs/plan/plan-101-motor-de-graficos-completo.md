@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao motor de gráficos o que um sistema de dados precisa: tema de verdade, várias séries e novos formatos"
 objetivo: "Fazer o motor de graficos obedecer ao tema do painel, desenhar varias series (empilhado, horizontal, combinado, dois eixos, legenda, clique) e oferecer waterfall, sankey e calendario de calor, sem trocar de biblioteca"
 dominio: "Sarak-Lib-UI-Core / Engines / Gráficos"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "graficos", "echarts", "tema", "engine"]
 relacionados: ["[[03-superficie-publica]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[04-contrato-de-tokens-e-paridade]]"]
@@ -363,6 +363,85 @@ no segundo `xAxis` e `xAxisIndex: 1` na série. O resumo veio na §10, antes da 
 
 **Liberação parcial.** Status volta a `🟡 Em execução`; o lote 3 (waterfall, sankey, calendário de calor) pode
 ser despachado. Os lotes 1 e 2 não se commitam antes do fecho da onda.
+
+## Resumo da execução (lote 3) — 2026-10-08
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+(limpo) — `git status --short` vazio ao começar. Durante a execução apareceram, sem serem meus: `src/features/DesignEngine/Main/components/*` (plan-100) e `package-lock.json`.
+
+**O que foi feito**
+- `waterfallCharts.ts` (novo): degraus acumulados em barras empilhadas com base transparente; positivo/negativo por `statusSuccessColor`/`statusErrorColor`, total pela 1.ª cor; trecho que cruza o zero vira dois; tooltip por item com variação assinada e nome escapado. `hasWaterfallData` valida.
+- `flowCharts.ts` (novo): sankey com nós tirados das ligações (sem duplicar); ligação inválida, de valor ≤ 0, que feche ciclo ou aponte para si é descartada. `hasSankeyData`.
+- `calendarCharts.ts` (novo): heatmap em calendário; só dias com dado entram na série (dia sem dado fica vazio); intensidade por `colorAlpha` sobre a 1.ª cor da paleta; dia aceita ISO (com ou sem hora), `Date` e timestamp. `hasCalendarData`.
+- `optionBuilders.ts` reexporta os três. `SarakChartEngine.tsx`: união de `type`, validação de vazio por formato, JSDoc (216 linhas). `seriesModel.ts`: três casos no despacho e legenda desligada nos três formatos (248 linhas).
+- Lista de cores derivada de uma só fonte: `CHART_COLOR_TOKENS` em `builders/types.ts`, usada por `useEChartsTheme.ts` e `seriesModel.ts` (aviso do veredito do lote 2).
+- `docs/migracoes.md`: seção nova, por substituição exata antes do título "8.0.0"; o arquivo não tinha edição da plan-102 quando editei.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `SubEngines/builders/waterfallCharts.ts`, `flowCharts.ts`, `calendarCharts.ts` | criados | Os três formatos |
+| `__tests__/SarakChartEngine.formats.test.tsx` | criado | 15 testes dos três formatos |
+| `SarakChartEngine.tsx`, `SubEngines/seriesModel.ts`, `optionBuilders.ts` | alterados | Ligação dos formatos |
+| `SubEngines/builders/types.ts`, `useEChartsTheme.ts`, `axisOptions.ts` | alterados | Lista única de tokens; tipos; sankey/calendário sem eixos; tooltip por item |
+| `docs/migracoes.md` | alterado | Nota do passo 17 |
+| `docs/component-catalog.*`, `dist/*`, `sarak-dev/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados por comando | `catalog`, `build:js` e demais passos, `dev-kit` |
+
+**Verificações executadas**
+- `npx vitest run src/components/engines/charts` → 6 arquivos, 61 testes verdes (15 novos).
+- `npx vitest run` (inteiro) → 409/410 arquivos, 2368/2368 testes; **1 suíte falhou ao carregar**: `scripts/consumer-kit/__tests__/kitGenerator.test.mjs`, `Cannot find package 'tsx/esm/api'` (ver pendências).
+- `npx tsc --noEmit` → 0 erros. `check-audit-baseline --with-tsc` → igual ao baseline.
+- Passos do build, um a um: `catalog:check`, `barrel`, `zero-brand`, `deep-import`, `build:js`, `public-types`, `prefix`, `icon-port`, `kit-names`, CSS, copy/inject/build-info → verdes. `token-types:check` verde. Lista de gates do pre-commit: todos verdes (inclui `plan-index-sync`, `dev-kit:check`, trail-citation, class-merge, container-query).
+- `npm run catalog` e `npm run dev-kit` rodados no fim; `npm run guide` e `guide:check` **não rodaram** (ver pendências).
+- Cor literal: só `CHART_THEME_FALLBACK_COLOR` em `useEChartsTheme.ts`; nenhuma nos builders novos. Sem mutação em cópia nesta rodada.
+- Contagem de processos antes de cada vitest/build: esperei a execução da plan-100 terminar (contagem 7 → 0).
+
+**Critérios de aceite**
+- [x] Waterfall [+10, −4, total] fecha em 6 — `SarakChartEngine.formats.test.tsx` (base `[0,6,0]`, total 6).
+- [x] Sankey sem nó duplicado; calendário com dia sem dado fora da série, não zero — mesmo arquivo.
+- [x] Dado inválido nos três → `SarakDataEmpty`, sem `console.error` nem chamada ao ECharts — `it.each` do mesmo arquivo.
+- [x] Cores: success/error/1.ª cor por token — teste de cores.
+- [x] `docs/migracoes.md` com a nota; `tsc` 0; baseline igual.
+- [ ] `npm run build` inteiro e `npm run guide` — motivo: `tsx` ausente (abaixo).
+
+**Decisões e suposições**
+- Calendário: dados de um só ano → o ano inteiro; senão, intervalo primeiro–último dia (leitura de "ano corrente ou o intervalo dos dados"). A chave do dia é `date`, fixa.
+- Waterfall: item sem número vira variação zero (mantém a barra alinhada à categoria); só falha para vazio se nenhum item tem número.
+- Sankey: ciclos descartados porque o ECharts exige grafo acíclico.
+- Toquei `axisOptions.ts`, `useEChartsTheme.ts` e `builders/types.ts`, que o §3.1 do lote 3 não lista, por necessidade (sem eixos nos dois formatos; fonte única da lista de cores).
+
+**Achados fora do escopo (não corrigidos)**
+- `package-lock.json` está modificado e o pacote `tsx` (usado por `scripts/consumer-kit/collectEmittedSarakCssVars.mjs`) não existe em `node_modules`, embora nunca tenha estado no lockfile nem no `package.json` — provavelmente removido por um `npm install` de outra execução.
+
+**Pendências / riscos**
+- `npm run guide`/`guide:check` e, por isso, `npm run build` completo não rodam sem `tsx`; `sarak-ui/` ficou sem regenerar. O resto do build passou passo a passo. Precisa de `tsx` instalado (decisão do dono/revisor) e de `npm run guide` depois.
+- Não olhei o desenho em navegador (jsdom não desenha canvas); a prova é a `option` entregue ao ECharts simulado.
+- Snapshots do DesignEngine não foram avaliados como falha: a suíte completa passou neles agora.
+
+## Veredito — 2026-10-09 (lote 3) — 🟢 Aprovado
+
+**Rodado pelo revisor**, com 0 processos de outras execuções, em cópia fora do repositório (HEAD `fbaa2d6c` +
+worktree): `npx vitest run src/components/engines/charts` → **61/61**. **Mutação:** total do waterfall zerado (2
+falham), nós do sankey sem `Set` (1), dia sem `date` aceito no calendário (2), ciclo aceito no sankey (2) — os
+testes dos três formatos têm dente.
+
+**Critérios do lote 3:** waterfall `[+10, −4, total]` fecha em 6, com o trecho que cruza o zero dividido nos dois
+sentidos da pilha (o ECharts empilha positivo e negativo em separado); sankey com nós tirados das ligações, sem
+duplicar, e ligação que fecha ciclo descartada; calendário com só os dias que têm dado; inválido nos três →
+`SarakDataEmpty`. Cores por `statusSuccessColor`/`statusErrorColor` e pela 1.ª da paleta; nenhum literal novo. A
+lista de tokens de cor passou a uma fonte só (`CHART_COLOR_TOKENS` em `builders/types.ts`), fechando o aviso do
+lote 2. `SarakChartEngine.tsx` 216 e `seriesModel.ts` 248 linhas. Os três arquivos tocados fora do §3.1
+(`axisOptions.ts`, `useEChartsTheme.ts`, `builders/types.ts`) são consequência direta e estão justificados.
+
+**O que não foi medido, e por quê:** `npm run guide` e o `npm run build` completo não rodam no worktree — o `tsx`
+saiu do `node_modules` num `npm install` de outra execução. Não é defeito desta plan: o `tsx` **nunca foi
+declarado** (nem no `package.json`, nem no lockfile do HEAD), e oito scripts e gates dependem dele. O revisor roda
+`guide` e `build` no fecho da onda, depois de o `tsx` voltar declarado.
+
+**A plan está completa.** Status: `🟢 Aprovada`. O commit espera o fecho da onda (regeneração única de catálogo e
+kits).
 
 ---
 

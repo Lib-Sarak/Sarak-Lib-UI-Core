@@ -38,6 +38,25 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
     image: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
 };
 
+const DEVICE_BADGES = {
+    mob: { badge: 'Só no Mobile', device: 'Mobile' },
+    tab: { badge: 'Só no Tablet', device: 'Tablet' },
+    desk: { badge: 'Desktop', device: 'Desktop' }
+} as const;
+
+const deviceBadgeTitle = (device: string) =>
+    `Este valor vale só para ${device}. Troque o dispositivo na barra do preview para editar os outros.`;
+
+const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ deviceKey }) => (
+    <span
+        data-testid="token-device-badge"
+        title={deviceBadgeTitle(DEVICE_BADGES[deviceKey].device)}
+        className="mb-1 inline-block rounded-md border border-[var(--theme-border)] px-1.5 text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-primary)]"
+    >
+        {DEVICE_BADGES[deviceKey].badge}
+    </span>
+);
+
 export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: SarakDesignToken, value: SarakTokenValue, onChange: (val: SarakTokenValue) => void, previewDevice?: string }) => {
     const Widget = ControlRegistry[token.type];
     if (!Widget) return null;
@@ -59,5 +78,13 @@ export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop'
         }
     };
 
-    return <Widget token={token} value={displayValue as SarakTokenValue} onChange={handleChange} />;
+    const widget = <Widget token={token} value={displayValue as SarakTokenValue} onChange={handleChange} />;
+    if (!token.isResponsive) return widget;
+
+    return (
+        <div>
+            <DeviceBadge deviceKey={deviceKey} />
+            {widget}
+        </div>
+    );
 };

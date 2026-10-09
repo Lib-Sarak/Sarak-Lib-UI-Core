@@ -8,6 +8,7 @@ import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import type { EChartsTheme } from './SubEngines/useEChartsTheme';
 import { buildChartOption, buildPointClickEvents, hasRenderableSeriesData, isSeriesChartType } from './SubEngines/seriesModel';
 import RechartsChart from './SubEngines/RechartsChart';
+import { hasCalendarData, hasSankeyData, hasWaterfallData } from './SubEngines/optionBuilders';
 import type { ChartOptionFragment, SarakChartDataItem, SarakChartType } from './SubEngines/builders/types';
 
 useEChartsExtensions([AriaComponent, LegendComponent]);
@@ -20,10 +21,13 @@ const ECHARTS_ONLY_PROPS = ['series', 'stacked', 'orientation', 'legend', 'onPoi
 const CHART_TYPES_WITH_SHORT_VALUE_KEY: readonly SarakChartType[] = ['funnel', 'treemap', 'histogram'];
 
 export interface SarakChartEngineProps {
-    /** Seleciona o formato; omitido, usa `chartType` do design resolvido. */
+    /**
+     * Seleciona o formato; omitido, usa `chartType` do design resolvido. `waterfall` lê `{ name, value, total? }`,
+     * `sankey` lê `{ source, target, value }` e `calendar` lê `{ date, value }`.
+     */
     type?: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter'
         | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst'
-        | 'histogram' | 'boxplot';
+        | 'histogram' | 'boxplot' | 'waterfall' | 'sankey' | 'calendar';
     /** Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. */
     data: SarakChartDataItem[];
     /** Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. */
@@ -37,7 +41,7 @@ export interface SarakChartEngineProps {
         thickness?: number;
     };
     /**
-     * Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop.
+     * Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop.
      * `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal.
      */
     series?: Array<{
@@ -50,11 +54,11 @@ export interface SarakChartEngineProps {
         color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor'
             | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor';
     }>;
-    /** Formatos não cartesianos ignoram esta prop. */
+    /** Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. */
     stacked?: boolean;
-    /** Formatos não cartesianos ignoram esta prop. */
+    /** Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. */
     orientation?: 'vertical' | 'horizontal';
-    /** Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade. */
+    /** Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade; `waterfall`, `sankey` e `calendar` ignoram esta prop. */
     legend?: boolean | 'top' | 'bottom';
     /** Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. */
     onPointClick?: (event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void;
@@ -84,6 +88,9 @@ function hasRenderableData(data: unknown, type: SarakChartType, dataKey: string)
     if (!Array.isArray(data) || data.length === 0) return false;
     if (type === 'candlestick') return data.some((item) => isRecord(item) && hasCandlestickValues(item));
     if (type === 'boxplot') return data.some((item) => isRecord(item) && hasBoxPlotValues(item, dataKey));
+    if (type === 'waterfall') return hasWaterfallData(data, dataKey);
+    if (type === 'sankey') return hasSankeyData(data, dataKey);
+    if (type === 'calendar') return hasCalendarData(data, dataKey);
     if (type === 'sunburst') {
         return data.some((item) => isRecord(item) && (item[dataKey] !== undefined || Array.isArray(item.children)));
     }

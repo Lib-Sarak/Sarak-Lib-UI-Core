@@ -1,7 +1,7 @@
 import type { ChartOptionFragment, ChartTheme, SarakChartType } from './builders/types';
 
 const CHART_TYPES_WITHOUT_CARTESIAN_AXES: readonly SarakChartType[] = [
-    'pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst',
+    'pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst', 'sankey', 'calendar',
 ];
 
 function createGridLine(theme: ChartTheme): Record<string, unknown> {
@@ -52,7 +52,9 @@ export function buildAxisOptions(
 }
 
 export function buildTooltipOption(type: SarakChartType, theme: ChartTheme): ChartOptionFragment {
-    const itemTriggerTypes: readonly SarakChartType[] = ['pie', 'funnel', 'treemap', 'sunburst', 'boxplot'];
+    const itemTriggerTypes: readonly SarakChartType[] = [
+        'pie', 'funnel', 'treemap', 'sunburst', 'boxplot', 'waterfall', 'sankey', 'calendar',
+    ];
     return {
         ...theme.baseOption.tooltip,
         trigger: itemTriggerTypes.includes(type) ? 'item' : 'axis',

@@ -1074,9 +1074,9 @@
       "props": [
         {
           "name": "type",
-          "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot'",
+          "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot' | 'waterfall' | 'sankey' | 'calendar'",
           "optional": true,
-          "doc": "Seleciona o formato; omitido, usa `chartType` do design resolvido."
+          "doc": "Seleciona o formato; omitido, usa `chartType` do design resolvido. `waterfall` lê `{ name, value, total? }`, `sankey` lê `{ source, target, value }` e `calendar` lê `{ date, value }`."
         },
         {
           "name": "data",
@@ -1094,25 +1094,25 @@
           "name": "series",
           "type": "Array<{ key: string; label?: string; type?: 'bar' | 'line' | 'area'; stack?: string; axis?: 'left' | 'right'; dashed?: boolean; color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor' | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor'; }>",
           "optional": true,
-          "doc": "Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal."
+          "doc": "Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal."
         },
         {
           "name": "stacked",
           "type": "boolean",
           "optional": true,
-          "doc": "Formatos não cartesianos ignoram esta prop."
+          "doc": "Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop."
         },
         {
           "name": "orientation",
           "type": "'vertical' | 'horizontal'",
           "optional": true,
-          "doc": "Formatos não cartesianos ignoram esta prop."
+          "doc": "Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop."
         },
         {
           "name": "legend",
           "type": "boolean | 'top' | 'bottom'",
           "optional": true,
-          "doc": "Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade."
+          "doc": "Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade; `waterfall`, `sankey` e `calendar` ignoram esta prop."
         },
         {
           "name": "onPointClick",
@@ -2199,13 +2199,43 @@
           "name": "onCardMove",
           "type": "(move: SarakCardMove) => void",
           "optional": true,
-          "doc": "Disparado ao soltar um card numa coluna (origem → destino)."
+          "doc": "Disparado ao soltar um card em outro lugar: coluna e índice de origem e destino, mais os vizinhos finais. Soltar no mesmo lugar não dispara."
         },
         {
           "name": "renderCard",
           "type": "(card: C, columnId: string) => React.ReactNode",
           "optional": true,
-          "doc": "Render customizado do card (default: título + descrição)."
+          "doc": "Render customizado do card (default: o cartão padrão com código, título, avatar, prioridade, prazo e subtarefas)."
+        },
+        {
+          "name": "onCardClick",
+          "type": "(card: C, columnId: string) => void",
+          "optional": true,
+          "doc": "Ao clicar (ou Enter) num card. Omitido, o card não é clicável."
+        },
+        {
+          "name": "onCardAdd",
+          "type": "(columnId: string, title: string) => void",
+          "optional": true,
+          "doc": "Criação rápida no rodapé da coluna. Omitido, o campo não aparece."
+        },
+        {
+          "name": "onColumnAdd",
+          "type": "(title: string) => void",
+          "optional": true,
+          "doc": "Nova coluna, ao fim do quadro. Omitido, o campo não aparece."
+        },
+        {
+          "name": "onColumnRename",
+          "type": "(id: string, title: string) => void",
+          "optional": true,
+          "doc": "Renomear coluna pelo menu dela. Omitido, o item não aparece."
+        },
+        {
+          "name": "onColumnDelete",
+          "type": "(id: string) => void",
+          "optional": true,
+          "doc": "Excluir coluna pelo menu dela. Omitido, o item não aparece."
         },
         {
           "name": "className",
@@ -4280,7 +4310,10 @@
           "candlestick",
           "sunburst",
           "histogram",
-          "boxplot"
+          "boxplot",
+          "waterfall",
+          "sankey",
+          "calendar"
         ]
       },
       {
