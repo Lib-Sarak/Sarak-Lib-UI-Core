@@ -672,6 +672,158 @@ na mesma sessão, arrasto por mouse e pelas setas do teclado. Para isso o códig
 **Liberação parcial.** Status volta a `🟡 Em execução`. O lote 3 (blocos de detalhe do cartão) não depende da
 biblioteca de arrastar e pode ser despachado; se a medição em aparelho falhar, só o lote 2 volta ao dono.
 
+## Resumo da execução — Lote 3 (blocos de detalhe do cartão) — 2026-10-09
+
+**Resultado:** Concluído com pendências — os quatro blocos e a prova de composição estão entregues e verdes; ficam abertas as pendências do lote 2 (medição em aparelho, do dono) e três achados de átomos que já existiam (abaixo).
+
+**Estado do worktree ao iniciar:** `(limpo)` — `git status --short` voltou vazio (o lote 2 já estava commitado).
+
+**O que foi feito**
+- `SarakChecklist` (`DataDisplay/SarakChecklist.tsx`): `items`, `onToggle(id, done)`, `onAdd?`, `onRemove?`, `showProgress?` (e `label?`, `className?`). Cada item é um `SarakCheckbox`; o progresso usa o `SarakProgress` da plan-98 (`value=feitos`, `max=total`, nome acessível `"1 de 3"`; com 0 itens, `max=1` para não dividir por zero). O campo de novo item e o botão de remover só existem com `onAdd`/`onRemove`. Ícone `X` pela porta (`SarakIcon`).
+- `SarakCommentThread` (`DataDisplay/SarakCommentThread.tsx`): `comments`, `onSubmit(text)`, `onDelete?`. Autor com `SarakAvatar`, horário em `<time dateTime>` com `Intl.RelativeTimeFormat` no idioma da lib, campo de envio com `SarakTextarea` (botão desabilitado com texto vazio; Ctrl/Cmd+Enter envia; Enter só quebra a linha). Sem menção. Ícone `Trash2` pela porta.
+- `SarakActivityFeed` (`DataDisplay/SarakActivityFeed.tsx`): `entries { id, actor?, text, at }`, lista ordenada `<ol>` com a linha do tempo por borda de token, avatar quando há autor, horário relativo.
+- `SarakAssigneePicker` (`Inputs/SarakAssigneePicker.tsx`): `people`, `value`, `onChange(id | null)`, `clearable?` (e `label?`, `disabled?`). Sobre `SarakAutocomplete` + `SarakAvatar`: mostra o escolhido, busca pelo nome por mouse ou teclado, limpa a busca após escolher; sem pessoas, mostra o estado vazio e não renderiza o campo.
+- `DataDisplay/relativeTime.ts`: `formatRelativeTime`, `parseTimestamp`, `useRelativeTime` e o tipo `SarakTimestamp` (`string | number | Date`), compartilhados pelos comentários e pelo histórico. Data inválida nunca vira "Invalid Date": o horário some.
+- i18n: 17 chaves novas (`checklist*`, `commentThreadLabel`, `commentEmpty`, `commentPlaceholder`, `commentSubmit`, `commentDelete`, `activityFeedLabel`, `activityEmpty`, `assignee*`) nos seis idiomas, em `catalogEntries.part6.ts` — o part4 já tinha 203 linhas e passaria de 250 —, registrado em `catalog.ts:6,33`.
+- Registro: `DataDisplay/index.ts` (três `export *` e `export type { SarakTimestamp }`), `Inputs/index.ts` e `src/index.ts` (o picker e os dois tipos, que o barril de Inputs exporta por nome). `npm run barrel:check`: 102 componentes (eram 98), 0 faltas.
+- Prova de composição (passo 20): `DataDisplay/__tests__/CardDetailComposition.test.tsx` monta o quadro `SarakKanban`, abre um `SarakDrawer` a partir do `onCardClick` com título, `SarakAssigneePicker`, `SarakChecklist` (com progresso), `SarakCommentThread` e `SarakActivityFeed`, e exercita responsável, progresso do checklist e novo comentário dentro do detalhe.
+- Geradores, só pelos comandos e depois da última edição de código: `npm run catalog`, `npm run guide`, `npm run dev-kit`, `npm run build`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/DataDisplay/SarakChecklist.tsx`, `SarakCommentThread.tsx`, `SarakActivityFeed.tsx`, `relativeTime.ts` | criado | Os três blocos e o helper de tempo relativo |
+| `src/components/atomic/Inputs/SarakAssigneePicker.tsx` | criado | O seletor de responsável |
+| `src/components/atomic/DataDisplay/__tests__/` (`SarakChecklist`, `SarakCommentThread`, `SarakActivityFeed`, `relativeTime`, `CardDetailComposition`) e `Inputs/__tests__/SarakAssigneePicker.test.tsx` | criado | Teste 1:1 de cada arquivo novo e a prova de composição |
+| `src/core/i18n/catalogEntries.part6.ts` | criado | 17 chaves nos seis idiomas |
+| `src/core/i18n/catalog.ts` | alterado | Registra `CATALOG_PART_6` |
+| `src/components/atomic/DataDisplay/index.ts`, `Inputs/index.ts`, `src/index.ts` | alterado | Barris públicos |
+| `docs/component-catalog.{json,md}`, `sarak-ui/*`, `sarak-dev/*`, `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerado | Pelos comandos (o `sarak-dev/` mudou: 98→102 componentes) |
+
+`package.json` e `package-lock.json` **não** mudaram neste lote: zero dependência nova.
+
+**Verificações executadas**
+- `npx vitest run src/components/atomic/DataDisplay/__tests__ src/components/atomic/Inputs/__tests__/SarakAssigneePicker.test.tsx` → 9 arquivos, 45 testes verdes (11 do checklist e da composição entre eles).
+- **Suíte inteira** (`npx vitest run`, a última do lote, depois do build) → **422 arquivos, 2.470 testes, todos verdes**, 916,7 s.
+- Mutação: inverti a contagem de feitos do checklist (`item.done` → `!item.done`) → falharam o teste de progresso e o de composição; revertida e conferida por `grep` (`SarakChecklist.tsx:84`).
+- `npx tsc --noEmit` → exit 0. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline, nenhuma regressão".
+- Gates do pre-commit, todos exit 0: `dev-kit:check`, `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`, `deep-import:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`, `persistence-doc:check`, `class-merge:check`, `icon-port:check`, `chrome-token-parity:check`, `trail-citation:check`, `plan-index:check`, `token-types:check` (`npx tsx scripts/generate-token-types.ts --check`). Pós-build: `public-types:check`, `package:check`, `build-info:check`. **Não rodei** o `agent-git-write` (falha em sessão de agente por definição) nem o Anel 0 de segredos (varre só o staged, e nada foi staged).
+- `npm run build` → exit 0. A primeira tentativa falhou no `public-types:check`: o tipo `SarakTimestamp`, usado nas props `createdAt` e `at`, vazava para o `.d.ts` sem estar exportado; exportei-o no barril de DataDisplay e refiz geradores e build. `dist/index.js` segue com **0 referências a `@dnd-kit`**.
+- Catálogo: os quatro aparecem com `propsInterface` e `source` corretos; props documentadas (só `className` sem doc em cada um).
+
+**Critérios de aceite**
+- [x] Cada um dos quatro: renderiza, dispara os eventos, tem estado vazio, teclado/ARIA e texto por i18n — evidência: os quatro arquivos de teste (checklist: Tab/Espaço, eventos, vazio, progresso; comentários: Ctrl/Cmd+Enter, vazio, exclusão; histórico: ordem, autor opcional, vazio; seletor: mouse, ArrowDown+Enter, `null` ao limpar, vazio). Idioma testado em alemão no fio de comentários (`Kommentare`, `vor 3 Stunden`).
+- [x] Registro e paridade verdes — `barrel:check` (102), `catalog:check`, `public-types:check`, `guide:check`, `dev-kit:check`.
+- [x] O teste de composição do passo 20 passa: clicar o cartão abre o detalhe montado só com átomos da lib — `CardDetailComposition.test.tsx`.
+- [x] `npx tsc --noEmit` → 0; `check-audit-baseline --with-tsc` → igual ao baseline; `npm run build` e `npx vitest run` verdes.
+- [x] Nenhum comentário novo cita plan (`trail-citation:check`); componentes e testes ≤ 250 linhas (maior: `SarakCommentThread.tsx`, 134); `catalogEntries.part6.ts` com 75.
+
+**Decisões e suposições**
+- **`catalogEntries.part6.ts`** em vez de estender o part4, como o prompt previu (o part4 estava em 203 linhas e +17 chaves passaria de 250).
+- **Tempo relativo:** `Intl.RelativeTimeFormat` com `numeric: 'auto'` ("ontem", "depois de amanhã"); menos de um minuto vira "agora". O idioma é o de `design.language`, ou português sem Provider.
+- **Tipos de dado:** `createdAt`/`at` aceitam `string | number | Date`; `actor?` do histórico é `{ name, avatarUrl? }`, como o autor do comentário. A plan não fixou o formato do `actor`.
+- **`SarakAssigneePicker` `disabled`:** o `SarakAutocomplete` não repassa `disabled` ao `<input>` (ver achado 2). O seletor então trava a busca com `readOnly` e `aria-disabled` e desabilita o botão de remover; o teste prova que digitar não abre opções nem dispara `onChange`.
+- **Provider nos testes do fio de comentários e da composição:** o `SarakTextarea` exige o Provider (achado 1), então esses testes montam `SarakUIProvider`. O Provider persiste o idioma no `localStorage`; o teste em alemão limpa o storage ao fim para não vazar para os outros.
+- Pasta: os três blocos de dado ficam na **raiz** de `DataDisplay/` (R14: componente público na raiz da categoria), e o helper `relativeTime.ts` ao lado, sem entrar no barril além do tipo `SarakTimestamp`.
+
+**Achados fora do escopo (não corrigidos)**
+1. `src/components/atomic/Inputs/SarakTextarea.tsx:29` chama `useSarakUI()`, que lança sem Provider — contra o R34 ("átomo renderiza sem Provider"), que o `SarakInput` e o `SarakAvatar` respeitam. Consequência: `SarakCommentThread` só renderiza dentro do `SarakUIProvider`. O teste existente do textarea é só um "o módulo exporta" (`__tests__/SarakTextarea.test.tsx`), por isso nunca viu isso.
+2. `src/components/atomic/Inputs/SarakAutocomplete.tsx` (função `SarakAutocomplete`) tira `disabled` das props e só o passa ao controlador: o `<input>` nunca recebe o atributo `disabled`. Quem passa `disabled` ao autocomplete obtém só o painel suprimido.
+3. O Provider grava o idioma no `localStorage` a cada `onLoad`/uso: os testes que mudam o idioma precisam limpar o storage, ou o idioma vaza para os testes seguintes do mesmo arquivo. Pode ser desejado; registro porque custou uma falha de teste.
+4. Os testes imprimem "Could not parse CSS stylesheet" (jsdom), como no lote 2; não investiguei se é anterior.
+
+**Pendências / riscos**
+- **Do lote 2, ainda abertas:** medição do toque em aparelho, e do arrasto por mouse e setas no navegador, no primeiro sistema importador atualizado — é do dono, e não bloqueia o lote 3. Também seguem os avisos do veredito (`opacity: 0.4` sem token; `tsx` não declarado no `package.json`, que reinstalei com `--no-save`).
+- O `dist/` foi regenerado por inteiro a partir da árvore compartilhada, então carrega também o trabalho das plans 100/101 já presente no worktree.
+- Os blocos não foram vistos num navegador por mim: tudo o que afirmo vem de jsdom (sem layout, sem CSS real). O revisor deve olhar o detalhe do cartão em tela, em celular e desktop, e com os temas de referência.
+
+## Veredito — 2026-10-09 (lote 3) — 🔴 Reprovado
+
+**Rodado pelo revisor**, com 0 processos de outras execuções, em cópia fora do repositório (HEAD `7dcb59ee` +
+worktree): os testes de `DataDisplay/__tests__` e do `SarakAssigneePicker` → **45/45**. **Mutação:** limpar o
+responsável devolvendo o valor anterior derruba 1; `numeric: 'always'` no tempo relativo derruba 4. Medidas e cores
+dos quatro blocos só por `var()` com fallback; nenhum ícone fora da porta; maior arquivo com 134 linhas;
+`catalogEntries.part6.ts` registrado no `catalog.ts`.
+
+**O que está certo:** os quatro blocos com os contratos do §5 (15–18), estado vazio, teclado/ARIA e textos por i18n;
+o progresso do checklist pelo `SarakProgress` da plan-98; tempo relativo por `Intl.RelativeTimeFormat` no idioma da
+lib, sem "Invalid Date"; prova de composição abrindo o detalhe num `SarakDrawer` pelo `onCardClick`. `part6` em vez
+do `part4` (que passaria de 250) e o `SarakTimestamp` exportado para o `public-types:check` — aceitos.
+
+**Achado**
+
+1. **`SarakCommentThread` lança sem Provider (R34).** Ele usa o `SarakTextarea`, que chama `useSarakUI()`
+   (`Inputs/SarakTextarea.tsx:29`) e lança fora do `SarakUIProvider`; por isso os testes do fio montam o Provider.
+   O defeito é do átomo, anterior a esta plan, mas chega a um componente **público novo** dela, e a R34 diz que o
+   átomo nunca lança por ausência de contexto. Autorizado tocar `SarakTextarea.tsx` e o teste dele: troque para
+   `useSarakUIOptional`, como o `SarakInput`, caindo no default; prove com um teste do `SarakTextarea` **e** um do
+   `SarakCommentThread`, ambos sem Provider. (O teste atual do textarea só confere que o módulo exporta.)
+
+**Para o backlog (registrado em `00-backlog`, item 14), sem achado:** o `SarakAutocomplete` não repassa `disabled`
+ao `<input>`; o `SarakAssigneePicker` contorna corretamente com `readOnly` + `aria-disabled`, e há teste.
+
+**Ainda aberto, do lote 2:** a medição em aparelho pelo dono (toque, mouse e setas no importador atualizado).
+
+Status: `🔵 Em correção`.
+
+## Resumo da execução (correção 1 do lote 3) — 2026-10-09
+
+**Resultado:** Concluído — o achado 1 foi corrigido. Segue aberta, e não é do executor, a medição em aparelho do lote 2.
+
+**Estado do worktree ao iniciar:** os arquivos do lote 3 (ainda não commitados) e os regenerados já estavam no worktree; nesta rodada só toquei os quatro arquivos listados abaixo.
+
+**O que foi feito**
+- **Achado 1 — R34.** `Inputs/SarakTextarea.tsx:2` importa `useSarakUIOptional` no lugar de `useSarakUI`, e `:30` passa a ler `const design = useSarakUIOptional()?.design;` com um comentário curto dizendo por quê. Sem Provider, `design` é `undefined` e o estilo cai no default do `getInputStyles`, exatamente como o `SarakInput` (`SarakInput.tsx:62`); o resto do componente não mudou.
+- **Teste do `SarakTextarea`** (`Inputs/__tests__/SarakTextarea.test.tsx`, antes só "o módulo exporta"): 4 casos. (1) sem Provider renderiza, aplica o default de borda (`1px solid`) e o texto digitado chega ao `onChange`; (2) com `SarakUIProvider config={{ inputBorderType: 'underline' }}` aplica o valor real do tema (`borderBottom` com `2px solid`), provando que o tema continua atravessando; (3) sem Provider, mostra a mensagem de erro, repassa foco e desfoque e respeita `disabled`; (4) o teste original de exportação, mantido.
+- **Testes do `SarakCommentThread`** (`DataDisplay/__tests__/SarakCommentThread.test.tsx`): o Provider só existia por causa do textarea, então saiu de todos os casos (a constante `wrapper` e os `{ wrapper }` foram removidos, assim como o `localStorage.clear()` do bloco principal). O caso de envio foi renomeado para "renderiza SEM Provider (R34) e envia pelo botão…" e prova: renderiza, o botão fica desabilitado com texto vazio, envia o texto sem espaços nas pontas e limpa o campo. O Provider ficou **só** no bloco "idioma do Provider" (alemão), que continua limpando o `localStorage` ao fim.
+- **`CardDetailComposition.test.tsx`:** também tirei o `SarakUIProvider` que envolvia o quadro e o detalhe — ele existia pelo mesmo motivo, e o teste passa sem ele. Isto vai um passo além do que o prompt pediu para o teste do fio; se o revisor preferir o Provider ali, é só recolocar a linha.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Inputs/SarakTextarea.tsx` | alterado | `useSarakUI()` → `useSarakUIOptional()?.design` |
+| `src/components/atomic/Inputs/__tests__/SarakTextarea.test.tsx` | alterado | 4 casos, com e sem Provider |
+| `src/components/atomic/DataDisplay/__tests__/SarakCommentThread.test.tsx` | alterado | Provider só no caso de idioma |
+| `src/components/atomic/DataDisplay/__tests__/CardDetailComposition.test.tsx` | alterado | Sem o Provider em volta |
+| `specs/plan/plan-102-quadro-kanban-de-gestao-de-projetos.md` | alterado | Este bloco e o status |
+
+**Verificações executadas** (a contagem de processos de vitest/tsup da máquina foi conferida em chamada separada antes de cada rodada; os que apareciam eram do ERP, outro repositório)
+- `npx vitest run src/components/atomic/Inputs src/components/atomic/DataDisplay` → 55 arquivos, **274 testes** verdes (rodado duas vezes: antes e depois da mutação).
+- **Mutação:** troquei a linha por `useSarakUIOptional()!.design` (exigir o Provider de novo) e rodei os três arquivos → **11 falhas** (as 2 do textarea sem Provider, as 7 do fio e as 2 da composição); restaurei a linha e conferi por busca (`SarakTextarea.tsx:2` e `:30`, sem `!`).
+- `npx tsc --noEmit` → exit 0. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline, nenhuma regressão". `npm run catalog:check` → "catálogo em dia" (a mudança não altera props nem exports, então não precisou regenerar). Conferências extras: `trail-citation:check`, `guide:check` e `dev-kit:check` verdes.
+- Não rodei a suíte inteira nem o build: a correção é um hook num átomo, dentro das duas pastas que o prompt mandou rodar. O `dist/` não foi regenerado e carrega o `SarakTextarea` antigo até o próximo `npm run build`.
+
+**Critérios de aceite**
+- [x] `SarakTextarea` usa `useSarakUIOptional` e cai no default do átomo — evidência: `SarakTextarea.tsx:2,30` e o teste sem Provider.
+- [x] Teste do `SarakTextarea` sem Provider — `SarakTextarea.test.tsx`, caso 1 (e o caso 3).
+- [x] Teste do `SarakCommentThread` sem Provider que renderiza e envia um comentário — `SarakCommentThread.test.tsx`, "renderiza SEM Provider (R34) e envia pelo botão…".
+- [x] Provider só no caso que testa o idioma — `SarakCommentThread.test.tsx`, bloco "idioma do Provider".
+
+**Decisões e suposições**
+- A leitura do tema com `useSarakUIOptional()?.design` espelha o `SarakInput`; não mexi no `getInputStyles` porque ele já aceita `design` indefinido (o `SarakInput` o chama assim).
+- Remover o Provider do `CardDetailComposition.test.tsx` é extensão minha do achado (mesma causa); está declarada acima.
+
+**Achados fora do escopo (não corrigidos):** nenhum novo. Os do resumo do lote 3 seguem como estavam; o item do `SarakAutocomplete` e `disabled` já está no backlog, segundo o veredito.
+
+**Pendências / riscos**
+- O `dist/` e o `sarak-ui/` não foram regenerados nesta rodada (ver acima); o próximo `npm run build` os atualiza.
+- Continuam abertos o que o veredito já listava: a medição em aparelho do lote 2 (dono) e os avisos antigos (`opacity: 0.4` sem token; `tsx` não declarado).
+
+## Veredito — 2026-10-09 (lote 3, correção 1) — 🟢 Aprovado
+
+**O achado fechou.** `SarakTextarea.tsx:2,30` lê o tema por `useSarakUIOptional()?.design` e cai no default do
+`getInputStyles`, como o `SarakInput`. O teste do textarea passou de "o módulo exporta" a quatro casos, com e sem
+Provider (o tema ainda atravessa: `underline` → `borderBottom`); o fio de comentários renderiza e envia **sem**
+Provider, que ficou só no caso de idioma. A mutação do executor (exigir o Provider de novo) derruba 11 testes.
+Tirar o Provider também do `CardDetailComposition.test.tsx` é a mesma causa e foi declarado: aceito. Lido pelo
+revisor; não repetido — havia 3 processos de teste deste repositório de outra execução, e a troca é de uma linha.
+
+**Os três lotes estão aprovados no código.** O veredito **final** da plan depende só da medição em aparelho do lote 2
+(§5 item 9): toque, mouse e setas do teclado, no primeiro importador atualizado, pelo dono. O `dist/` ainda traz o
+`SarakTextarea` antigo até o próximo `npm run build`.
+
+Status: `🟡 Em execução` (aguarda a medição em aparelho).
+
 ---
 
 # 11. Síntese

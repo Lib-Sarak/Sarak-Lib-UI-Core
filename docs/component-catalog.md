@@ -90,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (98)
+## Componentes públicos (102)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -124,6 +124,16 @@ Props (`SarakActionCardProps` — `src/components/atomic/Cards/SarakActionCard.t
 | `design` | `SarakThemePayload` | não |  |
 | `label` | `string` | não |  |
 | `actionLabel` | `string` | não | Texto do botão de ação principal (default: "Executar"). |
+
+### SarakActivityFeed
+
+Props (`SarakActivityFeedProps` — `src/components/atomic/DataDisplay/SarakActivityFeed.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `entries` | `SarakActivityEntry[]` | sim | Entradas na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `label` | `string` | não | Nome acessível da lista. Omitido, usa o texto traduzido "Histórico". |
+| `className` | `string` | não |  |
 
 ### SarakAlert
 
@@ -209,6 +219,20 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default; o hambúrguer continua controlando a navegação no celular. |
 | `className` | `string` | não |  |
 | `rootStyle` | `React.CSSProperties` | sim |  |
+
+### SarakAssigneePicker
+
+Props (`SarakAssigneePickerProps` — `src/components/atomic/Inputs/SarakAssigneePicker.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `people` | `SarakAssigneePerson[]` | sim | Pessoas que podem ser escolhidas. Vazio mostra o estado vazio traduzido, sem campo de busca. |
+| `value` | `string \| null` | não | Id da pessoa escolhida; `null`/omitido = sem responsável. Id que não está em `people` não mostra ninguém. |
+| `onChange` | `(id: string \| null) => void` | sim | Disparado com o id da pessoa escolhida, ou `null` ao remover o responsável. |
+| `clearable` | `boolean` | não | Mostra o botão de remover o responsável escolhido. Omitido, só dá para trocar de pessoa. |
+| `label` | `string` | não | Rótulo do campo. Omitido, usa o texto traduzido "Responsável". |
+| `disabled` | `boolean` | não | Trava a busca (somente leitura, anunciada como desabilitada) e desabilita o botão de remover. |
+| `className` | `string` | não |  |
 
 ### SarakAuthScreen
 
@@ -448,6 +472,32 @@ Props (`SarakCheckboxProps` — `src/components/atomic/Inputs/SarakCheckbox.tsx`
 | `indeterminate` | `boolean` | não |  |
 
 Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
+
+### SarakChecklist
+
+Props (`SarakChecklistProps` — `src/components/atomic/DataDisplay/SarakChecklist.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `items` | `SarakChecklistItem[]` | sim | Itens na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `onToggle` | `(id: string, done: boolean) => void` | sim | Disparado ao marcar ou desmarcar um item, com o id e o novo estado. A lista é controlada: quem chama atualiza `items`. |
+| `onAdd` | `(label: string) => void` | não | Criação rápida: recebe o título digitado, sem espaços nas pontas. Omitido, o campo de novo item não aparece. |
+| `onRemove` | `(id: string) => void` | não | Remover um item. Omitido, o botão de remover não aparece. |
+| `showProgress` | `boolean` | não | Mostra a barra de progresso e o contador `feitos de total`. Omitido, não aparece. |
+| `label` | `string` | não | Nome acessível da lista. Omitido, usa o texto traduzido "Lista de verificação". |
+| `className` | `string` | não |  |
+
+### SarakCommentThread
+
+Props (`SarakCommentThreadProps` — `src/components/atomic/DataDisplay/SarakCommentThread.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `comments` | `SarakComment[]` | sim | Comentários na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `onSubmit` | `(text: string) => void` | sim | Disparado ao enviar (botão ou Ctrl/Cmd+Enter) com o texto sem espaços nas pontas. Texto vazio não dispara. |
+| `onDelete` | `(id: string) => void` | não | Excluir um comentário. Omitido, o botão de excluir não aparece. |
+| `label` | `string` | não | Nome acessível da seção. Omitido, usa o texto traduzido "Comentários". |
+| `className` | `string` | não |  |
 
 ### SarakContextMenu
 

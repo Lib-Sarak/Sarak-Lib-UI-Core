@@ -140,6 +140,8 @@ export type {
     SarakAutocompleteProps,
     SarakAutocompleteOption,
 } from './components/atomic/Inputs/SarakAutocomplete';
+export { SarakAssigneePicker } from './components/atomic/Inputs/SarakAssigneePicker';
+export type { SarakAssigneePickerProps, SarakAssigneePerson } from './components/atomic/Inputs/SarakAssigneePicker';
 // Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
 export * from './components/atomic/Inputs/SarakRangeSlider';
 export * from './components/atomic/Inputs/SarakMultiSelect';

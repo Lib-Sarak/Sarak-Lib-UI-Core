@@ -1,5 +1,5 @@
 import React, { TextareaHTMLAttributes, useState } from 'react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 
 export interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -26,7 +26,8 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
     style,
     ...props
 }) => {
-    const { design } = useSarakUI();
+    // Átomo: tolera montar sem SarakUIProvider (R34) e cai no default do estilo de campo.
+    const design = useSarakUIOptional()?.design;
     const { getInputStyles } = useAtomicStyles();
     const [isFocused, setIsFocused] = useState(false);
 

@@ -92,6 +92,30 @@
         }
       ]
     },
+    "SarakActivityFeed": {
+      "propsInterface": "SarakActivityFeedProps",
+      "source": "src/components/atomic/DataDisplay/SarakActivityFeed.tsx",
+      "props": [
+        {
+          "name": "entries",
+          "type": "SarakActivityEntry[]",
+          "optional": false,
+          "doc": "Entradas na ordem em que aparecem. Vazio mostra o estado vazio traduzido."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da lista. Omitido, usa o texto traduzido \"Histórico\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakAlert": {
       "propsInterface": "SarakAlertProps",
       "source": "src/components/atomic/Feedback/SarakAlert.tsx",
@@ -454,6 +478,54 @@
           "name": "rootStyle",
           "type": "React.CSSProperties",
           "optional": false,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakAssigneePicker": {
+      "propsInterface": "SarakAssigneePickerProps",
+      "source": "src/components/atomic/Inputs/SarakAssigneePicker.tsx",
+      "props": [
+        {
+          "name": "people",
+          "type": "SarakAssigneePerson[]",
+          "optional": false,
+          "doc": "Pessoas que podem ser escolhidas. Vazio mostra o estado vazio traduzido, sem campo de busca."
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "optional": true,
+          "doc": "Id da pessoa escolhida; `null`/omitido = sem responsável. Id que não está em `people` não mostra ninguém."
+        },
+        {
+          "name": "onChange",
+          "type": "(id: string | null) => void",
+          "optional": false,
+          "doc": "Disparado com o id da pessoa escolhida, ou `null` ao remover o responsável."
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra o botão de remover o responsável escolhido. Omitido, só dá para trocar de pessoa."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo do campo. Omitido, usa o texto traduzido \"Responsável\"."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Trava a busca (somente leitura, anunciada como desabilitada) e desabilita o botão de remover."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
           "doc": ""
         }
       ]
@@ -1220,6 +1292,90 @@
         {
           "name": "indeterminate",
           "type": "boolean",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakChecklist": {
+      "propsInterface": "SarakChecklistProps",
+      "source": "src/components/atomic/DataDisplay/SarakChecklist.tsx",
+      "props": [
+        {
+          "name": "items",
+          "type": "SarakChecklistItem[]",
+          "optional": false,
+          "doc": "Itens na ordem em que aparecem. Vazio mostra o estado vazio traduzido."
+        },
+        {
+          "name": "onToggle",
+          "type": "(id: string, done: boolean) => void",
+          "optional": false,
+          "doc": "Disparado ao marcar ou desmarcar um item, com o id e o novo estado. A lista é controlada: quem chama atualiza `items`."
+        },
+        {
+          "name": "onAdd",
+          "type": "(label: string) => void",
+          "optional": true,
+          "doc": "Criação rápida: recebe o título digitado, sem espaços nas pontas. Omitido, o campo de novo item não aparece."
+        },
+        {
+          "name": "onRemove",
+          "type": "(id: string) => void",
+          "optional": true,
+          "doc": "Remover um item. Omitido, o botão de remover não aparece."
+        },
+        {
+          "name": "showProgress",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra a barra de progresso e o contador `feitos de total`. Omitido, não aparece."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da lista. Omitido, usa o texto traduzido \"Lista de verificação\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakCommentThread": {
+      "propsInterface": "SarakCommentThreadProps",
+      "source": "src/components/atomic/DataDisplay/SarakCommentThread.tsx",
+      "props": [
+        {
+          "name": "comments",
+          "type": "SarakComment[]",
+          "optional": false,
+          "doc": "Comentários na ordem em que aparecem. Vazio mostra o estado vazio traduzido."
+        },
+        {
+          "name": "onSubmit",
+          "type": "(text: string) => void",
+          "optional": false,
+          "doc": "Disparado ao enviar (botão ou Ctrl/Cmd+Enter) com o texto sem espaços nas pontas. Texto vazio não dispara."
+        },
+        {
+          "name": "onDelete",
+          "type": "(id: string) => void",
+          "optional": true,
+          "doc": "Excluir um comentário. Omitido, o botão de excluir não aparece."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da seção. Omitido, usa o texto traduzido \"Comentários\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
           "optional": true,
           "doc": ""
         }

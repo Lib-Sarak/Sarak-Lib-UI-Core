@@ -83,16 +83,18 @@
       "flows"
     ],
     "publicos": {
-      "count": 98,
+      "count": 102,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
         "SarakAccordion",
         "SarakActionCard",
+        "SarakActivityFeed",
         "SarakAlert",
         "SarakAnalyticalPage",
         "SarakAppChrome",
         "SarakAppChromeMobile",
+        "SarakAssigneePicker",
         "SarakAuthScreen",
         "SarakAutocomplete",
         "SarakAvatar",
@@ -110,6 +112,8 @@
         "SarakChat",
         "SarakChatEngine",
         "SarakCheckbox",
+        "SarakChecklist",
+        "SarakCommentThread",
         "SarakContextMenu",
         "SarakCurrencyInput",
         "SarakDataEmpty",
