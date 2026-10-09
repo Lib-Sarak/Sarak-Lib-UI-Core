@@ -4,6 +4,7 @@ import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { ThemePillarsList } from './ThemePillarsList';
 import { ThemeImpactList } from './ThemeImpactList';
 import { TokenControl } from './TokenControl';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { locateToken } from '../../utils/token-search';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
@@ -38,7 +39,10 @@ interface ThemeSidebarContentProps {
     editMode: ThemeEditMode;
     visualImpactTokens: VisualImpactToken[];
     isTokenVisible: (tokenId: string) => boolean;
-    setActivePreviewApp: (app: string) => void;
+    selectPillar: (pillarId: string | null) => void;
+    isGalleryOpen: boolean;
+    setIsGalleryOpen: (isOpen: boolean) => void;
+    onApplyFullTheme: (design: Partial<SarakDesignState>, themeId?: string) => void;
 }
 
 export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
@@ -65,7 +69,10 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
     editMode,
     visualImpactTokens,
     isTokenVisible,
-    setActivePreviewApp
+    selectPillar,
+    isGalleryOpen,
+    setIsGalleryOpen,
+    onApplyFullTheme,
 }) => {
     return (
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-[var(--theme-bg)]/30">
@@ -90,6 +97,25 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                     </motion.div>
                 ) : viewMode === 'preview' ? (
                     <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2">
+
+                        <section className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,12px)] border border-[var(--theme-border,rgba(255,255,255,0.1))] bg-[var(--theme-card,rgba(15,23,42,0.6))] p-[var(--sarak-layout-gap-sm,12px)]">
+                            <div>
+                                <h2 className="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#ffffff)]">Começar de um tema</h2>
+                                <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(255,255,255,0.4))]">
+                                    Escolha um estilo e ajuste os detalhes abaixo.
+                                </p>
+                            </div>
+                            <SarakButton
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                aria-expanded={isGalleryOpen}
+                                aria-controls={isGalleryOpen ? 'presets-catalog' : undefined}
+                                onClick={() => setIsGalleryOpen(!isGalleryOpen)}
+                            >
+                                {isGalleryOpen ? 'Fechar galeria' : 'Abrir galeria'}
+                            </SarakButton>
+                        </section>
 
                         {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
                         <ThemeGlobalSettings
@@ -119,7 +145,6 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             <ThemePillarsList
                                 pillars={pillars}
                                 activePillarId={activePillarId}
-                                setActivePillarId={setActivePillarId}
                                 activeSectionId={activeSectionId}
                                 setActiveSectionId={setActiveSectionId}
                                 groupedStructure={groupedStructure}
@@ -130,7 +155,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                                 draft={draft}
                                 updateDraft={updateDraft}
                                 previewDevice={previewDevice}
-                                setActivePreviewApp={setActivePreviewApp}
+                                selectPillar={selectPillar}
                             />
                         )}
                     </motion.div>
@@ -151,7 +176,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                     </motion.div>
                 ) : (
                     <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                        <TemplatesTab />
+                        <TemplatesTab onApplyFullTheme={onApplyFullTheme} />
                     </motion.div>
                 )}
             </AnimatePresence>

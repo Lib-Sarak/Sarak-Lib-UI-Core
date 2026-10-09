@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao motor de gráficos o que um sistema de dados precisa: tema de verdade, várias séries e novos formatos"
 objetivo: "Fazer o motor de graficos obedecer ao tema do painel, desenhar varias series (empilhado, horizontal, combinado, dois eixos, legenda, clique) e oferecer waterfall, sankey e calendario de calor, sem trocar de biblioteca"
 dominio: "Sarak-Lib-UI-Core / Engines / Gráficos"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "graficos", "echarts", "tema", "engine"]
 relacionados: ["[[03-superficie-publica]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[04-contrato-de-tokens-e-paridade]]"]
@@ -104,7 +104,7 @@ não consegue desenhar hoje.
 | **Skill** | `ui-refatorar-componente` | mexer em componente público sem quebrar o catálogo |
 | Código | `src/components/engines/charts/SarakChartEngine.tsx` · `src/components/engines/charts/index.tsx` · `src/components/engines/charts/SubEngines/useEChartsTheme.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` | ler antes de editar |
 | Código | `src/components/engines/charts/SubEngines/builders/basicCharts.ts` · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/statisticalCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` | ler antes de editar |
-| Código | `src/core/Design/schema/data.ts` · `src/components/atomic/Feedback/SarakEmptyState.tsx` · `src/core/i18n/useLibraryText.ts` | os sete tokens; o estado vazio; o texto traduzido |
+| Código | `src/core/Design/schema/data.ts` · `src/components/atomic/Feedback/SarakDataEmpty.tsx` (o mesmo que `SarakChart.tsx` já usa) · `src/core/i18n/useLibraryText.ts` | os sete tokens; o estado vazio; o texto traduzido |
 
 # 5. Instruções de execução
 
@@ -123,7 +123,7 @@ não consegue desenhar hoje.
 4. **As quatro props ganham efeito**, com o padrão preservando o desenho de hoje: `title` (título do gráfico),
    `showAnimation` (liga/desliga a animação; padrão ligada), `showGradients` (barra e área com degradê; padrão
    ligado), `thickness` (espessura da linha; **o padrão vira `chartThickness` do tema**).
-5. **Estado vazio e acessibilidade.** `data` vazio (ou sem o campo da série) → `SarakEmptyState` com texto do
+5. **Estado vazio e acessibilidade.** `data` vazio (ou sem o campo da série) → `SarakDataEmpty` (a peça de "sem dados"; o `SarakEmptyState` é branding de tela vazia e é da plan-98) com texto do
    catálogo de i18n, **sem** erro no console. O gráfico ganha `role="img"` e `aria-label` (nova prop `ariaLabel`,
    com padrão traduzido) e liga o módulo `aria` do ECharts.
 6. **Faixas de peer.** Em cópia **fora do repositório**, rode os testes do motor com `echarts@6.1.0` e depois com
@@ -173,7 +173,7 @@ não consegue desenhar hoje.
 - [ ] `<SarakChartEngine data={…} />` sem `type` usa `design.chartType` (teste); com `type`, vale a prop.
 - [ ] `title`, `showAnimation`, `showGradients` e `thickness` mudam a `option` (teste por prop); o desenho padrão
       não muda além do que o tema passa a ditar.
-- [ ] `data={[]}` e dado sem o campo → `SarakEmptyState`, sem erro no console (teste); o gráfico tem `role="img"`
+- [ ] `data={[]}` e dado sem o campo → `SarakDataEmpty`, sem erro no console (teste); o gráfico tem `role="img"`
       e `aria-label`.
 - [ ] O resumo traz o resultado dos testes com `echarts@6.1.0` e `recharts@3.10.1`; faixa estreitada **só** se
       falhou.
@@ -239,11 +239,130 @@ Texto pronto para transporte:
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-10-08
+
+### Resultado
+
+Lote 1 (tema e honestidade) concluído para revisão. Os lotes 2 e 3 não foram iniciados.
+
+### Estado inicial e escopo compartilhado
+
+O worktree já continha alterações da plan-98, do lote 2 da plan-100, do despacho em `specs/00-indice.md` e da emenda desta plan sobre `SarakDataEmpty`. As fontes nos territórios paralelos foram preservadas. `docs/component-catalog.*` e `sarak-ui/*` foram regenerados pelos comandos oficiais depois que o build detectou esses artefatos defasados em relação às alterações compartilhadas.
+
+### Alterações
+
+- `useEChartsTheme.ts` passa a consumir os sete tokens de gráfico, cores e tipografia resolvidas, com paleta categórica e um único fallback literal. `axisOptions.ts` centraliza eixos, grade, título e tooltip.
+- `SarakChartEngine.tsx` aceita `type` opcional com precedência da prop, aplica título/animação/degradê/espessura, usa `SarakDataEmpty` via `message`, expõe ARIA e avisa uma vez no desenvolvimento quando Recharts recebe opções que não honra. O arquivo terminou com 241 linhas; a fronteira lazy não foi alterada.
+- Os construtores usam cores, espessura e suavização do tema; gauge não inventa valor 75 e sunburst usa os dados recebidos. Textos de vazio e rótulo acessível foram adicionados ao `catalogEntries.part3.ts` em pt/en/es/fr/de/it.
+- `ChartType` interno foi renomeado para `SarakChartType`; a prop pública mantém a união literal inline para não introduzir um tipo declarado sem exportação correspondente no barril. `package.json` permaneceu inalterado.
+- Foram adicionados testes por token/configuração, estado vazio, acessibilidade, aviso Recharts e caracterização dos construtores; o snapshot dos construtores foi atualizado pelo Vitest e revisado.
+
+### Verificação
+
+- Gráficos e paridade pública: `npx vitest run src/components/engines/charts gates/scripts/contrato/__tests__/check-public-types-parity.test.mjs --maxWorkers=1` → 4 arquivos, 46 testes passaram. O teste lazy existente também passou (1/1).
+- Cópias isoladas dos peers: `echarts@6.1.0` e `recharts@3.10.1` → 36/36 testes cada; nenhuma faixa foi estreitada.
+- `npx tsc --noEmit`, `node gates/scripts/release/check-audit-baseline.mjs --with-tsc`, auditor de Clean Code, busca de cores literais e `git diff --check` passaram. Só o fallback `#3b82f6` aparece na busca de cores; o motor tem 241 linhas.
+- O build final `npm run build` passou por inteiro, incluindo JS, declarações e CSS. `npm run catalog` e `npm run guide` atualizaram os artefatos que os respectivos checks encontraram defasados; os checks do catálogo, barril, kit, prefixos e paridade pública passaram.
+- A última suíte global antes da correção final de tipo terminou com 401/406 arquivos e 2335/2340 testes: 2 falhas `EPERM` na criação de symlinks em `bin/scaffold`, 2 snapshots do painel em `src/features/DesignEngine/` (plan-100) e 1 paridade pública por `ChartType`. A causa de paridade foi corrigida; o teste focado correspondente e o build completo passaram depois da correção. A suíte global não foi repetida após essa alteração apenas de tipo.
+- A lista de gates do `.githooks/pre-commit` foi executada. `check-plan-index-sync` apontou divergências para plan-98 (`índice="🟡 Em execução"`, frontmatter `"🟠 Em revisão"`) e plan-101 (`índice="🔴 A executar"`, frontmatter `"🟠 Em revisão"`). `specs/00-indice.md` ficou intacto por pertencer ao revisor.
+
+### Decisões, achados fora do lote e riscos pendentes
+
+- Foi usada a API atual de `SarakDataEmpty` (`message`), sem introduzir `SarakEmptyState`. Nenhum token ou dependência foi adicionado.
+- As duas falhas de symlink dependem de permissão do ambiente Windows; os dois snapshots restantes pertencem ao DesignEngine da plan-100 e não foram atualizados. Não houve alteração nos lotes 2/3 desta plan.
+- A suíte global não está totalmente verde no último resultado disponível; após a correção da única falha de Lote 1, restam esses quatro casos fora deste território. O revisor deve considerar esse limite ao emitir o veredito.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-08 — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Rodado pelo revisor**, na árvore integrada (98 + 100 lote 2 + 101 lote 1), com 0 processos de outras execuções:
+- `npx vitest run` → **406 arquivos, 2338/2340**; as duas falhas são snapshots do painel (`PreviewCanvas`, da
+  plan-100 + tokens da plan-98; `PresetCard`, da plan-98), medidas em cópia isolada — **nenhuma é desta plan**.
+  Os dois testes de symlink que o executor viu com `EPERM` passam aqui (era o sandbox dele).
+- Passos do build um a um: `build:js`, `public-types:check` (a troca para `SarakChartType` liberou o gate),
+  `prefix`, `icon-port`, `kit-names`, `barrel`, `zero-brand`, `deep-import`, CSS → verdes.
+  `check-audit-baseline --with-tsc` → igual ao baseline.
+- **Mutação em cópia fora do repositório:** trocar a leitura de `chartTooltipBg`, `chartSmoothing` ou
+  `chartGridOpacity` pelo valor fixo derruba 2 testes cada — os testes por token têm dente.
+
+**Critérios do lote 1:** os 24 identificadores lidos pelo tema existem no schema; um único literal de cor
+(`CHART_THEME_FALLBACK_COLOR`); `type` opcional cai no `chartType` do design; `title`/`showAnimation`/
+`showGradients`/`thickness` com efeito; `SarakDataEmpty` + `role="img"` + `aria` do ECharts; aviso único do Recharts
+com teste; faixas de peer conferidas em cópia (36/36 nas duas) sem estreitar; 241 linhas; JSDoc das props
+reescrito para o comportamento novo. O snapshot de caracterização dos construtores bate com o código (a suíte do
+motor passa), apesar do incidente de `vitest -u` relatado pelo executor da plan-100.
+
+**Nota de processo, sem reprovar:** o `SarakChartEngine.tsx` foi editado às 03:46, depois da última regeneração do
+catálogo (03:38); "o build passou por inteiro" vale para antes dessa edição. Hoje `catalog:check` e `guide:check`
+acusam artefato defasado — eles se regeneram **uma vez, pelo último a terminar** (00-indice, despacho de
+2026-10-08), não por esta plan agora.
+
+**Liberação parcial.** Status volta a `🟡 Em execução`; o lote 2 (várias séries) pode ser despachado. O lote 1 não
+se commita sozinho: o lote 2 mexe nos mesmos arquivos.
+
+## Veredito — 2026-10-08 (lote 2) — 🔴 Reprovado
+
+**Antes de gravar:** o resumo do lote 2 foi gravado **depois** do título `# 11. Síntese` (seção do revisor). Não foi
+movido (append-only); nas próximas rodadas, o resumo vai na §10, antes desse título.
+
+**Rodado pelo revisor**, com 0 processos de outras execuções: `npx vitest run src/components/engines/charts` →
+45/45 (cópia fora do repositório com HEAD + o worktree); no worktree, `tsc` → 0, `check-audit-baseline --with-tsc`
+→ igual, `catalog:check`, `guide:check`, `barrel`, `prefix`, `class-merge`, `trail-citation` → verdes;
+`auditor_coverage` → OK. Único literal de cor no motor: o fallback do lote 1.
+
+**O que está certo:** `seriesModel.ts` separado (248 linhas) e motor em 209; sem `series` o desenho antigo segue;
+cor por série vem da paleta ou de um **nome de token** (hex não é aceito); `stacked`, `orientation`, `legend`
+(padrão por quantidade de séries) e `onPointClick` com `seriesKey`/`index`/`datum`; não cartesianos ignoram
+`series`; o burndown tem teste. **Mutação em cópia:** legenda com 1 série, `dashed` desligado e `seriesIndex`
+ignorado derrubam testes.
+
+**Achado**
+
+1. **O segundo eixo não tem prova de lado.** Trocar `position: horizontal ? 'top' : 'right'` por `'left'` em
+   `seriesModel.ts` mantém os 45 testes verdes: o teste "combina barra e linha, eixo direito…" confere que há dois
+   eixos e que a série usa `yAxisIndex: 1`, mas não onde o segundo eixo fica — com a mutação, os dois eixos de valor
+   se sobrepõem à esquerda e o gráfico de dois eixos fica ilegível. Acrescente a asserção de `position: 'right'`
+   (vertical) e um caso horizontal com `position: 'top'` e `xAxisIndex: 1`.
+
+**Aviso, sem achado:** a ordem `CHART_COLOR_TOKENS` (`seriesModel.ts`) repete a de `resolvePalette`
+(`useEChartsTheme.ts`); o teste de `statusSuccessColor` pega a deriva desse índice, não das outras. Se tocar nos
+dois arquivos no lote 3, derive uma da outra.
+
+Status: `🔵 Em correção`.
+
+## Resumo da execução (correção 1 do lote 2) — 2026-10-08
+
+**Achado 1 — corrigido**
+- No teste “combina barra e linha, eixo direito e traço de referência”, `SarakChartEngine.series.test.tsx` agora exige `position: 'right'` no segundo eixo vertical.
+- Foi acrescentado um caso horizontal com uma série `axis: 'right'`; ele exige `position: 'top'` no segundo eixo de `xAxis` e `xAxisIndex: 1` na série.
+- **Prova de mutação em cópia fora do repositório:** substituí na cópia de `seriesModel.ts` a posição calculada por `position: 'left'`. O Vitest executou 9 testes: falharam exatamente as duas asserções de posição recém-verificadas e passaram 7. Isso confirma que o teste detecta a regressão. O `seriesModel.ts` do worktree não foi alterado.
+
+**Verificações**
+- `npx vitest run src/components/engines/charts` → 5 arquivos, 46 testes passaram; três avisos de parse de CSS do ambiente permaneceram.
+- `npx tsc --noEmit` → passou.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11.
+- A consulta prescrita via `Get-CimInstance` foi bloqueada pela indisponibilidade de CIM no ambiente. Em chamadas separadas antes das execuções Vitest, a contagem alternativa de processos `node` foi 0.
+
+**Escopo compartilhado**
+- A plan-100 estava executando o lote 3 em `src/features/DesignEngine/`; os arquivos paralelos e snapshots permaneceram intactos. Não iniciei o lote 3 da plan-101.
+
+## Veredito — 2026-10-08 (lote 2, correção 1) — 🟢 Aprovado (lote 2 — liberação parcial)
+
+**Rodado pelo revisor**, com 0 processos de outras execuções: em cópia fora do repositório (HEAD + worktree),
+`npx vitest run src/components/engines/charts` → 46/46; com o segundo eixo forçado a `position: 'left'` em
+`seriesModel.ts` → **2 falham** (os casos vertical e horizontal novos). No worktree, `tsc` → 0 e
+`check-audit-baseline --with-tsc` → igual. O `seriesModel.ts` não foi alterado nesta rodada.
+
+**O achado fechou:** o teste do eixo direito afirma `position: 'right'`; o caso horizontal afirma `position: 'top'`
+no segundo `xAxis` e `xAxisIndex: 1` na série. O resumo veio na §10, antes da §11.
+
+**Liberação parcial.** Status volta a `🟡 Em execução`; o lote 3 (waterfall, sankey, calendário de calor) pode
+ser despachado. Os lotes 1 e 2 não se commitam antes do fecho da onda.
 
 ---
 
@@ -251,3 +370,176 @@ Texto pronto para transporte:
 
 <!-- Preenchido pelo REVISOR na síntese (00-prompt-revisor.md §7.4), imediatamente antes da remoção da plan.
      Append-only. O que foi transportado, e o que ficou de fora. -->
+
+## Resumo da execução — 2026-10-08
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```text
+ D dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-NWD3MO3I.js
+ D dist/SarakChartEngine-MICDXKMY.js
+ D dist/SarakChatEngine-ZNBOQUJA.js
+ D dist/SarakDataTableImpl-447JTWKL.js
+ D dist/SarakFlowEngine-JYMXODXB.js
+ D dist/SarakMarkdownRendererImpl-JYAPR5WG.js
+ D dist/SarakPDFViewerImpl-SHI7GGG7.js
+ D dist/chunk-4TMIAMXF.js
+ D dist/chunk-DWV7LGNI.js
+ D dist/chunk-SQFU3P7P.js
+ D dist/chunk-TFAMK3IX.js
+ D dist/chunk-YQN7JP3O.js
+ D dist/chunk-ZBCJHUC7.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/sarak-scoped.css
+ M dist/sarak.css
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M specs/00-indice.md
+ M specs/plan/plan-100-painel-de-temas-caminho-simples.md
+ M specs/plan/plan-101-motor-de-graficos-completo.md
+ M specs/plan/plan-98-dialogo-e-feedback.md
+ M src/buildInfo.ts
+ M src/components/atomic/Feedback/SarakEmptyState.tsx
+ M src/components/atomic/Feedback/SarakToast.tsx
+ M src/components/atomic/Feedback/__tests__/SarakEmptyState.test.tsx
+ M src/components/atomic/Feedback/__tests__/SarakToast.test.tsx
+ M src/components/atomic/Feedback/index.ts
+ M src/components/atomic/Modals/SarakModal.tsx
+ M src/components/atomic/Modals/SarakOverlayProvider.tsx
+ M src/components/atomic/Modals/__tests__/SarakModal.test.tsx
+ M src/components/atomic/Modals/__tests__/SarakOverlayProvider.test.tsx
+ M src/components/engines/charts/SarakChartEngine.tsx
+ M src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts
+ M src/components/engines/charts/SubEngines/builders/__tests__/__snapshots__/builders.characterization.test.ts.snap
+ M src/components/engines/charts/SubEngines/builders/__tests__/builders.characterization.test.ts
+ M src/components/engines/charts/SubEngines/builders/advancedCharts.ts
+ M src/components/engines/charts/SubEngines/builders/basicCharts.ts
+ M src/components/engines/charts/SubEngines/builders/statisticalCharts.ts
+ M src/components/engines/charts/SubEngines/builders/types.ts
+ M src/components/engines/charts/SubEngines/useEChartsTheme.ts
+ M src/components/engines/charts/__tests__/SarakChartEngine.test.tsx
+ M src/core/Design/catalog/partitions/colors_and_atmosphere.json
+ M src/core/Design/catalog/partitions/components_base.json
+ M src/core/Design/catalog/theme_table_mapping.json
+ M src/core/Design/schema/overlays.ts
+ M src/core/Design/schema/status.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/Provider/generated/design-token-ids.ts
+ M src/core/i18n/catalogEntries.part3.ts
+ M src/core/i18n/catalogEntries.part4.ts
+ M src/features/DesignEngine/Canvas/PreviewCanvas.tsx
+ M src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.designScopeStability.test.tsx
+ M src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx
+ M src/features/DesignEngine/Canvas/components/LiveDraftPreviewFrame.tsx
+ M src/features/DesignEngine/Canvas/components/PresetsCatalog.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewToolbar.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PresetsCatalog.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewToolbar.test.tsx
+ M src/features/DesignEngine/Canvas/components/__snapshots__/PresetsCatalog.test.tsx.snap
+ M src/features/DesignEngine/Canvas/hooks/__tests__/useDeviceStyles.test.ts
+ M src/features/DesignEngine/Canvas/hooks/__tests__/usePreviewApps.test.tsx
+ M src/features/DesignEngine/Canvas/hooks/useDeviceStyles.ts
+ M src/features/DesignEngine/Canvas/hooks/usePreviewApps.tsx
+ M src/features/DesignEngine/Main/TemplatesTab.tsx
+ M src/features/DesignEngine/Main/ThemeCustomizationTab.tsx
+ M src/features/DesignEngine/Main/__tests__/TemplatesTab.test.tsx
+ M src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx
+ M src/features/DesignEngine/Main/__tests__/useThemeEngineState.test.tsx
+ M src/features/DesignEngine/Main/components/ThemePillarsList.tsx
+ M src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemePillarsList.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx
+ M src/features/DesignEngine/Main/components/__snapshots__/ThemeSidebarContent.test.tsx.snap
+ M src/features/DesignEngine/Main/hooks/__tests__/usePreviewUIState.test.ts
+ M src/features/DesignEngine/Main/hooks/usePreviewUIState.ts
+ M src/features/DesignEngine/hooks/__tests__/themeApplication.persistenceIntegration.test.tsx
+ M src/index.ts
+?? dist/CustomizationPanelImpl-W2O4LFUP.js
+?? dist/SarakChartEngine-S2MYGGNK.js
+?? dist/SarakChatEngine-YGM2UVDE.js
+?? dist/SarakDataTableImpl-YCD4WSMQ.js
+?? dist/SarakFlowEngine-6TIPICSX.js
+?? dist/SarakMarkdownRendererImpl-LM6L2O3J.js
+?? dist/SarakPDFViewerImpl-O5AQ4JAQ.js
+?? dist/chunk-4AYHIRZB.js
+?? dist/chunk-B22CX5DB.js
+?? dist/chunk-CJJWO3XD.js
+?? dist/chunk-P7TRJU3J.js
+?? dist/chunk-QPVVHJSW.js
+?? dist/chunk-RVWGV4AM.js
+?? dist/chunk-TSXP64TR.js
+?? src/components/atomic/Feedback/SarakProgress.tsx
+?? src/components/atomic/Feedback/__tests__/SarakProgress.test.tsx
+?? src/components/engines/charts/SubEngines/axisOptions.ts
+?? src/features/DesignEngine/Canvas/Mocks/MoreScreensMock.tsx
+?? src/features/DesignEngine/Canvas/Mocks/__tests__/MoreScreensMock.test.tsx
+?? src/features/DesignEngine/Canvas/previewScreens.ts
+```
+
+**O que foi feito**
+- SarakChartEngine.tsx:43-60 e SubEngines/seriesModel.ts:74-245 implementam séries cartesianas com tipos mistos, paleta e cor por token, empilhamento, orientação horizontal, segundo eixo de valor, traço pontilhado, legenda e clique que retorna chave, índice e registro original.
+- SubEngines/builders/basicCharts.ts:18-105 e SubEngines/builders/types.ts:20-26 permitem que cada builder receba a cor de sua série; sem a prop series, a composição anterior continua disponível.
+- SubEngines/RechartsChart.tsx:1-64 isola a renderização alternativa para manter SarakChartEngine.tsx com 209 linhas; o fallback Recharts não ganhou recursos.
+- Os testes do motor verificam barras múltiplas, combinação barra/linha, eixo secundário, linha pontilhada, legenda, clique, formato não cartesiano e o cenário de burndown com duas linhas no mesmo eixo de datas.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| src/components/engines/charts/SarakChartEngine.tsx | alterado | Props públicas do lote 2 e ligação do modelo de séries aos eventos do ECharts. |
+| src/components/engines/charts/SubEngines/seriesModel.ts | criado | Construção das opções multi-série, eixos, empilhamento, legenda e clique. |
+| src/components/engines/charts/SubEngines/builders/basicCharts.ts | alterado | Consome a cor definida para cada série. |
+| src/components/engines/charts/SubEngines/builders/types.ts | alterado | Acrescenta a cor da série à configuração interna do builder. |
+| src/components/engines/charts/SubEngines/RechartsChart.tsx | criado | Mantém a renderização de fallback separada do motor ECharts. |
+| src/components/engines/charts/__tests__/SarakChartEngine.series.test.tsx | criado | Oito cenários observáveis do contrato de séries. |
+| src/components/engines/charts/SubEngines/__tests__/RechartsChart.test.tsx | criado | Cobertura da renderização Recharts extraída. |
+| src/components/engines/charts/__tests__/SarakChartEngine.test.tsx | alterado | Tipagem do fixture existente ajustada ao contrato público. |
+| dist/* | regenerado por comando | Bundles regenerados por npm run build:js. |
+| docs/component-catalog.json e docs/component-catalog.md | regenerados por comando | Catálogo atualizado por npm run catalog. |
+| sarak-ui/* e sarak-dev/* | regenerados por comando | Guias e kits atualizados por npm run guide. |
+
+**Verificações executadas**
+- npx vitest run src/components/engines/charts → 5 arquivos, 45 testes passaram; houve três avisos de parse de CSS do ambiente de teste.
+- npx tsc --noEmit → passou.
+- npm run catalog e npm run guide → passaram; catálogo com 98 componentes e kit com 101 componentes, 437 tokens e 117 ícones.
+- npm run build:js → passou; em seguida npm run public-types:check → passou.
+- node gates/scripts/release/check-audit-baseline.mjs --with-tsc → passou, igual ao baseline de 2026-08-11.
+- Toda a lista de gates do .githooks/pre-commit foi executada: todos passaram, exceto check-plan-index-sync, que encontrou plan-101 em revisão enquanto o índice do revisor ainda registra em execução. O verificador de segredos terminou sem achados e imprimiu apenas um aviso de localização de Python no ambiente.
+- O validador AST passou nos arquivos alterados, exceto a ocorrência de console.warn exigida pelo contrato Recharts do lote 1.
+- A consulta solicitada via Get-CimInstance não existe neste ambiente PowerShell; a contagem alternativa de processos node, em chamada separada antes dos builds, retornou 0.
+
+**Critérios de aceite**
+- [x] Duas séries de barra têm cores distintas da paleta; stacked empilha e horizontal troca os eixos — teste em SarakChartEngine.series.test.tsx.
+- [x] Barra + linha, eixo direito e série pontilhada chegam à opção ECharts — testes por caso em SarakChartEngine.series.test.tsx.
+- [x] Legenda automática para 2+ séries, oculta para 1, e clique recebe série, índice e datum — testes em SarakChartEngine.series.test.tsx.
+- [x] Tipo não cartesiano ignora series sem erro — teste em SarakChartEngine.series.test.tsx; JSDoc das props em SarakChartEngine.tsx:39-57.
+- [x] Burndown com duas linhas no mesmo eixo temporal, uma pontilhada — teste em SarakChartEngine.series.test.tsx.
+- [x] Contrato legado sem series, cor por token, motor abaixo de 250 linhas e checagens TypeScript — testes do contrato, 209 linhas e gates acima.
+
+**Decisões e suposições**
+- O texto da plan omite color no tipo ilustrado, mas exige cor explícita por token; foi acrescentada a prop color opcional com nomes de tokens existentes, sem aceitar hexadecimal.
+- O valor stacked sem chave de stack usa um grupo padrão; uma chave stack explícita continua definindo o grupo.
+- Não foram adicionadas chaves de tradução nem dependências no lote 2; não foi necessário alterar package.json. O Lote 3 não foi iniciado.
+
+**Achados fora do escopo (não corrigidos)**
+- Snapshots de PreviewCanvas e PresetCard em src/features/DesignEngine/ apareceram durante a execução paralela das plans 98/100; ficaram intactos, conforme o despacho.
+- O baseline integral ainda contém ocorrências preexistentes de ghostvars e composição atômica em SarakMultiSelect.tsx e SarakUploader.tsx; o comparador de baseline permaneceu igual.
+- check-plan-index-sync requer sincronização do índice pelo revisor; specs/00-indice.md não foi alterado por esta execução.
+
+**Pendências / riscos**
+- O gate check-plan-index-sync segue pendente porque o status da plan foi entregue para revisão e o índice do revisor não foi atualizado. Não há falha restante nos gates técnicos do lote 2.
+- Três avisos de parse de CSS persistiram no Vitest focado, embora os 45 testes tenham passado.

@@ -21,18 +21,18 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildFun
       ],
       "emphasis": {
         "label": {
-          "fontSize": 20,
+          "fontSize": 22,
         },
       },
       "gap": 2,
       "itemStyle": {
-        "borderColor": "#fff",
+        "borderColor": "whitesmoke",
         "borderWidth": 1,
         "opacity": 0.7,
       },
       "label": {
         "fontFamily": "Inter",
-        "fontSize": 10,
+        "fontSize": 11,
         "position": "inside",
         "show": true,
       },
@@ -63,9 +63,10 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildGau
           "color": [
             [
               1,
-              "rgba(255,255,255,0.05)",
+              "silver",
             ],
           ],
+          "opacity": 0.05,
           "width": 14,
         },
       },
@@ -78,9 +79,9 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildGau
         },
       ],
       "detail": {
-        "color": "#fff",
-        "fontFamily": "Inter",
-        "fontSize": 28,
+        "color": "navy",
+        "fontFamily": "Georgia",
+        "fontSize": 11,
         "fontWeight": "900",
         "formatter": "{value}%",
         "offsetCenter": [
@@ -100,11 +101,11 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildGau
           "color": LinearGradient {
             "colorStops": [
               {
-                "color": "#3b82f6",
+                "color": "cornflowerblue",
                 "offset": 0,
               },
               {
-                "color": "#8b5cf6",
+                "color": "darkorchid",
                 "offset": 1,
               },
             ],
@@ -153,7 +154,7 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildHea
       "emphasis": {
         "itemStyle": {
           "shadowBlur": 10,
-          "shadowColor": "rgba(0, 0, 0, 0.5)",
+          "shadowColor": "cornflowerblue",
         },
       },
       "label": {
@@ -167,9 +168,9 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildHea
     "calculable": true,
     "inRange": {
       "color": [
-        "rgba(59, 130, 246, 0.1)",
-        "#3b82f6",
-        "#ef4444",
+        "whitesmoke",
+        "cornflowerblue",
+        "crimson",
       ],
     },
     "left": "center",
@@ -186,7 +187,8 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildRad
   "radar": {
     "axisLine": {
       "lineStyle": {
-        "color": "rgba(255,255,255,0.05)",
+        "color": "silver",
+        "opacity": 0.05,
       },
     },
     "indicator": [
@@ -208,7 +210,8 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildRad
     },
     "splitLine": {
       "lineStyle": {
-        "color": "rgba(255,255,255,0.05)",
+        "color": "silver",
+        "opacity": 0.05,
       },
     },
   },
@@ -220,11 +223,11 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildRad
             "color": RadialGradient {
               "colorStops": [
                 {
-                  "color": "rgba(59, 130, 246, 0.6)",
+                  "color": "cornflowerblue",
                   "offset": 0,
                 },
                 {
-                  "color": "rgba(139, 92, 246, 0.2)",
+                  "color": "darkorchid",
                   "offset": 1,
                 },
               ],
@@ -234,12 +237,13 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildRad
               "x": 0.5,
               "y": 0.5,
             },
+            "opacity": 0.6,
           },
           "lineStyle": {
-            "color": "#3b82f6",
+            "color": "cornflowerblue",
             "width": 2,
           },
-          "name": "Métrica Sarak",
+          "name": "Métrica",
           "symbol": "none",
           "value": [
             10,
@@ -260,35 +264,24 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildSun
     {
       "data": [
         {
-          "children": [
-            {
-              "name": "A1",
-              "value": 10,
-            },
-            {
-              "name": "A2",
-              "value": 20,
-            },
-          ],
-          "name": "Node A",
+          "children": undefined,
+          "name": "A",
+          "value": 10,
         },
         {
-          "children": [
-            {
-              "name": "B1",
-              "value": 15,
-            },
-            {
-              "name": "B2",
-              "value": 25,
-            },
-          ],
-          "name": "Node B",
+          "children": undefined,
+          "name": "B",
+          "value": 20,
+        },
+        {
+          "children": undefined,
+          "name": "C",
+          "value": 30,
         },
       ],
       "label": {
         "fontFamily": "Inter",
-        "fontSize": 8,
+        "fontSize": 11,
         "rotate": "radial",
       },
       "radius": [
@@ -320,13 +313,13 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildTre
         },
       ],
       "itemStyle": {
-        "borderColor": "#fff",
+        "borderColor": "whitesmoke",
         "borderWidth": 1,
         "gapWidth": 1,
       },
       "label": {
         "fontFamily": "Inter",
-        "fontSize": 10,
+        "fontSize": 11,
         "formatter": "{b}",
         "show": true,
       },
@@ -357,11 +350,11 @@ exports[`chart builders — caracterização da saída > basicCharts.buildBarSer
           "color": LinearGradient {
             "colorStops": [
               {
-                "color": "#fff",
+                "color": "cornflowerblue",
                 "offset": 0,
               },
               {
-                "color": "#3b82f6",
+                "color": "darkorchid",
                 "offset": 1,
               },
             ],
@@ -373,7 +366,7 @@ exports[`chart builders — caracterização da saída > basicCharts.buildBarSer
             "y2": 1,
           },
           "shadowBlur": 20,
-          "shadowColor": "rgba(59, 130, 246, 0.4)",
+          "shadowColor": "cornflowerblue",
         },
       },
       "itemStyle": {
@@ -386,11 +379,11 @@ exports[`chart builders — caracterização da saída > basicCharts.buildBarSer
         "color": LinearGradient {
           "colorStops": [
             {
-              "color": "#3b82f6",
+              "color": "cornflowerblue",
               "offset": 0,
             },
             {
-              "color": "rgba(59, 130, 246, 0.1)",
+              "color": "darkorchid",
               "offset": 1,
             },
           ],
@@ -401,6 +394,7 @@ exports[`chart builders — caracterização da saída > basicCharts.buildBarSer
           "y": 0,
           "y2": 1,
         },
+        "opacity": 0.9,
       },
       "type": "bar",
     },
@@ -416,15 +410,15 @@ exports[`chart builders — caracterização da saída > basicCharts.buildLineSe
         "color": LinearGradient {
           "colorStops": [
             {
-              "color": "rgba(59, 130, 246, 0.5)",
+              "color": "cornflowerblue",
               "offset": 0,
             },
             {
-              "color": "rgba(59, 130, 246, 0.1)",
+              "color": "cornflowerblue",
               "offset": 0.5,
             },
             {
-              "color": "rgba(59, 130, 246, 0)",
+              "color": "darkorchid",
               "offset": 1,
             },
           ],
@@ -435,6 +429,7 @@ exports[`chart builders — caracterização da saída > basicCharts.buildLineSe
           "y": 0,
           "y2": 1,
         },
+        "opacity": 0.2,
       },
       "data": [
         10,
@@ -444,23 +439,23 @@ exports[`chart builders — caracterização da saída > basicCharts.buildLineSe
       "emphasis": {
         "itemStyle": {
           "shadowBlur": 15,
-          "shadowColor": "#3b82f6",
+          "shadowColor": "cornflowerblue",
         },
         "scale": 1.5,
       },
       "itemStyle": {
-        "borderColor": "#0f172a",
-        "borderWidth": 3,
-        "color": "#3b82f6",
+        "borderColor": "whitesmoke",
+        "borderWidth": 1,
+        "color": "cornflowerblue",
         "shadowBlur": 5,
-        "shadowColor": "rgba(0,0,0,0.2)",
+        "shadowColor": "cornflowerblue",
       },
       "lineStyle": {
-        "color": "#3b82f6",
+        "color": "cornflowerblue",
         "shadowBlur": 15,
-        "shadowColor": "rgba(59, 130, 246, 0.5)",
+        "shadowColor": "cornflowerblue",
         "shadowOffsetY": 8,
-        "width": 5,
+        "width": 2,
       },
       "smooth": 0.4,
       "symbol": "circle",
@@ -484,23 +479,23 @@ exports[`chart builders — caracterização da saída > basicCharts.buildLineSe
       "emphasis": {
         "itemStyle": {
           "shadowBlur": 15,
-          "shadowColor": "#3b82f6",
+          "shadowColor": "cornflowerblue",
         },
         "scale": 1.5,
       },
       "itemStyle": {
-        "borderColor": "#0f172a",
-        "borderWidth": 3,
-        "color": "#3b82f6",
+        "borderColor": "whitesmoke",
+        "borderWidth": 1,
+        "color": "cornflowerblue",
         "shadowBlur": 5,
-        "shadowColor": "rgba(0,0,0,0.2)",
+        "shadowColor": "cornflowerblue",
       },
       "lineStyle": {
-        "color": "#3b82f6",
+        "color": "cornflowerblue",
         "shadowBlur": 15,
-        "shadowColor": "rgba(59, 130, 246, 0.5)",
+        "shadowColor": "cornflowerblue",
         "shadowOffsetY": 8,
-        "width": 5,
+        "width": 2,
       },
       "smooth": 0.4,
       "symbol": "circle",
@@ -533,20 +528,20 @@ exports[`chart builders — caracterização da saída > basicCharts.buildPieSer
       "emphasis": {
         "itemStyle": {
           "shadowBlur": 20,
-          "shadowColor": "rgba(0,0,0,0.2)",
+          "shadowColor": "cornflowerblue",
         },
         "label": {
-          "color": "#fff",
-          "fontFamily": "Inter",
-          "fontSize": 16,
+          "color": "navy",
+          "fontFamily": "Georgia",
+          "fontSize": 11,
           "fontWeight": "bold",
           "show": true,
         },
       },
       "itemStyle": {
-        "borderColor": "#0f172a",
-        "borderRadius": 12,
-        "borderWidth": 4,
+        "borderColor": "whitesmoke",
+        "borderRadius": 8,
+        "borderWidth": 1,
       },
       "label": {
         "position": "center",
@@ -558,22 +553,6 @@ exports[`chart builders — caracterização da saída > basicCharts.buildPieSer
         "85%",
       ],
       "type": "pie",
-    },
-  ],
-}
-`;
-
-exports[`chart builders — caracterização da saída > statisticalCharts.buildBoxPlotSeries 1`] = `
-{
-  "series": [
-    {
-      "data": [],
-      "itemStyle": {
-        "borderColor": "#3b82f6",
-        "borderWidth": 2,
-        "color": "rgba(59, 130, 246, 0.2)",
-      },
-      "type": "boxplot",
     },
   ],
 }
@@ -604,10 +583,10 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
         ],
       ],
       "itemStyle": {
-        "borderColor": "#3b82f6",
-        "borderColor0": "#ef4444",
-        "color": "#3b82f6",
-        "color0": "#ef4444",
+        "borderColor": "cornflowerblue",
+        "borderColor0": "crimson",
+        "color": "cornflowerblue",
+        "color0": "crimson",
       },
       "type": "candlestick",
     },
@@ -633,9 +612,10 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
         30,
       ],
       "itemStyle": {
-        "borderColor": "#3b82f6",
+        "borderColor": "cornflowerblue",
         "borderWidth": 1,
-        "color": "rgba(59, 130, 246, 0.6)",
+        "color": "cornflowerblue",
+        "opacity": 0.6,
       },
       "name": "Histogram",
       "type": "bar",
@@ -666,11 +646,11 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
         "color": RadialGradient {
           "colorStops": [
             {
-              "color": "rgba(59, 130, 246, 1)",
+              "color": "cornflowerblue",
               "offset": 0,
             },
             {
-              "color": "rgba(139, 92, 246, 0.4)",
+              "color": "darkorchid",
               "offset": 1,
             },
           ],
@@ -680,11 +660,29 @@ exports[`chart builders — caracterização da saída > statisticalCharts.build
           "x": 0.4,
           "y": 0.3,
         },
+        "opacity": 0.7,
         "shadowBlur": 10,
-        "shadowColor": "rgba(59, 130, 246, 0.5)",
+        "shadowColor": "cornflowerblue",
       },
       "symbolSize": [Function],
       "type": "scatter",
+    },
+  ],
+}
+`;
+
+exports[`validação de construtores estatísticos > statisticalCharts.buildBoxPlotSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [],
+      "itemStyle": {
+        "borderColor": "cornflowerblue",
+        "borderWidth": 2,
+        "color": "cornflowerblue",
+        "opacity": 0.2,
+      },
+      "type": "boxplot",
     },
   ],
 }

@@ -35,31 +35,28 @@ describe('TemplatesTab', () => {
         (useSarakUI as any).mockReturnValue(mockSarakUI);
     });
 
-    it('renderiza os guias e links', () => {
-        render(<TemplatesTab />);
+    it('mostra os temas e remove o guia de integração desatualizado', () => {
+        render(<TemplatesTab onApplyFullTheme={vi.fn()} />);
         expect(screen.getByText('Templates &')).toBeInTheDocument();
-        expect(screen.getByText('Guia Rápido')).toBeInTheDocument();
-        expect(screen.getByText('Copie o JSON abaixo.')).toBeInTheDocument();
+        expect(screen.queryByText('Guia Rápido')).toBeNull();
+        expect(screen.queryByText(/DesignProvider/)).toBeNull();
         expect(screen.getByText('Theme 1')).toBeInTheDocument();
         expect(screen.getByText('Theme 2')).toBeInTheDocument();
         expect(screen.getByText('Desc 1')).toBeInTheDocument();
         expect(screen.getByText('Desc 2')).toBeInTheDocument();
     });
 
-    it('chama applyFullConfig e persistDesign ao aplicar um tema', () => {
-        const applicationOrder: string[] = [];
-        mockSarakUI.applyFullConfig.mockImplementation(() => applicationOrder.push('apply'));
-        mockSarakUI.setResolvedThemeId.mockImplementation((id: string) => applicationOrder.push(`theme:${id}`));
-        mockSarakUI.persistDesign.mockImplementation(async () => { applicationOrder.push('persist'); });
-        render(<TemplatesTab />);
-        
-        const applyButtons = screen.getAllByText('Aplicar Tema');
-        fireEvent.click(applyButtons[0]);
+    it('escolher um tema só encaminha o design e o id ao rascunho', () => {
+        const onApplyFullTheme = vi.fn();
+        render(<TemplatesTab onApplyFullTheme={onApplyFullTheme} />);
 
-        expect(mockSarakUI.applyFullConfig).toHaveBeenCalledWith({ mode: 'dark' });
-        expect(mockSarakUI.setResolvedThemeId).toHaveBeenCalledWith('theme1');
-        expect(mockSarakUI.persistDesign).toHaveBeenCalledWith({ mode: 'dark' });
-        expect(applicationOrder).toEqual(['apply', 'theme:theme1', 'persist']);
+        fireEvent.click(screen.getAllByRole('button', { name: 'Escolher tema' })[0]);
+
+        expect(onApplyFullTheme).toHaveBeenCalledWith({ mode: 'dark' }, 'theme1');
+        expect(screen.getByRole('button', { name: 'Selecionado' })).toBeInTheDocument();
+        expect(mockSarakUI.applyFullConfig).not.toHaveBeenCalled();
+        expect(mockSarakUI.setResolvedThemeId).not.toHaveBeenCalled();
+        expect(mockSarakUI.persistDesign).not.toHaveBeenCalled();
     });
 
     it('copia o tema e muda ícone', async () => {
@@ -70,7 +67,7 @@ describe('TemplatesTab', () => {
             clipboard: mockClipboard
         });
 
-        render(<TemplatesTab />);
+        render(<TemplatesTab onApplyFullTheme={vi.fn()} />);
         
         const copyButtons = screen.getAllByTestId('icon-copy');
         fireEvent.click(copyButtons[0]);

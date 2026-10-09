@@ -42,6 +42,9 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakChart` | `importance` | `hero` · `base` · `subtle` |
 | `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` |
 | `SarakChartEngine` | `config` | `recharts` · `echarts` |
+| `SarakChartEngine` | `series` | `bar` · `line` · `area` · `left` · `right` · `chartColorPalette` · `secondaryColor` · `accentColor` · `statusSuccessColor` · `statusWarningColor` · `statusErrorColor` · `statusInfoColor` · `tertiaryColor` |
+| `SarakChartEngine` | `orientation` | `vertical` · `horizontal` |
+| `SarakChartEngine` | `legend` | `top` · `bottom` |
 | `SarakChat` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChat` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChat` | `importance` | `hero` · `base` · `subtle` |
@@ -87,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (97)
+## Componentes públicos (98)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -400,9 +403,15 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | sim | Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. |
-| `data` | `SarakChartDataItem[]` | sim | Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. |
-| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. |
+| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | não | Seleciona o formato; omitido, usa `chartType` do design resolvido. |
+| `data` | `SarakChartDataItem[]` | sim | Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. |
+| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. |
+| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
+| `stacked` | `boolean` | não | Formatos não cartesianos ignoram esta prop. |
+| `orientation` | `'vertical' \| 'horizontal'` | não | Formatos não cartesianos ignoram esta prop. |
+| `legend` | `boolean \| 'top' \| 'bottom'` | não | Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade. |
+| `onPointClick` | `(event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void` | não | Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. |
+| `ariaLabel` | `string` | não | Texto acessível do gráfico; omitido, usa o catálogo de i18n. |
 
 ### SarakChat
 
@@ -576,6 +585,10 @@ Props (`SarakEmptyStateProps` — `src/components/atomic/Feedback/SarakEmptyStat
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `type` | `'minimal' \| 'abstract' \| 'geometric'` | não | Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`. |
+| `title` | `React.ReactNode` | não | Conteúdo principal do estado; quando informado, ativa a composição de conteúdo. |
+| `description` | `React.ReactNode` | não | Explicação complementar para o estado vazio. |
+| `action` | `React.ReactNode` | não | Ação composta pelo consumidor, normalmente um `SarakButton`. |
+| `icon` | `React.ReactNode` | não | Ícone ou ilustração composta pelo consumidor. |
 
 ### SarakExpandableCard
 
@@ -872,16 +885,17 @@ Props (`SarakModalProps` — `src/components/atomic/Modals/SarakModal.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `isOpen` | `boolean` | sim |  |
-| `onClose` | `() => void` | sim |  |
-| `title` | `React.ReactNode` | não |  |
-| `children` | `React.ReactNode` | não |  |
-| `footer` | `React.ReactNode` | não |  |
+| `isOpen` | `boolean` | sim | Controla se o modal está visível. |
+| `onClose` | `() => void` | sim | Chamado ao fechar pelo botão, tecla Escape ou clique no overlay habilitado. |
+| `title` | `React.ReactNode` | não | Conteúdo do cabeçalho e nome acessível do diálogo. |
+| `children` | `React.ReactNode` | não | Conteúdo principal do modal; fica em segundo plano quando `steps` é informado. |
+| `footer` | `React.ReactNode` | não | Conteúdo do rodapé; substituído pela navegação quando `steps` está informado. |
 | `steps` | `React.ReactNode[]` | não | Sub-wizard multi-step (Spec 13, Regra 2): cada passo é renderizado isolado dentro do overlay, com navegação "Voltar/Avançar" contida no rodapé. Tem precedência sobre `children`. No último passo, "Avançar" é substituído por `onComplete`. |
 | `onComplete` | `() => void` | não | Chamado ao avançar além do último passo (conclusão do wizard). |
-| `disableOverlayClick` | `boolean` | não | Se true, o clique no overlay (fundo) não fecha o modal |
-| `hideCloseButton` | `boolean` | não | Se true, o botão de fechar não é renderizado |
-| `className` | `string` | não | Classe CSS customizada para o contêiner do modal |
+| `disableOverlayClick` | `boolean` | não | Se true, o clique no overlay (fundo) não fecha o modal. |
+| `hideCloseButton` | `boolean` | não | Se true, o botão de fechar não é renderizado. |
+| `className` | `string` | não | Classe CSS customizada para o contêiner do modal. |
+| `size` | `SarakModalSize` | não | Largura máxima controlada por tokens; sem a prop, mantém os 32rem atuais. |
 
 ### SarakMultiSelect
 
@@ -941,6 +955,19 @@ Props (`SarakPaginationProps` — `src/components/atomic/Navigation/SarakPaginat
 | `maxVisible` | `number` | não | Máximo de botões numéricos antes de compactar com reticências (default: 7). |
 | `onChange` | `(page: number) => void` | sim | Disparado ao escolher uma página válida (diferente da atual). |
 | `className` | `string` | não |  |
+
+### SarakProgress
+
+Props (`SarakProgressProps` — `src/components/atomic/Feedback/SarakProgress.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `value` | `number` | não | Valor atual do progresso, limitado ao intervalo entre zero e `max` (padrão: 0). |
+| `max` | `number` | não | Valor que representa 100% do progresso; precisa ser positivo (padrão: 100). |
+| `thresholds` | `SarakProgressThreshold[]` | não | Limiares que escolhem a variante de cor conforme o valor atual. |
+| `label` | `string` | não | Rótulo acessível anunciado pela barra de progresso. |
+| `indeterminate` | `boolean` | não | Exibe animação indeterminada e omite o valor atual na árvore acessível. |
+| `className` | `string` | não | Classe adicional aplicada ao contêiner do componente. |
 
 ### SarakRadio
 

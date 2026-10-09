@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, FileJson, Info, ExternalLink, Code, Terminal } from 'lucide-react';
+import { Copy, Check, FileJson, ExternalLink, Code } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import type { SarakThemeEntry, SarakThemePayload } from '../../../core/Provider/types';
+import type { SarakDesignState, SarakThemeEntry } from '../../../core/Provider/types';
 
 type ThemeWithDesign = SarakThemeEntry & { description?: string; design: Record<string, unknown> };
 
 const hasThemeDesign = (theme: SarakThemeEntry): theme is ThemeWithDesign => Boolean(theme.design);
 
+interface TemplatesTabProps {
+    onApplyFullTheme: (design: Partial<SarakDesignState>, themeId?: string) => void;
+}
+
 /**
  * TemplatesTab (v13.0)
  * Exibe os temas híbridos (Scripts e Banco de Dados) para aplicação.
  */
-export const TemplatesTab: React.FC = () => {
+export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
-    const [appliedId, setAppliedId] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
     const sarak = useSarakUI();
     const themes = sarak.allThemes.filter(hasThemeDesign);
-    const handleApply = async (theme: ThemeWithDesign) => {
-        setAppliedId(theme.id);
-        const design = theme.design as SarakThemePayload;
-        sarak.applyFullConfig(design);
-        sarak.setResolvedThemeId?.(theme.id);
-        await sarak.persistDesign?.(design);
-        setTimeout(() => setAppliedId(null), 2000);
+    const handleSelect = (theme: ThemeWithDesign) => {
+        onApplyFullTheme(theme.design as Partial<SarakDesignState>, theme.id);
+        setSelectedId(theme.id);
     };
 
     const handleCopy = (id: string, config: Record<string, unknown>) => {
@@ -45,28 +45,6 @@ export const TemplatesTab: React.FC = () => {
                 </p>
             </div>
 
-            {/* Quick Guide - Stacked for Sidebar */}
-            <div className="flex flex-col gap-4 mb-8">
-                <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 mb-3 text-[var(--theme-primary)]">
-                        <Terminal size={14} />
-                        <div className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest">Guia Rápido</div>
-                    </div>
-                    <ul className="space-y-2">
-                        {[
-                            'Copie o JSON abaixo.',
-                            'Passe para o DesignProvider.',
-                            'Use a classe .sarak-design-scope.'
-                        ].map((item, i) => (
-                            <li key={i} className="flex gap-2 text-[var(--sarak-type-scale3xs,9px)] text-white/40 font-medium">
-                                <span className="text-[var(--theme-primary)] font-black">{i + 1}.</span>
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
                 {themes.map((template) => (
@@ -81,15 +59,15 @@ export const TemplatesTab: React.FC = () => {
                             </div>
                             <div className="flex gap-2">
                                 <button 
-                                    onClick={() => handleApply(template)}
+                                    onClick={() => handleSelect(template)}
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all flex-1 ${
-                                        appliedId === template.id 
+                                        selectedId === template.id
                                         ? 'bg-emerald-500 text-white' 
                                         : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-black'
                                     }`}
                                 >
-                                    {appliedId === template.id ? <Check size={10} /> : <Check size={10} />}
-                                    {appliedId === template.id ? 'Aplicado!' : 'Aplicar Tema'}
+                                    <Check size={10} />
+                                    {selectedId === template.id ? 'Selecionado' : 'Escolher tema'}
                                 </button>
                                 <button 
                                     onClick={() => handleCopy(template.id, template.design)}

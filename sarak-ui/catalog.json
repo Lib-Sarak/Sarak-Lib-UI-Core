@@ -90,6 +90,7 @@
     "SarakColorModePreference",
     "SarakColumn",
     "SarakColumnAlignment",
+    "SarakConfirmOptions",
     "SarakContextMenu",
     "SarakContextMenuPosition",
     "SarakContextMenuProps",
@@ -191,6 +192,7 @@
     "SarakModal",
     "SarakModalLayoutContext",
     "SarakModalProps",
+    "SarakModalSize",
     "SarakMultiSelect",
     "SarakMultiSelectOption",
     "SarakMultiSelectProps",
@@ -213,6 +215,10 @@
     "SarakPreferencePosition",
     "SarakPreferencesHook",
     "SarakPreferencesOptions",
+    "SarakProgress",
+    "SarakProgressProps",
+    "SarakProgressThreshold",
+    "SarakProgressVariant",
     "SarakRadio",
     "SarakRadioProps",
     "SarakRangeSlider",
@@ -290,6 +296,7 @@
     "SarakTimePickerProps",
     "SarakTitleCard",
     "SarakTitleCardProps",
+    "SarakToastAction",
     "SarakToastController",
     "SarakToastOptions",
     "SarakToastProvider",
@@ -1420,20 +1427,56 @@
         {
           "name": "type",
           "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot'",
-          "optional": false,
-          "doc": "Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha."
+          "optional": true,
+          "doc": "Seleciona o formato; omitido, usa `chartType` do design resolvido."
         },
         {
           "name": "data",
           "type": "SarakChartDataItem[]",
           "optional": false,
-          "doc": "Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas."
+          "doc": "Registros da série, com os campos configurados por `xAxisKey` e `dataKey`."
         },
         {
           "name": "config",
           "type": "{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' | 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }",
           "optional": true,
-          "doc": "Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação."
+          "doc": "Ajusta chaves de leitura, motor, título, gradiente, animação e espessura."
+        },
+        {
+          "name": "series",
+          "type": "Array<{ key: string; label?: string; type?: 'bar' | 'line' | 'area'; stack?: string; axis?: 'left' | 'right'; dashed?: boolean; color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor' | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor'; }>",
+          "optional": true,
+          "doc": "Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal."
+        },
+        {
+          "name": "stacked",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Formatos não cartesianos ignoram esta prop."
+        },
+        {
+          "name": "orientation",
+          "type": "'vertical' | 'horizontal'",
+          "optional": true,
+          "doc": "Formatos não cartesianos ignoram esta prop."
+        },
+        {
+          "name": "legend",
+          "type": "boolean | 'top' | 'bottom'",
+          "optional": true,
+          "doc": "Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade."
+        },
+        {
+          "name": "onPointClick",
+          "type": "(event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void",
+          "optional": true,
+          "doc": "Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto acessível do gráfico; omitido, usa o catálogo de i18n."
         }
       ]
     },
@@ -2025,6 +2068,30 @@
           "type": "'minimal' | 'abstract' | 'geometric'",
           "optional": true,
           "doc": "Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`."
+        },
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Conteúdo principal do estado; quando informado, ativa a composição de conteúdo."
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Explicação complementar para o estado vazio."
+        },
+        {
+          "name": "action",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Ação composta pelo consumidor, normalmente um `SarakButton`."
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Ícone ou ilustração composta pelo consumidor."
         }
       ]
     },
@@ -2907,31 +2974,31 @@
           "name": "isOpen",
           "type": "boolean",
           "optional": false,
-          "doc": ""
+          "doc": "Controla se o modal está visível."
         },
         {
           "name": "onClose",
           "type": "() => void",
           "optional": false,
-          "doc": ""
+          "doc": "Chamado ao fechar pelo botão, tecla Escape ou clique no overlay habilitado."
         },
         {
           "name": "title",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Conteúdo do cabeçalho e nome acessível do diálogo."
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Conteúdo principal do modal; fica em segundo plano quando `steps` é informado."
         },
         {
           "name": "footer",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Conteúdo do rodapé; substituído pela navegação quando `steps` está informado."
         },
         {
           "name": "steps",
@@ -2949,19 +3016,25 @@
           "name": "disableOverlayClick",
           "type": "boolean",
           "optional": true,
-          "doc": "Se true, o clique no overlay (fundo) não fecha o modal"
+          "doc": "Se true, o clique no overlay (fundo) não fecha o modal."
         },
         {
           "name": "hideCloseButton",
           "type": "boolean",
           "optional": true,
-          "doc": "Se true, o botão de fechar não é renderizado"
+          "doc": "Se true, o botão de fechar não é renderizado."
         },
         {
           "name": "className",
           "type": "string",
           "optional": true,
-          "doc": "Classe CSS customizada para o contêiner do modal"
+          "doc": "Classe CSS customizada para o contêiner do modal."
+        },
+        {
+          "name": "size",
+          "type": "SarakModalSize",
+          "optional": true,
+          "doc": "Largura máxima controlada por tokens; sem a prop, mantém os 32rem atuais."
         }
       ]
     },
@@ -3154,6 +3227,48 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        }
+      ]
+    },
+    "SarakProgress": {
+      "propsInterface": "SarakProgressProps",
+      "source": "src/components/atomic/Feedback/SarakProgress.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "doc": "Valor atual do progresso, limitado ao intervalo entre zero e `max` (padrão: 0)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "doc": "Valor que representa 100% do progresso; precisa ser positivo (padrão: 100)."
+        },
+        {
+          "name": "thresholds",
+          "type": "SarakProgressThreshold[]",
+          "optional": true,
+          "doc": "Limiares que escolhem a variante de cor conforme o valor atual."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo acessível anunciado pela barra de progresso."
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Exibe animação indeterminada e omite o valor atual na árvore acessível."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": "Classe adicional aplicada ao contêiner do componente."
         }
       ]
     },
@@ -4649,6 +4764,41 @@
         ]
       },
       {
+        "component": "SarakChartEngine",
+        "prop": "series",
+        "values": [
+          "bar",
+          "line",
+          "area",
+          "left",
+          "right",
+          "chartColorPalette",
+          "secondaryColor",
+          "accentColor",
+          "statusSuccessColor",
+          "statusWarningColor",
+          "statusErrorColor",
+          "statusInfoColor",
+          "tertiaryColor"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "orientation",
+        "values": [
+          "vertical",
+          "horizontal"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "legend",
+        "values": [
+          "top",
+          "bottom"
+        ]
+      },
+      {
         "component": "SarakChat",
         "prop": "role",
         "values": [
@@ -5389,6 +5539,11 @@
       "--sarak-modal-overlay",
       "--sarak-modal-overlay-blur",
       "--sarak-modal-overlay-color",
+      "--sarak-modal-width-full",
+      "--sarak-modal-width-lg",
+      "--sarak-modal-width-md",
+      "--sarak-modal-width-sm",
+      "--sarak-modal-width-xl",
       "--sarak-mode",
       "--sarak-mono-font",
       "--sarak-motion-dur-fast",
@@ -5454,7 +5609,9 @@
       "--sarak-primary-color-hover",
       "--sarak-primary-color-light",
       "--sarak-primary-color-rgb",
+      "--sarak-progress-bar-height",
       "--sarak-progress-bar-max-width",
+      "--sarak-progress-bar-radius",
       "--sarak-range-active-bg",
       "--sarak-range-active-color",
       "--sarak-reduced-motion",
@@ -5810,7 +5967,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 430,
+    "count": 437,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -7190,6 +7347,31 @@
         "responsive": false
       },
       {
+        "id": "modalWidthFull",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "modalWidthLg",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "modalWidthMd",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "modalWidthSm",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "modalWidthXl",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "mode",
         "type": "string",
         "responsive": false
@@ -7400,7 +7582,17 @@
         "responsive": false
       },
       {
+        "id": "progressBarHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "progressBarMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "progressBarRadius",
         "type": "number",
         "responsive": false
       },
@@ -8132,6 +8324,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "1784591a773f"
+    "kitHash": "c68ed6a8735f"
   }
 }

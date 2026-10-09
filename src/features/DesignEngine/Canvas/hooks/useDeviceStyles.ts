@@ -1,4 +1,4 @@
-export const useDeviceStyles = (previewDevice: string, isPreviewStacked: boolean | undefined) => {
+export const useDeviceStyles = (previewDevice: string) => {
     const deviceWidths = {
         desktop: '100%',
         tablet: '768px',
@@ -16,14 +16,8 @@ export const useDeviceStyles = (previewDevice: string, isPreviewStacked: boolean
         return "rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)]";
     };
 
-    const getDeviceHeightClass = () => {
-        if (previewDevice !== 'desktop') return '';
-        return isPreviewStacked ? 'h-[45vh]' : 'h-full';
-    };
-
     return {
         targetWidth,
         getDeviceFrameStyles,
-        getDeviceHeightClass
     };
 };

@@ -10,7 +10,8 @@ const DEVICE_OPTIONS = [
 
 const PREVIEW_TOOLBAR_LABELS = {
     deviceGroup: 'Dispositivo do preview',
-    stack: 'Empilhar previews'
+    stack: 'Empilhar previews',
+    stackDisabledTitle: 'Abra a galeria de estilos para empilhar os previews.',
 } as const;
 
 type PreviewDevice = 'desktop' | 'tablet' | 'smartphone';
@@ -20,13 +21,15 @@ interface PreviewToolbarProps {
     setPreviewDevice: (device: PreviewDevice) => void;
     isPreviewStacked: boolean;
     setIsPreviewStacked: (stacked: boolean) => void;
+    isGalleryOpen: boolean;
 }
 
 export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
     previewDevice,
     setPreviewDevice,
     isPreviewStacked,
-    setIsPreviewStacked
+    setIsPreviewStacked,
+    isGalleryOpen,
 }) => (
     <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
         <div role="group" aria-label={PREVIEW_TOOLBAR_LABELS.deviceGroup} className="flex min-w-0 flex-1 gap-1">
@@ -44,20 +47,23 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
                 </SarakButton>
             ))}
         </div>
-        <label className="flex shrink-0 cursor-pointer items-center gap-2">
+        <label className={'flex shrink-0 items-center gap-2 ' + (isGalleryOpen ? 'cursor-pointer' : 'cursor-not-allowed')}>
             <input
                 type="checkbox"
                 role="switch"
-                checked={isPreviewStacked}
+                checked={isGalleryOpen && isPreviewStacked}
                 onChange={() => setIsPreviewStacked(!isPreviewStacked)}
-                aria-checked={isPreviewStacked}
+                aria-checked={isGalleryOpen && isPreviewStacked}
+                aria-disabled={!isGalleryOpen}
+                disabled={!isGalleryOpen}
                 aria-label={PREVIEW_TOOLBAR_LABELS.stack}
+                title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle}
                 className="sr-only"
             />
-            <span aria-hidden="true" className={'relative h-3 w-6 rounded-full transition-colors ' + (isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]')}>
-                <span className={'absolute top-0.5 h-2 w-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ' + (isPreviewStacked ? 'left-3.5' : 'left-0.5')} />
+            <span aria-hidden="true" title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle} className={'relative h-3 w-6 rounded-full transition-colors ' + (isGalleryOpen && isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]')}>
+                <span className={'absolute top-0.5 h-2 w-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ' + (isGalleryOpen && isPreviewStacked ? 'left-3.5' : 'left-0.5')} />
             </span>
-            <span>{PREVIEW_TOOLBAR_LABELS.stack}</span>
+            <span title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle}>{PREVIEW_TOOLBAR_LABELS.stack}</span>
         </label>
     </div>
 );

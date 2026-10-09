@@ -1,61 +1,107 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useCallback, useState } from 'react';
+import { MORE_PREVIEW_SCREEN_ID } from '../../Canvas/previewScreens';
 
 export type ThemeEditMode = 'impact' | 'essential' | 'complete';
+
+const PILLAR_CANONICAL_APP: Record<string, string> = {
+    brand: 'auth',
+    typography: 'typography',
+    surfaces: 'dashboard',
+    interaction: 'caixas-texto',
+    navigation: 'dashboard',
+    systems: 'settings',
+    advanced: 'matrix',
+};
+
+const PILLAR_PREVIEW_APPS: Record<string, readonly string[]> = {
+    brand: ['auth'],
+    typography: ['typography'],
+    surfaces: ['dashboard', 'components', 'tabela'],
+    interaction: ['caixas-texto', 'forms'],
+    navigation: ['dashboard'],
+    systems: ['settings', 'logs', 'documentos'],
+    advanced: [MORE_PREVIEW_SCREEN_ID, 'chat', 'graficos', 'matrix', 'kitchen-sink'],
+};
+
+const APP_TO_PILLAR: Record<string, string> = {
+    dashboard: 'surfaces',
+    components: 'surfaces',
+    tabela: 'surfaces',
+    'caixas-texto': 'interaction',
+    forms: 'interaction',
+    typography: 'typography',
+    chat: 'advanced',
+    graficos: 'advanced',
+    matrix: 'advanced',
+    'kitchen-sink': 'advanced',
+    [MORE_PREVIEW_SCREEN_ID]: 'advanced',
+    auth: 'brand',
+    settings: 'systems',
+    logs: 'systems',
+    documentos: 'systems',
+};
 
 export function usePreviewUIState() {
     const [state, setState] = useState({
         activePreviewApp: 'dashboard',
         previewDevice: 'desktop' as 'desktop' | 'tablet' | 'smartphone',
-        activePillarId: 'brand' as string | null,
+        activePillarId: 'surfaces' as string | null,
         activeSectionId: null as string | null,
         viewMode: 'preview' as 'preview' | 'catalog' | 'templates' | 'command-center',
         searchQuery: '',
         editMode: 'essential' as ThemeEditMode,
-        isPreviewStacked: false
+        isPreviewStacked: false,
+        isGalleryOpen: false,
     });
 
-    const updateState = (updates: Partial<typeof state>) => {
-        setState(prev => ({ ...prev, ...updates }));
-    };
+    const updateState = useCallback((updates: Partial<typeof state>) => {
+        setState((previousState) => ({ ...previousState, ...updates }));
+    }, []);
 
-    // Pillar sync logic
-    const appToPillarMap: Record<string, string> = useMemo(() => ({
-        'dashboard': 'surfaces',
-        'components': 'surfaces',
-        'tabela': 'surfaces',
-        'caixas-texto': 'interaction',
-        'typography': 'typography',
-        'chat': 'advanced',
-        'graficos': 'advanced',
-        'matrix': 'advanced',
-        'auth': 'brand',
-        'settings': 'systems',
-        'logs': 'systems'
-    }), []);
+    const selectPreviewApp = useCallback((appId: string) => {
+        setState((previousState) => ({
+            ...previousState,
+            activePreviewApp: appId,
+            activePillarId: APP_TO_PILLAR[appId] ?? previousState.activePillarId,
+        }));
+    }, []);
 
-    useEffect(() => {
-        const pillarId = appToPillarMap[state.activePreviewApp];
-        if (pillarId) {
-            updateState({ activePillarId: pillarId });
-        }
-    }, [state.activePreviewApp, appToPillarMap]);
+    const selectPillar = useCallback((pillarId: string | null) => {
+        setState((previousState) => {
+            if (pillarId === null) return { ...previousState, activePillarId: null };
+
+            const canonicalApp = PILLAR_CANONICAL_APP[pillarId];
+            if (!canonicalApp) return { ...previousState, activePillarId: pillarId };
+
+            const currentAppBelongsToPillar = PILLAR_PREVIEW_APPS[pillarId]?.includes(previousState.activePreviewApp);
+
+            return {
+                ...previousState,
+                activePillarId: pillarId,
+                activePreviewApp: currentAppBelongsToPillar ? previousState.activePreviewApp : canonicalApp,
+            };
+        });
+    }, []);
 
     return {
         activePreviewApp: state.activePreviewApp,
-        setActivePreviewApp: (v: string) => updateState({ activePreviewApp: v }),
+        selectPreviewApp,
         previewDevice: state.previewDevice,
-        setPreviewDevice: (v: 'desktop' | 'tablet' | 'smartphone') => updateState({ previewDevice: v }),
+        setPreviewDevice: useCallback((v: 'desktop' | 'tablet' | 'smartphone') => updateState({ previewDevice: v }), [updateState]),
         activePillarId: state.activePillarId,
-        setActivePillarId: (v: string | null) => updateState({ activePillarId: v }),
+        setActivePillarId: useCallback((v: string | null) => updateState({ activePillarId: v }), [updateState]),
+        selectPillar,
         activeSectionId: state.activeSectionId,
-        setActiveSectionId: (v: string | null) => updateState({ activeSectionId: v }),
+        setActiveSectionId: useCallback((v: string | null) => updateState({ activeSectionId: v }), [updateState]),
         viewMode: state.viewMode,
-        setViewMode: (v: 'preview' | 'catalog' | 'templates' | 'command-center') => updateState({ viewMode: v }),
+        setViewMode: useCallback((v: 'preview' | 'catalog' | 'templates' | 'command-center') => updateState({ viewMode: v }), [updateState]),
         searchQuery: state.searchQuery,
-        setSearchQuery: (v: string) => updateState({ searchQuery: v }),
+        setSearchQuery: useCallback((v: string) => updateState({ searchQuery: v }), [updateState]),
         editMode: state.editMode,
-        setEditMode: (v: ThemeEditMode) => updateState({ editMode: v }),
+        setEditMode: useCallback((v: ThemeEditMode) => updateState({ editMode: v }), [updateState]),
         isPreviewStacked: state.isPreviewStacked,
-        setIsPreviewStacked: (v: boolean) => updateState({ isPreviewStacked: v })
+        setIsPreviewStacked: useCallback((v: boolean) => updateState({ isPreviewStacked: v }), [updateState]),
+        isGalleryOpen: state.isGalleryOpen,
+        setIsGalleryOpen: useCallback((v: boolean) => updateState({ isGalleryOpen: v }), [updateState]),
     };
 }

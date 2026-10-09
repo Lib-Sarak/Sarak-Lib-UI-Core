@@ -31,11 +31,20 @@ vi.mock('../../hooks/useResizable', () => ({
 // Mocks dos Sub-componentes. O PreviewCanvas expõe `onApplyFullTheme` por um botão
 // para cobrir o caminho do PresetsCatalog (aplicar tema completo pelo catálogo — L4).
 vi.mock('../../Canvas/PreviewCanvas', () => ({
-    PreviewCanvas: ({ onApplyFullTheme }: { onApplyFullTheme?: (d: Record<string, unknown>) => void }) => (
-        <div data-testid="preview-canvas">
+    PreviewCanvas: ({
+        onApplyFullTheme,
+        isDualView,
+        onCloseGallery,
+    }: {
+        onApplyFullTheme?: (d: Record<string, unknown>) => void;
+        isDualView?: boolean;
+        onCloseGallery?: () => void;
+    }) => (
+        <div data-testid="preview-canvas" data-gallery-open={String(Boolean(isDualView))}>
             <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
                 Apply Full
             </button>
+            <button data-testid="close-gallery" onClick={onCloseGallery}>Fechar galeria</button>
         </div>
     )
 }));
@@ -94,11 +103,12 @@ const mockPersistDesign = vi.fn();
 const baseThemeEngineState = {
     sarak: { applyFullConfigRaw: mockApplyFullConfigRaw, persistDesign: mockPersistDesign },
     activePreviewApp: 'dashboard',
-    setActivePreviewApp: vi.fn(),
+    selectPreviewApp: vi.fn(),
     previewDevice: 'desktop',
     setPreviewDevice: vi.fn(),
     activePillarId: null as string | null,
     setActivePillarId: vi.fn(),
+    selectPillar: vi.fn(),
     activeSectionId: null as string | null,
     setActiveSectionId: vi.fn(),
     viewMode: 'preview',
@@ -109,6 +119,8 @@ const baseThemeEngineState = {
     setEditMode: vi.fn(),
     isPreviewStacked: false,
     setIsPreviewStacked: vi.fn(),
+    isGalleryOpen: false,
+    setIsGalleryOpen: vi.fn(),
     currentThemeName: '',
     setCurrentThemeName: vi.fn(),
     isSaveModalOpen: false,
@@ -152,7 +164,23 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'false');
         expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('abre a galeria no preview e o botão de fechar volta ao preview único', () => {
+        const setIsGalleryOpen = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...baseThemeEngineState,
+            isGalleryOpen: true,
+            setIsGalleryOpen,
+        } as any);
+
+        render(<ThemeCustomizationTab />);
+
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'true');
+        fireEvent.click(screen.getByTestId('close-gallery'));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
     });
 
     it('a altura é relativa ao container-pai — nunca à viewport (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {

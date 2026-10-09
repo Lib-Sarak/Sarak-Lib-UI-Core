@@ -38,6 +38,19 @@ const TemplateUndoHarness = (props: {
     );
 };
 
+const TemplatePreviewHarness = (): React.ReactElement => {
+    const sarak = useSarakUI();
+    const { draft, handleThemePreview } = useDesignDraft(sarak);
+
+    return (
+        <>
+            <span data-testid="active-theme-id">{sarak.resolvedThemeId}</span>
+            <span data-testid="draft-primary-color">{String(draft.primaryColor ?? '')}</span>
+            <TemplatesTab onApplyFullTheme={(design, themeId) => handleThemePreview(design, undefined, themeId)} />
+        </>
+    );
+};
+
 afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
@@ -46,7 +59,7 @@ afterEach(() => {
 });
 
 describe('aplicação de tema e persistência — integração com SarakUIProvider real', () => {
-    it('modelos: a primeira gravação explícita leva o design e o id escolhidos', async () => {
+    it('escolher um modelo altera o rascunho sem anunciar nem gravar o tema', async () => {
         const onSave = vi.fn().mockResolvedValue(undefined);
         const customThemes = [{
             id: 'tema-modelo',
@@ -56,24 +69,20 @@ describe('aplicação de tema e persistência — integração com SarakUIProvid
 
         render(
             <SarakUIProvider customThemes={customThemes} options={{ persistence: { onSave } }}>
-                <TemplatesTab />
+                <TemplatePreviewHarness />
             </SarakUIProvider>,
         );
 
+        const initialThemeId = screen.getByTestId('active-theme-id').textContent;
         const template = screen.getByText('Tema de modelo').closest('.group');
         expect(template).not.toBeNull();
-        vi.useFakeTimers();
-
         await act(async () => {
-            fireEvent.click(within(template as HTMLElement).getByRole('button', { name: 'Aplicar Tema' }));
+            fireEvent.click(within(template as HTMLElement).getByRole('button', { name: 'Escolher tema' }));
         });
 
-        expect(onSave).toHaveBeenCalledTimes(1);
-        expect(onSave).toHaveBeenNthCalledWith(
-            1,
-            expect.objectContaining({ primaryColor: '#123456' }),
-            'tema-modelo',
-        );
+        expect(screen.getByTestId('draft-primary-color')).toHaveTextContent('#123456');
+        expect(screen.getByTestId('active-theme-id')).toHaveTextContent(initialThemeId ?? '');
+        expect(onSave).not.toHaveBeenCalled();
     });
 
     it('desfazer: a primeira gravação restaura o design e o id anteriores', async () => {

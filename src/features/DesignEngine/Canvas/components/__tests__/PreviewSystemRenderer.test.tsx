@@ -10,8 +10,21 @@ import {
 } from '../PreviewSystemRenderer';
 
 const apps = {
-    dashboard: <div>Dashboard preview</div>,
-    reports: <div>Reports preview</div>,
+    dashboard: <div>Painel preview</div>,
+    forms: <div>Form preview</div>,
+    tabela: <div>Tabela preview</div>,
+    'caixas-texto': <div>Texto preview</div>,
+    graficos: <div>Gráficos preview</div>,
+    typography: <div>Tipografia preview</div>,
+    components: <div>Componentes preview</div>,
+    auth: <div>Entrar preview</div>,
+    chat: <div>Chat preview</div>,
+    logs: <div>Registros preview</div>,
+    settings: <div>Configurações preview</div>,
+    documentos: <div>Documentos preview</div>,
+    matrix: <div>Matriz preview</div>,
+    'kitchen-sink': <div>Todos os componentes preview</div>,
+    'more-screens': <div>Mais telas preview</div>,
 };
 
 const makePreviewProps = (
@@ -21,7 +34,7 @@ const makePreviewProps = (
     tokens: {},
     previewDevice: 'desktop',
     activePreviewApp: 'dashboard',
-    setActivePreviewApp: () => undefined,
+    selectPreviewApp: () => undefined,
     apps,
     ...overrides,
 });
@@ -30,16 +43,16 @@ const renderPreview = (
     previewDevice: PreviewSystemRendererProps['previewDevice'],
     overrides: Partial<PreviewSystemRendererProps> = {},
 ) => {
-    const setActivePreviewApp = vi.fn();
+    const selectPreviewApp = vi.fn();
     const result = render(
         <SarakUIProvider>
             <PreviewSystemRenderer
-                {...makePreviewProps({ ...overrides, previewDevice, setActivePreviewApp })}
+                {...makePreviewProps({ ...overrides, previewDevice, selectPreviewApp })}
             />
         </SarakUIProvider>,
     );
 
-    return { ...result, setActivePreviewApp };
+    return { ...result, selectPreviewApp };
 };
 
 let resizeObserverCallback: ResizeObserverCallback | undefined;
@@ -75,21 +88,32 @@ describe('PreviewSystemRenderer', () => {
             const { container } = renderPreview(device);
 
             expect(container.querySelector('.sarak-device-' + device)).not.toBeNull();
-            expect(screen.getByText('Dashboard preview')).toBeTruthy();
+            expect(screen.getByText('Painel preview')).toBeTruthy();
             if (device === 'smartphone') {
                 fireEvent.click(screen.getByRole('button', { name: /Abrir menu/ }));
             }
-            expect(screen.getByRole('link', { name: 'dashboard' })).toBeTruthy();
-            expect(screen.getByRole('link', { name: 'reports' })).toBeTruthy();
+            ['Painel', 'Formulário', 'Tabela', 'Texto', 'Gráficos', 'Tipografia', 'Mais telas'].forEach((label) => {
+                expect(screen.getByRole('link', { name: label })).toBeTruthy();
+            });
+            expect(screen.queryByRole('link', { name: 'Componentes' })).toBeNull();
         },
     );
 
-    it('encaminha a seleção de navegação para o app ativo', () => {
-        const { setActivePreviewApp } = renderPreview('desktop');
+    it('encaminha a seleção das telas principais e da grade Mais telas', () => {
+        const { selectPreviewApp } = renderPreview('desktop');
 
-        fireEvent.click(screen.getByRole('link', { name: 'reports' }));
+        fireEvent.click(screen.getByRole('link', { name: 'Gráficos' }));
+        expect(selectPreviewApp).toHaveBeenCalledWith('graficos');
 
-        expect(setActivePreviewApp).toHaveBeenCalledWith('reports');
+        fireEvent.click(screen.getByRole('link', { name: 'Mais telas' }));
+        expect(selectPreviewApp).toHaveBeenCalledWith('more-screens');
+    });
+
+    it('mantém Mais telas ativo quando uma tela secundária está selecionada', () => {
+        renderPreview('desktop', { activePreviewApp: 'auth' });
+
+        expect(screen.getByRole('link', { name: 'Mais telas' })).toHaveAttribute('aria-current', 'page');
+        expect(screen.getByRole('link', { name: 'Painel' })).not.toHaveAttribute('aria-current', 'page');
     });
 });
 

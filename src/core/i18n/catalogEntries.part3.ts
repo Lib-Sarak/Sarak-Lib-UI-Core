@@ -121,4 +121,20 @@ export const CATALOG_PART_3 = {
         de: `Kein Signal im Hauptfenster erkannt.`,
         it: `Nessun segnale rilevato nella finestra principale.`,
     },
+    chartDataEmptyMessage: {
+        pt: `Nenhum dado disponível para este gráfico.`,
+        en: `No data is available for this chart.`,
+        es: `No hay datos disponibles para este gráfico.`,
+        fr: `Aucune donnée n’est disponible pour ce graphique.`,
+        de: `Für dieses Diagramm sind keine Daten verfügbar.`,
+        it: `Nessun dato disponibile per questo grafico.`,
+    },
+    chartAriaLabel: {
+        pt: `Gráfico de dados`,
+        en: `Data chart`,
+        es: `Gráfico de datos`,
+        fr: `Graphique de données`,
+        de: `Datendiagramm`,
+        it: `Grafico dei dati`,
+    },
 } satisfies Record<string, LibraryTextEntry>;

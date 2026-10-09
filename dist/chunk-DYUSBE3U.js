@@ -1,0 +1,1 @@
+import{H as t}from"./chunk-LXRLVWJV.js";import{jsx as r}from"react/jsx-runtime";var m=({message:a})=>{let e=t();return r("div",{role:"status","data-sarak-data-empty":"true",className:"flex items-center justify-center w-full text-sm",style:{color:"var(--text-muted,#94a3b8)",paddingBlock:"var(--sarak-layout-gap-lg, 24px)"},children:a??e("dataEmpty")})};export{m as a};

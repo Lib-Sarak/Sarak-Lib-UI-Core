@@ -84,4 +84,20 @@ export const CATALOG_PART_4 = {
         pt: 'Fechar notificação', en: 'Dismiss notification', es: 'Cerrar notificación',
         fr: 'Fermer la notification', de: 'Benachrichtigung schließen', it: 'Chiudi notifica',
     },
+    dialogConfirm: {
+        pt: 'Confirmar', en: 'Confirm', es: 'Confirmar',
+        fr: 'Confirmer', de: 'Bestätigen', it: 'Conferma',
+    },
+    dialogDefaultAriaLabel: {
+        pt: 'Diálogo', en: 'Dialog', es: 'Diálogo',
+        fr: 'Boîte de dialogue', de: 'Dialog', it: 'Finestra di dialogo',
+    },
+    dialogCancel: {
+        pt: 'Cancelar', en: 'Cancel', es: 'Cancelar',
+        fr: 'Annuler', de: 'Abbrechen', it: 'Annulla',
+    },
+    progressDefaultLabel: {
+        pt: 'Progresso', en: 'Progress', es: 'Progreso',
+        fr: 'Progression', de: 'Fortschritt', it: 'Avanzamento',
+    },
 } satisfies Record<string, LibraryTextEntry>;

@@ -23,22 +23,23 @@ describe('useThemeEngineState (Spec 44 — sem backend próprio)', () => {
 
         expect(result.current.activePreviewApp).toBe('dashboard');
         expect(result.current.previewDevice).toBe('desktop');
-        expect(result.current.activePillarId).toBe('surfaces'); // mapped from 'dashboard'
+        expect(result.current.activePillarId).toBe('surfaces');
+        expect(result.current.isGalleryOpen).toBe(false);
         expect(result.current.viewMode).toBe('preview');
         expect(result.current.searchQuery).toBe('');
     });
 
-    it('deve sincronizar activePillarId quando activePreviewApp mudar', () => {
+    it('selecionar uma tela atualiza o pilar correspondente', () => {
         const { result } = renderHook(() => useThemeEngineState());
 
         act(() => {
-            result.current.setActivePreviewApp('typography');
+            result.current.selectPreviewApp('typography');
         });
 
         expect(result.current.activePillarId).toBe('typography');
 
         act(() => {
-            result.current.setActivePreviewApp('chat');
+            result.current.selectPreviewApp('chat');
         });
 
         expect(result.current.activePillarId).toBe('advanced');

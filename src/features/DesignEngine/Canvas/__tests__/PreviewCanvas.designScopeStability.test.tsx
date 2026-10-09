@@ -42,7 +42,7 @@ const baseProps = (draftTokens: Record<string, unknown>) => ({
     previewDevice: 'desktop' as const,
     previewLayoutId: 'test',
     activePreviewApp: 'dashboard',
-    setActivePreviewApp: () => {},
+    selectPreviewApp: () => {},
     previewAnimationStyle: 'none',
     config: {},
     previewPrimaryColor: '#000',

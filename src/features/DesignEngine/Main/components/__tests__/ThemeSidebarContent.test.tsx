@@ -1,8 +1,18 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeSidebarContent } from '../ThemeSidebarContent';
+import { CardSchema } from '../../../../../core/Design/schema/cards';
+import { ColorsSchema } from '../../../../../core/Design/schema/colors';
+import { SystemSchema } from '../../../../../core/Design/schema/system';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
+
+const getSchemaDefaultValue = (cssVariableName: string): unknown => {
+    const schemas = [CardSchema, ColorsSchema, SystemSchema, TypographySchema];
+    return schemas.flatMap(({ tokens }) => tokens)
+        .find((token) => token.cssVars?.includes(cssVariableName))?.defaultValue;
+};
 
 vi.mock('../../MasterControlPanel', () => ({
     MasterControlPanel: (props: { draft: unknown; updateDraft: unknown; resetToken: unknown }) => (
@@ -48,7 +58,10 @@ const baseProps = () => ({
     editMode: 'essential',
     visualImpactTokens: [],
     isTokenVisible: () => true,
-    setActivePreviewApp: vi.fn()
+    selectPillar: vi.fn(),
+    isGalleryOpen: false,
+    setIsGalleryOpen: vi.fn(),
+    onApplyFullTheme: vi.fn(),
 });
 
 describe('ThemeSidebarContent', () => {
@@ -56,6 +69,42 @@ describe('ThemeSidebarContent', () => {
         const FinalProps = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
         const { container } = render(<ThemeSidebarContent {...FinalProps} />);
         expect(container).toMatchSnapshot();
+    });
+
+    it('começa por um tema e abre e fecha a galeria pelo mesmo controle', () => {
+        const props = baseProps();
+        const setIsGalleryOpen = vi.fn();
+        const initialProps = { ...props, setIsGalleryOpen } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        const { rerender } = render(<ThemeSidebarContent {...initialProps} />);
+
+        expect(screen.getByRole('heading', { name: 'Começar de um tema' })).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Abrir galeria' }));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(true);
+
+        rerender(<ThemeSidebarContent {...initialProps} isGalleryOpen={true} />);
+        fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
+    });
+
+    it('dimensiona o bloco pelos tokens e confere os valores padrão no schema', () => {
+        const props = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        render(<ThemeSidebarContent {...props} />);
+
+        const block = screen.getByRole('heading', { name: 'Começar de um tema' }).closest('section') as HTMLElement;
+        const subtitle = screen.getByText('Escolha um estilo e ajuste os detalhes abaixo.');
+
+        expect(block.className).toContain('--sarak-layout-gap-sm');
+        expect(getSchemaDefaultValue('--sarak-layout-gap-sm')).toEqual({ mob: 8, tab: 10, desk: 12 });
+        expect(block.className).toContain('--sarak-card-radius');
+        expect(getSchemaDefaultValue('--sarak-card-radius')).toEqual({ mob: 8, tab: 12, desk: 12 });
+        expect(block.className).toContain('--theme-card');
+        expect(getSchemaDefaultValue('--theme-card')).toBe('rgba(15, 23, 42, 0.6)');
+        expect(block.className).toContain('--theme-border');
+        expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.1)');
+        expect(subtitle.className).toContain('--sarak-type-scale-caption');
+        expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
+        expect(getSchemaDefaultValue('--theme-title')).toBe('#ffffff');
+        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(255, 255, 255, 0.4)');
     });
 
     it('no modo Impacto mostra os cinco blocos abertos e só os controles marcados, sem pilares', () => {

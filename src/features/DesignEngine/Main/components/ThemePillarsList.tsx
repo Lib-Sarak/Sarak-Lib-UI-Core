@@ -16,7 +16,6 @@ export interface ThemePillar {
 interface ThemePillarsListProps {
     pillars: ThemePillar[];
     activePillarId: string | null;
-    setActivePillarId: (id: string | null) => void;
     activeSectionId: string | null;
     setActiveSectionId: (id: string | null) => void;
     groupedStructure: Record<string, Record<string, SarakDesignToken[]>>;
@@ -27,7 +26,7 @@ interface ThemePillarsListProps {
     draft: SarakDesignState;
     updateDraft: (id: string, val: SarakTokenValue) => void;
     previewDevice: string;
-    setActivePreviewApp: (id: string) => void;
+    selectPillar: (id: string | null) => void;
 }
 
 interface VisibleSection {
@@ -117,8 +116,7 @@ const ThemePillarItem: React.FC<PillarItemProps> = (props) => {
     const isOpen = props.activePillarId === pillar.id;
     const handleToggle = () => {
         const nextId = isOpen ? null : pillar.id;
-        props.setActivePillarId(nextId);
-        if (nextId === 'advanced') props.setActivePreviewApp('matrix');
+        props.selectPillar(nextId);
     };
 
     return (

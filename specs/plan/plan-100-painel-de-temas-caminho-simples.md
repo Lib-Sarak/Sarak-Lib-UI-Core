@@ -514,6 +514,300 @@ por um token de padrão ≥ 12 com teste sobre o schema), o lote 1 está aprovad
 **Liberação parcial.** O status volta a `🟡 Em execução`; o lote 2 (começar por um tema, preview que acompanha,
 telas com nome) pode ser despachado.
 
+## Veredito — 2026-10-08 — 🔴 Reprovado (lote 2)
+
+**Antes de gravar:** a §10 foi relida no disco. **Não há resumo do lote 2** — o executor entregou só na conversa,
+e o `status` não foi a `🟠`. O revisor conferiu contra o `git diff` e o relato colado pelo dono.
+
+**O que está certo (conferido no diff):**
+- `usePreviewUIState` troca o `useEffect` por dois gestos (`selectPreviewApp`, `selectPillar`); a tabela da §5
+  passo 13 está inteira, `navigation` → `dashboard` não devolve o pilar a `surfaces`, e o estado inicial é um par
+  coerente (`surfaces`/`dashboard`); teste por pilar.
+- `TemplatesTab` recebe o `handleApplyFullTheme` (o mesmo caminho da galeria); "Guia Rápido" e "DesignProvider"
+  saíram.
+- Galeria: `isGalleryOpen` padrão `false`, "Galeria de estilos", abas em português, botão de fechar; "Empilhar"
+  fica `aria-disabled` com a galeria fechada; `git grep "45vh\|vh\]"` em `Canvas/` → vazio.
+- Seis telas com rótulo humano e "Mais telas" (`MoreScreensMock`, com teste 1:1).
+- `ThemeCustomizationTab.tsx` com 176 linhas; `auditor_ghostvars` → só o `--x` do baseline.
+
+**Achados**
+
+1. **O snapshot de `PreviewCanvas` falha por causa do próprio lote, não das plans paralelas.** Medido numa cópia
+   fora do repositório com o HEAD mais **só** os arquivos de `src/features/DesignEngine/`: o teste
+   `deve usar propriedades de estilo reais…` falha, e o diff é exatamente o lote 2 (rótulos `Painel`/`Formulário`
+   no lugar de `dashboard`/`forms`, as telas que saíram do menu, a ordem das classes do quadro). Atualize-o **de
+   propósito**, gerado contra **HEAD + os arquivos da 100**, e não contra o worktree: no worktree a plan-98 soma
+   tokens novos às variáveis embutidas do snapshot, e um `.snap` gerado ali quebraria no commit da 100 sozinha.
+2. **O teste do `TemplatesTab` não prova o critério inteiro.** Ele afirma que `applyFullConfig` e
+   `setResolvedThemeId` não são chamados, mas não o `persistDesign`: reintroduzir só o `persistDesign` passa
+   verde. Acrescente a asserção.
+3. **O bloco "Começar de um tema" não tem borda na tela.** `ThemeSidebarContent.tsx` usa
+   `border-[var(--theme-border,…)]` sem a classe de largura (`border`): no Tailwind v4 isso define só a cor, e a
+   largura fica 0. Acrescente `border`.
+4. **Processo.** (a) Grave o resumo da execução do lote 2 na §10 e passe o `status` a `🟠` (00-prompt-executor
+   §5). (b) No resumo, declare o incidente do `vitest -u`: quais arquivos ele reescreveu, e que o snapshot de
+   `engines/charts/…/builders.characterization.test.ts.snap` (território da plan-101) foi "devolvido" por você —
+   o revisor da 101 vai conferir esse arquivo contra o executor dela.
+
+**Não é da 100, mas fica registrado:** o snapshot de `PresetCard` passa na cópia HEAD + 100 e falha com os arquivos
+da plan-98 por cima — são os tokens novos dela nas variáveis embutidas. Atualizar esse snapshot e o de
+`PreviewCanvas` depois do commit da 100 é consequência direta da **98**.
+
+Status: `🔵 Em correção`.
+
+## Adendo ao veredito — 2026-10-08 (achado 5, medido nos gates do pre-commit)
+
+5. **`trail-citation:check` (R36) barra o commit.** `PresetsCatalog.test.tsx:53` cita `plan-35` no nome do teste. A
+   citação já existia, mas o lote 2 editou a linha ("Globais" → "Temas"), e o gate vê a linha editada como nova.
+   Tire o `plan-35, ` e deixe só a spec fixa (`fecha 06-painel-de-customizacao-e-preview.md §6.2`).
+
+## Resumo da execução — lote 2 — 2026-10-08
+
+**Resultado:** Concluído com pendências na primeira entrega; aguardou o veredito do revisor.
+
+**Estado do worktree ao iniciar**
+
+```text
+ D dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-NWD3MO3I.js
+ D dist/SarakChartEngine-MICDXKMY.js
+ D dist/SarakChatEngine-ZNBOQUJA.js
+ D dist/SarakDataTableImpl-447JTWKL.js
+ D dist/SarakFlowEngine-JYMXODXB.js
+ D dist/SarakMarkdownRendererImpl-JYAPR5WG.js
+ D dist/SarakPDFViewerImpl-SHI7GGG7.js
+ D dist/chunk-4TMIAMXF.js
+ D dist/chunk-DWV7LGNI.js
+ D dist/chunk-SQFU3P7P.js
+ D dist/chunk-TFAMK3IX.js
+ D dist/chunk-YQN7JP3O.js
+ D dist/chunk-ZBCJHUC7.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/sarak-scoped.css
+ M dist/sarak.css
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M specs/00-indice.md
+ M specs/plan/plan-100-painel-de-temas-caminho-simples.md
+ M specs/plan/plan-101-motor-de-graficos-completo.md
+ M specs/plan/plan-98-dialogo-e-feedback.md
+ M src/buildInfo.ts
+ M src/components/atomic/Feedback/SarakEmptyState.tsx
+ M src/components/atomic/Feedback/SarakToast.tsx
+ M src/components/atomic/Feedback/__tests__/SarakEmptyState.test.tsx
+ M src/components/atomic/Feedback/__tests__/SarakToast.test.tsx
+ M src/components/atomic/Feedback/index.ts
+ M src/components/atomic/Modals/SarakModal.tsx
+ M src/components/atomic/Modals/SarakOverlayProvider.tsx
+ M src/components/atomic/Modals/__tests__/SarakModal.test.tsx
+ M src/components/atomic/Modals/__tests__/SarakOverlayProvider.test.tsx
+ M src/components/engines/charts/SarakChartEngine.tsx
+ M src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts
+ M src/components/engines/charts/SubEngines/builders/__tests__/__snapshots__/builders.characterization.test.ts.snap
+ M src/components/engines/charts/SubEngines/builders/__tests__/builders.characterization.test.ts
+ M src/components/engines/charts/SubEngines/builders/advancedCharts.ts
+ M src/components/engines/charts/SubEngines/builders/basicCharts.ts
+ M src/components/engines/charts/SubEngines/builders/statisticalCharts.ts
+ M src/components/engines/charts/SubEngines/builders/types.ts
+ M src/components/engines/charts/SubEngines/useEChartsTheme.ts
+ M src/components/engines/charts/__tests__/SarakChartEngine.test.tsx
+ M src/core/Design/catalog/partitions/colors_and_atmosphere.json
+ M src/core/Design/catalog/partitions/components_base.json
+ M src/core/Design/catalog/theme_table_mapping.json
+ M src/core/Design/schema/overlays.ts
+ M src/core/Design/schema/status.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/Provider/generated/design-token-ids.ts
+ M src/core/i18n/catalogEntries.part3.ts
+ M src/core/i18n/catalogEntries.part4.ts
+ M src/features/DesignEngine/Canvas/PreviewCanvas.tsx
+ M src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.designScopeStability.test.tsx
+ M src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx
+ M src/features/DesignEngine/Canvas/components/LiveDraftPreviewFrame.tsx
+ M src/features/DesignEngine/Canvas/components/PresetsCatalog.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx
+ M src/features/DesignEngine/Canvas/components/PreviewToolbar.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PresetsCatalog.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/PreviewToolbar.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap
+ M src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap
+ M src/features/DesignEngine/Canvas/hooks/__tests__/useDeviceStyles.test.ts
+ M src/features/DesignEngine/Canvas/hooks/__tests__/usePreviewApps.test.tsx
+ M src/features/DesignEngine/Canvas/hooks/useDeviceStyles.ts
+ M src/features/DesignEngine/Canvas/hooks/usePreviewApps.tsx
+ M src/features/DesignEngine/Main/TemplatesTab.tsx
+ M src/features/DesignEngine/Main/ThemeCustomizationTab.tsx
+ M src/features/DesignEngine/Main/__tests__/TemplatesTab.test.tsx
+ M src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx
+ M src/features/DesignEngine/Main/__tests__/useThemeEngineState.test.tsx
+ M src/features/DesignEngine/Main/components/ThemePillarsList.tsx
+ M src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemePillarsList.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/__snapshots__/ThemeSidebarContent.test.tsx.snap
+ M src/features/DesignEngine/Main/hooks/__tests__/usePreviewUIState.test.ts
+ M src/features/DesignEngine/Main/hooks/usePreviewUIState.ts
+ M src/features/DesignEngine/hooks/__tests__/themeApplication.persistenceIntegration.test.tsx
+ M src/index.ts
+?? dist/CustomizationPanelImpl-W2O4LFUP.js
+?? dist/SarakChartEngine-S2MYGGNK.js
+?? dist/SarakChatEngine-YGM2UVDE.js
+?? dist/SarakDataTableImpl-YCD4WSMQ.js
+?? dist/SarakFlowEngine-6TIPICSX.js
+?? dist/SarakMarkdownRendererImpl-LM6L2O3J.js
+?? dist/SarakPDFViewerImpl-O5AQ4JAQ.js
+?? dist/chunk-4AYHIRZB.js
+?? dist/chunk-B22CX5DB.js
+?? dist/chunk-CJJWO3XD.js
+?? dist/chunk-P7TRJU3J.js
+?? dist/chunk-QPVVHJSW.js
+?? dist/chunk-RVWGV4AM.js
+?? dist/chunk-TSXP64TR.js
+?? src/components/atomic/Feedback/SarakProgress.tsx
+?? src/components/atomic/Feedback/__tests__/SarakProgress.test.tsx
+?? src/components/engines/charts/SubEngines/axisOptions.ts
+?? src/components/engines/charts/SubEngines/seriesModel.ts
+?? src/components/engines/charts/__tests__/SarakChartEngine.series.test.tsx
+?? src/features/DesignEngine/Canvas/Mocks/MoreScreensMock.tsx
+?? src/features/DesignEngine/Canvas/Mocks/__tests__/MoreScreensMock.test.tsx
+?? src/features/DesignEngine/Canvas/previewScreens.ts
+```
+
+**O que foi feito**
+- `usePreviewUIState.ts` coordena a seleção da tela e do pilar; a prévia segue a edição sem efeito que sobrescreva o estado inicial.
+- `TemplatesTab.tsx` usa o mesmo caminho de seleção de tema da galeria; selecionar altera o rascunho e não persiste.
+- `PresetsCatalog.tsx` começa em Temas e abre sob demanda; as telas do preview receberam rótulos humanos e "Mais telas".
+- `MoreScreensMock.tsx` foi criado com teste 1:1; o painel usa tokens cujo padrão do schema sustenta os tamanhos e as cores.
+
+**Arquivos alterados**
+
+| Arquivo / grupo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/` | alterado | Galeria, toolbar, telas nomeadas, prévia e testes de comportamento. |
+| `src/features/DesignEngine/Canvas/Mocks/MoreScreensMock.tsx` | criado | Mock para as telas adicionais. |
+| `src/features/DesignEngine/Canvas/Mocks/__tests__/MoreScreensMock.test.tsx` | criado | Teste espelho 1:1 do mock. |
+| `src/features/DesignEngine/Canvas/previewScreens.ts` | criado | Catálogo de telas nomeadas. |
+| `src/features/DesignEngine/Main/` | alterado | Caminho de tema, sidebar, seleção de pilar e testes. |
+| `src/features/DesignEngine/hooks/__tests__/themeApplication.persistenceIntegration.test.tsx` | alterado | Confirma que escolher tema não anuncia nem persiste. |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado | Snapshot da galeria em português. |
+| `src/features/DesignEngine/Main/components/__tests__/__snapshots__/ThemeSidebarContent.test.tsx.snap` | alterado | Snapshot do conteúdo da sidebar. |
+
+**Verificações executadas na primeira entrega**
+- `npx vitest run src/features/DesignEngine --maxWorkers=4` → 75/77 arquivos e 338/340 testes passaram; falharam os snapshots de `PreviewCanvas` e `PresetCard`.
+- `npx tsc --noEmit` → exit code 0.
+- `node gates/scripts/audit/auditor_ghostvars.mjs` → reportou somente `--x`, fora de `DesignEngine`.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline.
+- `git diff --check -- src/features/DesignEngine` → sem erros depois do ajuste de whitespace em `TemplatesTab.tsx`.
+- Não rodei `npm run build` nem medição visual em navegador.
+
+**Critérios de aceite**
+- [x] Selecionar tela/pilar acompanha o estado da prévia — teste por pilar em `usePreviewUIState.test.ts`.
+- [x] Selecionar tema altera rascunho sem persistir — teste de integração em `themeApplication.persistenceIntegration.test.tsx`.
+- [x] O mock adicional tem teste 1:1 e as dimensões/cores são conferidas pelo `defaultValue` do schema.
+- [ ] Snapshot integrado de `PreviewCanvas` — pendência registrada pelo revisor na §10; fechado no resumo da correção 1 somente para o diff próprio do lote.
+
+**Decisões e suposições**
+- Snapshots afetados pelas alterações paralelas permaneceram fora da atualização do lote 2.
+- `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap` estava sob mudança paralela e foi preservado.
+
+**Achados fora do escopo**
+- A alteração do snapshot `src/components/engines/charts/SubEngines/builders/__tests__/__snapshots__/builders.characterization.test.ts.snap` pertence à execução paralela de gráficos; detalhes do incidente e do estado atual estão no resumo da correção 1.
+
+**Pendências / riscos**
+- Na primeira entrega, o snapshot de `PreviewCanvas` ainda estava igual ao `HEAD` e o bloco "Começar de um tema" não exibia borda; ambos são tratados abaixo.
+
+## Resumo da execução (correção 1) — 2026-10-08
+
+**Resultado:** Concluído com uma divergência integrada de snapshot a relatar; aguardando veredito.
+
+**Estado do worktree ao iniciar**
+- Permaneciam as alterações listadas no estado acima: lote 2 no módulo, duas execuções paralelas e arquivos gerados. O snapshot de `PresetCard` estava em alteração paralela e foi excluído da cópia e preservado.
+- O contador CIM solicitado não funciona nesta máquina (`Acesso a um recurso CIM não estava disponível para o cliente`); a contagem conservadora `@(Get-Process -Name node).Count` foi zero antes de cada Vitest iniciado nesta correção.
+
+**O que foi feito**
+- Montei `C:\tmp\plan100-lote2-20261008` com `git archive HEAD`, copiei 32 arquivos modificados/não rastreados de `src/features/DesignEngine/` e criei a junction `node_modules` para o repositório. Excluí `PresetCard.test.tsx.snap` por pertencer à edição paralela.
+- Atualizei `PreviewCanvas.test.tsx.snap` apenas na cópia: o diff traz `Painel`/`Formulário`, as telas removidas do menu, "Mais telas", a galeria e a ordem das classes do quadro. O diff foi lido; não contém `modalWidth*` nem `progressBar*`. Copiei somente esse snapshot de volta.
+- Acrescentei `border` à `<section>` de `ThemeSidebarContent.tsx:101` e atualizei o snapshot de `ThemeSidebarContent` na mesma cópia `HEAD + DesignEngine`; copiei somente esse `.snap` de volta.
+- Achados 2 (`persistDesign`) e 5 (citação efêmera no nome do teste) foram conferidos como já feitos; o gate R36 passou.
+- Atualizei o status da plan e sua linha no índice para `🟠 Em revisão`.
+
+**Arquivos alterados nesta correção**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx` | alterado | Adicionada a classe `border`. |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | Snapshot isolado com diferenças do lote 2. |
+| `src/features/DesignEngine/Main/components/__tests__/__snapshots__/ThemeSidebarContent.test.tsx.snap` | alterado | Snapshot do bloco com borda. |
+| `specs/plan/plan-100-painel-de-temas-caminho-simples.md` | alterado | Resumos append-only; status 🟠. |
+| `specs/00-indice.md` | alterado | Status da linha da plan-100 sincronizado para 🟠. |
+
+**Incidente do Vitest `-u` na execução anterior**
+- A opção `--update` recebeu o caminho do teste como argumento de atualização e iniciou uma execução ampla. O `git status` após esse incidente mostrou modificados `PreviewCanvas.test.tsx.snap`, `PresetsCatalog.test.tsx.snap`, `ThemeSidebarContent.test.tsx.snap` e o snapshot de builders abaixo.
+- `PreviewCanvas.test.tsx.snap` foi devolvido ao conteúdo do `HEAD`; nesta correção foi regenerado na cópia isolada, com o diff próprio do lote 2.
+- `PresetsCatalog.test.tsx.snap` e `ThemeSidebarContent.test.tsx.snap` foram mantidos como snapshots intencionais do lote 2; o segundo foi regenerado agora para refletir `border`.
+- `src/components/engines/charts/SubEngines/builders/__tests__/__snapshots__/builders.characterization.test.ts.snap` foi reescrito com chaves/valores dos builders e devolvido ao `HEAD` naquela ocasião. Depois, a execução paralela de gráficos voltou a modificar esse arquivo; o estado atual foi preservado e não o toquei nesta correção.
+- `PresetCard.test.tsx.snap` não foi copiado nem alterado nesta correção.
+
+**Verificações executadas nesta correção**
+- Na cópia: `npx vitest run src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx -u` → 4 testes passaram; 1 snapshot atualizado. A primeira tentativa falhou por `EPERM` ao renomear cache temporário (zero testes); defini `TEMP/TMP/TMPDIR` dentro da cópia e repeti.
+- Na cópia: `npx vitest run src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx -u` → 10 testes passaram; 1 snapshot atualizado.
+- No worktree, a primeira `npx vitest run src/features/DesignEngine` terminou antes dos testes: 77 suítes falharam por `EPERM` no cache temporário. Repeti o mesmo comando com `TEMP/TMP/TMPDIR` na pasta autorizada de visualizações: 76/77 arquivos passaram, 339/340 testes passaram. O único vermelho foi o snapshot de `PreviewCanvas`, com variáveis de modal/progresso emitidas pelas alterações paralelas. Não incorporei essas variáveis ao snapshot da plan-100, conforme a instrução de preservar o diff isolado; o snapshot de `PresetCard` passou.
+- `npx tsc --noEmit` → exit code 0.
+- `npm run trail-citation:check` → passou.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline de 2026-08-11, nenhuma regressão.
+- A junction foi removida com `cmd /c rmdir` antes da pasta temporária; a cópia foi removida depois de sair dela. A pasta temporária da suíte do worktree também foi removida.
+
+**Critérios de aceite**
+- [x] Snapshot de `PreviewCanvas` gerado sobre `HEAD + DesignEngine`; diff lido e sem variáveis `modalWidth*`/`progressBar*`.
+- [x] Bloco "Começar de um tema" tem largura de borda e snapshot correspondente.
+- [x] Resumos e status da plan gravados.
+- [ ] Suíte integrada totalmente verde — resta a divergência do snapshot de `PreviewCanvas` causada pelas alterações paralelas; foi mantida fora do snapshot desta execução.
+
+**Decisões e suposições**
+- A cópia temporária recebeu todos os arquivos do território, exceto o snapshot explicitamente reservado à execução paralela.
+- Como o diretório temporário padrão do sandbox não permite o rename do Vitest, usei `TEMP/TMP/TMPDIR` dentro da cópia ou da raiz visualizações, sem acrescentar opções à chamada Vitest prescrita.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/engines/charts/SubEngines/builders/__tests__/__snapshots__/builders.characterization.test.ts.snap` está modificado pela execução paralela de gráficos; preservei-o.
+- O snapshot integrado de `PreviewCanvas` contém diferenças das variáveis de modal/progresso da execução paralela; a cópia correta do lote 2 não as inclui.
+
+**Pendências / riscos**
+- A suíte integrada mantém 1 teste falhando em `PreviewCanvas`; o snapshot atualizado contra apenas `HEAD + DesignEngine` diverge quando as alterações paralelas são aplicadas.
+
+## Veredito — 2026-10-08 (lote 2, correção 1) — 🟢 Aprovado (lote 2 — liberação parcial)
+
+**Antes de gravar:** a §10 foi relida no disco; os dois resumos pedidos (lote 2 e correção 1) estão nela.
+
+**Rodado pelo revisor**, com 0 processos de outras execuções:
+- `npx vitest run src/features/DesignEngine` → 76/77 arquivos, 339/340. O único vermelho é o `PreviewCanvas`,
+  e **o diff dele contra o snapshot é só as sete variáveis da plan-98** (`--sarak-modal-width-{sm,md,lg,xl,full}`,
+  `--sarak-progress-bar-{height,radius}`): removidas essas, as linhas esperadas e recebidas são idênticas. É o
+  efeito cruzado previsto — o snapshot está certo para HEAD + 100, e quem commitar por último o regenera.
+- `npx tsc --noEmit` → 0; `check-audit-baseline --with-tsc` → igual ao baseline; `trail-citation:check` → OK;
+  `auditor_ghostvars` → só o `--x` do baseline.
+
+**Os cinco achados fecharam:** (1) `PreviewCanvas.test.tsx.snap` gerado em cópia HEAD + 100, sem variável da 98;
+(2) o teste do `TemplatesTab` afirma que `persistDesign` não é chamado; (3) o bloco "Começar de um tema" tem
+`border` (snapshot do `ThemeSidebarContent` atualizado pela mesma cópia, sem variável da 98); (4) resumos na §10 e
+o incidente do `vitest -u` declarado — o snapshot de caracterização dos gráficos foi devolvido e depois
+reescrito pela plan-101, cuja suíte do motor passa com ele (veredito da 101); (5) o `plan-35` saiu do nome do teste.
+
+**Liberação parcial.** Status volta a `🟡 Em execução`; o lote 3 (selo de dispositivo e menu "Avançado") pode ser
+despachado. Os lotes 1 e 2 não se commitam antes do fecho da onda (catálogo e `PreviewCanvas` se regeneram uma vez,
+pelo último a terminar).
+
 ---
 
 # 11. Síntese

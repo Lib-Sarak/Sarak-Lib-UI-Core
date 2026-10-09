@@ -1,130 +1,197 @@
 import * as echarts from 'echarts';
 import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildRadarConfig = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+const DEFAULT_GAUGE_VALUE = 0;
+const DEFAULT_GAUGE_MAXIMUM = 100;
+const HEATMAP_MAXIMUM = 1000;
+const HEATMAP_EMPHASIS_SHADOW_BLUR = 10;
+const RADAR_AREA_OPACITY = 0.6;
+const GAUGE_TRACK_WIDTH = 14;
+const GAUGE_START_ANGLE = 210;
+const FUNNEL_VERTICAL_INSET = 60;
+const FUNNEL_ITEM_OPACITY = 0.7;
+const TREEMAP_VISIBLE_MINIMUM = 300;
+const TREEMAP_HEADER_HEIGHT = 20;
+
+export const buildRadarConfig = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => ({
     radar: {
-        indicator: data.map(item => ({ name: item[config?.xAxisKey || 'name'], max: 1000 })),
+        indicator: data.map((item) => ({ name: item[config?.xAxisKey || 'name'], max: HEATMAP_MAXIMUM })),
         splitArea: { show: false },
-        splitLine: { lineStyle: { color: theme.isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' } },
-        axisLine: { lineStyle: { color: theme.isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' } }
+        splitLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
+        axisLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
     },
     series: [{
         type: 'radar',
         data: [{
-            value: data.map(item => item[config?.dataKey || 'value']),
-            name: 'Métrica Sarak',
+            value: data.map((item) => item[config?.dataKey || 'value']),
+            name: 'Métrica',
             symbol: 'none',
             areaStyle: {
                 color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                    { offset: 0, color: `rgba(${theme.primaryRGB}, 0.6)` },
-                    { offset: 1, color: `rgba(${theme.secondaryRGB}, 0.2)` }
-                ])
-            },
-            lineStyle: { color: theme.primaryColor, width: 2 }
-        }]
-    }]
-});
-
-export const buildGaugeSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
-    series: [{
-        type: 'gauge',
-        startAngle: 210,
-        endAngle: -30,
-        min: 0,
-        max: 100,
-        progress: {
-            show: true,
-            width: 14,
-            itemStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
                     { offset: 0, color: theme.primaryColor },
-                    { offset: 1, color: theme.secondaryColor }
-                ])
-            }
-        },
-        pointer: { show: false },
-        axisLine: { lineStyle: { width: 14, color: [[1, theme.isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)']] } },
-        axisTick: { show: false },
-        splitLine: { show: false },
-        axisLabel: { show: false },
-        detail: {
-            valueAnimation: true,
-            offsetCenter: [0, 0],
-            fontSize: 28,
-            fontWeight: '900',
-            fontFamily: theme.headingFont || 'Inter',
-            color: theme.isDark ? '#fff' : '#000',
-            formatter: '{value}%'
-        },
-        data: [{ value: data[data.length - 1]?.[config?.dataKey || 'value'] || 75 }]
-    }]
+                    { offset: 1, color: theme.secondaryColor },
+                ]),
+                opacity: RADAR_AREA_OPACITY,
+            },
+            lineStyle: { color: theme.primaryColor, width: theme.chartThickness },
+        }],
+    }],
 });
 
-export const buildHeatmapSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+function createGaugeProgress(theme: ChartTheme): Record<string, unknown> {
+    return {
+        show: true,
+        width: GAUGE_TRACK_WIDTH,
+        itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: theme.primaryColor },
+                { offset: 1, color: theme.secondaryColor },
+            ]),
+        },
+    };
+}
+
+function createGaugeAxisLine(theme: ChartTheme): Record<string, unknown> {
+    return {
+        lineStyle: {
+            width: GAUGE_TRACK_WIDTH,
+            color: [[1, theme.borderColor]],
+            opacity: theme.chartGridOpacity,
+        },
+    };
+}
+
+function createGaugeDetail(theme: ChartTheme): Record<string, unknown> {
+    return {
+        valueAnimation: true,
+        offsetCenter: [0, 0],
+        fontSize: theme.fontSize,
+        fontWeight: '900',
+        fontFamily: theme.headingFont,
+        color: theme.titleColor,
+        formatter: '{value}%',
+    };
+}
+
+export const buildGaugeSeries = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => {
+    const dataKey = config?.dataKey || 'value';
+    const value = data[data.length - 1]?.[dataKey] ?? DEFAULT_GAUGE_VALUE;
+
+    return {
+        series: [{
+            type: 'gauge',
+            startAngle: GAUGE_START_ANGLE,
+            endAngle: -30,
+            min: 0,
+            max: DEFAULT_GAUGE_MAXIMUM,
+            progress: createGaugeProgress(theme),
+            pointer: { show: false },
+            axisLine: createGaugeAxisLine(theme),
+            axisTick: { show: false },
+            splitLine: { show: false },
+            axisLabel: { show: false },
+            detail: createGaugeDetail(theme),
+            data: [{ value }],
+        }],
+    };
+};
+
+export const buildHeatmapSeries = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => ({
     visualMap: {
         min: 0,
-        max: 1000,
+        max: HEATMAP_MAXIMUM,
         calculable: true,
         orient: 'horizontal',
         left: 'center',
         bottom: '0%',
         show: false,
-        inRange: { color: [`rgba(${theme.primaryRGB}, 0.1)`, theme.primaryColor, '#ef4444'] }
+        inRange: { color: [theme.surfaceColor, theme.primaryColor, theme.palette[5]] },
     },
     series: [{
         type: 'heatmap',
-        data: data.map((item, i) => [i % 5, Math.floor(i / 5), item[config?.dataKey || 'value']]),
+        data: data.map((item, index) => [index % 5, Math.floor(index / 5), item[config?.dataKey || 'value']]),
         label: { show: false },
         emphasis: {
             itemStyle: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-        }
-    }]
+                shadowBlur: HEATMAP_EMPHASIS_SHADOW_BLUR,
+                shadowColor: theme.primaryColor,
+            },
+        },
+    }],
 });
 
-export const buildFunnelSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildFunnelSeries = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => ({
     series: [{
         name: 'Funnel',
         type: 'funnel',
         left: '10%',
-        top: 60,
-        bottom: 60,
+        top: FUNNEL_VERTICAL_INSET,
+        bottom: FUNNEL_VERTICAL_INSET,
         width: '80%',
         min: 0,
-        max: 1000,
+        max: HEATMAP_MAXIMUM,
         minSize: '0%',
         maxSize: '100%',
         sort: 'descending',
         gap: 2,
-        label: { show: true, position: 'inside', fontSize: 10, fontFamily: theme.bodyFont },
-        itemStyle: { borderColor: '#fff', borderWidth: 1, opacity: 0.7 },
-        emphasis: { label: { fontSize: 20 } },
-        data: data.map(item => ({ value: item[config?.dataKey || 'v'], name: item[config?.xAxisKey || 'name'] }))
-    }]
+        label: { show: true, position: 'inside', fontSize: theme.fontSize, fontFamily: theme.bodyFont },
+        itemStyle: { borderColor: theme.surfaceColor, borderWidth: theme.borderWidth, opacity: FUNNEL_ITEM_OPACITY },
+        emphasis: { label: { fontSize: theme.fontSize * 2 } },
+        data: data.map((item) => ({
+            value: item[config?.dataKey || 'v'],
+            name: item[config?.xAxisKey || 'name'],
+        })),
+    }],
 });
 
-export const buildTreeMapSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildTreeMapSeries = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => ({
     series: [{
         name: 'TreeMap',
         type: 'treemap',
-        visibleMin: 300,
-        label: { show: true, formatter: '{b}', fontSize: 10, fontFamily: theme.bodyFont },
-        itemStyle: { borderColor: '#fff', borderWidth: 1, gapWidth: 1 },
-        upperLabel: { show: true, height: 20 },
-        data: data.map(item => ({ value: item[config?.dataKey || 'v'], name: item[config?.xAxisKey || 'name'] }))
-    }]
+        visibleMin: TREEMAP_VISIBLE_MINIMUM,
+        label: { show: true, formatter: '{b}', fontSize: theme.fontSize, fontFamily: theme.bodyFont },
+        itemStyle: { borderColor: theme.surfaceColor, borderWidth: theme.borderWidth, gapWidth: 1 },
+        upperLabel: { show: true, height: TREEMAP_HEADER_HEIGHT },
+        data: data.map((item) => ({
+            value: item[config?.dataKey || 'v'],
+            name: item[config?.xAxisKey || 'name'],
+        })),
+    }],
 });
 
-export const buildSunburstSeries = (data: SarakChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
+export const buildSunburstSeries = (
+    data: SarakChartDataItem[],
+    config: ChartBuilderConfig | undefined,
+    theme: ChartTheme,
+): ChartOptionFragment => ({
     series: [{
         type: 'sunburst',
-        data: [
-            { name: 'Node A', children: [{ name: 'A1', value: 10 }, { name: 'A2', value: 20 }] },
-            { name: 'Node B', children: [{ name: 'B1', value: 15 }, { name: 'B2', value: 25 }] }
-        ],
+        data: data.map((item) => ({
+            name: item[config?.xAxisKey || 'name'],
+            value: item[config?.dataKey || 'value'],
+            children: item.children,
+        })),
         radius: [0, '90%'],
-        label: { rotate: 'radial', fontSize: 8, fontFamily: theme.bodyFont }
-    }]
+        label: { rotate: 'radial', fontSize: theme.fontSize, fontFamily: theme.bodyFont },
+    }],
 });

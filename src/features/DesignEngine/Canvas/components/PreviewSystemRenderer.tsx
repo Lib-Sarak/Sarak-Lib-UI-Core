@@ -4,6 +4,11 @@ import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import type { SarakUIContextType, SarakDesignState } from '../../../../core/Provider/types';
 import { useContainerScale } from '../hooks/useContainerScale';
+import {
+    isAdditionalPreviewScreen,
+    MAIN_PREVIEW_SCREENS,
+    MORE_PREVIEW_SCREEN_ID,
+} from '../previewScreens';
 
 export interface PreviewSystemRendererProps {
     useSystemDesign?: boolean;
@@ -12,7 +17,7 @@ export interface PreviewSystemRendererProps {
     isDualView?: boolean;
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
     activePreviewApp: string;
-    setActivePreviewApp: (app: string) => void;
+    selectPreviewApp: (appId: string) => void;
     apps: Record<string, React.ReactNode>;
 }
 
@@ -32,21 +37,35 @@ function createNavigationItems(
     apps: PreviewSystemRendererProps['apps'],
     activePreviewApp: string,
 ): SarakNavItem[] {
-    return Object.keys(apps).map((appId) => ({
-        id: appId,
-        label: appId.replace(/-/g, ' '),
-        href: `/${appId}`,
-        active: activePreviewApp === appId,
-    }));
+    const mainScreenItems = MAIN_PREVIEW_SCREENS
+        .filter(({ id }) => Object.prototype.hasOwnProperty.call(apps, id))
+        .map(({ id, label }) => ({
+            id,
+            label,
+            href: `/${id}`,
+            active: activePreviewApp === id,
+        }));
+
+    if (!Object.prototype.hasOwnProperty.call(apps, MORE_PREVIEW_SCREEN_ID)) return mainScreenItems;
+
+    return [
+        ...mainScreenItems,
+        {
+            id: MORE_PREVIEW_SCREEN_ID,
+            label: 'Mais telas',
+            href: `/${MORE_PREVIEW_SCREEN_ID}`,
+            active: activePreviewApp === MORE_PREVIEW_SCREEN_ID || isAdditionalPreviewScreen(activePreviewApp),
+        },
+    ];
 }
 
 function createNavigationHandler(
     apps: PreviewSystemRendererProps['apps'],
-    setActivePreviewApp: PreviewSystemRendererProps['setActivePreviewApp'],
+    selectPreviewApp: PreviewSystemRendererProps['selectPreviewApp'],
 ): (route: string) => void {
     return (route: string): void => {
         const appId = route.slice(1);
-        if (Object.prototype.hasOwnProperty.call(apps, appId)) setActivePreviewApp(appId);
+        if (Object.prototype.hasOwnProperty.call(apps, appId)) selectPreviewApp(appId);
     };
 }
 
@@ -101,7 +120,7 @@ function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.Rea
         isDualView,
         previewDevice,
         activePreviewApp,
-        setActivePreviewApp,
+        selectPreviewApp,
         apps,
     } = props;
     const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
@@ -112,8 +131,8 @@ function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.Rea
     );
     const activeApp = apps[activePreviewApp] ?? Object.values(apps)[0] ?? null;
     const navigateToApp = React.useMemo(
-        () => createNavigationHandler(apps, setActivePreviewApp),
-        [apps, setActivePreviewApp],
+        () => createNavigationHandler(apps, selectPreviewApp),
+        [apps, selectPreviewApp],
     );
 
     return <PreviewDeviceSurface

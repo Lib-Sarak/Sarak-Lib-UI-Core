@@ -5,7 +5,6 @@ interface LiveDraftPreviewFrameProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
     isPreviewStacked?: boolean;
     targetWidth: string | number;
-    getDeviceHeightClass: () => string;
     getDeviceFrameStyles: () => string;
     isInspecting: boolean;
     setIsInspecting: (value: boolean) => void;
@@ -17,20 +16,31 @@ export const LiveDraftPreviewFrame: React.FC<LiveDraftPreviewFrameProps> = ({
     previewDevice,
     isPreviewStacked,
     targetWidth,
-    getDeviceHeightClass,
     getDeviceFrameStyles,
     isInspecting,
     setIsInspecting,
     children,
 }) => {
+    const layoutClasses = isPreviewStacked
+        ? 'w-full flex-1 min-h-0'
+        : 'h-full shrink-0 min-h-[var(--sarak-engine-min-h-sm,300px)]';
+    const frameStyle: React.CSSProperties = {
+        width: previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
+    };
+
+    if (!isPreviewStacked) {
+        frameStyle.height = previewDevice === 'smartphone'
+            ? 'var(--sarak-device-phone-height, 812px)'
+            : previewDevice === 'tablet'
+                ? 'var(--sarak-device-tablet-height, 1024px)'
+                : 'auto';
+        frameStyle.maxHeight = previewDevice !== 'desktop' ? '90vh' : 'none';
+    }
+
     return (
         <div
-            className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] max-w-full ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
-            style={{
-                width: previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
-                height: previewDevice === 'smartphone' ? 'var(--sarak-device-phone-height, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-device-tablet-height, 1024px)' : 'auto',
-                maxHeight: previewDevice !== 'desktop' ? '90vh' : 'none'
-            } as React.CSSProperties}
+            className={`relative overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group max-w-full ${layoutClasses} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+            style={frameStyle}
         >
             {/* Hardware Mockup Extras (Notch, Camera) */}
             {previewDevice === 'smartphone' && (

@@ -45,8 +45,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | 1 | [plan-100-painel-de-temas-caminho-simples](plan/plan-100-painel-de-temas-caminho-simples.md) | Fazer o painel de temas contar um caminho de tres passos sem jargao, com poucos botoes, uma galeria que abre sob demanda, preview que acompanha o que se edita e um unico jeito de aplicar | — | 🟡 Em execução | specs/06-painel-de-customizacao-e-preview.md |
 | 2 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
 | 3 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 4 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 5 | [plan-101-motor-de-graficos-completo](plan/plan-101-motor-de-graficos-completo.md) | Fazer o motor de graficos obedecer ao tema do painel, desenhar varias series (empilhado, horizontal, combinado, dois eixos, legenda, clique) e oferecer waterfall, sankey e calendario de calor, sem trocar de biblioteca | — | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md |
+| 4 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
+| 5 | [plan-101-motor-de-graficos-completo](plan/plan-101-motor-de-graficos-completo.md) | Fazer o motor de graficos obedecer ao tema do painel, desenhar varias series (empilhado, horizontal, combinado, dois eixos, legenda, clique) e oferecer waterfall, sankey e calendario de calor, sem trocar de biblioteca | — | 🟡 Em execução | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md |
 | 6 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
 | 7 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
@@ -70,6 +70,27 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > 🧪 **O lote 1 da 102 (a avaliação das bibliotecas de arrastar e soltar e de Gantt) não toca o repositório** e pode ser
 > despachado em **qualquer onda**, em paralelo a qualquer plan — é o que antecipa o ADR-019 e o ADR-020. O resultado
 > dele precisa do **dono com um aparelho de toque**.
+>
+> 🚦 **Despacho de 2026-10-08 — 98 ‖ 101 (lote 1) ‖ 100 (lote 2).** Disjunção declarada pelo
+> revisor:
+> - a 98 é a única a tocar `Modals/`, `Feedback/`, `src/core/Design/schema/` e `src/index.ts` (a 101 foi
+>   emendada para usar o `SarakDataEmpty`, só **consumido**, no lugar do `SarakEmptyState`, que é da 98);
+> - a 101 é a única a tocar `engines/charts/` e o `package.json`;
+> - em `src/core/i18n/`, a 101 escreve só em `catalogEntries.part3.ts` (chaves `chart*`), e a 98 só em
+>   `catalogEntries.part4.ts` (chaves `dialog*`/`progress*`/`toast*`);
+> - a 100 fica em `src/features/DesignEngine/`.
+>
+> A 91 continua atrás da 90, e a 90, atrás da 100. Em paralelo, o revisor corrige a prosa das specs fixas
+> apontada pela contraprova de paridade de 2026-10-08, sem tocar `src/` nem `specs/plan/`.
+>
+> 🚦 **Despacho 2 de 2026-10-08 — 100 (lote 3) ‖ 101 (lote 3) ‖ 102 (lote 2)**, depois do commit integral da
+> 98 e dos lotes já aprovados da 100 e da 101. Disjunção declarada pelo revisor:
+> - a 100 fica em `src/features/DesignEngine/`; textos só em `catalogEntries.part5.ts` (`panel*`);
+> - a 101 fica em `src/components/engines/charts/`; textos só em `catalogEntries.part3.ts` (`chart*`);
+> - a 102 é a única a tocar `DataDisplay/SarakKanban/`, `DataDisplay/index.ts`, `src/index.ts` e o
+>   `package.json`/lockfile (o `npm install` do dnd-kit roda só com a máquina livre); textos só em
+>   `catalogEntries.part4.ts` (`kanban*`);
+> - `docs/migracoes.md` é dividido pela 101 e pela 102: cada uma acrescenta **a sua** seção, por substituição exata.
 >
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,

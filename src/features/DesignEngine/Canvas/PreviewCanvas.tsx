@@ -18,7 +18,7 @@ interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
     previewLayoutId: string;
     activePreviewApp: string;
-    setActivePreviewApp: (app: string) => void;
+    selectPreviewApp: (appId: string) => void;
     previewAnimationStyle: string;
     config: SarakUIOptions;
     previewPrimaryColor: string;
@@ -32,13 +32,14 @@ interface PreviewCanvasProps {
     sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
+    onCloseGallery?: () => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     previewDevice,
     previewLayoutId,
     activePreviewApp,
-    setActivePreviewApp,
+    selectPreviewApp,
     previewAnimationStyle,
     config,
     previewPrimaryColor,
@@ -51,7 +52,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     customThemes,
     sarak,
     onInspectComponent,
-    onApplyFullTheme
+    onApplyFullTheme,
+    onCloseGallery,
 }) => {
     const handleApplyPreset = useApplyPreset(onUpdateDraft, onApplyFullTheme);
 
@@ -75,7 +77,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const previewContextValue = usePreviewContextValue(parentContext, tokens, onUpdateDraft);
 
-    const apps = usePreviewApps(tokens, config, previewAnimationStyle);
+    const apps = usePreviewApps(tokens, config, previewAnimationStyle, selectPreviewApp);
 
     const renderSystemContent = (useSystemDesign = false) => {
         return (
@@ -86,13 +88,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 isDualView={isDualView}
                 previewDevice={previewDevice}
                 activePreviewApp={activePreviewApp}
-                setActivePreviewApp={setActivePreviewApp}
+                selectPreviewApp={selectPreviewApp}
                 apps={apps}
             />
         );
     };
 
-    const { targetWidth, getDeviceFrameStyles, getDeviceHeightClass } = useDeviceStyles(previewDevice, isPreviewStacked);
+    const isGalleryStacked = isDualView && isPreviewStacked;
+    const { targetWidth, getDeviceFrameStyles } = useDeviceStyles(previewDevice);
 
     return (
         <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
@@ -104,15 +107,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 <div className="@container flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible">
 
                     {/* Linha Superior: Previews Actuais (Restaurando flex-1 e min-h-0 para comportamento original) */}
-                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
+                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isGalleryStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
                         {isDualView ? (
                         <>
-                            {/* Live Draft Preview (Gêmeo Digital / Preset 1) */}
+                            {/* Live Draft Preview */}
                             <LiveDraftPreviewFrame
                                 previewDevice={previewDevice}
-                                isPreviewStacked={isPreviewStacked}
+                                isPreviewStacked={isGalleryStacked}
                                 targetWidth={targetWidth}
-                                getDeviceHeightClass={getDeviceHeightClass}
                                 getDeviceFrameStyles={getDeviceFrameStyles}
                                 isInspecting={isInspecting}
                                 setIsInspecting={setIsInspecting}
@@ -122,12 +124,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-h-[var(--sarak-engine-min-h-sm,300px)] min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
+                            <div className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isGalleryStacked ? 'w-full flex-1 min-h-0' : 'w-1/2 h-full min-h-[var(--sarak-engine-min-h-sm,300px)] shrink-0'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}
                                     currentMode={mode}
                                     sarak={sarak}
+                                    onClose={() => onCloseGallery?.()}
                                 />
                             </div>
                         </>

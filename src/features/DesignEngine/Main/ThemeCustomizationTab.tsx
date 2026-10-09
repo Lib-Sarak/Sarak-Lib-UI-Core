@@ -17,14 +17,15 @@ import { SaveThemeModal } from './components/SaveThemeModal';
 export const ThemeCustomizationTab: React.FC = () => {
     const {
         sarak,
-        activePreviewApp, setActivePreviewApp,
+        activePreviewApp, selectPreviewApp,
         previewDevice, setPreviewDevice,
-        activePillarId, setActivePillarId,
+        activePillarId, setActivePillarId, selectPillar,
         activeSectionId, setActiveSectionId,
         viewMode, setViewMode,
         searchQuery, setSearchQuery,
         editMode, setEditMode,
         isPreviewStacked, setIsPreviewStacked,
+        isGalleryOpen, setIsGalleryOpen,
         currentThemeName, setCurrentThemeName,
         isSaveModalOpen, setIsSaveModalOpen,
         isSaving, setIsSaving
@@ -63,7 +64,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         setTimeout(() => setActiveSectionId(schemaId), 100);
     }, [groupedStructure, setActivePillarId, setActiveSectionId]);
 
-    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }, themeId?: string) => {
+    const handleApplyFullTheme = useCallback((design: Partial<SarakDesignState> & { systemName?: string }, themeId?: string) => {
         setCurrentThemeName(design.systemName || 'Novo Tema');
         handleThemePreview(design, undefined, themeId);
     }, [handleThemePreview, setCurrentThemeName]);
@@ -113,7 +114,10 @@ export const ThemeCustomizationTab: React.FC = () => {
                     editMode={editMode}
                     visualImpactTokens={visualImpactTokens}
                     isTokenVisible={isTokenVisible}
-                    setActivePreviewApp={setActivePreviewApp}
+                    selectPillar={selectPillar}
+                    isGalleryOpen={isGalleryOpen}
+                    setIsGalleryOpen={setIsGalleryOpen}
+                    onApplyFullTheme={handleApplyFullTheme}
                 />
                 <ThemeActionBar
                     isDirty={isDirty}
@@ -131,6 +135,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     setPreviewDevice={setPreviewDevice}
                     isPreviewStacked={isPreviewStacked}
                     setIsPreviewStacked={setIsPreviewStacked}
+                    isGalleryOpen={viewMode === 'preview' && isGalleryOpen}
                 />
                 <div className="flex min-h-0 min-w-0 flex-1">
                 <PreviewCanvas
@@ -141,16 +146,17 @@ export const ThemeCustomizationTab: React.FC = () => {
                     onUpdateDraft={updateDraft}
                     sarak={sarak}
                     previewLayoutId={draft.layout || sarak.layout || 'glass'}
-                    setActivePreviewApp={setActivePreviewApp}
+                    selectPreviewApp={selectPreviewApp}
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
                     previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #00f2ff)'}
                     draftTokens={draft}
                     activeSectionId={activeSectionId}
-                    isDualView={viewMode === 'preview'}
+                    isDualView={viewMode === 'preview' && isGalleryOpen}
                     isPreviewStacked={isPreviewStacked}
                     customThemes={[]}
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={handleApplyFullTheme}
+                    onCloseGallery={() => setIsGalleryOpen(false)}
                 />
                 </div>
                 <ThemeFeedbackToast toast={toast} />

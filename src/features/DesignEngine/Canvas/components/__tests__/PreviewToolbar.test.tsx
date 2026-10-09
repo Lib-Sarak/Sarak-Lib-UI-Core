@@ -9,6 +9,7 @@ const createProps = (overrides: Partial<React.ComponentProps<typeof PreviewToolb
     setPreviewDevice: vi.fn(),
     isPreviewStacked: false,
     setIsPreviewStacked: vi.fn(),
+    isGalleryOpen: true,
     ...overrides
 });
 
@@ -30,8 +31,24 @@ describe('PreviewToolbar', () => {
         const setIsPreviewStacked = vi.fn();
         render(<PreviewToolbar {...createProps({ setIsPreviewStacked })} />);
 
-        await user.click(screen.getByRole('switch', { name: 'Empilhar previews' }));
+        const stackSwitch = screen.getByRole('switch', { name: 'Empilhar previews' });
+        expect(stackSwitch).toHaveAttribute('aria-disabled', 'false');
+        await user.click(stackSwitch);
 
         expect(setIsPreviewStacked).toHaveBeenCalledWith(true);
+    });
+
+    it('desativa o empilhamento e explica o motivo enquanto a galeria está fechada', async () => {
+        const setIsPreviewStacked = vi.fn();
+        render(<PreviewToolbar {...createProps({ isGalleryOpen: false, isPreviewStacked: true, setIsPreviewStacked })} />);
+
+        const stackSwitch = screen.getByRole('switch', { name: 'Empilhar previews' });
+        expect(stackSwitch).toBeDisabled();
+        expect(stackSwitch).toHaveAttribute('aria-disabled', 'true');
+        expect(stackSwitch).toHaveAttribute('aria-checked', 'false');
+        expect(stackSwitch).toHaveAttribute('title', 'Abra a galeria de estilos para empilhar os previews.');
+
+        await userEvent.setup().click(stackSwitch);
+        expect(setIsPreviewStacked).not.toHaveBeenCalled();
     });
 });

@@ -1904,6 +1904,36 @@
     "relatedTokens": []
   },
   {
+    "tokenId": "progressBarHeight",
+    "name": "Altura da Barra de Progresso",
+    "description": "Altura das barras de progresso, em pixels.",
+    "type": "number",
+    "importance": 55,
+    "categories": ["geometria", "status", "colors-and-atmosphere"],
+    "tags": ["progress", "height"],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": ["SarakProgress"],
+    "cssVariables": ["--sarak-progress-bar-height"],
+    "allowedValues": { "min": 2, "max": 32 },
+    "relatedTokens": ["progressBarRadius"]
+  },
+  {
+    "tokenId": "progressBarRadius",
+    "name": "Arredondamento da Barra de Progresso",
+    "description": "Raio dos cantos da barra de progresso, em pixels.",
+    "type": "number",
+    "importance": 50,
+    "categories": ["geometria", "status", "colors-and-atmosphere"],
+    "tags": ["progress", "radius"],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": ["SarakProgress"],
+    "cssVariables": ["--sarak-progress-bar-radius"],
+    "allowedValues": { "min": 0, "max": 32 },
+    "relatedTokens": ["progressBarHeight"]
+  },
+  {
     "tokenId": "globalBackgroundImageUrl",
     "name": "URL da Imagem de Fundo",
     "description": "Caminho da imagem de fundo global (pode ser arquivo ou base64).",

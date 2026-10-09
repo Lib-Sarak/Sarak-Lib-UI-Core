@@ -1,19 +1,32 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { 
-    ResponsiveContainer, LineChart, Line, XAxis, YAxis, 
-    Tooltip as RechartsTooltip, BarChart, Bar
-} from 'recharts';
+import { use as useEChartsExtensions } from 'echarts/core';
+import { AriaComponent, LegendComponent } from 'echarts/components';
+import { SarakDataEmpty } from '../../atomic/Feedback/SarakDataEmpty';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useEChartsTheme } from './SubEngines/useEChartsTheme';
-import * as builders from './SubEngines/optionBuilders';
-import type { SarakChartDataItem } from './SubEngines/builders/types';
+import type { EChartsTheme } from './SubEngines/useEChartsTheme';
+import { buildChartOption, buildPointClickEvents, hasRenderableSeriesData, isSeriesChartType } from './SubEngines/seriesModel';
+import RechartsChart from './SubEngines/RechartsChart';
+import type { ChartOptionFragment, SarakChartDataItem, SarakChartType } from './SubEngines/builders/types';
+
+useEChartsExtensions([AriaComponent, LegendComponent]);
+
+const CHART_TYPES: readonly SarakChartType[] = [
+    'line', 'area', 'bar', 'pie', 'radar', 'gauge', 'scatter', 'heatmap',
+    'funnel', 'treemap', 'candlestick', 'sunburst', 'histogram', 'boxplot',
+];
+const ECHARTS_ONLY_PROPS = ['series', 'stacked', 'orientation', 'legend', 'onPointClick'] as const;
+const CHART_TYPES_WITH_SHORT_VALUE_KEY: readonly SarakChartType[] = ['funnel', 'treemap', 'histogram'];
 
 export interface SarakChartEngineProps {
-    /** Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. */
-    type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
-    /** Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. */
+    /** Seleciona o formato; omitido, usa `chartType` do design resolvido. */
+    type?: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter'
+        | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst'
+        | 'histogram' | 'boxplot';
+    /** Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. */
     data: SarakChartDataItem[];
-    /** Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. */
+    /** Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. */
     config?: {
         xAxisKey?: string;
         dataKey?: string;
@@ -23,112 +36,174 @@ export interface SarakChartEngineProps {
         showAnimation?: boolean;
         thickness?: number;
     };
+    /**
+     * Séries cartesianas; pizza, radar, funil e outros formatos não cartesianos ignoram esta prop.
+     * `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal.
+     */
+    series?: Array<{
+        key: string;
+        label?: string;
+        type?: 'bar' | 'line' | 'area';
+        stack?: string;
+        axis?: 'left' | 'right';
+        dashed?: boolean;
+        color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor'
+            | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor';
+    }>;
+    /** Formatos não cartesianos ignoram esta prop. */
+    stacked?: boolean;
+    /** Formatos não cartesianos ignoram esta prop. */
+    orientation?: 'vertical' | 'horizontal';
+    /** Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade. */
+    legend?: boolean | 'top' | 'bottom';
+    /** Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. */
+    onPointClick?: (event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void;
+    /** Texto acessível do gráfico; omitido, usa o catálogo de i18n. */
+    ariaLabel?: string;
 }
 
-/**
- * Sarak Chart Engine v7.5 [Quantum Edition] - Refactored v7.2.5
- */
-const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config }) => {
+function isRecord(value: unknown): value is SarakChartDataItem {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isFiniteNumber(value: unknown): value is number {
+    return typeof value === 'number' && Number.isFinite(value);
+}
+
+function hasCandlestickValues(item: SarakChartDataItem): boolean {
+    return [item.open, item.close, item.low, item.high].every(isFiniteNumber);
+}
+
+function hasBoxPlotValues(item: SarakChartDataItem, dataKey: string): boolean {
+    const values = item[dataKey] ?? item.boxplot;
+    if (Array.isArray(values)) return values.length === 5 && values.every(isFiniteNumber);
+    return [item.min, item.q1, item.median, item.q3, item.max].every(isFiniteNumber);
+}
+
+function hasRenderableData(data: unknown, type: SarakChartType, dataKey: string): data is SarakChartDataItem[] {
+    if (!Array.isArray(data) || data.length === 0) return false;
+    if (type === 'candlestick') return data.some((item) => isRecord(item) && hasCandlestickValues(item));
+    if (type === 'boxplot') return data.some((item) => isRecord(item) && hasBoxPlotValues(item, dataKey));
+    if (type === 'sunburst') {
+        return data.some((item) => isRecord(item) && (item[dataKey] !== undefined || Array.isArray(item.children)));
+    }
+
+    return data.some((item) => isRecord(item) && item[dataKey] !== undefined && item[dataKey] !== null);
+}
+
+function resolveChartType(type: SarakChartType | undefined, designType: string): SarakChartType {
+    if (type) return type;
+    return CHART_TYPES.includes(designType as SarakChartType) ? designType as SarakChartType : 'line';
+}
+
+function getUnsupportedRechartsProps(props: SarakChartEngineProps, type: SarakChartType): string[] {
+    const runtimeProps = props as unknown as Record<string, unknown>;
+    const unsupported: string[] = ECHARTS_ONLY_PROPS.filter((name) => runtimeProps[name] !== undefined);
+    if (type !== 'bar' && type !== 'line') unsupported.push('type');
+    if (props.config?.showGradients !== undefined) unsupported.push('showGradients');
+    if (props.config?.title !== undefined) unsupported.push('title');
+    return unsupported;
+}
+
+function useRechartsCompatibilityWarning(
+    engine: 'echarts' | 'recharts',
+    props: SarakChartEngineProps,
+    type: SarakChartType,
+): void {
+    const warnedProps = useRef(new Set<string>());
+    const unsupportedProps = getUnsupportedRechartsProps(props, type);
+
+    useEffect(() => {
+        if (engine !== 'recharts' || process.env.NODE_ENV === 'production') return;
+        const unreportedProps = unsupportedProps.filter((name) => !warnedProps.current.has(name));
+        if (unreportedProps.length === 0) return;
+        console.warn(`[SarakChartEngine] recharts não aplica: ${unreportedProps.join(', ')}.`);
+        unreportedProps.forEach((name) => warnedProps.current.add(name));
+    }, [engine, props, unsupportedProps]);
+}
+
+interface ChartOptionRuntimeInput {
+    type: SarakChartType;
+    props: SarakChartEngineProps;
+    theme: EChartsTheme;
+    engine: 'echarts' | 'recharts';
+    hasData: boolean;
+}
+
+function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKey: string): boolean {
+    if (isSeriesChartType(type) && props.series !== undefined) {
+        return hasRenderableSeriesData(props.data, props.series);
+    }
+    return hasRenderableData(props.data, type, dataKey);
+}
+
+function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFragment | null {
+    const { type, props, theme, engine, hasData } = input;
+    const option = useMemo(
+        () => engine === 'echarts' && hasData ? buildChartOption({
+            type,
+            data: props.data,
+            config: props.config,
+            theme,
+            series: props.series,
+            stacked: props.stacked,
+            orientation: props.orientation,
+            legend: props.legend,
+        }) : null,
+        [engine, type, props, theme, hasData],
+    );
+    return option;
+}
+
+function usePointClickEvents(
+    props: SarakChartEngineProps,
+    type: SarakChartType,
+    dataKey: string,
+): ReturnType<typeof buildPointClickEvents> {
+    return useMemo(() => buildPointClickEvents({
+        data: props.data,
+        series: isSeriesChartType(type) ? props.series : undefined,
+        dataKey,
+        onPointClick: props.onPointClick,
+    }), [props.data, props.onPointClick, props.series, type, dataKey]);
+}
+
+function SarakChartEngine(props: SarakChartEngineProps): React.ReactElement {
     const theme = useEChartsTheme();
-    const engine = config?.engine || 'echarts';
-    
-    const getEChartsOption = useMemo(() => {
-        if (engine !== 'echarts') return null;
+    const text = useLibraryText();
+    const type = resolveChartType(props.type, theme.chartType);
+    const engine = props.config?.engine ?? 'echarts';
+    const dataKey = props.config?.dataKey ?? (CHART_TYPES_WITH_SHORT_VALUE_KEY.includes(type) ? 'v' : 'value');
+    const hasData = hasChartData(props, type, dataKey);
+    const option = useResolvedChartOption({ type, props, theme, engine, hasData });
+    const onEvents = usePointClickEvents(props, type, dataKey);
 
-        const xAxisData = data.map(item => item[config?.xAxisKey || 'name']);
-        
-        const base = {
-            ...theme.baseOption,
-            xAxis: ['pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst', 'boxplot'].includes(type) ? undefined : {
-                type: 'category',
-                data: xAxisData,
-                axisLine: { show: false },
-                axisTick: { show: false },
-                axisLabel: { 
-                    color: theme.isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.4)',
-                    fontSize: 11,
-                    fontFamily: theme.bodyFont || 'Inter',
-                    margin: 20
-                }
-            },
-            yAxis: ['pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst'].includes(type) ? undefined : {
-                type: 'value',
-                splitLine: { 
-                    lineStyle: { 
-                        color: theme.isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.03)',
-                        type: 'solid' 
-                    } 
-                },
-                axisLine: { show: false },
-                axisLabel: { 
-                    color: theme.isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.4)',
-                    fontSize: 11,
-                    fontFamily: theme.bodyFont || 'Inter',
-                    margin: 10
-                }
-            },
-            tooltip: {
-                ...theme.baseOption.tooltip,
-                trigger: ['pie', 'funnel', 'treemap', 'sunburst', 'boxplot'].includes(type) ? 'item' : 'axis',
-            }
-        };
+    useRechartsCompatibilityWarning(engine, props, type);
+    if (!hasData) return <SarakDataEmpty message={text('chartDataEmptyMessage')} />;
 
-        let typeSpecificConfig = {};
-        switch (type) {
-            case 'bar': typeSpecificConfig = builders.buildBarSeries(data, config, theme); break;
-            case 'line': typeSpecificConfig = builders.buildLineSeries(data, config, theme, false); break;
-            case 'area': typeSpecificConfig = builders.buildLineSeries(data, config, theme, true); break;
-            case 'pie': typeSpecificConfig = builders.buildPieSeries(data, config, theme); break;
-            case 'radar': typeSpecificConfig = builders.buildRadarConfig(data, config, theme); break;
-            case 'gauge': typeSpecificConfig = builders.buildGaugeSeries(data, config, theme); break;
-            case 'scatter': typeSpecificConfig = builders.buildScatterSeries(data, config, theme); break;
-            case 'heatmap': typeSpecificConfig = builders.buildHeatmapSeries(data, config, theme); break;
-            case 'funnel': typeSpecificConfig = builders.buildFunnelSeries(data, config, theme); break;
-            case 'treemap': typeSpecificConfig = builders.buildTreeMapSeries(data, config, theme); break;
-            case 'candlestick': typeSpecificConfig = builders.buildCandlestickSeries(data, config, theme); break;
-            case 'sunburst': typeSpecificConfig = builders.buildSunburstSeries(data, config, theme); break;
-            case 'boxplot': typeSpecificConfig = builders.buildBoxPlotSeries(data, config, theme); break;
-            case 'histogram': typeSpecificConfig = builders.buildHistogramSeries(data, config, theme); break;
-        }
-
-        return { ...base, ...typeSpecificConfig };
-    }, [type, data, config, theme, engine]);
-
-    if (engine === 'echarts') {
+    const ariaLabel = props.ariaLabel ?? text('chartAriaLabel');
+    if (engine === 'recharts') {
         return (
-            <div className="w-full h-full p-6">
-                <ReactECharts 
-                    option={getEChartsOption} 
-                    style={{ height: '100%', width: '100%' }}
-                    settings={{ notMerge: true }}
-                />
-            </div>
+            <RechartsChart
+                type={type}
+                data={props.data}
+                config={props.config}
+                theme={theme}
+                ariaLabel={ariaLabel}
+            />
         );
     }
 
-    // --- Legacy Recharts Fallback ---
     return (
-        <div className="w-full h-full min-h-[var(--sarak-chart-engine-min-h,180px)] p-2">
-            <ResponsiveContainer width="100%" height="100%">
-                {type === 'bar' ? (
-                    <BarChart data={data}>
-                        <XAxis dataKey={config?.xAxisKey || 'name'} hide />
-                        <YAxis hide />
-                        <RechartsTooltip />
-                        <Bar dataKey={config?.dataKey || 'value'} fill={theme.primaryColor} radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                ) : (
-                    <LineChart data={data}>
-                        <XAxis dataKey={config?.xAxisKey || 'name'} hide />
-                        <YAxis hide />
-                        <RechartsTooltip />
-                        <Line type="monotone" dataKey={config?.dataKey || 'value'} stroke={theme.primaryColor} strokeWidth={3} dot={false} />
-                    </LineChart>
-                )}
-            </ResponsiveContainer>
+        <div className="w-full h-full p-6" role="img" aria-label={ariaLabel}>
+            <ReactECharts
+                option={option}
+                style={{ height: '100%', width: '100%' }}
+                settings={{ notMerge: true }}
+                onEvents={onEvents}
+            />
         </div>
     );
-};
+}
 
 export default SarakChartEngine;
-

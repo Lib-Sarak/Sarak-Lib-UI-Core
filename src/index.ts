@@ -159,6 +159,8 @@ export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
 export { SarakAlert } from './components/atomic/Feedback/SarakAlert';
 export type { SarakAlertProps, SarakAlertVariant } from './components/atomic/Feedback/SarakAlert';
+export { SarakProgress } from './components/atomic/Feedback/SarakProgress';
+export type { SarakProgressProps, SarakProgressThreshold, SarakProgressVariant } from './components/atomic/Feedback/SarakProgress';
 export * from './components/atomic/UX';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
