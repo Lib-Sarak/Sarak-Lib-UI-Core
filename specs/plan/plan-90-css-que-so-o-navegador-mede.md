@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Medir em navegador e consertar o CSS que o jsdom não vê"
 objetivo: "Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel"
 dominio: "Sarak-Lib-UI-Core / Design Engine / CSS publicado"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "css", "browser-tests", "camadas", "atomos"]
 relacionados: ["[[02-design-engine]]", "[[11-testes-e-cobertura]]", "[[03-superficie-publica]]", "[[06-painel-de-customizacao-e-preview]]"]
@@ -29,7 +29,7 @@ vivem exatamente nesse ponto cego — por isso seguem no código com a suíte ve
 | 1 | **Seletor que casa pelo NOME da classe.** `[data-sx-texture] [class*="card"]` força `background` e `backdrop-filter` com `!important` | `src/styles/_atmosphere.css:618-623`; o mesmo mecanismo nas regras `[class*="card"]::after`, a partir de `:83` — 85 ocorrências no arquivo | qualquer utilitária com `card` no nome — da lib (`bg-theme-card`) ou do consumidor (`hover:bg-[var(--color-theme-card,…)]`) — perde o fundo quando há textura. É a classe de defeito que a camada de padrões de elemento já fechou para `[class*="border"]` |
 | 2 | **Custom property cíclica.** `--theme-primary-hover: var(--theme-primary-hover, color-mix(…))` e as irmãs `-active`, `-focus`, `secondary-*`, `accent-*` referenciam a si mesmas no `body` | `src/styles/_base.css:26-34` | ciclo é inválido; a reserva `color-mix(...)` **nunca** é usada. Com o Design Engine montado o valor injetado vence; sem ele, não há hover de botão. O mesmo arquivo já resolveu isso para o raio (`:36-45`, com o motivo no comentário) |
 | 3 | **O `body` não cede à classe utilitária.** Os padrões dele estão divididos entre dois arquivos, e o token de entrelinha só vence o literal por ordem de arquivo | `src/styles/_base.css:12-56` (`line-height: 1.5` literal em `:55`) · `src/styles/_typography.css:5-8` | é o item que [[02-design-engine]] §9.1 lista em *"o que ainda não cede à classe"* |
-| 4 | **Valor de CSS malformado em estilo inline.** Parêntese sobrando, e `box-shadow` que é só uma cor | `src/components/atomic/hooks/useAtomicStyles.ts` — `:58` e `:61` (botão `frosted`), `:106` e `:110-112` (campo: foco e `neumorphism`), `:138`, `:147-148` (switch); e, pela mesma classe de defeito, `src/components/atomic/Feedback/SarakDataEmpty.tsx:24` e `src/components/atomic/Buttons/SarakSocialButton.tsx:76,85-86` | o navegador descarta a declaração inteira, em silêncio |
+| 4 | **Valor de CSS malformado em estilo inline.** Parêntese sobrando, e `box-shadow` que é só uma cor | `src/components/atomic/hooks/useAtomicStyles.ts` — `:58` e `:61` (botão `frosted`), `:106` e `:110-112` (campo: foco e `neumorphism`), `:138`, `:147-148` (switch); e, pela mesma classe de defeito, `src/components/atomic/Inputs/SarakRangeSlider.tsx` (as constantes `ACTIVE` e `TRACK`) e `src/components/atomic/Layouts/SarakAccordion.tsx` (o `borderColor`) *(emendado em 2026-10-09: `SarakDataEmpty` e `SarakSocialButton` já estão válidos)* | o navegador descarta a declaração inteira, em silêncio |
 | 5 | **A seta do `SarakSelect` flutua.** Sem `fullWidth`, o invólucro é bloco e ocupa a célula; o `<select>` fica com a largura do conteúdo; a seta é absoluta e ancorada na direita do invólucro | `src/components/atomic/Inputs/SarakSelect.tsx:50-67` | em grid que estica, a seta aparece sozinha no canto direito, longe do campo |
 | 6 | **Relato não reproduzido:** a busca de token do painel descarta a primeira digitação logo depois de abrir a aba Design | campo em `src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx:105`; o painel é `lazy` (`src/features/DesignEngine/Library/CustomizationPanel/index.tsx:16`) | relatado no ERP por automação; **não** reproduzido em `jsdom` por quatro métodos. Hipótese: o campo que recebe a primeira digitação é substituído por uma montagem nova. **As plans 99 e 100 rodam antes desta e mexem nesse cabeçalho: a linha `:105` vai se deslocar — localize o campo pelo `placeholder`, não pelo número** |
 
@@ -50,7 +50,8 @@ nome. No `packages/ui-kit` do ERP Earendel não há nenhum `className` literal c
 - `src/styles/_atmosphere.css` — os seletores por nome de classe.
 - `src/styles/_base.css` · `src/styles/_typography.css` · `src/styles/_elements.css` — o ciclo e o `body`.
 - `src/components/atomic/hooks/useAtomicStyles.ts` — **só** os valores malformados.
-- `src/components/atomic/Feedback/SarakDataEmpty.tsx` e `src/components/atomic/Buttons/SarakSocialButton.tsx` — **só** os valores malformados.
+- `src/components/atomic/Inputs/SarakRangeSlider.tsx` e `src/components/atomic/Layouts/SarakAccordion.tsx` — **só** os valores malformados *(emendado em 2026-10-09)*.
+- `browser-tests/css-que-so-o-navegador-mede.spec.ts` e `browser-tests/fixtures/harness-entry.tsx` — **só** para acrescentar os casos dos dois arquivos acima, vermelhos antes do conserto *(emendado em 2026-10-09)*.
 - `src/components/atomic/Inputs/SarakSelect.tsx` — **só** a relação entre invólucro, campo e seta.
 - Componentes da lib que hoje só recebem a superfície de cartão por causa do casamento por nome — eles
   ganham a âncora explícita. A lista entra no resumo.
@@ -148,7 +149,7 @@ número escrito à mão. Classe usada num elemento de prova tem de ser uma que o
 - [ ] Em `src/styles/_base.css`, nenhuma custom property referencia a si mesma.
 - [ ] A lista *"o que ainda não cede à classe"* não tem mais motivo para citar o `body`: ele cede, e o caso
       de navegador prova.
-- [ ] Nenhum valor de `useAtomicStyles.ts`, `SarakDataEmpty.tsx` ou `SarakSocialButton.tsx` tem parêntese desbalanceado; o
+- [ ] Nenhum valor de `useAtomicStyles.ts`, `SarakRangeSlider.tsx` ou `SarakAccordion.tsx` tem parêntese desbalanceado; o
       `box-shadow` de foco é uma sombra, não uma cor.
 - [ ] A seta do `SarakSelect` fica dentro da caixa do campo, com e sem `fullWidth`.
 - [ ] O item 6 tem a contagem das 20 tentativas no resumo, e uma das duas saídas: não reproduz (caso fica
@@ -193,11 +194,117 @@ nota de migração do item 1 é escrita pela própria execução.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (Lote 1 — medir) — 2026-10-09
+
+**Resultado:** Concluído com pendências — só o Lote 1, a pedido do usuário; o Lote 2 não foi tocado. Cinco dos seis itens têm caso vermelho (itens 1 a 5, e o item 4 com oito casos); o item 6 não reproduziu.
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-contexto.md
+ M specs/00-indice.md
+ M specs/arquitetura/03-superficie-publica.md
+ D specs/plan/plan-100-painel-de-temas-caminho-simples.md
+ D specs/plan/plan-101-motor-de-graficos-completo.md
+ D specs/plan/plan-98-dialogo-e-feedback.md
+ M specs/specs/06-painel-de-customizacao-e-preview.md
+ M specs/specs/09-temas-e-presets.md
+```
+A plan chegou em `🔴 A executar`, e não em `🟡`: executei porque o usuário mandou executar o Lote 1 e passar o status a `🟠`.
+
+**O que foi feito**
+- `browser-tests/fixtures/harness-entry.tsx` — import de `SarakCustomizationPanel`, `SarakInput`, `SarakSelect`, `SarakSwitch`, `SarakTitleCard`; três recortes novos em `TOKEN_VARIANTS` (`atomo-frosted`, `atomo-neumorphism`, `atomo-glass`); cinco cenas escolhidas por `?cena=` (`textura`, `sem-provider`, `atomos`, `select-grade`, `painel`). Sem `?cena=` vale o `App` de antes, intocado.
+- `browser-tests/css-que-so-o-navegador-mede.spec.ts` (novo, irmão do spec do cromo) — 16 casos: item 1 (1 + contraprova), item 2 (1 + contraprova), item 3 (1 + contraprova), item 4 (8), item 5 (1 + contraprova com `fullWidth`), item 6 (1). Régua relacional: o elemento medido contra um `<i>` irmão com a expressão pretendida em estilo inline.
+- Rodei `npm run build` antes das medições. O `tsx` estava presente, e a CLI do Tailwind baixou normalmente.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cenas e recortes novos (+89/−2) |
+| `browser-tests/css-que-so-o-navegador-mede.spec.ts` | criado | 16 casos do Lote 1 |
+| `dist/` (37 entradas), `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados | efeito colateral do `npm run build` (geradores, nada à mão); não são mudança de lógica |
+
+**Verificações executadas**
+- Contagem de processos `vitest|tsup` antes do build, em chamada separada → 0. Nenhum vitest rodado neste lote.
+- `npm run build` → concluído sem erro (todos os `*:check` de pré-build verdes).
+- `npx playwright test … css-que-so-o-navegador-mede` → **11 falharam, 5 passaram**. Os 11 vermelhos, com a causa que o navegador mediu:
+  - item 1 — `Expected "rgba(15, 23, 42, 0.6)"` (a classe `bg-[var(--sarak-card-bg)]`), `Received "color(srgb 0.0588235 0.0901961 0.164706 / 0.48)"` (a superfície de cartão forçada por `[class*="card"]`, 0,6 × 0,8).
+  - item 2 — sem Provider, `Expected: not "rgba(0, 0, 0, 0)"`, `Received: "rgba(0, 0, 0, 0)"` (o hover não difere do repouso).
+  - item 3 — `Expected "14px"` (`leading-none`), `Received "22.4px"` (o token, 14 × 1,6).
+  - item 4, frosted/borda (`useAtomicStyles.ts:58`) — `Expected "rgba(255, 255, 255, 0.1)"`, `Received "rgba(255, 255, 255, 0.467)"` (a cor do texto).
+  - item 4, frosted/sombra (`:61`) — `Expected "rgba(0, 0, 0, 0.4) 0px 2px 5px 0px, rgba(0, 0, 0, 0.2) 0px 40px 60px 0px"`, `Received "none"`.
+  - item 4, campo em foco (`:105`) — `Expected substring "rgb(0, 242, 255)"`, `Received "none"`.
+  - item 4, neumorphism em repouso (`:110`) — `Expected pattern /inset[\s\S]*inset/`, `Received "none"`.
+  - item 4, neumorphism em foco (`:112`) — `Expected substring "rgb(0, 242, 255)"`, `Received "none"`.
+  - item 4, trilho do switch (`:138`) — `Expected "rgba(15, 23, 42, 0.6)"`, `Received "rgba(0, 0, 0, 0)"`.
+  - item 4, switch glass (`:148`) — `Expected "rgba(255, 255, 255, 0.1)"`, `Received "rgb(255, 255, 255)"`.
+  - item 5 — `Expected: <= 102`, `Received: 592` (a seta termina 490 px à direita da caixa do select).
+- Os 5 verdes são as quatro contraprovas "NÃO MUDA NADA" (itens 1, 2, 3 e 5) e o item 6.
+- Item 6: `[item 6] digitação inteira em 20 de 20 tentativas`. Método: cena `painel`, clique em "Abrir painel", `waitFor` no campo de placeholder "Buscar token...", `focus()` e `keyboard.type('primario')`, releitura do campo por um localizador novo; 20 páginas novas.
+- `npx playwright test … cromo-css-real.spec` (casos antigos, sem edição; `git diff` do arquivo vazio) → 1ª rodada 31 verdes e 1 falha (`isSplitViewEnabled`, `Expected: <= 2811.015625`, `Received: 2813.015625`); depois 6 rodadas sem falha (3 do caso isolado e 2 do arquivo inteiro, mais o controle abaixo) → 32 verdes nas duas rodadas do arquivo inteiro.
+- Controle no `HEAD` fora do repositório, com o mesmo `dist/` (`git archive` + junção de `node_modules`; junção removida antes de apagar a cópia): o caso passou. `Test-Path node_modules` do repo → `True`; `git status --short` antes e depois → idêntico.
+
+**Critérios de aceite** (do Lote 1)
+- [x] Casos dos itens 1 a 5 falham contra o `dist/` de hoje — saída acima.
+- [x] Contraprovas "NÃO MUDA NADA" dos itens 1, 2, 3 e 5 passam hoje.
+- [x] Casos de navegador que já existiam continuam verdes sem edição — com a intermitência registrada em *Achados*.
+- [x] Item 6 medido: 20 de 20, não reproduz.
+- [ ] Itens 1 a 5 completos — o `SarakDataEmpty.tsx` e o `SarakSocialButton.tsx` da §2 não têm valor malformado hoje (ver *Decisões*), então não há caso para eles; falta decisão do revisor.
+
+**Decisões e suposições**
+- **Onde está este resumo:** na §9, que é o lugar do executor neste plano; a §10 é o veredito do revisor. O pedido dizia "§10, antes do título `# 11. Síntese`"; a §9 também fica antes dele.
+- **`SarakDataEmpty.tsx` e `SarakSocialButton.tsx`:** a tabela da §2 cita `SarakDataEmpty.tsx:24` e `SarakSocialButton.tsx:76,85-86`, mas um varredor de parênteses sobre `src/components/atomic/` (strings com `var(`) não achou desbalanceamento nenhum nos dois; as linhas 26, 77 e 84-85 têm valores válidos. Não escrevi caso: nasceria verde e não provaria nada. A premissa da plan parece desatualizada.
+- **Item 4, relação com o "pretendido":** onde o vizinho dá o valor (borda, fundo do trilho, sombra do frosted), a régua é a expressão do próprio vizinho. Para o `box-shadow` de foco (`:105`) e os de neumorphism (`:110`, `:112`) a plan pede registrar a escolha, e por isso os casos só exigem estrutura: contém a cor primária do tema, e (neumorphism) duas camadas `inset`. Qualquer conserto válido de Lote 2 que mantenha isso passa.
+- **Item 1, régua:** o fundo de cartão é reescrito com `!important` também no `<i>` de referência quando ele tem a classe, então a régua dele é a expressão inline e não a classe; a superfície de cartão da contraprova repete a fórmula de `_atmosphere.css`. Usei `bg-[var(--sarak-card-bg)]` como a utilitária com `card` no nome (o `dist/sarak.css` já a emite).
+- **Item 2:** o botão de prova é um `<button>` nativo sem Provider; o Lote 2 precisa cuidar de que `--primary-color` também não existe sem o Provider — só tirar o ciclo não basta, a reserva `color-mix(in srgb, var(--primary-color), …)` fica inválida do mesmo jeito. O caso acusa isso sem prender a forma do conserto.
+- **Item 6, limite:** a fixture é empacotada em IIFE (`build-harness.mjs`), então o `import()` do painel resolve dentro do bundle, sem ida à rede. Mede remontagem, não latência de chunk. Está no cabeçalho do spec novo.
+- O spec novo duplica três funções pequenas do spec do cromo (`readComputed`, a régua e o `launch`) porque importar o spec antigo executaria os casos dele e editá-lo é proibido.
+
+**Achados fora do escopo (não corrigidos)**
+- `browser-tests/cromo-css-real.spec.ts:547` — `isSplitViewEnabled responde à largura da região…` falhou **uma vez** em 6 execuções do worktree (`bottom` 2813,02 > `top` 2811,02, 2 px de sobreposição no empilhamento) e passou no controle do `HEAD` e nas demais. Intermitência no layout do cromo; não relacionada a esta execução, que não mexe em `src/`.
+- `src/components/atomic/Inputs/SarakRangeSlider.tsx:25-26` — `ACTIVE` e `TRACK` com um parêntese a mais (mesma classe de defeito do item 4, fora da lista da §3.1).
+- `src/components/atomic/Layouts/SarakAccordion.tsx:35` — `borderColor = 'var(--border-color,#334155))'`, idem.
+- `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx:50-51` — o varredor também apontou estas linhas; não conferi se é defeito ou ruído da expressão regular.
+
+**Pendências / riscos**
+- Casos vermelhos **não** devem ser commitados sozinhos (plan §5, passo 8): o commit sai com o Lote 2.
+- `dist/`, `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts` estão modificados pelo build; o revisor deve contá-los como saída do gerador, e não como edição.
+- O item 6 não reproduziu em 20 de 20; pela §3.2 o Lote 2 não mexe no painel a menos que o revisor mande medir de outro modo.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-09 (lote 1) — 🟢 Aprovado (lote 1 — liberação parcial)
+
+**Rodado pelo revisor**, com 0 processos de outras execuções, contra o `dist/` do executor (o worktree não mudou
+desde o build dele): `browser-tests/css-que-so-o-navegador-mede.spec.ts` → **11 falham, 5 passam** — os mesmos 11
+vermelhos (itens 1 a 5, o item 4 com oito casos) e os mesmos 5 verdes (as quatro contraprovas "NÃO MUDA NADA" e o
+item 6, com `20 de 20`). `browser-tests/cromo-css-real.spec.ts`, sem edição (`git diff` vazio) → **32/32**.
+
+**O que está certo:** régua relacional (o elemento contra um irmão com a expressão pretendida inline), cenas novas
+por `?cena=` sem tocar o `App` de antes, casos que mordem o defeito e deixam livre a forma do conserto (foco e
+`neumorphism` exigem estrutura — a cor primária, duas camadas `inset` — e não um valor fixo). O item 6 **não
+reproduz**: o caso fica como regressão, e o lote 2 não mexe no painel (§3.2).
+
+**Emenda da plan (2026-10-09), por premissa vencida:** `SarakDataEmpty.tsx` e `SarakSocialButton.tsx` já têm valores
+válidos (conferido no código: commits posteriores à plan os corrigiram). Entram no lugar deles os dois que o
+executor achou com a mesma classe de defeito, conferidos pelo revisor: `SarakRangeSlider.tsx` (`ACTIVE` e `TRACK`,
+um parêntese a mais) e `SarakAccordion.tsx` (`borderColor`, idem). O `SarakMarkdownRendererImpl.tsx:50-51` é ruído
+do varredor (os valores estão certos). §2, §3.1 e §6 foram emendadas: **no lote 2, os casos desses dois nascem
+vermelhos antes do conserto**, como os do lote 1.
+
+**Para o lote 2, além do §5:** o item 2 não fecha só tirando o ciclo — sem Provider, `--primary-color` também não
+existe, e a reserva `color-mix(in srgb, var(--primary-color), …)` fica inválida do mesmo jeito (o executor mediu).
+A reserva precisa de uma cor que exista sem o Design Engine.
+
+**Para o backlog (item 15):** o caso `isSplitViewEnabled responde à largura da região…` do spec do cromo falhou uma
+vez em seis execuções do executor (2 px de sobreposição no empilhamento) e passou no controle do `HEAD` e na
+rodada do revisor. Intermitência anterior a esta plan.
+
+**Liberação parcial.** Status volta a `🟡 Em execução`; o lote 2 (os consertos) pode ser despachado. Os casos
+vermelhos não se commitam sozinhos: o commit sai com o lote 2 (§5 passo 8).
 
 ---
 

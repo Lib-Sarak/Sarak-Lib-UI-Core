@@ -42,13 +42,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-100-painel-de-temas-caminho-simples](plan/plan-100-painel-de-temas-caminho-simples.md) | Fazer o painel de temas contar um caminho de tres passos sem jargao, com poucos botoes, uma galeria que abre sob demanda, preview que acompanha o que se edita e um unico jeito de aplicar | — | 🟢 Aprovada | specs/06-painel-de-customizacao-e-preview.md |
-| 2 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
-| 3 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 4 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 5 | [plan-101-motor-de-graficos-completo](plan/plan-101-motor-de-graficos-completo.md) | Fazer o motor de graficos obedecer ao tema do painel, desenhar varias series (empilhado, horizontal, combinado, dois eixos, legenda, clique) e oferecer waterfall, sankey e calendario de calor, sem trocar de biblioteca | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md |
-| 6 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
-| 7 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🟡 Em execução | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
+| 2 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 3 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
+| 4 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre
@@ -61,10 +58,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | 1 | ~~**92** ‖ **88**~~ ✅ *sintetizadas e removidas em 2026-10-05* | Disjuntas na fonte; o `package.json` foi tocado em chaves diferentes | — |
 > | 2 | ~~**94**~~ ✅ *sintetizada e removida em 2026-10-05* | Foi o caminho crítico: liberou a 89 e a 95, e por elas todas as outras | Rodou **sozinha na árvore** — removeu o modo host |
 > | 3 | ~~**95** ‖ **99**~~ ✅ *sintetizadas e removidas (95 em 2026-10-06, 99 em 2026-10-07)* | A cadeia 95→96→97→98 é a mais longa; a 99 (busca e modo Impacto do painel de temas) toca só `src/features/DesignEngine/Main/`, `utils/`, `config/` e as partições do catálogo | A 94 já saiu (a 99 parte da árvore dela); a 89 colide com a 95 (`navItem.ts`, `schema/system.ts`), por isso não é par dela |
-> | 4 | ~~**89** ‖ **96**~~ ✅ *sintetizadas e removidas (96 em 2026-10-07, 89 em 2026-10-08)* ‖ **100** (lotes 2 e 3) | A 100 mexe só em `src/features/DesignEngine/` | — |
-> | 5 | **90** ‖ ~~**97**~~ ✅ *sintetizada e removida em 2026-10-08* | A 90 mede o campo de busca do painel: espera a 100 | — |
-> | 6 | **91** ‖ **98** | Dividem `src/core/i18n/` | Coordenar as chaves de texto, ou rodar a 91 antes da 98 |
-> | 7 | **101** ‖ **102** (lotes 2 e 3) | A 101 (motor de gráficos) toca só `src/components/engines/charts/` e a 102 (quadro kanban), só `DataDisplay/SarakKanban/` e componentes novos | As duas dividem `src/core/i18n/` e o `package.json`; a 102 depende da 98 (barra de progresso). A 101 **pode subir para a onda 5** (depende só da 96) se o revisor declarar a disjunção com a 90 e a 97 |
+> | 4 | ~~**89** ‖ **96** ‖ **100**~~ ✅ *sintetizadas e removidas (96 em 2026-10-07, 89 em 2026-10-08, 100 em 2026-10-09)* | A 100 mexe só em `src/features/DesignEngine/` | — |
+> | 5 | **90** ‖ ~~**97**~~ ✅ *sintetizada e removida em 2026-10-08* | A 90 mede o campo de busca do painel: a 100 já saiu, então ela está livre | — |
+> | 6 | **91** ‖ ~~**98**~~ ✅ *sintetizada e removida em 2026-10-09* | A 91 espera a 90 | — |
+> | 7 | ~~**101**~~ ✅ *sintetizada e removida em 2026-10-09* ‖ **102** (lotes 2 e 3 aprovados no código; falta a medição em aparelho) | A 101 (motor de gráficos) toca só `src/components/engines/charts/` e a 102 (quadro kanban), só `DataDisplay/SarakKanban/` e componentes novos | As duas dividem `src/core/i18n/` e o `package.json`; a 102 depende da 98 (barra de progresso). A 101 **pode subir para a onda 5** (depende só da 96) se o revisor declarar a disjunção com a 90 e a 97 |
 > | 8 | **103** | O ADR-020 já existe ([[020-gantt-casca-propria]], 2026-10-05); falta a 102 inteira | Sozinha: usa `src/core/i18n/` e o barril de `DataDisplay` |
 >
 > 🧪 **O lote 1 da 102 (a avaliação das bibliotecas de arrastar e soltar e de Gantt) não toca o repositório** e pode ser
@@ -92,9 +89,35 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 >   `catalogEntries.part4.ts` (`kanban*`);
 > - `docs/migracoes.md` é dividido pela 101 e pela 102: cada uma acrescenta **a sua** seção, por substituição exata.
 >
+> 🚦 **Despacho de 2026-10-09 — 90 (lote 1, em execução) ‖ 103 (lote 1).** A `plan-102` está aprovada no código
+> nos três lotes; a medição em aparelho (§5 item 9) só pode acontecer **depois da release**, nos importadores —
+> o dono emite a tag ao fim de todas as specs. Por isso a 103 não espera o veredito final da 102: ela usa o código
+> já aprovado do quadro e do detalhe do cartão, e não depende do comportamento de toque. Se a medição falhar, só o
+> lote 2 da 102 volta ao dono. Disjunção declarada pelo revisor:
+> - a 90 fica em `src/styles/`, `atomic/hooks/useAtomicStyles.ts`, `Inputs/SarakSelect.tsx`,
+>   `Feedback/SarakDataEmpty.tsx`, `Buttons/SarakSocialButton.tsx` e `browser-tests/`;
+> - a 103 fica em `DataDisplay/SarakCalendar/`, `DataDisplay/SarakGantt/`, `Inputs/internal/calendarGrid.ts` (só
+>   exportar), `DataDisplay/index.ts`, `src/index.ts` e `catalogEntries.part6.ts` (chaves `calendar*`/`gantt*`);
+> - **o build é compartilhado:** a 103 regenera catálogo e kit (`npm run catalog && npm run guide`) logo depois
+>   de cada mudança de componente público, para a árvore continuar buildável; se o `npm run build` da 90 parar
+>   num check de artefato por edição da 103, ela roda as etapas de compilação uma a uma e relata.
+>
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,
 > pelo último a terminar.
+
+> ⚪ **As `plan-98`, `plan-100` e `plan-101` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **98** | [[03-superficie-publica]] **§6.7 (nova)** — `useOverlay().confirm()` com `Promise<boolean>` (`false` em cancelar, Esc, troca de overlay e desmontagem; inerte fora do Provider), `SarakModal` com cinco tamanhos por token, `SarakEmptyState` com título/descrição/ação/ícone, `SarakProgress` (limiares, indeterminado, `progressbar`), toast com título e ação (mínimo de 5 s). Ficou de fora: nada |
+> | **100** | [[06-painel-de-customizacao-e-preview]] **§2.3 (nova)** — o caminho escolher/ajustar/aplicar, "Começar de um tema", a Galeria de estilos sob demanda, a barra de ações (`Aplicar (N)` como porta única, Descartar global e por pilar, Exportar, Desfazer) e o menu Avançado · §3 (selo de dispositivo; rótulos ≥ 12 px) · §4 (toda porta que escolhe tema só altera o rascunho) · §4.2 (o desfazer na barra de ações) · §6.2 (barra do preview; empilhado pela altura do contêiner) · **§6.6 (nova)** (pilar ↔ tela em dois gestos; seis telas e "Mais telas") · §11. Ficou de fora: a medição do painel em navegador real (não há caso em `browser-tests/`; é da `plan-90`) |
+> | **101** | [[03-superficie-publica]] **§6.8 (nova)** — o motor de gráficos: tema e paleta categórica, `type` opcional, várias séries, os 17 formatos (com `waterfall`, `sankey` e `calendar`), estado vazio e ARIA, `recharts` como alternativa limitada, decisão de não trocar de biblioteca · [[09-temas-e-presets]] §4.4.3 e §10 (os sete tokens de gráfico têm consumidor). Ficou de fora: nada |
+>
+> Na mesma ação, por divergência que o HEAD desmente: [[03-superficie-publica]] §7.1 (o `SarakKanban` passou a ser
+> lazy, com `@dnd-kit` como peer opcional — a síntese completa da `plan-102` espera o veredito final dela);
+> [[06-painel-de-customizacao-e-preview]] §1 (`SarakCustomizationPanel`, nome do barril) e §6.2
+> (`SarakDeviceProvider`); [[00-contexto]] §4 (linhas para o painel e para tradução).
 
 > ⚪ **As `plan-89` e `plan-97` foram SINTETIZADAS e REMOVIDAS em 2026-10-08.** Destino demonstrado:
 >

@@ -349,6 +349,60 @@ literal dentro da lib. O mesmo valor está no atributo `data-sarak-build-info` d
 [[05-build-e-distribuicao]] §6. Ela não responde *"estou atualizado?"*: isso é do `sarak-ui check`
 ([[13-instalacao-e-atualizacao]] §10).
 
+## 6.7 Diálogo e feedback
+
+As peças que um sistema precisa para perguntar, avisar e mostrar andamento — todas renderizam sem Provider (R34)
+e tiram tamanho e cor de token:
+
+- **Confirmação imperativa.** `useOverlay().confirm({ title, message, confirmLabel?, cancelLabel?, tone? })` devolve
+  `Promise<boolean>`: `true` só no botão de confirmar; cancelar, Esc, fechar, abrir outro overlay por cima ou
+  desmontar o `SarakOverlayProvider` resolvem `false`. O foco fica preso no diálogo e volta a quem o abriu.
+  `tone: 'danger'` troca o botão de confirmar pela variante de perigo; os rótulos padrão vêm do catálogo de i18n.
+  Fora do Provider, `useOverlay()` é um controlador inerte e `confirm` resolve `false`.
+- **`SarakModal` com tamanhos.** `size` é `sm`, `md`, `lg` (o padrão), `xl` ou `full`; a largura máxima vem dos tokens
+  `modalWidthSm`…`modalWidthFull` (padrões 384, 448, 512, 768 e 1280 px).
+- **`SarakEmptyState` com conteúdo.** `title`, `description`, `action` (um nó, normalmente um `SarakButton`) e `icon`;
+  sem eles, continua a composição decorativa escolhida por `type`.
+- **`SarakProgress`.** `value`/`max`, `label` (nome acessível; padrão traduzido), `indeterminate` e `thresholds`
+  (`{ value, variant }[]`: vale o maior limiar que o valor atingiu; sem limiar, a cor é a de informação). É um
+  `role="progressbar"` com `aria-valuenow` omitido quando indeterminado; altura e raio pelos tokens
+  `progressBarHeight` e `progressBarRadius`, cor pelos tokens de status.
+- **Toast com título e ação.** `useToast().notify({ message, variant?, duration?, title?, action? })`: com `action`
+  (`{ label, onClick }`) a duração é de **pelo menos cinco segundos**; `duration` zero ou negativa desliga o
+  sumiço automático.
+
+Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
+
+## 6.8 O motor de gráficos
+
+`SarakChartEngine` desenha com **ECharts** (Apache-2.0) e é carregado sob demanda (§7.1). O que ele promete:
+
+- **O tema manda.** As cores, a fonte, a borda, a grade e o tooltip saem do design resolvido — inclusive os sete tokens
+  de gráfico ([[09-temas-e-presets]]). A cor de cada série segue a **paleta categórica** do tema, nesta ordem:
+  `chartColorPalette` → `secondaryColor` → `accentColor` → `statusSuccessColor` → `statusWarningColor` →
+  `statusErrorColor` → `statusInfoColor` → `tertiaryColor`. Uma série pode pedir uma cor pelo **nome** de um
+  desses tokens, nunca por valor.
+- **`type` é opcional**: sem ele vale o `chartType` do tema; a prop explícita vence. `config.title`,
+  `showAnimation`, `showGradients` e `thickness` (padrão: `chartThickness` do tema) mudam o desenho.
+- **Várias séries.** `series` (`{ key, label?, type?: 'bar' | 'line' | 'area', stack?, axis?: 'left' | 'right', dashed?,
+  color? }[]`), `stacked`, `orientation` (`'vertical' | 'horizontal'`), `legend` (padrão: escondida com uma série,
+  no topo com duas ou mais) e `onPointClick({ seriesKey, index, datum })`. `axis: 'right'` cria o segundo eixo
+  de valor (no topo, na horizontal); `dashed` desenha a linha de referência. Sem `series`, o desenho de uma série
+  segue o de sempre. Formatos não cartesianos ignoram `series`, `stacked` e `orientation`.
+- **Formatos**: `line`, `area`, `bar`, `pie`, `radar`, `gauge`, `scatter`, `heatmap`, `funnel`, `treemap`,
+  `candlestick`, `sunburst`, `histogram`, `boxplot`, `waterfall` (`{ name, value, total? }`: cada item é variação
+  sobre o acumulado, e `total: true` fecha o acumulado), `sankey` (`{ source, target, value }`: os nós saem das
+  ligações; ligação que fecharia ciclo é descartada) e `calendar` (`{ date, value }`: um ano inteiro, ou o
+  intervalo dos dados; dia sem dado fica vazio, não zero).
+- **Sem dado, sem exceção**: dado vazio ou sem o campo da série mostra o `SarakDataEmpty`, com texto traduzido.
+  O gráfico tem `role="img"` e `aria-label` (prop `ariaLabel`, padrão traduzido), e o módulo `aria` do ECharts
+  ligado.
+- **`engine: 'recharts'` é alternativa limitada**: desenha só barra e linha de uma série, e avisa uma vez, em
+  desenvolvimento, cada prop que não honra.
+
+**Decisão:** nenhuma biblioteca nova. O Grafana foi descartado (o servidor é AGPL-3.0 e traz design system
+próprio); o `uPlot` só se justificaria com séries de centenas de milhares de pontos.
+
 
 # 7. Fronteiras de bundle — a parte MEDIDA
 
@@ -375,8 +429,12 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 | `SarakMarkdownRenderer` | `src/components/atomic/Media/SarakMarkdownRenderer/index.ts:13` |
 | `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts:11` |
 | `SarakDataGrid` | `src/components/atomic/DataDisplay/SarakDataGrid/index.ts:14` |
+| `SarakKanban` | `src/components/atomic/DataDisplay/SarakKanban/SarakKanban.tsx` |
 
-`SarakKanban` **não** é lazy, e isso é deliberado — o comentário em `DataDisplay/SarakKanban/index.ts:3` registra que ele é leve (arrastar-e-soltar HTML5 nativo, zero dependência).
+`SarakKanban` arrasta com `@dnd-kit` (peer **opcional**, como `echarts`): o `dist/index.js` não referencia a
+biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é interno e direto, sem o
+`LazyEngineWrapper` — o wrapper exige Provider, e o quadro renderiza sem ele (R34). A lógica pura
+(`sarakMoveCard`) fica fora da fronteira e é exportada.
 
 # 8. Dívidas nomeadas — as duas ondas de limpeza
 

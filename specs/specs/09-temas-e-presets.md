@@ -362,6 +362,12 @@ quem cai nele por omissão.** Um valor que produz resultado quebrado ou é **con
 schema**. Deixá-lo de pé e desviar o default é o conserto que passa em todos os gates e continua quebrado
 na tela de quem já o tinha salvo.
 
+**Os sete tokens de gráfico têm consumidor.** `chartColorPalette` (a cor da 1.ª série), `chartGridOpacity`,
+`chartShowGrid`, `chartTooltipBg`, `chartType` (o formato quando o gráfico não diz qual), `chartThickness` e
+`chartSmoothing` são lidos pelo motor de gráficos ([[03-superficie-publica]] §6.8): mudar um deles no tema muda o
+gráfico desenhado. As demais séries tomam as cores do próprio design (secundária, destaque e as quatro de status,
+nessa ordem), sem token próprio de paleta.
+
 ## 4.5 Exportar — o substituto do "salvar no banco"
 
 `buildThemeExportPayload` (`exportTheme.ts:40-46`) exporta o conjunto **COMPLETO** de tokens, não o
@@ -638,6 +644,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | Nenhuma atmosfera shippada depende de servidor de terceiro | `src/core/Design/presets/components/__tests__/atmosphere.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |
+| Cada um dos sete tokens de gráfico muda a opção entregue ao ECharts | `src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts` · `src/components/engines/charts/__tests__/SarakChartEngine.test.tsx` |
 
 **Nada a implementar.** Um tema novo é coberto automaticamente pelas duas suítes de contrato — é o que
 significa "anti-drift por construção".

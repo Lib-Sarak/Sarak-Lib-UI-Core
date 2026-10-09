@@ -18,7 +18,16 @@
  */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { SarakUIProvider, SarakAppChrome, SarakButton } from '@sarak/lib-ui-core';
+import {
+    SarakUIProvider,
+    SarakAppChrome,
+    SarakButton,
+    SarakCustomizationPanel,
+    SarakInput,
+    SarakSelect,
+    SarakSwitch,
+    SarakTitleCard,
+} from '@sarak/lib-ui-core';
 
 const NAV_ITEMS = [
     { id: 'inicio', label: 'Início', href: '/inicio' },
@@ -71,6 +80,9 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'cromo-densidade-confortavel': { layoutDensity: 'comfortable' },
     'cromo-densidade-espacosa': { layoutDensity: 'spacious' },
     'cromo-vista-dividida': { isSplitViewEnabled: true },
+    'atomo-frosted': { btnStyleType: 'frosted' },
+    'atomo-neumorphism': { inputShadow: 'neumorphism' },
+    'atomo-glass': { switchStyleType: 'glass' },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -139,6 +151,81 @@ const App: React.FC = () => {
     );
 };
 
+/**
+ * `?cena=<nome>` troca a página inteira por uma cena de prova de CSS que o cromo não exercita.
+ * Sem o parâmetro vale o `App` acima, intocado. Cada cena só usa classes que o
+ * `dist/sarak.css` já emite.
+ *   - `textura`: cartão real da lib e um elemento com utilitária de fundo cujo NOME contém
+ *     `card`, sob a textura que o tema default já liga no `body`.
+ *   - `sem-provider`: botões nativos SEM `SarakUIProvider` — só o `dist/sarak.css` e o HTML.
+ *   - `atomos`: os átomos de formulário e botão que escrevem estilo inline.
+ *   - `select-grade`: `SarakSelect` sem e com `fullWidth`, cada um numa célula de grade que estica.
+ *   - `painel`: um botão que monta o painel de customização carregado sob demanda.
+ */
+const SCENE_ITEM = { nome: 'Cartão de prova' };
+const SCENE_MAPPING = { title: 'nome' };
+
+const TextureScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <SarakTitleCard item={SCENE_ITEM} mapping={SCENE_MAPPING} />
+        <div data-probe="utilitaria-com-card-no-nome" className="bg-[var(--sarak-card-bg)]">
+            Utilitária com card no nome
+        </div>
+    </div>
+);
+
+const NoProviderScene: React.FC = () => (
+    <div>
+        <button type="button">Prova hover sem Provider</button>
+    </div>
+);
+
+const AtomsScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="botao"><SarakButton>Botão de prova</SarakButton></div>
+        <div data-probe="campo"><SarakInput aria-label="Campo de prova" /></div>
+        <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
+    </div>
+);
+
+const GRID_CELL_STYLE: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', width: '600px' };
+
+const SelectGridScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="select-sem-largura-total" style={GRID_CELL_STYLE}>
+            <SarakSelect aria-label="Seletor sem largura total"><option>Curto</option></SarakSelect>
+        </div>
+        <div data-probe="select-largura-total" style={GRID_CELL_STYLE}>
+            <SarakSelect fullWidth aria-label="Seletor com largura total"><option>Curto</option></SarakSelect>
+        </div>
+    </div>
+);
+
+const PanelScene: React.FC = () => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    return (
+        <div style={{ height: '100dvh' }}>
+            <button type="button" onClick={() => setIsOpen(true)}>Abrir painel</button>
+            {isOpen && <div style={{ height: '80dvh' }}><SarakCustomizationPanel /></div>}
+        </div>
+    );
+};
+
+const SCENES: Record<string, React.FC> = {
+    textura: TextureScene,
+    'sem-provider': NoProviderScene,
+    atomos: AtomsScene,
+    'select-grade': SelectGridScene,
+    painel: PanelScene,
+};
+
+function renderScene(Scene: React.FC): React.ReactElement {
+    if (searchParams.get('cena') === 'sem-provider') return <Scene />;
+    return <SarakUIProvider config={resolveHarnessConfig()}><Scene /></SarakUIProvider>;
+}
+
+const SceneComponent = SCENES[searchParams.get('cena') ?? ''];
+
 const container = document.getElementById('root');
 if (!container) throw new Error('harness-entry: #root ausente no HTML do harness.');
-createRoot(container).render(<App />);
+createRoot(container).render(SceneComponent ? renderScene(SceneComponent) : <App />);

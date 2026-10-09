@@ -226,6 +226,8 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
 | **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as três camadas de cache entre o `dist/` e o navegador, e o selo que diz qual build a página executa | skill local `ui-integra-consumidor` |
 | Mexer no cromo, nos slots, nos widgets da barra ou na navegação | `specs/05-cromo-e-slots` | [[00-knowledge]] |
+| Mexer no painel de customização ou no preview | `specs/06-painel-de-customizacao-e-preview` + `specs/09-temas-e-presets` | [[00-knowledge]] |
+| Texto que a lib mostra, idioma, chave de tradução | `specs/10-seguranca-e-acessibilidade` §3.6 | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
 | **Operar Git**: commit, PR, merge na `main`, emitir release | `specs/17-contrato-de-operacao-git` (quem faz o quê) + `specs/03` + `specs/16` + `adr/008` | skill local **`git-ci-cd`** — ela **instrui, nunca executa** |
 | Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` + `specs/16-integracao-continua` | [[00-knowledge]] |
