@@ -185,8 +185,8 @@ Os 3, com onde moram:
 | --- | --- |
 | `Atoms` | Primitivas de base — os menores blocos reutilizáveis, incluindo tipografia |
 | `Buttons` | Botões e botão-ícone |
-| `Cards` | Cartões de conteúdo, ação, busca e título |
-| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban, árvore, sparkline |
+| `Cards` | Cartões de conteúdo, ação, busca e título. Os tokens de direção e alinhamento de cartão valem para os cartões de domínio (lidos por `useCardLayoutStyles(design)`); o cartão composto (`SarakCard` e peças) **não** os lê — as peças dele são explícitas, e o layout é uma classe fixa (`compositeCardLayoutClassName`) |
+| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban e os blocos de detalhe do cartão (§6.10), árvore, sparkline |
 | `Feedback` | Comunicação de estado — toast, alerta, carregamento, estado vazio |
 | `Icon` | O sistema de ícones (`SarakIcon`, `IconMap`) |
 | `Inputs` | Entrada de dados, do básico ao denso (pickers, multiselect, rich text, uploader) |
@@ -273,6 +273,8 @@ Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com
 - **`data`** — o dado já carregado. O template o renderiza e **não chama `load`**;
 - **`load`** — uma função do host que devolve uma `Promise` com o dado. O template mostra carregamento enquanto
   ela não resolve, e o estado de erro se ela rejeita.
+
+Sem nenhuma das duas props, nenhum template busca nem fica preso em carregamento.
 
 `SarakForm` entrega os valores por `onSubmit`, sem campo de envio quando o host não o passa. `SarakChat` envia
 por `onSend` (a função do host recebe a mensagem e um `onToken` para resposta em fluxo) e lista modelos por
@@ -402,6 +404,54 @@ Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catá
 
 **Decisão:** nenhuma biblioteca nova. O Grafana foi descartado (o servidor é AGPL-3.0 e traz design system
 próprio); o `uPlot` só se justificaria com séries de centenas de milhares de pontos.
+
+## 6.9 Campos: rótulo, erro e ícones
+
+**O erro de campo tem uma forma só.** Todo átomo de campo com a prop `error` (`SarakInput`, `SarakSelect`,
+`SarakTextarea`, `SarakDatePicker`, `SarakMultiSelect`, `SarakRangeSlider`, `SarakRichText`, `SarakTimePicker`,
+`SarakUploader`) a desenha pelo **`SarakFieldError`**: ícone e texto, `role="alert"`, com o id que o controle
+referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulário que misture átomos e
+`SarakFieldError` solto mostra um erro só de aparência. A prop `error` é `string`.
+
+- **Rótulo:** os átomos de campo têm `label`, ligado ao controle (`htmlFor`/`id`). O `SarakSelect` sem `label` tem
+  o mesmo DOM de sempre.
+- **Ícones do `SarakInput`:** `leftIcon` e `rightIcon` aparecem **juntos**, cada um no seu lado, e o da direita é
+  clicável (é o que permite "mostrar senha"); `icon` prevalece sobre os dois.
+- **Texto do átomo pelo idioma da lib:** os rótulos acessíveis padrão (como os do intervalo e do grupo de horário)
+  saem do catálogo de i18n ([[10-seguranca-e-acessibilidade]] §3.6).
+
+## 6.10 Quadro kanban e detalhe do cartão
+
+`SarakKanban` (`DataDisplay/SarakKanban/`) é carregado sob demanda (§7.1) e arrasta com `@dnd-kit/core` e
+`@dnd-kit/sortable`, peers **opcionais** ([[019-arrastar-e-soltar-do-kanban]]): quem renderiza um quadro as instala.
+
+- **Reordenar de verdade:** o cartão cai no **índice onde se soltou**, dentro da coluna ou em outra.
+  `onCardMove` recebe `cardId`, `fromColumn`, `toColumn`, `fromIndex`, `toIndex` e os vizinhos finais
+  `beforeCardId`/`afterCardId` (`null` nas pontas) — o bastante para o host calcular a ordem sem reler o quadro.
+  Soltar no mesmo lugar não emite evento. A lógica pura (`sarakMoveCard`) é exportada e fica fora da fronteira lazy.
+- **Toque e teclado:** o toque ativa por pressão longa (250 ms, tolerância de 5 px), sem impedir a rolagem da página;
+  o teclado levanta e solta com Espaço, move pelas setas e cancela com Esc; os anúncios para leitor de tela saem do
+  catálogo de i18n; a borda rola sozinha durante o arrasto. **A medição em aparelho e em navegador real está
+  pendente** (ADR-019).
+- **Cartão padrão** (`SarakKanbanCard`, todos opcionais): `code`, `title`, `description`, `assignee`, `priority`
+  (`low`, `medium`, `high`, `urgent` — a média não aparece), `dueDate` (atrasado pela cor de erro do tema) e
+  `subtasks`. `renderCard` vence o padrão.
+- **Sem evento, sem controle:** `onCardClick`, `onCardAdd` (criação rápida no rodapé da coluna), `onColumnAdd`,
+  `onColumnRename` e `onColumnDelete` (menu da coluna) só desenham o controle correspondente quando passados.
+- **Layout:** container query, mobile-first; no celular o quadro rola na horizontal com uma coluna por vez.
+
+**Blocos para o detalhe do cartão**, compostos pelo host (por exemplo, num `SarakDrawer` aberto pelo
+`onCardClick`):
+
+| Bloco | Contrato |
+|---|---|
+| `SarakChecklist` | `items { id, label, done }[]`, `onToggle(id, done)`, `onAdd?`, `onRemove?`, `showProgress?` (progresso pelo `SarakProgress`) |
+| `SarakCommentThread` | `comments { id, author { name, avatarUrl? }, body, createdAt }[]`, `onSubmit(text)`, `onDelete?`; horário relativo no idioma da lib; Ctrl/Cmd+Enter envia |
+| `SarakActivityFeed` | `entries { id, actor?, text, at }[]`, em linha do tempo |
+| `SarakAssigneePicker` (`Inputs/`) | `people { id, name, avatarUrl? }[]`, `value`, `onChange(id \| null)`, `clearable?` |
+
+Todos renderizam sem Provider (R34) e têm estado vazio. Datas aceitam `string`, `number` ou `Date`
+(`SarakTimestamp`); data inválida não vira texto quebrado — o horário some.
 
 
 # 7. Fronteiras de bundle — a parte MEDIDA

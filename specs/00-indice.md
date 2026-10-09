@@ -42,9 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 2 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
-| 3 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre
@@ -59,9 +57,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | 3 | ~~**95** ‖ **99**~~ ✅ *sintetizadas e removidas (95 em 2026-10-06, 99 em 2026-10-07)* | A cadeia 95→96→97→98 é a mais longa; a 99 (busca e modo Impacto do painel de temas) toca só `src/features/DesignEngine/Main/`, `utils/`, `config/` e as partições do catálogo | A 94 já saiu (a 99 parte da árvore dela); a 89 colide com a 95 (`navItem.ts`, `schema/system.ts`), por isso não é par dela |
 > | 4 | ~~**89** ‖ **96** ‖ **100**~~ ✅ *sintetizadas e removidas (96 em 2026-10-07, 89 em 2026-10-08, 100 em 2026-10-09)* | A 100 mexe só em `src/features/DesignEngine/` | — |
 > | 5 | ~~**90** ‖ **97**~~ ✅ *sintetizadas e removidas (97 em 2026-10-08, 90 em 2026-10-09)* | A 90 mediu o campo de busca do painel depois da 100 | — |
-> | 6 | **91** ‖ ~~**98**~~ ✅ *sintetizada e removida em 2026-10-09* | A 91 espera a 90 | — |
-> | 7 | ~~**101**~~ ✅ *sintetizada e removida em 2026-10-09* ‖ **102** (lotes 2 e 3 aprovados no código; falta a medição em aparelho) | A 101 (motor de gráficos) toca só `src/components/engines/charts/` e a 102 (quadro kanban), só `DataDisplay/SarakKanban/` e componentes novos | As duas dividem `src/core/i18n/` e o `package.json`; a 102 depende da 98 (barra de progresso). A 101 **pode subir para a onda 5** (depende só da 96) se o revisor declarar a disjunção com a 90 e a 97 |
-> | 8 | **103** | O ADR-020 já existe ([[020-gantt-casca-propria]], 2026-10-05); falta a 102 inteira | Sozinha: usa `src/core/i18n/` e o barril de `DataDisplay` |
+> | 6 | ~~**91** ‖ **98**~~ ✅ *sintetizadas e removidas em 2026-10-09* | A 91 esperou a 90 | — |
+> | 7 | ~~**101** ‖ **102**~~ ✅ *sintetizadas e removidas em 2026-10-09 (a 102 sem a medição em aparelho, por decisão do dono: `00-backlog` item 20)* | A 101 tocou só `engines/charts/` e a 102, `DataDisplay/SarakKanban/` e componentes novos | — |
+> | 8 | **103** | O ADR-020 já existe ([[020-gantt-casca-propria]], 2026-10-05); a 102 saiu (sintetizada) | Sozinha na árvore desde a síntese da 91 e da 102 |
 >
 > 🧪 **O lote 1 da 102 (a avaliação das bibliotecas de arrastar e soltar e de Gantt) não toca o repositório** e pode ser
 > despachado em **qualquer onda**, em paralelo a qualquer plan — é o que antecipa o ADR-019 e o ADR-020. O resultado
@@ -115,6 +113,13 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,
 > pelo último a terminar.
+
+> ⚪ **As `plan-91` e `plan-102` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **91** | [[03-superficie-publica]] §6.3 (sem `data` nem `load`, nenhum template busca nem fica preso em carregamento) · tabela da §6, linha `Cards` (o cartão composto não lê os tokens de direção e alinhamento) · **§6.9 (nova)** — o erro de campo com uma forma só (`SarakFieldError`, `role="alert"`, `aria-describedby`, `aria-invalid`) nos nove átomos, o `label` do select, os dois ícones do `SarakInput`, os rótulos acessíveis pelo i18n. Ficou de fora: o item 10 (worker do PDF) — `00-backlog` item 18, decisão do dono; os textos fixos restantes — item 19 |
+> | **102** | **[[019-arrastar-e-soltar-do-kanban]] (novo)** — `@dnd-kit` como peer opcional atrás do adaptador `useKanbanDrag`, com as três alternativas medidas, a escolha pelo risco e o gatilho de reavaliação · [[03-superficie-publica]] **§6.10 (nova)** — o contrato de `onCardMove` (índice de soltura e vizinhos; nada no mesmo lugar), toque e teclado, cartão padrão, eventos opcionais, layout, os quatro blocos do detalhe do cartão; linha `DataDisplay` da §6; §7.1 (já registrado) · [[13-instalacao-e-atualizacao]] §2 (as duas peers opcionais; a contagem de peers passa ao comando que conta) · `adr/README.md`. Ficou de fora: **a medição em aparelho e em navegador real** do quadro — por decisão do dono, ela só acontece no primeiro importador atualizado com a 8.0.0 (`00-backlog` item 20); falhou, o ADR-019 se reabre |
 
 > ⚪ **A `plan-90` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
 >
