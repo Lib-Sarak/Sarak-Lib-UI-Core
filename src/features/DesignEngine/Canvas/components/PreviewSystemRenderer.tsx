@@ -11,7 +11,6 @@ import {
 } from '../previewScreens';
 
 export interface PreviewSystemRendererProps {
-    useSystemDesign?: boolean;
     sarak: SarakUIContextType;
     tokens: Partial<SarakDesignState>;
     isDualView?: boolean;
@@ -28,7 +27,6 @@ export const arePreviewPropsEqual = (
     previous.tokens === next.tokens &&
     previous.apps === next.apps &&
     previous.sarak === next.sarak &&
-    previous.useSystemDesign === next.useSystemDesign &&
     previous.previewDevice === next.previewDevice &&
     previous.isDualView === next.isDualView &&
     previous.activePreviewApp === next.activePreviewApp;
@@ -114,8 +112,6 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
 
 function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.ReactElement {
     const {
-        useSystemDesign = false,
-        sarak,
         tokens,
         isDualView,
         previewDevice,
@@ -123,7 +119,6 @@ function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.Rea
         selectPreviewApp,
         apps,
     } = props;
-    const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
     const { containerRef, scale } = useContainerScale(isDualView ? 0.75 : 0.95);
     const navigationItems = React.useMemo<SarakNavItem[]>(
         () => createNavigationItems(apps, activePreviewApp),
@@ -136,7 +131,7 @@ function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.Rea
     );
 
     return <PreviewDeviceSurface
-        activeDesign={activeDesign}
+        activeDesign={tokens}
         previewDevice={previewDevice}
         containerRef={containerRef}
         scale={scale}

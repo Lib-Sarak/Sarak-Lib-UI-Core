@@ -663,7 +663,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakRangeSlider** | `label` · `min` · `max` · `step` · `value` · `defaultValue` · `disabled` · `error` · `hideTooltips` · `onChange` |
 | Inputs | **SarakRichText** | `value` · `defaultValue` · `onChange` · `placeholder` · `disabled` · `error` · `className` |
 | Inputs | **SarakSearch** | `isOpen` · `onClose` · `items` · `onSelect` |
-| Inputs | **SarakSelect** | `error` · `fullWidth` |
+| Inputs | **SarakSelect** | `label` · `error` · `fullWidth` |
 | Inputs | **SarakSlider** | `label` · `valueLabel` |
 | Inputs | **SarakSwitch** | `label` · `description` |
 | Inputs | **SarakTextarea** | `error` · `fullWidth` |

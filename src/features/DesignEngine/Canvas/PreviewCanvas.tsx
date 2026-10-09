@@ -79,10 +79,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const apps = usePreviewApps(tokens, config, previewAnimationStyle, selectPreviewApp);
 
-    const renderSystemContent = (useSystemDesign = false) => {
+    const renderSystemContent = () => {
         return (
             <PreviewSystemRenderer 
-                useSystemDesign={useSystemDesign}
                 sarak={sarak}
                 tokens={tokens}
                 isDualView={isDualView}
@@ -119,7 +118,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 isInspecting={isInspecting}
                                 setIsInspecting={setIsInspecting}
                             >
-                                {renderSystemContent(false)}
+                                {renderSystemContent()}
                             </LiveDraftPreviewFrame>
 
 

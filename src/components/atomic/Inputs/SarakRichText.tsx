@@ -10,10 +10,11 @@ import { SarakIcon } from "../Icon/SarakIcon";
  * consumido pelo `model`/`coerceEventValue` do LeafNode (Spec 32).
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 
 import { sanitizeHtml } from '../../../core/Security/sanitizeHtml';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 
 /** Allowlist semântica restrita (Regra 4): sem `style`/`script`, só marcação segura. */
 const ALLOWED_TAGS = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'blockquote', 'code'];
@@ -59,6 +60,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
     className = '',
 }) => {
     const ref = useRef<HTMLDivElement>(null);
+    const reactId = useId();
 
     // Semeia o conteúdo inicial uma vez (e ressincroniza só se o `value` externo divergir
     // do DOM — evita "pular" o cursor a cada tecla, que ocorreria reescrevendo sempre).
@@ -143,6 +145,8 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 role="textbox"
                 aria-multiline="true"
                 aria-label={placeholder}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? `${reactId}-error` : undefined}
                 data-sarak-richtext="true"
                 contentEditable={!disabled}
                 suppressContentEditableWarning
@@ -164,9 +168,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 }}
             />
 
-            {error && (
-                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </div>
     );
 };

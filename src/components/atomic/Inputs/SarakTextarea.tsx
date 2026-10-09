@@ -1,11 +1,13 @@
-import React, { TextareaHTMLAttributes, useState } from 'react';
+import React, { TextareaHTMLAttributes, useId, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 
 export interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     /**
-     * Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o
-     * texto não é associado automaticamente ao `<textarea>` por `aria-describedby`.
+     * Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por
+     * `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`.
+     * Sem a prop, não há mensagem nem estado inválido.
      */
     error?: string;
     /**
@@ -30,6 +32,8 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
     const design = useSarakUIOptional()?.design;
     const { getInputStyles } = useAtomicStyles();
     const [isFocused, setIsFocused] = useState(false);
+    const reactId = useId();
+    const textareaId = props.id ?? reactId;
 
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input p-4';
@@ -48,15 +52,14 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
                 className={`${baseClasses} ${shapeClasses} ${widthClass} ${disabledClass} ${className}`}
                 disabled={disabled}
                 style={dynamicStyle}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? `${textareaId}-error` : undefined}
                 onFocus={(e) => { setIsFocused(true); props.onFocus?.(e); }}
                 onBlur={(e) => { setIsFocused(false); props.onBlur?.(e); }}
                 {...props}
+                id={textareaId}
             />
-            {error && (
-                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                    {error}
-                </p>
-            )}
+            <SarakFieldError message={error} fieldId={textareaId} />
         </div>
     );
 };

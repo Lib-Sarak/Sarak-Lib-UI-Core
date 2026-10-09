@@ -206,7 +206,9 @@ base (preflight do Tailwind)  →  components.sarak-elements  →  utilities  �
 **Num elemento com classe utilitária, a classe decide; sem classe, vale o padrão da lib.** Os padrões que
 miram **elemento ou atributo solto** moram em `_elements.css`, na subcamada `components.sarak-elements`: raio,
 hover, estado ativo e foco de `<button>`; raio de campo; família, cor, tamanho e peso de título; família de
-texto; e a ponte do token `borderStyle`. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
+texto; os padrões do **`body`** (cor, família, tamanho, peso, entrelinha, margens, transição e `overflow-x`, num
+lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color` fica em `_base.css`, com
+`!important`, na camada final. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
 `bg-theme-card`, `border-theme`, `[data-surface]` e as texturas. Vale igual nos dois artefatos, `dist/sarak.css` e
 `dist/sarak-scoped.css`: o escopado herda a ordem do mesmo `sarak-base.css`.
 
@@ -225,12 +227,24 @@ texto; e a ponte do token `borderStyle`. As classes que a lib aplica por nome fi
   ponte do `borderStyle` alimenta essa variável. O raio do botão chega por `.rounded-btn`, que compõe os quatro
   cantos (`btnRadiusTL/TR/BR/BL`) com o raio mestre como reserva de cada um.
 
-**O que ainda não cede à classe:**
-- **o `body`** (tamanho, peso e entrelinha), porque a entrelinha literal de `_base.css` só perde para o token por
-  ordem de arquivo dentro da camada final;
-- **o `transform` do botão pressionado**, que é `!important`.
+**O que ainda não cede à classe:** o **`transform` do botão pressionado** e o **`background-color` do
+`body`**, os dois `!important` na camada final por desenho.
+
+**A lib alcança cartão por âncora explícita, nunca por substring de nome de classe.** A superfície e a textura de
+cartão sob o tema chegam por três âncoras: `.sarak-card` (o cartão completo: superfície, padding, borda e
+`clip-path`, em `_cards.css`), `.card` e `.bg-theme-card` (superfície e textura sem padding nem borda próprios).
+Nenhum seletor da lib casa `[class*="card"]`: uma utilitária com `card` no nome — da lib ou do consumidor, como
+`bg-[var(--color-theme-card,…)]` — computa o fundo que a própria classe escreve. Contêiner que é cartão de fato
+recebe a âncora `card`; controle (campo, botão, menu) não recebe.
+
+**Custom property nunca referencia a si mesma.** As reservas de hover, ativo e foco (`--theme-*-hover`,
+`-active`, `-focus`) e a do raio caem numa cor ou num valor que existe **sem** o Design Engine montado; com ele, o
+valor que ele injeta no `body` vence a regra. Ciclo é inválido no CSS e anularia a reserva em silêncio.
 
 **A prova é de navegador, não de `jsdom`:** `npm run cromo-css-real:check` (job de CI) mede, em Chromium real
 contra o `dist/`, que a classe vence o padrão em raio, hover, família e estilo de borda, e que o padrão continua
 sem classe. Os casos "continua sem classe" usam um valor que importa: cantos diferentes do mestre, e o token de
-borda fora do default.
+borda fora do default. O mesmo comando roda `browser-tests/css-que-so-o-navegador-mede.spec.ts`: utilitária com
+`card` no nome sob textura, hover sem Provider, `body` que cede à classe de entrelinha, valores de estilo inline
+dos átomos (frosted, foco, `neumorphism`, switch, intervalo, acordeão) e a seta do `SarakSelect` numa célula que
+estica — cada caso com a contraprova de que o padrão sem classe não muda.

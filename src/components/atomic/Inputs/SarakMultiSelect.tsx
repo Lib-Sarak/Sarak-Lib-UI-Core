@@ -1,5 +1,6 @@
 import React, { useId, useMemo, useRef, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface SarakMultiSelectOption {
@@ -153,11 +154,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                 )}
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
-                    {error}
-                </p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

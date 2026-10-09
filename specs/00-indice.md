@@ -42,10 +42,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🟢 Aprovada | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
-| 2 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 3 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
-| 4 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
+| 2 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
+| 3 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre
@@ -59,7 +58,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > | 2 | ~~**94**~~ ✅ *sintetizada e removida em 2026-10-05* | Foi o caminho crítico: liberou a 89 e a 95, e por elas todas as outras | Rodou **sozinha na árvore** — removeu o modo host |
 > | 3 | ~~**95** ‖ **99**~~ ✅ *sintetizadas e removidas (95 em 2026-10-06, 99 em 2026-10-07)* | A cadeia 95→96→97→98 é a mais longa; a 99 (busca e modo Impacto do painel de temas) toca só `src/features/DesignEngine/Main/`, `utils/`, `config/` e as partições do catálogo | A 94 já saiu (a 99 parte da árvore dela); a 89 colide com a 95 (`navItem.ts`, `schema/system.ts`), por isso não é par dela |
 > | 4 | ~~**89** ‖ **96** ‖ **100**~~ ✅ *sintetizadas e removidas (96 em 2026-10-07, 89 em 2026-10-08, 100 em 2026-10-09)* | A 100 mexe só em `src/features/DesignEngine/` | — |
-> | 5 | **90** ‖ ~~**97**~~ ✅ *sintetizada e removida em 2026-10-08* | A 90 mede o campo de busca do painel: a 100 já saiu, então ela está livre | — |
+> | 5 | ~~**90** ‖ **97**~~ ✅ *sintetizadas e removidas (97 em 2026-10-08, 90 em 2026-10-09)* | A 90 mediu o campo de busca do painel depois da 100 | — |
 > | 6 | **91** ‖ ~~**98**~~ ✅ *sintetizada e removida em 2026-10-09* | A 91 espera a 90 | — |
 > | 7 | ~~**101**~~ ✅ *sintetizada e removida em 2026-10-09* ‖ **102** (lotes 2 e 3 aprovados no código; falta a medição em aparelho) | A 101 (motor de gráficos) toca só `src/components/engines/charts/` e a 102 (quadro kanban), só `DataDisplay/SarakKanban/` e componentes novos | As duas dividem `src/core/i18n/` e o `package.json`; a 102 depende da 98 (barra de progresso). A 101 **pode subir para a onda 5** (depende só da 96) se o revisor declarar a disjunção com a 90 e a 97 |
 > | 8 | **103** | O ADR-020 já existe ([[020-gantt-casca-propria]], 2026-10-05); falta a 102 inteira | Sozinha: usa `src/core/i18n/` e o barril de `DataDisplay` |
@@ -116,6 +115,12 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,
 > pelo último a terminar.
+
+> ⚪ **A `plan-90` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **90** | [[02-design-engine]] §9.1 — o `body` mora num lugar só (`_elements.css`) e cede à classe, e sai de *"o que ainda não cede"* (fica só o `background-color !important` dele); **regra nova:** a lib alcança cartão por âncora explícita (`.sarak-card`, `.card`, `.bg-theme-card`), nunca por substring de nome de classe; custom property nunca referencia a si mesma, e a reserva vale sem o engine; o spec de navegador novo · [[11-testes-e-cobertura]] §7.3 — os dois arquivos de `browser-tests/`, as famílias novas (cascata sob textura, render sem Provider, `body`, estilo inline dos átomos, seta do select, busca do painel) e o que a medição não vê (latência de chunk). Ficou de fora: as notas de migração da 8.0.0 continuam com classificação abaixo de MAJOR em `docs/migracoes.md` (correção pela via direta, pendente) |
 
 > ⚪ **As `plan-98`, `plan-100` e `plan-101` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
 >

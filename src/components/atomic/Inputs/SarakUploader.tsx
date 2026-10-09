@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useId } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /**
@@ -61,6 +62,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
     onReject,
 }) => {
     const t = useLibraryText();
+    const reactId = useId();
     const onDrop = useCallback(
         (accepted: File[], rejections: SarakFileRejection[]): void => {
             if (accepted.length > 0) onChange?.(accepted);
@@ -96,6 +98,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                 }}
                 aria-disabled={disabled || undefined}
                 aria-invalid={error ? true : undefined}
+                aria-describedby={error ? `${reactId}-error` : undefined}
             >
                 {/* R10 declarado como FALSO POSITIVO do gate (plan-22, triagem 2026-08-10),
                     não corrigido: `getInputProps()` do react-dropzone injeta este input com
@@ -120,9 +123,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                 {hint && <span className="text-2xs text-[var(--text-muted,#94a3b8)]/70">{hint}</span>}
             </div>
 
-            {error && (
-                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

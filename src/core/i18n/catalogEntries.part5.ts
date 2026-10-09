@@ -96,4 +96,16 @@ export const CATALOG_PART_5 = {
         pt: 'Excluir item', en: 'Delete item', es: 'Eliminar elemento',
         fr: 'Supprimer l’élément', de: 'Element löschen', it: 'Elimina elemento',
     },
+    rangeMinAriaLabel: {
+        pt: '{label} mínimo', en: '{label} minimum', es: '{label} mínimo',
+        fr: '{label} minimum', de: '{label} Minimum', it: '{label} minimo',
+    },
+    rangeMaxAriaLabel: {
+        pt: '{label} máximo', en: '{label} maximum', es: '{label} máximo',
+        fr: '{label} maximum', de: '{label} Maximum', it: '{label} massimo',
+    },
+    timeGroupAriaLabel: {
+        pt: 'Horário', en: 'Time', es: 'Hora',
+        fr: 'Heure', de: 'Uhrzeit', it: 'Orario',
+    },
 } satisfies Record<string, LibraryTextEntry>;

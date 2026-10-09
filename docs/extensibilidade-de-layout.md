@@ -52,7 +52,7 @@ const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
 - **Modo Embarcado** (`mode: 'embedded'`): overlays de página inteira ficam desligados por
   desenho — a lib não é dona da página do host. Nesse modo, use os **slots** (nível b).
 - Tokens relacionados (schema vivo, `sarakGetAllDesignTokens()`): `globalBackgroundImageUrl`,
-  `globalBackgroundOpacity`, `globalBackgroundBlur`, `globalBackgroundBlendMode`, `texture`,
+  `globalBackgroundOpacity`, `globalBackgroundBlur`, `texture`,
   `textureOpacity`, `atmosphereNoiseOpacity`, `bgNoiseAnimation`, `bgGradientMode`.
 
 ---

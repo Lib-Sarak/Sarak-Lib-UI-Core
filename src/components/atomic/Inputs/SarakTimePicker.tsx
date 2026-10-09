@@ -1,5 +1,7 @@
 import React, { useId, useMemo } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakTimePickerProps {
     label?: string;
@@ -41,6 +43,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
     style,
     onChange,
 }) => {
+    const t = useLibraryText();
     const reactId = useId();
     const errorId = `${reactId}-error`;
     const [hour, minute] = useMemo(() => {
@@ -63,7 +66,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
-            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-label={label ?? 'Horário'}>
+            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-label={label ?? t('timeGroupAriaLabel')}>
                 <select
                     aria-label="Hora"
                     aria-invalid={error ? true : undefined}
@@ -95,9 +98,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                 </select>
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

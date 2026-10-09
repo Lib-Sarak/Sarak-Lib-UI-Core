@@ -58,3 +58,19 @@ describe('SarakUploader — idioma que vale', () => {
         expect(screen.getByText('Drag files here or click to select')).toBeInTheDocument();
     });
 });
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        const { container } = render(<SarakUploader error="Campo obrigatório" />);
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(container.querySelector('[aria-invalid="true"]')).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        render(<SarakUploader />);
+        expect(screen.queryByRole('alert')).toBeNull();
+    });
+});

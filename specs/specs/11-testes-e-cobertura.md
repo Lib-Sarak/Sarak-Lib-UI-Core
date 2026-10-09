@@ -368,9 +368,11 @@ em `jsdom`, como a local ([[16-integracao-continua]] §5).
 
 ## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
 
-`browser-tests/cromo-css-real.spec.ts`, rodando por `npm run cromo-css-real:check` — que **builda antes**,
-sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
-(`grep -c "^test(" browser-tests/cromo-css-real.spec.ts`); o que eles cobrem cabe em cinco famílias:
+Dois arquivos em `browser-tests/`, rodando juntos por `npm run cromo-css-real:check` — que **builda antes**,
+sempre, porque o harness lê `dist/`: `cromo-css-real.spec.ts` (o cromo e o padrão de elemento) e
+`css-que-so-o-navegador-mede.spec.ts` (o CSS dos átomos e da atmosfera que o `jsdom` não resolve). **Quantos
+casos são, os arquivos dizem** (`grep -c "^test(" browser-tests/*.spec.ts`). O harness escolhe a cena pela URL
+(`?cena=`), e sem ela monta o cromo de sempre. O que os casos cobrem cabe nestas famílias:
 
 - a **métrica do item de navegação** nas três faixas de [[07-responsividade-e-multidispositivo]] §2;
 - o **contrato de altura e rolagem** do cromo ([[05-cromo-e-slots]] §5.1);
@@ -378,7 +380,16 @@ sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
 - a **classe utilitária vencendo o padrão de elemento** — e o padrão valendo quando não há classe;
 - o **fundo da raiz** do cromo, com e sem mídia global;
 - **tema que sobrescreve token de cromo**, por recorte nomeado de cada família (cor, gap, margem, estrutura),
-  mais largura máxima, densidade e a vista dividida medida pela largura do host com a janela fixa.
+  mais largura máxima, densidade e a vista dividida medida pela largura do host com a janela fixa;
+- a **cascata sob textura**: utilitária com `card` no nome mantém o próprio fundo, e o cartão de verdade recebe a
+  superfície ([[02-design-engine]] §9.1);
+- **render sem Provider**: o hover do botão difere do repouso sem o Design Engine montado;
+- o **`body` cedendo à classe** de entrelinha;
+- **valores de estilo inline dos átomos**, por recorte de tema que ativa o ramo (`frosted`, foco, `neumorphism`,
+  switch, intervalo, acordeão) — a propriedade computada é a pretendida, e não o valor inicial do navegador;
+- a **seta do `SarakSelect`** dentro da caixa do campo numa célula de grade que estica;
+- a **busca de token do painel** recebe a digitação inteira em 20 aberturas seguidas (regressão de um relato que não
+  se reproduziu).
 
 **Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
 de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
@@ -392,8 +403,9 @@ interna.
 fonte carregada · **varredura de temas** (ela cobre o default e recortes **nomeados** de `config`, um por família de
 token, nunca todos os temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
 `src/` quando o `dist/` está velho · qualquer navegador que não seja Chromium headless · `input`, `select` e
-`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `body` e o
-`transform !important` do botão ativo).
+`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `background-color !important` do
+`body` e o `transform !important` do botão ativo) · a **latência** do chunk sob demanda (o harness é um pacote só,
+então o caso do painel mede remontagem, não rede).
 
 ⚠️ **O quinto limite é o que morde na prática:** o harness carrega o artefato **publicado**. `dist/`
 desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que

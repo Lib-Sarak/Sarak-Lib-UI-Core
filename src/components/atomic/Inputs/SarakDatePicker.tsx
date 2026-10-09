@@ -1,6 +1,7 @@
 import React, { useId, useMemo, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -164,9 +165,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                 )}
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

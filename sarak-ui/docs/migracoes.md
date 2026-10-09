@@ -7,7 +7,8 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ## A superfície de cartão sob textura chega por âncora explícita, não por "card" no nome da classe
 
-**Classificação: PATCH visual.** Nenhum nome saiu do barril público nem mudou de tipo. Muda o que o CSS publicado
+**Classificação: MAJOR (sai na 8.0.0).** Muda o que o CSS publicado faz por padrão com o markup do consumidor e
+pede ação a quem dependia do efeito (§3 da política de versionamento: mudar um default é MAJOR). Nenhum nome saiu do barril público nem mudou de tipo. Muda o que o CSS publicado
 alcança quando o tema liga uma textura (o default liga `grid`).
 
 | Antes | Depois |
@@ -22,7 +23,8 @@ nada: o elemento deixa de ser alterado por engano.
 
 ## O motor de gráficos obedece ao tema do painel, desenha várias séries e ganha waterfall, sankey e calendário de calor
 
-**Classificação: MINOR visual.** Nenhuma prop foi removida nem mudou de tipo: `type`, `data` e `config` continuam
+**Classificação: MAJOR (sai na 8.0.0).** O desenho padrão de todo gráfico muda: cores, grade, tooltip e fonte
+passam a sair do tema, e quem não tocou uma linha vê outro gráfico (mudar um default é MAJOR). Nenhuma prop foi removida nem mudou de tipo: `type`, `data` e `config` continuam
 valendo como antes. O que muda é o **desenho** que o consumidor vê, porque o `SarakChartEngine` passou a ler o
 tema que o painel de Design oferece.
 
@@ -42,7 +44,9 @@ console de desenvolvimento.
 
 ## O `SarakKanban` reordena dentro da coluna, funciona em toque e teclado, e passa a ser carregado sob demanda
 
-**Classificação: MINOR com ação do consumidor.** `<SarakKanban columns onCardMove renderCard />` continua
+**Classificação: MAJOR (sai na 8.0.0).** Reordenar na mesma coluna passa a emitir `onCardMove` por padrão, o quadro
+passa a exigir as peers `@dnd-kit/core` e `@dnd-kit/sortable`, e `SarakKanbanCard` muda de forma incompatível para
+campos com os nomes novos. `<SarakKanban columns onCardMove renderCard />` continua
 compilando e renderizando, mas o arrasto trocou de motor e **quem usa o quadro precisa instalar duas dependências**.
 
 | Antes | Depois |
@@ -201,6 +205,15 @@ sem o slot secundário, a região continua com um único painel. Para manter a c
 - `SarakTable` aceita renderização e alinhamento por coluna, ativação de linha e estados de carregamento, erro com nova tentativa e vazio; no celular, os cartões preservam a renderização, o alinhamento e a ativação da linha. `SarakDataTable` também aceita altura variável por linha e os mesmos estados.
 - `SarakPagination` aceita tamanho de página, callback de alteração e resumo traduzido do intervalo exibido.
 - Os formatadores públicos de número, moeda, percentual e data acompanham o idioma configurado, com override local. `SarakValue` aplica os tokens de status para valores positivos, negativos e neutros; `SarakStats` aceita configuração por métrica para ícone, variação, formato, rótulo e dica.
+
+### A cor do texto principal sai em `--text-main` (plan-91)
+
+A biblioteca não emite a variável `--theme-text`: a cor do texto principal sai em `--sarak-text-main` e no alias
+`--text-main`, e o utilitário `text-theme-text` do Tailwind lê `--text-main`. Uma tela do consumidor que lê o nome
+antigo direto fica sem valor. **Como migrar:** troque a leitura por `var(--text-main)` (ou `--sarak-text-main`);
+quem precisa manter o nome antigo declara o alias no próprio CSS, apontando para `--text-main`.
+
+O `SarakInput` passa a mostrar `leftIcon` e `rightIcon` juntos, cada um no seu lado, e o da direita é clicável; antes só um dos dois aparecia (o widget de busca do cromo, por exemplo, passa a exibir o atalho à direita).
 
 ## A persistência do tema ativo restaura também o id
 

@@ -1,5 +1,7 @@
 import React, { HTMLAttributes, useId, useMemo, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Par ordenado [início, fim] de um intervalo contínuo. */
 export type SarakRangeValue = [number, number];
@@ -54,6 +56,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     style,
     ...props
 }) => {
+    const t = useLibraryText();
     const reactId = useId();
     const errorId = `${reactId}-error`;
     const [internal, setInternal] = useState<SarakRangeValue>(defaultValue ?? [min, max]);
@@ -103,7 +106,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                 )}
 
                 <RangeThumb
-                    ariaLabel={`${label ?? 'range'} mínimo`}
+                    ariaLabel={t('rangeMinAriaLabel', { label: label ?? 'range' })}
                     min={min}
                     max={max}
                     step={step}
@@ -114,7 +117,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                     onInput={handleLow}
                 />
                 <RangeThumb
-                    ariaLabel={`${label ?? 'range'} máximo`}
+                    ariaLabel={t('rangeMaxAriaLabel', { label: label ?? 'range' })}
                     min={min}
                     max={max}
                     step={step}
@@ -126,11 +129,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                 />
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
-                    {error}
-                </p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

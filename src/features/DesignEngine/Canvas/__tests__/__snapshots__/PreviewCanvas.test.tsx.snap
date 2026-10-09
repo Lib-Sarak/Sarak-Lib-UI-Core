@@ -1596,8 +1596,23 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                                     />
                                   </svg>
                                 </div>
+                                <div
+                                  class="absolute right-3 flex items-center text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
+                                >
+                                  <div
+                                    class="flex items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none"
+                                    style="gap: calc(var(--sarak-layout-gap-sm, 8px) * 0.5); padding-inline: calc(var(--sarak-layout-gap-sm, 8px) * 0.75); padding-block: calc(var(--sarak-layout-gap-sm, 8px) * 0.25);"
+                                  >
+                                    <span>
+                                      CTRL
+                                    </span>
+                                    <span>
+                                      K
+                                    </span>
+                                  </div>
+                                </div>
                                 <input
-                                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
+                                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-11 w-full "
                                   id=":r2:"
                                   placeholder="Busca inteligente…"
                                   style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"

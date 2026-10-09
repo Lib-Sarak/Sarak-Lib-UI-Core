@@ -41,3 +41,45 @@ describe('SarakRangeSlider', () => {
         expect(screen.getByText('Intervalo inválido')).toBeInTheDocument();
     });
 });
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        render(<SarakRangeSlider error="Campo obrigatório" />);
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(screen.getAllByRole('slider')[0]).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        render(<SarakRangeSlider />);
+        expect(screen.queryByRole('alert')).toBeNull();
+    });
+});
+
+describe('SarakRangeSlider — textos da lib seguem o idioma', () => {
+    it('o rótulo acessível dos dois polegares muda com o idioma', () => {
+        const { rerender } = render(<SarakRangeSlider label="Preço" />);
+        expect(screen.getByLabelText('Preço mínimo')).toBeInTheDocument();
+        expect(screen.getByLabelText('Preço máximo')).toBeInTheDocument();
+
+        rerender(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakRangeSlider label="Price" />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('Price minimum')).toBeInTheDocument();
+        expect(screen.getByLabelText('Price maximum')).toBeInTheDocument();
+    });
+
+    it('sem `label`, o sufixo também vem do catálogo', () => {
+        render(
+            <SarakUIProvider config={{ language: 'de' }}>
+                <SarakRangeSlider />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByLabelText('range Minimum')).toBeInTheDocument();
+        expect(screen.getByLabelText('range Maximum')).toBeInTheDocument();
+    });
+});

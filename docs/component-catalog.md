@@ -811,9 +811,9 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
-| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
-| `leftIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado somente quando `icon` não é fornecido. Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não fixa o lado visual. |
-| `rightIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado quando `icon` e `leftIcon` não são fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo fica sem decoração. |
+| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
+| `leftIcon` | `React.ReactNode` | não | Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema. |
+| `rightIcon` | `React.ReactNode` | não | Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema. |
 | `error` | `string` | não | Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai. |
 
@@ -1114,7 +1114,8 @@ Props (`SarakSelectProps` — `src/components/atomic/Inputs/SarakSelect.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não | Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<select>` por `aria-describedby`. |
+| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
+| `error` | `string` | não | Mensagem exibida abaixo da lista, ligada ao `<select>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `SelectHTMLAttributes<HTMLSelectElement>`
@@ -1329,7 +1330,7 @@ Props (`SarakTextareaProps` — `src/components/atomic/Inputs/SarakTextarea.tsx`
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não | Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<textarea>` por `aria-describedby`. |
+| `error` | `string` | não | Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `TextareaHTMLAttributes<HTMLTextAreaElement>`

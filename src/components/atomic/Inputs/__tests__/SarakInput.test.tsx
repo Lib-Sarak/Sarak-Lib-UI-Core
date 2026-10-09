@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import * as ComponentModule from '../SarakInput';
 import { SarakInput } from '../SarakInput';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
@@ -27,5 +27,50 @@ describe('SarakInput', () => {
         // 'solid' (default sem Provider) nunca toca `borderBottom`; só 'underline' toca
         // — presente aqui prova que o valor REAL do tema atravessou, não o default.
         expect(input.style.borderBottom).toContain('2px solid');
+    });
+});
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        render(<SarakInput error="Campo obrigatório" />);
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(screen.getByRole('textbox')).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        render(<SarakInput />);
+        expect(screen.queryByRole('alert')).toBeNull();
+    });
+});
+
+describe('SarakInput — ícones', () => {
+    it('leftIcon e rightIcon renderizam juntos, cada um no seu lado', () => {
+        render(<SarakInput leftIcon={<span data-testid="esq" />} rightIcon={<span data-testid="dir" />} />);
+
+        expect(screen.getByTestId('esq').parentElement?.className).toContain('left-3');
+        expect(screen.getByTestId('dir').parentElement?.className).toContain('right-3');
+        const input = screen.getByRole('textbox');
+        expect(input.className).toContain('pl-11');
+        expect(input.className).toContain('pr-11');
+    });
+
+    it('o clique no ícone da direita dispara', () => {
+        const onClick = vi.fn();
+        render(<SarakInput leftIcon={<span />} rightIcon={<button type="button" onClick={onClick}>ver</button>} />);
+
+        expect(screen.getByText('ver').parentElement?.className).not.toContain('pointer-events-none');
+        fireEvent.click(screen.getByText('ver'));
+        expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('`icon` prevalece sobre os outros dois', () => {
+        render(<SarakInput icon={<span data-testid="unico" />} leftIcon={<span data-testid="esq" />} rightIcon={<span data-testid="dir" />} />);
+
+        expect(screen.getByTestId('unico')).toBeInTheDocument();
+        expect(screen.queryByTestId('esq')).toBeNull();
+        expect(screen.queryByTestId('dir')).toBeNull();
     });
 });

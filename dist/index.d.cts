@@ -839,8 +839,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "45707f6";
-    readonly builtAt: "2026-10-09T16:00:51.422Z";
+    readonly baseCommitShort: "0690307";
+    readonly builtAt: "2026-10-09T18:26:21.575Z";
 };
 
 interface SarakDesignScopeProps {
@@ -2082,20 +2082,21 @@ interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
      */
     label?: string;
     /**
-     * Ícone do campo; sua posição vem do layout do tema. Quando definido,
-     * prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone.
+     * Ícone do campo; sua posição vem do layout do tema e ele não recebe clique.
+     * Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três,
+     * não há ícone.
      */
     icon?: React__default.ReactNode;
     /**
-     * Ícone de compatibilidade usado somente quando `icon` não é fornecido.
-     * Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não
-     * fixa o lado visual.
+     * Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto
+     * com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a
+     * posição do layout do tema.
      */
     leftIcon?: React__default.ReactNode;
     /**
-     * Ícone de compatibilidade usado quando `icon` e `leftIcon` não são
-     * fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo
-     * fica sem decoração.
+     * Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita
+     * clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica
+     * à direita; sozinho, segue a posição do layout do tema.
      */
     rightIcon?: React__default.ReactNode;
     /**
@@ -2158,8 +2159,14 @@ declare const SarakCurrencyInput: ({ value, defaultValue, currency, locale, labe
 
 interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     /**
-     * Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto
-     * não é associado automaticamente ao `<select>` por `aria-describedby`.
+     * Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado).
+     * Sem ele, não há rótulo visível; forneça outro nome acessível se necessário.
+     */
+    label?: string;
+    /**
+     * Mensagem exibida abaixo da lista, ligada ao `<select>` por `aria-describedby`
+     * (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há
+     * mensagem nem estado inválido.
      */
     error?: string;
     /**
@@ -2179,8 +2186,9 @@ declare const SarakSelect: React__default.FC<SarakSelectProps>;
 
 interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     /**
-     * Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o
-     * texto não é associado automaticamente ao `<textarea>` por `aria-describedby`.
+     * Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por
+     * `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`.
+     * Sem a prop, não há mensagem nem estado inválido.
      */
     error?: string;
     /**
