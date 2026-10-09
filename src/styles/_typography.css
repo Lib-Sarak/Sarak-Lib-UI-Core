@@ -1,13 +1,5 @@
-/* Os padrões de ELEMENTO de título e texto moram em `_elements.css`, numa camada que
-   cede à classe utilitária. Fica aqui só o `body`: `_base.css`, nesta mesma camada,
-   também escreve `line-height` no `body` e só perde para este bloco por vir antes — numa
-   camada anterior, o `1.5` literal de `_base.css` venceria o token `--sarak-body-lh`. */
-body {
-    font-size: var(--sarak-body-size, 14px);
-    font-weight: var(--sarak-body-weight, 400);
-    line-height: var(--sarak-body-lh, 1.6);
-}
-
+/* Os padrões de ELEMENTO de título, texto e `body` moram em `_elements.css`, numa camada
+   que cede à classe utilitária. */
 .font-tab { font-family: var(--font-heading, 'Inter', sans-serif); }
 
 /* Atomic Font Scaling Integration */

@@ -67,7 +67,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     return (
         <div className={mergeSarakClasses('@container', containerLayout.className)} style={{ ...containerLayout.style, paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
             {/* Header & Filter Section */}
-            <section className={mergeSarakClasses("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
+            <section className={mergeSarakClasses("card relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                 <div className="absolute top-0 right-0 opacity-5 pointer-events-none" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                     <SarakIcon name="LayoutGrid" size={240} />
                 </div>
@@ -145,7 +145,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        className="bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
+                                        className="card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
                                         style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}
                                     >
                                         <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>

@@ -20,10 +20,12 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
     SarakUIProvider,
+    SarakAccordion,
     SarakAppChrome,
     SarakButton,
     SarakCustomizationPanel,
     SarakInput,
+    SarakRangeSlider,
     SarakSelect,
     SarakSwitch,
     SarakTitleCard,
@@ -185,6 +187,8 @@ const AtomsScene: React.FC = () => (
         <div data-probe="botao"><SarakButton>Botão de prova</SarakButton></div>
         <div data-probe="campo"><SarakInput aria-label="Campo de prova" /></div>
         <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
+        <div data-probe="intervalo"><SarakRangeSlider label="Intervalo de prova" /></div>
+        <div data-probe="acordeao"><SarakAccordion title="Acordeão de prova" defaultOpen>Conteúdo</SarakAccordion></div>
     </div>
 );
 

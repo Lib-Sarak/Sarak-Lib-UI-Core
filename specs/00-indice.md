@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🟡 Em execução | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
+| 1 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🟢 Aprovada | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
 | 2 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
 | 3 | [plan-102-quadro-kanban-de-gestao-de-projetos](plan/plan-102-quadro-kanban-de-gestao-de-projetos.md) | Escolher por medicao a biblioteca de arrastar e soltar do kanban, entregar um SarakKanban que reordena, funciona em toque e teclado e abre cartao, e dar os blocos de detalhe do cartao (checklist, comentarios, responsavel, historico) | plan-98-dialogo-e-feedback | 🟡 Em execução | adr/019 (nova) + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
 | 4 | [plan-103-calendario-e-gantt-de-projetos](plan/plan-103-calendario-e-gantt-de-projetos.md) | Dar a lib um calendario mensal de eventos e um Gantt com dependencias, ambos com tema, teclado e celular, para que um sistema de projetos monte as visoes do quadro sem refazer a mao | plan-102-quadro-kanban-de-gestao-de-projetos | 🔴 A executar | arquitetura/03-superficie-publica.md |
@@ -101,6 +101,17 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > - **o build é compartilhado:** a 103 regenera catálogo e kit (`npm run catalog && npm run guide`) logo depois
 >   de cada mudança de componente público, para a árvore continuar buildável; se o `npm run build` da 90 parar
 >   num check de artefato por edição da 103, ela roda as etapas de compilação uma a uma e relata.
+>
+> 🚦 **Despacho 2 de 2026-10-09 — 91 ‖ 103 (lote 1)**, depois do commit do lote 2 da 90 (a 91 toca o
+> `SarakSelect` e o `SarakRangeSlider`, que a 90 alterou). Disjunção declarada pelo revisor:
+> - a 91 fica nos nove átomos de `Inputs/` (só a renderização do erro), `SarakInput` (ícones), `SarakSelect`
+>   (`label`), `Cards/hooks/useSarakCardLayoutStyles.ts` e `SarakCard.tsx`, `SarakPDFViewer/usePdfDocument.ts`,
+>   `PreviewCanvas.tsx`/`PreviewSystemRenderer.tsx` (só o parâmetro morto), `docs/extensibilidade-de-layout.md` e a
+>   sua nota em `docs/migracoes.md`; textos só em `catalogEntries.part5.ts` (chaves `field*`/`range*`/`time*`);
+> - a 103 fica no que o despacho anterior declarou (`SarakCalendar/`, `SarakGantt/`, `calendarGrid.ts` só exportar,
+>   barris, `catalogEntries.part6.ts`); o `SarakDatePicker` usa o `calendarGrid.ts`, mas a 91 só mexe no erro dele;
+> - `docs/migracoes.md` e o build são compartilhados: cada uma acrescenta a sua seção por substituição exata, e
+>   regenera catálogo e kit logo depois de mudar componente público.
 >
 > Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
 > `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,

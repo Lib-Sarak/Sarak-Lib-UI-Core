@@ -44,7 +44,7 @@ export const SarakChart = <TData extends Record<string, unknown> = Record<string
 
     return (
         <div className={mergeSarakClasses(
-            'bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]',
+            'card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]',
             containerLayout.className,
         )} style={containerLayout.style}>
             {label && (

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Medir em navegador e consertar o CSS que o jsdom não vê"
 objetivo: "Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel"
 dominio: "Sarak-Lib-UI-Core / Design Engine / CSS publicado"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "css", "browser-tests", "camadas", "atomos"]
 relacionados: ["[[02-design-engine]]", "[[11-testes-e-cobertura]]", "[[03-superficie-publica]]", "[[06-painel-de-customizacao-e-preview]]"]
@@ -270,6 +270,91 @@ A plan chegou em `🔴 A executar`, e não em `🟡`: executei porque o usuário
 - `dist/`, `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts` estão modificados pelo build; o revisor deve contá-los como saída do gerador, e não como edição.
 - O item 6 não reproduziu em 20 de 20; pela §3.2 o Lote 2 não mexe no painel a menos que o revisor mande medir de outro modo.
 
+## Resumo da execução (Lote 2 — consertar) — 2026-10-09
+
+**Resultado:** Concluído. Itens 1 a 5 consertados, com os casos de navegador vermelhos antes e verdes depois; item 6 não tocado (20 de 20, o caso fica como regressão). Passos 16 e 17, a lista de gates do `.githooks/pre-commit` e `check-audit-baseline --with-tsc`, todos verdes.
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+O Lote 1 já estava commitado (`45707f68`). A plan-103 ainda não havia deixado edição na árvore; o `npm run build` completo passou sem parar em `catalog:check`, `barrel:check` nem `guide:check` por causa dela (o `guide:check` parou uma vez por **edição minha**, em `docs/migracoes.md`; ver *Decisões*).
+
+**O que foi feito**
+- **Itens 4 novos, vermelhos primeiro** (`browser-tests/fixtures/harness-entry.tsx`: `SarakRangeSlider` e `SarakAccordion` entram na cena `atomos`; `css-que-so-o-navegador-mede.spec.ts`: 3 casos). Saída contra o `dist/` de antes do conserto, 3 falharam:
+  - trilho — `Expected: "rgba(255, 255, 255, 0.1)"`, `Received: "rgba(0, 0, 0, 0)"`
+  - faixa ativa — `Expected: "rgb(0, 242, 255)"`, `Received: "rgba(0, 0, 0, 0)"`
+  - acordeão — `Expected: "rgba(255, 255, 255, 0.1)"`, `Received: "rgb(255, 255, 255)"`
+- **Item 1** — `src/styles/_atmosphere.css`: a regra de superfície troca `[data-sx-texture] [class*="card"]` por `[data-sx-texture] .bg-theme-card` (`.card` e `.sarak-card` já estavam na regra); as 84 ocorrências de `[class*="card"]` das texturas `::after` viram `:is(.card, .bg-theme-card)` (as de `.sarak-card` já existiam ao lado). `grep -c 'class\*="card"'` → **0**.
+- **Item 2** — `src/styles/_base.css`: `--theme-{primary,secondary,accent}-{hover,active}` e `--theme-primary-focus` deixam de se referenciar; cada reserva usa uma cor que existe sem o engine (`#3b82f6`, `#64748b`, `#06b6d4`; `59, 130, 246` no foco). Com o engine montado, o valor que ele injeta no `body` vence a regra, como no raio.
+- **Item 3** — o `body` ficou num lugar só: `src/styles/_elements.css` (camada `components.sarak-elements`) recebe cor, transição, margens, `overflow-x`, família, tamanho, peso e entrelinha; `_base.css` mantém só as variáveis e o `background-color` `!important`; o bloco de `_typography.css` saiu.
+- **Item 4** — `useAtomicStyles.ts` (`:58`, `:61`, `:105`, `:110`, `:112`, `:138`, `:147`, `:148`), `SarakRangeSlider.tsx` (`ACTIVE`, `TRACK`), `SarakAccordion.tsx` (`borderColor`): só os valores. Nenhuma lógica nem variante mudou.
+- **Item 5** — `SarakSelect.tsx`: sem `fullWidth`, o invólucro e o campo ganham `w-fit` (antes `''`); com `fullWidth` segue `w-full`.
+- **Item 15** — `docs/migracoes.md`: nota nova no topo (PATCH visual) com as âncoras `card`, `sarak-card` e `bg-theme-card`.
+- Snapshots: 3 atualizados porque o markup mudou exatamente pelo conserto (`SarakSearchCard` — parêntese do trilho; `SarakChart` — âncora `card`; `LayoutTab` — `w-fit` nos selects).
+
+**Inventário do item 1 — quem dependia do casamento por nome**
+Varredura das strings de classe de `src/` (fora de testes): nenhum componente usa uma classe de nome próprio com `card` fora das âncoras (`sarak-card`, `card`, `bg-theme-card`). O substring alcançava, **por acidente**, cerca de 60 arquivos com utilitárias como `bg-[var(--color-theme-card,…)]` (campos, botões, tooltips, menus): esses só ganham — passam a computar o fundo que a classe escreve. **Ganharam a âncora explícita `card`** os contêineres que são cartões de fato (fundo de cartão + raio de cartão + borda própria):
+`SarakChart.tsx` (raiz) · `components/ManagementGroupCard.tsx` (raiz) · `SarakStats.tsx` (item e esqueleto) · `SarakTableView.tsx` (invólucro) · `SarakManagementGrid.tsx` (modal, cabeçalho e esqueleto) · `SarakCatalogGrid.tsx` (seção e item) · `SarakHelpButton.tsx` (diálogo). `card` dá superfície e textura sem o `padding` e a borda de `sarak-card`. Ficaram **sem** âncora, de propósito: controles (campos, botões, menus, paginação) e os que escrevem opacidade própria (`RecursiveMatrixNode`, `SarakExpandableMatrix`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/_atmosphere.css` | alterado | seletores por substring → âncoras explícitas |
+| `src/styles/_base.css`, `_elements.css`, `_typography.css` | alterado | itens 2 e 3 |
+| `src/components/atomic/hooks/useAtomicStyles.ts` | alterado | 8 valores |
+| `…/Inputs/SarakRangeSlider.tsx`, `…/Layouts/SarakAccordion.tsx` | alterado | 1 a 2 valores cada |
+| `…/Inputs/SarakSelect.tsx` | alterado | `w-fit` sem `fullWidth` |
+| `…/Templates/{SarakChart,SarakStats,SarakTableView,SarakManagementGrid,SarakCatalogGrid,SarakHelpButton,components/ManagementGroupCard}.tsx` | alterado | âncora `card` |
+| `…/__tests__/__snapshots__/` (SarakSearchCard, SarakChart, LayoutTab) | alterado | markup novo |
+| `browser-tests/css-que-so-o-navegador-mede.spec.ts`, `browser-tests/fixtures/harness-entry.tsx` | alterado | 3 casos e 2 elementos de prova; e a espera do `box-shadow` (ver *Decisões*) |
+| `docs/migracoes.md` | alterado | nota do item 1 |
+| `sarak-ui/docs/migracoes.md`, `dist/` (43 entradas), `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | regenerados | `npm run guide` e `npm run build`; nada à mão |
+
+**Verificações executadas**
+- `npm run build` (com os `*:check` de pré-build) → exit 0, na 2ª vez; a 1ª parou em `guide:check` ("kit do consumidor DEFASADO em 1 arquivo: sarak-ui/docs/migracoes.md") por causa da minha nota; `npm run guide` e repeti.
+- `npm run cromo-css-real:check` → **51 passed** (32 antigos + 19 novos), exit 0; mais duas rodadas só do playwright → 51 e 51. Total: **3 rodadas verdes**. `[item 6] digitação inteira em 20 de 20 tentativas` em todas. O `isSplitViewEnabled` não falhou nenhuma vez.
+- `npx tsc --noEmit` → exit 0, zero erros.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → `igual ao baseline de 2026-08-11 — nenhuma regressão`.
+- `npx vitest run` → 1ª vez: 3 falhas, só de snapshot, todas pelo que mudei (diferenças coladas acima nos itens). Depois da atualização: **422 arquivos, 2473 testes, todos passando** (824 s).
+- `npm run dev-kit` → exit 0; `sarak-dev/` não ficou com diferença.
+- Gates do `.githooks/pre-commit`, um a um, todos exit 0: `check-plan-index-sync`, `generate-dev-kit --check`, `check-barrel-parity --check`, `generate-component-catalog --check`, `check-zero-brand --check`, `generate-consumer-kit --check`, `check-no-deep-import`, `check-gate-limits`, `check-container-query-literal`, `check-container-query-boundary`, `check-persistence-doc-identifiers`, `check-class-merge`, `check-icon-port`, `check-chrome-token-parity`, `check-trail-citation`, `generate-token-types --check`, `verificar_commit.py` (nada staged). **Não rodei** `check-agent-git-write` (falha em sessão de agente por definição) nem `gerar_indice.py` (grava `.agents/index.md` e faz `git add`).
+- `git diff` de `browser-tests/cromo-css-real.spec.ts` e de `src/styles/sarak-base.css` → vazio.
+
+**Critérios de aceite**
+- [x] Itens 1 a 5 com caso que falhou contra o `dist/` anterior (Lote 1 e acima) e passa agora — 3 rodadas, 51 verdes.
+- [x] Contraprovas "NÃO MUDA NADA" passam antes e depois (itens 1, 2, 3 e 5).
+- [x] `grep -c 'class\*="card"' src/styles/_atmosphere.css` → 0; lista dos ancorados acima.
+- [x] `_base.css` sem custom property que referencie a si mesma.
+- [x] O `body` cede à classe: caso do item 3 verde. *(A lista "o que ainda não cede à classe" é da spec 02 §9.1, do revisor.)*
+- [x] Sem parêntese desbalanceado em `useAtomicStyles.ts`, `SarakRangeSlider.tsx`, `SarakAccordion.tsx` (varredor sem achados nesses três); `box-shadow` de foco é uma sombra.
+- [x] Seta do `SarakSelect` dentro do campo, com e sem `fullWidth`.
+- [x] Item 6: 20 de 20, caso fica como regressão.
+- [x] Casos antigos do cromo passam sem edição.
+- [x] `docs/migracoes.md` tem a nota do item 1.
+- [x] `npm run audit` sem regressão, `tsc` zero, suíte verde.
+
+**Decisões e suposições**
+- **Item 2, reserva sem engine:** `#3b82f6` (a mesma que os átomos usam para `--sarak-primary-color`), `#64748b` (secundária) e `#06b6d4` (destaque). Para as duas últimas não havia convenção no código; as escolhi. `--theme-primary-focus` ganhou `59, 130, 246` como reserva de `--theme-primary-rgb`.
+- **Item 4, `box-shadow` de foco (`:105`)** era só uma cor; supus um anel `0 0 0 2px <cor primária>`, o mesmo primeiro componente que o vizinho `neumorphism` em foco (`:112`) já usa. Em `:112` removi também a cor solta no fim da lista (inválida) além do parêntese. Os dois `border` que eram só uma cor (`:58`, `:148`) viraram `1px solid <cor>`, a forma que o ramo `neon` do mesmo arquivo usa; sem largura e estilo, o atalho de uma cor só apagaria a borda dos botões `secondary`/`outline` frosted.
+- **Item 1, forma:** `:is(.card, .bg-theme-card)` mantém a especificidade do seletor de atributo que substitui. O CSS escopado (`dist/sarak-scoped.css`) gerou normalmente com ele.
+- **Item 1, âncora `card`, e não `sarak-card`:** `sarak-card` traz `padding` de 24 px, borda e `clip-path` de `_cards.css`, que os contêineres acima nunca tiveram; `card` reproduz o que eles recebiam sob textura.
+- **Item 3, lugar do bloco:** no fim de `_elements.css`, depois de `body, span, p, div { font-family }`, para a família manter a reserva `'Inter'`.
+- **Item 5, `w-fit`:** a mensagem de `error` do `SarakSelect` fica dentro do invólucro e passa a ter a largura do campo quando não há `fullWidth`. A renderização do erro é da `plan-91`; não mexi.
+- **Espera do `box-shadow` no spec novo:** o caso "campo em foco" falhou na 1ª rodada pós-conserto por defeito **meu**: a espera aceitava o primeiro quadro da transição (`rgba(0,0,0,0) 0 0 0 0`, `transition: all`). Passou a exigir valor estável em duas leituras (`waitForShadow`). Os casos continuam mordendo: no Lote 1 viam `none`.
+- **`npm run guide`:** regenerou `sarak-ui/docs/migracoes.md`, cópia do kit do consumidor da minha nota — gerador, não edição à mão.
+- **Um comando de vitest rodou a suíte inteira:** `npx vitest run -u <arquivo>` (para atualizar um snapshot) executou os 422 arquivos com `-u`. Terminou verde e só os 3 snapshots esperados mudaram (`git status`), mas o `-u` global poderia ter reescrito outro; conferi pela lista de arquivos modificados.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/features/DesignEngine/Canvas/hooks/useInspector.ts:19` — o inspetor do painel agrupa elementos por `'.card, [class*="card"], [class*="panel"]'`: o mesmo casamento por substring, agora só em JS. Fora do escopo (`src/features/DesignEngine/`, §3.2).
+- `specs/arquitetura/02-design-engine.md` §9.1 ainda lista o `body` em "o que ainda não cede à classe", e o limite 9 do cabeçalho de `browser-tests/cromo-css-real.spec.ts` diz o mesmo — a primeira é do revisor (síntese, §8); o segundo é spec antigo que não posso editar.
+- `src/components/atomic/Templates/SarakCatalogGrid.tsx:148` — `border-[var(--border-color,#334155)]-border`: classe com sufixo `-border` solto, anterior a esta execução.
+
+**Pendências / riscos**
+- Sob textura, os cartões ancorados e os que **nunca** tiveram âncora mudam de aparência de forma diferente: os primeiros ficam como estavam; os controles e `RecursiveMatrixNode`/`SarakExpandableMatrix` passam a mostrar o próprio fundo (era a intenção do código deles). O revisor pode querer olhar essa lista.
+- Mudou o artefato publicado: `dist/` e `sarak-ui/` diferem da última tag; o `pre-push` da `main` vai exigir tag nova. Nível sugerido por superfície pública: nenhum nome saiu nem mudou de tipo (`patch`, pela §3.1 de `00-contexto`); não rodei `npm version`.
+- Nada commitado.
+
 ---
 
 # 10. Veredito
@@ -305,6 +390,35 @@ rodada do revisor. Intermitência anterior a esta plan.
 
 **Liberação parcial.** Status volta a `🟡 Em execução`; o lote 2 (os consertos) pode ser despachado. Os casos
 vermelhos não se commitam sozinhos: o commit sai com o lote 2 (§5 passo 8).
+
+## Veredito — 2026-10-09 (lote 2) — 🟢 Aprovado
+
+**Rodado pelo revisor**, com 0 processos deste repositório na máquina, contra o `dist/` do executor (o worktree não
+mudou desde o build dele): `playwright test --config=browser-tests/playwright.config.ts` → **51/51** (32 antigos +
+19 novos), com `[item 6] digitação inteira em 20 de 20`. `git diff` de `cromo-css-real.spec.ts` e de
+`sarak-base.css` → vazio. Os três casos novos (trilho e faixa do `SarakRangeSlider`, borda do `SarakAccordion`)
+nasceram vermelhos contra o `dist/` anterior, com a saída no resumo.
+
+**Critérios:** `grep -c 'class\*="card"' _atmosphere.css` → 0, com a superfície e a textura por `.card`,
+`.sarak-card` e `.bg-theme-card`, e o inventário de quem dependia do casamento — sete contêineres que são cartões
+de fato ganharam a âncora `card`, e os controles deixaram de ser pintados por engano; nenhuma custom property de
+`_base.css` referencia a si mesma, e a reserva usa cores que existem sem o engine (o problema do `--primary-color`
+ausente, apontado no veredito do lote 1, foi tratado); o `body` mora num lugar só (`_elements.css`) e cede à
+classe; os valores de `useAtomicStyles.ts`, `SarakRangeSlider.tsx` e `SarakAccordion.tsx` são CSS válido, com o
+foco como anel `0 0 0 2px` e as bordas de uma cor só como `1px solid` (suposições registradas e coerentes com os
+vizinhos do mesmo arquivo); a seta do `SarakSelect` acompanha o campo (`w-fit` sem `fullWidth`). Os três
+snapshots atualizados mudam pelo próprio conserto. Suíte (`422/2473`), `tsc` 0 e baseline igual pelo executor.
+
+**Aviso, sem achado — classificação da nota de migração.** A nota do item 1 diz "PATCH visual". Pela
+[[03-versionamento-e-release]] §3, mudar o que o CSS publicado faz por padrão com o markup do consumidor (e pedir
+ação de quem dependia do efeito) é **MAJOR**. Ela sai na 8.0.0, como as do quadro e dos gráficos; a correção do
+texto vai no prompt de via direta que já ajusta as outras duas.
+
+**Para o backlog:** itens 16 (`useInspector.ts:19`, substring em JS) e 17 (`SarakCatalogGrid.tsx:148`, classe com
+sufixo solto).
+
+**A plan está completa.** Status: `🟢 Aprovada`. A síntese (destino §8: `arquitetura/02-design-engine` §9.1 e
+`specs/11-testes-e-cobertura` §7.3) espera o commit do lote 2 e o seu sinal.
 
 ---
 

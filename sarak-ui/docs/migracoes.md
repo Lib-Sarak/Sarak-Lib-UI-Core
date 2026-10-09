@@ -5,6 +5,21 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## A superfície de cartão sob textura chega por âncora explícita, não por "card" no nome da classe
+
+**Classificação: PATCH visual.** Nenhum nome saiu do barril público nem mudou de tipo. Muda o que o CSS publicado
+alcança quando o tema liga uma textura (o default liga `grid`).
+
+| Antes | Depois |
+|---|---|
+| Sob textura, **qualquer** elemento com `card` em qualquer pedaço do nome de uma classe — inclusive utilitárias como `bg-[var(--color-theme-card,…)]` ou `hover:bg-[var(--sarak-card-bg)]` — recebia a superfície de cartão com `!important` (fundo translúcido, desfoque, raio, borda e `clip-path` do cartão) e a camada de textura do cartão. | Só recebem a superfície e a textura de cartão os elementos com uma **âncora explícita**: `sarak-card`, `card` ou `bg-theme-card`. A utilitária do consumidor com `card` no nome passa a computar o fundo que a classe escreve. |
+
+**O que fazer:** se uma classe sua dependia do efeito, dê ao elemento a âncora `card` (superfície e textura sob o
+tema, sem o padding e a borda de `sarak-card`) ou `sarak-card` (o cartão completo). Quem nunca quis o efeito não faz
+nada: o elemento deixa de ser alterado por engano.
+
+---
+
 ## O motor de gráficos obedece ao tema do painel, desenha várias séries e ganha waterfall, sankey e calendário de calor
 
 **Classificação: MINOR visual.** Nenhuma prop foi removida nem mudou de tipo: `type`, `data` e `config` continuam

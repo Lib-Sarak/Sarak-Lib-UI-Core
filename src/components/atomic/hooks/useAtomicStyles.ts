@@ -55,10 +55,10 @@ export const useAtomicStyles = () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             }
-            dynamicStyle.border = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
+            dynamicStyle.border = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';
             
             if (variant === 'primary' || variant === 'danger') {
-                dynamicStyle.boxShadow = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1)))';
+                dynamicStyle.boxShadow = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1))';
             }
             
             if (variant === 'secondary') {
@@ -102,14 +102,14 @@ export const useAtomicStyles = () => {
         executeBorder();
 
         if (isFocused && borderType !== 'underline' && borderType !== 'none') {
-            dynamicStyle.boxShadow = `var(--color-theme-primary, #3b82f6)`;
+            dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6)`;
         }
 
         if (shadowType === 'neumorphism') {
             if (!isFocused) {
-                dynamicStyle.boxShadow = 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -5px -5px 10px rgba(255,255,255,0.05))';
+                dynamicStyle.boxShadow = 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -5px -5px 10px rgba(255,255,255,0.05)';
             } else {
-                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px rgba(255,255,255,0.05)), var(--color-theme-primary, #3b82f6)`;
+                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px rgba(255,255,255,0.05)`;
             }
         } 
         
@@ -135,7 +135,7 @@ export const useAtomicStyles = () => {
         const styleType = design?.switchStyleType || 'tactile';
 
         const trackStyle: React.CSSProperties = {
-            backgroundColor: checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1)))',
+            backgroundColor: checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1))',
         };
 
         if (blurAmount > 0) {
@@ -144,8 +144,8 @@ export const useAtomicStyles = () => {
         }
 
         if (styleType === 'glass') {
-            trackStyle.backgroundColor = checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1)))';
-            trackStyle.border = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
+            trackStyle.backgroundColor = checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1))';
+            trackStyle.border = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';
         }
 
         const thumbStyle: React.CSSProperties = {

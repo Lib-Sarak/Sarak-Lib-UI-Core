@@ -112,7 +112,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="w-full max-w-lg bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] shadow-2xl relative rounded-[var(--sarak-card-radius,12px)]"
+                            className="card w-full max-w-lg bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] shadow-2xl relative rounded-[var(--sarak-card-radius,12px)]"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}
                         >
                             <SarakIconButton
@@ -139,7 +139,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             </AnimatePresence>
 
             {(label || description || headerActions.some(canShowAction)) && (
-                <div className={`${headerLayout.className} bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]`} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: headerLayout.style.gap }}>
+                <div className={`${headerLayout.className} card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]`} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: headerLayout.style.gap }}>
                     <div>
                         {label && <h2 className="text-xl font-bold text-theme-title">{label}</h2>}
                         {description && <p className="text-sm text-theme-muted">{description}</p>}
@@ -158,7 +158,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             <div className={gridLayout.className} style={gridLayout.style}>
                 {loading ? (
                     [...Array(6)].map((_, index) => (
-                        <div key={`skeleton-${index}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
+                        <div key={`skeleton-${index}`} className="card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
                     ))
                 ) : (
                     (Object.entries(groups) as [string, TItem[]][]).map(([groupName, items]) => (

@@ -455,10 +455,10 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Heading Font
               </label>
               <div
-                class="relative group "
+                class="relative group w-fit"
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none   "
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none w-fit  "
                   style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                 >
                   <option
@@ -506,10 +506,10 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Body Font
               </label>
               <div
-                class="relative group "
+                class="relative group w-fit"
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none   "
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none w-fit  "
                   style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                 >
                   <option

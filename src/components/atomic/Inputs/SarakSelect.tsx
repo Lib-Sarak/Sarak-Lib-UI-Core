@@ -38,7 +38,9 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input py-4 pl-4 pr-10 appearance-none';
     
-    const widthClass = fullWidth ? 'w-full' : '';
+    // Sem `fullWidth` o invólucro encolhe ao campo: a seta é absoluta no invólucro e, num
+    // bloco que estica (célula de grade), ficaria longe do `<select>`.
+    const widthClass = fullWidth ? 'w-full' : 'w-fit';
     const disabledClass = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     const dynamicStyle: React.CSSProperties = { 

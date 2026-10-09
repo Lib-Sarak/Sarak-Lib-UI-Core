@@ -25,10 +25,10 @@ numa spec, numa prop, num documento — e o comportamento diverge dele.** Todos 
 | # | A promessa | O que acontece | Onde |
 |---|---|---|---|
 | 1 | *(saiu desta plan em 2026-10-03: o par design + id do tema é a `plan-93` inteira)* | — | — |
-| 2 | Template de dado sem `data` e sem `endpoint` não busca e não fica preso em carregamento ([[03-superficie-publica]] §6.3 — vale hoje para `SarakTable` e `SarakCardGrid`) | `SarakStats` fica em carregamento **para sempre**: o hook nasce com `loading: !initialData`, e o efeito não busca sem `endpoint` | `src/components/atomic/Templates/hooks/useSarakStatsData.ts:7` |
+| 2 | ~~Template de dado sem `data` e sem `endpoint` não busca e não fica preso em carregamento ([[03-superficie-publica]] §6.3 — vale hoje para `SarakTable` e `SarakCardGrid`) | `SarakStats` fica em carregamento **para sempre**: o hook nasce com `loading: !initialData`, e o efeito não busca sem `endpoint` ~~ *(resolvido antes da execução — emenda de 2026-10-09: o hook só carrega quando recebe `load`, `useSarakStatsData.ts`; fora do escopo)* | — |
 | 3 | A lib tem um componente de erro de campo, `SarakFieldError`: ícone + texto, `role="alert"`, id `${fieldId}-error` | **Nove** átomos têm a prop `error` e desenham o erro por conta própria, **só texto**, sem ícone e sem `role`. Um formulário que use os dois mostra duas formas | `src/components/atomic/Feedback/SarakFieldError.tsx` × `src/components/atomic/Inputs/` — `SarakInput`, `SarakSelect`, `SarakTextarea`, `SarakDatePicker`, `SarakMultiSelect`, `SarakRangeSlider`, `SarakRichText`, `SarakTimePicker`, `SarakUploader` |
 | 4 | Os tokens de direção e alinhamento de cartão valem para os cartões | Valem para os quatro cartões de domínio, por `useCardLayoutStyles(design)`. O `SarakCard` composto usa `useSarakCardLayoutStyles()`, de nome quase igual: **não é hook**, não recebe `design` e devolve uma string constante. É defensável — as peças do cartão composto são explícitas —, mas não está escrito em lugar nenhum | `src/components/atomic/Cards/hooks/useSarakCardLayoutStyles.ts` · `src/components/atomic/Cards/SarakCard.tsx:17` |
-| 5 | Todo texto da lib segue o idioma escolhido ([[10-seguranca-e-acessibilidade]] §3.6) | Textos em português fixo: `'mínimo'`/`'máximo'` no rótulo acessível do intervalo, e `'Horário'` | `src/components/atomic/Inputs/SarakRangeSlider.tsx:106` e `:117` · `src/components/atomic/Inputs/SarakTimePicker.tsx:66` |
+| 5 | Todo texto da lib segue o idioma escolhido ([[10-seguranca-e-acessibilidade]] §3.6) | Textos em português fixo: `mínimo`/`máximo` no rótulo acessível do intervalo (`range` quando falta `label`), e `'Horário'` | `src/components/atomic/Inputs/SarakRangeSlider.tsx` (os dois `ariaLabel`) · `src/components/atomic/Inputs/SarakTimePicker.tsx` |
 | 6 | O documento de extensibilidade lista os tokens do fundo global | Lista `globalBackgroundBlendMode`, que **saiu do schema** | `docs/extensibilidade-de-layout.md:54-55` |
 | 7 | O parâmetro `useSystemDesign` promete o design **do sistema** | Lê `sarak.design`, que hoje inclui o rascunho. Nenhum ponto de chamada passa `true`: é código morto com nome enganoso. **O preview já foi reescrito para o cromo único e o parâmetro sobrou** | `src/features/DesignEngine/Canvas/PreviewCanvas.tsx:82-85` · `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx:9`, `:98`, `:107` |
 | 8 | `SarakInput` aceita `icon`, `leftIcon` e `rightIcon` | Renderiza **um** só (`icon`, senão `leftIcon`, senão `rightIcon`), num invólucro `pointer-events-none`. O ícone da direita nunca aparece quando há um à esquerda — é o que mata o "mostrar senha" do próprio template de autenticação (`AuthFormFields.tsx:79-88`), medido no `login-completo` | `src/components/atomic/Inputs/SarakInput.tsx:80,99` |
@@ -43,7 +43,6 @@ por dentro.
 
 ## 3.1 Dentro (o que pode ser tocado)
 
-- `src/components/atomic/Templates/hooks/useSarakStatsData.ts` — item 2.
 - Os nove átomos de `src/components/atomic/Inputs/` listados acima — **só** a renderização do erro.
 - `src/components/atomic/Cards/hooks/useSarakCardLayoutStyles.ts`, o teste dele e `SarakCard.tsx` — item 4.
 - `SarakRangeSlider.tsx`, `SarakTimePicker.tsx` e o catálogo de textos em `src/core/i18n/` — item 5.
@@ -88,7 +87,7 @@ por dentro.
 # 5. Instruções de execução
 
 1. *(Item 1 saiu — `plan-93`.)*
-2. **Item 2.** `SarakStats` sem `data` e sem `endpoint` termina o carregamento e não busca. Teste.
+2. *(Item 2 resolvido antes da execução — emenda de 2026-10-09; nada a fazer.)*
 3. **Item 3.** Os nove átomos renderizam o erro por `SarakFieldError`. O que tem de continuar verdadeiro em
    cada um:
    - o id da mensagem é o mesmo que o controle referencia em `aria-describedby`;
@@ -115,7 +114,7 @@ por dentro.
 
 # 6. Critérios de aceite
 
-- [ ] **2** — teste prova que `SarakStats` sem as duas props sai do carregamento e não chama a rede.
+- **2** — *(resolvido antes da execução; sem critério — emenda de 2026-10-09)*
 - [ ] **3** — `git grep -n "error && (" -- src/components/atomic/Inputs` não devolve nenhum `<p` de erro
       desenhado à mão; os nove átomos importam `SarakFieldError`; um teste por átomo prova o `role="alert"` e
       a associação por `aria-describedby`.

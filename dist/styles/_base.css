@@ -23,15 +23,19 @@ body {
   --theme-surface: var(--surface-color);
   
   /* Engine de Estados Dinâmicos (v9.0 Industrial) */
-  --theme-primary-hover: var(--theme-primary-hover, color-mix(in srgb, var(--primary-color), #000 10%));
-  --theme-primary-active: var(--theme-primary-active, color-mix(in srgb, var(--primary-color), #000 20%));
-  --theme-primary-focus: var(--theme-primary-focus, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.4));
+  /* Piso, como o raio abaixo: com o Design Engine montado, o valor que o engine injeta
+     no `body` vence esta regra. Cada reserva cai numa cor que existe SEM o engine —
+     `--primary-color` e irmãs só nascem com ele — e nunca na própria variável, que seria
+     um ciclo (inválido) e deixaria o hover de botão sem fundo. */
+  --theme-primary-hover: color-mix(in srgb, var(--primary-color, #3b82f6), #000 10%);
+  --theme-primary-active: color-mix(in srgb, var(--primary-color, #3b82f6), #000 20%);
+  --theme-primary-focus: rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb, 59, 130, 246)), 0.4);
 
-  --theme-secondary-hover: var(--theme-secondary-hover, color-mix(in srgb, var(--secondary-color), #000 10%));
-  --theme-secondary-active: var(--theme-secondary-active, color-mix(in srgb, var(--secondary-color), #000 20%));
+  --theme-secondary-hover: color-mix(in srgb, var(--secondary-color, #64748b), #000 10%);
+  --theme-secondary-active: color-mix(in srgb, var(--secondary-color, #64748b), #000 20%);
 
-  --theme-accent-hover: var(--theme-accent-hover, color-mix(in srgb, var(--accent-color), #000 10%));
-  --theme-accent-active: var(--theme-accent-active, color-mix(in srgb, var(--accent-color), #000 20%));
+  --theme-accent-hover: color-mix(in srgb, var(--accent-color, #06b6d4), #000 10%);
+  --theme-accent-active: color-mix(in srgb, var(--accent-color, #06b6d4), #000 20%);
 
   /* Engine de Geometria Escalonada (v8.5) — piso para quem usa a lib SEM o Design
      Engine montado. Com engine: a variável real do mesmo conceito vence (é ela que
@@ -44,15 +48,10 @@ body {
   --radius-theme: var(--sarak-border-radius, 12px);
   --theme-card-padding: var(--sarak-layout-padding, 24px);
   
+  /* Único padrão do `body` que fica na camada final: `!important` só é vencido, aqui, por
+     outro `!important`. Os demais padrões (cor, fonte, entrelinha…) moram em `_elements.css`
+     e cedem à classe utilitária. */
   background-color: var(--bg-body) !important;
-  color: var(--text-main);
-  transition: background-color var(--duration-normal) var(--ease-sarak), color var(--duration-normal) var(--ease-sarak);
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: var(--font-main, 'Inter', sans-serif);
-  line-height: 1.5;
 }
 
 /* Motor de Fundo (Media Engine) */

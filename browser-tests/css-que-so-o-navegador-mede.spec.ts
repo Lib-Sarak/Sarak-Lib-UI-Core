@@ -183,11 +183,15 @@ const FROSTED_SHADOW_EXPRESSION = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0
 
 /**
  * Espera a transição do `box-shadow` (`transition: all`) assentar e devolve o valor computado: o
- * primeiro que não é `none` e casa com o padrão, ou o último lido se o prazo vence.
+ * primeiro que não é `none`, casa com o padrão e se repete na leitura seguinte (o primeiro quadro
+ * de uma transição é o início interpolado, não o destino), ou o último lido se o prazo vence.
  */
 async function waitForShadow(target: Locator, pattern: RegExp): Promise<string> {
+    let previous = '';
     let shadow = await readComputed(target, 'box-shadow');
-    for (let attempt = 0; attempt < 20 && !(shadow !== 'none' && pattern.test(shadow)); attempt += 1) {
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+        if (shadow !== 'none' && pattern.test(shadow) && shadow === previous) break;
+        previous = shadow;
         await target.page().waitForTimeout(100);
         shadow = await readComputed(target, 'box-shadow');
     }
@@ -263,6 +267,41 @@ test('item 4: trilho do switch glass computa a cor de borda do tema', async () =
         const track = page.locator('[data-probe="alternador"] .relative > div').first();
 
         await expectBorderColorFromExpression(track, THEME_BORDER_EXPRESSION, 'useAtomicStyles.ts:148 — border do glass');
+    });
+});
+
+const THEME_PRIMARY_RANGE_EXPRESSION = 'var(--color-theme-primary, #00f2ff)';
+
+test('item 4: trilho do SarakRangeSlider computa a cor de borda do tema', async () => {
+    await withScene('atomos', undefined, async (page) => {
+        const track = page.locator('[data-probe="intervalo"] [data-testid="sarak-range"] > div').nth(0);
+        const expected = await resolveExpression(track, 'background-color', THEME_BORDER_EXPRESSION);
+        expect(expected, 'o fundo pretendido precisa diferir do transparente, ou o caso não distingue nada').not.toBe('rgba(0, 0, 0, 0)');
+
+        await expect(track, 'SarakRangeSlider.tsx — constante TRACK').toHaveCSS('background-color', expected);
+    });
+});
+
+test('item 4: faixa ativa e tooltip do SarakRangeSlider computam a cor primária do tema', async () => {
+    await withScene('atomos', undefined, async (page) => {
+        const range = page.locator('[data-probe="intervalo"] [data-testid="sarak-range"]');
+        const active = range.locator('> div').nth(1);
+        const tooltip = range.locator('> span').first();
+        const expectedBackground = await resolveExpression(active, 'background-color', THEME_PRIMARY_RANGE_EXPRESSION);
+        const expectedColor = await resolveExpression(tooltip, 'color', THEME_PRIMARY_RANGE_EXPRESSION);
+        expect(expectedBackground, 'a faixa pretendida precisa diferir do transparente').not.toBe('rgba(0, 0, 0, 0)');
+        expect(expectedColor, 'a cor pretendida precisa diferir da herdada').not.toBe(await readComputed(range, 'color'));
+
+        await expect(active, 'SarakRangeSlider.tsx — constante ACTIVE na faixa').toHaveCSS('background-color', expectedBackground);
+        await expect(tooltip, 'SarakRangeSlider.tsx — constante ACTIVE no tooltip').toHaveCSS('color', expectedColor);
+    });
+});
+
+test('item 4: SarakAccordion computa a cor de borda do tema', async () => {
+    await withScene('atomos', undefined, async (page) => {
+        const root = page.locator('[data-probe="acordeao"] > div');
+
+        await expectBorderColorFromExpression(root, 'var(--border-color,#334155)', 'SarakAccordion.tsx — borderColor');
     });
 });
 

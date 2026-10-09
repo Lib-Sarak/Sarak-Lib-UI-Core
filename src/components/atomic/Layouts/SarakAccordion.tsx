@@ -32,7 +32,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     const animDuration = typeof animNormal === 'number' ? `${animNormal}ms` : '300ms';
     const animEasing = (design?.easeMain as string) || 'ease-in-out';
     const borderRadius = (design?.borderRadius as string | number) || 'var(--sarak-card-radius,12px)';
-    const borderColor = 'var(--border-color,#334155))';
+    const borderColor = 'var(--border-color,#334155)';
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
