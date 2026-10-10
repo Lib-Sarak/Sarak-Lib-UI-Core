@@ -74,9 +74,18 @@ describe('SarakAuthScreen host configuration', () => {
 
     it('shows forgot-password action only when the host provides a handler', () => {
         const onForgot = vi.fn();
-        renderWithProvider(<SarakAuthScreen onForgot={onForgot} />);
+        const onChange = vi.fn<(event: SarakAuthScreenEvent) => void>();
+        renderWithProvider(<SarakAuthScreen onForgot={onForgot} onChange={onChange} />);
 
         fireEvent.click(screen.getByRole('button', { name: 'Esqueceu a senha?' }));
         expect(onForgot).toHaveBeenCalledOnce();
+        expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ intent: 'forgot' }));
+    });
+
+    it('does not show forgot-password action when the host only provides onChange', () => {
+        const onChange = vi.fn<(event: SarakAuthScreenEvent) => void>();
+        renderWithProvider(<SarakAuthScreen onChange={onChange} />);
+
+        expect(screen.queryByRole('button', { name: 'Esqueceu a senha?' })).not.toBeInTheDocument();
     });
 });

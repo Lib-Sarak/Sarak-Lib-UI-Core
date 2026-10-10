@@ -36,10 +36,17 @@ describe('ThemeActionBar', () => {
         expect(onDiscard).toHaveBeenCalledTimes(1);
     });
 
-    it('mantém Exportar fixo e desabilitado quando não há alterações', () => {
-        render(<ThemeActionBar {...createProps({ isDirty: false, dirtyTokenCount: 0 })} />);
+    it('permite exportar e chama o callback quando não há alterações pendentes', async () => {
+        const user = userEvent.setup();
+        const onExport = vi.fn();
+        render(<ThemeActionBar {...createProps({ isDirty: false, dirtyTokenCount: 0, onExport })} />);
 
-        expect(screen.getByRole('button', { name: 'Exportar' })).toBeDisabled();
+        const exportButton = screen.getByRole('button', { name: 'Exportar' });
+        expect(exportButton).toBeEnabled();
+
+        await user.click(exportButton);
+
+        expect(onExport).toHaveBeenCalledTimes(1);
         expect(screen.queryByText('Exportado')).toBeNull();
     });
 

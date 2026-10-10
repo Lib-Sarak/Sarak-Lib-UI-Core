@@ -119,10 +119,8 @@
     "SarakDataEmpty",
     "SarakDataEmptyProps",
     "SarakDataGrid",
-    "SarakDataGridImpl",
     "SarakDataGridProps",
     "SarakDataTable",
-    "SarakDataTableImpl",
     "SarakDataTableProps",
     "SarakDataTableRowHeight",
     "SarakDateLocale",
@@ -1972,12 +1970,6 @@
         }
       ]
     },
-    "SarakDataGridImpl": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
     "SarakDataTable": {
       "propsInterface": "SarakDataTableProps",
       "source": "src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx",
@@ -2109,12 +2101,6 @@
           "doc": ""
         }
       ]
-    },
-    "SarakDataTableImpl": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
     },
     "SarakDatePicker": {
       "propsInterface": "SarakDatePickerProps",
@@ -8573,7 +8559,6 @@
       "SarakAnalyticalPage",
       "SarakAppChrome",
       "SarakDataTable",
-      "SarakDataTableImpl",
       "SarakFlex",
       "SarakGrid",
       "SarakHidden",
@@ -8667,6 +8652,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "6c06cb1881d1"
+    "kitHash": "c2993bbe18f8"
   }
 }

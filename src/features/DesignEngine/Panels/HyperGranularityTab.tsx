@@ -48,14 +48,13 @@ export interface HyperGranularityTabProps {
  *
  * Agora 100% dinâmico e organizado por Pilares de Soberania.
  *
- * `draft`/`updateDraft`/`handleApplyToSystem`/`resetComponent`/`resetToken`/`toast` chegam
- * por prop (plan-37, correção) — ANTES este componente instanciava a própria
+ * `draft`/`updateDraft`/`resetComponent`/`resetToken`/`toast` chegam por prop — ANTES este componente instanciava a própria
  * `useDesignDraft(sarak)`, em paralelo à de `ThemeCustomizationTab`: duas fontes de
  * rascunho vivas ao mesmo tempo assim que o Command Center ficou alcançável. Segue o
  * mesmo padrão que `MasterControlPanel` já usa (plan-36) — fonte única de rascunho.
  */
 export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
-    draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast
+    draft, updateDraft, resetComponent, resetToken, toast
 }) => {
     const sarak = useSarakUI();
     const draftRecord = draft as Record<string, SarakTokenValue>;
@@ -182,29 +181,6 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                 )}
             </div>
 
-            {/* ACTION FOOTER */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--color-theme-card,#1e293b)] via-[var(--color-theme-card,#1e293b)]/95 to-transparent border-t border-white/5">
-                <button 
-                    onClick={handleApplyToSystem}
-                    disabled={Object.keys(draft).length === 0}
-                    className={`w-full font-black uppercase py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group ${
-                        Object.keys(draft).length > 0 
-                            ? 'bg-[var(--theme-primary)] text-black shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.2)] hover:bg-[var(--theme-primary)]/90' 
-                            : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
-                    }`}
-                >
-                    <Check size={16} className={Object.keys(draft).length > 0 ? 'group-hover:scale-110 transition-transform' : ''} />
-                    <span className="text-xs tracking-[var(--sarak-tracking-tight,0.2em)]">Aplicar Soberania</span>
-                </button>
-                
-                <div className="mt-4 flex items-center justify-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${Object.keys(draft).length > 0 ? 'bg-orange-500 animate-pulse' : 'bg-green-500'}`} />
-                    <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20">
-                        {Object.keys(draft).length > 0 ? 'Sessão com Alterações Pendentes' : 'Sarak Sovereign UI v12.0'}
-                    </span>
-                </div>
-            </div>
-
             {/* TOAST NOTIFICATION */}
             <AnimatePresence>
                 {toast && (
@@ -232,4 +208,3 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
 };
 
 export default HyperGranularityTab;
-

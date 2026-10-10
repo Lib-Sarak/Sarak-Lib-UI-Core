@@ -90,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (104)
+## Componentes públicos (102)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -566,10 +566,6 @@ Props (`SarakDataGridProps` — `src/components/atomic/DataDisplay/SarakDataGrid
 | `height` | `number \| string` | não | Altura da janela de scroll (default: 100% do contêiner pai). |
 | `className` | `string` | não | Classe utilitária extra do contêiner. |
 
-### SarakDataGridImpl
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
-
 ### SarakDataTable
 
 Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx`):
@@ -597,10 +593,6 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `onRetry` | `() => void` | não |  |
 | `onRowClick` | `(row: T) => void` | não | Disparado ao ativar uma linha. |
 | `className` | `string` | não |  |
-
-### SarakDataTableImpl
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
 
 ### SarakDatePicker
 

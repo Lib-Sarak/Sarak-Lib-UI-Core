@@ -5,7 +5,18 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
-## A superfície de cartão sob textura chega por âncora explícita, não por "card" no nome da classe
+## 8.0.0 — um cromo por aplicação
+
+**Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
+Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
+
+Itens de navegação com destino (`SarakMenuItem` e, por ele, `SarakShellNav` e o menu do `SarakAppChrome`)
+agora são âncoras `<a href>` em vez de `<button>`. Testes de ponta a ponta e seletores de consumidor que
+procuravam `role="button"`/`button` em um item de navegação devem procurar `role="link"`/`a`. Sem
+`onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
+ignorar o clique.
+
+### A superfície de cartão sob textura chega por âncora explícita, não por "card" no nome da classe
 
 **Classificação: MAJOR (sai na 8.0.0).** Muda o que o CSS publicado faz por padrão com o markup do consumidor e
 pede ação a quem dependia do efeito (§3 da política de versionamento: mudar um default é MAJOR). Nenhum nome saiu do barril público nem mudou de tipo. Muda o que o CSS publicado
@@ -19,9 +30,7 @@ alcança quando o tema liga uma textura (o default liga `grid`).
 tema, sem o padding e a borda de `sarak-card`) ou `sarak-card` (o cartão completo). Quem nunca quis o efeito não faz
 nada: o elemento deixa de ser alterado por engano.
 
----
-
-## O motor de gráficos obedece ao tema do painel, desenha várias séries e ganha waterfall, sankey e calendário de calor
+### O motor de gráficos obedece ao tema do painel, desenha várias séries e ganha waterfall, sankey e calendário de calor
 
 **Classificação: MAJOR (sai na 8.0.0).** O desenho padrão de todo gráfico muda: cores, grade, tooltip e fonte
 passam a sair do tema, e quem não tocou uma linha vê outro gráfico (mudar um default é MAJOR). Nenhuma prop foi removida nem mudou de tipo: `type`, `data` e `config` continuam
@@ -40,9 +49,7 @@ tema que o painel de Design oferece.
 O motor `recharts` segue uma alternativa limitada: recebendo uma prop que só o ECharts honra, avisa uma vez no
 console de desenvolvimento.
 
----
-
-## O `SarakKanban` reordena dentro da coluna, funciona em toque e teclado, e passa a ser carregado sob demanda
+### O `SarakKanban` reordena dentro da coluna, funciona em toque e teclado, e passa a ser carregado sob demanda
 
 **Classificação: MAJOR (sai na 8.0.0).** Reordenar na mesma coluna passa a emitir `onCardMove` por padrão, o quadro
 passa a exigir as peers `@dnd-kit/core` e `@dnd-kit/sortable`, e `SarakKanbanCard` muda de forma incompatível para
@@ -59,20 +66,9 @@ compilando e renderizando, mas o arrasto trocou de motor e **quem usa o quadro p
 | `SarakKanbanCard` só com `id`, `title` e `description`. | Campos opcionais novos: `code`, `assignee`, `priority` (`'low' \| 'medium' \| 'high' \| 'urgent'`), `dueDate` e `subtasks`. **Um cartão do consumidor que já tenha um campo com um desses nomes e outro tipo passa a dar erro de tipo.** |
 | Sem criar cartão, abrir cartão nem gerir coluna. | Eventos opcionais `onCardClick`, `onCardAdd`, `onColumnAdd`, `onColumnRename` e `onColumnDelete`: cada um, quando passado, liga o controle dele. Sem o evento, sem o controle. |
 
----
-
-## 8.0.0 — um cromo por aplicação
-
-**Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
-Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
-
-Itens de navegação com destino (`SarakMenuItem` e, por ele, `SarakShellNav` e o menu do `SarakAppChrome`)
-agora são âncoras `<a href>` em vez de `<button>`. Testes de ponta a ponta e seletores de consumidor que
-procuravam `role="button"`/`button` em um item de navegação devem procurar `role="link"`/`a`. Sem
-`onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
-ignorar o clique.
-
 ### Exports removidos do barril público
+
+**Classificação: MAJOR (sai na 8.0.0).**
 
 | Nome removido | Migração |
 |---|---|
@@ -101,6 +97,8 @@ ignorar o clique.
 
 ### Configuração e scaffolder
 
+**Classificação: MAJOR (sai na 8.0.0).**
+
 O `SarakUIProvider` não recebe mais `discoveryEndpoints`; `useSarakUI()` não expõe mais
 `discoveryEndpoints`, `registeredModules` ou `layouts`. Remova também `options.endpoints`,
 `options.theme.defaultModuleId` e o campo de tema `moduleBlacklist`, que só tinham efeito no modo
@@ -113,6 +111,8 @@ não consulta mais o registro de módulos como fallback.
 `navItems` e um exemplo de roteamento local. Ajuste `src/App.tsx` ao roteador e às telas do projeto.
 
 ### Composição dos widgets da barra
+
+**Classificação: MAJOR (sai na 8.0.0).**
 
 | | Antes | Agora |
 |---|---|---|
@@ -185,9 +185,9 @@ carregar recursos e tratar cada evento.
 anexos, modo, modelo e limite de tokens e encaminha os tokens recebidos ao template; `loadModels` é opcional,
 e a lista permanece vazia sem o loader.
 
----
-
 ### Largura máxima e densidade da região de conteúdo
+
+**Classificação: MAJOR (o limite padrão altera o layout, incluído na 8.0.0).**
 
 `maxContentWidth` agora limita e centraliza a região de conteúdo; o padrão `1440px` deixa de crescer em telas mais largas. `layoutDensity` escala o respiro: `compact` reduz, `spacious` aumenta e `comfortable` preserva o espaçamento anterior.
 
@@ -195,27 +195,39 @@ Para voltar à largura fluida, defina `maxContentWidth: '100%'`. Para manter o r
 
 ### Vista dividida do conteúdo
 
+**Classificação: MINOR (capacidade aditiva incluída na 8.0.0).**
+
 Com `isSplitViewEnabled: true` no design e `secondaryContent` preenchido em `SarakAppChrome`, o conteúdo
 passa a exibir dois painéis lado a lado em desktop e empilhados em tablet e celular. Sem o token ligado ou
 sem o slot secundário, a região continua com um único painel. Para manter a composição anterior, omita
 `secondaryContent` ou defina `isSplitViewEnabled: false`.
 
-### Exibição de dados: tabelas, paginação e valores formatados (plan-97)
+### Exibição de dados: tabelas, paginação e valores formatados
+
+**Classificação: MINOR (capacidades aditivas incluídas na 8.0.0).**
 
 - `SarakTable` aceita renderização e alinhamento por coluna, ativação de linha e estados de carregamento, erro com nova tentativa e vazio; no celular, os cartões preservam a renderização, o alinhamento e a ativação da linha. `SarakDataTable` também aceita altura variável por linha e os mesmos estados.
 - `SarakPagination` aceita tamanho de página, callback de alteração e resumo traduzido do intervalo exibido.
 - Os formatadores públicos de número, moeda, percentual e data acompanham o idioma configurado, com override local. `SarakValue` aplica os tokens de status para valores positivos, negativos e neutros; `SarakStats` aceita configuração por métrica para ícone, variação, formato, rótulo e dica.
 
-### A cor do texto principal sai em `--text-main` (plan-91)
+### A cor do texto principal sai em `--text-main`
+
+**Classificação: MAJOR (a variável CSS antiga deixa de ser emitida).**
 
 A biblioteca não emite a variável `--theme-text`: a cor do texto principal sai em `--sarak-text-main` e no alias
 `--text-main`, e o utilitário `text-theme-text` do Tailwind lê `--text-main`. Uma tela do consumidor que lê o nome
 antigo direto fica sem valor. **Como migrar:** troque a leitura por `var(--text-main)` (ou `--sarak-text-main`);
 quem precisa manter o nome antigo declara o alias no próprio CSS, apontando para `--text-main`.
 
+### O `SarakInput` exibe os ícones laterais em conjunto
+
+**Classificação: PATCH (correção de comportamento).**
+
 O `SarakInput` passa a mostrar `leftIcon` e `rightIcon` juntos, cada um no seu lado, e o da direita é clicável; antes só um dos dois aparecia (o widget de busca do cromo, por exemplo, passa a exibir o atalho à direita).
 
-## A persistência do tema ativo restaura também o id
+### A persistência do tema ativo restaura também o id
+
+**Classificação: MAJOR (os tipos requerem atualização).**
 
 **Compatibilidade.** As assinaturas antigas de `onSave(design)` e `onLoad()` que devolve somente o
 design continuam aceitas. Há mudanças de tipo que exigem atualização em consumidores que fornecem
@@ -233,6 +245,13 @@ O Provider também aceita `null` ou `undefined` de `onLoad` para indicar que ain
 
 O id carregado não vence `activeThemeId` quando essa prop é controlada. O consumidor continua dono
 do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria fonte persistente.
+
+
+### As implementações de SarakDataTable e SarakDataGrid deixam de ser públicas
+
+**Classificação: MAJOR (sai na 8.0.0).** `SarakDataTableImpl` e `SarakDataGridImpl` deixam de ser exportados pelo barril público. `SarakDataTable`, `SarakDataGrid` e seus tipos de props continuam disponíveis; os componentes seguem carregados sob demanda e exigem `<Suspense>` do consumidor.
+
+**Como migrar:** troque os imports de `SarakDataTableImpl` e `SarakDataGridImpl` por `SarakDataTable` e `SarakDataGrid`. Renderize os wrappers dentro de `<Suspense fallback={...}>`; os tipos `SarakDataTableProps`, `SarakDataTableRowHeight` e `SarakDataGridProps` continuam importáveis pelo barril.
 
 ---
 

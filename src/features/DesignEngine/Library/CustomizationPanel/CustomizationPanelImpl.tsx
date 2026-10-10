@@ -5,10 +5,10 @@ import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
  * CustomizationPanel (v6.0)
  * Central de Comando Unificada - Foco 100% em Soberania e Gêmeo Digital.
  *
- * O painel monta **uma** aba: a de tema. Ele já importou sete — as outras seis nunca
- * foram renderizadas, então pagavam bundle sem alcance nenhum. Os imports mortos saíram
- * (decisão do dono, 2026-08-04); os componentes seguem em `../Panels/` com os seus testes,
- * prontos para quem decidir restaurar a navegação.
+ * O painel monta **uma** aba: a de tema. Dos seis componentes de aba que não eram
+ * renderizados, `LanguageTab` e `ShortcutsTab` foram removidos; `AdvancedTab`,
+ * `EngineCustomizationTab`, `HyperGranularityTab` e `LayoutTab` continuam em `../Panels/`
+ * com os seus testes.
  */
 export const CustomizationPanel: React.FC = () => {
     return (

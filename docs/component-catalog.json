@@ -1592,12 +1592,6 @@
         }
       ]
     },
-    "SarakDataGridImpl": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
     "SarakDataTable": {
       "propsInterface": "SarakDataTableProps",
       "source": "src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx",
@@ -1729,12 +1723,6 @@
           "doc": ""
         }
       ]
-    },
-    "SarakDataTableImpl": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
     },
     "SarakDatePicker": {
       "propsInterface": "SarakDatePickerProps",

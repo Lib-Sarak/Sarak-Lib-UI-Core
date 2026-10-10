@@ -49,7 +49,7 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
                     <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="sm">
                         {ACTION_LABELS.discard}
                     </SarakButton>
-                    <SarakButton onClick={onExport} disabled={!isDirty} variant="ghost" size="sm">
+                    <SarakButton onClick={onExport} variant="ghost" size="sm">
                         {ACTION_LABELS.export}
                     </SarakButton>
                 </div>

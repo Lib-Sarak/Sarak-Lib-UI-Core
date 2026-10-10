@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { SarakDataGridImpl } from '../SarakDataGrid';
+import SarakDataGridImpl from '../SarakDataGrid/SarakDataGridImpl';
 
 describe('Spec 12 (base) — SarakDataGrid virtualizado (Regra 1)', () => {
     it('deve montar apenas uma janela de linhas, não as 10.000 (windowing)', () => {

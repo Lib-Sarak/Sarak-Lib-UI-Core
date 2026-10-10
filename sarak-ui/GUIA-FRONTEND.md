@@ -606,9 +606,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **369** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **367** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (107)
+### A.1 Componentes públicos (105)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -700,8 +700,6 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
 | Outros | **SARAK_DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **SARAK_MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |
-| Outros | **SarakDataGridImpl** | _ver arquivo do componente_ |
-| Outros | **SarakDataTableImpl** | _ver arquivo do componente_ |
 | Outros | **SarakHelpButton** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
@@ -728,7 +726,7 @@ Breakpoints canônicos: **celular** < 768px · **tablet** 768–1023px · **desk
 
 **Adaptam sozinhos** (leem o dispositivo no próprio código — você não escreve CSS nem media query):
 
-`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakDataTableImpl` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakSplitPane`
+`SarakAnalyticalPage` · `SarakAppChrome` · `SarakDataTable` · `SarakFlex` · `SarakGrid` · `SarakHidden` · `SarakSplitPane`
 
 **Refino opcional por dispositivo** (`SarakResponsiveValue<T>` = `{ mob, tab, desk }`) — 2 props:
 

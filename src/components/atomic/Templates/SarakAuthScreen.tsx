@@ -138,7 +138,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
     };
 
     // A recuperação só aparece quando o host fornece um callback para tratá-la.
-    const handleForgot = (props.onForgot || props.onChange)
+    const handleForgot = props.onForgot
         ? (): void => {
               props.onForgot?.();
               emit({ intent: 'forgot', username });

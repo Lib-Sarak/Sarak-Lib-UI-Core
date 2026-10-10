@@ -83,7 +83,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 104,
+      "count": 102,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -119,9 +119,7 @@
         "SarakCurrencyInput",
         "SarakDataEmpty",
         "SarakDataGrid",
-        "SarakDataGridImpl",
         "SarakDataTable",
-        "SarakDataTableImpl",
         "SarakDatePicker",
         "SarakDivider",
         "SarakDrawer",
