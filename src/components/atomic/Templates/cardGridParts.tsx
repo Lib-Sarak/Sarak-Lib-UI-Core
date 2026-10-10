@@ -126,7 +126,7 @@ export function CardGridHeader<TData extends Record<string, unknown>>(props: Car
     const { getResponsiveStackStyles } = useResponsiveStyles();
     const block = getFlexStyles('column', undefined, undefined, 'var(--sarak-layout-gap-md,16px)');
     const row = getResponsiveStackStyles('md', 'var(--sarak-layout-gap-md,16px)');
-    return <div className={block.className} style={block.style}>
+    return <div className={`${block.className} @container`} style={block.style}>
         <div className={`${row.className} md:items-center justify-between`} style={row.style}>
             <div>
                 {props.label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{props.label}</h3>}
@@ -152,10 +152,12 @@ export function CardGridResults<TData extends Record<string, unknown>>({ filtere
     const emptyState = getFlexStyles('column', 'center', 'center', '0px');
     const grid = getGridStyles(undefined, undefined, 'var(--sarak-layout-gap-md, 16px)', 'cardsStandard');
     const emptyStyle = { ...emptyState.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' };
-    return <div className={grid.className} style={grid.style}>
-        {loading && !hasData ? [...Array(6)].map((_, index) => <div key={index} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />)
-            : error && !hasData ? <div className={`col-span-full ${emptyState.className}`} style={emptyStyle}><SarakDataErrorNotice error={error} /></div>
-                : filteredData.length === 0 ? <div className={`col-span-full ${emptyState.className} text-center`} style={emptyStyle}><SarakDataEmpty /></div>
-                    : filteredData.map((item, index) => <SarakCoreCard key={index} item={item} mapping={mapping} variant={variant} />)}
+    return <div className="@container">
+        <div className={grid.className} style={grid.style}>
+            {loading && !hasData ? [...Array(6)].map((_, index) => <div key={index} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />)
+                : error && !hasData ? <div className={`col-span-full ${emptyState.className}`} style={emptyStyle}><SarakDataErrorNotice error={error} /></div>
+                    : filteredData.length === 0 ? <div className={`col-span-full ${emptyState.className} text-center`} style={emptyStyle}><SarakDataEmpty /></div>
+                        : filteredData.map((item, index) => <SarakCoreCard key={index} item={item} mapping={mapping} variant={variant} />)}
+        </div>
     </div>;
 }

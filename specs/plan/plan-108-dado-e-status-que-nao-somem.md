@@ -243,6 +243,43 @@ do token de status.
 **Pendências / riscos**
 - A suíte focada não coletou testes por causa do `EPERM`; o revisor deve validar a plan isolada na cópia de `HEAD` descrita no veredito.
 
+## Resumo da execução (correção 2) — 2026-10-10
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+MM specs/plan/plan-108-dado-e-status-que-nao-somem.md
+M  src/components/atomic/Templates/SarakCardGrid.tsx
+A  src/components/atomic/Templates/cardGridParts.tsx
+```
+
+**O que foi feito**
+- `cardGridParts.tsx` — `CardGridHeader` ganhou uma fronteira ancestral `@container`, e `CardGridResults` envolve o grid responsivo em um ancestral com a mesma classe; o gate é por arquivo e consulta descendentes.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Templates/cardGridParts.tsx` | alterado | Fronteiras `@container` locais para os estilos responsivos. |
+| `specs/plan/plan-108-dado-e-status-que-nao-somem.md` | alterado | Registro da correção do achado da rodada 3. |
+
+**Verificações executadas**
+- `npm run container-query-boundary:check` → `[OK]` em todos os arquivos verificados.
+- `npx tsc --noEmit` → concluído com código 0.
+
+**Critérios de aceite**
+- [x] O gate `container-query-boundary:check` passa — evidência: saída `[OK]`.
+- [x] Typecheck global sem erros — evidência: saída com código 0.
+
+**Decisões e suposições**
+- A fronteira foi colocada num ancestral real dos elementos responsivos, em vez de no próprio grid, para que as container queries tenham um contexto válido.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum nesta rodada.
+
+**Pendências / riscos**
+- Nenhum identificado para o achado desta rodada. `npm run build` não foi executado, conforme instrução do usuário.
+
 ---
 
 # 10. Veredito
@@ -265,3 +302,17 @@ do token de status.
 **Suíte completa, na árvore com as plans 105, 106 e 108 juntas:** `npx vitest run` → 438 arquivos e 2659 testes verdes (2026-10-10; uma primeira rodada teve 2 estouros de tempo em ganchos de testes que varrem o repositório, `kitGenerator` e `check-barrel-parity` — passaram sozinhos, e a repetição veio inteira verde). Na mesma árvore: `tsc` 0, `audit:baseline` igual ao baseline. `npm run build` oficial (rodado pelo revisor, com rede) e `npm run dev-kit`: `public-types:check`, `barrel:check`, `catalog:check`, `guide:check` e `dev-kit:check` em dia. `dist/index.d.ts` traz `updatedAt`.
 
 **Critérios de aceite:** todos atendidos. O item 22 já saiu do `00-backlog` (promovido nesta plan).
+
+## Veredito — 2026-10-10 (rodada 3) — 🔴 Reprovado (aprovação reaberta)
+
+**Por que reabre:** o `pre-commit` barrou o commit desta plan no Anel 1. O revisor aprovou sem rodar os gates do Anel 1 — o `container-query-boundary:check` não roda no `build` nem no `run_audit` —, e a falha é da revisão tanto quanto da execução. Rodados agora todos os gates do Anel 1 na árvore: só este falha.
+
+**Achado:**
+
+1. `src/components/atomic/Templates/cardGridParts.tsx` (arquivo novo desta plan) chama `getGridStyles` e `getResponsiveStackStyles`, que emitem classes `@min-[…]`, sem plantar `@container` num ancestral **no mesmo arquivo** — o `@container` ficou em `SarakCardGrid.tsx`, e o gate é por arquivo (limite declarado dele). `npm run container-query-boundary:check` → `[ERROR]`. Regra: [[07-responsividade-e-multidispositivo]] §6.1. Enquanto isto não passar, o `pre-commit` barra **qualquer** commit, inclusive o das plans 105 e 106: o gate varre `src/` inteiro.
+
+## Veredito — 2026-10-10 (rodada 4) — 🟢 Aprovado
+
+**Achado da rodada 3, conferido:** `cardGridParts.tsx` planta `@container` no ancestral do `CardGridHeader` e num invólucro do `CardGridResults`, no mesmo arquivo; `container-query-boundary:check` → `[OK]`. O `md:items-center` do cabeçalho já existia no `HEAD` (não é desta plan).
+
+**Desta vez com todos os gates do Anel 1 do `pre-commit`, na árvore com as plans 105, 106 e 108:** `container-query`, `container-query-boundary`, `persistence-doc`, `class-merge`, `icon-port`, `chrome-token-parity`, `gate-limits`, `deep-import`, `zero-brand`, `barrel`, `catalog`, `guide`, `dev-kit` — todos verdes; `tsc` 0; `audit:baseline` igual ao baseline; `src/components/atomic/Templates` → 49 arquivos, 137 testes verdes (o único snapshot que toca a grade, o do `SarakCoreCard`, inalterado). A mudança é um invólucro e uma classe; a suíte completa da rodada 2 vale para o resto.
