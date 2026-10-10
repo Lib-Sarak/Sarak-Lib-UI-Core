@@ -99,6 +99,32 @@ describe('SarakGantt', () => {
         expect(region.getAttribute('style')).toContain('max-height: calc(var(--sarak-layout-gap-md');
     });
 
+    it('com rangeStart/rangeEnd, nada sai do intervalo: barra fora some, barra na borda é recortada, seta com ponta fora some', () => {
+        const tasks: SarakGanttTask[] = [
+            { id: 'antes', title: 'Antes', start: '2026-10-01', end: '2026-10-05' },
+            { id: 'cruza-inicio', title: 'Cruza o início', start: '2026-10-08', end: '2026-10-12', progress: 80 },
+            { id: 'dentro', title: 'Dentro', start: '2026-10-14', end: '2026-10-15', dependsOn: ['antes'] },
+            { id: 'cruza-fim', title: 'Cruza o fim', start: '2026-10-18', end: '2026-10-23', dependsOn: ['cruza-inicio'] },
+            { id: 'depois', title: 'Depois', start: '2026-10-25', end: '2026-10-28', dependsOn: ['dentro'] },
+        ];
+        render(<SarakGantt tasks={tasks} scale="day" rangeStart="2026-10-10" rangeEnd="2026-10-20" />);
+        const timelineWidth = 11 * 32;
+        const bar = (id: string) => document.querySelector<HTMLElement>(`[data-gantt-bar="${id}"]`);
+
+        expect(within(screen.getByRole('list', { name: 'Tarefas' })).getAllByRole('listitem')).toHaveLength(5);
+        expect(document.querySelectorAll('[data-gantt-row]')).toHaveLength(5);
+        expect(bar('antes')).toBeNull();
+        expect(bar('depois')).toBeNull();
+        expect(bar('cruza-inicio')).toHaveStyle({ left: '0px', width: `${3 * 32}px` });
+        expect(bar('cruza-fim')).toHaveStyle({ left: `${8 * 32}px`, width: `${3 * 32}px` });
+        for (const visible of document.querySelectorAll<HTMLElement>('[data-gantt-bar]')) {
+            expect(parseFloat(visible.style.left)).toBeGreaterThanOrEqual(0);
+            expect(parseFloat(visible.style.left) + parseFloat(visible.style.width)).toBeLessThanOrEqual(timelineWidth);
+        }
+        const arrows = [...document.querySelectorAll('[data-gantt-arrow]')].map((arrow) => arrow.getAttribute('data-gantt-arrow'));
+        expect(arrows).toEqual(['cruza-inicio->cruza-fim']);
+    });
+
     it('planta @container na raiz, ancestral das classes da lista', () => {
         const { container } = render(<SarakGantt tasks={TASKS} className="extra" />);
         const root = container.firstElementChild as HTMLElement;

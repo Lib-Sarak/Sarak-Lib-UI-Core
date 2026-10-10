@@ -8,7 +8,7 @@
  */
 
 import React, { useId } from 'react';
-import { GANTT_DAY_WIDTH, ganttBarGeometry, type GanttRange, type SarakGanttScale } from './ganttScale';
+import { GANTT_DAY_WIDTH, ganttBarGeometry, ganttRangeWidth, type GanttRange, type SarakGanttScale } from './ganttScale';
 import type { GanttEdge } from './ganttTasks';
 
 export interface GanttDependenciesProps {
@@ -32,16 +32,22 @@ export interface GanttArrow {
 
 const rowCenter = (index: number, rowCount: number): string => `${((index + 0.5) / rowCount) * 100}%`;
 
-/** Geometria de uma seta: sai do fim da predecessora, anda meio dia, troca de linha e entra no início da sucessora. */
-export const ganttArrow = (edge: GanttEdge, range: GanttRange, scale: SarakGanttScale, rowCount: number): GanttArrow => {
+/**
+ * Geometria de uma seta: sai do fim da predecessora, anda meio dia, troca de linha e entra no início da sucessora.
+ * Só existe com as duas pontas dentro do intervalo (o fim da predecessora e o início da sucessora); senão, `null`.
+ * A volta nunca passa do último dia.
+ */
+export const ganttArrow = (edge: GanttEdge, range: GanttRange, scale: SarakGanttScale, rowCount: number): GanttArrow | null => {
+    const width = ganttRangeWidth(range, scale);
     const from = ganttBarGeometry(edge.from.start, edge.from.end, range, scale);
-    const to = ganttBarGeometry(edge.to.start, edge.to.end, range, scale);
     const x1 = from.x + from.width;
+    const x2 = ganttBarGeometry(edge.to.start, edge.to.end, range, scale).x;
+    if (x1 <= 0 || x1 > width || x2 < 0 || x2 >= width) return null;
     return {
         key: `${edge.from.task.id}->${edge.to.task.id}`,
         x1,
-        xTurn: x1 + Math.max(GANTT_DAY_WIDTH[scale] / 2, GANTT_DAY_WIDTH.week / 2),
-        x2: to.x,
+        xTurn: Math.min(x1 + Math.max(GANTT_DAY_WIDTH[scale] / 2, GANTT_DAY_WIDTH.week / 2), width),
+        x2,
         y1: rowCenter(edge.from.index, rowCount),
         y2: rowCenter(edge.to.index, rowCount),
     };
@@ -50,7 +56,8 @@ export const ganttArrow = (edge: GanttEdge, range: GanttRange, scale: SarakGantt
 export function GanttDependencies({ edges, range, scale, rowCount }: GanttDependenciesProps) {
     // `useId` dá um id por instância: dois Gantts na mesma página não disputam o marcador da ponta.
     const markerId = `sarak-gantt-arrow-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-    if (edges.length === 0 || rowCount === 0) return null;
+    const arrows = rowCount === 0 ? [] : edges.flatMap((edge) => ganttArrow(edge, range, scale, rowCount) ?? []);
+    if (arrows.length === 0) return null;
 
     return (
         <svg
@@ -71,16 +78,13 @@ export function GanttDependencies({ edges, range, scale, rowCount }: GanttDepend
                     <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
                 </marker>
             </defs>
-            {edges.map((edge) => {
-                const arrow = ganttArrow(edge, range, scale, rowCount);
-                return (
-                    <g key={arrow.key} data-gantt-arrow={arrow.key} stroke="currentColor" strokeWidth={1.5} fill="none">
-                        <line x1={arrow.x1} y1={arrow.y1} x2={arrow.xTurn} y2={arrow.y1} />
-                        <line x1={arrow.xTurn} y1={arrow.y1} x2={arrow.xTurn} y2={arrow.y2} />
-                        <line x1={arrow.xTurn} y1={arrow.y2} x2={arrow.x2} y2={arrow.y2} markerEnd={`url(#${markerId})`} />
-                    </g>
-                );
-            })}
+            {arrows.map((arrow) => (
+                <g key={arrow.key} data-gantt-arrow={arrow.key} stroke="currentColor" strokeWidth={1.5} fill="none">
+                    <line x1={arrow.x1} y1={arrow.y1} x2={arrow.xTurn} y2={arrow.y1} />
+                    <line x1={arrow.xTurn} y1={arrow.y1} x2={arrow.xTurn} y2={arrow.y2} />
+                    <line x1={arrow.xTurn} y1={arrow.y2} x2={arrow.x2} y2={arrow.y2} markerEnd={`url(#${markerId})`} />
+                </g>
+            ))}
         </svg>
     );
 }

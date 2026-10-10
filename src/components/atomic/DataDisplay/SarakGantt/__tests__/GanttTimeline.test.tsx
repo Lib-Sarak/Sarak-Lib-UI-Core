@@ -54,6 +54,12 @@ describe('GanttTimeline', () => {
         expect(bar('b')).toHaveAccessibleName(`Protótipo, de ${full(new Date(2026, 9, 6))} a ${full(new Date(2026, 9, 8))}`);
     });
 
+    it('barra recortada no início do intervalo: o progresso termina no mesmo dia da barra inteira', () => {
+        renderTimeline({ range: { start: new Date(2026, 9, 3), end: new Date(2026, 9, 14) } });
+        expect(bar('a')).toHaveStyle({ left: '0px', width: '64px' });
+        expect(bar('a').querySelector<HTMLElement>('[data-gantt-progress]')!.style.width).toBe('10%');
+    });
+
     it('o progresso é uma faixa na base da barra, fora do título, e a trilha é opaca (tom sobre o fundo do tema)', () => {
         renderTimeline();
         const fill = bar('a').querySelector<HTMLElement>('[data-gantt-progress]')!;

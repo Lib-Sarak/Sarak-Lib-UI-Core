@@ -20,6 +20,8 @@ import {
     ganttDateToPixel,
     ganttRangeWidth,
     ganttToneColor,
+    ganttVisibleBar,
+    ganttVisibleProgress,
     type GanttRange,
     type GanttTick,
     type SarakGanttScale,
@@ -92,11 +94,14 @@ function GanttHeaderTick({ tick, scale, formats, isFirst }: { tick: GanttTick; s
 function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; range: GanttRange; scale: SarakGanttScale; formats: GanttFormats; onTaskClick?: (task: SarakGanttTask) => void }) {
     const text = useLibraryText();
     const { task } = row;
-    const { x, width } = ganttBarGeometry(row.start, row.end, range, scale);
+    const bar = ganttBarGeometry(row.start, row.end, range, scale);
+    const visible = ganttVisibleBar(bar, range, scale);
     const progress = ganttProgress(task.progress);
     const tone = ganttToneColor(task.tone);
     const dates = { title: task.title, start: formats.full.format(row.start), end: formats.full.format(row.end) };
     const label = progress === null ? text('ganttTaskBar', dates) : text('ganttTaskBarProgress', { ...dates, progress: Math.round(progress) });
+    // Tarefa inteiramente fora do intervalo não tem barra; a linha continua, alinhada com a lista.
+    if (!visible) return null;
 
     return (
         <SarakButton
@@ -108,8 +113,8 @@ function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; 
             className={GANTT_BAR_CLASS}
             style={{
                 position: 'absolute',
-                left: x,
-                width,
+                left: visible.x,
+                width: visible.width,
                 top: '20%',
                 height: '60%',
                 minHeight: 0,
@@ -136,7 +141,7 @@ function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; 
                 <span
                     aria-hidden="true"
                     data-gantt-progress={Math.round(progress)}
-                    style={{ position: 'absolute', insetBlockEnd: 0, insetInlineStart: 0, height: GANTT_PROGRESS_HEIGHT, width: `${progress}%`, background: tone }}
+                    style={{ position: 'absolute', insetBlockEnd: 0, insetInlineStart: 0, height: GANTT_PROGRESS_HEIGHT, width: `${ganttVisibleProgress(bar, visible, progress)}%`, background: tone }}
                 />
             )}
             <span style={{ position: 'relative', paddingInline: GAP_XS, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

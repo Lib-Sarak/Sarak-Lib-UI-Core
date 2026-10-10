@@ -58,10 +58,36 @@ export const ganttPixelToDate = (x: number, rangeStart: Date, scale: SarakGanttS
 export const ganttRangeWidth = (range: GanttRange, scale: SarakGanttScale): number =>
     ganttDateToPixel(addDays(range.end, 1), range.start, scale);
 
-/** Barra de uma tarefa: do início do primeiro dia ao fim do último (fim inclusive). */
-export const ganttBarGeometry = (start: Date, end: Date, range: GanttRange, scale: SarakGanttScale): { x: number; width: number } => {
+/** Caixa horizontal de uma barra, em pixels a partir do início do intervalo. */
+export interface GanttBarBox {
+    x: number;
+    width: number;
+}
+
+/** Barra de uma tarefa: do início do primeiro dia ao fim do último (fim inclusive). Pode cair fora do intervalo. */
+export const ganttBarGeometry = (start: Date, end: Date, range: GanttRange, scale: SarakGanttScale): GanttBarBox => {
     const x = ganttDateToPixel(start, range.start, scale);
     return { x, width: ganttDateToPixel(addDays(end, 1), range.start, scale) - x };
+};
+
+/**
+ * A parte da barra que cabe no intervalo: recortada no primeiro e no último dia, para nada ser desenhado atrás da
+ * lista presa nem alargar a rolagem. Barra inteiramente fora devolve `null`.
+ */
+export const ganttVisibleBar = (bar: GanttBarBox, range: GanttRange, scale: SarakGanttScale): GanttBarBox | null => {
+    const left = Math.max(bar.x, 0);
+    const right = Math.min(bar.x + bar.width, ganttRangeWidth(range, scale));
+    return right > left ? { x: left, width: right - left } : null;
+};
+
+/**
+ * Preenchimento do progresso, em porcentagem da parte VISÍVEL da barra: o fim do preenchimento fica no mesmo dia
+ * em que ficaria na barra inteira, e o que dele cai fora do intervalo é recortado junto com ela.
+ */
+export const ganttVisibleProgress = (bar: GanttBarBox, visible: GanttBarBox, progress: number): number => {
+    // Uma divisão só, no fim: sem recorte, o resultado é o próprio `progress`, sem resíduo de ponto flutuante.
+    const percent = ((bar.x - visible.x) * 100 + bar.width * progress) / visible.width;
+    return Math.min(100, Math.max(0, percent));
 };
 
 const PADDING: Record<SarakGanttScale, (span: GanttRange) => GanttRange> = {

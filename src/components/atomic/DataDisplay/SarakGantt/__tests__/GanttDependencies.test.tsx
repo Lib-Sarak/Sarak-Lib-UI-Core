@@ -25,8 +25,40 @@ describe('ganttArrow', () => {
     });
 
     it('em escala apertada a volta ainda se afasta da barra', () => {
-        const arrow = ganttArrow(edges[0], RANGE, 'month', 3);
+        const arrow = ganttArrow(edges[0], RANGE, 'month', 3)!;
         expect(arrow.xTurn - arrow.x1).toBe(6);
+    });
+});
+
+describe('ganttArrow — bordas do intervalo', () => {
+    const NARROW = { start: new Date(2026, 9, 5), end: new Date(2026, 9, 10) };
+
+    it('predecessora que termina antes do intervalo ou sucessora que começa depois dele: sem seta', () => {
+        expect(ganttArrow(edges[0], { start: new Date(2026, 9, 5), end: new Date(2026, 9, 31) }, 'day', 3)).toBeNull();
+        expect(ganttArrow(edges[0], { start: new Date(2026, 9, 1), end: new Date(2026, 9, 5) }, 'day', 3)).toBeNull();
+    });
+
+    it('as duas pontas dentro: a seta existe, e a volta para no último dia', () => {
+        const arrow = ganttArrow(edges[0], { start: new Date(2026, 9, 1), end: new Date(2026, 9, 6) }, 'day', 3)!;
+        expect(arrow).toMatchObject({ x1: 4 * 32, x2: 5 * 32 });
+        expect(arrow.xTurn).toBeLessThanOrEqual(6 * 32);
+        const atEdge = ganttArrow(edges[0], { start: new Date(2026, 9, 1), end: new Date(2026, 9, 4) }, 'day', 3);
+        expect(atEdge).toBeNull();
+        expect(ganttArrow(edges[0], NARROW, 'day', 3)).toBeNull();
+    });
+
+    it('predecessora que termina no último dia: a volta não passa da borda', () => {
+        const backwards = normalizeGanttTasks([
+            { id: 'p', title: 'P', start: '2026-10-04', end: '2026-10-06' },
+            { id: 's', title: 'S', start: '2026-10-03', end: '2026-10-03', dependsOn: ['p'] },
+        ]);
+        const arrow = ganttArrow(resolveGanttDependencies(backwards).edges[0], { start: new Date(2026, 9, 1), end: new Date(2026, 9, 6) }, 'day', 2)!;
+        expect(arrow).toMatchObject({ x1: 6 * 32, xTurn: 6 * 32, x2: 2 * 32 });
+    });
+
+    it('sem seta válida, o SVG não é montado', () => {
+        const { container } = render(<GanttDependencies edges={edges} range={NARROW} scale="day" rowCount={3} />);
+        expect(container.querySelector('svg')).toBeNull();
     });
 });
 

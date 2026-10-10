@@ -170,6 +170,8 @@ const App: React.FC = () => {
  *   - `gantt`: o `SarakGantt` com 30 tarefas e 8 dependências (uma para tarefa inexistente), na escala de dia
  *     num contêiner largo e na de semana num estreito. As datas partem de hoje, para o marcador de hoje existir.
  *   - `gantt-altura`: as mesmas tarefas em dois hosts de ALTURA definida (1000 × 420 e 340 × 360).
+ *   - `gantt-intervalo`: o `SarakGantt` com `rangeStart`/`rangeEnd` de 20 dias (escala de dia, host de 600 px) e
+ *     tarefas antes do intervalo, cruzando cada borda, dentro e depois dele, com setas para as de fora.
  *   - `calendario-tom`: o calendário com um evento de tom fora da união (`neutral`, como vem de dado solto)
  *     ao lado de um evento `primary`.
  */
@@ -294,6 +296,23 @@ const CalendarToneScene: React.FC = () => (
     </div>
 );
 
+// `antes` e `depois` ficam inteiras fora do intervalo; `cruza-*` atravessam uma borda cada; as duas setas têm uma ponta fora.
+const GANTT_RANGE_TASKS = [
+    { id: 'antes', title: 'Antes', start: ganttDay(-10), end: ganttDay(-5) },
+    { id: 'cruza-inicio', title: 'Cruza o início', start: ganttDay(-3), end: ganttDay(2) },
+    { id: 'dentro', title: 'Dentro', start: ganttDay(5), end: ganttDay(7), dependsOn: ['antes'] },
+    { id: 'cruza-fim', title: 'Cruza o fim', start: ganttDay(17), end: ganttDay(24) },
+    { id: 'depois', title: 'Depois', start: ganttDay(25), end: ganttDay(40), dependsOn: ['dentro'] },
+];
+
+const GanttRangeScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="gantt-intervalo" style={{ width: '600px' }}>
+            <SarakGantt tasks={GANTT_RANGE_TASKS} scale="day" rangeStart={ganttDay(0)} rangeEnd={ganttDay(19)} />
+        </div>
+    </div>
+);
+
 const SCENES: Record<string, React.FC> = {
     textura: TextureScene,
     'sem-provider': NoProviderScene,
@@ -303,6 +322,7 @@ const SCENES: Record<string, React.FC> = {
     calendario: CalendarScene,
     gantt: GanttScene,
     'gantt-altura': GanttHeightScene,
+    'gantt-intervalo': GanttRangeScene,
     'calendario-tom': CalendarToneScene,
 };
 

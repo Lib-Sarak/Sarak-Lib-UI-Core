@@ -373,7 +373,8 @@ sempre, porque o harness lê `dist/` (quais são: `ls browser-tests/*.spec.ts`):
 (`cromo-css-real.spec.ts`), o CSS dos átomos e da atmosfera que o `jsdom` não resolve
 (`css-que-so-o-navegador-mede.spec.ts`) e as visões de projeto — calendário e Gantt, em contêiner largo e estreito,
 em tema claro e escuro (`calendario*.spec.ts`, `gantt*.spec.ts`). **Quantos
-casos são, os arquivos dizem** (`grep -c "^test(" browser-tests/*.spec.ts`). O harness escolhe a cena pela URL
+casos são, os arquivos dizem** (`grep -cE "^\s*test\(" browser-tests/*.spec.ts` — com o recuo, porque os casos dentro de `test.describe` são
+indentados). O harness escolhe a cena pela URL
 (`?cena=`), e sem ela monta o cromo de sempre. O que os casos cobrem cabe nestas famílias:
 
 - a **métrica do item de navegação** nas três faixas de [[07-responsividade-e-multidispositivo]] §2;

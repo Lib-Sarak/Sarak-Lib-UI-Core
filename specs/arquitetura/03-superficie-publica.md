@@ -4,7 +4,7 @@ titulo: "Superfície pública — o barril, os gates e as fronteiras de bundle"
 dominio: "Arquitetura / Contrato público / Empacotamento"
 status: "🟢 Vigente"
 tags: ["arquitetura", "barril", "contrato-publico", "catalogo", "bundle", "lazy", "taxonomia"]
-relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
+relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]", "[[019-arrastar-e-soltar-do-kanban]]", "[[020-gantt-casca-propria]]"]
 ---
 
 # 1. Propósito
@@ -468,7 +468,7 @@ em `primary` — e renderizam sem Provider (R34).
   `onDayClick`; `renderEvent` substitui o chip.
 - Teclado: `role="grid"` com foco itinerante — setas (±1 dia, ±1 semana), PageUp/PageDown (±1 mês); `Enter` no dia chama
   `onDayClick` e, no evento, `onEventClick`. Cada dia tem `aria-label` com a data por extenso e a contagem.
-- **Contêiner estreito** (container query, a partir de 768 px de largura disponível): o evento vira um ponto colorido, e
+- **Contêiner estreito** (container query: abaixo de 768 px de largura disponível): o evento vira um ponto colorido, e
   o toque em cima dele chama `onDayClick`; nada rola na horizontal. O título do evento sai em caixa normal.
 
 **`SarakGantt`** — cronograma em casca própria ([[020-gantt-casca-propria]]).
@@ -481,8 +481,8 @@ em `primary` — e renderizam sem Provider (R34).
   em tema claro e escuro; foco e `Enter` chamam `onTaskClick`. `dependsOn` desenha uma seta término → início;
   dependência para tarefa inexistente é ignorada com aviso em desenvolvimento, e ciclo não trava.
 - **Altura:** com o host de altura definida, o Gantt ocupa essa altura e rola por dentro; sem ela, cresce até um teto.
-- **Limites declarados:** até 500 tarefas sem virtualização; sem arrastar nem redimensionar barra (`onTaskChange` fica
-  reservado), sem grade de horas, sem recorrência, sem fuso, sem caminho crítico, auto-agendamento ou exportação.
+- **Limites declarados:** até 500 tarefas sem virtualização; sem arrastar nem redimensionar barra (a prop `onTaskChange`
+  **não existe** — o nome fica guardado para quando houver), sem grade de horas, sem recorrência, sem fuso, sem caminho crítico, auto-agendamento ou exportação.
 
 
 # 7. Fronteiras de bundle — a parte MEDIDA

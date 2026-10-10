@@ -9,6 +9,8 @@ import {
     ganttPixelToDate,
     ganttRangeWidth,
     ganttToneColor,
+    ganttVisibleBar,
+    ganttVisibleProgress,
     resolveGanttRange,
     type SarakGanttScale,
 } from '../ganttScale';
@@ -69,6 +71,36 @@ describe('ganttBarGeometry / ganttRangeWidth', () => {
 
     it('a largura do intervalo inclui o último dia inteiro', () => {
         expect(ganttRangeWidth({ start: START, end: new Date(2026, 9, 31) }, 'day')).toBe(31 * 32);
+    });
+});
+
+describe('ganttVisibleBar / ganttVisibleProgress', () => {
+    const range = { start: START, end: new Date(2026, 9, 10) };
+    const visible = (start: Date, end: Date) => ganttVisibleBar(ganttBarGeometry(start, end, range, 'day'), range, 'day');
+
+    it('barra dentro do intervalo sai inteira', () => {
+        expect(visible(new Date(2026, 9, 3), new Date(2026, 9, 5))).toEqual({ x: 2 * 32, width: 3 * 32 });
+    });
+
+    it('barra que cruza uma borda é recortada nela', () => {
+        expect(visible(new Date(2026, 8, 28), new Date(2026, 9, 2))).toEqual({ x: 0, width: 2 * 32 });
+        expect(visible(new Date(2026, 9, 9), new Date(2026, 9, 14))).toEqual({ x: 8 * 32, width: 2 * 32 });
+        expect(visible(new Date(2026, 8, 28), new Date(2026, 9, 14))).toEqual({ x: 0, width: 10 * 32 });
+    });
+
+    it('barra inteiramente fora, inclusive encostada na borda, não existe', () => {
+        expect(visible(new Date(2026, 8, 20), new Date(2026, 8, 30))).toBeNull();
+        expect(visible(new Date(2026, 9, 11), new Date(2026, 9, 12))).toBeNull();
+    });
+
+    it('o progresso termina no mesmo dia da barra inteira, recortado como ela', () => {
+        const bar = { x: -2 * 32, width: 4 * 32 };
+        const shown = { x: 0, width: 2 * 32 };
+        expect(ganttVisibleProgress(bar, shown, 75)).toBe(50);
+        expect(ganttVisibleProgress(bar, shown, 25)).toBe(0);
+        expect(ganttVisibleProgress(bar, shown, 100)).toBe(100);
+        expect(ganttVisibleProgress({ x: 0, width: 4 * 32 }, { x: 0, width: 2 * 32 }, 75)).toBe(100);
+        expect(ganttVisibleProgress(shown, shown, 40)).toBe(40);
     });
 });
 
