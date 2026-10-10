@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao host o controle das preferencias do usuario no cromo"
 objetivo: "Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez"
 dominio: "Provider / Preferencias do usuario / Cromo"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Media"
 tags: ["plan", "preferencias", "modo-de-cor", "provider", "cromo", "widgets"]
 relacionados: ["[[09-temas-e-presets]]", "[[05-cromo-e-slots]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]"]

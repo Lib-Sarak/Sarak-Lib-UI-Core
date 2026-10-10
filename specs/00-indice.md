@@ -42,21 +42,34 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-104-fronteira-lazy-da-grade-e-notas-da-8](plan/plan-104-fronteira-lazy-da-grade-e-notas-da-8.md) | Fazer o SarakDataTable e o SarakDataGrid sairem do chunk de abertura do barril e deixar docs/migracoes.md com toda nota da 8.0.0 dentro da entrada ancorada e classificada | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 2 | [plan-105-rotulo-dos-campos-e-textos-traduzidos](plan/plan-105-rotulo-dos-campos-e-textos-traduzidos.md) | Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao | — | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 3 | [plan-106-controle-do-host-sobre-as-preferencias](plan/plan-106-controle-do-host-sobre-as-preferencias.md) | Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez | — | 🔴 A executar | specs/09-temas-e-presets.md + specs/05-cromo-e-slots.md |
-| 4 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🔴 A executar | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
-| 5 | [plan-108-dado-e-status-que-nao-somem](plan/plan-108-dado-e-status-que-nao-somem.md) | Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema | — | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 6 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
+| 1 | [plan-105-rotulo-dos-campos-e-textos-traduzidos](plan/plan-105-rotulo-dos-campos-e-textos-traduzidos.md) | Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao | — | 🟡 Em execução | arquitetura/03-superficie-publica.md |
+| 2 | [plan-106-controle-do-host-sobre-as-preferencias](plan/plan-106-controle-do-host-sobre-as-preferencias.md) | Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez | — | 🟡 Em execução | specs/09-temas-e-presets.md + specs/05-cromo-e-slots.md |
+| 3 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🔴 A executar | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
+| 4 | [plan-108-dado-e-status-que-nao-somem](plan/plan-108-dado-e-status-que-nao-somem.md) | Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema | — | 🟡 Em execução | arquitetura/03-superficie-publica.md |
+| 5 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` primeiro — ela fecha a superfície da 8.0.0 e
-> precisa entrar antes da tag; depois a `plan-106` e a `plan-105`. As três tocam `docs/migracoes.md`, cada uma na
+> **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
+> 🚦 **Despacho de 2026-10-10 — 105 ‖ 106 ‖ 108.** Disjunção declarada pelo revisor:
+> - a 105 é a única em `Inputs/` e `Media/SarakPDFViewer/`; textos só em `catalogEntries.part5.ts`;
+> - a 106 é a única em `src/core/Provider/`, `Layout/chrome/` e `Navigation/SarakShellThemeToggle.tsx`; textos, se precisar, só em `catalogEntries.part4.ts`;
+> - a 108 é a única em `Templates/`, `Atoms/SarakValue.tsx` e `Feedback/SarakBadge.tsx`; textos só em `catalogEntries.part6.ts`;
+> - `docs/migracoes.md`: cada uma acrescenta a sua subseção `###` dentro da entrada `## 8.0.0`, por substituição exata, sem `---` novo;
+> - catálogo e kit (`npm run catalog && npm run guide`) cada uma regenera depois de mudar componente público; `dist/` e `sarak-dev/` o revisor regenera no fim da onda (`npm run build` precisa de rede para o `build:css`).
+>
+> A 107 espera esta onda (colide com a 105 em `SarakMultiSelect`/`SarakAutocomplete`), e a 109 espera a 107.
+>
 > **As 107 → 109 vêm da avaliação de mobile de 2026-10-10:** a `plan-109` depende da `plan-107` (usa o token de alvo
 > de toque); a `plan-108` é independente das duas.
+
+> ⚪ **A `plan-104` foi SINTETIZADA e REMOVIDA em 2026-10-10.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **104** | [[03-superficie-publica]] §6.3.1 (o `SarakDataTable` e o `SarakDataGrid` exigem `<Suspense>` de quem os usa; a implementação não é nome público) e §7.1 (a regra: fronteira só vale se o `Impl` não for nome do barril, com a medição do `dist/` e o teste que a trava). Ficou de fora: as notas consolidadas em `docs/migracoes.md` (doc do consumidor, não spec); o `@tanstack/react-virtual` agora só é importado sob demanda e continua peer obrigatória — `00-backlog` item 9 |
 
 > ⚪ **A `plan-103` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
 >

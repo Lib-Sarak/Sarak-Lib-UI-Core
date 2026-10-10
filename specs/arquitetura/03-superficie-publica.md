@@ -306,7 +306,8 @@ O que um sistema precisa para mostrar dado, sem refazer à mão:
   o botão de atualizar. No celular, a mesma tabela reflui em cartões, e
   `render`, `align` e `onRowClick` valem neles também.
 - **`SarakDataTable`** (a grade virtualizada) aceita `rowHeight` fixo, por função da linha ou `'auto'`, os mesmos três
-  estados, `onRowClick` e `align`.
+  estados, `onRowClick` e `align`. Ele e o `SarakDataGrid` são carregados sob demanda e **exigem um `<Suspense>`** de
+  quem os usa (ao contrário dos motores, que o embutem); a implementação não é nome público.
 - **`SarakPagination`** recebe `pageSize`, `pageSizeOptions`, `totalItems` e `onPageSizeChange`, e mostra o resumo
   "X–Y de N" traduzido.
 - **Formatadores públicos**: `sarakFormatNumber`, `sarakFormatCurrency`, `sarakFormatPercent` e `sarakFormatDate`
@@ -516,9 +517,15 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 | `SarakFlowEngine` | `src/components/engines/flows/index.tsx:17` |
 | `SarakPDFViewer` | `src/components/atomic/Media/SarakPDFViewer/index.ts:12` |
 | `SarakMarkdownRenderer` | `src/components/atomic/Media/SarakMarkdownRenderer/index.ts:13` |
-| `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts:11` |
-| `SarakDataGrid` | `src/components/atomic/DataDisplay/SarakDataGrid/index.ts:14` |
+| `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts` |
+| `SarakDataGrid` | `src/components/atomic/DataDisplay/SarakDataGrid/index.ts` |
 | `SarakKanban` | `src/components/atomic/DataDisplay/SarakKanban/SarakKanban.tsx` |
+
+**Uma fronteira só vale se a implementação não for nome do barril.** Exportar o `Impl` como valor, ao lado do
+`lazy`, faz o esbuild levá-lo ao chunk carregado na abertura — e o chunk "lazy" vira um reexport de poucos bytes.
+Medido no `dist/`: nenhum chunk importado estaticamente por `dist/index.js` contém `@tanstack/react-virtual`; a
+implementação das duas grades mora nos chunks `SarakDataTableImpl-*.js`/`SarakDataGridImpl-*.js`. O teste
+`DataDisplay/__tests__/SarakDataLazyBoundary.test.ts` trava as duas condições na fonte.
 
 `SarakKanban` arrasta com `@dnd-kit` (peer **opcional**, como `echarts`): o `dist/index.js` não referencia a
 biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é interno e direto, sem o

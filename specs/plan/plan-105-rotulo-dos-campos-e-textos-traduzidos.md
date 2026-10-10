@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ligar o rotulo de todo campo ao controle e traduzir os textos fixos dos atomos"
 objetivo: "Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao"
 dominio: "Componentes atomicos / Inputs / Acessibilidade / i18n"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Media"
 tags: ["plan", "acessibilidade", "i18n", "inputs", "label"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]"]

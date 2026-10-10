@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Manter o ultimo dado na falha, carimbar a leitura e mostrar status sem depender so de cor"
 objetivo: "Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema"
 dominio: "Templates de dado / Feedback / Exibicao de dados"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Media"
 tags: ["plan", "estados", "templates", "status", "acessibilidade", "mobile"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]"]
