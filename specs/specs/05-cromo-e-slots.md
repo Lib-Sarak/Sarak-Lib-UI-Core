@@ -29,7 +29,7 @@ A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invar
 | `nav?: SarakShellNavItem[]` + `activeRoute?` | modelo declarativo legado (`route`/`activeRoute`), mantido por compatibilidade |
 | `onNavigate?: (route) => void` | **o host decide COMO navegar** — redirect de página inteira, router local, o que for |
 | `navigationStyle?: 'sidebar' \| 'topbar' \| 'auto'` | `'auto'` (default) segue `design.navigationStyle` |
-| `widgets?: { search?, themeToggle?, user?, notifications?, collapse? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele |
+| `widgets?: { search?, themeToggle?, user?, notifications?, collapse?, fontSize?, navigationStyle?, language? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele; é teto: tira o widget da barra e do ⚙, e nunca liga preferência que o tema não oferece |
 | `user?: SarakShellUser` · `logout?: () => void` | identidade e sessão **do consumidor**: `{ name, role?, avatarUrl?, email? }` alimenta o widget de usuário (só `avatarUrl` `http(s)` ou relativo vira imagem; sem ela, as iniciais do nome), que **aparece desabilitado** sem `user` ou sem `logout` (§2.2.1) |
 | `notifications?: SarakChromeNotification[]` · `onNotificationSelect?` | itens e tratamento do widget de notificações, que aparece desabilitado sem os dois (§2.2.1) |
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |

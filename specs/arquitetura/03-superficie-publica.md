@@ -279,6 +279,12 @@ Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com
 - **`load`** — uma função do host que devolve uma `Promise` com o dado. O template mostra carregamento enquanto
   ela não resolve, e o estado de erro se ela rejeita.
 
+Com dado já carregado, uma falha de recarregamento **não apaga a tela** (`SarakTable`, `SarakCardGrid`,
+`SarakChart`, `SarakStats`): o dado fica, com o erro e "Tentar de novo" acima dele. O template mostra o horário da
+última leitura — no modo `load`, o da última leitura bem-sucedida; no modo `data`, o que o host passar em
+`updatedAt` (`Date`, `string` ou `number`) — e o marca como desatualizado depois de uma falha. A retenção mora num
+hook só (`Templates/hooks/useHostData.ts`).
+
 Sem nenhuma das duas props, nenhum template busca nem fica preso em carregamento. **Exceção:** o `SarakForm` em
 `mode: 'create'` não chama `load` — o formulário nasce dos valores iniciais (o padrão é `'edit'`, que carrega).
 
@@ -315,8 +321,14 @@ O que um sistema precisa para mostrar dado, sem refazer à mão:
   fixos no código.
 - **`SarakValue`** compõe valor, formatador e cor por sinal (`signColor`, padrão ligado): positivo pelo token
   `statusSuccessColor`, negativo pelo `statusErrorColor`, neutro pelo `textColorMuted`, sempre por variável CSS.
-  Formata no idioma da preferência da lib, com override por `locale`; `size` é `sm`, `md` ou `lg`.
-- **`SarakStats`**, por métrica: `icon`, `delta` (com sinal e cor, pelo `SarakValue`), `format`, `label` e `hint`.
+  Formata no idioma da preferência da lib, com override por `locale`; `size` é `sm`, `md` ou `lg`. Números em dígitos
+  tabulares (`tabular-nums`): o valor não "pula" ao atualizar.
+- **`SarakStats`**, por métrica: `icon`, `delta` (com sinal e cor, pelo `SarakValue`), `format`, `label` e `hint`;
+  números em dígitos tabulares.
+- **`SarakBadge`** de status (`success`, `warning`, `danger`, `info`) lê a cor do token de status do tema e desenha,
+  por padrão, uma forma por status — ● sucesso, ▲ aviso, ◆ crítico, ■ informação — oculta do leitor de tela
+  (`showStatusShape={false}` desliga); o rótulo é o conteúdo. Na variante sólida (`soft={false}`) o texto é escuro,
+  medido ≥ 4,5:1 contra as cores de status dos temas embarcados.
 
 Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
 
@@ -422,7 +434,9 @@ próprio); o `uPlot` só se justificaria com séries de centenas de milhares de 
 referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulário que misture átomos e
 `SarakFieldError` solto mostra um erro só de aparência. A prop `error` é `string`.
 
-- **Rótulo:** os átomos de campo têm `label`, ligado ao controle (`htmlFor`/`id`). O `SarakSelect` sem `label` tem
+- **Rótulo:** os átomos de campo têm `label`, e o controle que recebe o foco tem esse nome acessível: por
+  `<label htmlFor>` quando há elemento rotulável, por `aria-labelledby` quando não há (editor rico, gatilho próprio
+  do seletor de data e do multisseleção, área do uploader, grupo do intervalo e do horário). O `SarakSelect` sem `label` tem
   o mesmo DOM de sempre.
 - **Ícones do `SarakInput`:** `leftIcon` e `rightIcon` aparecem **juntos**, cada um no seu lado, e o da direita é
   clicável (é o que permite "mostrar senha"); `icon` prevalece sobre os dois.

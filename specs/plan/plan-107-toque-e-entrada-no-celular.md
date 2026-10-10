@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar a lib alvos de toque, campos e movimento corretos no celular"
 objetivo: "Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca"
 dominio: "Componentes atomicos / Multidispositivo / Acessibilidade"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "mobile", "toque", "acessibilidade", "movimento", "multidispositivo"]
 relacionados: ["[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[04-contrato-de-tokens-e-paridade]]"]

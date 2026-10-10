@@ -42,28 +42,28 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-105-rotulo-dos-campos-e-textos-traduzidos](plan/plan-105-rotulo-dos-campos-e-textos-traduzidos.md) | Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 2 | [plan-106-controle-do-host-sobre-as-preferencias](plan/plan-106-controle-do-host-sobre-as-preferencias.md) | Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez | — | 🟢 Aprovada | specs/09-temas-e-presets.md + specs/05-cromo-e-slots.md |
-| 3 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🔴 A executar | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
-| 4 | [plan-108-dado-e-status-que-nao-somem](plan/plan-108-dado-e-status-que-nao-somem.md) | Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md |
-| 5 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
+| 1 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🟡 Em execução | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
+| 2 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Despacho de 2026-10-10 — 105 ‖ 106 ‖ 108.** Disjunção declarada pelo revisor:
-> - a 105 é a única em `Inputs/` e `Media/SarakPDFViewer/`; textos só em `catalogEntries.part5.ts`;
-> - a 106 é a única em `src/core/Provider/`, `Layout/chrome/` e `Navigation/SarakShellThemeToggle.tsx`; textos, se precisar, só em `catalogEntries.part4.ts`;
-> - a 108 é a única em `Templates/`, `Atoms/SarakValue.tsx` e `Feedback/SarakBadge.tsx`; textos só em `catalogEntries.part6.ts`;
-> - `docs/migracoes.md`: cada uma acrescenta a sua subseção `###` dentro da entrada `## 8.0.0`, por substituição exata, sem `---` novo;
-> - catálogo e kit (`npm run catalog && npm run guide`) cada uma regenera depois de mudar componente público; `dist/` e `sarak-dev/` o revisor regenera no fim da onda (`npm run build` precisa de rede para o `build:css`).
->
-> A 107 espera esta onda (colide com a 105 em `SarakMultiSelect`/`SarakAutocomplete`), e a 109 espera a 107.
+> 🚦 **Despacho de 2026-10-10 — 107, sozinha na árvore.** A 109 depende dela (usa o token de alvo de toque) e espera o
+> veredito. O `npm run build` e o `cromo-css-real:check` precisam de rede (o `build:css` baixa a CLI do Tailwind):
+> quem os roda é o revisor; o executor escreve os casos de `browser-tests/`.
 >
 > **As 107 → 109 vêm da avaliação de mobile de 2026-10-10:** a `plan-109` depende da `plan-107` (usa o token de alvo
 > de toque); a `plan-108` é independente das duas.
+
+> ⚪ **As `plan-105`, `plan-106` e `plan-108` foram SINTETIZADAS e REMOVIDAS em 2026-10-10.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **105** | [[03-superficie-publica]] §6.9 — o controle que recebe o foco tem o nome do `label`: `<label htmlFor>` quando há elemento rotulável, `aria-labelledby` quando não há, com os átomos de cada caso. Ficou de fora: nada (os textos traduzidos já estavam na §6.9; o item 19 do backlog saiu ao promover) |
+> | **106** | [[09-temas-e-presets]] §4.7 — `defaultColorMode` do host (`system` segue o SO), nunca gravado, ignorado sem a preferência oferecida; preferência só é gravada quando o usuário escolhe · [[05-cromo-e-slots]] §1 — as chaves `fontSize`, `navigationStyle` e `language` de `widgets`, como teto. Ficou de fora: nada |
+> | **108** | [[03-superficie-publica]] §6.3 — falha de recarregamento não apaga a tela, horário da leitura e "desatualizado", `updatedAt` · §6.3.1 — dígitos tabulares no `SarakValue` e no `SarakStats`; o `SarakBadge` de status com forma, rótulo, token de status e texto escuro na variante sólida. Ficou de fora: o limite do texto escuro com cor de status escura de tema do consumidor (registrado no veredito; não é regra) |
 
 > ⚪ **A `plan-104` foi SINTETIZADA e REMOVIDA em 2026-10-10.** Destino demonstrado:
 >

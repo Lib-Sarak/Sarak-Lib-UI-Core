@@ -429,6 +429,12 @@ navegação recolhida **fixa na barra**; fonte, navegação e idioma **não ofer
 padrão de fábrica**, nunca *oferecida* — um design aplicado por substituição, sem essas chaves, não abre nada
 que o administrador não abriu. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
 
+**O host escolhe o modo inicial.** `options.preferences.defaultColorMode` (`light`, `dark` ou `system`) vale
+enquanto o usuário não escolheu um modo — `system` acompanha o sistema operacional em tempo real. A escolha do
+usuário vence; o padrão do host nunca é gravado, e é ignorado se o tema não oferece a preferência de modo.
+**Preferência só é gravada quando o usuário escolhe** (`updatePreferences`): a hidratação, a carga do `onLoad` e a
+sincronização entre abas não gravam nem chamam `onSave`.
+
 **A troca de modo mexe só nas chaves que carregam modo** — as que a contraparte declara (§2.1):
 1. pedir o modo em que o design já está **não muda nada**;
 2. mudando de modo, essas chaves vêm da contraparte no modo oposto ao nativo, e do próprio tema no nativo —
