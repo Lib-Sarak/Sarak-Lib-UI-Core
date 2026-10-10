@@ -2,9 +2,10 @@ import { motion } from 'framer-motion';
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
-import { SarakAlert } from '../Feedback/SarakAlert';
 import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
 import { SarakValue } from '../Atoms/SarakValue';
+import { SarakDataErrorNotice } from './SarakDataErrorNotice';
+import { SarakDataFreshness } from './SarakDataFreshness';
 import type { SarakValueFormat } from '../../../shared/format';
 import type { ReactElement, ReactNode } from 'react';
 
@@ -24,6 +25,10 @@ export interface SarakStatsProps<TData extends Record<string, unknown>> {
     data?: TData;
     /** Carrega as métricas pelo mecanismo escolhido pelo host. */
     load?: () => Promise<TData>;
+    /** Horário do dado entregue diretamente pelo host. */
+    updatedAt?: Date | string | number;
+    /** Callback opcional para tentar novamente após uma falha. */
+    onRetry?: () => void;
     /** Título opcional fornecido pelo host. */
     label?: string;
     /** Define os rótulos exibidos; omitido, usa as chaves do dado recebido. */
@@ -54,23 +59,30 @@ const SarakStatsGrid = <TData extends Record<string, unknown>>({ stats, keys, lo
 export const SarakStats = <TData extends Record<string, unknown> = Record<string, unknown>>({
     data,
     load,
+    updatedAt,
+    onRetry,
     label,
     mapping,
     metrics,
 }: SarakStatsProps<TData>): ReactElement => {
     const text = useLibraryText();
-    const { stats, loading, error } = useSarakStatsData<TData>(data, load);
+    const { stats, loading, error, updatedAt: lastReadAt, loadData } = useSarakStatsData<TData>(data, load, updatedAt);
     const { getGridStyles } = useStructuralStyles();
     const statsGrid = getGridStyles(undefined, undefined, 'var(--sarak-layout-gap-md,16px)', 'statsStandard');
     const keys = mapping ? Object.keys(mapping) : Object.keys(stats);
+    const hasData = Object.keys(stats).length > 0;
+    const retry = onRetry ?? (() => void loadData());
 
-    if (error) {
-        return <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />;
+    if (error && !hasData) {
+        return <SarakDataErrorNotice error={error} />;
     }
 
     return (
         <div className="@container w-full">
+            {loading && hasData && <span className="sr-only" role="status" aria-live="polite">{text('spinnerLoading')}</span>}
             {label && <h3 className="text-theme-title font-bold">{label}</h3>}
+            {error && <SarakDataErrorNotice error={error} onRetry={retry} />}
+            <SarakDataFreshness updatedAt={lastReadAt} stale={Boolean(error && hasData)} />
             <div className={statsGrid.className} style={statsGrid.style}><SarakStatsGrid stats={stats} keys={keys} loading={loading} mapping={mapping} metrics={metrics} /></div>
         </div>
     );

@@ -60,9 +60,10 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
     style,
     onChange,
     onReject,
-}) => {
+}: SarakUploaderProps): React.ReactElement => {
     const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const onDrop = useCallback(
         (accepted: File[], rejections: SarakFileRejection[]): void => {
             if (accepted.length > 0) onChange?.(accepted);
@@ -84,11 +85,11 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
     return (
         <SarakFormGroup className={className} style={style}>
             {label && (
-                <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
+                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
             )}
 
             <div
-                {...getRootProps()}
+                {...getRootProps({ role: 'button' })}
                 className={`flex items-center justify-center w-full rounded-input text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] ${disabledClass}`}
                 style={{
                     flexDirection: 'column',
@@ -99,6 +100,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                 aria-disabled={disabled || undefined}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? `${reactId}-error` : undefined}
+                aria-labelledby={label ? labelId : undefined}
             >
                 {/* R10 declarado como FALSO POSITIVO do gate (plan-22, triagem 2026-08-10),
                     não corrigido: `getInputProps()` do react-dropzone injeta este input com

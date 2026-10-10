@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Manter o ultimo dado na falha, carimbar a leitura e mostrar status sem depender so de cor"
 objetivo: "Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema"
 dominio: "Templates de dado / Feedback / Exibicao de dados"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Media"
 tags: ["plan", "estados", "templates", "status", "acessibilidade", "mobile"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -109,8 +109,159 @@ do token de status.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução — 2026-10-10
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- `useHostData.ts:32` concentra os quatro carregadores, preserva o último dado e carimbo em falha e registra a hora em sucesso.
+- `SarakDataFreshness.tsx:11` e `SarakDataErrorNotice.tsx:10` apresentam carimbo, estado desatualizado, erro e ação de nova tentativa traduzidos.
+- `SarakCardGrid.tsx:76`, `cardGridParts.tsx:35`, `SarakChart.tsx:81`, `SarakStats.tsx:59` e `SarakTableView.tsx:11` mantêm o conteúdo após falha e colocam o aviso acima dele.
+- `SarakValue.tsx:52` usa dígitos tabulares; `SarakBadge.tsx:19` usa propriedades de status do tema e formas distintas que podem ser desligadas.
+- `catalogEntries.part6.ts:140` inclui os novos textos nos seis idiomas; `docs/migracoes.md:224` registra a mudança como MAJOR na entrada `8.0.0`.
+- Os geradores de catálogo e guia foram executados; os arquivos gerados listados abaixo acompanham a fotografia atual do worktree compartilhado.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `docs/component-catalog.json` | gerado | catálogo regenerado |
+| `docs/component-catalog.md` | gerado | catálogo regenerado |
+| `docs/migracoes.md` | alterado | subseção MAJOR sobre dados preservados e badges de status em `8.0.0` |
+| `sarak-ui/GUIA-FRONTEND.md` | gerado | guia regenerado |
+| `sarak-ui/START-HERE.md` | gerado | ponto de entrada do kit regenerado |
+| `sarak-ui/VERSION` | gerado | versão/hash do kit regenerado |
+| `sarak-ui/catalog.json` | gerado | catálogo do kit regenerado |
+| `sarak-ui/docs/migracoes.md` | gerado | cópia gerada das notas de migração |
+| `specs/plan/plan-108-dado-e-status-que-nao-somem.md` | alterado | status e resumo append-only desta execução |
+| `src/components/atomic/Atoms/SarakValue.tsx` | alterado | números tabulares |
+| `src/components/atomic/Atoms/__tests__/SarakValue.test.tsx` | alterado | asserção para dígitos tabulares |
+| `src/components/atomic/Feedback/SarakBadge.tsx` | alterado | cores de status por propriedade do tema e formas opcionais |
+| `src/components/atomic/Feedback/__tests__/SarakBadge.test.tsx` | alterado | cobertura de cores por status e formas |
+| `src/components/atomic/Templates/SarakCardGrid.tsx` | alterado | estado de erro com dados preservados, carimbo e retry |
+| `src/components/atomic/Templates/cardGridParts.tsx` | criado | filtros, cabeçalho e conteúdo do grid extraídos em partes menores |
+| `src/components/atomic/Templates/SarakChart.tsx` | alterado | estado de erro com dados preservados, carimbo e retry; plot separado |
+| `src/components/atomic/Templates/SarakStats.tsx` | alterado | estado de erro com métricas preservadas, carimbo e retry |
+| `src/components/atomic/Templates/SarakTable.tsx` | alterado | prop `updatedAt` |
+| `src/components/atomic/Templates/SarakTableErrorState.tsx` | alterado | aviso compartilhado e assinatura tipada |
+| `src/components/atomic/Templates/SarakTableView.tsx` | alterado | mantém linhas e apresenta aviso/carimbo |
+| `src/components/atomic/Templates/SarakTableViewParts.tsx` | alterado | props de estado e carimbo |
+| `src/components/atomic/Templates/SarakDataErrorNotice.tsx` | criado | aviso compartilhado com ação de retry |
+| `src/components/atomic/Templates/SarakDataFreshness.tsx` | criado | carimbo de leitura e estado desatualizado |
+| `src/components/atomic/Templates/useSarakTableViewModel.ts` | alterado | encaminha `updatedAt` e estado de dados |
+| `src/components/atomic/Templates/hooks/dataTimestamp.ts` | criado | valida e normaliza `Date`, string ou número |
+| `src/components/atomic/Templates/hooks/useHostData.ts` | criado | carregamento compartilhado com retenção de dados em falha |
+| `src/components/atomic/Templates/hooks/useCardGridState.ts` | alterado | usa carregamento compartilhado |
+| `src/components/atomic/Templates/hooks/useChartData.ts` | alterado | usa carregamento compartilhado |
+| `src/components/atomic/Templates/hooks/useSarakStatsData.ts` | alterado | usa carregamento compartilhado |
+| `src/components/atomic/Templates/hooks/useSarakTableData.ts` | alterado | usa carregamento compartilhado e memoiza filtragem |
+| `src/components/atomic/Templates/__tests__/SarakCardGrid.data.test.tsx` | alterado | retenção de cards e retry após falha |
+| `src/components/atomic/Templates/__tests__/cardGridParts.test.tsx` | criado | filtragem por texto e filtros ativos |
+| `src/components/atomic/Templates/__tests__/SarakChart.test.tsx` | alterado | retenção de pontos e retry após falha |
+| `src/components/atomic/Templates/__tests__/SarakStats.test.tsx` | alterado | retenção de métricas, retry e dígitos tabulares |
+| `src/components/atomic/Templates/__tests__/SarakTable.data.test.tsx` | alterado | retenção de linhas, retry e timestamps nos três formatos |
+| `src/components/atomic/Templates/__tests__/SarakDataErrorNotice.test.tsx` | criado | mensagem de erro e ação opcional |
+| `src/components/atomic/Templates/__tests__/SarakDataFreshness.test.tsx` | criado | horário, estado desatualizado e timestamp inválido |
+| `src/components/atomic/Templates/hooks/__tests__/useHostData.test.ts` | criado | prioridade de dados do host e retenção após falha |
+| `src/components/atomic/Templates/hooks/__tests__/useCardGridState.test.ts` | alterado | mantém cards e horário após falha de retry |
+| `src/components/atomic/Templates/hooks/__tests__/useChartData.test.ts` | alterado | mantém pontos e horário após falha de retry |
+| `src/components/atomic/Templates/hooks/__tests__/useSarakStatsData.test.ts` | alterado | mantém métricas e horário após falha de retry |
+| `src/components/atomic/Templates/hooks/__tests__/useSarakTableData.test.ts` | alterado | mantém linhas e horário após falha de retry |
+| `src/core/i18n/catalogEntries.part6.ts` | alterado | novos textos de carimbo e desatualização nos seis idiomas |
+
+**Verificações executadas**
+- `npm run catalog` → gerou catálogo para 102 componentes.
+- `npm run guide` → gerou o kit com 105 componentes, 437 tokens e 117 ícones.
+- `npm run catalog:check` → catálogo em dia.
+- `npm run guide:check` → kit em dia (7 arquivos).
+- `npm run barrel:check` → 102 componentes registrados, 0 faltas.
+- `npm run audit:baseline` → igual ao baseline de 2026-08-11, sem regressão.
+- Validador `padrao-typescript` nos arquivos do escopo → nenhum achado de alta confiança; os seis números de massa no teste de gráfico são heurísticas de baixa confiança, conforme a regra da skill.
+- Busca por `green-500|red-500|yellow-500|blue-500` em `SarakBadge.tsx` → sem ocorrências.
+- `npx tsc --noEmit` → saiu com 1 erro em `src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts:4`, fora do escopo 105; nenhum erro reportado nos arquivos desta plan.
+- `npx vitest run` focado nos 10 testes do escopo → 10 suítes falharam antes da coleta, com `EPERM` ao renomear arquivos temporários; 0 testes executados.
+- `npx vitest run` (suíte completa) → interrompido após vários arquivos reportarem `0 test`; o resumo final não foi obtido. Nenhuma estratégia alternativa ou repetição foi usada.
+- `npm run build`, `npm run build:js`, `npm run build:css` e `public-types:check` → não executados, conforme instrução do usuário.
+
+**Critérios de aceite**
+- [x] Os quatro templates preservam dados e exibem erro/retry; testes correspondentes adicionados — evidência: `SarakCardGrid.tsx:93`, `SarakChart.tsx:122`, `SarakStats.tsx:84`, `SarakTableView.tsx:26`.
+- [x] `updatedAt` aceita `Date`, string e número; o modo `load` carimba sucesso e a falha mantém o horário — evidência: `useHostData.ts:32`, `dataTimestamp.ts:1`.
+- [x] O badge usa as propriedades de status do tema, sem classes Tailwind de cor fixa, e tem forma desligável — evidência: `SarakBadge.tsx:19`.
+- [x] `SarakValue` usa `tabular-nums`, também aplicado aos valores de `SarakStats` — evidência: `SarakValue.tsx:52`.
+- [ ] Item 22 removido do backlog — reservado ao revisor, conforme a plan.
+- [ ] Suíte completa verde e `tsc` global sem erros — coleta Vitest bloqueada por `EPERM`; typecheck ainda aponta o erro fora do escopo citado acima.
+- [x] Baseline, catálogo, kit e barril em dia — evidência nas saídas acima.
+
+**Decisões e suposições**
+- Um hook compartilhado concentra a retenção de dados, erro, loading e carimbo para evitar quatro implementações divergentes.
+- O badge soft combina a cor tokenizada com `color-mix`; o solid mantém o texto do tema e colore fundo/borda pelo status.
+- A execução foi encerrada sem trocar paralelismo, cache ou configuração de teste, para respeitar a instrução sobre `EPERM`.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` — auditoria aponta `<input>` nativo cru; arquivos da plan 105.
+- `src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts:4` — import de `SarakUIProvider` não resolvido no typecheck; arquivo da plan 105.
+
+**Pendências / riscos**
+- Os testes foram escritos, mas não executaram devido ao erro de ambiente do Vitest; o revisor deve repetir a suíte quando a execução concorrente e o `EPERM` não estiverem presentes.
+- A validação global de tipos depende do ajuste pertencente à plan 105; as verificações de build e tipos públicos ficam para o revisor, como solicitado.
+
+## Resumo da execução (correção 1) — 2026-10-10
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+Árvore compartilhada com alterações já existentes da execução da plan 108 e das plans 105/106; consulte o resumo anterior para a fotografia inicial. Os arquivos fora deste escopo foram preservados.
+
+**O que foi feito**
+- `SarakBadge.tsx` — as variantes sólidas de status usam texto escuro; teste mede contraste mínimo de 4,5:1 sobre as cores embarcadas, nas paletas base e contrapartes disponíveis.
+- `SarakBadge.tsx` e `SarakBadge.test.tsx` — o aviso usa ▲, o crítico usa ◆ e as expectativas acompanham a convenção da plan.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Feedback/SarakBadge.tsx` | alterado | Contraste do texto sólido e formas de aviso/crítico corrigidos. |
+| `src/components/atomic/Feedback/__tests__/SarakBadge.test.tsx` | alterado | Expectativas dos símbolos e medição de contraste dos temas embarcados. |
+| `specs/plan/plan-108-dado-e-status-que-nao-somem.md` | alterado | Registro desta correção; status voltou para revisão. |
+
+**Verificações executadas**
+- `npx tsc --noEmit` → concluído com código 0.
+- `npx vitest run src/components/atomic/Feedback/__tests__/SarakBadge.test.tsx` → falhou antes da coleta, com `EPERM` ao renomear arquivo temporário; 0 testes executados. Não houve repetição nem mudança de configuração.
+
+**Critérios de aceite**
+- [x] Texto das variantes sólidas legível sobre os tokens de status embarcados — evidência: `SarakBadge.test.tsx`, teste de contraste mínimo WCAG AA em todas as paletas base e contrapartes disponíveis.
+- [x] Formas seguem a convenção de aviso/crítico — evidência: `SarakBadge.tsx` e expectativas em `SarakBadge.test.tsx`.
+- [ ] Teste do SarakBadge executado — motivo: `EPERM` antes da coleta; validação isolada fica para o revisor, conforme instrução do usuário.
+
+**Decisões e suposições**
+- Usei `text-black` nas variantes sólidas; as medições do teste exigem contraste mínimo 4,5:1 para cada cor de status incluída nos temas embarcados.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum nesta rodada.
+
+**Pendências / riscos**
+- A suíte focada não coletou testes por causa do `EPERM`; o revisor deve validar a plan isolada na cópia de `HEAD` descrita no veredito.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-10 — 🔴 Reprovado
+
+**Como foi verificado:** a árvore está compartilhada com a 105 e a 106; a 108 foi validada **isolada** — cópia de `git archive HEAD` fora do repositório com só os 34 arquivos desta plan (`Templates/`, `SarakValue`, `SarakBadge`, `catalogEntries.part6.ts`, inclusive os novos não rastreados) e `node_modules` por junção. Nela: **14 arquivos de teste, 58/58 verdes**; `tsc` **0**; `audit:baseline` igual ao baseline. **Mutação:** os testes da plan contra o código do `HEAD` → **19 testes novos falham** (retenção do dado nos quatro templates e nos quatro hooks, carimbo nos três formatos de `updatedAt`, tokens do `SarakBadge` e `tabular-nums`). Lido o diff: `useHostData` concentra a retenção (a falha não limpa `data` nem `updatedAt`); `SarakDataErrorNotice` acima do conteúdo; `SarakDataFreshness` com `Intl` no idioma da lib; nota MAJOR dentro da entrada `## 8.0.0`, sem separador novo. Critérios de retenção, carimbo, `tabular-nums` e "sem cor fixa no badge" atendidos.
+
+**Achados:**
+
+1. `src/components/atomic/Feedback/SarakBadge.tsx` (`VARIANT_CLASSES`, variantes de status `solid`) — com `soft={false}`, o texto das variantes de status passou a ser `text-theme-text` (`--color-theme-text` → `--text-main`) sobre a cor **cheia** do status. Num tema escuro, isso é texto claro sobre o âmbar do aviso (`statusWarningColor: #f59e0b` no `sarak-sovereign`): cerca de **2:1**, abaixo de 4,5:1 (R31, [[10-seguranca-e-acessibilidade]]); no `HEAD` o aviso sólido usava texto preto. O selo sólido tem de ficar legível nos dois modos — com uma cor de texto que contraste com a cor do status, provada por teste ou medida nos temas embarcados.
+2. `SarakBadge.tsx` (`STATUS_SHAPES`) — `danger: ▲` e `warning: ◆` invertem a convenção que a própria plan exemplifica ("● ▲ ◆" para normal, aviso, crítico) e a do material de origem: o triângulo é o sinal universal de **aviso**. Trocar para `warning: ▲` e `danger: ◆`, e o teste acompanhar.
+
+## Veredito — 2026-10-10 (rodada 2) — 🟢 Aprovado
+
+**Achados da rodada anterior, conferidos:** (1) as variantes sólidas de status usam `text-black`; `SarakBadge.test.tsx` confere a classe no componente **e** mede preto contra a cor de status de todos os temas de `SARAK_GLOBAL_THEMES`, base e contraparte, exigindo ≥ 4,5:1 — voltar ao texto do tema derruba o primeiro caso; (2) `warning: ▲`, `danger: ◆`, com o teste acompanhando. Validação isolada (`HEAD` + os 34 arquivos da plan): 63/63, `tsc` 0, `audit:baseline` igual. **Limite que fica:** o texto preto é garantido para as cores de status embarcadas; um tema do consumidor com cor de status escura perde contraste na variante sólida (a `soft`, padrão, não é afetada).
+
+**Suíte completa, na árvore com as plans 105, 106 e 108 juntas:** `npx vitest run` → 438 arquivos e 2659 testes verdes (2026-10-10; uma primeira rodada teve 2 estouros de tempo em ganchos de testes que varrem o repositório, `kitGenerator` e `check-barrel-parity` — passaram sozinhos, e a repetição veio inteira verde). Na mesma árvore: `tsc` 0, `audit:baseline` igual ao baseline. `npm run build` oficial (rodado pelo revisor, com rede) e `npm run dev-kit`: `public-types:check`, `barrel:check`, `catalog:check`, `guide:check` e `dev-kit:check` em dia. `dist/index.d.ts` traz `updatedAt`.
+
+**Critérios de aceite:** todos atendidos. O item 22 já saiu do `00-backlog` (promovido nesta plan).

@@ -280,7 +280,7 @@ Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocompl
 | `value` | `string` | não | Texto digitado no modo controlado. Omitido, o componente guarda a busca internamente; quem controla deve atualizá-lo após a seleção. |
 | `defaultValue` | `string` | não | Texto inicial no modo não controlado. Omitido, o campo começa vazio. |
 | `onChange` | `React.ChangeEventHandler<HTMLInputElement>` | não | Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`. |
-| `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa "Buscar...". |
+| `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca. |
 | `onOptionSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa. |
 
 Estende: `Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>`
@@ -308,6 +308,7 @@ Props (`SarakBadgeProps` — `src/components/atomic/Feedback/SarakBadge.tsx`):
 | `size` | `SarakBadgeSize` | não |  |
 | `pill` | `boolean` | não | Se true, o badge terá bordas mais arredondadas (estilo pill) |
 | `soft` | `boolean` | não | Se true, o fundo será translúcido/suave em vez de sólido |
+| `showStatusShape` | `boolean` | não | Exibe uma forma junto ao rótulo nas variantes de status. |
 
 Estende: `React.HTMLAttributes<HTMLSpanElement>`
 
@@ -390,6 +391,8 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 | --- | --- | --- | --- |
 | `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. |
 | `load` | `() => Promise<TData[]>` | não | Carrega os registros pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
 | `label` | `string` | não |  |
 | `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `SarakFilterConfig[]` | não |  |
@@ -433,6 +436,8 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 | --- | --- | --- | --- |
 | `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
 | `load` | `() => Promise<TData[]>` | não | Carrega os pontos pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
 | `label` | `string` | não | Rótulo opcional fornecido pelo host. |
 | `mapping` | `{ value?: string; date?: string }` | não | Chaves dos campos de valor e rótulo; os defaults são value e date. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
@@ -1088,6 +1093,7 @@ Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`
 | `defaultValue` | `string` | não | Conteúdo inicial não-controlado. |
 | `onChange` | `(html: string) => void` | não | Emite o HTML JÁ sanitizado a cada mudança. |
 | `placeholder` | `string` | não |  |
+| `label` | `string` | não |  |
 | `disabled` | `boolean` | não |  |
 | `error` | `string` | não |  |
 | `className` | `string` | não |  |
@@ -1292,6 +1298,8 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 | --- | --- | --- | --- |
 | `data` | `TData` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
 | `load` | `() => Promise<TData>` | não | Carrega as métricas pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
 | `label` | `string` | não | Título opcional fornecido pelo host. |
 | `mapping` | `Record<string, string>` | não | Define os rótulos exibidos; omitido, usa as chaves do dado recebido. |
 | `metrics` | `Partial<Record<keyof TData & string, SarakStatsMetricConfig>>` | não | Configuração visual e de formato por chave de métrica. |
@@ -1328,6 +1336,7 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `onRetry` | `() => void` | não |  |
+| `updatedAt` | `Date \| string \| number` | não |  |
 | `emptyMessage` | `string` | não |  |
 | `loading` | `boolean` | não |  |
 | `error` | `string \| null` | não |  |
@@ -1354,6 +1363,7 @@ Props (`SarakTextareaProps` — `src/components/atomic/Inputs/SarakTextarea.tsx`
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
+| `label` | `string` | não | Rótulo visual ligado à área de texto pelo `id` (gerado quando não é informado). |
 | `error` | `string` | não | Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 

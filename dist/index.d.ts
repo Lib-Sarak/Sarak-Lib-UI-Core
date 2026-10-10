@@ -535,6 +535,12 @@ interface SarakUserPreferences {
  *  (ADR-011, mesmo espírito): a lib não conhece o usuário — quem associa a
  *  preferência a ele é o host, pela própria closure do callback. */
 interface SarakPreferencesOptions {
+    /**
+     * Modo inicial enquanto o usuário não escolheu um modo. Só se aplica se o
+     * tema oferecer a preferência; `system` acompanha o sistema operacional.
+     * Este fallback do host nunca é persistido nem enviado a `onSave`.
+     */
+    defaultColorMode?: SarakColorModePreference;
     storageKey?: string;
     onSave?: (preferences: SarakUserPreferences) => Promise<void> | void;
     onLoad?: () => Promise<SarakUserPreferences> | SarakUserPreferences;
@@ -839,8 +845,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "adf1979";
-    readonly builtAt: "2026-10-10T06:05:19.991Z";
+    readonly baseCommitShort: "3dd6c78";
+    readonly builtAt: "2026-10-10T18:11:13.458Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1144,10 +1150,11 @@ interface SarakNavItem {
 
 /**
  * Widgets do cromo que nascem MONTADOS por padrão no `SarakAppChrome` — busca (com
- * atalho Ctrl/Cmd+K), alternância de tema, usuário, notificações e colapso da navegação.
+ * atalho Ctrl/Cmd+K), alternância de tema, usuário, notificações e preferências de
+ * tamanho da fonte, orientação da navegação, idioma e colapso.
  * Omitir um campo mantém o widget ligado; só `false` explícito desliga aquele, isolado
- * dos demais. Idioma, redimensionamento por arraste e auto-hide continuam fora do
- * default — não têm campo aqui de propósito.
+ * dos demais. Redimensionamento por arraste e auto-hide continuam fora do default —
+ * não têm campo aqui de propósito.
  */
 interface SarakChromeWidgets {
     /** Busca (slot `search`) — trigger + atalho Ctrl/Cmd+K. Default: ligado. */
@@ -1158,6 +1165,12 @@ interface SarakChromeWidgets {
     user?: boolean;
     /** Widget de notificações. Default: ligado. */
     notifications?: boolean;
+    /** Preferência de tamanho da fonte. Default: ligado. */
+    fontSize?: boolean;
+    /** Preferência de orientação da navegação. Default: ligado. */
+    navigationStyle?: boolean;
+    /** Preferência de idioma. Default: ligado. */
+    language?: boolean;
     /** Colapso da navegação (sidebar ícone-only / topbar reduzida) no desktop. Default: ligado. */
     collapse?: boolean;
 }
@@ -2185,6 +2198,8 @@ interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 declare const SarakSelect: React__default.FC<SarakSelectProps>;
 
 interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    /** Rótulo visual ligado à área de texto pelo `id` (gerado quando não é informado). */
+    label?: string;
     /**
      * Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por
      * `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`.
@@ -2321,7 +2336,7 @@ interface SarakAutocompleteProps extends Omit<SarakInputProps, 'defaultValue' | 
      */
     onChange?: React__default.ChangeEventHandler<HTMLInputElement>;
     /**
-     * Texto de dica do campo. Omitido, usa "Buscar...".
+     * Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca.
      */
     placeholder?: string;
     /**
@@ -2537,6 +2552,7 @@ interface SarakRichTextProps {
     /** Emite o HTML JÁ sanitizado a cada mudança. */
     onChange?: (html: string) => void;
     placeholder?: string;
+    label?: string;
     disabled?: boolean;
     error?: string;
     className?: string;
@@ -2657,6 +2673,7 @@ interface SarakTableProps$1<TData extends Record<string, unknown> = Record<strin
 
 interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> extends SarakTableProps$1<TData> {
     onRetry?: () => void;
+    updatedAt?: Date | string | number;
     emptyMessage?: string;
     loading?: boolean;
     error?: string | null;
@@ -2679,6 +2696,10 @@ interface SarakCardGridProps<TData extends Record<string, unknown> = Record<stri
     data?: TData[];
     /** Carrega os registros pelo mecanismo escolhido pelo host. */
     load?: () => Promise<TData[]>;
+    /** Horário do dado entregue diretamente pelo host. */
+    updatedAt?: Date | string | number;
+    /** Callback opcional para tentar novamente após uma falha. */
+    onRetry?: () => void;
     label?: string;
     /**
      * Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os
@@ -2726,7 +2747,7 @@ interface SarakCardGridProps<TData extends Record<string, unknown> = Record<stri
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-declare const SarakCardGrid: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, label, mapping, filters, variant }: SarakCardGridProps<TData>) => react_jsx_runtime.JSX.Element;
+declare const SarakCardGrid: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, updatedAt, onRetry, label, mapping, filters, variant }: SarakCardGridProps<TData>) => ReactElement;
 
 interface SarakStatsMetricConfig {
     icon?: ReactNode;
@@ -2740,6 +2761,10 @@ interface SarakStatsProps<TData extends Record<string, unknown>> {
     data?: TData;
     /** Carrega as métricas pelo mecanismo escolhido pelo host. */
     load?: () => Promise<TData>;
+    /** Horário do dado entregue diretamente pelo host. */
+    updatedAt?: Date | string | number;
+    /** Callback opcional para tentar novamente após uma falha. */
+    onRetry?: () => void;
     /** Título opcional fornecido pelo host. */
     label?: string;
     /** Define os rótulos exibidos; omitido, usa as chaves do dado recebido. */
@@ -2750,13 +2775,17 @@ interface SarakStatsProps<TData extends Record<string, unknown>> {
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
 }
-declare const SarakStats: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, label, mapping, metrics, }: SarakStatsProps<TData>) => ReactElement;
+declare const SarakStats: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, updatedAt, onRetry, label, mapping, metrics, }: SarakStatsProps<TData>) => ReactElement;
 
 interface SarakChartProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     /** Dado já carregado pelo host; quando presente, tem prioridade sobre load. */
     data?: TData[];
     /** Carrega os pontos pelo mecanismo escolhido pelo host. */
     load?: () => Promise<TData[]>;
+    /** Horário do dado entregue diretamente pelo host. */
+    updatedAt?: Date | string | number;
+    /** Callback opcional para tentar novamente após uma falha. */
+    onRetry?: () => void;
     /** Rótulo opcional fornecido pelo host. */
     label?: string;
     /** Chaves dos campos de valor e rótulo; os defaults são value e date. */
@@ -2768,7 +2797,7 @@ interface SarakChartProps<TData extends Record<string, unknown> = Record<string,
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
 }
-declare const SarakChart: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, label, mapping, }: SarakChartProps<TData>) => react_jsx_runtime.JSX.Element;
+declare const SarakChart: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, updatedAt, onRetry, label, mapping, }: SarakChartProps<TData>) => ReactElement;
 
 interface SarakFormProps<TData extends Record<string, unknown>> {
     /** Dado já carregado pelo host; quando presente, tem prioridade sobre load. */
@@ -3240,6 +3269,8 @@ interface SarakBadgeProps extends React__default.HTMLAttributes<HTMLSpanElement>
     pill?: boolean;
     /** Se true, o fundo será translúcido/suave em vez de sólido */
     soft?: boolean;
+    /** Exibe uma forma junto ao rótulo nas variantes de status. */
+    showStatusShape?: boolean;
 }
 declare const SarakBadge: React__default.FC<SarakBadgeProps>;
 

@@ -59,8 +59,9 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     className = '',
     style,
     onChange,
-}) => {
+}: SarakDatePickerProps): React.ReactElement => {
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const errorId = `${reactId}-error`;
     const [open, setOpen] = useState(false);
     const { containerRef, handleTrap } = useFocusTrap(open, () => setOpen(false));
@@ -104,13 +105,14 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
 
     return (
         <SarakFormGroup className={className} style={style}>
-            {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
+            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
             <div className="relative w-full">
                 <SarakButton
                     type="button"
                     disabled={disabled}
-                    aria-label={label ?? t('datePickerAriaLabel')}
+                    aria-labelledby={label ? labelId : undefined}
+                    aria-label={!label ? t('datePickerAriaLabel') : undefined}
                     aria-haspopup="dialog"
                     aria-expanded={open}
                     aria-invalid={error ? true : undefined}

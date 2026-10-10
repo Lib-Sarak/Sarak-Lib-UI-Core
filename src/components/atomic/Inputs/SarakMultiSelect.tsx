@@ -2,6 +2,7 @@ import React, { useId, useMemo, useRef, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakMultiSelectOption {
     value: string;
@@ -38,16 +39,19 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     options,
     value,
     defaultValue,
-    placeholder = 'Buscar...',
+    placeholder,
     disabled,
     error,
     className = '',
     style,
     onChange,
-}) => {
+}: SarakMultiSelectProps): React.ReactElement => {
+    const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const listId = `${reactId}-list`;
     const errorId = `${reactId}-error`;
+    const effectivePlaceholder = placeholder ?? t('fieldSearchPlaceholder');
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
@@ -93,7 +97,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && (
-                <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
+                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
             )}
 
             <div className="relative w-full">
@@ -115,12 +119,13 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         ref={inputRef}
                         type="text"
                         role="combobox"
+                        aria-labelledby={label ? labelId : undefined}
                         aria-expanded={open}
                         aria-controls={listId}
                         aria-invalid={error ? true : undefined}
                         aria-describedby={error ? errorId : undefined}
                         disabled={disabled}
-                        placeholder={selected.length === 0 ? placeholder : ''}
+                        placeholder={selected.length === 0 ? effectivePlaceholder : ''}
                         value={query}
                         onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
                         onFocus={() => setOpen(true)}
@@ -165,32 +170,36 @@ interface ChipProps {
     onRemove: () => void;
 }
 
-const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }) => (
-    <span
-        className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]"
-        style={{
-            gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
-            paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
-            paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
-            paddingLeft: 'var(--sarak-layout-gap-sm, 8px)',
-            paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)'
-        }}
-    >
-        {label}
-        <SarakIconButton
-            variant="ghost"
-            size="xs"
-            aria-label={`Remover ${label}`}
-            disabled={disabled}
-            onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
-            // O preset "xs" do átomo (24px) é maior que os 16px originais do botão de
-            // remover cru — cresce o alvo de toque do chip. Aceito: forçar um tamanho
-            // sem token válido (`1rem`) seria hardcode duro (R7), pior que o delta visual.
-            icon={
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            }
-        />
-    </span>
-);
+const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }: ChipProps): React.ReactElement => {
+    const t = useLibraryText();
+
+    return (
+        <span
+            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]"
+            style={{
+                gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
+                paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+                paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+                paddingLeft: 'var(--sarak-layout-gap-sm, 8px)',
+                paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)'
+            }}
+        >
+            {label}
+            <SarakIconButton
+                variant="ghost"
+                size="xs"
+                aria-label={t('multiSelectRemoveAriaLabel', { label })}
+                disabled={disabled}
+                onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
+                // O preset "xs" do átomo (24px) é maior que os 16px originais do botão de
+                // remover cru — cresce o alvo de toque do chip. Aceito: forçar um tamanho
+                // sem token válido (`1rem`) seria hardcode duro (R7), pior que o delta visual.
+                icon={
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                }
+            />
+        </span>
+    );
+};

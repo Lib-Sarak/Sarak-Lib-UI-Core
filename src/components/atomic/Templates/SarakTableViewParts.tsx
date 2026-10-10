@@ -24,6 +24,8 @@ export interface SarakTableViewProps<TData extends Record<string, unknown>> {
     density: 'compact' | 'standard' | 'spacious';
     loading: boolean;
     error: string | null;
+    hasData?: boolean;
+    updatedAt?: Date | null;
     collapseToCards: boolean;
     canRefresh: boolean;
     showSearch: boolean;

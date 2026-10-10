@@ -62,6 +62,7 @@ const createSarakTableViewProps = <TData extends Record<string, unknown>>({ prop
     return {
         filteredData: tableData.filteredData, interactions, columns: columns.columns, columnKeys: columns.columnKeys, columnLabels: columns.columnLabels,
         label: props.label, role: props.role ?? 'neutral', density: props.density ?? 'standard', loading, error,
+        hasData: tableData.data.length > 0, updatedAt: tableData.updatedAt,
         collapseToCards: layout.collapseToCards, canRefresh, showSearch: props.showSearch ?? true, selectable: props.selectable ?? false,
         search: tableData.search, onSearchChange: tableData.setSearch, onRefresh: () => void tableData.loadData(),
         onRetry: props.onRetry ?? (canRefresh ? () => void tableData.loadData() : undefined), onRowClick: props.onRowClick,
@@ -74,7 +75,7 @@ export const useSarakTableViewModel = <TData extends Record<string, unknown>>(
     props: SarakTableProps<TData>,
 ): SarakTableViewProps<TData> => {
     const layout = useSarakTableLayout(props.responsive ?? true);
-    const tableData = useSarakTableData<TData>(props.data, props.load);
+    const tableData = useSarakTableData<TData>(props.data, props.load, props.updatedAt);
     const columns = createSarakTableColumns(props.columns, props.mapping, tableData.data);
     const interactions = useTableInteractions({ rows: tableData.filteredData, getRowKey: props.getRowKey, sort: props.sort, onSortChange: props.onSortChange, selectedKeys: props.selectedKeys, onSelectionChange: props.onSelectionChange, getSortValue: (row, columnId) => row[columnId] });
     return createSarakTableViewProps({ props, tableData, layout, columns, interactions });

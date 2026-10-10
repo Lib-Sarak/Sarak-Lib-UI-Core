@@ -1,64 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLibraryText } from '../../../../core/i18n/useLibraryText';
-
-type CardGridState<T> = {
-    data: T[];
-    loading: boolean;
-    error: string | null;
-    search: string;
-    activeFilters: Record<string, string>;
-};
+import { useCallback, useState } from 'react';
+import { useHostData } from './useHostData';
+import type { HostDataResult } from './useHostData';
 
 type LoadData<T> = () => Promise<T[]>;
+type FilterUpdater = (current: Record<string, string>) => Record<string, string>;
+type CardGridStateResult<T> = HostDataResult<T[]> & {
+    search: string;
+    activeFilters: Record<string, string>;
+    setSearch: (search: string) => void;
+    setActiveFilters: (update: FilterUpdater) => void;
+};
 
 export const useCardGridState = <T extends Record<string, unknown>>(
     data?: T[],
     load?: LoadData<T>,
-) => {
-    const [state, setState] = useState<CardGridState<T>>({
-        data: data ?? [],
-        loading: data === undefined && Boolean(load),
-        error: null,
-        search: '',
-        activeFilters: {},
-    });
-    const loadRef = useRef(load);
-    const text = useLibraryText();
-    const textRef = useRef(text);
-    loadRef.current = load;
-    textRef.current = text;
-    const hasLoad = Boolean(load);
+    updatedAt?: Date | string | number,
+): CardGridStateResult<T> => {
+    const hostData = useHostData({ data, load, updatedAt, initialData: [] as T[] });
+    const [search, setSearch] = useState('');
+    const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+    const updateFilters = useCallback((update: FilterUpdater) => setActiveFilters(update), []);
 
-    const loadData = useCallback(async () => {
-        if (data !== undefined) {
-            setState((current) => ({ ...current, data, loading: false, error: null }));
-            return;
-        }
-        const loadFromHost = loadRef.current;
-        if (!loadFromHost) {
-            setState((current) => ({ ...current, loading: false }));
-            return;
-        }
-        setState((current) => ({ ...current, loading: true, error: null }));
-        try {
-            const nextData = await loadFromHost();
-            setState((current) => ({ ...current, data: nextData, loading: false, error: null }));
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
-            setState((current) => ({ ...current, loading: false, error: message }));
-        }
-    }, [data, hasLoad]);
-
-    useEffect(() => {
-        void loadData();
-    }, [loadData]);
-
-    const setSearch = useCallback((search: string) => {
-        setState((current) => ({ ...current, search }));
-    }, []);
-    const setActiveFilters = useCallback((update: (current: Record<string, string>) => Record<string, string>) => {
-        setState((current) => ({ ...current, activeFilters: update(current.activeFilters) }));
-    }, []);
-
-    return { ...state, setSearch, setActiveFilters, loadData };
+    return { ...hostData, search, activeFilters, setSearch, setActiveFilters: updateFilters };
 };

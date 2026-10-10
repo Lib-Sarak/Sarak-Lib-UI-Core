@@ -7,6 +7,7 @@ export type { SarakTableColumn } from './SarakTableProps';
 export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>>
     extends BaseSarakTableProps<TData> {
     onRetry?: () => void;
+    updatedAt?: Date | string | number;
     emptyMessage?: string;
     loading?: boolean;
     error?: string | null;

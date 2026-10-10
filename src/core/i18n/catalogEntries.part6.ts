@@ -137,4 +137,12 @@ export const CATALOG_PART_6 = {
         pt: 'Nenhuma tarefa', en: 'No tasks', es: 'Sin tareas',
         fr: 'Aucune tâche', de: 'Keine Aufgaben', it: 'Nessuna attività',
     },
+    dataReadAt: {
+        pt: 'Leitura das {time}', en: 'Read at {time}', es: 'Leído a las {time}',
+        fr: 'Dernière lecture à {time}', de: 'Gelesen um {time}', it: 'Letto alle {time}',
+    },
+    dataStale: {
+        pt: 'Desatualizado', en: 'Out of date', es: 'Desactualizado',
+        fr: 'Obsolète', de: 'Veraltet', it: 'Non aggiornato',
+    },
 } satisfies Record<string, LibraryTextEntry>;

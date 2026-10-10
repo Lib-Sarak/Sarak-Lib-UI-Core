@@ -1,11 +1,15 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { afterEach, describe, it, expect, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import * as ComponentModule from '../SarakStats';
 import { SarakStats } from '../SarakStats';
+import * as statsData from '../hooks/useSarakStatsData';
 
 const SAMPLE_TOTAL = 3;
 const SAMPLE_VOLUME = 1500;
 const CONFIGURED_REVENUE = 1250;
+const CACHED_METRIC_TOTAL = 5;
+
+afterEach(() => vi.restoreAllMocks());
 
 describe('SarakStats — superfície', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -34,6 +38,7 @@ describe('SarakStats — valores legados', () => {
 
         expect(screen.getByText('0')).toBeInTheDocument();
         expect(screen.getByText(String(SAMPLE_VOLUME))).toBeInTheDocument();
+        expect(screen.getByText('0')).toHaveClass('tabular-nums');
     });
 });
 
@@ -59,5 +64,20 @@ describe('SarakStats — configuração por métrica', () => {
         expect(screen.getByText(String(CONFIGURED_REVENUE))).toBeInTheDocument();
         expect(screen.getByText('1').parentElement).toHaveTextContent('+1');
         expect(screen.getByText('vs. mês anterior')).toBeInTheDocument();
+    });
+
+    it('keeps previously loaded metrics visible with a stale notice and retry action', () => {
+        const loadData = vi.fn();
+        vi.spyOn(statsData, 'useSarakStatsData').mockReturnValue({
+            stats: { total: CACHED_METRIC_TOTAL }, loading: false, error: 'Unavailable',
+            updatedAt: new Date('2026-10-10T22:12:00.000Z'), loadData,
+        } as ReturnType<typeof statsData.useSarakStatsData>);
+        render(<SarakStats />);
+
+        expect(screen.getByText(String(CACHED_METRIC_TOTAL))).toBeInTheDocument();
+        expect(screen.getByText('Unavailable')).toBeInTheDocument();
+        expect(screen.getByText('Desatualizado')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
+        expect(loadData).toHaveBeenCalledOnce();
     });
 });

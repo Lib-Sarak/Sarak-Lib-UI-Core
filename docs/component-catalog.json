@@ -743,7 +743,7 @@
           "name": "placeholder",
           "type": "string",
           "optional": true,
-          "doc": "Texto de dica do campo. Omitido, usa \"Buscar...\"."
+          "doc": "Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca."
         },
         {
           "name": "onOptionSelect",
@@ -812,6 +812,12 @@
           "type": "boolean",
           "optional": true,
           "doc": "Se true, o fundo será translúcido/suave em vez de sólido"
+        },
+        {
+          "name": "showStatusShape",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Exibe uma forma junto ao rótulo nas variantes de status."
         }
       ]
     },
@@ -1031,6 +1037,18 @@
           "doc": "Carrega os registros pelo mecanismo escolhido pelo host."
         },
         {
+          "name": "updatedAt",
+          "type": "Date | string | number",
+          "optional": true,
+          "doc": "Horário do dado entregue diretamente pelo host."
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Callback opcional para tentar novamente após uma falha."
+        },
+        {
           "name": "label",
           "type": "string",
           "optional": true,
@@ -1179,6 +1197,18 @@
           "type": "() => Promise<TData[]>",
           "optional": true,
           "doc": "Carrega os pontos pelo mecanismo escolhido pelo host."
+        },
+        {
+          "name": "updatedAt",
+          "type": "Date | string | number",
+          "optional": true,
+          "doc": "Horário do dado entregue diretamente pelo host."
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Callback opcional para tentar novamente após uma falha."
         },
         {
           "name": "label",
@@ -3275,6 +3305,12 @@
           "doc": ""
         },
         {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
           "name": "disabled",
           "type": "boolean",
           "optional": true,
@@ -3865,6 +3901,18 @@
           "doc": "Carrega as métricas pelo mecanismo escolhido pelo host."
         },
         {
+          "name": "updatedAt",
+          "type": "Date | string | number",
+          "optional": true,
+          "doc": "Horário do dado entregue diretamente pelo host."
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Callback opcional para tentar novamente após uma falha."
+        },
+        {
           "name": "label",
           "type": "string",
           "optional": true,
@@ -3963,6 +4011,12 @@
           "doc": ""
         },
         {
+          "name": "updatedAt",
+          "type": "Date | string | number",
+          "optional": true,
+          "doc": ""
+        },
+        {
           "name": "emptyMessage",
           "type": "string",
           "optional": true,
@@ -4035,6 +4089,12 @@
       "source": "src/components/atomic/Inputs/SarakTextarea.tsx",
       "extends": "TextareaHTMLAttributes<HTMLTextAreaElement>",
       "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo visual ligado à área de texto pelo `id` (gerado quando não é informado)."
+        },
         {
           "name": "error",
           "type": "string",

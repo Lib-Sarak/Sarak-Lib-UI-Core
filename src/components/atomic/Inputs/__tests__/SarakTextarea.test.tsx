@@ -44,6 +44,15 @@ describe('SarakTextarea', () => {
         expect(onFocus).toHaveBeenCalledTimes(1);
         expect(onBlur).toHaveBeenCalledTimes(1);
     });
+
+});
+
+describe('SarakTextarea — rótulo acessível', () => {
+    it('liga o rótulo visível à área de texto', () => {
+        render(<SarakTextarea label="Observações" />);
+        const textarea = screen.getByRole('textbox', { name: 'Observações' });
+        expect(screen.getByText('Observações')).toHaveAttribute('for', textarea.id);
+    });
 });
 
 describe('Erro de campo pelo SarakFieldError', () => {

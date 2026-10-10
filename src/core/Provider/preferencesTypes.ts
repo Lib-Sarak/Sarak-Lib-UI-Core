@@ -31,6 +31,12 @@ export interface SarakUserPreferences {
  *  (ADR-011, mesmo espírito): a lib não conhece o usuário — quem associa a
  *  preferência a ele é o host, pela própria closure do callback. */
 export interface SarakPreferencesOptions {
+    /**
+     * Modo inicial enquanto o usuário não escolheu um modo. Só se aplica se o
+     * tema oferecer a preferência; `system` acompanha o sistema operacional.
+     * Este fallback do host nunca é persistido nem enviado a `onSave`.
+     */
+    defaultColorMode?: SarakColorModePreference;
     storageKey?: string;
     onSave?: (preferences: SarakUserPreferences) => Promise<void> | void;
     onLoad?: () => Promise<SarakUserPreferences> | SarakUserPreferences;

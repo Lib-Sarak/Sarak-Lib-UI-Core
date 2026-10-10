@@ -125,6 +125,17 @@ Temas de consumidor que declaram `hidden` em `searchPositionSidebar` devem troca
 `hidden` de `searchPositionTopbar` continua válida. A composição vem do sistema, e os temas distribuídos
 herdam `pinned` quando o design não configura outra posição.
 
+### O host escolhe o modo inicial e limita os widgets de preferência
+
+**Classificação: MINOR (opções aditivas; os padrões atuais permanecem iguais).**
+
+`options.preferences.defaultColorMode` aceita `'light'`, `'dark'` ou `'system'`. Ele define o modo enquanto
+o usuário não escolheu um; `'system'` acompanha o sistema operacional. A escolha salva do usuário vence, o
+default do host não é persistido e ele é ignorado se o tema não oferecer a preferência de modo.
+
+`SarakAppChrome.widgets` também aceita `fontSize`, `navigationStyle` e `language`. Omitir cada chave mantém o
+widget ligado; `false` o remove da barra e do menu de preferências, mesmo quando o tema o oferece.
+
 ### Modelo público de usuário do cromo
 
 **Classificação: MAJOR.** `SarakShellUser` deixa de aceitar os campos de produto `username` e `level`; o nome
@@ -210,6 +221,12 @@ sem o slot secundário, a região continua com um único painel. Para manter a c
 - `SarakPagination` aceita tamanho de página, callback de alteração e resumo traduzido do intervalo exibido.
 - Os formatadores públicos de número, moeda, percentual e data acompanham o idioma configurado, com override local. `SarakValue` aplica os tokens de status para valores positivos, negativos e neutros; `SarakStats` aceita configuração por métrica para ícone, variação, formato, rótulo e dica.
 
+### Dados preservam a última leitura e badges de status ganham forma
+
+**Classificação: MAJOR (o desenho padrão de `SarakBadge` muda).** `SarakTable`, `SarakCardGrid`, `SarakChart` e `SarakStats` mantêm os dados já carregados quando uma atualização falha, exibem o erro com uma ação de nova tentativa e mostram o horário da última leitura com o estado desatualizado. No modo `data`, passe `updatedAt` (`Date`, string ou número); no modo `load`, a biblioteca registra o horário de cada leitura bem-sucedida. `SarakCardGrid`, `SarakChart` e `SarakStats` também aceitam `onRetry` para substituir a nova tentativa padrão.
+
+`SarakValue` e os números de `SarakStats` usam dígitos tabulares. As variantes `success`, `danger`, `warning` e `info` de `SarakBadge` usam as cores de status do tema e exibem uma forma junto ao rótulo. Para manter o badge sem forma, passe `showStatusShape={false}`.
+
 ### A cor do texto principal sai em `--text-main`
 
 **Classificação: MAJOR (a variável CSS antiga deixa de ser emitida).**
@@ -252,6 +269,10 @@ do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria f
 **Classificação: MAJOR (sai na 8.0.0).** `SarakDataTableImpl` e `SarakDataGridImpl` deixam de ser exportados pelo barril público. `SarakDataTable`, `SarakDataGrid` e seus tipos de props continuam disponíveis; os componentes seguem carregados sob demanda e exigem `<Suspense>` do consumidor.
 
 **Como migrar:** troque os imports de `SarakDataTableImpl` e `SarakDataGridImpl` por `SarakDataTable` e `SarakDataGrid`. Renderize os wrappers dentro de `<Suspense fallback={...}>`; os tipos `SarakDataTableProps`, `SarakDataTableRowHeight` e `SarakDataGridProps` continuam importáveis pelo barril.
+
+### `SarakTextarea` e `SarakRichText` passam a aceitar `label`
+
+**Classificação: MINOR (props opcionais aditivas).** Os dois átomos passam a exibir e associar o rótulo informado ao controle editável. Usos existentes continuam válidos; informe `label` para que o campo tenha um nome acessível ligado ao rótulo visível.
 
 ---
 

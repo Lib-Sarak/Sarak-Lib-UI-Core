@@ -18,7 +18,7 @@ export interface SarakTimePickerProps {
 }
 
 const pad = (n: number): string => String(n).padStart(2, '0');
-const range = (count: number, step = 1): number[] =>
+const range = (count: number, step: number = 1): number[] =>
     Array.from({ length: Math.ceil(count / step) }, (_, i) => i * step);
 
 const SELECT =
@@ -42,9 +42,10 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
     className = '',
     style,
     onChange,
-}) => {
+}: SarakTimePickerProps): React.ReactElement => {
     const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const errorId = `${reactId}-error`;
     const [hour, minute] = useMemo(() => {
         const [h, m] = value.split(':');
@@ -64,11 +65,11 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
 
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
-            {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
+            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
-            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-label={label ?? t('timeGroupAriaLabel')}>
+            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-labelledby={label ? labelId : undefined} aria-label={!label ? t('timeGroupAriaLabel') : undefined}>
                 <select
-                    aria-label="Hora"
+                    aria-label={t('timeHourAriaLabel')}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     disabled={disabled}
@@ -85,7 +86,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                 <span className="font-bold text-[var(--text-muted,#94a3b8)]">:</span>
 
                 <select
-                    aria-label="Minuto"
+                    aria-label={t('timeMinuteAriaLabel')}
                     disabled={disabled}
                     value={minute}
                     onChange={(e) => emit(hour, e.target.value)}

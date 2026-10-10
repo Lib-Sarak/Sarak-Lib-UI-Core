@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakRangeSlider, type SarakRangeSliderProps } from '../SarakRangeSlider';
 
-const renderSlider = (props: SarakRangeSliderProps) =>
+const renderSlider = (props: SarakRangeSliderProps): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakRangeSlider {...props} />
@@ -12,6 +12,14 @@ const renderSlider = (props: SarakRangeSliderProps) =>
     );
 
 describe('SarakRangeSlider', () => {
+    it('liga o rótulo visível ao grupo dos dois controles deslizantes', () => {
+        renderSlider({ label: 'Preço' });
+        expect(screen.getByRole('group', { name: 'Preço' })).toHaveAttribute(
+            'aria-labelledby',
+            screen.getByText('Preço').id,
+        );
+    });
+
     it('deve renderizar dois thumbs refletindo min/max/step do manifesto', () => {
         renderSlider({ label: 'Faixa', min: 10, max: 90, step: 5, value: [20, 60] });
         const thumbs = screen.getAllByRole('slider');
@@ -79,7 +87,7 @@ describe('SarakRangeSlider — textos da lib seguem o idioma', () => {
                 <SarakRangeSlider />
             </SarakUIProvider>,
         );
-        expect(screen.getByLabelText('range Minimum')).toBeInTheDocument();
-        expect(screen.getByLabelText('range Maximum')).toBeInTheDocument();
+        expect(screen.getByLabelText('Bereich Minimum')).toBeInTheDocument();
+        expect(screen.getByLabelText('Bereich Maximum')).toBeInTheDocument();
     });
 });

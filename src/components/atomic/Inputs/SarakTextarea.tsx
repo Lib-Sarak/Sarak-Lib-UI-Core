@@ -4,6 +4,8 @@ import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { SarakFieldError } from '../Feedback/SarakFieldError';
 
 export interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    /** Rótulo visual ligado à área de texto pelo `id` (gerado quando não é informado). */
+    label?: string;
     /**
      * Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por
      * `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`.
@@ -21,19 +23,21 @@ export interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaE
  * Componente Atômico: SarakTextarea
  */
 export const SarakTextarea: React.FC<SarakTextareaProps> = ({
+    label,
     error,
     fullWidth,
     className = '',
     disabled,
     style,
     ...props
-}) => {
+}: SarakTextareaProps): React.ReactElement => {
     // Átomo: tolera montar sem SarakUIProvider (R34) e cai no default do estilo de campo.
     const design = useSarakUIOptional()?.design;
     const { getInputStyles } = useAtomicStyles();
     const [isFocused, setIsFocused] = useState(false);
     const reactId = useId();
     const textareaId = props.id ?? reactId;
+    const labelId = `${textareaId}-label`;
 
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input p-4';
@@ -48,6 +52,7 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
 
     return (
         <div className={`relative group ${widthClass}`}>
+            {label && <label id={labelId} htmlFor={textareaId} className="text-sm font-medium">{label}</label>}
             <textarea
                 className={`${baseClasses} ${shapeClasses} ${widthClass} ${disabledClass} ${className}`}
                 disabled={disabled}

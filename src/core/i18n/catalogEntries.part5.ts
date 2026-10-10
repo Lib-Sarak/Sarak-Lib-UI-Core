@@ -108,4 +108,57 @@ export const CATALOG_PART_5 = {
         pt: 'Horário', en: 'Time', es: 'Hora',
         fr: 'Heure', de: 'Uhrzeit', it: 'Orario',
     },
+    fieldSearchPlaceholder: {
+        pt: 'Buscar...', en: 'Search...', es: 'Buscar...',
+        fr: 'Rechercher...', de: 'Suchen...', it: 'Cerca...',
+    },
+    multiSelectRemoveAriaLabel: {
+        pt: 'Remover {label}', en: 'Remove {label}', es: 'Eliminar {label}',
+        fr: 'Supprimer {label}', de: '{label} entfernen', it: 'Rimuovi {label}',
+    },
+    timeHourAriaLabel: {
+        pt: 'Hora', en: 'Hour', es: 'Hora',
+        fr: 'Heure', de: 'Stunde', it: 'Ora',
+    },
+    timeMinuteAriaLabel: {
+        pt: 'Minuto', en: 'Minute', es: 'Minuto',
+        fr: 'Minute', de: 'Minute', it: 'Minuto',
+    },
+    rangeDefaultLabel: {
+        pt: 'Intervalo', en: 'Range', es: 'Intervalo',
+        fr: 'Plage', de: 'Bereich', it: 'Intervallo',
+    },
+    richTextToolbarAriaLabel: {
+        pt: 'Formatação', en: 'Formatting', es: 'Formato',
+        fr: 'Mise en forme', de: 'Formatierung', it: 'Formattazione',
+    },
+    richTextBoldAction: {
+        pt: 'Negrito', en: 'Bold', es: 'Negrita',
+        fr: 'Gras', de: 'Fett', it: 'Grassetto',
+    },
+    richTextItalicAction: {
+        pt: 'Itálico', en: 'Italic', es: 'Cursiva',
+        fr: 'Italique', de: 'Kursiv', it: 'Corsivo',
+    },
+    richTextUnorderedListAction: {
+        pt: 'Lista', en: 'Bulleted list', es: 'Lista con viñetas',
+        fr: 'Liste à puces', de: 'Aufzählungsliste', it: 'Elenco puntato',
+    },
+    richTextOrderedListAction: {
+        pt: 'Lista numerada', en: 'Numbered list', es: 'Lista numerada',
+        fr: 'Liste numérotée', de: 'Nummerierte Liste', it: 'Elenco numerato',
+    },
+    richTextInsertLinkAction: {
+        pt: 'Inserir link', en: 'Insert link', es: 'Insertar enlace',
+        fr: 'Insérer un lien', de: 'Link einfügen', it: 'Inserisci link',
+    },
+    richTextLinkUrlPrompt: {
+        pt: 'URL do link:', en: 'Link URL:', es: 'URL del enlace:',
+        fr: 'URL du lien :', de: 'Link-URL:', it: 'URL del link:',
+    },
+    pdfViewerLoadError: {
+        pt: 'Falha ao carregar PDF', en: 'Failed to load PDF', es: 'Error al cargar el PDF',
+        fr: 'Échec du chargement du PDF', de: 'PDF konnte nicht geladen werden',
+        it: 'Errore durante il caricamento del PDF',
+    },
 } satisfies Record<string, LibraryTextEntry>;

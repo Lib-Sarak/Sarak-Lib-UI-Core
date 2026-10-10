@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakTimePicker } from '../SarakTimePicker';
 
-const renderTP = (props: Partial<React.ComponentProps<typeof SarakTimePicker>> = {}) =>
+const renderTP = (props: Partial<React.ComponentProps<typeof SarakTimePicker>> = {}): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakTimePicker label="Horário" {...props} />
@@ -12,6 +12,14 @@ const renderTP = (props: Partial<React.ComponentProps<typeof SarakTimePicker>> =
     );
 
 describe('SarakTimePicker', () => {
+    it('liga o rótulo do campo ao grupo de controles', () => {
+        renderTP();
+        expect(screen.getByRole('group', { name: 'Horário' })).toHaveAttribute(
+            'aria-labelledby',
+            screen.getByText('Horário').id,
+        );
+    });
+
     it('deve refletir o valor HH:mm nos campos', () => {
         renderTP({ value: '09:30' });
         expect(screen.getByLabelText('Hora')).toHaveValue('09');
@@ -55,6 +63,8 @@ describe('SarakTimePicker — texto da lib segue o idioma', () => {
     it('o nome do grupo, sem `label`, muda com o idioma', () => {
         const { rerender } = render(<SarakTimePicker />);
         expect(screen.getByRole('group', { name: 'Horário' })).toBeInTheDocument();
+        expect(screen.getByLabelText('Hora')).toBeInTheDocument();
+        expect(screen.getByLabelText('Minuto')).toBeInTheDocument();
 
         rerender(
             <SarakUIProvider config={{ language: 'en' }}>
@@ -62,5 +72,7 @@ describe('SarakTimePicker — texto da lib segue o idioma', () => {
             </SarakUIProvider>,
         );
         expect(screen.getByRole('group', { name: 'Time' })).toBeInTheDocument();
+        expect(screen.getByLabelText('Hour')).toBeInTheDocument();
+        expect(screen.getByLabelText('Minute')).toBeInTheDocument();
     });
 });

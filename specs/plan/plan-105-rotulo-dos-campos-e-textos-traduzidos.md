@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ligar o rotulo de todo campo ao controle e traduzir os textos fixos dos atomos"
 objetivo: "Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao"
 dominio: "Componentes atomicos / Inputs / Acessibilidade / i18n"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Media"
 tags: ["plan", "acessibilidade", "i18n", "inputs", "label"]
 relacionados: ["[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -102,8 +102,44 @@ Texto para a §6.9, substituindo a frase do rótulo, pronto para transporte:
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+### Execução — 2026-10-10
+
+- Estado inicial do ritual §2: worktree limpo antes da primeira edição.
+- Rótulos visíveis agora nomeiam os controles de `SarakTextarea`, `SarakRichText`, `SarakDatePicker`, `SarakMultiSelect`, `SarakTimePicker`, `SarakUploader` e o grupo de `SarakRangeSlider`. Placeholders e textos internos passaram a usar o catálogo em `src/core/i18n/catalogEntries.part5.ts`, incluindo `SarakAutocomplete` e o fallback de erro do visualizador de PDF. A nota MINOR foi inserida em `## 8.0.0`.
+- Testes de acessibilidade e tradução foram acrescentados aos testes dos componentes afetados.
+- `npm run catalog`, `npm run guide`, `npm run catalog:check`, `npm run guide:check` e `npm run barrel:check` concluíram com sucesso. `git diff --check` não encontrou erro nos fontes/testes desta plan. O validador AST não apontou erro de parse; os avisos restantes de tamanho e hardcoded nos controles também aparecem no conteúdo de `HEAD`.
+- `npx tsc --noEmit` ficou bloqueado por erros de sintaxe em `src/components/Layout/chrome/__tests__/useChromeDefaultWidgets.test.ts`, arquivo da execução paralela da plan 106; não foi aberto nem alterado.
+- A suíte focada encerrou sem iniciar testes por `EPERM` ao renomear um arquivo temporário do cliente Vitest. A suíte integral permaneceu reportando `0 test` por vários minutos e foi interrompida sem trocar configuração ou repetir a execução. Não houve resultado de testes válido.
+- `npm run audit:baseline` reprovou no estado compartilhado: encontrou regressões de hardcode, variáveis-fantasma e cobertura em arquivos de `Templates/` modificados em paralelo. A auditoria estrutural também marcou os inputs nativos já documentados como exceções/impasses de R10 em `SarakMultiSelect` e `SarakUploader`; nada fora do escopo foi alterado para contornar esses achados.
+- `public-types:check` e os builds foram deixados para o revisor conforme instrução do usuário.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-10 — 🔴 Reprovado
+
+**Como foi verificado:** como a árvore está compartilhada com a 106 e a 108 (que quebram `tsc` e `audit:baseline` por arquivos delas), a 105 foi validada **isolada**: cópia de `git archive HEAD` fora do repositório, com só os 19 arquivos desta plan (`Inputs/`, `Media/SarakPDFViewer/`, `catalogEntries.part5.ts`) e `node_modules` por junção. Nela: `audit:baseline` igual ao baseline; `tsc` com **1 erro**; os 9 arquivos de teste da plan → **4 falham, 3 testes falham** (56 passam). Lido o diff inteiro: rótulos ligados por `htmlFor`/`aria-labelledby` nos 7 átomos, textos fixos trocados por chaves com os seis idiomas, nota MINOR dentro da entrada `## 8.0.0` sem separador novo (`extractMigrationNotes` com `installedMajor: 7` a mostra). O código está certo; os achados são dos testes, que a execução nunca chegou a rodar (resumo: `EPERM` e suíte interrompida).
+
+**Achados:**
+
+1. `src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts:4` — importa `../../../../core/Provider/SarakUIProvider`, que resolve para `src/components/core/…` (falta um nível: são cinco `../` até `src/`). Derruba o `tsc` (TS2307) e o arquivo de teste inteiro. Critério violado: `tsc` 0 e suíte verde.
+2. `Inputs/__tests__/SarakAutocomplete.test.tsx` ("traduz o placeholder padrão…"), `SarakMultiSelect.test.tsx` ("traduz o placeholder e o rótulo de remoção dos chips") e `SarakRichText.test.tsx` ("nomeia o editor pelo rótulo visível e traduz os comandos…") trocam o idioma com `rerender` do `SarakUIProvider` passando outro `config` — e o Provider aplica `config` só ao montar, então o texto continua em português (`Expected Search... / Received Buscar...`; `Unable to find … "Remove Recursos Humanos"`; `… toolbar … "Formatting"`). O teste de idioma do `SarakTimePicker`, que monta de novo já em inglês, passa. Critério violado: "teste de troca de idioma em pelo menos um átomo por grupo" e suíte verde.
+
+## Veredito — 2026-10-10 (rodada 2) — 🔴 Reprovado
+
+**Verificado na mesma cópia isolada** (`HEAD` + os 19 arquivos da plan): os 9 arquivos de teste → **61/61 verdes**; `audit:baseline` igual ao baseline. **Mutação:** os 9 testes da plan contra o código do `HEAD` → os **12 testes novos falham** (rótulo ligado nos 7 átomos, troca de idioma em Autocomplete, MultiSelect, RichText, RangeSlider, TimePicker e o erro do PDF) e os 49 antigos passam. O achado 2 da rodada anterior está corrigido (provider novo em cada teste de idioma).
+
+**Achado:**
+
+1. `src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts:33` — `React.createElement(SarakUIProvider, { config: { language: 'en' } }, children)` não compila: `TS2769 … Property 'children' is missing in type '{ config: { language: string; }; }' but required in type 'SarakUIProviderProps'`. O import foi corrigido, mas o `tsc` continua com 1 erro, no mesmo arquivo. Critério violado: `tsc` 0 (o mesmo do achado 1 anterior). O `tsc` roda sem o vitest — o `EPERM` não impede conferir isto.
+
+## Veredito — 2026-10-10 (rodada 3) — 🟢 Aprovado
+
+**Achado da rodada 2, conferido:** `usePdfDocument.test.ts` passa `children` nas props do `createElement`; validação isolada (`HEAD` + os 19 arquivos da plan): `tsc` 0, 61/61 testes, `audit:baseline` igual. A mutação da rodada 2 (12 testes novos falham contra o `HEAD`) continua valendo.
+
+**Suíte completa, na árvore com as plans 105, 106 e 108 juntas:** `npx vitest run` → 438 arquivos e 2659 testes verdes (2026-10-10; uma primeira rodada teve 2 estouros de tempo em ganchos de testes que varrem o repositório, `kitGenerator` e `check-barrel-parity` — passaram sozinhos, e a repetição veio inteira verde). Na mesma árvore: `tsc` 0, `audit:baseline` igual ao baseline. `npm run build` oficial (rodado pelo revisor, com rede) e `npm run dev-kit`: `public-types:check`, `barrel:check`, `catalog:check`, `guide:check` e `dev-kit:check` em dia.
+
+**Critérios de aceite:** todos atendidos — o controle com foco tem o nome do `label` nos 7 átomos; nenhum dos literais da §2 sobra em `src/components/atomic/`; troca de idioma testada por grupo; suíte, `tsc`, `audit:baseline`, catálogo, kit e barril. O item 19 já saiu do `00-backlog` (promovido nesta plan).

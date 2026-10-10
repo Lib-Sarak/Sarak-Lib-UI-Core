@@ -55,9 +55,10 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     className = '',
     style,
     ...props
-}) => {
+}: SarakRangeSliderProps): React.ReactElement => {
     const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const errorId = `${reactId}-error`;
     const [internal, setInternal] = useState<SarakRangeValue>(defaultValue ?? [min, max]);
     const current = value ?? internal;
@@ -80,9 +81,15 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     const disabledClass = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     return (
-        <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style} {...props}>
+        <SarakFormGroup
+            {...props}
+            className={`${disabledClass} ${className}`.trim()}
+            style={style}
+            role="group"
+            aria-labelledby={label ? labelId : undefined}
+        >
             {label && (
-                <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
+                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
                     {label}
                 </span>
             )}
@@ -106,7 +113,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                 )}
 
                 <RangeThumb
-                    ariaLabel={t('rangeMinAriaLabel', { label: label ?? 'range' })}
+                    ariaLabel={t('rangeMinAriaLabel', { label: label ?? t('rangeDefaultLabel') })}
                     min={min}
                     max={max}
                     step={step}
@@ -117,7 +124,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                     onInput={handleLow}
                 />
                 <RangeThumb
-                    ariaLabel={t('rangeMaxAriaLabel', { label: label ?? 'range' })}
+                    ariaLabel={t('rangeMaxAriaLabel', { label: label ?? t('rangeDefaultLabel') })}
                     min={min}
                     max={max}
                     step={step}
@@ -157,7 +164,7 @@ const RangeThumb: React.FC<ThumbProps> = ({
     invalid,
     describedBy,
     onInput,
-}) => (
+}: ThumbProps): React.ReactElement => (
     <input
         type="range"
         aria-label={ariaLabel}
@@ -174,7 +181,7 @@ const RangeThumb: React.FC<ThumbProps> = ({
     />
 );
 
-const Tooltip: React.FC<{ pct: number; value: number }> = ({ pct, value }) => (
+const Tooltip: React.FC<{ pct: number; value: number }> = ({ pct, value }: { pct: number; value: number }): React.ReactElement => (
     <span
         className="absolute -top-4 -translate-x-1/2 text-2xs font-black tabular-nums"
         style={{ left: `${pct}%`, color: ACTIVE }}

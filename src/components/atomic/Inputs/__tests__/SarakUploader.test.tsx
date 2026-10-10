@@ -4,14 +4,14 @@ import { render, screen, fireEvent, createEvent } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakUploader } from '../SarakUploader';
 
-const renderUploader = (props: Partial<React.ComponentProps<typeof SarakUploader>> = {}) =>
+const renderUploader = (props: Partial<React.ComponentProps<typeof SarakUploader>> = {}): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakUploader label="Anexos" {...props} />
         </SarakUIProvider>,
     );
 
-const buildFileDrop = (zone: HTMLElement, files: File[]) => {
+const buildFileDrop = (zone: HTMLElement, files: File[]): ReturnType<typeof createEvent.drop> => {
     const event = createEvent.drop(zone);
     Object.defineProperty(event, 'dataTransfer', {
         value: { files, items: files.map((f) => ({ kind: 'file', type: f.type, getAsFile: () => f })), types: ['Files'] },
@@ -20,6 +20,12 @@ const buildFileDrop = (zone: HTMLElement, files: File[]) => {
 };
 
 describe('SarakUploader', () => {
+    it('liga o rótulo visível à área que recebe foco e abre o seletor de arquivos', () => {
+        renderUploader();
+        const dropzone = screen.getByRole('button', { name: 'Anexos' });
+        expect(dropzone).toHaveAttribute('aria-labelledby', screen.getByText('Anexos').id);
+    });
+
     it('deve renderizar a área drag-and-drop acessível', () => {
         renderUploader({ hint: 'PNG até 2MB' });
         expect(screen.getByText('Anexos')).toBeInTheDocument();

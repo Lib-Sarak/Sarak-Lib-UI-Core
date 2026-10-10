@@ -57,6 +57,19 @@ it('filtra a lista local e seleciona a opção ativa pelo teclado', () => {
         expect(input).toHaveAttribute('aria-expanded', 'false');
 });
 
+it('traduz o placeholder padrão quando o idioma da biblioteca muda', () => {
+        const { unmount } = renderAutocomplete();
+        expect(screen.getByRole('combobox', { name: 'Setor' })).toHaveAttribute('placeholder', 'Buscar...');
+        unmount();
+
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakAutocomplete label="Department" options={OPTIONS} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('combobox', { name: 'Department' })).toHaveAttribute('placeholder', 'Search...');
+});
+
 it('navega para cima e para baixo, fecha com Escape e deixa Tab seguir', () => {
         renderAutocomplete();
         const input = screen.getByRole('combobox', { name: 'Setor' });

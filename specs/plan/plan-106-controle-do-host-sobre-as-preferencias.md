@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar ao host o controle das preferencias do usuario no cromo"
 objetivo: "Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez"
 dominio: "Provider / Preferencias do usuario / Cromo"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Media"
 tags: ["plan", "preferencias", "modo-de-cor", "provider", "cromo", "widgets"]
 relacionados: ["[[09-temas-e-presets]]", "[[05-cromo-e-slots]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]"]
@@ -119,8 +119,41 @@ Para a [[05-cromo-e-slots]] §1, na linha de `widgets`: a lista de chaves passa 
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+### Execução — 2026-10-10
+
+**Resultado:** implementação realizada; revisão pendente por falhas de ambiente e verificações do workspace compartilhado.
+
+**Estado inicial:** worktree limpo antes desta execução.
+
+**Implementado:**
+- `src/core/Provider/preferencesTypes.ts`: `defaultColorMode` com contrato de precedência, oferta pelo tema e não persistência.
+- `src/core/Provider/hooks/usePreferencesManager.ts`: preferência salva vence o default do host; `system` usa o esquema acompanhado em tempo real; o default não dispara persistência nem `onSave`.
+- `src/components/Layout/chrome/chromeWidgets.ts` e `useChromeDefaultWidgets.ts`: `fontSize`, `navigationStyle` e `language` aplicados como teto na barra e no menu; comentário atualizado.
+- Testes adicionados para os cinco casos de modo e para as três chaves de widgets.
+- `docs/migracoes.md`: subseção MINOR aditiva em `## 8.0.0`; catálogo e kit regenerados.
+
+**Verificações:**
+- Passaram: `npm run catalog`, `npm run guide`, `npm run catalog:check`, `npm run guide:check`, `npm run barrel:check` e `git diff --check` nos arquivos desta execução.
+- `npx tsc --noEmit`: falhou somente em arquivos das plans paralelas `SarakRichText.test.tsx` e `usePdfDocument.test.ts`; nenhum erro nos arquivos desta plan.
+- `npm run audit:baseline`: regressão reportada em `auditor_coverage.mjs.orfaos` (0 → 2). O relatório detalhado não foi executado, para não investigar arquivos das plans paralelas.
+- `npx vitest run`: 432 suítes falharam antes de executar testes, com `EPERM` ao renomear diretórios temporários do Vitest e quatro encerramentos inesperados de workers. Nenhuma alteração de pool, worker ou timeout foi feita.
+- Validador AST: sem violações de tipagem/limiares nos arquivos novos; apontou `console.error` e `console.warn` preexistentes nos hooks tocados.
+- `build`, `build:js` e `public-types:check` não executados conforme instrução; `dist/` fica para regeneração do revisor.
+
+**Critérios pendentes:** suíte de testes executada com sucesso; `tsc` verde no workspace; baseline sem regressão; declaração pública em `dist/index.d.ts` e conferência funcional do botão de modo pelo revisor.
+
+**Escopo paralelo:** alterações pertencentes às plans 105 e 108 foram mantidas no workspace compartilhado e não foram corrigidas nem revertidas.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-10 — 🟢 Aprovado
+
+**Validação isolada** (`HEAD` + os 6 arquivos da plan): 2 arquivos de teste, 27/27 verdes; `tsc` 0; `audit:baseline` igual. **Mutação:** os testes da plan contra o `HEAD` → os 6 novos falham (modo fixo do host sem escolha salva; `system` acompanhando o SO; o padrão não grava nem chama `onSave`; `widgets.fontSize/navigationStyle/language: false` tiram a preferência da barra e do menu). **Diff lido:** `withHostDefaultColorMode` só aplica o padrão sem `colorMode` salvo; a gravação passou a acontecer só por `updatePreferences` (flag `shouldPersistPreferencesRef`) — hidratação, carga remota e sincronização entre abas não gravam, o que segue "a lib não grava sem mudança" ([[09-temas-e-presets]] §4.4.2); as três chaves novas de `widgets` aplicadas como teto; o comentário de `chromeWidgets.ts` corrigido. A regressão `auditor_coverage.orfaos` 0 → 2 relatada na execução era do estado intermediário da árvore e não aparece na árvore final.
+
+**Suíte completa, na árvore com as plans 105, 106 e 108 juntas:** `npx vitest run` → 438 arquivos e 2659 testes verdes (2026-10-10; uma primeira rodada teve 2 estouros de tempo em ganchos de testes que varrem o repositório, `kitGenerator` e `check-barrel-parity` — passaram sozinhos, e a repetição veio inteira verde). Na mesma árvore: `tsc` 0, `audit:baseline` igual ao baseline. `npm run build` oficial (rodado pelo revisor, com rede) e `npm run dev-kit`: `public-types:check`, `barrel:check`, `catalog:check`, `guide:check` e `dev-kit:check` em dia. `dist/index.d.ts` traz `defaultColorMode` e as chaves `fontSize`/`navigationStyle` de `widgets`.
+
+**Critérios de aceite:** todos atendidos.

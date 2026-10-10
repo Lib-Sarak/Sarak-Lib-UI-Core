@@ -3,19 +3,25 @@ import { describe, expect, it } from 'vitest';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakValue } from '../SarakValue';
 
-describe('SarakValue', () => {
+const POSITIVE_SAMPLE = 12;
+const NEGATIVE_SAMPLE = -12;
+
+describe('SarakValue sign tokens', () => {
     it.each([
-        { value: 12, sign: 'positive', color: 'var(--sarak-status-success-color)' },
-        { value: -12, sign: 'negative', color: 'var(--sarak-status-error-color)' },
+        { value: POSITIVE_SAMPLE, sign: 'positive', color: 'var(--sarak-status-success-color)' },
+        { value: NEGATIVE_SAMPLE, sign: 'negative', color: 'var(--sarak-status-error-color)' },
         { value: 0, sign: 'neutral', color: 'var(--sarak-text-muted)' },
     ])('aplica o token CSS de $sign', ({ value, sign, color }) => {
         render(<SarakUIProvider><SarakValue value={value} /></SarakUIProvider>);
 
         const element = screen.getByText(String(value));
         expect(element).toHaveAttribute('data-sign', sign);
+        expect(element).toHaveClass('tabular-nums');
         expect((element as HTMLElement).style.color).toBe(color);
     });
+});
 
+describe('SarakValue locale', () => {
     it('usa o override de locale, formata o valor e identifica seu sinal', () => {
         render(
             <SarakUIProvider>
@@ -35,7 +41,9 @@ describe('SarakValue', () => {
 
         await waitFor(() => expect(screen.getByText('1.234,5')).toBeInTheDocument());
     });
+});
 
+describe('SarakValue formatting', () => {
     it('formata moeda e percentual sem perder zero e neutro', () => {
         const { rerender } = render(
             <SarakUIProvider config={{ language: 'pt-BR' }}>

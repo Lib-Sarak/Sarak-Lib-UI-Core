@@ -4,14 +4,14 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakDatePicker } from '../SarakDatePicker';
 
-const renderDP = (props: Partial<React.ComponentProps<typeof SarakDatePicker>> = {}) =>
+const renderDP = (props: Partial<React.ComponentProps<typeof SarakDatePicker>> = {}): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakDatePicker label="Data" {...props} />
         </SarakUIProvider>,
     );
 
-const openCalendar = () => fireEvent.click(screen.getByRole('button', { name: /Data|Selecione/i }));
+const openCalendar = (): void => { fireEvent.click(screen.getByRole('button', { name: /Data|Selecione/i })); };
 
 describe('SarakDatePicker', () => {
     it('deve exibir o valor formatado conforme displayFormat (i18n via JSON)', () => {
@@ -46,6 +46,14 @@ describe('SarakDatePicker', () => {
         const grid = screen.getByRole('grid');
         fireEvent.click(within(grid).getByText('20'));
         expect(onChange).toHaveBeenCalledWith(['2026-01-10', '2026-01-20']);
+    });
+});
+
+describe('SarakDatePicker — rótulo acessível', () => {
+    it('liga o rótulo visível ao controle que abre o calendário', () => {
+        renderDP({ label: 'Data limite' });
+        const trigger = screen.getByRole('button', { name: 'Data limite' });
+        expect(trigger).toHaveAttribute('aria-labelledby', screen.getByText('Data limite').id);
     });
 });
 

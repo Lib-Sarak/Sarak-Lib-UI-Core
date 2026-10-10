@@ -62,7 +62,10 @@ const resolveWidgetPlacement = (
     return splitChromeWidgetsByPlacement(design, {
         search: isChromeWidgetEnabled(widgets.search) && design?.chromeSearchPosition !== 'off',
         colorMode: isChromeWidgetEnabled(widgets.themeToggle),
+        fontSize: isChromeWidgetEnabled(widgets.fontSize),
+        navigationStyle: isChromeWidgetEnabled(widgets.navigationStyle),
         navCollapsed: isChromeWidgetEnabled(widgets.collapse),
+        language: isChromeWidgetEnabled(widgets.language),
         user: isChromeWidgetEnabled(widgets.user) && design?.chromeUserPosition !== 'off',
         notifications: isChromeWidgetEnabled(widgets.notifications) && design?.chromeNotificationsPosition !== 'off',
     });
@@ -171,9 +174,8 @@ export const useChromeDefaultWidgets = (
         sarak?.updatePreferences({ navCollapsed: !sarak?.design?.isNavHidden });
     }, [sarak]);
 
-    // `colorMode`/`navCollapsed` já eram widget antes desta barra existir — o teto de
-    // código continua vencendo a posição do tema (Spec 05 §2.2.1); as outras três
-    // preferências não têm teto, só a posição decide.
+    // O teto de código vence a posição do tema para todas as preferências
+    // (Spec 05 §2.2.1); cada preferência desligada sai da barra e do menu.
     return {
         hasProvider,
         ...visibility,

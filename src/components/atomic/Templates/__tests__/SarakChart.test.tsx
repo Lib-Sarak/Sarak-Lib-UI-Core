@@ -1,16 +1,23 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SarakChart } from '../SarakChart';
+import { useChartData } from '../hooks/useChartData';
 import React from 'react';
+
+const DEFAULT_CHART_POINTS = vi.hoisted(() => [
+    { tokens: 100, value: 50, date: '2023-01-01' },
+    { tokens: 200, value: 80, date: '2023-01-02' },
+]);
+const SAMPLE_CHART_POINT = vi.hoisted(() => ({ value: 50, date: '2023-01-01' }));
+const CACHED_CHART_POINT = vi.hoisted(() => ({ value: 50, date: 'Cached point' }));
 
 vi.mock('../hooks/useChartData', () => ({
     useChartData: vi.fn(() => ({
-        data: [
-            { tokens: 100, value: 50, date: '2023-01-01' },
-            { tokens: 200, value: 80, date: '2023-01-02' }
-        ],
+        data: DEFAULT_CHART_POINTS,
         loading: false,
-        error: null
+        error: null,
+        updatedAt: null,
+        loadData: vi.fn(),
     }))
 }));
 
@@ -26,9 +33,9 @@ vi.mock('../../hooks/useStructuralStyles', () => ({
 
 // Mock resize observer para o framer-motion/React
 global.ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
 };
 
 describe('SarakChart', () => {
@@ -38,8 +45,23 @@ describe('SarakChart', () => {
 
     it('matches snapshot to ensure no layout regressions during type fixes', () => {
         const { asFragment } = render(
-            <SarakChart data={[{ value: 50, date: '2023-01-01' }]} label="Test Chart" />
+            <SarakChart data={[SAMPLE_CHART_POINT]} label="Test Chart" />
         );
         expect(asFragment()).toMatchSnapshot();
+    });
+
+    it('keeps the last points visible with a stale notice and retry action', () => {
+        const loadData = vi.fn();
+        vi.mocked(useChartData).mockReturnValue({
+            data: [CACHED_CHART_POINT], loading: false, error: 'Unavailable',
+            updatedAt: new Date('2026-10-10T22:12:00.000Z'), loadData,
+        } as ReturnType<typeof useChartData>);
+        render(<SarakChart />);
+
+        expect(screen.getByText('Cached point')).toBeInTheDocument();
+        expect(screen.getByText('Unavailable')).toBeInTheDocument();
+        expect(screen.getByText('Desatualizado')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
+        expect(loadData).toHaveBeenCalledOnce();
     });
 });

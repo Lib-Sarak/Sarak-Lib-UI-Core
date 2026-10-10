@@ -49,7 +49,7 @@ export const SarakValue = ({ value, format, locale: localeOverride, signColor = 
 
     return (
         <span
-            className={['font-black tracking-tight', sizeClasses[size], className].filter(Boolean).join(' ')}
+            className={['font-black tracking-tight tabular-nums', sizeClasses[size], className].filter(Boolean).join(' ')}
             data-sign={signColor ? sign : undefined}
             style={style}
         >
