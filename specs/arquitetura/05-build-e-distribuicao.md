@@ -32,7 +32,9 @@ produziu ou validou.
 
 ## 2.1 A armadilha MEDIDA do tsup
 
-A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDependencies`. Uma peer (`tailwindcss`, que só o build CSS da lib usa) **não** está na flag. E as 3 `dependencies` reais — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` — **também não estão**, porque não precisam:
+A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDependencies`. Três peers **não**
+estão na flag: `tailwindcss` (só o build CSS da lib a usa) e as duas do `@dnd-kit`, que só o chunk lazy do quadro
+importa — e que, sem a flag, o tsup externaliza por serem peers ([[019-arrastar-e-soltar-do-kanban]]). E as 3 `dependencies` reais — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` — **também não estão**, porque não precisam:
 
 > ⚠️ **O tsup externaliza `dependencies` sozinho, independentemente da flag.** Um harness de medição que só espelha a lista `--external` **MENTE** sobre o que está no bundle. Foi exatamente essa suposição que produziu uma hipótese refutada sobre o peso do bundle ([[03-superficie-publica]] §7). **Meça o `dist/`, não a flag.**
 
@@ -68,12 +70,12 @@ A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDep
 
 O tarball tem hoje **77 arquivos** (779,6 KB comprimido / 3,8 MB descompactado).
 
-# 4. Dependências: 3 contra 18
+# 4. Dependências: 3 contra 20
 
 | Tipo | Quais | Por quê |
 | --- | --- | --- |
 | **`dependencies`** (3) | `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` | São **implementação interna** que o consumidor não escolhe: as duas famílias de ícone que o `IconMap` curado resolve, e o sanitizador que é o canal único de conteúdo rico. Se fossem peers, o consumidor teria de instalá-las sem nunca importá-las. |
-| **`peerDependencies`** (18) | React, React DOM, `tailwindcss`, `framer-motion`, `lucide-react`, `recharts`, `echarts`(+`-for-react`), `reactflow`, `react-grid-layout`, `react-markdown`, `react-syntax-highlighter`, `react-dropzone`, `pdfjs-dist`, `clsx`, `tailwind-merge`, `date-fns`, `@tanstack/react-virtual` | São **do aplicativo**, não da lib. Duplicar React ou Tailwind quebra; e as libs pesadas só fazem sentido se o consumidor as controlar (versão, configuração, e a decisão de nem instalá-las se não usar o componente que as exige). |
+| **`peerDependencies`** (20) | React, React DOM, `tailwindcss`, `framer-motion`, `lucide-react`, `recharts`, `echarts`(+`-for-react`), `reactflow`, `react-grid-layout`, `react-markdown`, `react-syntax-highlighter`, `react-dropzone`, `pdfjs-dist`, `clsx`, `tailwind-merge`, `date-fns`, `@tanstack/react-virtual`, `@dnd-kit/core`, `@dnd-kit/sortable` | São **do aplicativo**, não da lib. Duplicar React ou Tailwind quebra; e as libs pesadas só fazem sentido se o consumidor as controlar (versão, configuração, e a decisão de nem instalá-las se não usar o componente que as exige). |
 
 A divisão segue uma pergunta: *o consumidor pode ter uma opinião sobre esta versão?* Se sim, é peer.
 

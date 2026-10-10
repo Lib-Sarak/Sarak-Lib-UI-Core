@@ -52,7 +52,7 @@ quadro entrega ao consumidor é da superfície pública ([[03-superficie-publica
   - A troca de biblioteca, se vier, é de um arquivo.
 - **Negativas (Trade-offs):**
   - **Peer público:** o consumidor que usa o quadro instala duas libs a mais, e a versão delas passa a ser contrato
-    (por isso o adaptador). A mudança saiu como MAJOR na 8.0.0 ([[03-versionamento-e-release]] §3).
+    (por isso o adaptador). A mudança sai como MAJOR na 8.0.0 ([[03-versionamento-e-release]] §3).
   - O dnd-kit não tem versão nova desde 2024-12; o adaptador contém o risco, não o elimina.
   - +6,23 KB gzip a mais que o Pragmatic, no chunk do quadro.
   - **Validação pendente:** o toque em aparelho (pressão longa, índice certo entre colunas, rolagem da página sem

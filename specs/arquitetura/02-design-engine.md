@@ -49,16 +49,16 @@ A ordem real em `src/core/Provider/SarakUIProvider.tsx` — e a ordem importa, p
 | Onde | Etapa |
 | --- | --- |
 | `:11` | **`injectSarakStyles(SARAK_CSS)`** — no topo do módulo, **fora** do componente (§9) |
-| `:102` | `resolveSarakUIMode(options)` → `mode` |
-| `:103` | Estado do `scopeElement` (o container da ilha, no modo embarcado) |
-| `:107` | `useRegistryManager` → módulos registrados e flag de hidratação |
-| `:110-112` | `allThemes = [...GLOBAL_THEMES, ...customThemes]` |
-| `:115-123` | **`useDesignManager`** → `design`, `setDesign`, `applyConfig`, `applyFullConfig`, `persistDesign` |
-| `:126` | `useBrandingManager` → identidade (opt-in, ver [[006-zero-marca-soberania-host]]) |
-| `:129` | `useSarakDrafting(design, applyConfig, applyFullConfig)` → o rascunho (§5) |
-| `:136` | `useSarakUIEffects` → efeitos globais de documento (título, fontes) |
-| `:140` | `useSarakStylesheetGuard(mode, scopeElement)` → a guarda de stylesheet (§9) |
-| `:143-174` | O `useMemo` que monta o contexto público |
+| `:99` | `resolveSarakUIMode(options)` → `mode` |
+| `:100` | Estado do `scopeElement` (o container da ilha, no modo embarcado) |
+| `:106` | `useThemeCollection` → `allThemes` (`SARAK_GLOBAL_THEMES` + `customThemes`), `saveTheme`, `deleteTheme` |
+| `:109` | **`useDesignManager`** → `design`, `setDesign`, `applyConfig`, `applyFullConfig`, `persistDesign`, o id resolvido |
+| `:120` | `useBrandingManager` → identidade (opt-in, ver [[006-zero-marca-soberania-host]]) |
+| `:128` | `useSarakDrafting(design, applyConfig, applyFullConfig)` → o rascunho (§5) |
+| `:132` | `overlayPreferences` → o design efetivo: rascunho (se houver) com as preferências do usuário por cima, entre elas o modo de cor |
+| `:142` | `useSarakUIEffects` → efeitos globais de documento (título, fontes) |
+| `:145` | `useSarakStylesheetGuard(mode, scopeElement)` → a guarda de stylesheet (§9) |
+| `:148` | O `useMemo` que monta o contexto público |
 
 A árvore renderizada (`:180-221`): `DeviceProvider` → `UIContext.Provider` → `SarakScopeRoot`, e dentro dela — **nesta ordem**:
 
@@ -224,15 +224,19 @@ lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color
   caso do `transform` do botão pressionado.
 - **O token que a classe utilitária também escreve é entregue pela variável que ela lê.** As utilitárias de
   borda (`border`, `border-2`, `border-t`…) escrevem `border-style` por `var(--tw-border-style)`, e por isso a
-  ponte do `borderStyle` alimenta essa variável. O raio do botão chega por `.rounded-btn`, que compõe os quatro
+  ponte do `borderStyle` alimenta essa variável. A ponte é o **único** seletor da lib por substring de classe
+  (`[class*="border"]`, em `_elements.css`) — aceito porque só entrega `border-style` a quem já escolheu ter
+  borda, e mora na subcamada que cede à classe. O raio do botão chega por `.rounded-btn`, que compõe os quatro
   cantos (`btnRadiusTL/TR/BR/BL`) com o raio mestre como reserva de cada um.
 
 **O que ainda não cede à classe:** o **`transform` do botão pressionado** e o **`background-color` do
 `body`**, os dois `!important` na camada final por desenho.
 
 **A lib alcança cartão por âncora explícita, nunca por substring de nome de classe.** A superfície e a textura de
-cartão sob o tema chegam por três âncoras: `.sarak-card` (o cartão completo: superfície, padding, borda e
-`clip-path`, em `_cards.css`), `.card` e `.bg-theme-card` (superfície e textura sem padding nem borda próprios).
+cartão sob o tema chegam por três âncoras: `.sarak-card` e `.bg-theme-card` (o cartão completo — superfície,
+padding, borda e `clip-path`, no mesmo bloco de `_cards.css`; os componentes da lib que levam `.bg-theme-card`
+contam com esse padding e essa borda) e `.card` (só superfície e textura, sob `[data-sx-texture]` ou
+`.sarak-design-scope`, sem padding nem borda próprios — é a âncora para o contêiner do consumidor).
 Nenhum seletor da lib casa `[class*="card"]`: uma utilitária com `card` no nome — da lib ou do consumidor, como
 `bg-[var(--color-theme-card,…)]` — computa o fundo que a própria classe escreve. Contêiner que é cartão de fato
 recebe a âncora `card`; controle (campo, botão, menu) não recebe.

@@ -142,8 +142,9 @@ O painel conta um caminho de três passos, e a tela segue essa ordem:
 | **Exportar** | secundário: baixa o JSON (§5); o rótulo não muda depois de exportar |
 | **Desfazer última aplicação** | só aparece quando há uma aplicação a desfazer (§4.2) |
 
-Não há aplicar por pilar nem por componente: aplicar é sempre o rascunho inteiro. O título do painel é
-**"Personalizar o tema"**, sem selos.
+Não há aplicar por pilar nem por componente: aplicar é sempre o rascunho inteiro. O painel montado
+pelo `SarakCustomizationPanel` se intitula **"Personalizar o tema"**; dentro dele, o cabeçalho da barra lateral
+diz **"Design"**. Sem selos.
 
 **O menu "Avançado"** (`Main/components/ThemeAdvancedMenu.tsx`) é o único botão do cabeçalho além do seletor de
 modo. Ele reúne as telas de quem já conhece o motor — **Tabela de tokens** (a planilha do `MasterControlPanel`),
@@ -188,8 +189,9 @@ tamanho vem de `--sarak-type-scale-caption` (padrão 12 no schema).
 
 Duas decisões de projeto do rascunho, ambas com o motivo no código:
 
-- **O rascunho começa `null`** (`useDesignDraft.ts:25-27`) — "para seguir o sistema sem criar uma cópia
-  dessincronizada no mount". Sem rascunho, `draft` **resolve para o design do sistema** (`:31-35`). Não
+- **O rascunho começa `null`** (`useDesignDraft.ts`, o estado `draftState`) — "para seguir o sistema sem criar
+  uma cópia dessincronizada no mount". Sem rascunho, `draft` **resolve para o design do sistema** (o `useMemo`
+  de `draft`, logo abaixo). Não
   existe estado intermediário nascendo defasado.
 - **Comparação profunda antes de marcar mudança** (`areValuesEqual`, `:11-17`) — evita marcar rascunho
   sujo por diferença de identidade de objeto em valor estruturalmente igual (o caso dos valores
@@ -255,8 +257,8 @@ Depois de um **`Aplicar`**, a barra de ações oferece **"Desfazer última aplic
 - **O que é guardado:** imediatamente antes de cada "Aplicar", o design do sistema **e** o tema anunciado
   (`resolvedThemeId`) daquele instante.
 - **O que o desfazer faz:** devolve o design ao sistema (`applyFullConfigRaw`), anuncia de volta o tema
-  guardado, e grava pelo `persistDesign` num efeito, **depois** do render que atualiza o tema anunciado.
-  Por isso toda gravação que ele dispara, inclusive a porta `persistence.onSave`, recebe o par restaurado:
+  guardado e grava pelo `persistDesign` logo em seguida, na mesma chamada: `setResolvedThemeId` atualiza na
+  hora a referência que `persistDesign` lê (`useLastAppliedSnapshot.ts`, JSDoc do topo). Por isso toda gravação que ele dispara, inclusive a porta `persistence.onSave`, recebe o par restaurado:
   o design e o tema de antes. Ele também limpa o rascunho do painel, senão o rascunho com o valor desfeito
   continuaria por cima da tela real (§4).
 - **Um nível só:** usado, o controle some; uma nova aplicação substitui o que está guardado; recarregar a
@@ -429,13 +431,12 @@ mais usa a lib (nós). O painel é o consumidor mais intenso da biblioteca.
 # 8. A allowlist do zero-marca — por que ela é legítima
 
 `gates/scripts/contrato/check-zero-brand.mjs` proíbe os literais de marca da lib como **texto renderizado** em `src/`, com
-**allowlist comentada** de três arquivos (`:37-46`):
+**allowlist** na constante `ALLOWLIST` do próprio gate (a fonte) — hoje dois arquivos:
 
-| Arquivo | Motivo escrito no gate |
+| Arquivo | Motivo |
 | --- | --- |
 | `features/DesignEngine/Canvas/KitchenSinkPreview.tsx` | vitrine interna de componentes/temas, usada só pelo painel |
-| `features/DesignEngine/Panels/LanguageTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
-| `features/DesignEngine/Panels/LayoutTab.tsx` | idem |
+| `features/DesignEngine/Panels/LayoutTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
 
 **Por que é legítimo:** estes são **painéis internos** — a ferramenta com que a lib autora temas. O
 consumidor **não embute** o Kitchen Sink no produto dele. A regra zero-marca existe para que a lib não
@@ -488,8 +489,9 @@ as outras cinco eram inalcançáveis e pesavam no bundle sem entregar nada.
 
 **Decisão do dono (2026-08-04): remover os imports mortos**, não restaurar a navegação. `CustomizationPanel`
 (hoje `CustomizationPanelImpl.tsx`) caiu de 49 para 35 linhas — saíram os 6 imports de aba, os ícones que só
-serviam a elas, o `useState` não usado e o `type TabId` órfão. **Os 6 componentes de aba não foram apagados**
-— continuam em `Panels/`, com os próprios testes, caso uma navegação futura queira reativá-los. A ordem
+serviam a elas, o `useState` não usado e o `type TabId` órfão. Dos 6 componentes de aba, **quatro continuam em
+`Panels/`** (`AdvancedTab`, `EngineCustomizationTab`, `HyperGranularityTab`, `LayoutTab`), com os próprios
+testes; `LanguageTab` e `ShortcutsTab` foram apagados depois. A ordem
 obrigatória foi respeitada: esta remoção só aconteceu **depois** de a §9.5 fechar (F1 antes de F2, porque
 restaurar navegação antes do conserto do `localStorage.clear()` ativaria a perda de dados).
 
@@ -530,7 +532,7 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 - [x] O caminho export → `customThemes` está descrito ponta a ponta (§5).
 - [x] A folksonomia está explicada com as 3 fontes, o algoritmo e `arquivo:linha`.
 - [x] Os controles polimórficos aparecem mapeados por `token.type`, não por nome de token.
-- [x] Draft × persistido inclui a exceção deliberada (tema completo comita).
+- [x] Draft × persistido: a gravação é explícita e não tem exceção (§4).
 - [x] O preview está descrito com o **limite** declarado (override lógico, não container query).
 - [x] A allowlist do zero-marca tem a justificativa **e** a tensão registrada.
 - [x] O erro de `tsc` está documentado e **não corrigido**.

@@ -158,13 +158,12 @@ remoção), e não diz nada sobre a saúde da regra.
 
 ## 7.3 A allowlist, e como (não) entrar nela
 
-Três arquivos, cada um com **motivo comentado ao lado** (`:37-46`):
+A lista é a constante `ALLOWLIST` de `gates/scripts/contrato/check-zero-brand.mjs`, a fonte — hoje:
 
 | Arquivo | Motivo |
 | --- | --- |
 | `features/DesignEngine/Canvas/KitchenSinkPreview.tsx` | vitrine interna de componentes/temas, usada só pelo painel de autoria |
-| `features/DesignEngine/Panels/LanguageTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
-| `features/DesignEngine/Panels/LayoutTab.tsx` | idem |
+| `features/DesignEngine/Panels/LayoutTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
 
 **Como adicionar:** editar `ALLOWLIST` com o caminho relativo a `src/` **e** o comentário do motivo.
 

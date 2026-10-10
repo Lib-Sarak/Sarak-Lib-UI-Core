@@ -117,7 +117,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 > As exclusões são **nomeadas uma a uma**, com motivo, em `gates/allowlists/publicTypeExclusions.mjs`; o
 > gate não tem categoria genérica de dispensa.
 
-**Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
+**Os gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
 
 | Gate | Comando | Garante | Cobra |
 | --- | --- | --- | --- |
@@ -145,7 +145,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
-Os quatro primeiros são **rápidos e verdes**, e são os que rodam encadeados antes de compilar no `npm run build`. `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
+Os que rodam encadeados no `npm run build` — antes de compilar e depois do `build:js` — estão na ordem do script `build` do `package.json`, que é a fonte (não conte aqui). `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
 
 Todos têm a mesma mecânica de leitura: **saída de uma linha quando passa**. Se a linha não apareceu, leia o erro acima dela.
 
@@ -160,7 +160,8 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | Gate | `pre-commit` | `gates:full` | `version` | `pre-push` | **CI** |
 | --- | :---: | :---: | :---: | :---: | :---: |
 | `barrel` · `catalog` · `zero-brand` · `guide` · `token-types` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ |
-| `deep-import` · `public-types` | Anel 1 | — | — | — | ✅ |
+| `deep-import` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
+| `public-types` | — | ✅ *(via `build`, depois do `build:js`)* | ✅ | — | ✅ *(via `build`)* |
 | `dev-kit` | **união dos 2 gatilhos** (§2.2.1 da [[02-enforcement-por-commit]]) | ✅ 1º | ✅ | — | ✅ |
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
@@ -175,6 +176,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
 | `build-info` · `package` · `coverage` | — | ✅ | — | — | ✅ |
 | `release:check` | — | — | — | ✅ (só `main`) | ✅ **job `release-tag`** |
+| `cromo-css-real` (`browser-tests/`, Playwright) | — | — | — | — | ✅ **job `cromo-css-real`** ([[16-integracao-continua]] §4.2.1) |
 | `migration-anchor` · `minor-no-removal` | — | — | ✅ *(desde a `plan-53`)* | — | — |
 | Segredos (Anel 0) | ✅ **sempre** | — | — | — | ⛔ **impossível** |
 
@@ -235,18 +237,16 @@ npx tsc --noEmit
 
 Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
-## 2.6 Playwright — REMOVIDO em 2026-08-18
+## 2.6 Playwright — só a medição de CSS renderizado, e só na CI
 
-**Não existe mais aparato de browser neste repositório.** Saíram o config, o script `test-ct`, as duas
-dependências, o harness e os 5 arquivos de teste que dependiam deles.
+O aparato de **component test** e E2E (`playwright-ct.config.ts`, script `test-ct`, `src/**/__e2e__/`) **não
+existe**: era cobertura que nenhum pipeline executava, e verde que ninguém executa é indistinguível de sucesso.
 
-O motivo é o que esta spec inteira defende: aquilo era **cobertura que existia e não era cobrada** — não
-rodava no build, nem em hook, nem em CI. Verde que ninguém executa é indistinguível de sucesso, e vale menos
-que vermelho declarado.
-
-**Consequência que não some com a remoção:** a base ficou **sem nenhuma forma de medir CSS renderizado**, e
-isso rebaixou a **R24** de ✅ para ⚠️. O adiamento está numerado (achado **45**, [[15-divida-conhecida]] §4) e
-depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cobertura]] §7.
+O que existe é **uma** medição em navegador real: `browser-tests/*.spec.ts`, por `npm run cromo-css-real:check`
+(builda antes, porque lê `dist/`), executada pelo job `cromo-css-real` da CI ([[16-integracao-continua]] §4.2.1)
+— não por hook nem por `gates:full`. O que ela prova e o que não vê está em [[11-testes-e-cobertura]] §7.3.
+**R24** continua ⚠️: o não-vazamento do modo embarcado não é medido em CSS renderizado (achado **45**,
+[[15-divida-conhecida]] §4).
 
 # 3. O BASELINE — recontado em 2026-08-05 (plans 12 e 16)
 

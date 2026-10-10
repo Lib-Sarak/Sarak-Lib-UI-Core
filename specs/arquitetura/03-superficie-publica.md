@@ -252,6 +252,11 @@ Nenhum componente importa uma família de ícones direto (R39). O ícone chega d
   vezes (os dois casos lançam erro).
 - **Elemento** — `icon={<MeuIcone />}`: passa direto, com o tamanho, a cor e a espessura do contexto.
 
+O `SarakIcon` aceita `size`, `color`, `className`, `style`, `onClick` e `strokeWidth` (que vence o token só
+naquele ícone); os tipos
+públicos são `SarakIconProps`, `SarakIconPresentationProps` e `SarakRegisteredIconProps` (o que um ícone
+registrado recebe).
+
 **O tema vale para todo ícone desenhado pela porta:** `iconFamily` escolhe a família dos nomes curados;
 `iconWeight` e `iconStrokeWidth` chegam ao traço (o Phosphor recebe o peso nativo; Lucide e Tabler, uma
 espessura derivada). Sem Provider, valem os padrões (Lucide, peso regular).
@@ -274,7 +279,8 @@ Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com
 - **`load`** — uma função do host que devolve uma `Promise` com o dado. O template mostra carregamento enquanto
   ela não resolve, e o estado de erro se ela rejeita.
 
-Sem nenhuma das duas props, nenhum template busca nem fica preso em carregamento.
+Sem nenhuma das duas props, nenhum template busca nem fica preso em carregamento. **Exceção:** o `SarakForm` em
+`mode: 'create'` não chama `load` — o formulário nasce dos valores iniciais (o padrão é `'edit'`, que carrega).
 
 `SarakForm` entrega os valores por `onSubmit`, sem campo de envio quando o host não o passa. `SarakChat` envia
 por `onSend` (a função do host recebe a mensagem e um `onToken` para resposta em fluxo) e lista modelos por
@@ -295,7 +301,9 @@ O que um sistema precisa para mostrar dado, sem refazer à mão:
 
 - **`SarakTable`** continua `<table>` semântica. Cada coluna é `{ key, label, render?, align? }`: `render(row)` desenha
   a célula, e `align` alinha. `onRowClick` torna a linha acionável. Os três estados — carregando, vazio (com
-  mensagem) e erro (com `onRetry`) — têm texto traduzido. No celular, a mesma tabela reflui em cartões, e
+  mensagem) e erro (com `onRetry`) — têm texto traduzido; `loading` e `error` passados pelo host **vencem** o
+  estado que vem do `load`. `showSearch` (padrão: visível) e `showRefresh` (padrão: só com `load`) ligam a busca e
+  o botão de atualizar. No celular, a mesma tabela reflui em cartões, e
   `render`, `align` e `onRowClick` valem neles também.
 - **`SarakDataTable`** (a grade virtualizada) aceita `rowHeight` fixo, por função da linha ou `'auto'`, os mesmos três
   estados, `onRowClick` e `align`.

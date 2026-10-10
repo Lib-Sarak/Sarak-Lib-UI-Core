@@ -260,7 +260,7 @@ Medido no ensaio do release (sandbox, 2026-07-28): o commit da `v1.0.1` carrega 
 Push para `main` com o **artefato publicado alterado** e **sem tag nova** é BLOQUEADO pelo anel de push
 (`.githooks/pre-push` → `gates/scripts/release/check-release-tag.mjs`). O gatilho é *"o artefato mudou"*, não *"houve
 commit"*: mudança só em `specs/` não pede tag. O mecanismo e a mensagem estão em
-[[02-enforcement-por-commit]] §4.1.
+[[02-enforcement-por-commit]] §4.3.
 
 Ao bloquear, ele **sugere** o nível lendo os commits desde a última tag — e diz, no próprio texto, que é
 sugestão. **Quem escolhe o nível é humano**, pelo motivo registrado no ADR-008: os 8 commits mais

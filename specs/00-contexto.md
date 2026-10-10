@@ -131,7 +131,7 @@ testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, ma
 | Todos os gates de release | `npm run gates:full` |
 | Barril público ↔ componentes | `npm run barrel:check` |
 | Catálogo · kit do consumidor · kit do mantenedor | `npm run catalog:check` · `guide:check` · `dev-kit:check` |
-| Build (roda 4 gates antes) | `npm run build` |
+| Build (encadeia gates antes e depois de compilar — a ordem é o script `build`) | `npm run build` |
 | Emitir release (gates + tag + push) | `npm version <major\|minor\|patch>` — ⚠️ **só o usuário roda** (§7) |
 
 ## 3.1 Release e tag — o que bloqueia o push
@@ -157,8 +157,8 @@ agente descobre do jeito difícil se não estiverem escritos:
   > regenerar os **três** kits que carimbam a `version` — consumidor, `dist/` e `sarak-dev/` — no mesmo commit
   > da tag. Antes disso, toda tag saía com o kit do mantenedor um release atrás e a release seguinte nascia
   > bloqueada por ela. Detalhe em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6.
-- **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
-  commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
+- **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/`, `sarak-ui/`, `sarak-dev/` e os
+  dois `buildInfo.ts` **no mesmo commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
 - **Todo MAJOR precisa da nota de migração ANCORADA — e isso virou gate** *(2026-08-19)*. O gancho `version`
   abre com `migration-anchor:check`: sem uma entrada em `docs/migracoes.md` cujo título cite `X.0.0` por
   extenso, o `npm version major` **para antes de criar a tag**. Um segundo gate, `minor-no-removal:check`,

@@ -94,7 +94,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > **R8.1**, que não entra na contagem das regras numeradas. Quem confere a contagem usa
 > `grep -c "^## R"`, que conta só as numeradas.
 
-**A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
+**A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit` imprime os números (a linha `Regra violada` de cada bloco) na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
 # 2. Regras verificáveis
 
@@ -541,7 +541,7 @@ repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem painéis **internos** do Design Engine (hoje `KitchenSinkPreview` e `LayoutTab`; a fonte é `check-zero-brand.mjs`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 
@@ -929,7 +929,8 @@ ERRADO   npx tsx scripts/generate-token-types.ts   # gera, e nada confere depois
 
 **Cobrada por:** os 5 geradores têm modo `--check`, e os 5 rodam — `catalog:check` · `guide:check` ·
 `token-types:check` dentro do `build`; `build-info:check` e `dev-kit:check` dentro do `gates:full`. A tabela
-completa de gerador × `--check` está em [[01-gates-e-baseline]] §2.2. Achado 22 em [[15-divida-conhecida]]
+completa de gerador × `--check` está em [[01-gates-e-baseline]] §2.2. (O `generate-plan-index.mjs --check`
+também existe, mas gera o índice de `specs/`, não artefato da lib — por isso fica fora da conta.) Achado 22 em [[15-divida-conhecida]]
 registra o fecho.
 
 > **`src/core/Provider/manifest.ts` NÃO entra nesta regra.** Conferido no arquivo em 2026-08-02: ele é **escrito à mão** (`DESIGN_MANIFEST`, "Sovereign Design Manifest v10.1") — não tem marca de gerado e não há gerador para ele em `scripts/`. O único arquivo de `src/` com a marca `ARQUIVO GERADO AUTOMATICAMENTE` é o `design-token-ids.ts`.
@@ -1487,7 +1488,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
 | R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
-| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução | `npm run dev-kit:check` · `npm run section-pointers:check` |
+| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução **+** `check-kit-names.mjs` (os nomes públicos que o kit do consumidor cita existem no barril, [[01-gates-e-baseline]] §9.8) | `npm run dev-kit:check` · `npm run section-pointers:check` · `npm run kit-names:check` |
 | R24 | CSS não vaza no host | ⚠️ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` — **jsdom: provam o seletor, não o CSS renderizado**; a prova em navegador saiu com o E2E (achado 45) | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
@@ -1500,6 +1501,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
 | **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
+| **R37** | **Todo nome do barril público carrega o prefixo da biblioteca** | **✅** | `check-public-prefix.mjs` — cadeia do `build`, depois do `public-types:check`; allowlist vazia | `npm run prefix:check` |
 | **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
 | **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
@@ -1521,6 +1523,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verify_presets.ts` | R5 | `gates/scripts/audit/` | ✅ via `auditor_presets.mjs` |
 | `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `gates/scripts/contrato/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
 | `check-public-prefix.mjs` | **R37** | `gates/scripts/contrato/` | ✅ `prefix:check` (cadeia do `build`, depois do `public-types:check`) |
+| `check-kit-names.mjs` | **R23** (nomes públicos citados pelo kit do consumidor) | `gates/scripts/contrato/` | ✅ `kit-names:check` (cadeia do `build`) |
 | `check-package-contents.mjs` | **R19** | `gates/scripts/contrato/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
 | `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` — geram **e** conferem, por isso **não** migram | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
 | `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `gates/scripts/release/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
@@ -1556,7 +1559,7 @@ Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa 
 2. **As regras marcadas ⚠️ na tabela da §1.3 têm o escopo do gate menor que o da regra**, e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`).
 3. **As violações declaradas hoje vivem no baseline, não nesta prosa.** R30 (`tsc`) nasce com produção em hard-block a zero e teste tolerado como piso; R10 registra o resíduo dela em `auditor_composicaoatomica.violacoes`. As duas contagens correntes estão em `gates/baselines/audit-baseline.json`. R7 e R32 **fecharam** as violações com que nasceram (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 é a única que segue violada por decisão declarada**, e o motivo está na própria regra.
 4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).
-5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit:68-71` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
+5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
 
 Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; **pagar o que os gates acusam é sempre plan própria**, na fila do [[00-indice]] — nunca efeito colateral de uma plan de regra.
 

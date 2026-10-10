@@ -220,8 +220,8 @@ Duas portas, **contratos de estabilidade diferentes**:
 
 | Prop | Semântica | Exige do consumidor |
 | --- | --- | --- |
-| `activeThemeId` (`types.ts:232`) | **controlado** — a lib segue este valor | que `customThemes` seja **referencialmente estável**; um array recriado a cada render realimenta o ciclo |
-| `initialTheme` (`types.ts:240`) | **semente** — "só quero começar neste tema" | nada; é o caminho seguro para o caso comum |
+| `activeThemeId` (`providerProps.ts`) | **controlado** — a lib segue este valor | que `customThemes` seja **referencialmente estável**; um array recriado a cada render realimenta o ciclo |
+| `initialTheme` (`providerProps.ts`) | **semente** — "só quero começar neste tema" | nada; é o caminho seguro para o caso comum |
 
 O comentário de `types.ts:236-240` diz isso explicitamente: `initialTheme` existe para **não expor o
 consumidor ao contrato de estabilidade de referência** que `activeThemeId` exige. Quem só quer escolher o
@@ -290,7 +290,7 @@ trocava o rótulo.
 
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
-Persistência é **local por construção** (`options.persistence`, `types.ts:153-166`):
+Persistência é **local por construção** (`options.persistence`, em `src/core/Provider/types.ts`):
 `storageKey` nomeia a chave, `onSave`/`onLoad` são as portas "traga sua persistência" (para o backend
 **do consumidor**, se ele quiser — a lib nunca faz fetch para servidor próprio), e
 **`crossTabSync` (default `true`)** escuta o evento `storage` e reaplica o design — **validado** — quando
@@ -340,9 +340,9 @@ consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria resta
 
 **A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave`, não
 escrevem no `localStorage` e não chamam `onThemeChange`. Só gravam a edição do usuário (com o atraso de 1,5 s) e
-a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Todo caminho que aplica tema
-— a aba de modelos, *Aplicar alterações globais* e o desfazer da última aplicação — anuncia o id **antes** de
-gravar, de modo que a primeira chamada de `onSave` leva o par certo.
+a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Os dois caminhos que aplicam tema
+— o `Aplicar (N)` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
+tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-customizacao-e-preview]] §4), de modo que a primeira chamada de `onSave` leva o par certo.
 
 **O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
 (formato, schema em dois dialetos e exemplo de ligação) — ver [[13-instalacao-e-atualizacao]]. Persistir é
@@ -365,8 +365,8 @@ na tela de quem já o tinha salvo.
 **Os sete tokens de gráfico têm consumidor.** `chartColorPalette` (a cor da 1.ª série), `chartGridOpacity`,
 `chartShowGrid`, `chartTooltipBg`, `chartType` (o formato quando o gráfico não diz qual), `chartThickness` e
 `chartSmoothing` são lidos pelo motor de gráficos ([[03-superficie-publica]] §6.8): mudar um deles no tema muda o
-gráfico desenhado. As demais séries tomam as cores do próprio design (secundária, destaque e as quatro de status,
-nessa ordem), sem token próprio de paleta.
+gráfico desenhado. As demais séries tomam as cores do próprio design (secundária, destaque, as quatro de status e
+a terciária, nessa ordem — `CHART_COLOR_TOKENS`), sem token próprio de paleta.
 
 ## 4.5 Exportar — o substituto do "salvar no banco"
 

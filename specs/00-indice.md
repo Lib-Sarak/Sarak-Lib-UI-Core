@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "104"
+proximo_numero_plan: "110"
 ---
 
 # 0. O que é este arquivo
@@ -42,76 +42,21 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
+| 1 | [plan-104-fronteira-lazy-da-grade-e-notas-da-8](plan/plan-104-fronteira-lazy-da-grade-e-notas-da-8.md) | Fazer o SarakDataTable e o SarakDataGrid sairem do chunk de abertura do barril e deixar docs/migracoes.md com toda nota da 8.0.0 dentro da entrada ancorada e classificada | — | 🟡 Em execução | arquitetura/03-superficie-publica.md |
+| 2 | [plan-105-rotulo-dos-campos-e-textos-traduzidos](plan/plan-105-rotulo-dos-campos-e-textos-traduzidos.md) | Fazer todo atomo de campo com label expor um nome acessivel ligado ao controle e tirar dos atomos os textos fixos em portugues, que passam a vir do catalogo de traducao | — | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 3 | [plan-106-controle-do-host-sobre-as-preferencias](plan/plan-106-controle-do-host-sobre-as-preferencias.md) | Permitir que o host declare o modo de cor inicial, inclusive system, e desligue qualquer widget de preferencia do cromo, sem tocar na escolha que o usuario ja fez | — | 🔴 A executar | specs/09-temas-e-presets.md + specs/05-cromo-e-slots.md |
+| 4 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🔴 A executar | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
+| 5 | [plan-108-dado-e-status-que-nao-somem](plan/plan-108-dado-e-status-que-nao-somem.md) | Fazer os templates de dado manterem o ultimo dado com o horario quando o recarregamento falha, mostrarem quando o dado esta desatualizado, alinharem numeros em digitos tabulares e o selo de status ter forma, rotulo e cor do tema | — | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 6 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> 🌊 **A ordem da tabela segue as ondas de execução** *(decisão do dono, 2026-10-04: encurtar o ciclo entre
-> execução e correção)*. É plano, não estado — o estado corrente é a coluna *Status* acima. Duas plans da mesma
-> onda só correm juntas se o **revisor declarar a disjunção ao despachar as duas** (§5), na mesma árvore, com a
-> suíte completa de **uma** por vez e a verificação conjunta no fim.
+> **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` primeiro — ela fecha a superfície da 8.0.0 e
+> precisa entrar antes da tag; depois a `plan-106` e a `plan-105`. As três tocam `docs/migracoes.md`, cada uma na
+> sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
+> só com a disjunção declarada pelo revisor ao despachar.
 >
-> | Onda | Plans | O que a torna possível | Restrição |
-> |---|---|---|---|
-> | 1 | ~~**92** ‖ **88**~~ ✅ *sintetizadas e removidas em 2026-10-05* | Disjuntas na fonte; o `package.json` foi tocado em chaves diferentes | — |
-> | 2 | ~~**94**~~ ✅ *sintetizada e removida em 2026-10-05* | Foi o caminho crítico: liberou a 89 e a 95, e por elas todas as outras | Rodou **sozinha na árvore** — removeu o modo host |
-> | 3 | ~~**95** ‖ **99**~~ ✅ *sintetizadas e removidas (95 em 2026-10-06, 99 em 2026-10-07)* | A cadeia 95→96→97→98 é a mais longa; a 99 (busca e modo Impacto do painel de temas) toca só `src/features/DesignEngine/Main/`, `utils/`, `config/` e as partições do catálogo | A 94 já saiu (a 99 parte da árvore dela); a 89 colide com a 95 (`navItem.ts`, `schema/system.ts`), por isso não é par dela |
-> | 4 | ~~**89** ‖ **96** ‖ **100**~~ ✅ *sintetizadas e removidas (96 em 2026-10-07, 89 em 2026-10-08, 100 em 2026-10-09)* | A 100 mexe só em `src/features/DesignEngine/` | — |
-> | 5 | ~~**90** ‖ **97**~~ ✅ *sintetizadas e removidas (97 em 2026-10-08, 90 em 2026-10-09)* | A 90 mediu o campo de busca do painel depois da 100 | — |
-> | 6 | ~~**91** ‖ **98**~~ ✅ *sintetizadas e removidas em 2026-10-09* | A 91 esperou a 90 | — |
-> | 7 | ~~**101** ‖ **102**~~ ✅ *sintetizadas e removidas em 2026-10-09 (a 102 sem a medição em aparelho, por decisão do dono: `00-backlog` item 20)* | A 101 tocou só `engines/charts/` e a 102, `DataDisplay/SarakKanban/` e componentes novos | — |
-> | 8 | ~~**103**~~ ✅ *sintetizada e removida em 2026-10-09* | O ADR-020 ([[020-gantt-casca-propria]]) decidiu o Gantt antes do lote 2 | — |
->
-> 🧪 **O lote 1 da 102 (a avaliação das bibliotecas de arrastar e soltar e de Gantt) não toca o repositório** e pode ser
-> despachado em **qualquer onda**, em paralelo a qualquer plan — é o que antecipa o ADR-019 e o ADR-020. O resultado
-> dele precisa do **dono com um aparelho de toque**.
->
-> 🚦 **Despacho de 2026-10-08 — 98 ‖ 101 (lote 1) ‖ 100 (lote 2).** Disjunção declarada pelo
-> revisor:
-> - a 98 é a única a tocar `Modals/`, `Feedback/`, `src/core/Design/schema/` e `src/index.ts` (a 101 foi
->   emendada para usar o `SarakDataEmpty`, só **consumido**, no lugar do `SarakEmptyState`, que é da 98);
-> - a 101 é a única a tocar `engines/charts/` e o `package.json`;
-> - em `src/core/i18n/`, a 101 escreve só em `catalogEntries.part3.ts` (chaves `chart*`), e a 98 só em
->   `catalogEntries.part4.ts` (chaves `dialog*`/`progress*`/`toast*`);
-> - a 100 fica em `src/features/DesignEngine/`.
->
-> A 91 continua atrás da 90, e a 90, atrás da 100. Em paralelo, o revisor corrige a prosa das specs fixas
-> apontada pela contraprova de paridade de 2026-10-08, sem tocar `src/` nem `specs/plan/`.
->
-> 🚦 **Despacho 2 de 2026-10-08 — 100 (lote 3) ‖ 101 (lote 3) ‖ 102 (lote 2)**, depois do commit integral da
-> 98 e dos lotes já aprovados da 100 e da 101. Disjunção declarada pelo revisor:
-> - a 100 fica em `src/features/DesignEngine/`; textos só em `catalogEntries.part5.ts` (`panel*`);
-> - a 101 fica em `src/components/engines/charts/`; textos só em `catalogEntries.part3.ts` (`chart*`);
-> - a 102 é a única a tocar `DataDisplay/SarakKanban/`, `DataDisplay/index.ts`, `src/index.ts` e o
->   `package.json`/lockfile (o `npm install` do dnd-kit roda só com a máquina livre); textos só em
->   `catalogEntries.part4.ts` (`kanban*`);
-> - `docs/migracoes.md` é dividido pela 101 e pela 102: cada uma acrescenta **a sua** seção, por substituição exata.
->
-> 🚦 **Despacho de 2026-10-09 — 90 (lote 1, em execução) ‖ 103 (lote 1).** A `plan-102` está aprovada no código
-> nos três lotes; a medição em aparelho (§5 item 9) só pode acontecer **depois da release**, nos importadores —
-> o dono emite a tag ao fim de todas as specs. Por isso a 103 não espera o veredito final da 102: ela usa o código
-> já aprovado do quadro e do detalhe do cartão, e não depende do comportamento de toque. Se a medição falhar, só o
-> lote 2 da 102 volta ao dono. Disjunção declarada pelo revisor:
-> - a 90 fica em `src/styles/`, `atomic/hooks/useAtomicStyles.ts`, `Inputs/SarakSelect.tsx`,
->   `Feedback/SarakDataEmpty.tsx`, `Buttons/SarakSocialButton.tsx` e `browser-tests/`;
-> - a 103 fica em `DataDisplay/SarakCalendar/`, `DataDisplay/SarakGantt/`, `Inputs/internal/calendarGrid.ts` (só
->   exportar), `DataDisplay/index.ts`, `src/index.ts` e `catalogEntries.part6.ts` (chaves `calendar*`/`gantt*`);
-> - **o build é compartilhado:** a 103 regenera catálogo e kit (`npm run catalog && npm run guide`) logo depois
->   de cada mudança de componente público, para a árvore continuar buildável; se o `npm run build` da 90 parar
->   num check de artefato por edição da 103, ela roda as etapas de compilação uma a uma e relata.
->
-> 🚦 **Despacho 2 de 2026-10-09 — 91 ‖ 103 (lote 1)**, depois do commit do lote 2 da 90 (a 91 toca o
-> `SarakSelect` e o `SarakRangeSlider`, que a 90 alterou). Disjunção declarada pelo revisor:
-> - a 91 fica nos nove átomos de `Inputs/` (só a renderização do erro), `SarakInput` (ícones), `SarakSelect`
->   (`label`), `Cards/hooks/useSarakCardLayoutStyles.ts` e `SarakCard.tsx`, `SarakPDFViewer/usePdfDocument.ts`,
->   `PreviewCanvas.tsx`/`PreviewSystemRenderer.tsx` (só o parâmetro morto), `docs/extensibilidade-de-layout.md` e a
->   sua nota em `docs/migracoes.md`; textos só em `catalogEntries.part5.ts` (chaves `field*`/`range*`/`time*`);
-> - a 103 fica no que o despacho anterior declarou (`SarakCalendar/`, `SarakGantt/`, `calendarGrid.ts` só exportar,
->   barris, `catalogEntries.part6.ts`); o `SarakDatePicker` usa o `calendarGrid.ts`, mas a 91 só mexe no erro dele;
-> - `docs/migracoes.md` e o build são compartilhados: cada uma acrescenta a sua seção por substituição exata, e
->   regenera catálogo e kit logo depois de mudar componente público.
->
-> Dentro de uma onda de duas, o primeiro veredito a chegar não espera o outro. Commit é por plan, com
-> `git add` por caminho; os artefatos gerados (`dist/`, `sarak-ui/`, `sarak-dev/`) são regenerados uma vez,
-> pelo último a terminar.
+> **As 107 → 109 vêm da avaliação de mobile de 2026-10-10:** a `plan-109` depende da `plan-107` (usa o token de alvo
+> de toque); a `plan-108` é independente das duas.
 
 > ⚪ **A `plan-103` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
 >

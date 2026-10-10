@@ -74,10 +74,12 @@ Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `check-no-deep-import.mjs` | R27 — Zero deep import *(entrou em 2026-08-05, `plan-12`)* |
 | `check-gate-limits.mjs` | R18 — Todo gate declara o que não vê *(entrou em 2026-08-05, `plan-12`)* |
 | `generate-token-types.ts --check` | R4 · R29 — tipo gerado bate com o schema *(entrou em 2026-08-05, `plan-12`; roda logo no início, porque `guide`/`dev-kit` leem esse arquivo)* |
-| `check-container-query.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
+| `check-container-query-literal.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
 | `check-container-query-boundary.mjs` | — *(`plan-41`)* — todo `@min-[…]` tem ancestral `container-type` *(entrou em 2026-08-18, `plan-52`)* |
-| `check-persistence-doc.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
+| `check-persistence-doc-identifiers.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
 | `check-class-merge.mjs` | R35 — a classe do chamador vence a do átomo *(entrou em 2026-09-08)* |
+| `check-icon-port.mjs` | R39 — todo ícone da lib passa pela porta de ícones |
+| `check-chrome-token-parity.mjs` | — *([[05-cromo-e-slots]] §2.4)* — todo token de cromo tem consumidor no cromo |
 | `check-trail-citation.mjs --staged` | R36 — o código não cita o rastro de execução. Lê só as linhas **adicionadas** do staged; é o único gate do Anel 1 que não roda também na CI, pela mesma razão do Anel 0 (§9) *(entrou em 2026-09-13)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
@@ -397,7 +399,8 @@ CI mudou **para os anéis locais**, que é o assunto desta spec.
 > olha nada é pior que passo ausente. **O Anel 0 continua exclusivamente local**, e essa é a única parte deste
 > pipeline sem rede remota nenhuma.
 
-*(O Playwright não entrou na conta: foi removido da base em 2026-08-18 — [[01-gates-e-baseline]] §2.6.)*
+*(A medição em navegador, `cromo-css-real`, não entra nesta conta: roda só na CI, num job próprio —
+[[01-gates-e-baseline]] §2.6 e [[16-integracao-continua]] §4.2.1.)*
 
 # 10. Critérios de aceite
 
