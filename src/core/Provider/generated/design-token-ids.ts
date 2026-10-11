@@ -109,14 +109,14 @@ export interface SarakDesignTokens {
     toastMaxWidth: number; toastMinWidth: number; tooltipBg: string; tooltipBorderColor: string;
     tooltipRadius: number; tooltipTextColor: string; topbarActiveColor: string; topbarCollapsedHeight: number;
     topbarColor: string; topbarHeight: number | SarakResponsiveValue<number>; topbarHoverColor: string; topbarLabelMaxWidth: number;
-    topbarNoiseOpacity: number; topbarTitleColor: string; trackingSnug: number; trackingSubtle: number;
-    trackingTight: number; trackingUltra: number; trackingWide: number; trackingWider: number;
-    trackingWidest: number; typeScale2xs: number; typeScale3xs: number; typeScaleCaption: number;
-    typeScaleDisplay: number; typeScaleMicro: number; typeScaleTiny: number; typeScaleXl: number;
-    typeScaleXs: number; vignetteOpacity: number; vignetteSoftness: number; visualDotGridSize: number;
-    visualOrbBlur: number; visualPerspective: number; visualTranslateOffsetSm: number; visualTranslateZMd: number;
-    zIndexBase: number; zIndexModal: number; zIndexSidebar: number; zIndexToast: number;
-    zIndexTooltip: number;
+    topbarNoiseOpacity: number; topbarTitleColor: string; touchTargetMin: number; trackingSnug: number;
+    trackingSubtle: number; trackingTight: number; trackingUltra: number; trackingWide: number;
+    trackingWider: number; trackingWidest: number; typeScale2xs: number; typeScale3xs: number;
+    typeScaleCaption: number; typeScaleDisplay: number; typeScaleMicro: number; typeScaleTiny: number;
+    typeScaleXl: number; typeScaleXs: number; vignetteOpacity: number; vignetteSoftness: number;
+    visualDotGridSize: number; visualOrbBlur: number; visualPerspective: number; visualTranslateOffsetSm: number;
+    visualTranslateZMd: number; zIndexBase: number; zIndexModal: number; zIndexSidebar: number;
+    zIndexToast: number; zIndexTooltip: number;
 }
 
 export type DesignTokenId = keyof SarakDesignTokens;

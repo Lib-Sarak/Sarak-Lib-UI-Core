@@ -11,6 +11,7 @@
    (`sarak-lib`). Num elemento com classe utilitaria, a classe decide; sem classe, vale o
    padrao da lib. O porque de ser subcamada de `components` esta em `_elements.css`. */
 @import "./_elements.css" layer(components.sarak-elements);
+@import "./_touch.css" layer(components.sarak-elements);
 @import "./_theme.css" layer(sarak-lib);
 @import "./_colors.css" layer(sarak-lib);
 @import "./_base.css" layer(sarak-lib);
@@ -21,6 +22,7 @@
 @import "./_animations.css" layer(sarak-lib);
 @import "./_utilities.css" layer(sarak-lib);
 @import "./_performance.css" layer(sarak-lib);
+@import "./_motion.css" layer(sarak-lib);
 
 @source "../**/*.{ts,tsx}";
 

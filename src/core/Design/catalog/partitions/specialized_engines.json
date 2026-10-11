@@ -197,6 +197,41 @@
     ]
   },
   {
+    "tokenId": "touchTargetMin",
+    "name": "Alvo Mínimo de Toque",
+    "description": "Acessibilidade: área tocável mínima (altura e largura) dos acionáveis da lib quando o ponteiro é o dedo (pointer: coarse).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "acessibilidade",
+      "geometria",
+      "specialized-engines"
+    ],
+    "tags": [
+      "touch",
+      "target",
+      "accessibility",
+      "mobile",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-touch-target-min"
+    ],
+    "allowedValues": {
+      "min": 24,
+      "max": 64,
+      "step": 1
+    },
+    "relatedTokens": [
+      "focusRingWidth"
+    ]
+  },
+  {
     "tokenId": "zIndexModal",
     "name": "Camada: Modais (Engenharia)",
     "description": "Variável de engenharia mapeando o índice Z para janelas Modais.",

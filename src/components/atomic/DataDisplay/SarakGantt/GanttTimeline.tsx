@@ -12,7 +12,7 @@ import { isAfter, isBefore, startOfDay } from 'date-fns';
 import { SarakButton } from '../../Buttons/SarakButton';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { GanttDependencies } from './GanttDependencies';
-import { GANTT_BAR_CLASS, GANTT_HEADER_HEIGHT, GANTT_ROW_HEIGHT, GANTT_STICKY_SURFACE } from './ganttLayout';
+import { GANTT_BAR_CLASS, GANTT_HEADER_HEIGHT, GANTT_ROW_SIZE, GANTT_STICKY_SURFACE } from './ganttLayout';
 import {
     GANTT_DAY_WIDTH,
     buildGanttTicks,
@@ -49,6 +49,9 @@ const GAP_XS = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)';
  */
 // sarak-allow-hardcode: piso do marcador de hoje — o token de borda pode ser 0 e o marcador nunca pode sumir.
 export const GANTT_TODAY_THICKNESS = 'max(2px, calc(var(--sarak-border-width, 1px) * 2))';
+/** Alvo mínimo de toque (`0px` com ponteiro fino); a barra nunca fica menor que ele nem desce de 60% da linha. */
+const GANTT_TOUCH_ACTIVE = 'var(--sarak-touch-target-active, 0px)';
+const GANTT_BAR_HEIGHT = `max(60%, ${GANTT_TOUCH_ACTIVE})`;
 /** O progresso é uma faixa fina na base da barra, fora do título. */
 const GANTT_PROGRESS_HEIGHT = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.375)';
 
@@ -115,10 +118,11 @@ function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; 
                 position: 'absolute',
                 left: visible.x,
                 width: visible.width,
-                top: '20%',
-                height: '60%',
+                // 60% da linha com ponteiro fino; com o dedo a barra sobe ao alvo mínimo e se centra na linha.
+                top: `calc((100% - ${GANTT_BAR_HEIGHT}) / 2)`,
+                height: GANTT_BAR_HEIGHT,
                 minHeight: 0,
-                minWidth: 0,
+                minWidth: GANTT_TOUCH_ACTIVE,
                 padding: 0,
                 justifyContent: 'flex-start',
                 overflow: 'hidden',
@@ -199,12 +203,12 @@ export function GanttTimeline({ rows, edges, range, scale, formats, onTaskClick 
             style={{ position: 'relative', flexShrink: 0, width }}
         >
             <GanttHeader ticks={ticks} scale={scale} formats={formats} width={width} />
-            <div data-gantt-body="true" style={{ position: 'relative', height: `calc(${GANTT_ROW_HEIGHT} * ${rows.length})` }}>
+            <div data-gantt-body="true" style={{ position: 'relative', height: `calc(${GANTT_ROW_SIZE} * ${rows.length})` }}>
                 <GanttBackdrop ticks={ticks} range={range} scale={scale} />
                 {/* Antes das linhas: a barra cobre a seta que passa por ela, e o título continua legível. */}
                 <GanttDependencies edges={edges} range={range} scale={scale} rowCount={rows.length} />
                 {rows.map((row) => (
-                    <div key={row.task.id} data-gantt-row={row.task.id} style={{ position: 'relative', height: GANTT_ROW_HEIGHT, borderBottom: HAIRLINE, boxSizing: 'border-box' }}>
+                    <div key={row.task.id} data-gantt-row={row.task.id} style={{ position: 'relative', height: GANTT_ROW_SIZE, borderBottom: HAIRLINE, boxSizing: 'border-box' }}>
                         <GanttBar row={row} range={range} scale={scale} formats={formats} onTaskClick={onTaskClick} />
                     </div>
                 ))}

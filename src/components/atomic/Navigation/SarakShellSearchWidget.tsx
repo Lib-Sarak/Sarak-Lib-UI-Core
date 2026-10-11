@@ -79,6 +79,8 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
     return (
         <div className="hidden md:flex items-center w-64 group relative" ref={containerRef}>
             <SarakInput
+                type="search"
+                enterKeyHint="search"
                 value={query}
                 placeholder={t('shellSearchWidgetPlaceholder')}
                 onChange={(e) => {

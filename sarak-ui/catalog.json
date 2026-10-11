@@ -6199,6 +6199,7 @@
       "--sarak-topbar-label-max-width",
       "--sarak-topbar-noise-opacity",
       "--sarak-topbar-title-color",
+      "--sarak-touch-target-min",
       "--sarak-tracking-snug",
       "--sarak-tracking-subtle",
       "--sarak-tracking-tight",
@@ -6356,7 +6357,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 437,
+    "count": 438,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -8451,6 +8452,11 @@
         "responsive": false
       },
       {
+        "id": "touchTargetMin",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "trackingSnug",
         "type": "number",
         "responsive": false
@@ -8712,6 +8718,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "0b8614f0e5d8"
+    "kitHash": "c022fcba8881"
   }
 }

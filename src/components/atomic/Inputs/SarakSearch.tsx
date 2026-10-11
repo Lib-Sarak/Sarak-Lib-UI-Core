@@ -96,6 +96,8 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     >
                         <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
                         <SarakInput
+                            type="search"
+                            enterKeyHint="search"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={t('searchPlaceholder')}

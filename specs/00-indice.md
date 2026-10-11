@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🟡 Em execução | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
+| 1 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🟢 Aprovada | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
 | 2 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 

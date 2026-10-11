@@ -133,3 +133,16 @@ describe('SarakGantt', () => {
         expect(root.contains(document.querySelector('[data-gantt-list]'))).toBe(true);
     });
 });
+
+describe('SarakGantt — alvo de toque', () => {
+    it('a barra e a linha leem o alvo mínimo de toque ativo, que vale 0 com ponteiro fino', () => {
+        render(<SarakGantt tasks={TASKS} />);
+        const bar = document.querySelector<HTMLElement>('[data-gantt-bar="a"]')!;
+        expect(bar.style.height).toBe('max(60%, var(--sarak-touch-target-active, 0px))');
+        expect(bar.style.minWidth).toBe('var(--sarak-touch-target-active, 0px)');
+        const row = document.querySelector<HTMLElement>('[data-gantt-row="a"]')!;
+        expect(row.style.height).toContain('var(--sarak-touch-target-active, 0px)');
+        const listRow = document.querySelector<HTMLElement>('[data-gantt-list-row="a"]')!;
+        expect(listRow.style.height).toBe(row.style.height);
+    });
+});

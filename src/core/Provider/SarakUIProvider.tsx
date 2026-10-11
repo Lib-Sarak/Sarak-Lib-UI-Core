@@ -1,4 +1,5 @@
 import React, { ReactNode, useMemo, useState, useEffect, useContext, createContext } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { injectSarakStyles } from './injectStyles';
 import { SARAK_CSS } from './__sarakCss';
@@ -230,9 +231,11 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         (trigger_toast / open_modal / open_drawer — Spec 25) já nascem
                         montados — o consumidor não precisa (nem deve) montá-los à mão. */}
                     {shouldRenderChildren ? (
-                        <SarakToastProvider>
-                            <SarakOverlayProvider>{children}</SarakOverlayProvider>
-                        </SarakToastProvider>
+                        <MotionConfig reducedMotion={effectiveDesign?.reducedMotion === true ? 'always' : 'user'}>
+                            <SarakToastProvider>
+                                <SarakOverlayProvider>{children}</SarakOverlayProvider>
+                            </SarakToastProvider>
+                        </MotionConfig>
                     ) : null}
                 </SarakScopeRoot>
             </UIContext.Provider>

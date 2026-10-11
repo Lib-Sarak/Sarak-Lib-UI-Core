@@ -22,6 +22,13 @@ export const GANTT_STICKY_SURFACE: CSSProperties = {
 /** Altura de uma linha (lista e linha do tempo usam a mesma), derivada do token de espaçamento. */
 export const GANTT_ROW_HEIGHT = 'calc(var(--sarak-layout-gap-md, 16px) * 2.5)';
 
+/**
+ * Altura efetiva da linha: a de `GANTT_ROW_HEIGHT`, ou o alvo mínimo de toque quando ele é maior. Com ponteiro fino a
+ * variável vale `0px` e nada muda; com o dedo (`pointer: coarse`) a linha — e a barra, que a preenche — chega ao
+ * token `touchTargetMin`. As setas de dependência andam em porcentagem da área das linhas, então acompanham.
+ */
+export const GANTT_ROW_SIZE = `max(${GANTT_ROW_HEIGHT}, var(--sarak-touch-target-active, 0px))`;
+
 /** Altura do cabeçalho fixo (o "Tarefa" da lista e as datas da linha do tempo). */
 export const GANTT_HEADER_HEIGHT = 'calc(var(--sarak-layout-gap-md, 16px) * 2.5)';
 

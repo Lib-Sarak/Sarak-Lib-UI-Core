@@ -76,3 +76,12 @@ describe('SarakTimePicker — texto da lib segue o idioma', () => {
         expect(screen.getByLabelText('Minute')).toBeInTheDocument();
     });
 });
+
+describe('SarakTimePicker — campo no celular', () => {
+    it('os seletores sobem a 16px com ponteiro de dedo, para o navegador não dar zoom ao focar', () => {
+        renderTP();
+        for (const select of [screen.getByLabelText('Hora'), screen.getByLabelText('Minuto')]) {
+            expect(select.className).toContain('[@media(pointer:coarse)]:text-[length:max(16px,1em)]');
+        }
+    });
+});

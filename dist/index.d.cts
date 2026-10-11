@@ -474,6 +474,7 @@ interface SarakDesignTokens {
     topbarLabelMaxWidth: number;
     topbarNoiseOpacity: number;
     topbarTitleColor: string;
+    touchTargetMin: number;
     trackingSnug: number;
     trackingSubtle: number;
     trackingTight: number;
@@ -845,8 +846,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "3dd6c78";
-    readonly builtAt: "2026-10-10T18:53:48.666Z";
+    readonly baseCommitShort: "e49bc5d";
+    readonly builtAt: "2026-10-11T04:34:56.830Z";
 };
 
 interface SarakDesignScopeProps {
@@ -3432,6 +3433,9 @@ declare const SarakTabs: React__default.FC<SarakTabsProps>;
  * o conteúdo é renderizado num portal no `body` e posicionado em `position: fixed` a
  * partir do retângulo do gatilho. Inclui edge detection — se a posição preferida sair
  * da viewport, é espelhada (flip) e/ou deslocada para dentro.
+ *
+ * Abre por mouse (com atraso), por foco e por toque: no toque o gatilho alterna o balão na hora
+ * e um toque fora o fecha — sem isso, um gatilho que não recebe foco nunca o abriria.
  *
  * Zero Hardcode nas cores (tokens `--theme-*`).
  */

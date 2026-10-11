@@ -1,0 +1,58 @@
+/* =========================================
+   TOQUE E ENTRADA NO CELULAR — alvo mínimo e piso de fonte do campo
+   =========================================
+   Importado em `components.sarak-elements` (ver `sarak-base.css`), como `_elements.css`: o
+   padrão vale para o elemento sem classe e CEDE a qualquer classe utilitária ou estilo inline
+   que escreva a mesma propriedade. É o que permite a um componente denso declarar a própria
+   medida (ex.: o chip do calendário, que deixa o toque passar para a célula).
+
+   Tudo aqui mora dentro de `@media (pointer: coarse)`: a adaptação é por CSS, nunca por
+   detecção de aparelho em JS, e com mouse o desenho do desktop não muda.
+
+   `--sarak-touch-target-min` é o token `touchTargetMin` (schema `engineering`). Os `44px`
+   depois da vírgula só valem antes de o Design Engine hidratar ou sem Provider.
+
+   `--sarak-touch-target-active` é a ponte para o que escreve medida em estilo inline (a
+   barra do Gantt): `0px` com ponteiro fino, o token com ponteiro de dedo. Fica no escopo
+   do documento (`:root`, que a variante escopada troca pela ilha) e no do `DesignScope`,
+   que pode carregar outro valor do token. */
+
+:root,
+.sarak-design-scope {
+    --sarak-touch-target-active: 0px;
+}
+
+@media (pointer: coarse) {
+    :root,
+    .sarak-design-scope {
+        --sarak-touch-target-active: var(--sarak-touch-target-min, 44px);
+    }
+
+    /* Acionáveis: caixa tocável de pelo menos o token, nos dois eixos quando o controle é
+       um botão ou aba (um botão-ícone de 24 px passa a 44 × 44). */
+    button,
+    [role="button"],
+    [role="menuitem"],
+    [role="tab"],
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"] {
+        min-height: var(--sarak-touch-target-min, 44px);
+        min-width: var(--sarak-touch-target-min, 44px);
+    }
+
+    /* Só a altura: a largura de uma opção de lista e de um seletor é a do contêiner. */
+    [role="option"],
+    select {
+        min-height: var(--sarak-touch-target-min, 44px);
+    }
+
+    /* O Safari do iPhone dá zoom ao focar campo com fonte menor que 16 px. `1em` aqui é a
+       fonte herdada: o campo mantém a do corpo quando ela já passa de 16 px, e sobe a 16
+       quando não passa. */
+    input,
+    select,
+    textarea {
+        font-size: max(16px, 1em);
+    }
+}

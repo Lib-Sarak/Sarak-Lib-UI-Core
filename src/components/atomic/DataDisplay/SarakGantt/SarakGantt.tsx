@@ -15,7 +15,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { SarakCalendarDate } from '../SarakCalendar/calendarEvents';
 import { GanttTimeline } from './GanttTimeline';
-import { GANTT_GROUP_CLASS, GANTT_HEADER_HEIGHT, GANTT_LIST_CLASS, GANTT_ROW_HEIGHT, GANTT_SCROLL_HEIGHT, GANTT_STICKY_SURFACE } from './ganttLayout';
+import { GANTT_GROUP_CLASS, GANTT_HEADER_HEIGHT, GANTT_LIST_CLASS, GANTT_ROW_SIZE, GANTT_SCROLL_HEIGHT, GANTT_STICKY_SURFACE } from './ganttLayout';
 import { resolveGanttRange, type SarakGanttScale } from './ganttScale';
 import { normalizeGanttTasks, resolveGanttDependencies, type GanttRow, type SarakGanttTask } from './ganttTasks';
 import { useGanttFormats, type GanttFormats } from './useGanttFormats';
@@ -69,7 +69,7 @@ function GanttTaskList({ rows, formats }: { rows: GanttRow[]; formats: GanttForm
                     <li
                         key={row.task.id}
                         data-gantt-list-row={row.task.id}
-                        style={{ height: GANTT_ROW_HEIGHT, paddingInline: GAP_SM, borderBottom: HAIRLINE, boxSizing: 'border-box', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+                        style={{ height: GANTT_ROW_SIZE, paddingInline: GAP_SM, borderBottom: HAIRLINE, boxSizing: 'border-box', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
                     >
                         <span style={{ ...ellipsis, display: 'block', fontSize: CAPTION, color: 'var(--sarak-text-main, var(--color-theme-title, inherit))' }}>{row.task.title}</span>
                         {row.task.group && <span className={GANTT_GROUP_CLASS} style={{ fontSize: CAPTION, color: MUTED }}>{row.task.group}</span>}

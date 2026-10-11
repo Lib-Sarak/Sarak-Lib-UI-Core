@@ -26,10 +26,14 @@ import {
     SarakCalendar,
     SarakGantt,
     SarakCustomizationPanel,
+    SarakIconButton,
     SarakInput,
+    SarakMenuItem,
     SarakRangeSlider,
     SarakSelect,
     SarakSwitch,
+    SarakTextarea,
+    SarakTimePicker,
     SarakTitleCard,
 } from '@sarak/lib-ui-core';
 
@@ -68,6 +72,9 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `cromo-largura-limitada` / `cromo-largura-fluida`: `maxContentWidth` limita ou libera a região.
  *   - `cromo-densidade-*`: `layoutDensity` escala o respiro da região de conteúdo.
  *   - `cromo-vista-dividida`: `isSplitViewEnabled` habilita o slot `secondaryContent`.
+ *   - `toque-alvo-largo`: `touchTargetMin` = 56, para provar que o alvo de toque segue o token.
+ *   - `corpo-pequeno`: `bodySize` = 12px, o corpo de texto de 11 dos 14 temas, que o campo não pode herdar no celular.
+ *   - `movimento-reduzido`: `reducedMotion` ligado.
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -87,6 +94,9 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'atomo-frosted': { btnStyleType: 'frosted' },
     'atomo-neumorphism': { inputShadow: 'neumorphism' },
     'atomo-glass': { switchStyleType: 'glass' },
+    'toque-alvo-largo': { touchTargetMin: 56 },
+    'corpo-pequeno': { bodySize: '12px' },
+    'movimento-reduzido': { reducedMotion: true },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -174,6 +184,10 @@ const App: React.FC = () => {
  *     tarefas antes do intervalo, cruzando cada borda, dentro e depois dele, com setas para as de fora.
  *   - `calendario-tom`: o calendário com um evento de tom fora da união (`neutral`, como vem de dado solto)
  *     ao lado de um evento `primary`.
+ *   - `toque`: acionáveis e campos da lib, o calendário e o Gantt num contêiner largo — a cena em que se mede o
+ *     alvo de toque e o corpo da fonte dos campos com ponteiro de dedo.
+ *   - `toque-estreito`: o calendário e o Gantt num contêiner de 320 px (WCAG 1.4.10).
+ *   - `movimento`: um elemento com transição e outro com animação longas, para medir o movimento reduzido.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -313,7 +327,57 @@ const GanttRangeScene: React.FC = () => (
     </div>
 );
 
+const TOUCH_TASKS = GANTT_TASKS.slice(0, 6);
+
+const TouchScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="acionaveis" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'flex-start' }}>
+            <SarakButton size="xs">Botão xs</SarakButton>
+            <SarakButton size="sm" variant="secondary">Botão sm</SarakButton>
+            <SarakButton size="md" variant="ghost">Botão md</SarakButton>
+            <SarakIconButton size="xs" aria-label="Ícone xs" icon={<span aria-hidden="true">+</span>} />
+            <SarakIconButton size="sm" variant="ghost" aria-label="Ícone sm" icon={<span aria-hidden="true">+</span>} />
+            <SarakMenuItem label="Item vertical" orientation="vertical" />
+            <SarakMenuItem label="Item horizontal" orientation="horizontal" />
+            <SarakMenuItem label="Item recolhido" collapsed icon={<span aria-hidden="true">+</span>} />
+        </div>
+        <div data-probe="campos" style={{ display: 'grid', gap: '8px', width: '320px' }}>
+            <SarakInput aria-label="Campo de texto" />
+            <SarakSelect aria-label="Campo de seleção"><option>Opção</option></SarakSelect>
+            <SarakTextarea aria-label="Campo de texto longo" />
+            <SarakTimePicker label="Horário" />
+        </div>
+        <div data-probe="calendario" style={{ width: '800px' }}>
+            <SarakCalendar events={CALENDAR_EVENTS} defaultMonth={CALENDAR_MONTH} />
+        </div>
+        <div data-probe="gantt" style={{ width: '800px' }}>
+            <SarakGantt tasks={TOUCH_TASKS} scale="day" />
+        </div>
+    </div>
+);
+
+const NarrowTouchScene: React.FC = () => (
+    <div style={{ padding: 0 }}>
+        <div data-probe="calendario-320" style={{ width: '320px' }}>
+            <SarakCalendar events={CALENDAR_EVENTS} defaultMonth={CALENDAR_MONTH} />
+        </div>
+        <div data-probe="gantt-320" style={{ width: '320px' }}>
+            <SarakGantt tasks={GANTT_TASKS} scale="week" />
+        </div>
+    </div>
+);
+
+const MotionScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="transicao" style={{ transition: 'opacity 5s linear', opacity: 1 }}>Transição longa</div>
+        <div data-probe="animacao" className="animate-spin">Animação longa</div>
+    </div>
+);
+
 const SCENES: Record<string, React.FC> = {
+    toque: TouchScene,
+    'toque-estreito': NarrowTouchScene,
+    movimento: MotionScene,
     textura: TextureScene,
     'sem-provider': NoProviderScene,
     atomos: AtomsScene,

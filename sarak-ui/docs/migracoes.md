@@ -16,6 +16,24 @@ procuravam `role="button"`/`button` em um item de navegação devem procurar `ro
 `onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
 ignorar o clique.
 
+### No celular, todo acionável tem área tocável de 44 px, o campo não dá zoom, o movimento reduzido vale e a busca abre o teclado de busca
+
+**Classificação: MAJOR (sai na 8.0.0).** Com ponteiro de dedo (`pointer: coarse`) o tamanho computado de botões,
+botões-ícone, itens de menu, abas e seletores cresce, e o corpo da fonte dos campos sobe. Nenhum nome saiu do
+barril público nem mudou de tipo; muda o que o CSS publicado faz por padrão (mudar um default é MAJOR). Com mouse,
+nada muda no desenho.
+
+| Antes | Depois |
+|---|---|
+| Um botão-ícone `xs` media 24 px, o `sm` 32 px e o `SarakButton` `xs` cerca de 28 px também no celular. A barra do Gantt tinha 60% de uma linha de ~40 px. | Com `pointer: coarse`, `button`, `[role="button"]`, `[role="menuitem"]`, `[role="tab"]` e `input` de botão têm pelo menos o token **`touchTargetMin`** (44 px por padrão, faixa 24–64) de altura **e** de largura; `select` e `[role="option"]`, de altura. A linha do Gantt e a barra sobem ao mesmo valor. Mouse: tamanho de antes. **Um layout seu que contava com um botão pequeno no celular cresce; um componente seu que precise de uma caixa menor escreve `min-height`/`min-width` em estilo inline ou em classe, que vencem o padrão.** |
+| `input`, `textarea` e `select` herdavam o corpo do texto (12 ou 14 px em 11 dos 14 temas): o Safari do iPhone dava zoom ao focá-los. | Com `pointer: coarse` a fonte do campo é `max(16px, corpo herdado)`. Um campo seu com `text-sm` ou `text-xs` em classe segue vencendo o padrão — a lib mesma trocou o `text-sm` do `SarakTimePicker` por uma variante de ponteiro de dedo. |
+| O token `reducedMotion` emitia `--sarak-reduced-motion`, e nada lia a variável; nenhum CSS respondia a `prefers-reduced-motion`; o `framer-motion` ignorava a preferência. | Com o token ligado **ou** `prefers-reduced-motion: reduce`, transição e animação da lib caem a 0,01 ms (CSS) e o `SarakUIProvider` monta um `MotionConfig` (`always` com o token, `user` sem ele). **Quem tem a preferência ligada no sistema operacional passa a ver a lib sem movimento, sem mudar nada.** Spinner e skeleton param. |
+| `SarakTooltip` abria só por `mouseenter` e foco: no toque, um gatilho não focável nunca o abria. | Abre no toque, na hora; um segundo toque no gatilho ou um toque fora o fecha. Mouse e foco como antes. |
+| Os campos de busca eram `type="text"` (ou sem `type`) e abriam o teclado comum. | `SarakSearch`, a barra do `SarakShellSearchWidget`, o campo do `SarakMultiSelect` e o do `SarakAutocomplete` declaram `type="search"` e `enterKeyHint="search"`. **Um seletor de teste seu `input[type="text"]` nesses campos deixa de casar; o `role="combobox"` e o placeholder não mudaram.** No `SarakAutocomplete`, `type` e `enterKeyHint` passados vencem o padrão. |
+
+**Token novo:** `touchTargetMin` (schema `engineering`, `--sarak-touch-target-min`), em `config` do Provider ou no
+painel de Design. Não há nada a configurar para ter o comportamento novo.
+
 ### A superfície de cartão sob textura chega por âncora explícita, não por "card" no nome da classe
 
 **Classificação: MAJOR (sai na 8.0.0).** Muda o que o CSS publicado faz por padrão com o markup do consumidor e

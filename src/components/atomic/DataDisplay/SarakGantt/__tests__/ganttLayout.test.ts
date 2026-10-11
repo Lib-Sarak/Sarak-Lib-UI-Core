@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BREAKPOINT_TABLET } from '../../../../../core/Design/breakpoints';
-import { GANTT_BAR_CLASS, GANTT_GROUP_CLASS, GANTT_LIST_CLASS, GANTT_MAX_HEIGHT, GANTT_ROW_HEIGHT, GANTT_SCROLL_HEIGHT, GANTT_STICKY_SURFACE } from '../ganttLayout';
+import { GANTT_BAR_CLASS, GANTT_GROUP_CLASS, GANTT_LIST_CLASS, GANTT_MAX_HEIGHT, GANTT_ROW_HEIGHT, GANTT_ROW_SIZE, GANTT_SCROLL_HEIGHT, GANTT_STICKY_SURFACE } from '../ganttLayout';
 
 // As constantes são literais (o Tailwind lê texto); aqui a forma interpolada pega a deriva
 // caso o breakpoint de tablet mude e as classes fiquem para trás.
@@ -32,5 +32,11 @@ describe('ganttLayout', () => {
 
     it('a altura da linha deriva do token de espaçamento', () => {
         expect(GANTT_ROW_HEIGHT).toMatch(/^calc\(var\(--sarak-layout-gap-md/);
+    });
+});
+
+describe('alvo mínimo de toque da linha do Gantt', () => {
+    it('a linha é a maior entre a altura do token de espaçamento e o alvo de toque ativo', () => {
+        expect(GANTT_ROW_SIZE).toBe(`max(${GANTT_ROW_HEIGHT}, var(--sarak-touch-target-active, 0px))`);
     });
 });

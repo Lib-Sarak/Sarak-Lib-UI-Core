@@ -117,7 +117,8 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         dependência real). */}
                     <input
                         ref={inputRef}
-                        type="text"
+                        type="search"
+                        enterKeyHint="search"
                         role="combobox"
                         aria-labelledby={label ? labelId : undefined}
                         aria-expanded={open}

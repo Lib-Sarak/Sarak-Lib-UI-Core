@@ -93,6 +93,8 @@ const AutocompleteField = (props: AutocompleteFieldProps): React.ReactElement =>
         : undefined;
     return (
         <SarakInput
+            type="search"
+            enterKeyHint="search"
             {...nativeProps}
             placeholder={placeholder ?? t('fieldSearchPlaceholder')}
             value={state.query}

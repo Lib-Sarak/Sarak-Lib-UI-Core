@@ -29,6 +29,17 @@ export const EngineeringSchema: ComponentSchema = {
             cssVars: ['--sarak-reduced-motion']
         },
         {
+            id: 'touchTargetMin',
+            label: 'Alvo Mínimo de Toque',
+            type: 'slider',
+            description: 'Altura e largura mínimas, em pixels, da área tocável de todo acionável da lib (botão, botão-ícone, item de menu, aba, campo de seleção, barra do Gantt) quando o ponteiro é o dedo (`pointer: coarse`). Com mouse o desenho não muda. 44px é o alvo de toque recomendado pelo WCAG 2.5.5; 24px é o piso do WCAG 2.5.8 (AA).',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 24, max: 64 },
+            defaultValue: 44,
+            cssVars: ['--sarak-touch-target-min']
+        },
+        {
             id: 'zIndexToast',
             label: 'Camada: Notificações',
             type: 'number',

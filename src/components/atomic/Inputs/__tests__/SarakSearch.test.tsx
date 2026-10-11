@@ -132,3 +132,12 @@ describe('SarakSearch — idioma que vale', () => {
         expect(screen.getByText('Available tools')).toBeInTheDocument();
     });
 });
+
+describe('SarakSearch — teclado de busca no celular', () => {
+    it('o campo é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        renderSearch();
+        const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…');
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
+    });
+});

@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 437 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **437** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 438 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **438** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 437 |
-| `SarakDesignTokens` (tipo público) | ids | 437 |
+| `catalog/partitions/` | tokens | 438 |
+| `SarakDesignTokens` (tipo público) | ids | 438 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).

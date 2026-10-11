@@ -92,3 +92,12 @@ describe('SarakMultiSelect — textos da lib seguem o idioma', () => {
         expect(screen.getByRole('combobox', { name: 'Departments' })).toHaveAttribute('placeholder', 'Search...');
     });
 });
+
+describe('SarakMultiSelect — teclado de busca no celular', () => {
+    it('o campo de busca é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        renderMS();
+        const input = screen.getByRole('combobox', { name: 'Setores' });
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
+    });
+});

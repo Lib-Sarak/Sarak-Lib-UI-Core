@@ -12,7 +12,8 @@ vi.mock('framer-motion', () => ({
         aside: ({ children, ...props }: React.PropsWithChildren<unknown>) => <aside {...props}>{children}</aside>,
         button: ({ children, ...props }: React.PropsWithChildren<unknown>) => <button {...props}>{children}</button>
     },
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
+    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>,
+    MotionConfig: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
 }));
 
 vi.mock('../Mocks/DashboardMock', () => ({

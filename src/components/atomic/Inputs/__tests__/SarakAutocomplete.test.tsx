@@ -147,3 +147,16 @@ it('descarta a resposta antiga quando ela chega depois da busca mais nova', asyn
         expect(screen.getByRole('option', { name: 'Resultado novo' })).toBeInTheDocument();
         expect(screen.queryByRole('option', { name: 'Resultado antigo' })).not.toBeInTheDocument();
 });
+
+it('o campo é type="search" com a tecla "Buscar", e o consumidor ainda pode trocar o type', () => {
+    const { unmount } = renderAutocomplete();
+    const input = screen.getByRole('combobox', { name: 'Setor' });
+    expect(input).toHaveAttribute('type', 'search');
+    expect(input).toHaveAttribute('enterkeyhint', 'search');
+    unmount();
+
+    renderAutocomplete({ type: 'text', enterKeyHint: 'go' });
+    const custom = screen.getByRole('combobox', { name: 'Setor' });
+    expect(custom).toHaveAttribute('type', 'text');
+    expect(custom).toHaveAttribute('enterkeyhint', 'go');
+});

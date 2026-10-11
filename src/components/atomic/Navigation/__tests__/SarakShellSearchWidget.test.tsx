@@ -64,3 +64,12 @@ describe('ShellSearchWidget — idioma que vale', () => {
         expect(screen.getByRole('button', { name: /Buscar…/i })).toBeInTheDocument();
     });
 });
+
+describe('ShellSearchWidget — teclado de busca no celular', () => {
+    it('o campo da variante bar é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+        const input = screen.getByPlaceholderText('Busca inteligente…');
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
+    });
+});
