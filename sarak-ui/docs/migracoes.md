@@ -16,6 +16,22 @@ procuravam `role="button"`/`button` em um item de navegação devem procurar `ro
 `onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
 ignorar o clique.
 
+### No celular, a navegação passa para uma barra na base (até 5 destinos), e a opção `dock` sai do schema
+
+**Classificação: MAJOR (sai na 8.0.0).** Muda o que o cromo faz por padrão no celular e tira um valor do schema
+(mudar um default é MAJOR; remover valor de token é MAJOR). Nenhum nome saiu do barril público nem mudou de tipo.
+
+| Antes | Depois |
+|---|---|
+| No celular a navegação morava sempre **dentro do drawer**, atrás do hambúrguer. | O token novo **`mobileNavigationStyle`** (`auto` · `bottom` · `drawer`, padrão **`auto`**) escolhe onde ela fica. Em `auto`, um cromo com **até 5 destinos** mostra a navegação numa **barra fixa na base** (ícone e rótulo, estado ativo, `badge`, `disabled`, link de verdade, caixa tocável de pelo menos `touchTargetMin`, respiro da área segura), e **acima de 5** segue na gaveta. `bottom` e `drawer` forçam. O hambúrguer e o drawer continuam, com os widgets e os slots `sidebarHeader`/`sidebarFooter`; com a barra ativa, a navegação **sai** do drawer. Tablet e desktop não mudam. |
+| `navigationStyle` aceitava `'dock'` ("Doca Flutuante"), que nenhum cromo implementava: o valor era lido como `sidebar`. | `'dock'` saiu das opções do schema e do catálogo. Um tema ou preferência salvo com `navigationStyle: 'dock'` é **descartado na validação com o aviso de valor fora do contrato** e o cromo desenha a sidebar — o mesmo desenho de antes. |
+
+**O que fazer:** quem quer a navegação do celular na gaveta como antes define `mobileNavigationStyle: 'drawer'` em
+`config` do Provider (ou escolhe **Gaveta** em *Navegação no Celular*, na seção de configurações globais do painel de
+Design). **Um teste seu que abria o drawer para clicar num item de navegação no celular** passa a achá-lo na barra
+da base (`nav[data-sarak-bottom-nav]`, links com o mesmo nome) sem abrir o drawer, quando o cromo tem até 5 itens.
+Quem tinha `navigationStyle: 'dock'` em tema salvo não precisa fazer nada; o aviso some ao regravar o tema.
+
 ### No celular, todo acionável tem área tocável de 44 px, o campo não dá zoom, o movimento reduzido vale e a busca abre o teclado de busca
 
 **Classificação: MAJOR (sai na 8.0.0).** Com ponteiro de dedo (`pointer: coarse`) o tamanho computado de botões,

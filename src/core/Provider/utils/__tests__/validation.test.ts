@@ -22,6 +22,19 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(warnSpy).toHaveBeenCalled();
     });
 
+    it('um `navigationStyle: "dock"` salvo é descartado com aviso de valor fora do contrato (o cromo lê sidebar)', () => {
+        const result = validateDesign({ mode: 'dark', navigationStyle: 'dock' });
+        expect((result as Record<string, unknown>).navigationStyle).toBeUndefined();
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"navigationStyle" com valor fora do contrato'), 'dock');
+    });
+
+    it('`mobileNavigationStyle` aceita auto, bottom e drawer e descarta o resto', () => {
+        for (const value of ['auto', 'bottom', 'drawer']) {
+            expect((validateDesign({ mobileNavigationStyle: value }) as Record<string, unknown>).mobileNavigationStyle).toBe(value);
+        }
+        expect((validateDesign({ mobileNavigationStyle: 'dock' }) as Record<string, unknown>).mobileNavigationStyle).toBeUndefined();
+    });
+
     it('aceita uma cor segura (`color`) e descarta um payload de breakout CSS/HTML', () => {
         const safe = validateDesign({ primaryColor: '#ff0000' });
         expect(safe.primaryColor).toBe('#ff0000');

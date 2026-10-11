@@ -326,6 +326,7 @@ interface SarakDesignTokens {
     matrixRadius: number;
     matrixSearchBg: string;
     maxContentWidth: string;
+    mobileNavigationStyle: string;
     modalActionAlignment: string;
     modalBorderRadius: number | SarakResponsiveValue<number>;
     modalHeaderStyle: string;
@@ -846,8 +847,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "e49bc5d";
-    readonly builtAt: "2026-10-11T04:34:56.830Z";
+    readonly baseCommitShort: "29dfb52";
+    readonly builtAt: "2026-10-11T06:19:59.714Z";
 };
 
 interface SarakDesignScopeProps {

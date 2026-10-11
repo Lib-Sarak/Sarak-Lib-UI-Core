@@ -3,7 +3,8 @@
     "mode"
   ],
   "navigation_style": [
-    "navigationStyle"
+    "navigationStyle",
+    "mobileNavigationStyle"
   ],
   "body_size": [
     "bodySize"

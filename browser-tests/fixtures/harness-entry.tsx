@@ -75,6 +75,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `toque-alvo-largo`: `touchTargetMin` = 56, para provar que o alvo de toque segue o token.
  *   - `corpo-pequeno`: `bodySize` = 12px, o corpo de texto de 11 dos 14 temas, que o campo não pode herdar no celular.
  *   - `movimento-reduzido`: `reducedMotion` ligado.
+ *   - `navegacao-celular-base` / `navegacao-celular-gaveta`: `mobileNavigationStyle` forçado em `bottom` ou `drawer`.
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -97,6 +98,8 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'toque-alvo-largo': { touchTargetMin: 56 },
     'corpo-pequeno': { bodySize: '12px' },
     'movimento-reduzido': { reducedMotion: true },
+    'navegacao-celular-base': { mobileNavigationStyle: 'bottom' },
+    'navegacao-celular-gaveta': { mobileNavigationStyle: 'drawer' },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -188,6 +191,9 @@ const App: React.FC = () => {
  *     alvo de toque e o corpo da fonte dos campos com ponteiro de dedo.
  *   - `toque-estreito`: o calendário e o Gantt num contêiner de 320 px (WCAG 1.4.10).
  *   - `movimento`: um elemento com transição e outro com animação longas, para medir o movimento reduzido.
+ *   - `navegacao-celular`: o cromo com 4 destinos e um conteúdo mais alto que a janela, cujo último item é
+ *     `data-probe="ultimo-item"` — a cena em que se mede a barra da base no celular.
+ *   - `navegacao-celular-7`: o mesmo cromo com 7 destinos, acima do teto de 5 da barra em `auto`.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -374,7 +380,31 @@ const MotionScene: React.FC = () => (
     </div>
 );
 
+const MOBILE_NAV_ITEMS = ['Início', 'Pedidos', 'Contas', 'Ajustes', 'Relatórios', 'Equipe', 'Ajuda'].map((label, index) => ({
+    id: `destino-${index + 1}`,
+    label,
+    href: `/destino-${index + 1}`,
+    icon: 'Home',
+    active: index === 1,
+}));
+
+const MobileNavigationScene: React.FC<{ itemCount: number }> = ({ itemCount }) => (
+    <SarakAppChrome
+        navItems={MOBILE_NAV_ITEMS.slice(0, itemCount)}
+        brand={{ name: 'Harness' }}
+        widgets={{ user: false, notifications: false }}
+    >
+        <div style={{ height: '2400px' }}>Conteúdo mais alto que a janela</div>
+        <p data-probe="ultimo-item">Último item do conteúdo</p>
+    </SarakAppChrome>
+);
+
+const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
+const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
+
 const SCENES: Record<string, React.FC> = {
+    'navegacao-celular': MobileNavigationFewScene,
+    'navegacao-celular-7': MobileNavigationManyScene,
     toque: TouchScene,
     'toque-estreito': NarrowTouchScene,
     movimento: MotionScene,

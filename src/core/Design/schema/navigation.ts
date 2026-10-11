@@ -13,7 +13,7 @@ export const NavigationSchema: ComponentSchema = {
             id: 'isNavHidden',
             label: 'Ocultar Navegação',
             type: 'boolean',
-            description: 'Quando ativo, remove completamente a navegação (sidebar/topbar/dock) da tela — usado para telas de foco total (ex. apresentação, modo tela cheia de um editor).',
+            description: 'Quando ativo, remove completamente a navegação (sidebar/topbar) da tela — usado para telas de foco total (ex. apresentação, modo tela cheia de um editor).',
             defaultValue: false,
             cssVars: ['--is-nav-hidden']
         },

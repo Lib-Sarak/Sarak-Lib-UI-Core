@@ -13,6 +13,8 @@ import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeContentRegion } from './chrome/ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
+import { ChromeBottomNav } from './chrome/ChromeBottomNav';
+import { resolveMobileNavigationMode } from './chrome/mobileNavigation';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import { resolveChromeContentAlignmentClass, resolveChromeContentStyle } from './chrome/chromeStructuralStyles';
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
@@ -35,6 +37,10 @@ import { getSarakSearchItems } from './chrome/navItem';
  * **drawer** (é onde a sidebar existe aqui); `topbarStart`/`topbarEnd` compactam na barra
  * (`min-w-0`, sem empurrar o hambúrguer); `decoration` fica atrás, `aria-hidden` e sem
  * captura de foco/toque. Nada estoura a largura da tela.
+ *
+ * Onde a navegação mora (token `mobileNavigationStyle`): `bottom` a põe numa barra fixa na
+ * base (`ChromeBottomNav`) e o drawer fica só com widgets e slots de sidebar; `drawer` a mantém
+ * dentro do drawer; `auto` (default) escolhe a barra até 5 destinos e a gaveta acima disso.
  *
  * Acessibilidade: o toggle expõe `aria-expanded`/`aria-controls`/rótulo; o drawer usa
  * `useFocusTrap` (prende o Tab, fecha no ESC e devolve o foco ao toggle); selecionar um item
@@ -104,7 +110,8 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
-    const { contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const { contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar, mobileNavigationStyle } = useChromeDesignTokens();
+    const navOnBottom = resolveMobileNavigationMode(mobileNavigationStyle, nav.length) === 'bottom';
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -188,7 +195,9 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                         {/* É onde a sidebar existe no celular — segue `searchPositionSidebar`. */}
                         {searchPositionSidebar === 'top' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
-                        <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={handleSelect} orientation="vertical" className="flex-1" />
+                        {navOnBottom
+                            ? <div aria-hidden="true" className="flex-1" />
+                            : <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={handleSelect} orientation="vertical" className="flex-1" />}
                         {searchPositionSidebar === 'bottom' && <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
                         <ChromeUserThemeGroup
@@ -218,6 +227,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             >
                 {children}
             </ChromeContentRegion>
+            {navOnBottom && <ChromeBottomNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} />}
             {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}

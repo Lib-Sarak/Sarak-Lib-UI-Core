@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
 import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
@@ -138,5 +138,19 @@ describe('SarakAppChrome — vista dividida', () => {
 
         expect(content.innerHTML).toBe('<div>conteúdo principal</div>');
         expect(content.querySelector('[data-sarak-slot="secondaryContent"]')).toBeNull();
+    });
+});
+
+describe('SarakAppChrome — navigationStyle salvo como `dock` (a opção saiu do schema)', () => {
+    it('o cromo de desktop volta à sidebar', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome navItems={NAV_ITEMS}><div>x</div></SarakAppChrome>,
+            { navigationStyle: 'dock' },
+        );
+        expect(container.querySelector('aside')).not.toBeNull();
+        expect(container.querySelector('header')).toBeNull();
+        warn.mockRestore();
     });
 });

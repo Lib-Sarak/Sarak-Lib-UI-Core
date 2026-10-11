@@ -21,16 +21,30 @@ export const GlobalSchema: ComponentSchema = {
             id: 'navigationStyle',
             label: 'Estrutura de Navegação',
             type: 'select',
-            description: 'Define onde a navegação principal do sistema é renderizada: Sidebar (coluna fixa à esquerda, ideal para apps densos com muitos itens de menu), Topbar (cabeçalho horizontal, mais compacto verticalmente) ou Doca Flutuante (barra inferior estilo mobile/dock, híbrida). Muda a estrutura de layout inteira, não só cor.',
+            description: 'Define onde a navegação principal do sistema é renderizada: Sidebar (coluna fixa à esquerda, ideal para apps densos com muitos itens de menu) ou Topbar (cabeçalho horizontal, mais compacto verticalmente). Muda a estrutura de layout inteira, não só cor. No celular o cromo tem a própria escolha (Navegação no Celular).',
             constraints: {
                 options: [
                     { value: 'sidebar', label: 'Sidebar (Esquerda)' },
-                    { value: 'topbar', label: 'Topbar (Cabeçalho)' },
-                    { value: 'dock', label: 'Doca Flutuante (Híbrida)' }
+                    { value: 'topbar', label: 'Topbar (Cabeçalho)' }
                 ]
             },
             defaultValue: 'sidebar',
             cssVars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style']
+        },
+        {
+            id: 'mobileNavigationStyle',
+            label: 'Navegação no Celular',
+            type: 'select',
+            description: 'Onde a navegação fica no celular: Barra na base (ícone e rótulo na zona do polegar, sempre visível), Gaveta (atrás do hambúrguer, indicada para muitos destinos) ou Automático — barra na base quando há até 5 destinos e gaveta acima disso. Tablet e desktop não mudam.',
+            axis: 'geometry',
+            constraints: {
+                options: [
+                    { id: 'auto', value: 'auto', label: 'Automático (até 5 itens na base)' },
+                    { id: 'bottom', value: 'bottom', label: 'Barra na base' },
+                    { id: 'drawer', value: 'drawer', label: 'Gaveta' }
+                ]
+            },
+            defaultValue: 'auto'
         },
         {
             id: 'bodySize',

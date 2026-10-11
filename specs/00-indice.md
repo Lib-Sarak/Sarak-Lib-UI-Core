@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | — | 🟡 Em execução | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
+| 1 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | — | 🟢 Aprovada | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na

@@ -1,4 +1,5 @@
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from './mobileNavigation';
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
@@ -18,6 +19,7 @@ export interface ChromeDesignTokens {
     isAutoHideEnabled: boolean;
     searchPositionSidebar: ChromeSearchPositionSidebar;
     searchPositionTopbar: ChromeSearchPositionTopbar;
+    mobileNavigationStyle: ChromeMobileNavigationStyle;
 }
 
 const resolveSidebarSearchPosition = (value: unknown): ChromeSearchPositionSidebar =>
@@ -46,5 +48,6 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
         isAutoHideEnabled: design?.isAutoHideEnabled ?? false,
         searchPositionSidebar: resolveSidebarSearchPosition(design?.searchPositionSidebar),
         searchPositionTopbar: (design?.searchPositionTopbar as ChromeSearchPositionTopbar) || 'left',
+        mobileNavigationStyle: resolveMobileNavigationStyle(design?.mobileNavigationStyle),
     };
 };

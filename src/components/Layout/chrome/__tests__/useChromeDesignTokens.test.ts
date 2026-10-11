@@ -25,6 +25,7 @@ describe('useChromeDesignTokens', () => {
             isAutoHideEnabled: false,
             searchPositionSidebar: 'top',
             searchPositionTopbar: 'left',
+            mobileNavigationStyle: 'auto',
         });
     });
 
@@ -50,6 +51,7 @@ describe('useChromeDesignTokens', () => {
                 isAutoHideEnabled: true,
                 searchPositionSidebar: 'bottom',
                 searchPositionTopbar: 'right',
+                mobileNavigationStyle: 'bottom',
             }),
         });
         expect(result.current).toEqual({
@@ -63,7 +65,15 @@ describe('useChromeDesignTokens', () => {
             isAutoHideEnabled: true,
             searchPositionSidebar: 'bottom',
             searchPositionTopbar: 'right',
+            mobileNavigationStyle: 'bottom',
         });
+    });
+
+    it('mobileNavigationStyle fora da lista (inclusive o `dock` que saiu do schema) degrada para auto', () => {
+        const { result } = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ mobileNavigationStyle: 'dock' }),
+        });
+        expect(result.current.mobileNavigationStyle).toBe('auto');
     });
 
     it('valor legado "hidden" na sidebar degrada para a posição padrão "top"', () => {

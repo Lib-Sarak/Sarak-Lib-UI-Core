@@ -238,9 +238,9 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
 
 // `useSarakDevice` lê o DeviceContext; aninhar um DeviceProvider com override força o device
 // (o SarakUIProvider já monta o seu — o interno vence). SarakIcon (hambúrguer) exige o Provider.
-const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement) =>
+const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement, design: Record<string, unknown> = {}) =>
     render(
-        <SarakUIProvider config={{ mode: 'dark' }}>
+        <SarakUIProvider config={{ mode: 'dark', ...design }}>
             <SarakDeviceProvider overrideDevice={device}>{ui}</SarakDeviceProvider>
         </SarakUIProvider>,
     );
@@ -251,6 +251,7 @@ describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo
     it('CELULAR: colapsa a nav atrás de um toggle (hambúrguer) — a nav não vem aberta', () => {
         const { container } = renderAtDevice('smartphone',
             <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV}><div>conteúdo</div></SarakAppChrome>,
+            { mobileNavigationStyle: 'drawer' },
         );
         const toggle = toggleOf(container);
         expect(toggle).not.toBeNull();
@@ -264,6 +265,7 @@ describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo
     it('CELULAR: o toggle abre o drawer, é acessível (aria-expanded/controls) e mostra a nav', () => {
         const { container } = renderAtDevice('smartphone',
             <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV}><div>x</div></SarakAppChrome>,
+            { mobileNavigationStyle: 'drawer' },
         );
         const toggle = toggleOf(container)!;
         fireEvent.click(toggle);
@@ -276,12 +278,35 @@ describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo
         const onNavigate = vi.fn();
         const { container } = renderAtDevice('smartphone',
             <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>,
+            { mobileNavigationStyle: 'drawer' },
         );
         fireEvent.click(toggleOf(container)!);
         fireEvent.click(screen.getByText('Projetos'));
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
         // Fechou: o drawer some da árvore.
         expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
+    });
+
+    it('CELULAR (padrão auto, até 5 itens): a navegação nasce numa barra na base, sem abrir o drawer', () => {
+        const { container } = renderAtDevice('smartphone',
+            <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>,
+        );
+        const bar = container.querySelector('nav[data-sarak-bottom-nav]');
+        expect(bar).not.toBeNull();
+        expect(bar).toHaveTextContent('Propostas');
+        expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
+        expect(toggleOf(container)).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('TABLET e DESKTOP não ganham a barra da base, qualquer que seja o token', () => {
+        for (const device of ['tablet', 'desktop'] as const) {
+            const { container, unmount } = renderAtDevice(device,
+                <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>,
+                { mobileNavigationStyle: 'bottom' },
+            );
+            expect(container.querySelector('nav[data-sarak-bottom-nav]')).toBeNull();
+            unmount();
+        }
     });
 
     it('TABLET: cai no tier intermediário (topbar compacta) mesmo com nav sidebar — sem sidebar fixa', () => {

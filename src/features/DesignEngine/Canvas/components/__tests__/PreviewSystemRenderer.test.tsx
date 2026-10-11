@@ -117,6 +117,30 @@ describe('PreviewSystemRenderer', () => {
     });
 });
 
+describe('PreviewSystemRenderer — navegação do celular (`mobileNavigationStyle` do rascunho)', () => {
+    it('com `bottom` no rascunho, o preview em celular mostra a barra na base e o drawer sem a navegação', () => {
+        const { container } = renderPreview('smartphone', { tokens: { mobileNavigationStyle: 'bottom' } });
+
+        const bar = container.querySelector('nav[data-sarak-bottom-nav]');
+        expect(bar).not.toBeNull();
+        expect(bar?.querySelectorAll('a').length).toBeGreaterThan(5);
+        fireEvent.click(screen.getByRole('button', { name: /Abrir menu/ }));
+        expect(container.querySelector('#sarak-chrome-drawer nav')).toBeNull();
+    });
+
+    it('em `auto`, as telas de exemplo passam do teto de 5 itens e a navegação fica na gaveta', () => {
+        const { container } = renderPreview('smartphone', { tokens: { mobileNavigationStyle: 'auto' } });
+
+        expect(container.querySelector('nav[data-sarak-bottom-nav]')).toBeNull();
+    });
+
+    it('desktop não ganha a barra com `bottom`', () => {
+        const { container } = renderPreview('desktop', { tokens: { mobileNavigationStyle: 'bottom' } });
+
+        expect(container.querySelector('nav[data-sarak-bottom-nav]')).toBeNull();
+    });
+});
+
 describe('PreviewSystemRenderer — escala pela largura real do contêiner', () => {
     it('reduz a escala no contêiner estreito até o piso de 0.5', () => {
         vi.stubGlobal('ResizeObserver', ResizeObserverStub);
