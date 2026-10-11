@@ -42,20 +42,22 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-107-toque-e-entrada-no-celular](plan/plan-107-toque-e-entrada-no-celular.md) | Fazer todo atomo acionavel ter area tocavel minima com ponteiro de dedo, campo sem zoom automatico no celular, movimento reduzido de verdade, tooltip que abre no toque e busca com o teclado de busca | — | 🟢 Aprovada | specs/07-responsividade-e-multidispositivo.md + specs/10-seguranca-e-acessibilidade.md |
-| 2 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | plan-107-toque-e-entrada-no-celular | 🔴 A executar | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
+| 1 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | — | 🟡 Em execução | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Despacho de 2026-10-10 — 107, sozinha na árvore.** A 109 depende dela (usa o token de alvo de toque) e espera o
-> veredito. O `npm run build` e o `cromo-css-real:check` precisam de rede (o `build:css` baixa a CLI do Tailwind):
-> quem os roda é o revisor; o executor escreve os casos de `browser-tests/`.
+> 🚦 **Despacho de 2026-10-11 — 109, sozinha na árvore** (é a última plan aberta). O `npm run build` e o
+> `cromo-css-real:check` precisam de rede (o `build:css` baixa a CLI do Tailwind): quem os roda é o revisor; o
+> executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-107` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
 >
-> **As 107 → 109 vêm da avaliação de mobile de 2026-10-10:** a `plan-109` depende da `plan-107` (usa o token de alvo
-> de toque); a `plan-108` é independente das duas.
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **107** | [[07-responsividade-e-multidispositivo]] §5 — duas linhas novas na tabela do que adapta sozinho: todo acionável da lib com área tocável ≥ o token `touchTargetMin` com ponteiro de dedo (e a ponte `--sarak-touch-target-active` do Gantt), todo campo ≥ 16 px · [[10-seguranca-e-acessibilidade]] **§2.4e (nova)** — movimento reduzido em todo o documento (token e sistema, `MotionConfig`), tooltip por toque, teclado de busca. **Divergências corrigidas na mesma ação:** a `10` §2.4d dizia que a auditoria de contraste não existe, a lacuna 5.2 que o gate não foi construído e a 5.7 citava um teste removido. Ficou de fora: o chip do calendário em tablet e os `input` de checkbox/radio/range fora da regra do alvo (achados do executor, sem regra que os exija) |
 
 > ⚪ **As `plan-105`, `plan-106` e `plan-108` foram SINTETIZADAS e REMOVIDAS em 2026-10-10.** Destino demonstrado:
 >

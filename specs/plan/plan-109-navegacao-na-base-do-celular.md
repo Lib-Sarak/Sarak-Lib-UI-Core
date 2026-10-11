@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Levar a navegacao do celular para uma barra na base, configuravel pelo tema"
 objetivo: "Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa"
 dominio: "Cromo / Multidispositivo / Navegacao"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "cromo", "mobile", "navegacao", "token", "adr"]
 relacionados: ["[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]", "[[04-contrato-de-tokens-e-paridade]]"]
-depende_de: "plan-107-toque-e-entrada-no-celular"
+depende_de: ""
 retida_por: ""
 destino_sintese: "adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md"
 ---
@@ -59,7 +59,7 @@ segue container query ([[07-responsividade-e-multidispositivo]] §6.1).
 | Spec fixa | `arquitetura/04-contrato-de-tokens-e-paridade.md` | paridade do token novo e da opção removida |
 | Spec fixa | `specs/06-painel-de-customizacao-e-preview.md` §6.2.2 | o preview desenha o cromo real |
 | ADR | `adr/018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` | a lib não é host |
-| Plan | `specs/plan/plan-107-toque-e-entrada-no-celular.md` | o token de alvo de toque que a barra usa |
+| Spec fixa | `specs/07-responsividade-e-multidispositivo.md` §5 (linhas "Todo acionável" e "Todo campo") e `src/styles/_touch.css` | o token `touchTargetMin` e a variável `--sarak-touch-target-active` que a barra usa (vieram da `plan-107`, já sintetizada) |
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
 | **Skill** | `padrao-escrita` + `padrao-typescript` | sempre |
 | **Skill** | `ui-novo-componente` (token novo) · `ui-refatorar-componente` (opção removida) | paridade nas três fontes |
@@ -69,7 +69,7 @@ segue container query ([[07-responsividade-e-multidispositivo]] §6.1).
 # 5. Instruções de execução
 
 1. Criar `mobileNavigationStyle` com paridade completa; `auto` resolve para `bottom` quando o cromo tem **até 5 itens de navegação** e para `drawer` acima disso.
-2. Barra na base (`bottom`): fixa na base da raiz do cromo no celular; cada item com ícone **e** rótulo, estado ativo, `badge` e `disabled` como os do item de navegação; altura tocável pelo token de alvo de toque da `plan-107`; respeita a área segura (`env(safe-area-inset-bottom)`); o painel de conteúdo ganha o respiro dela e não fica coberto. Com a barra ativa, a navegação sai do drawer; o hambúrguer e o drawer continuam com os widgets e os slots de sidebar.
+2. Barra na base (`bottom`): fixa na base da raiz do cromo no celular; cada item com ícone **e** rótulo, estado ativo, `badge` e `disabled` como os do item de navegação; altura tocável pelo token `touchTargetMin` (a `--sarak-touch-target-active`, ver [[07-responsividade-e-multidispositivo]] §5); respeita a área segura (`env(safe-area-inset-bottom)`); o painel de conteúdo ganha o respiro dela e não fica coberto. Com a barra ativa, a navegação sai do drawer; o hambúrguer e o drawer continuam com os widgets e os slots de sidebar.
 3. Tirar `dock` das opções do `navigationStyle`; valor salvo `dock` continua lido como `sidebar` (como hoje), com o aviso de valor fora do contrato.
 4. O token aparece no painel na seção do `navigationStyle`, e o preview em celular mostra a barra.
 5. Testes: `auto` com 3 e com 7 itens; `bottom` e `drawer` forçados; item ativo com `aria-current`; navegação por clique e teclado; widgets e slots continuam no drawer; `dock` salvo cai em sidebar. Em `browser-tests/`, com toque emulado: a barra está na base, os itens têm caixa ≥ o token, e o último item do conteúdo fica visível acima da barra ao rolar até o fim.

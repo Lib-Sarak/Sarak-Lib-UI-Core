@@ -258,8 +258,23 @@ nem gate. O que existe é:
 **Por que a lib não pode prometer AA:** o tema é **dado do consumidor** (§[[09-temas-e-presets]]). Ele
 pode declarar texto cinza-claro sobre fundo branco, e a lib vai obedecer — obedecer ao tema é a função
 dela. Prometer AA exigiria a lib **recusar** valores do consumidor, o que contradiz o contrato de tema.
-Uma auditoria de contraste é possível (calcular a razão dos pares shippados e avisar), mas **não
-existe hoje** — §5.2.
+A auditoria existe para o que a lib entrega: o `auditor_contraste` mede os pares de texto dos temas embarcados,
+nos dois modos (**R31**, [[01-gates-e-baseline]]); o tema do consumidor fica fora dela, e o contraste não textual
+(borda de campo, partes de gráfico) ainda não é medido ([[15-divida-conhecida]] achado **59**).
+
+### e) Toque, movimento e teclado do celular
+
+A adaptação é por CSS (`pointer: coarse`, `prefers-reduced-motion`), nunca por detecção de aparelho em JS:
+
+- **Movimento reduzido:** com o token `reducedMotion` ligado **ou** `prefers-reduced-motion: reduce`, transições e
+  animações caem a 0,01 ms em **todo** o documento (`src/styles/_motion.css`, camada `sarak-lib`, `!important`) — o
+  alcance é o do contrato do token, "em toda a aplicação", e inclui o markup do host; o `framer-motion` segue o
+  mesmo pelo `MotionConfig` do `SarakUIProvider`. Spinners e esqueletos param de girar.
+- **Tooltip** abre e fecha por toque (e um toque fora o fecha); mouse e foco continuam como antes.
+- **Busca** declara `type="search"` e `enterKeyHint="search"` (`SarakSearch`, a barra do cromo, o campo do
+  `SarakMultiSelect` e do `SarakAutocomplete`): o teclado do celular mostra "Buscar".
+
+Alvo de toque e piso de fonte do campo estão na tabela de [[07-responsividade-e-multidispositivo]] §5.
 
 # 3. O que o HOST deve prover — a fronteira, explicitamente
 
@@ -376,12 +391,12 @@ lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida
 | # | Lacuna | Consequência | Onde |
 | --- | --- | --- | --- |
 | **5.1** | **Nenhum gate de a11y.** Não há `axe`, nem teste de árvore de acessibilidade agregada. A cobertura é a dos testes por componente | uma regressão de ARIA/foco passa se o teste daquele componente não a cobrir | — |
-| **5.2** | ⚠️ **Contraste medido, gate ainda não construído** (§2.4d) — `plan-12` mediu **12 dos 18 temas falham** em pelo menos 1 dos 4 pares canônicos, inclusive `minimalist-airy` (um dos `SARAK_REFERENCE_THEMES`). Regra escrita (**R31**) | gate depende de decisão do dono sobre fronteira de pares/limiar | script de medição fora do repo, anexo da `plan-12`; achado 18 em [[15-divida-conhecida]] §4.1 |
+| **5.2** | ⚠️ **Contraste de texto medido por gate; o não textual, não** (§2.4d) — o `auditor_contraste` (`run_audit`) mede os pares de texto dos temas embarcados nos dois modos (**R31**); borda de campo e partes de gráfico (WCAG 1.4.11) ficam fora | um tema embarcado com borda de campo quase invisível passa verde | `gates/scripts/audit/verify_contrast.ts`; achados 18 e **59** em [[15-divida-conhecida]] §4.1 |
 | **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
 | **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
 | **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:92` |
-| **5.7** | **E2E de isolamento não roda em automação** — `EmbeddedNoLeak.spec.tsx` exige build e execução manual | a garantia mais difícil de manter (não-vazamento) é a menos exercitada | [[01-gates-e-baseline]] §2.6 |
+| **5.7** | **O não-vazamento do modo embarcado não é medido em CSS renderizado** — o teste de navegador que o cobria saiu com o aparato de component test (achado **45**); a medição que existe (`browser-tests/`) não tem caso de modo embarcado | a garantia mais difícil de manter (não-vazamento) é provada só por estrutura (R24 ⚠️) | [[01-gates-e-baseline]] §2.6 · [[15-divida-conhecida]] §4.1 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas
 que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dado do consumidor.

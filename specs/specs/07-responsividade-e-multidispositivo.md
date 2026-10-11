@@ -148,6 +148,8 @@ Cada linha foi **conferida no código**, e cada uma tem teste identificado.
 | **`SarakDataTable`** | **celular:** colapsa para `SarakDataCards`; **opt-out explícito** `responsive={false}` | `SarakDataTableImpl.tsx:41-42,71,74,77` | `SarakDataTableImpl.test.tsx`, `SarakDataCards.test.tsx` |
 | **`SarakTable`** | **celular:** colapsa para `SarakTableCards`; **opt-out explícito** `responsive={false}` *(desde 2026-08-04)* | `SarakTable.tsx:32-37,44,46,116` | `SarakTable.responsive.test.tsx`, `SarakTableCards.test.tsx` |
 | **`SarakHidden`** | remove da árvore nos dispositivos listados | `SarakHidden.tsx:17-24` | `SarakHidden.test.tsx` |
+| **Todo acionável da lib** (botão, botão-ícone, item de menu e de aba, opção, seletor, barra do Gantt) | **ponteiro de dedo** (`pointer: coarse`): área tocável de pelo menos o token `touchTargetMin` (44 px por padrão), pelo `min-height`/`min-width` do elemento — na subcamada que cede à classe e ao estilo inline; a linha e a barra do Gantt usam `max(medida, --sarak-touch-target-active)`. **Mouse:** o tamanho de antes | `src/styles/_touch.css`, `SarakGantt/ganttLayout.ts` | `browser-tests/toque-no-celular.spec.ts`, `styles/__tests__/toqueEMovimento.test.ts` |
+| **Todo campo da lib** (`input`, `select`, `textarea`) | **ponteiro de dedo:** fonte de pelo menos 16 px (`max(16px, 1em)`) — o navegador do iPhone não dá zoom ao focar; o `SarakTimePicker`, que declara a fonte por classe, tem a variante própria | `src/styles/_touch.css`, `Inputs/SarakTimePicker.tsx` | `browser-tests/toque-no-celular.spec.ts` |
 
 ✅ **A assimetria fechou em 2026-08-04 (`plan-08`, F6).** `SarakTable` ganhou `responsive?: boolean` com
 default `true`, espelhando `SarakDataTableImpl` — mesma prop, mesmo default, mesmo efeito. Mudança aditiva
