@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Layout / Cromo"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "cromo", "slots", "layout", "extensibilidade", "app-chrome", "navegacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[02-design-engine]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[02-design-engine]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[005-modelo-modulos-plugin-e-apps-separados]]", "[[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]", "[[015-metrica-do-item-de-navegacao-horizontal]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[021-navegacao-na-base-do-celular]]"]
 ---
 
 # 1. O que ele é
@@ -207,7 +207,7 @@ Existe **um** seletor de idioma na lib, o `SarakShellLanguageSelector`. Trocar o
 | --- | --- |
 | **sidebar** (sem barra superior) | `topbarStart` → topo da sidebar; `topbarEnd` → **rodapé** da sidebar (`ChromeSidebarBody.tsx`) |
 | **topbar** | todos na barra superior, como declarados |
-| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand`; busca, tema, usuário e notificações default vão **para o drawer** e o colapso é o próprio hambúrguer do drawer — selecionar um resultado da busca navega e fecha o drawer |
+| **celular** (`SarakAppChromeMobile`) | `sidebarHeader`/`sidebarFooter` → **dentro do drawer** (é onde a sidebar existe ali, `SarakAppChromeMobile.tsx`); `topbarStart`/`topbarEnd` compactam na barra (`min-w-0`, sem empurrar o hambúrguer); `banner`/`footer` seguem faixas; `logo` viaja dentro do nó `brand`; busca, tema, usuário e notificações default vão **para o drawer** e o colapso é o próprio hambúrguer do drawer — selecionar um resultado da busca navega e fecha o drawer. **A navegação** segue o token `mobileNavigationStyle` (padrão `auto`): com até 5 itens (ou `bottom`), numa **barra fixa na base** — ícone e rótulo, área tocável do `touchTargetMin`, área segura, irmã do painel de conteúdo (nunca o cobre; o `footer` fica abaixo dela) — e fora do drawer; acima de 5 itens (ou `drawer`), dentro do drawer ([[021-navegacao-na-base-do-celular]]) |
 
 **Nenhum slot nem widget é descartado em nenhum modo.** É por isso que o consumidor pode declarar todos e confiar —
 sem escrever media query nem condicional por dispositivo.

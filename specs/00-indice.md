@@ -42,16 +42,20 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-109-navegacao-na-base-do-celular](plan/plan-109-navegacao-na-base-do-celular.md) | Fazer o cromo no celular mostrar a navegacao numa barra fixa na base quando ha ate cinco destinos, com a escolha auto, base ou gaveta configuravel no painel, e tirar do navigationStyle a opcao dock que nenhum cromo implementa | — | 🟢 Aprovada | adr/021-navegacao-na-base-do-celular.md + specs/05-cromo-e-slots.md + specs/07-responsividade-e-multidispositivo.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Despacho de 2026-10-11 — 109, sozinha na árvore** (é a última plan aberta). O `npm run build` e o
-> `cromo-css-real:check` precisam de rede (o `build:css` baixa a CLI do Tailwind): quem os roda é o revisor; o
-> executor escreve os casos de `browser-tests/`.
+> ✅ **A fila zerou em 2026-10-11.** As plans 104 a 109 foram executadas, aprovadas, sintetizadas e removidas; o
+> repositório está pronto para o merge na `main` e a tag 8.0.0.
+
+> ⚪ **A `plan-109` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **109** | 🆕 [[021-navegacao-na-base-do-celular]] — barra na base × gaveta, com as alternativas e o custo de cada · [[05-cromo-e-slots]] §2.3 (a navegação do celular pelo `mobileNavigationStyle`: barra na base até 5 itens, irmã do conteúdo, área segura e alvo de toque; drawer acima) · [[07-responsividade-e-multidispositivo]] §5 (linha do `SarakAppChrome`) · `adr/README.md`. O `dock` saiu do schema e do catálogo. Ficou de fora: o escopo do `chrome-token-parity`, que não varre `global.ts` (`00-backlog` item 22), e o comentário do `SarakShellNav` que cita `dock` (item 31) |
 
 > ⚪ **A `plan-107` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
 >
