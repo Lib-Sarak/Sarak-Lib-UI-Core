@@ -5501,9 +5501,6 @@
       "--sarak-body-weight",
       "--sarak-border-beam-enabled",
       "--sarak-border-radius",
-      "--sarak-border-radius-lg",
-      "--sarak-border-radius-md",
-      "--sarak-border-radius-sm",
       "--sarak-border-style",
       "--sarak-border-type",
       "--sarak-border-width",
@@ -5723,7 +5720,6 @@
       "--sarak-color-bg-layer2",
       "--sarak-color-bg-modal",
       "--sarak-color-depth",
-      "--sarak-color-palette",
       "--sarak-color-primary",
       "--sarak-color-primary-10",
       "--sarak-color-primary-20",
@@ -5764,7 +5760,6 @@
       "--sarak-content-alignment",
       "--sarak-context-menu-min-width",
       "--sarak-contrast",
-      "--sarak-contrast-curve",
       "--sarak-control-height-toggle",
       "--sarak-design-engine-sidebar-max-w",
       "--sarak-design-engine-sidebar-max-width",
@@ -6014,9 +6009,6 @@
       "--sarak-scroll-thumb-opacity",
       "--sarak-scroll-track-opacity",
       "--sarak-scroll-width",
-      "--sarak-scrollbar-thumb",
-      "--sarak-scrollbar-thumb-color",
-      "--sarak-scrollbar-width",
       "--sarak-search-backdrop-blur",
       "--sarak-search-dropdown-gap",
       "--sarak-search-dropdown-width",
@@ -6180,6 +6172,17 @@
       "--sarak-text-smoothing",
       "--sarak-texture",
       "--sarak-texture-color",
+      "--sarak-texture-color-10",
+      "--sarak-texture-color-20",
+      "--sarak-texture-color-30",
+      "--sarak-texture-color-40",
+      "--sarak-texture-color-50",
+      "--sarak-texture-color-active",
+      "--sarak-texture-color-bg",
+      "--sarak-texture-color-border",
+      "--sarak-texture-color-hover",
+      "--sarak-texture-color-light",
+      "--sarak-texture-color-rgb",
       "--sarak-texture-opacity",
       "--sarak-theme-dropdown-max-height",
       "--sarak-title-color",
@@ -6359,12 +6362,9 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 441,
+    "count": 434,
     "responsiveCapable": [
       "borderRadius",
-      "borderRadiusLg",
-      "borderRadiusMd",
-      "borderRadiusSm",
       "btnBorderRadius",
       "btnRadiusBL",
       "btnRadiusBR",
@@ -6390,7 +6390,6 @@
       "layoutGapSm",
       "layoutPadding",
       "modalBorderRadius",
-      "scrollbarWidth",
       "scrollPadding",
       "scrollRadius",
       "scrollWidth",
@@ -6520,21 +6519,6 @@
       },
       {
         "id": "borderRadius",
-        "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
-      },
-      {
-        "id": "borderRadiusLg",
-        "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
-      },
-      {
-        "id": "borderRadiusMd",
-        "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
-      },
-      {
-        "id": "borderRadiusSm",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true
       },
@@ -7089,11 +7073,6 @@
         "responsive": false
       },
       {
-        "id": "colorPalette",
-        "type": "string",
-        "responsive": false
-      },
-      {
         "id": "colorVariation",
         "type": "number",
         "responsive": false
@@ -7105,11 +7084,6 @@
       },
       {
         "id": "contextMenuMinWidth",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "contrastCurve",
         "type": "number",
         "responsive": false
       },
@@ -8014,16 +7988,6 @@
         "responsive": false
       },
       {
-        "id": "scrollbarThumbColor",
-        "type": "string",
-        "responsive": false
-      },
-      {
-        "id": "scrollbarWidth",
-        "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
-      },
-      {
         "id": "scrollPadding",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true
@@ -8735,6 +8699,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "6c2805546ea5"
+    "kitHash": "a5b46fbbb0e4"
   }
 }

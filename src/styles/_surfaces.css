@@ -17,9 +17,11 @@
    Só `backdrop-filter`, sem a forma `-webkit-` ao lado: o build funde as duas num único
    `-webkit-backdrop-filter` e a propriedade sem prefixo — a que o navegador computa — some. */
 
-/* Vidro fosco: translúcido, com desfoque forte e saturação. */
+/* Vidro fosco: translúcido, com desfoque forte e saturação. O desfoque parte do que o tema
+   pediu em `cardBackdropBlur` (12px por padrão) e a intensidade do material soma até +24px:
+   no padrão (12px, 0,5) dá os mesmos 24px de antes, e o token deixa de ser sobrescrito. */
 [data-sx-surface-material="frosted"] :is(.sarak-card, .bg-theme-card) {
-    backdrop-filter: blur(calc(8px + var(--surface-intensity, 0.5) * 32px)) saturate(160%) !important;
+    backdrop-filter: blur(calc(var(--sarak-card-blur, 12px) + var(--surface-intensity, 0.5) * 24px)) saturate(160%) !important;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.18 + var(--glass-opacity, 0.1) * 0.4)), rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.04))) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.3)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
@@ -45,34 +47,55 @@
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.16)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
 
-/* 3.2 NEO-BORDERS (v6.0) */
-[data-border="inlet"] .bg-theme-card, [data-border="inlet"] .sarak-shell-sidebar, [data-border="inlet"] .sarak-shell-header {
-    box-shadow: inset 0 4px 15px rgba(0,0,0,0.6), 0 1px 1px rgba(255,255,255,0.05) !important; border-color: rgba(0,0,0,0.4) !important;
+/* 3.2 MOLDURA — leitor de `borderType` (`data-sx-border-type`).
+   Age nas superfícies principais (cartões, painéis, barra lateral e cabeçalho do cromo) e
+   desenha só o contorno: cor, raio e geometria continuam do tema. `!important` pelo mesmo
+   motivo dos materiais acima — `[data-sx-texture] .sarak-card` escreve estilo, cor e largura
+   da borda com `!important`; a regra daqui tem a mesma especificidade e vem depois.
+   A sombra do cartão é recomposta (`--sarak-card-shadow-full`) para o contorno não a apagar. */
+[data-sx-border-type="solid"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+    border-style: solid !important;
 }
-[data-border="neon"] .bg-theme-card, [data-border="neon"] .sarak-shell-sidebar, [data-border="neon"] .sarak-shell-header {
-    border-color: var(--theme-texture-color, var(--theme-primary)) !important;
-    box-shadow: 0 0 25px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.4), inset 0 0 10px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.15) !important;
+/* Tech segmentado: traço interrompido na cor de textura, com um filete interno. */
+[data-sx-border-type="cyber"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+    border-style: dashed !important;
+    border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 70%, transparent) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 18%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
 }
-[data-border="beveled"] .bg-theme-card, [data-border="beveled"] .sarak-shell-sidebar, [data-border="beveled"] .sarak-shell-header {
-    border-top: 1px solid rgba(255,255,255,0.25) !important; border-left: 1px solid rgba(255,255,255,0.2) !important; border-bottom: 3px solid rgba(0,0,0,0.6) !important; border-right: 3px solid rgba(0,0,0,0.5) !important;
+/* Dupla linha: `double` só aparece a partir de 3px de espessura. */
+[data-sx-border-type="double"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+    border-style: double !important;
+    border-width: max(3px, var(--theme-border-width, 3px)) !important;
+}
+/* Neon: contorno e halo na cor de textura. */
+[data-sx-border-type="glow"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+    border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 50%, transparent) !important;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 20%, transparent), inset 0 0 5px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 10%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
+}
+/* Sem moldura: o contorno some, mas a caixa mantém a espessura (nada se desloca). */
+[data-sx-border-type="none"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+    border-color: transparent !important;
 }
 
-/* 9. NEO-BORDERS (v6.8) */
-[data-border="neon"] .sarak-card, [data-border="neon"] .border-theme {
-    border-color: rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.5) !important; box-shadow: 0 0 10px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2), inset 0 0 5px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1);
+/* 10. DIREÇÃO DA SOMBRA — leitor de `shadowOrientation` (`data-sx-shadow-orientation`).
+   Cada opção só fixa um vetor (`--sarak-shadow-dir-x/y`, de -1 a 1); quem o consome é a
+   sombra do cartão (`_cards.css`) e a sombra em camadas `--sarak-dynamic-shadow`
+   (`_theme.css`), que `--dynamic-shadow` espelha. Sem o atributo vale `bottom`.
+   `dynamic` segue a luz — o oposto do ponteiro, que o `DesignInjector` publica em
+   `--sarak-light-x/y` enquanto esta opção está ativa; sem ponteiro, cai em `bottom`. */
+[data-sx-shadow-orientation="bottom"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: 1; }
+[data-sx-shadow-orientation="center"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: 0; }
+[data-sx-shadow-orientation="top"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: -1; }
+[data-sx-shadow-orientation="bottom-right"] { --sarak-shadow-dir-x: 1; --sarak-shadow-dir-y: 1; }
+[data-sx-shadow-orientation="dynamic"] {
+    --sarak-shadow-dir-x: var(--sarak-light-x);
+    --sarak-shadow-dir-y: var(--sarak-light-y);
 }
-[data-border="inlet"] .sarak-card {
-    border: 1px solid rgba(0,0,0,0.3) !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.05);
-}
-[data-border="beveled"] .sarak-card {
-    border: 1px solid rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.3) !important; border-bottom: 2px solid rgba(0,0,0,0.4) !important; border-right: 2px solid rgba(0,0,0,0.4) !important;
-}
-
-/* 10. LIGHTING & DEPTH MOTOR (v6.0) */
-[data-shadow-orientation="top-down"] { --dynamic-shadow: 0 10px 30px -10px rgba(0,0,0,var(--shadow-intensity, 0.5)); }
-[data-shadow-orientation="isometric"] { --dynamic-shadow: 10px 10px 20px -5px rgba(0,0,0,var(--shadow-intensity, 0.5)); }
-[data-shadow-orientation="inner"] .sarak-card, [data-shadow-orientation="inner"] .bg-theme-card {
-    box-shadow: inset 0 2px 10px rgba(0,0,0,calc(var(--shadow-intensity) * 0.5)) !important;
+/* Luz parada em cima, como em `bottom`; o `DesignInjector` a escreve inline no `html` quando a opção
+   `dynamic` está ativa. Fica só em `:root` — em `body` ela sombrearia o valor inline herdado. */
+:root {
+    --sarak-light-x: 0;
+    --sarak-light-y: 1;
 }
 
 /* 11. COR DA SOMBRA — leitor de `shadowColorMode` (`data-sx-shadow-color-mode`).

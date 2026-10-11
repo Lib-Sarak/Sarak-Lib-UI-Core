@@ -121,6 +121,46 @@ describe('DesignInjector', () => {
         island.remove();
     });
 
+    describe('shadowOrientation: dynamic — a luz segue o ponteiro', () => {
+        const moveMouse = (clientX: number, clientY: number) => {
+            const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => { cb(0); return 1; });
+            window.dispatchEvent(new MouseEvent('mousemove', { clientX, clientY }));
+            raf.mockRestore();
+        };
+        const mountWith = (orientation: string) => {
+            (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+                variables: {},
+                attributes: { 'data-sx-shadow-orientation': orientation },
+                responsiveCSS: null,
+            });
+            return render(<DesignInjector design={{ mode: 'dark' }} isDrafting={false} />);
+        };
+
+        it('com a opção ativa publica --sarak-light-x/y, de -1 a 1, oposta ao ponteiro', () => {
+            const view = mountWith('dynamic');
+
+            moveMouse(0, window.innerHeight); // canto inferior esquerdo: luz vem de lá, sombra cai para cima e para a direita
+            expect(document.documentElement.style.getPropertyValue('--sarak-light-x')).toBe('1');
+            expect(document.documentElement.style.getPropertyValue('--sarak-light-y')).toBe('-1');
+
+            moveMouse(window.innerWidth / 2, window.innerHeight / 2);
+            expect(Number(document.documentElement.style.getPropertyValue('--sarak-light-x'))).toBeCloseTo(0);
+            expect(Number(document.documentElement.style.getPropertyValue('--sarak-light-y'))).toBeCloseTo(0);
+            view.unmount();
+        });
+
+        it('com qualquer outra opção NÃO escreve a luz (a variável herda pela árvore toda)', () => {
+            const view = mountWith('bottom');
+
+            moveMouse(100, 100);
+
+            expect(document.documentElement.style.getPropertyValue('--mouse-x')).not.toBe('');
+            expect(document.documentElement.style.getPropertyValue('--sarak-light-x')).toBe('');
+            expect(document.documentElement.style.getPropertyValue('--sarak-light-y')).toBe('');
+            view.unmount();
+        });
+    });
+
     it('não injeta nada se design não for fornecido', () => {
         (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
             variables: {},

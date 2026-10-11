@@ -1,38 +1,5 @@
 [
   {
-    "tokenId": "colorPalette",
-    "name": "Paleta Ativa (Preset)",
-    "description": "Define qual esquema global de cores está em uso (ex: default, neon, matrix).",
-    "type": "select",
-    "importance": 95,
-    "categories": [
-      "colors-and-atmosphere",
-      "temas",
-      "cores"
-    ],
-    "tags": [
-      "palette",
-      "preset",
-      "global"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "default",
-      "neon",
-      "matrix",
-      "slate",
-      "sunset"
-    ],
-    "relatedTokens": [
-      "primaryColor"
-    ]
-  },
-  {
     "tokenId": "primaryColor",
     "visualImpact": "cores",
     "name": "Cor Primária (Base)",
@@ -62,8 +29,7 @@
     ],
     "allowedValues": null,
     "relatedTokens": [
-      "secondaryColor",
-      "colorPalette"
+      "secondaryColor"
     ]
   },
   {
@@ -832,9 +798,7 @@
       "cyber",
       "tactical"
     ],
-    "relatedTokens": [
-      "colorPalette"
-    ]
+    "relatedTokens": []
   },
   {
     "tokenId": "texture",
@@ -1619,39 +1583,6 @@
     },
     "relatedTokens": [
       "globalSaturation"
-    ]
-  },
-  {
-    "tokenId": "contrastCurve",
-    "name": "Curva de Contraste",
-    "description": "Maneira que os tons médios são processados (linear, dramático s-curve, suave).",
-    "type": "select",
-    "importance": 75,
-    "categories": [
-      "cores",
-      "ajuste",
-      "colors-and-atmosphere"
-    ],
-    "tags": [
-      "contrast",
-      "curve",
-      "post-process"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-contrast-curve"
-    ],
-    "allowedValues": [
-      "linear",
-      "s-curve",
-      "flat"
-    ],
-    "relatedTokens": [
-      "globalContrast"
     ]
   },
   {

@@ -30,6 +30,7 @@ import {
     SarakInput,
     SarakMenuItem,
     SarakRangeSlider,
+    SarakSearch,
     SarakSelect,
     SarakSwitch,
     SarakTextarea,
@@ -84,6 +85,11 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `tom-neutro` / `tom-cyber` / `tom-tatico`: `systemTone`.
  *   - `tema-claro`: modo claro com fundo e cartão brancos e cor de textura escura.
  *   - `atomo-switch-assimetrico` / `atomo-switch-pulso`: `switchStyleType` (o vidro é `atomo-glass`).
+ *   - `moldura-<solid|cyber|double|glow|none>`: `borderType`, sobre uma cor de textura escura distinta da primária.
+ *   - `orientacao-<bottom|center|top|diagonal|dinamica>`: `shadowOrientation` (diagonal = `bottom-right`).
+ *   - `camadas-zero` / `camadas-dobro`: `layeredShadows` 0 e 2 (o padrão é 1).
+ *   - `vidro-cartao` / `vidro-cartao-fosco`: `cardBackdropBlur` = 24 (o padrão é 12), sob o material `sleek` e sob o `frosted` padrão.
+ *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -121,6 +127,23 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'tom-neutro': { systemTone: 'none' },
     'tom-cyber': { systemTone: 'cyber' },
     'tom-tatico': { systemTone: 'tactical' },
+    'moldura-solid': { borderType: 'solid', textureColor: '#1f2937' },
+    'moldura-cyber': { borderType: 'cyber', textureColor: '#1f2937' },
+    'moldura-double': { borderType: 'double', textureColor: '#1f2937' },
+    'moldura-glow': { borderType: 'glow', textureColor: '#1f2937' },
+    'moldura-none': { borderType: 'none', textureColor: '#1f2937' },
+    'orientacao-bottom': { shadowOrientation: 'bottom' },
+    'orientacao-center': { shadowOrientation: 'center' },
+    'orientacao-top': { shadowOrientation: 'top' },
+    'orientacao-diagonal': { shadowOrientation: 'bottom-right' },
+    'orientacao-dinamica': { shadowOrientation: 'dynamic' },
+    'camadas-zero': { layeredShadows: 0 },
+    'camadas-dobro': { layeredShadows: 2 },
+    'vidro-cartao': { cardBackdropBlur: 24, surfaceMaterial: 'sleek' },
+    'vidro-cartao-fosco': { cardBackdropBlur: 24 },
+    'cor-profunda': { primaryColor: '#808040', colorDepth: 3 },
+    'cor-variada': { primaryColor: '#808040', colorVariation: 5 },
+    'cor-base': { primaryColor: '#808040' },
     'tema-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textureColor: '#1f2937' },
     'toque-alvo-largo': { touchTargetMin: 56 },
     'corpo-pequeno': { bodySize: '12px' },
@@ -224,6 +247,9 @@ const App: React.FC = () => {
  *   - `alternadores`: dois `SarakSwitch`, um desligado e um ligado — a cena em que se mede o estilo do alternador.
  *   - `texturas-claras`: um cartão por textura de cartão que desenhava em branco fixo, cada um sob o atributo
  *     `data-sx-card-texture-type` da própria textura — a cena em que se mede a cor delas em superfície clara.
+ *   - `texturas-cor`: uma textura por família de leitor da cor de textura (gradiente, máscara de SVG, tecido) e um
+ *     elemento `glow-reveal` (a animação que lê a mesma cor).
+ *   - `busca`: a paleta `SarakSearch` aberta, cujo painel lê `--dynamic-shadow`.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -448,6 +474,29 @@ const LightTexturesScene: React.FC = () => (
     </div>
 );
 
+const COLORED_TEXTURES = ['stripes', 'waves', 'carbon'] as const;
+
+/** Uma textura por família de leitor (gradiente, máscara de SVG, tecido) e o `glow-reveal` das animações. */
+const TextureColorScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        {COLORED_TEXTURES.map((texture) => (
+            <div key={texture} data-probe={`textura-${texture}`} data-sx-card-texture-type={texture}>
+                <SarakTitleCard item={{ nome: texture }} mapping={SCENE_MAPPING} />
+            </div>
+        ))}
+        <div data-probe="brilho-animado" className="glow-reveal" style={{ width: '40px', height: '40px' }} />
+    </div>
+);
+
+const NOOP = (): void => undefined;
+
+/** A paleta de busca aberta: o painel dela lê `--dynamic-shadow`. */
+const SearchScene: React.FC = () => (
+    <div data-probe="busca">
+        <SarakSearch isOpen onClose={NOOP} items={[{ id: 'inicio', label: 'Início' }]} />
+    </div>
+);
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -469,6 +518,8 @@ const SCENES: Record<string, React.FC> = {
     'calendario-tom': CalendarToneScene,
     alternadores: SwitchesScene,
     'texturas-claras': LightTexturesScene,
+    'texturas-cor': TextureColorScene,
+    busca: SearchScene,
 };
 
 function renderScene(Scene: React.FC): React.ReactElement {

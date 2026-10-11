@@ -88,9 +88,6 @@ interface SarakDesignTokens {
     bodyWeight: string;
     borderBeamEnabled: boolean;
     borderRadius: number | SarakResponsiveValue<number>;
-    borderRadiusLg: number | SarakResponsiveValue<number>;
-    borderRadiusMd: number | SarakResponsiveValue<number>;
-    borderRadiusSm: number | SarakResponsiveValue<number>;
     borderStyle: string;
     borderType: string;
     borderWidth: number;
@@ -201,11 +198,9 @@ interface SarakDesignTokens {
     colorBgLayer2: string;
     colorBgModal: string;
     colorDepth: number;
-    colorPalette: string;
     colorVariation: number;
     contentAlignment: string;
     contextMenuMinWidth: number;
-    contrastCurve: number;
     controlHeightToggle: number;
     designEngineSidebarMaxWidth: number;
     designEngineSidebarMinWidth: number;
@@ -386,8 +381,6 @@ interface SarakDesignTokens {
     progressBarRadius: number;
     rangeActiveColor: string;
     reducedMotion: boolean;
-    scrollbarThumbColor: string;
-    scrollbarWidth: number | SarakResponsiveValue<number>;
     scrollPadding: number | SarakResponsiveValue<number>;
     scrollRadius: number | SarakResponsiveValue<number>;
     scrollThumbColor: string;
@@ -801,8 +794,11 @@ interface SarakUIContextType {
 /**
  * SOVEREIGN DESIGN MANIFEST (v10.1)
  *
- * O Manifesto é a única fonte de verdade para como os tokens de design
- * são mapeados para variáveis CSS, Atributos de DOM e Classes.
+ * Lista de chaves aceitas fora do schema (`ALLOWED_EXTRA_KEYS`) e o export público das
+ * variáveis/transformações. NÃO é o emissor: quem escreve variável (`--sarak-<kebab>` e as
+ * `cssVars` do schema) e atributo (`data-sx-<kebab>`) de TODO token é `useDesignVariables.ts`,
+ * a partir do schema. O `attr` e o `vars` daqui nunca alimentaram CSS real — por isso o
+ * `token-reader:check` lê o schema inteiro, e usa este arquivo só para o `classPrefix`.
  */
 declare const SARAK_DESIGN_MANIFEST: Record<string, {
     vars?: string[];
@@ -849,8 +845,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "393743e";
-    readonly builtAt: "2026-10-11T18:02:09.312Z";
+    readonly baseCommitShort: "a72e0bc";
+    readonly builtAt: "2026-10-11T20:29:04.450Z";
 };
 
 interface SarakDesignScopeProps {

@@ -167,8 +167,11 @@
 .sarak-card[data-sx-card-texture-type="waves"]::after,
 [data-sx-card-texture-type="waves"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="waves"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10' fill='none' stroke='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.3)' stroke-width='1'/%3E%3C/svg%3E");
-    background-size: 200px 40px;
+    background-color: var(--theme-texture-color, var(--theme-primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
+    -webkit-mask-size: 200px 40px;
+    mask-size: 200px 40px;
 }
 
 .texture-squares::before,
@@ -200,8 +203,11 @@
 .sarak-card[data-sx-card-texture-type="topo"]::after,
 [data-sx-card-texture-type="topo"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="topo"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50' fill='none' stroke='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2)' stroke-width='0.5'/%3E%3C/svg%3E");
-    background-size: 300px 300px;
+    background-color: var(--theme-texture-color, var(--theme-primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='0.5'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='0.5'/%3E%3C/svg%3E");
+    -webkit-mask-size: 300px 300px;
+    mask-size: 300px 300px;
 }
 
 .texture-diamond::before,
@@ -210,8 +216,11 @@
 .sarak-card[data-sx-card-texture-type="diamond"]::after,
 [data-sx-card-texture-type="diamond"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="diamond"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2)' stroke-width='1'/%3E%3C/svg%3E");
-    background-size: 40px 40px;
+    background-color: var(--theme-texture-color, var(--theme-primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='1'/%3E%3C/svg%3E");
+    -webkit-mask-size: 40px 40px;
+    mask-size: 40px 40px;
 }
 
 .texture-prestige::before,
@@ -220,7 +229,9 @@
 .sarak-card[data-sx-card-texture-type="prestige"]::after,
 [data-sx-card-texture-type="prestige"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="prestige"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.05)'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1)' stroke-width='1'/%3E%3C/svg%3E");
+    background-color: var(--theme-texture-color, var(--theme-primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='white' fill-opacity='0.05'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='white' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='white' fill-opacity='0.05'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='white' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 .texture-carbon::before,
@@ -229,7 +240,23 @@
 .sarak-card[data-sx-card-texture-type="carbon"]::after,
 [data-sx-card-texture-type="carbon"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="carbon"]::after {
-    background: linear-gradient(27deg, rgba(var(--theme-texture-color-rgb, 21,21,21), 1) 5px, transparent 5px) 0 5px, linear-gradient(207deg, rgba(var(--theme-texture-color-rgb, 21,21,21), 1) 5px, transparent 5px) 10px 0px, linear-gradient(27deg, rgba(var(--theme-texture-color-rgb, 34,34,34), 0.8) 5px, transparent 5px) 0px 10px, linear-gradient(207deg, rgba(var(--theme-texture-color-rgb, 34,34,34), 0.8) 5px, transparent 5px) 10px 5px, linear-gradient(90deg, rgba(var(--theme-texture-color-rgb, 27,27,27), 0.9) 10px, transparent 10px), linear-gradient(rgba(var(--theme-texture-color-rgb, 29,29,29), 0.9) 25%, rgba(var(--theme-texture-color-rgb, 26,26,26), 1) 25%, rgba(var(--theme-texture-color-rgb, 26,26,26), 1) 50%, transparent 50%, transparent 75%, rgba(var(--theme-texture-color-rgb, 36,36,36), 0.85) 75%, rgba(var(--theme-texture-color-rgb, 36,36,36), 0.85));
+    /* Os seis tons do tecido (antes cinzas fixos 21…36, porque a variável `-rgb` não existia):
+       cada um é a cor de textura do tema misturada com preto na proporção que, com a textura
+       branca padrão, reproduz o cinza de antes. Com outra cor de textura o tecido a acompanha
+       sem perder a diferença entre os tons — que é o que desenha o padrão. */
+    --sarak-carbon-1: color-mix(in srgb, var(--theme-texture-color, #fff) 8%, #000);
+    --sarak-carbon-2: color-mix(in srgb, var(--theme-texture-color, #fff) 13%, #000);
+    --sarak-carbon-3: color-mix(in srgb, var(--theme-texture-color, #fff) 11%, #000);
+    --sarak-carbon-4: color-mix(in srgb, var(--theme-texture-color, #fff) 11%, #000);
+    --sarak-carbon-5: color-mix(in srgb, var(--theme-texture-color, #fff) 10%, #000);
+    --sarak-carbon-6: color-mix(in srgb, var(--theme-texture-color, #fff) 14%, #000);
+    background:
+        linear-gradient(27deg, var(--sarak-carbon-1) 5px, transparent 5px) 0 5px,
+        linear-gradient(207deg, var(--sarak-carbon-1) 5px, transparent 5px) 10px 0px,
+        linear-gradient(27deg, color-mix(in srgb, var(--sarak-carbon-2) 80%, transparent) 5px, transparent 5px) 0px 10px,
+        linear-gradient(207deg, color-mix(in srgb, var(--sarak-carbon-2) 80%, transparent) 5px, transparent 5px) 10px 5px,
+        linear-gradient(90deg, color-mix(in srgb, var(--sarak-carbon-3) 90%, transparent) 10px, transparent 10px),
+        linear-gradient(color-mix(in srgb, var(--sarak-carbon-4) 90%, transparent) 25%, var(--sarak-carbon-5) 25%, var(--sarak-carbon-5) 50%, transparent 50%, transparent 75%, color-mix(in srgb, var(--sarak-carbon-6) 85%, transparent) 75%, color-mix(in srgb, var(--sarak-carbon-6) 85%, transparent));
     background-size: 20px 20px;
     filter: brightness(1.2) contrast(1.1);
 }
@@ -295,8 +322,11 @@
 .sarak-card[data-sx-card-texture-type="hexagon"]::after,
 [data-sx-card-texture-type="hexagon"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="hexagon"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z' fill='none' stroke='rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.3)' stroke-width='1'/%3E%3C/svg%3E");
-    background-size: 56px 98px;
+    background-color: var(--theme-texture-color, var(--theme-primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
+    -webkit-mask-size: 56px 98px;
+    mask-size: 56px 98px;
 }
 
 .texture-silk::before,
@@ -629,7 +659,6 @@ body:not([data-sx-texture="none"]) .module-content,
     /* Superfície Atômica */
     background: color-mix(in srgb, var(--sarak-card-bg, #0f172a), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8)))) !important;
     backdrop-filter: blur(var(--sarak-card-blur, 12px)) !important;
-    -webkit-backdrop-filter: blur(var(--sarak-card-blur, 12px)) !important;
     
     /* Geometria Soberana */
     border-radius: var(--sarak-card-radius-tl, 12px) var(--sarak-card-radius-tr, 12px) var(--sarak-card-radius-br, 12px) var(--sarak-card-radius-bl, 12px) !important;

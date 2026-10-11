@@ -219,7 +219,7 @@ export const validateDesign = (design: unknown): SarakDesignState => {
 
     // Fallbacks Estruturais (v9.0+ Resilience) — só para chaves que NÃO são
     // tokens do catálogo (`navigationStyle`/`sidebarWidth`/`topbarHeight`/
-    // `fontScale`/`borderRadius`/`glassBlur`/`glassOpacity`/`contrastCurve` já são
+    // `fontScale`/`borderRadius`/`glassBlur`/`glassOpacity` já são
     // tokens reais de `MASTER_DESIGN_MAP` — o default deles vem do
     // `getDefaultDesignState()` no seed, ANTES desta função rodar; forçá-los aqui
     // de novo sobrescreveria valores responsivos válidos — ex.: `sidebarWidth` é

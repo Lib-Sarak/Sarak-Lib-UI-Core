@@ -91,42 +91,6 @@ export const SystemSchema: ComponentSchema = {
             cssVars: ['--radius-theme', '--sarak-border-radius', '--border-radius']
         },
         {
-            id: 'borderRadiusSm',
-            label: 'Arredondamento Pequeno',
-            type: 'slider',
-            description: 'Raio de borda da escala "pequena" do sistema, para elementos menores (ex. badges, inputs compactos).',
-            axis: 'geometry',
-            isResponsive: true,
-            unit: 'px',
-            constraints: { min: 0, max: 20 },
-            defaultValue: { mob: 4, tab: 6, desk: 6 },
-            cssVars: ['--sarak-border-radius-sm']
-        },
-        {
-            id: 'borderRadiusMd',
-            label: 'Arredondamento Médio',
-            type: 'slider',
-            description: 'Raio de borda da escala "média" do sistema — a referência mais usada para cards e containers de tamanho padrão.',
-            axis: 'geometry',
-            isResponsive: true,
-            unit: 'px',
-            constraints: { min: 0, max: 40 },
-            defaultValue: { mob: 8, tab: 10, desk: 12 },
-            cssVars: ['--sarak-border-radius-md']
-        },
-        {
-            id: 'borderRadiusLg',
-            label: 'Arredondamento Grande',
-            type: 'slider',
-            description: 'Raio de borda da escala "grande" do sistema, para containers maiores/de destaque (ex. modais, hero sections).',
-            axis: 'geometry',
-            isResponsive: true,
-            unit: 'px',
-            constraints: { min: 0, max: 60 },
-            defaultValue: { mob: 12, tab: 16, desk: 20 },
-            cssVars: ['--sarak-border-radius-lg']
-        },
-        {
             id: 'borderWidth',
             label: 'Espessura da Borda',
             type: 'slider',
@@ -203,27 +167,6 @@ export const SystemSchema: ComponentSchema = {
         },
         ...ICON_TOKENS,
         // --- SCROLLBARS ---
-        {
-            id: 'scrollbarWidth',
-            label: 'Largura da Scrollbar',
-            type: 'slider',
-            description: 'Espessura da barra de rolagem, em pixels, com valores independentes por breakpoint. Nota: paralelo a `scrollWidth` em `scrollbars.ts`, que é o token efetivamente lido pelo CSS de produção (`_theme.css`) — este token em `system.ts` está catalogado mas atualmente sem consumidor próprio (ver backlog de cobertura, spec 01).',
-            axis: 'geometry',
-            isResponsive: true,
-            unit: 'px',
-            constraints: { min: 2, max: 12 },
-            defaultValue: { mob: 4, tab: 4, desk: 6 },
-            cssVars: ['--sarak-scrollbar-width']
-        },
-        {
-            id: 'scrollbarThumbColor',
-            label: 'Cor do Trilho (Thumb)',
-            type: 'color',
-            description: 'Cor do cursor da barra de rolagem. Nota: paralelo a `scrollThumbColor` em `scrollbars.ts` (que é o consumido de fato) — mesma pendência de duplicação de `scrollbarWidth`.',
-            axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--sarak-scrollbar-thumb']
-        },
         // --- CORE ENGINEERING ---
         {
             id: 'industrialRegistry',

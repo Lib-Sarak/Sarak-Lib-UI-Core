@@ -57,7 +57,6 @@ describe('useThemeCustomizationData', () => {
             'isSplitViewEnabled',
             'colorBgBody',
             'accentColor',
-            'colorPalette',
             'bgGradientMode',
             // escolhe QUAL cartão o SarakCardGrid desenha, não um estilo
             'cardVariant'

@@ -68,10 +68,17 @@
   --sarak-blur-master: var(--sarak-glass-blur, 12px);
   --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.1));
   
-  /* Motor de Sombras Multi-Camada (Física Real) */
-  --sarak-dynamic-shadow: 
-    0 2px 5px rgba(0, 0, 0, var(--sarak-shadow-ambient-alpha, 0.4)),
-    0 var(--sarak-shadow-projection-blur, 40px) calc(var(--sarak-shadow-projection-blur, 40px) * 1.5) rgba(0, 0, 0, var(--sarak-shadow-projection-alpha, 0.2));
+  /* Motor de Sombras Multi-Camada (Física Real) — contato + projeção. A direção vem de
+     `shadowOrientation` (`--sarak-shadow-dir-x/y`), a cor de `shadowColorMode`, e
+     `layeredShadows` multiplica a opacidade das duas camadas (0 apaga, 1 é o desenho base).
+     `--dynamic-shadow` é o mesmo valor com o nome que `SarakSearch`, o widget de busca do
+     cromo e `.shadow-theme` leem. */
+  --sarak-dynamic-shadow:
+    calc(var(--sarak-shadow-dir-x, 0) * 2px) calc(var(--sarak-shadow-dir-y, 1) * 2px) 5px
+      color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-shadow-ambient-alpha, 0.4) * var(--sarak-layered-shadows, 1) * 100%)), transparent),
+    calc(var(--sarak-shadow-dir-x, 0) * var(--sarak-shadow-projection-blur, 40px) * 0.5) calc(var(--sarak-shadow-dir-y, 1) * var(--sarak-shadow-projection-blur, 40px)) calc(var(--sarak-shadow-projection-blur, 40px) * 1.5)
+      color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-shadow-projection-alpha, 0.2) * var(--sarak-layered-shadows, 1) * 100%)), transparent);
+  --dynamic-shadow: var(--sarak-dynamic-shadow);
 
   /* Óptica de Vidro Avançada */
   --sarak-surface-specular: rgba(255, 255, 255, var(--sarak-glass-specularity, 0.1));

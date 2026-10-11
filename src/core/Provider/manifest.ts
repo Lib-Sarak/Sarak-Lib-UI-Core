@@ -7,9 +7,12 @@ import type { SarakTokenValue } from '../Design/types';
 
 /**
  * SOVEREIGN DESIGN MANIFEST (v10.1)
- * 
- * O Manifesto é a única fonte de verdade para como os tokens de design
- * são mapeados para variáveis CSS, Atributos de DOM e Classes.
+ *
+ * Lista de chaves aceitas fora do schema (`ALLOWED_EXTRA_KEYS`) e o export público das
+ * variáveis/transformações. NÃO é o emissor: quem escreve variável (`--sarak-<kebab>` e as
+ * `cssVars` do schema) e atributo (`data-sx-<kebab>`) de TODO token é `useDesignVariables.ts`,
+ * a partir do schema. O `attr` e o `vars` daqui nunca alimentaram CSS real — por isso o
+ * `token-reader:check` lê o schema inteiro, e usa este arquivo só para o `classPrefix`.
  */
 export const SARAK_DESIGN_MANIFEST: Record<string, {
     vars?: string[],
@@ -20,11 +23,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
 }> = {
     layout: { vars: ['--sarak-layout', '--layout-theme'], classPrefix: 'layout-' },
     mode: { vars: ['--sarak-mode', '--mode-theme'], transform: (v: SarakTokenValue) => v === 'dark' ? 'dark' : 'light' },
-    colorPalette: {
-        vars: ['--sarak-palette'],
-        attr: 'data-palette',
-        transform: (v: SarakTokenValue) => String(v)
-    },
     primaryColor: {
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#3b82f6')
@@ -92,9 +90,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     fontLineHeight: { vars: ['--line-height', '--sarak-line-height'] },
 
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
-    borderRadiusSm: { vars: ['--sarak-border-radius-sm'], unit: 'px' },
-    borderRadiusMd: { vars: ['--sarak-border-radius-md'], unit: 'px' },
-    borderRadiusLg: { vars: ['--sarak-border-radius-lg'], unit: 'px' },
 
     borderWidth: { vars: ['--theme-border-width', '--border-width', '--sarak-border-width'], unit: 'px' },
     borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
@@ -107,7 +102,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
-    contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     
     cardPaddingMd: { vars: ['--sarak-card-padding-md'], unit: 'px' },
@@ -192,7 +186,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
 
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
-    scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 200 },

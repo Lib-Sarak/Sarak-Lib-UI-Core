@@ -2,22 +2,22 @@
  * Gate de LEITOR DE TOKEN (R40): todo valor que o motor emite tem leitor.
  *
  * Um token passa por três camadas — o schema (opções, painel, catálogo), o motor
- * (variáveis e atributos que o `manifest.ts` declara e `useDesignVariables` emite) e um
- * LEITOR (regra CSS ou componente). Token oferecido sem leitor é contrato quebrado com
- * o usuário final (specs/specs/09-temas-e-presets.md §4.4.3): o painel mostra a opção,
- * o tema a escolhe e nada muda na tela. O `check-chrome-token-parity` cobra isso só no
- * cromo; este gate cobra no resto.
+ * (`useDesignVariables`, que emite para TODO token do schema a variável `--sarak-<kebab>`,
+ * as `cssVars` e o atributo `data-sx-<kebab>`) e um LEITOR (regra CSS ou componente).
+ * Token oferecido sem leitor é contrato quebrado com o usuário final
+ * (specs/specs/09-temas-e-presets.md §4.4.3): o painel mostra a opção, o tema a escolhe e
+ * nada muda na tela. O `check-chrome-token-parity` cobra isso só no cromo; este gate cobra
+ * no schema inteiro.
  *
- * Duas regras, um script:
- *   (i)  VARIÁVEL — cada entrada do manifesto com `vars` tem ao menos uma variável
- *        lida (`var(--x)` em CSS ou literal em componente) ou o próprio id do token
- *        lido num componente. As variáveis consideradas são as do manifesto, as
- *        `cssVars` do schema do mesmo id e a automática `--sarak-<kebab>`: o motor
- *        emite as três famílias para o mesmo valor, então um leitor de qualquer uma
- *        lê o token. Um token lido por ATRIBUTO (regra ii satisfeita em todas as
- *        opções) também está lido: a variável é só o outro canal do mesmo valor.
- *   (ii) OPÇÃO — cada entrada do manifesto com `attr`, cujo token do schema é um
- *        `select` de opções literais, tem para CADA opção uma regra CSS
+ * Duas regras, um script, o mesmo escopo — cada token de `src/core/Design/schema/`:
+ *   (i)  VARIÁVEL — ao menos uma variável do token é lida (`var(--x)` em CSS ou literal em
+ *        componente) ou o próprio id do token é lido num componente. As variáveis
+ *        consideradas são a automática `--sarak-<kebab>`, as `cssVars` do schema e as do
+ *        manifesto: o motor emite as famílias para o mesmo valor, então um leitor de
+ *        qualquer uma lê o token. Um token lido por ATRIBUTO (regra ii satisfeita em todas
+ *        as opções, ou qualquer regra `[data-sx-<kebab>…]` num token que não é `select`)
+ *        também está lido: a variável é só o outro canal do mesmo valor.
+ *   (ii) OPÇÃO — cada token `select` de opções literais tem, para CADA opção, uma regra CSS
  *        (`[data-sx-<kebab>="valor"]`, atributo que o motor de fato emite, ou a
  *        `classPrefix` do manifesto) ou um leitor em componente (arquivo que acessa o
  *        id do token e contém o valor como literal).
@@ -29,9 +29,10 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
  * -------------------------------------------------------------------------
- * 1. ESCOPO = o que o `manifest.ts` declara (`vars` e `attr`). Token de schema que o
- *    manifesto não cita fica fora, mesmo emitindo variável e atributo pelo
- *    `useDesignVariables`. Ampliar o escopo é decisão de plan, não de correção.
+ * 1. ESCOPO = os tokens do schema. Variável que o `useDesignVariables` escreve FORA do
+ *    laço de tokens (`--sarak-vignette-color`, `--sarak-card-clip-path`, os aliases
+ *    `--text-main`…) não é token e fica fora. O manifesto NÃO define escopo: ele só
+ *    informa `classPrefix` e variáveis extras (o `attr` dele nunca alimentou CSS).
  * 2. É TEXTUAL, não por AST: prova que uma referência existe (variável em `var(...)`
  *    ou literal, id acessado por `.id`/`?.id`/desestruturação), não que o consumo é
  *    correto nem que produz efeito visível. A prova de efeito é o teste do leitor e,
@@ -50,6 +51,10 @@
  *    token cujo único valor útil é `none` fica invisível aqui.
  * 8. Id lido por chave computada (`design[token]`) não é reconhecido como leitura;
  *    o leitor tem de acessar o id por nome (`design.id`).
+ * 9. SÓ A DIREÇÃO "emitido → lido". Variável que o CSS lê e NENHUM token emite (o caso de
+ *    `--theme-texture-color-rgb` antes de `textureColor` ganhar variantes: 24 leitores
+ *    caíam todos no fallback, em silêncio) é o gate inverso, e continua sem dono — hoje o
+ *    caso se prova por teste.
  * -------------------------------------------------------------------------
  */
 import fs from 'fs';
@@ -61,7 +66,34 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 const toKebabCase = (str) => str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 const escapeRe = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const OUT_OF_PLAN = 'Sem leitor medido em 2026-10-11; fora dos achados da plan que criou o gate. Cabe ao revisor decidir: dar leitor ao token ou retirá-lo do schema.';
+// Os três grupos abaixo são o que o escopo ampliado ao schema inteiro (2026-10-11) revelou DEPOIS
+// de os 11 tokens da exceção anterior serem resolvidos — nenhum deles estava na medição que
+// originou a exceção. Dar leitor ou retirar do schema é decisão do dono, em plan própria.
+const SEM_MENCAO = 'Nenhuma menção fora de schema, catálogo e presets (medido em 2026-10-11): o painel oferece, o motor emite e nada lê. Dar leitor ou retirar do schema é decisão do dono.';
+const LIDO_POR_TABELA = 'O valor chega ao leitor por tabela, normalizador ou passagem direta ao estilo, sem literal da opção (limites 5 e 8): o gate textual não o vê. Falta o teste por opção do leitor.';
+const OPCAO_SEM_REGRA = 'Variável lida, mas as opções do schema não têm regra nem literal em leitor (a `classPrefix` `layout-` não tem `.layout-grid`/`.layout-flex`/`.layout-masonry`). Dar leitor ou retirar a opção.';
+
+const SEM_MENCAO_IDS = [
+    'matrixSearchBg', 'animInstant', 'animFast', 'colorBgLayer2', 'bgNoiseAnimation', 'vignetteSoftness',
+    'identityPadding', 'identityFontFamily', 'identityFontWeight', 'identityTracking', 'identityRedirectUrl',
+    'btnGhostHoverBg', 'btnNeonPulseSpeed', 'themeDropdownMaxHeight',
+    'cardActionBtnPrimaryBg', 'cardActionBtnHoverBg', 'cardActionBtnText', 'cardActionBtnBorderRadius', 'cardActionBtnPadding',
+    'cardSearchBgFocus', 'cardSearchPlaceholderColor', 'cardSearchTextFocusColor',
+    'cardHeaderBg', 'cardHeaderBorder', 'cardHeaderPadding', 'cardFooterBg', 'cardFooterBorder',
+    'cardHoverTranslate', 'cardHoverGlowIncrease', 'managementGroupDescMaxWidth',
+    'presetCardHoverShadowBlur', 'presetCardHoverShadowSpread', 'devicePhoneWidth',
+    'colorBgModal', 'zIndexToast', 'formLayoutDirection', 'inputPadding', 'inputSuccessColor', 'layerElevationFactor',
+    'motionEaseOut', 'motionEaseIn', 'motionDurationInstant', 'motionStaggerDelay',
+    'modalOverlayBlur', 'tooltipRadius', 'aiPanelBg', 'aiGlowColor',
+    'visualPerspective', 'visualTranslateOffsetSm', 'visualTranslateZMd', 'visualDotGridSize', 'visualOrbBlur',
+    'kbdMinWidth', 'statusGlowBlur', 'industrialRegistry', 'tableZebraStriping', 'tableBorderRadius', 'textSmoothing',
+];
+
+const LIDO_POR_TABELA_IDS = [
+    'pageTransitionType', 'cardHoverStyle', 'btnStyleType', 'cardTitleFontWeight', 'mobileNavigationStyle',
+    'chromeSearchPosition', 'chromeUserPosition', 'chromeNotificationsPosition',
+    'layoutGridTemplate', 'maxContentWidth', 'borderStyle',
+];
 
 /**
  * Achados que o gate aceita enquanto existirem, cada um com o MOTIVO. Esvazia sozinha:
@@ -69,17 +101,9 @@ const OUT_OF_PLAN = 'Sem leitor medido em 2026-10-11; fora dos achados da plan q
  * `value` são opcionais e estreitam a entrada; sem eles, ela cobre o token inteiro.
  */
 export const ALLOWLIST = [
-    { tokenId: 'colorPalette', motivo: OUT_OF_PLAN },
-    { tokenId: 'colorDepth', motivo: OUT_OF_PLAN },
-    { tokenId: 'colorVariation', motivo: OUT_OF_PLAN },
-    { tokenId: 'borderRadiusSm', motivo: OUT_OF_PLAN },
-    { tokenId: 'borderRadiusMd', motivo: OUT_OF_PLAN },
-    { tokenId: 'borderRadiusLg', motivo: OUT_OF_PLAN },
-    { tokenId: 'contrastCurve', motivo: OUT_OF_PLAN },
-    { tokenId: 'borderType', motivo: OUT_OF_PLAN },
-    { tokenId: 'shadowOrientation', motivo: OUT_OF_PLAN },
-    { tokenId: 'layeredShadows', motivo: OUT_OF_PLAN },
-    { tokenId: 'scrollbarStyle', motivo: OUT_OF_PLAN },
+    ...SEM_MENCAO_IDS.map((tokenId) => ({ tokenId, motivo: SEM_MENCAO })),
+    ...LIDO_POR_TABELA_IDS.map((tokenId) => ({ tokenId, motivo: LIDO_POR_TABELA })),
+    { tokenId: 'layout', kind: 'option', motivo: OPCAO_SEM_REGRA },
 ];
 
 /** Valor de opção que é a ausência do efeito — não há leitor a exigir. */
@@ -223,11 +247,10 @@ function loadSchemas(root) {
     return byId;
 }
 
-/** O id do token é ACESSADO (`x.id`, `x?.id`, `{ id } = …`), não apenas citado em string. */
-function codeReadsId(code, id) {
-    const access = new RegExp(`(?:\\.|\\?\\.)${id}\\b`);
-    const destructure = new RegExp(`\\{[^{}]*\\b${id}\\b[^{}]*\\}\\s*=\\s*[\\w.]+`);
-    return code.some((text) => access.test(text) || destructure.test(text));
+/** O id do token é ACESSADO (`x.id`, `x?.id`, `{ id } = …`) no texto, não apenas citado em string. */
+function codeReadsId(text, id) {
+    return new RegExp(`(?:\\.|\\?\\.)${id}\\b`).test(text)
+        || new RegExp(`\\{[^{}]*\\b${id}\\b[^{}]*\\}\\s*=\\s*[\\w.]+`).test(text);
 }
 
 function codeHasVar(code, cssText, name) {
@@ -240,38 +263,36 @@ function optionHasReader({ token, entry, css, code, value }) {
     if (new RegExp(`\\[${attrName}\\s*(?:[~|^$*]?=)\\s*${quoted}\\s*\\]`).test(css)) return true;
     if (entry.classPrefix && new RegExp(`\\.${escapeRe(entry.classPrefix + value)}(?![\\w-])`).test(css)) return true;
     const literal = new RegExp(`['"\`]${escapeRe(value)}['"\`]`);
-    return code.some((text) => codeReadsIdIn(text, token.id) && literal.test(text));
+    return code.some((text) => codeReadsId(text, token.id) && literal.test(text));
 }
 
-function codeReadsIdIn(text, id) {
-    return new RegExp(`(?:\\.|\\?\\.)${id}\\b`).test(text)
-        || new RegExp(`\\{[^{}]*\\b${id}\\b[^{}]*\\}\\s*=\\s*[\\w.]+`).test(text);
+/** Qualquer regra sobre o atributo do token (`[data-sx-<kebab>]`, com ou sem valor). */
+const cssReadsAttribute = (css, id) => new RegExp(`\\[data-sx-${escapeRe(toKebabCase(id))}(?![\\w-])`).test(css);
+
+/** Achados de opção (regra ii) de um token `select` de opções literais. */
+function optionFindings({ token, entry, css, code }) {
+    return token.options
+        .filter((value) => !ABSENCE_VALUES.has(value))
+        .filter((value) => !optionHasReader({ token, entry, css, code, value }))
+        .map((value) => ({ kind: 'option', tokenId: token.id, value, detail: `data-sx-${toKebabCase(token.id)}="${value}"` }));
 }
 
-/** Todo valor emitido sem leitor. Cada achado: `{ kind, token, value?, detail }`. */
+/** Todo valor emitido sem leitor. Cada achado: `{ kind, tokenId, value?, detail }`. */
 export function checkTokenReader({ root = ROOT, allowlist = ALLOWLIST } = {}) {
     const manifest = parseManifest(fs.readFileSync(path.join(root, MANIFEST_FILE), 'utf8'));
     const schemas = loadSchemas(root);
     const { css, code } = collectSources(root);
     const findings = [];
 
-    for (const [id, entry] of Object.entries(manifest)) {
-        const token = schemas.get(id) ?? { id, type: null, cssVars: [], options: null };
-        const optionFindings = [];
-        const readByAttribute = Boolean(entry.attr) && token.type === 'select' && Boolean(token.options);
-        if (readByAttribute) {
-            for (const value of token.options.filter((v) => !ABSENCE_VALUES.has(v))) {
-                if (!optionHasReader({ token, entry, css, code, value })) {
-                    optionFindings.push({ kind: 'option', tokenId: id, value, detail: `data-sx-${toKebabCase(id)}="${value}"` });
-                }
-            }
-        }
-        findings.push(...optionFindings);
-        if (entry.vars.length === 0) continue;
+    for (const [id, token] of schemas) {
+        const entry = manifest[id] ?? { vars: [], attr: null, classPrefix: null };
+        const bySelectOptions = token.type === 'select' && Boolean(token.options);
+        const options = bySelectOptions ? optionFindings({ token, entry, css, code }) : [];
+        findings.push(...options);
         const candidates = [...new Set([...entry.vars, ...token.cssVars, `--sarak-${toKebabCase(id)}`])];
-        const readByVar = candidates.some((name) => codeHasVar(code, css, name)) || codeReadsId(code, id);
-        const readByAttr = readByAttribute && optionFindings.length === 0;
-        if (!readByVar && !readByAttr) findings.push({ kind: 'var', tokenId: id, detail: entry.vars.join(', ') });
+        const readByVar = candidates.some((name) => codeHasVar(code, css, name)) || code.some((text) => codeReadsId(text, id));
+        const readByAttr = bySelectOptions ? options.length === 0 : cssReadsAttribute(css, id);
+        if (!readByVar && !readByAttr) findings.push({ kind: 'var', tokenId: id, detail: candidates.join(', ') });
     }
 
     const covers = (a, f) => a.tokenId === f.tokenId && (a.kind === undefined || a.kind === f.kind)

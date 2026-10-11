@@ -9,21 +9,6 @@ export const ColorsSchema: ComponentSchema = {
     label: 'Paletas e Gradientes',
     tokens: [
         {
-            id: 'colorPalette',
-            label: 'Paleta Ativa (Preset)',
-            type: 'select',
-            description: 'Preset de paleta cromática completa aplicado de uma vez (define combinação coerente de `primaryColor`/`secondaryColor`/`tertiaryColor`). Use como ponto de partida rápido antes de ajustar cores individuais.',
-            axis: 'color',
-            defaultValue: 'default',
-            options: [
-                { value: 'default', label: 'Padrão (Cyberpunk)' },
-                { value: 'neon', label: 'Neon Glow' },
-                { value: 'matrix', label: 'Green Matrix' },
-                { value: 'slate', label: 'Slate Industrial' },
-                { value: 'sunset', label: 'Sunset Orange' }
-            ]
-        },
-        {
             id: 'primaryColor',
             label: 'Cor Primária (Base)',
             type: 'color',
@@ -78,6 +63,9 @@ export const ColorsSchema: ComponentSchema = {
             description: 'Cor usada em overlays de textura/ruído de fundo (ex. grão, padrões sutis) — normalmente aplicada com opacidade baixa, para não competir com o conteúdo principal.',
             axis: 'color',
             defaultValue: '#ffffff',
+            // Os 24 leitores de CSS pedem o canal (`--theme-texture-color-rgb`) para compor o alfa
+            // de cada textura; sem a variante, a variável nunca existia e toda textura caía na primária.
+            generateVariants: true,
             cssVars: ['--theme-texture-color', '--sarak-texture-color']
         },
         {

@@ -18,7 +18,6 @@ export const BEZIER_CURVES = {
 
 export const DEFAULT_INDUSTRIAL_SEED = {
     mode: 'dark',
-    colorPalette: 'industrial-night',
     primaryColor: '#00f2ff', // Neon Sarak
     layout: 'sidebar',
     navigationStyle: 'sidebar',

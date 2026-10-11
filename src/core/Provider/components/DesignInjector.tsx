@@ -74,6 +74,12 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
                 const y = (e.clientY / window.innerHeight) * 100;
                 target.style.setProperty('--mouse-x', `${x}%`);
                 target.style.setProperty('--mouse-y', `${y}%`);
+                // `shadowOrientation: dynamic`: a luz é o oposto do ponteiro (-1 a 1). Só é
+                // escrita quando a opção está ativa — a variável herda por toda a árvore.
+                if (target.getAttribute('data-sx-shadow-orientation') === 'dynamic') {
+                    target.style.setProperty('--sarak-light-x', String((50 - x) / 50));
+                    target.style.setProperty('--sarak-light-y', String((50 - y) / 50));
+                }
             });
         };
         window.addEventListener('mousemove', handleMouseMove, { passive: true });

@@ -127,6 +127,31 @@ Um gate novo (`npm run token-reader:check`) passa a travar o motivo: valor que o
 `noiseIntensity` ou `systemTone: 'dark' | 'light'` não precisa fazer nada (o aviso some ao regravar o tema). Um teste
 que fixava a cor de uma série de gráfico lê a cor da paleta derivada, não a do token.
 
+### O resto do arsenal desenha: moldura, direção e camadas da sombra, vidro do cartão, variantes de cor e cor de textura
+
+**Classificação: MAJOR (sai na 8.0.0).** Sete tokens saem do schema, e efeitos que o painel já oferecia passam a
+aparecer em todo tema que os escolhia ou que os carregava no valor padrão (mudar um default é MAJOR). Nenhum nome
+saiu do barril público nem mudou de tipo; o tipo `SarakDesignTokens` perde sete chaves.
+
+| Antes | Depois |
+|---|---|
+| `textureColor` não gerava variantes: a variável `--theme-texture-color-rgb`, lida por 24 regras de CSS, **nunca existia**, e toda textura, animação de brilho e moldura caía na cor primária. | A variante é emitida: **a cor de textura do tema chega às texturas**. Um tema com `textureColor` diferente da primária passa a ter texturas na cor dele (e o `glow-reveal`, o halo da moldura `glow`). A `carbon` mantém a diferença entre os tons do tecido sobre qualquer cor de textura. O anel de foco (`--theme-primary-focus`) continua da primária. |
+| `waves`, `topo`, `diamond`, `prestige` e `hexagon` escreviam a cor com `var()` **dentro do SVG embutido**, que o navegador não resolve: o traço não tinha a cor do tema. | Pintam por máscara, preenchida com a cor de textura do tema (o desenho das outras seis da plan anterior). |
+| `-webkit-backdrop-filter` ao lado de `backdrop-filter` deixa **só** a forma com prefixo no `dist/sarak.css`, que o Chromium não aplica: `cardBackdropBlur` não desfocava nenhum cartão, e o modo `eco` não o cancelava. | Toda declaração sai só na forma sem prefixo. **O cartão passa a desfocar** `cardBackdropBlur` (12px por padrão) sob os materiais `sleek` e `industrial`; sob `frosted` o desfoque é `cardBackdropBlur` + a intensidade do material (no padrão, os mesmos 24px de antes); `organic` segue sem desfoque. |
+| `borderType` (`solid`, `cyber`, `double`, `glow`, `none`) virava um atributo cujas regras conheciam `inlet`, `neon` e `beveled`, que não são opções: nenhuma desenhava. | As cinco desenham, nos cartões, painéis e no cabeçalho/barra lateral do cromo: contorno contínuo, segmentado, em linha dupla, em neon e sem moldura. |
+| `shadowOrientation` e `layeredShadows` emitiam variáveis e atributo que nada lia; `--dynamic-shadow`, lido por `SarakSearch`, pela busca do cromo e por `.shadow-theme`, **nunca era definido**: esses painéis não tinham sombra. | A direção (`bottom`, `center`, `top`, `bottom-right`, `dynamic`, esta seguindo o ponteiro) vira a sombra do cartão e a sombra em camadas; `layeredShadows` multiplica a opacidade das duas camadas (0 apaga, 1 é o desenho de sempre); `--dynamic-shadow` existe e espelha a sombra em camadas. **A paleta de busca e a busca do cromo passam a ter sombra.** |
+| `colorDepth` e `colorVariation` emitiam variáveis que ninguém lia. | Moldam o hover e o active de toda cor com variantes: a profundidade afasta ambos da cor base (fator `1 ± 0,1 × depth`) e a variação abre o matiz entre eles (8° por passo). Em 1 e 1, o desenho é o de sempre. |
+| `colorPalette`, `borderRadiusSm`, `borderRadiusMd`, `borderRadiusLg`, `contrastCurve`, `scrollbarWidth` e `scrollbarThumbColor` eram oferecidos pelo painel e emitiam variáveis que nenhum CSS lia. | **Saem do schema**, fundidos no que desenha: a paleta é preset de três cores que já são tokens; o raio é `borderRadius` e os raios por componente; a curva de contraste é `globalContrast`, o único mecanismo de contraste que o CSS tem; a largura e a cor da barra de rolagem são `scrollWidth` e `scrollThumbColor` (os temas embarcados escreviam os dois pares com o mesmo valor). O valor salvo é descartado com o aviso de valor fora do contrato e vale o padrão. A entrada `scrollbarStyle` do manifesto, que nunca teve token, sai também. |
+
+**O que fazer:** quem salvou um dos sete tokens acima não precisa fazer nada (o aviso some ao regravar o tema); quem
+quer o raio, a barra de rolagem ou o contraste que eles prometiam define `borderRadius`, `scrollWidth`/`scrollThumbColor`
+ou `globalContrast`. Quem tinha uma textura "na primária" e quer o desenho de antes define `textureColor` igual à primária.
+Um teste seu que fixava o `box-shadow` do painel de busca como `none`, ou o `backdrop-filter` de um cartão `sleek` como
+`none`, lê o valor novo.
+
+O `token-reader:check` passa a olhar o schema inteiro, não só o que o manifesto cita; os tokens que o escopo novo
+revelou sem leitor estão declarados, com o motivo, na `ALLOWLIST` do próprio gate.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

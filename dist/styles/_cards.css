@@ -21,13 +21,14 @@
     background-color: var(--sarak-card-bg, var(--theme-card)) !important;
     opacity: var(--sarak-card-surface-opacity, 1);
     
-    /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`), cor de
-       `shadowColorMode` (`_surfaces.css`; sem o atributo, preto) e opacidade de
+    /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
+       direção de `shadowOrientation` (`--sarak-shadow-dir-x/y`, `_surfaces.css`; sem o
+       atributo, para baixo), cor de `shadowColorMode` (sem o atributo, preto) e opacidade de
        `cardShadowSpread`, em % — limitada a 100% porque `color-mix` não aceita mais.
        Os materiais de `_surfaces.css` reaproveitam `--sarak-card-shadow-full`. */
     --sarak-card-shadow-base:
-        var(--sarak-card-shadow-offset-x, 0px)
-        var(--sarak-card-shadow-offset-y, 20px)
+        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
+        calc(var(--sarak-card-shadow-offset-y, 20px) * var(--sarak-shadow-dir-y, 1))
         var(--sarak-card-shadow-blur, 50px)
         var(--sarak-card-shadow-expansion, -12px)
         color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-card-shadow-spread, 20) * 1%)), transparent);
@@ -39,9 +40,9 @@
     /* Transição Fluida */
     transition: transform 0.4s var(--sarak-ease-main), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
     
-    /* Motor de Filtros */
+    /* Motor de Filtros — só a forma sem prefixo: com as duas lado a lado o build deixa
+       apenas `-webkit-` e o Chromium não desfoca (ver _surfaces.css, topo). */
     backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
-    -webkit-backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
 
     /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
     clip-path: polygon(
@@ -78,8 +79,8 @@
     border-color: rgba(var(--theme-primary-rgb), 0.4);
     /* Hover: a mesma sombra, 10px mais baixa e mais difusa, a 60% de opacidade. */
     box-shadow:
-        var(--sarak-card-shadow-offset-x, 0px)
-        calc(var(--sarak-card-shadow-offset-y, 20px) + 10px)
+        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
+        calc((var(--sarak-card-shadow-offset-y, 20px) + 10px) * var(--sarak-shadow-dir-y, 1))
         calc(var(--sarak-card-shadow-blur, 50px) + 10px)
         var(--sarak-card-shadow-expansion, -12px)
         color-mix(in srgb, var(--sarak-card-shadow-color, #000) 60%, transparent);

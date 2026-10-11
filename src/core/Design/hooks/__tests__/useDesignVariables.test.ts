@@ -134,3 +134,48 @@ describe('useDesignVariables — tabela única de mídia', () => {
         }
     );
 });
+
+/**
+ * 24 leitores de CSS pedem `--theme-texture-color-rgb`. Antes de `textureColor` ganhar
+ * `generateVariants`, a variável nunca era emitida e toda textura caía na primária, sem erro.
+ */
+describe('useDesignVariables — cor de textura chega aos leitores', () => {
+    const emit = (design: Record<string, unknown>) =>
+        renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), ...design })).result.current.variables;
+
+    it('emite o canal --theme-texture-color-rgb (e o par --sarak-) da cor de textura do tema', () => {
+        const variables = emit({ textureColor: '#1f2937', primaryColor: '#00f2ff' });
+
+        expect(variables['--theme-texture-color']).toBe('#1f2937');
+        expect(variables['--theme-texture-color-rgb']).toBe('31, 41, 55');
+        expect(variables['--sarak-texture-color-rgb']).toBe('31, 41, 55');
+        expect(variables['--theme-texture-color-rgb']).not.toBe(variables['--theme-primary-rgb']);
+    });
+});
+
+describe('useDesignVariables — colorDepth e colorVariation moldam hover e active', () => {
+    const hoverActive = (design: Record<string, unknown>) => {
+        const { variables } = renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), primaryColor: '#808040', ...design })).result.current;
+        return { hover: variables['--theme-primary-hover'], active: variables['--theme-primary-active'] };
+    };
+
+    it('o padrão (1 e 1) é o desenho de sempre: hover ×1,1 e active ×0,9', () => {
+        expect(hoverActive({ colorDepth: 1, colorVariation: 1 })).toEqual({ hover: '#8d8d46', active: '#73733a' });
+    });
+
+    it('colorDepth afasta hover e active da cor base', () => {
+        const base = hoverActive({ colorDepth: 1 });
+        const deep = hoverActive({ colorDepth: 3 });
+
+        expect(deep.hover).not.toBe(base.hover);
+        expect(deep).toEqual({ hover: '#a6a653', active: '#5a5a2d' });
+    });
+
+    it('colorVariation abre o matiz entre hover e active', () => {
+        const flat = hoverActive({ colorVariation: 1 });
+        const varied = hoverActive({ colorVariation: 5 });
+
+        expect(varied.hover).not.toBe(flat.hover);
+        expect(varied.active).not.toBe(flat.active);
+    });
+});

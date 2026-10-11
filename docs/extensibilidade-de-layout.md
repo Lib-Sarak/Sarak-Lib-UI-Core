@@ -44,7 +44,7 @@ const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
 ```
 
 - **Animação sem arquivo:** `texture` (catálogo grande — `aurora`, `stars`, `waves`, `nebula`, …),
-  `bgNoiseAnimation`, `bgNoiseDensity`, `noiseIntensity` — tudo procedural, custo zero de asset.
+  `bgNoiseAnimation`, `bgNoiseDensity` — tudo procedural, custo zero de asset.
 - **Vídeo:** a URL é tratada como vídeo quando termina em `.webm`/`.mp4` (ou contém `video`) —
   renderiza `<video autoplay loop muted playsinline>`.
 - O fundo global é **fixo, atrás de tudo e sem captura de toque**; ele se auto-protege de
@@ -53,7 +53,7 @@ const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
   desenho — a lib não é dona da página do host. Nesse modo, use os **slots** (nível b).
 - Tokens relacionados (schema vivo, `sarakGetAllDesignTokens()`): `globalBackgroundImageUrl`,
   `globalBackgroundOpacity`, `globalBackgroundBlur`, `texture`,
-  `textureOpacity`, `atmosphereNoiseOpacity`, `bgNoiseAnimation`, `bgGradientMode`.
+  `textureOpacity`, `bgNoiseDensity`, `bgNoiseAnimation`, `bgGradientMode`.
 
 ---
 

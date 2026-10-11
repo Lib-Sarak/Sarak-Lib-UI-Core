@@ -440,16 +440,6 @@ export const AtmosphereSchema: ComponentSchema = {
             constraints: { min: 0.5, max: 3.0, step: 0.05 },
             defaultValue: 1,
             cssVars: ['--sarak-contrast']
-        },
-        {
-            id: 'contrastCurve',
-            label: 'Curva de Contraste Cinematográfico',
-            type: 'slider',
-            description: 'Curva de contraste não-linear aplicada como pós-processamento (ao estilo de correção de cor cinematográfica) — mais sofisticado que `globalContrast`, permite um contraste "em S" que preserva sombras e realces.',
-            axis: 'color',
-            constraints: { min: 0.5, max: 4.0, step: 0.1 },
-            defaultValue: 1.0,
-            cssVars: ['--contrast-curve', '--sarak-contrast-curve']
         }
     ]
 };

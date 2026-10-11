@@ -24,7 +24,7 @@ const TOKEN_DISPLAY_ORDER = [
     'headingFont', 'bodyFont', 'bodySize', 'h1Size',
     'primaryColor', 'secondaryColor', 'mode', 'textColorMaster',
     'texture', 'surfaceMaterial', 'systemTone',
-    'cardVariant', 'cardTextureType', 'cardBorderRadius', 'cardBackgroundColor', 'shadowIntensity', 'borderType',
+    'cardTextureType', 'cardBorderRadius', 'cardBackgroundColor', 'shadowIntensity', 'borderType',
     'btnBorderRadius', 'btnStyleType', 'navigationStyle'
 ];
 

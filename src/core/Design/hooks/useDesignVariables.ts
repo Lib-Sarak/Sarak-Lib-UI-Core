@@ -11,6 +11,9 @@ import type { SarakTokenValue } from '../types';
 const toKebabCase = (str: string) =>
     str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
+const asFiniteNumber = (value: unknown): number | undefined =>
+    typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+
 /**
  * Segunda barreira contra breakout de CSS/HTML (a primeira é `validateDesign`,
  * que já deveria ter descartado qualquer valor com estes caracteres antes de
@@ -60,6 +63,11 @@ export const useDesignVariables = (
         
         const isDark = targetMode === 'dark';
         const anchorColor = isDark ? '#000000' : '#ffffff';
+        // `colorDepth`/`colorVariation` moldam o hover/active de toda cor com variantes.
+        const variantShape = {
+            depth: asFiniteNumber(design.colorDepth),
+            variation: asFiniteNumber(design.colorVariation),
+        };
 
         // Breakpoints como dado (Spec 16, Regra 1): lê os tokens do tema (se o
         // tema os declarar) com fallback à fonte única; `@media` não aceita
@@ -126,7 +134,7 @@ export const useDesignVariables = (
                         // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
                         if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
                             try {
-                                const variants = computeColorVariants(String(value), anchorColor);
+                                const variants = computeColorVariants(String(value), anchorColor, variantShape);
                                 variables[`${v}-rgb`] = variants.rgb;
                                 variables[`${v}-bg`] = variants.bg;
                                 variables[`${v}-border`] = variants.border;

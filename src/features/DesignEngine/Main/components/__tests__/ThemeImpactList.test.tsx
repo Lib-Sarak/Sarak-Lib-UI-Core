@@ -37,7 +37,7 @@ describe('ThemeImpactList', () => {
             {
                 id: 'cards',
                 title: 'Cards',
-                tokens: ['cardVariant', 'cardTextureType', 'cardBorderRadius', 'cardBackgroundColor', 'shadowIntensity', 'borderType']
+                tokens: ['cardTextureType', 'cardBorderRadius', 'cardBackgroundColor', 'shadowIntensity', 'borderType']
             },
             { id: 'forma', title: 'Forma e estrutura', tokens: ['btnBorderRadius', 'btnStyleType', 'navigationStyle'] }
         ] as const;
@@ -58,9 +58,9 @@ describe('ThemeImpactList', () => {
             expect(Array.from(group?.querySelectorAll<HTMLElement>('[data-visual-impact-token]') ?? [])
                 .map((token) => token.dataset.visualImpactToken)).toEqual(tokens);
         });
-        expect(container.querySelectorAll('[data-visual-impact-token]')).toHaveLength(20);
+        expect(container.querySelectorAll('[data-visual-impact-token]')).toHaveLength(19);
         const renderedControls = screen.getAllByTestId('token-control');
-        expect(renderedControls).toHaveLength(20);
+        expect(renderedControls).toHaveLength(19);
         renderedControls.forEach((control) => expect(control).toBeVisible());
     });
 

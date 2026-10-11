@@ -221,6 +221,79 @@ describe('checkTokenReader — regra (i): variável sem leitor', () => {
     });
 });
 
+const EXTRA_SCHEMA = `
+export const ExtraSchema = {
+    id: 'extra',
+    tokens: [
+        {
+            id: 'borderType',
+            type: 'select',
+            options: [{ value: 'solid', label: 'Sólido' }, { value: 'glow', label: 'Neon' }, { value: 'none', label: 'Sem' }],
+            cssVars: ['--sarak-border-type']
+        },
+        { id: 'smoothFlag', type: 'boolean', defaultValue: true },
+        { id: 'orphanSlider', type: 'slider', cssVars: ['--sarak-orphan'] }
+    ]
+};
+`;
+
+describe('checkTokenReader — escopo: o schema inteiro, não o manifesto', () => {
+    const files = { ...baseFiles, 'src/core/Design/schema/extra.ts': EXTRA_SCHEMA };
+
+    it('MUTAÇÃO: token que o manifesto NÃO cita ainda é visto — opção e variável', () => {
+        const root = createFixtureRoot({ ...files, 'src/styles/a.css': '.x { color: red; }' });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'option', tokenId: 'borderType', value: 'glow' }));
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'var', tokenId: 'orphanSlider' }));
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'var', tokenId: 'smoothFlag' }));
+    });
+
+    it('a regra por opção basta, mesmo sem entrada no manifesto; `none` não exige regra', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/styles/a.css': '[data-sx-border-type="solid"] .c {} [data-sx-border-type="glow"] .c {}',
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.filter((f) => f.tokenId === 'borderType')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: apagar a regra de UMA opção de um token fora do manifesto falha o gate', () => {
+        const root = createFixtureRoot({ ...files, 'src/styles/a.css': '[data-sx-border-type="solid"] .c {}' });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.filter((f) => f.kind === 'option' && f.tokenId === 'borderType').map((f) => f.value)).toEqual(['glow']);
+    });
+
+    it('token booleano é lido por qualquer regra sobre o atributo dele', () => {
+        const root = createFixtureRoot({ ...files, 'src/styles/a.css': '[data-sx-smooth-flag="true"] body { opacity: 1; }' });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.some((f) => f.tokenId === 'smoothFlag')).toBe(false);
+    });
+
+    it('o prefixo de outro atributo não é leitura (data-sx-smooth-flag-extra ≠ data-sx-smooth-flag)', () => {
+        const root = createFixtureRoot({ ...files, 'src/styles/a.css': '[data-sx-smooth-flag-extra="true"] body { opacity: 1; }' });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.some((f) => f.tokenId === 'smoothFlag')).toBe(true);
+    });
+
+    it('a variável automática --sarak-<kebab> é lida mesmo sem cssVars nem manifesto', () => {
+        const root = createFixtureRoot({ ...files, 'src/styles/a.css': '.x { opacity: var(--sarak-smooth-flag, 1); }' });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.some((f) => f.tokenId === 'smoothFlag')).toBe(false);
+    });
+});
+
 describe('ALLOWLIST', () => {
     it('cobre o achado do token e é a única forma de aceitá-lo', () => {
         const root = createFixtureRoot({ ...baseFiles, 'src/styles/a.css': '.x { color: red; }' });
