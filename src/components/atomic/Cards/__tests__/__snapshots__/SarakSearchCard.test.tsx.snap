@@ -3,7 +3,7 @@
 exports[`SarakSearchCard (Characterization) > matches snapshot before any removal 1`] = `
 <DocumentFragment>
   <div
-    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0)] transition-opacity duration-1000"
     style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
   />
   <style
@@ -148,7 +148,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -198,7 +198,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--color-theme-card, rgba(255,255,255,0.1)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--color-theme-card, rgba(255,255,255,0.1));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -249,7 +249,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"

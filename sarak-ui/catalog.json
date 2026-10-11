@@ -5478,7 +5478,6 @@
       "--sarak-anim-instant",
       "--sarak-anim-normal",
       "--sarak-anim-slow",
-      "--sarak-atmosphere-noise-opacity",
       "--sarak-auth-hero-orb-blur",
       "--sarak-b-weight",
       "--sarak-badge-radius",
@@ -5653,6 +5652,10 @@
       "--sarak-card-search-text-focus",
       "--sarak-card-search-text-focus-color",
       "--sarak-card-shadow",
+      "--sarak-card-shadow-blur",
+      "--sarak-card-shadow-expansion",
+      "--sarak-card-shadow-offset-x",
+      "--sarak-card-shadow-offset-y",
       "--sarak-card-shadow-spread",
       "--sarak-card-spotlight-opacity",
       "--sarak-card-surface-opacity",
@@ -5960,8 +5963,6 @@
       "--sarak-navbar-layout",
       "--sarak-navigation-style",
       "--sarak-noise-density",
-      "--sarak-noise-intensity",
-      "--sarak-noise-opacity",
       "--sarak-noise-speed",
       "--sarak-page-transition-type",
       "--sarak-preference-font-size-position",
@@ -6358,7 +6359,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 439,
+    "count": 441,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -6454,11 +6455,6 @@
       },
       {
         "id": "animSlow",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "atmosphereNoiseOpacity",
         "type": "number",
         "responsive": false
       },
@@ -6870,6 +6866,26 @@
       {
         "id": "cardShadow",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "cardShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "cardShadowExpansion",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "cardShadowOffsetX",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "cardShadowOffsetY",
+        "type": "number",
         "responsive": false
       },
       {
@@ -7848,11 +7864,6 @@
         "responsive": false
       },
       {
-        "id": "noiseIntensity",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "pageTransitionType",
         "type": "string",
         "responsive": false
@@ -8724,6 +8735,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "29f3e5bb7cf6"
+    "kitHash": "6c2805546ea5"
   }
 }

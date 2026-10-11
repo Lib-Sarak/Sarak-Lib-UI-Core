@@ -70,23 +70,6 @@ body::before {
   transition: all var(--duration-slow) var(--ease-sarak);
 }
 
-/* System Tones personality layers */
-[data-tone="cyber"] {
-    --theme-primary-rgb-mix: 0, 255, 128; /* Cyber Green fallback secondary */
-    --accent-glow: 0 0 15px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.5);
-}
-
-[data-tone="cyber"] body {
-    background-image: 
-        radial-gradient(circle at 50% 110%, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1) 0%, transparent 50%),
-        linear-gradient(rgba(18, 18, 18, 0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(18, 18, 18, 0.2) 1px, transparent 1px);
-    background-size: 100% 100%, 20px 20px, 20px 20px;
-}
-
-[data-tone="friendly"] { --theme-primary-rgb-mix: 168, 85, 247; }
-[data-tone="formal"] { --theme-primary-rgb-mix: 15, 23, 42; }
-
 /* Industrial Safe Area Motor */
 .sarak-safe-container {
     width: 100%;

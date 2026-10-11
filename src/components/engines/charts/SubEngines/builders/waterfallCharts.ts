@@ -1,6 +1,6 @@
 import * as echarts from 'echarts';
-import { CHART_COLOR_TOKENS } from './types';
-import type { ChartBuilderConfig, ChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem } from './types';
+import { resolveChartColorToken } from './types';
+import type { ChartBuilderConfig, ChartOptionFragment, ChartTheme, SarakChartDataItem } from './types';
 
 const WATERFALL_STACK = 'waterfall';
 const WATERFALL_BAR_WIDTH = '40%';
@@ -32,10 +32,6 @@ function isFiniteNumber(value: unknown): value is number {
 /** Há ao menos um item com valor numérico finito no campo lido. */
 export function hasWaterfallData(data: unknown, dataKey: string): boolean {
     return Array.isArray(data) && data.some((item) => isRecord(item) && isFiniteNumber(item[dataKey]));
-}
-
-function tokenColor(theme: ChartTheme, token: ChartColorToken): string {
-    return theme.palette[CHART_COLOR_TOKENS.indexOf(token)] ?? theme.primaryColor;
 }
 
 /** Item sem valor numérico entra como variação zero, para a barra continuar alinhada à sua categoria. */
@@ -87,8 +83,8 @@ export const buildWaterfallSeries = (
     const steps = buildSteps(data, config?.dataKey || 'value');
     const segments = steps.map(splitSegment);
     const colors: Record<WaterfallKind, string> = {
-        increase: tokenColor(theme, 'statusSuccessColor'),
-        decrease: tokenColor(theme, 'statusErrorColor'),
+        increase: resolveChartColorToken(theme, 'statusSuccessColor'),
+        decrease: resolveChartColorToken(theme, 'statusErrorColor'),
         total: theme.primaryColor,
     };
     const kindSeries = (kind: WaterfallKind): Record<string, unknown> => createBarSeries(

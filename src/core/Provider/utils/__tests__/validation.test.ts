@@ -22,6 +22,31 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(warnSpy).toHaveBeenCalled();
     });
 
+    it('um `systemTone` salvo como "dark" ou "light" (opções que saíram) é descartado com aviso de valor fora do contrato', () => {
+        for (const saved of ['dark', 'light']) {
+            warnSpy.mockClear();
+            const result = validateDesign({ mode: 'dark', systemTone: saved });
+
+            expect((result as Record<string, unknown>).systemTone, saved).toBeUndefined();
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"systemTone" com valor fora do contrato'), saved);
+        }
+    });
+
+    it('aceita os três tons que o schema oferece: none, cyber e tactical', () => {
+        for (const tone of ['none', 'cyber', 'tactical']) {
+            expect((validateDesign({ systemTone: tone }) as Record<string, unknown>).systemTone, tone).toBe(tone);
+        }
+    });
+
+    it('a geometria da sombra do cartão é aceita dentro da faixa e clampada fora dela', () => {
+        const result = validateDesign({ cardShadowOffsetX: 8, cardShadowOffsetY: 999, cardShadowBlur: 0, cardShadowExpansion: -999 }) as Record<string, unknown>;
+
+        expect(result.cardShadowOffsetX).toBe(8);
+        expect(result.cardShadowOffsetY).toBe(60);
+        expect(result.cardShadowBlur).toBe(0);
+        expect(result.cardShadowExpansion).toBe(-40);
+    });
+
     it('um `navigationStyle: "dock"` salvo é descartado com aviso de valor fora do contrato (o cromo lê sidebar)', () => {
         const result = validateDesign({ mode: 'dark', navigationStyle: 'dock' });
         expect((result as Record<string, unknown>).navigationStyle).toBeUndefined();
@@ -65,6 +90,14 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         const second = validateDesign({ mode: 'dark', globalBackgroundBlendMode: 'screen' });
         expect((second as Record<string, unknown>).globalBackgroundBlendMode).toBeUndefined();
         expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('os dois controles de ruído que se fundiram em bgNoiseDensity são descartados, e o que sobrou é aceito', () => {
+        const result = validateDesign({ atmosphereNoiseOpacity: 0.3, noiseIntensity: 0.4, bgNoiseDensity: 0.2 }) as Record<string, unknown>;
+
+        expect(result.atmosphereNoiseOpacity).toBeUndefined();
+        expect(result.noiseIntensity).toBeUndefined();
+        expect(result.bgNoiseDensity).toBe(0.2);
     });
 
     it('clampa um token numérico/responsivo (`sidebarWidth`, min 200 max 400) dentro da faixa', () => {

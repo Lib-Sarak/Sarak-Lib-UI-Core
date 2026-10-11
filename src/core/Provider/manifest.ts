@@ -124,6 +124,8 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     // continuam consumindo o fallback local (não tocados); `ghostvars` continua acusando os
     // 3 consumos até essa decisão.
     surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
+    bgGradientMode: { vars: ['--sarak-bg-gradient-mode'], attr: 'data-sx-bg-gradient-mode' },
+    bgGradientAngle: { vars: ['--sarak-bg-gradient-angle'] },
     surfaceIntensity: { vars: ['--surface-intensity', '--sarak-surface-intensity'] },
     borderType: { attr: 'data-border', vars: ['--sarak-border-type', '--border-type'] },
     systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
@@ -146,6 +148,12 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
         transform: (v: SarakTokenValue) => parseFloat(String(v)) || 0
     },
     cardBorderRadius: { vars: ['--card-radius', '--sarak-card-radius'], unit: 'px' },
+    cardShadowSpread: { vars: ['--sarak-card-shadow-spread'] },
+    cardShadowOffsetX: { vars: ['--sarak-card-shadow-offset-x'], unit: 'px' },
+    cardShadowOffsetY: { vars: ['--sarak-card-shadow-offset-y'], unit: 'px' },
+    cardShadowBlur: { vars: ['--sarak-card-shadow-blur'], unit: 'px' },
+    cardShadowExpansion: { vars: ['--sarak-card-shadow-expansion'], unit: 'px' },
+    switchStyleType: { vars: ['--sarak-switch-style-type'], attr: 'data-sx-switch-style-type' },
 
     borderBeamEnabled: { attr: 'data-border-beam' },
     secondaryModuleId: { attr: 'data-sec-module' },
@@ -182,8 +190,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     sidebarNoiseOpacity: { vars: ['--sarak-sidebar-noise-opacity'] },
     topbarNoiseOpacity: { vars: ['--sarak-topbar-noise-opacity'] },
 
-    atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
-
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
     scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
@@ -195,7 +201,7 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     // Novas Integrações v11.0 (Security & Atmosphere)
     securityShieldGlow: { vars: ['--sarak-security-glow'], unit: 'px' },
     securityPulseSpeed: { vars: ['--sarak-security-pulse'], unit: 's' },
-    noiseIntensity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'], transform: (v: SarakTokenValue) => (parseFloat(String(v)) || 0) / 100 },
+    bgNoiseDensity: { vars: ['--sarak-noise-density'] },
     
     // Configurações de Sistema
     industrialRegistry: { attr: 'data-industrial-registry' }

@@ -8,6 +8,13 @@ import type { EChartsTheme } from '../useEChartsTheme';
 /** Tema de chart já resolvido (cores/flags), produzido por `useEChartsTheme`. */
 export type ChartTheme = EChartsTheme;
 
+/** Cor que um token de série resolve neste tema: marca pela paleta derivada, estado pela cor de estado. */
+export function resolveChartColorToken(theme: ChartTheme, token: ChartColorToken): string {
+    const brandIndex = (CHART_BRAND_TOKENS as readonly string[]).indexOf(token);
+    if (brandIndex >= 0) return theme.palette[brandIndex] ?? theme.primaryColor;
+    return theme.statusColors[token as ChartStatusToken] ?? theme.primaryColor;
+}
+
 /** Item de dado de série: dataset externo, lido por chave dinâmica. */
 export type SarakChartDataItem = Record<string, unknown>;
 
@@ -16,13 +23,24 @@ export type SarakChartType =
     | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst'
     | 'histogram' | 'boxplot' | 'waterfall' | 'sankey' | 'calendar';
 
-/** Tokens de cor do design que formam a paleta categórica, na ordem em que as séries os recebem. */
-export const CHART_COLOR_TOKENS = [
-    'chartColorPalette', 'secondaryColor', 'accentColor', 'statusSuccessColor',
-    'statusWarningColor', 'statusErrorColor', 'statusInfoColor', 'tertiaryColor',
-] as const;
+/**
+ * Cores de marca que alimentam a paleta categórica, na ordem em que as quatro primeiras
+ * séries as recebem. As quatro seguintes são variações derivadas delas (`categoricalPalette`).
+ */
+export const CHART_BRAND_TOKENS = ['chartColorPalette', 'secondaryColor', 'accentColor', 'tertiaryColor'] as const;
+
+/**
+ * Cores de estado. Ficam FORA da paleta automática — uma série que não pediu "sucesso"
+ * não pinta de verde —, e só chegam a uma série por escolha explícita (`series[].color`)
+ * ou por semântica do próprio gráfico (alta/baixa, aumento/redução).
+ */
+export const CHART_STATUS_TOKENS = ['statusSuccessColor', 'statusWarningColor', 'statusErrorColor', 'statusInfoColor'] as const;
+
+export const CHART_COLOR_TOKENS = [...CHART_BRAND_TOKENS, ...CHART_STATUS_TOKENS] as const;
 
 export type ChartColorToken = typeof CHART_COLOR_TOKENS[number];
+export type ChartBrandToken = typeof CHART_BRAND_TOKENS[number];
+export type ChartStatusToken = typeof CHART_STATUS_TOKENS[number];
 
 /** Subset da config de chart lido pelos builders (chaves de leitura de série). */
 export interface ChartBuilderConfig {

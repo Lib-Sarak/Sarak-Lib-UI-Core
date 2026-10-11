@@ -45,6 +45,10 @@ const CHART_PALETTE = ['cornflowerblue', 'darkorchid', 'coral', 'seagreen', 'ora
 const CHART_THEME = {
     baseOption: {},
     palette: CHART_PALETTE,
+    statusColors: {
+        statusSuccessColor: 'seagreen', statusWarningColor: 'orange',
+        statusErrorColor: 'crimson', statusInfoColor: 'dodgerblue',
+    },
     primaryColor: CHART_PALETTE[0],
     secondaryColor: CHART_PALETTE[1],
     textColor: 'slategray',

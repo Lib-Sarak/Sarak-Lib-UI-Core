@@ -76,6 +76,14 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `corpo-pequeno`: `bodySize` = 12px, o corpo de texto de 11 dos 14 temas, que o campo não pode herdar no celular.
  *   - `movimento-reduzido`: `reducedMotion` ligado.
  *   - `navegacao-celular-base` / `navegacao-celular-gaveta`: `mobileNavigationStyle` forçado em `bottom` ou `drawer`.
+ *   - `fundo-nenhum` / `fundo-linear` / `fundo-linear-45` / `fundo-radial` / `fundo-mesh`: `bgGradientMode` (e o ângulo).
+ *   - `material-<frosted|sleek|industrial|organic>`: `surfaceMaterial`, com intensidade alta para o efeito aparecer.
+ *   - `sombra-neutra` / `sombra-colorida` / `sombra-ambiente`: `shadowColorMode` sobre uma primária vermelha e um fundo claro,
+ *     para a cor da sombra se distinguir do preto.
+ *   - `sombra-dura`: a geometria da sombra do cartão (`cardShadow*`) em sombra dura deslocada.
+ *   - `tom-neutro` / `tom-cyber` / `tom-tatico`: `systemTone`.
+ *   - `tema-claro`: modo claro com fundo e cartão brancos e cor de textura escura.
+ *   - `atomo-switch-assimetrico` / `atomo-switch-pulso`: `switchStyleType` (o vidro é `atomo-glass`).
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -95,6 +103,25 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'atomo-frosted': { btnStyleType: 'frosted' },
     'atomo-neumorphism': { inputShadow: 'neumorphism' },
     'atomo-glass': { switchStyleType: 'glass' },
+    'atomo-switch-assimetrico': { switchStyleType: 'asymmetric' },
+    'atomo-switch-pulso': { switchStyleType: 'pulsing' },
+    'fundo-nenhum': { bgGradientMode: 'none' },
+    'fundo-linear': { bgGradientMode: 'linear', bgGradientAngle: 90 },
+    'fundo-linear-45': { bgGradientMode: 'linear', bgGradientAngle: 45 },
+    'fundo-radial': { bgGradientMode: 'radial' },
+    'fundo-mesh': { bgGradientMode: 'mesh' },
+    'material-frosted': { surfaceMaterial: 'frosted', surfaceIntensity: 0.9 },
+    'material-sleek': { surfaceMaterial: 'sleek', surfaceIntensity: 0.9 },
+    'material-industrial': { surfaceMaterial: 'industrial', surfaceIntensity: 0.9 },
+    'material-organic': { surfaceMaterial: 'organic', surfaceIntensity: 0.9 },
+    'sombra-neutra': { shadowColorMode: 'neutral', primaryColor: '#e11d48', colorBgBody: '#d6dbe6' },
+    'sombra-colorida': { shadowColorMode: 'colored', primaryColor: '#e11d48', colorBgBody: '#d6dbe6' },
+    'sombra-ambiente': { shadowColorMode: 'ambient', primaryColor: '#e11d48', colorBgBody: '#d6dbe6' },
+    'sombra-dura': { cardShadowOffsetX: 8, cardShadowOffsetY: 8, cardShadowBlur: 0, cardShadowExpansion: 0 },
+    'tom-neutro': { systemTone: 'none' },
+    'tom-cyber': { systemTone: 'cyber' },
+    'tom-tatico': { systemTone: 'tactical' },
+    'tema-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textureColor: '#1f2937' },
     'toque-alvo-largo': { touchTargetMin: 56 },
     'corpo-pequeno': { bodySize: '12px' },
     'movimento-reduzido': { reducedMotion: true },
@@ -194,6 +221,9 @@ const App: React.FC = () => {
  *   - `navegacao-celular`: o cromo com 4 destinos e um conteúdo mais alto que a janela, cujo último item é
  *     `data-probe="ultimo-item"` — a cena em que se mede a barra da base no celular.
  *   - `navegacao-celular-7`: o mesmo cromo com 7 destinos, acima do teto de 5 da barra em `auto`.
+ *   - `alternadores`: dois `SarakSwitch`, um desligado e um ligado — a cena em que se mede o estilo do alternador.
+ *   - `texturas-claras`: um cartão por textura de cartão que desenhava em branco fixo, cada um sob o atributo
+ *     `data-sx-card-texture-type` da própria textura — a cena em que se mede a cor delas em superfície clara.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -399,6 +429,25 @@ const MobileNavigationScene: React.FC<{ itemCount: number }> = ({ itemCount }) =
     </SarakAppChrome>
 );
 
+const SwitchesScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="alternador-desligado"><SarakSwitch aria-label="Alternador desligado" /></div>
+        <div data-probe="alternador-ligado"><SarakSwitch checked readOnly aria-label="Alternador ligado" /></div>
+    </div>
+);
+
+const FIXED_WHITE_TEXTURES = ['brushed', 'frosted', 'topo-deep', 'prism-mesh', 'blueprint-pro', 'wave-pulse'] as const;
+
+const LightTexturesScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        {FIXED_WHITE_TEXTURES.map((texture) => (
+            <div key={texture} data-probe={`textura-${texture}`} data-sx-card-texture-type={texture}>
+                <SarakTitleCard item={{ nome: texture }} mapping={SCENE_MAPPING} />
+            </div>
+        ))}
+    </div>
+);
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -418,6 +467,8 @@ const SCENES: Record<string, React.FC> = {
     'gantt-altura': GanttHeightScene,
     'gantt-intervalo': GanttRangeScene,
     'calendario-tom': CalendarToneScene,
+    alternadores: SwitchesScene,
+    'texturas-claras': LightTexturesScene,
 };
 
 function renderScene(Scene: React.FC): React.ReactElement {

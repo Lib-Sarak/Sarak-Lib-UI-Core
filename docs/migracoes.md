@@ -100,6 +100,33 @@ compilando e renderizando, mas o arrasto trocou de motor e **quem usa o quadro p
 | `SarakKanbanCard` só com `id`, `title` e `description`. | Campos opcionais novos: `code`, `assignee`, `priority` (`'low' \| 'medium' \| 'high' \| 'urgent'`), `dueDate` e `subtasks`. **Um cartão do consumidor que já tenha um campo com um desses nomes e outro tipo passa a dar erro de tipo.** |
 | Sem criar cartão, abrir cartão nem gerir coluna. | Eventos opcionais `onCardClick`, `onCardAdd`, `onColumnAdd`, `onColumnRename` e `onColumnDelete`: cada um, quando passado, liga o controle dele. Sem o evento, sem o controle. |
 
+### Todo token visual que o painel oferece passa a mudar a tela: gradiente, material, sombra, tom, alternador, ruído, fontes, texturas e paleta dos gráficos
+
+**Classificação: MAJOR (sai na 8.0.0).** Duas opções de `systemTone` e dois tokens de ruído saem do schema, o valor das
+fontes dos temas embarcados muda, a paleta automática dos gráficos deixa de usar cor de status e vários efeitos que
+o painel já oferecia passam a aparecer (mudar um default é MAJOR). Nenhum nome saiu do barril público nem mudou de
+tipo; o tipo `SarakDesignTokens` perde duas chaves e ganha quatro.
+
+Um gate novo (`npm run token-reader:check`) passa a travar o motivo: valor que o motor emite e que ninguém lê.
+
+| Antes | Depois |
+|---|---|
+| `bgGradientMode` e `bgGradientAngle` emitiam variáveis que nenhum CSS lia: escolher "Linear", "Radial" ou "Mesh" não mudava o fundo. | **Desenham.** As paradas saem das cores do tema (fundo, camada, primária e destaque); `mesh` mistura quatro manchas em baixa opacidade. O padrão do token é `linear`, então **um tema que não definia o gradiente passa a ter um fundo em gradiente**; `bgGradientMode: 'none'` devolve o fundo chapado. |
+| `surfaceMaterial` (`frosted`, `sleek`, `industrial`, `organic`) virava um atributo cujas regras CSS conheciam outros quatro nomes: nenhuma opção desenhava. | Os quatro **desenham nos cartões**: vidro com desfoque e saturação, reflexo diagonal, chapa com veio e bisel, fosco sem brilho. A intensidade vem de `surfaceIntensity`. |
+| `shadowColorMode` (`neutral`, `colored`, `ambient`) tinha regras para `match` e `adaptive`; a geometria da sombra do cartão era fixa em `0 20px 50px -12px`. | A cor desenha: preta, tingida pela primária ou derivada do fundo. A geometria vira quatro tokens novos (`cardShadowOffsetX`, `cardShadowOffsetY`, `cardShadowBlur`, `cardShadowExpansion`), com o padrão **igual ao desenho anterior** (`0 20px 50px -12px`). **`cardShadowSpread` deixa de emitir `px`**: é a opacidade da sombra em %, e a unidade fazia a declaração da sombra base do cartão ser inválida (o navegador a descartava). O cartão passa a ter a sombra base que o tema já pedia. |
+| `systemTone` oferecia `dark`, `light`, `cyber` e `tactical`; só `cyber` desenhava, e `dark`/`light` duplicavam `mode`. | Fica com **`none`** (o padrão, sem tom), **`cyber`** e **`tactical`** (HUD monocromo). Um tema ou preferência salvo com `systemTone: 'dark'` ou `'light'` é **descartado na validação, com o aviso de valor fora do contrato**, e vale `none` — o mesmo desenho de antes. |
+| `switchStyleType` (`tactile`, `asymmetric`, `pulsing`, `glass`) não era lido pelo `SarakSwitch`. | Os quatro estilos desenham. O desfoque de `switchBackdropBlur` passa a existir **só em `glass`**; antes, todo alternador desfocava o fundo do trilho. |
+| Três controles de ruído: `atmosphereNoiseOpacity` e `noiseIntensity` escreviam a mesma variável (`--sarak-noise-opacity`, o último vencia) e `bgNoiseDensity` escrevia outra (`--sarak-noise-density`). | **Um só: `bgNoiseDensity`**, que governa o grão de filme sobre a tela e o padrão `texture: noise`. `atmosphereNoiseOpacity` e `noiseIntensity` **saem do schema**; o valor salvo deles é descartado com aviso e vale o padrão. A variável `--sarak-noise-opacity` deixa de ser emitida. |
+| Os temas embarcados escreviam `Orbitron`, `Chakra Petch`, `VT323` e `Fira Code`, que a lib não carrega, e o valor num formato (`"Inter", sans-serif`) que o painel não reconhecia como opção. | O carregador de fontes passa a ser derivado de `THEME_FONTS`: toda fonte oferecida é carregada. Os temas embarcados usam o valor exato da lista (`'Inter', sans-serif`); as quatro fontes não carregadas foram trocadas pela mais próxima da lista. |
+| Seis texturas (`brushed`, `frosted`, `topo-deep`, `prism-mesh`, `blueprint-pro`, `wave-pulse`) pintavam em branco fixo e sumiam em superfície clara. | Pintam com a cor de textura do tema, como as outras 35, e aparecem nos dois modos. |
+| A paleta automática dos gráficos usava as quatro cores de status como séries 4 a 7: a 4ª série pintava de "sucesso". | A paleta é **derivada das cores de marca** (primária, secundária, destaque e terciária, mais variações delas), ajustada à faixa de luminosidade do modo, ao piso de croma, ao contraste e à separação entre vizinhas (inclusive sob daltonismo). **A cor de cada série automática muda** em todo gráfico com mais de três séries — e, quando a cor de marca está fora do critério, também nas primeiras. Cor de status só chega a uma série por escolha explícita (`series[].color: 'statusSuccessColor'`, que segue valendo) ou pela semântica do próprio gráfico (waterfall, candlestick). |
+| `cardVariant` aparecia no modo Impacto do painel como estilo. | Sai do modo Impacto: escolhe **qual cartão** o `SarakCardGrid` desenha, não um estilo. O token e seus valores não mudam. |
+
+**O que fazer:** quem quer o fundo chapado de antes define `bgGradientMode: 'none'` em `config`; quem lia
+`--sarak-noise-opacity` na própria folha de estilo lê `--sarak-noise-density`; quem salvou `atmosphereNoiseOpacity`,
+`noiseIntensity` ou `systemTone: 'dark' | 'light'` não precisa fazer nada (o aviso some ao regravar o tema). Um teste
+que fixava a cor de uma série de gráfico lê a cor da paleta derivada, não a do token.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

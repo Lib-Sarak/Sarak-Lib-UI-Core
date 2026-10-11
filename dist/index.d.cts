@@ -75,7 +75,6 @@ interface SarakDesignTokens {
     animInstant: number;
     animNormal: number;
     animSlow: number;
-    atmosphereNoiseOpacity: number;
     authHeroOrbBlur: number;
     badgeRadius: number;
     bgBaseColor: string;
@@ -158,6 +157,10 @@ interface SarakDesignTokens {
     cardSearchPlaceholderColor: string;
     cardSearchTextFocusColor: string;
     cardShadow: string;
+    cardShadowBlur: number;
+    cardShadowExpansion: number;
+    cardShadowOffsetX: number;
+    cardShadowOffsetY: number;
     cardShadowSpread: number;
     cardSpotlightOpacity: number;
     cardSurfaceOpacity: number;
@@ -353,7 +356,6 @@ interface SarakDesignTokens {
     navbarLayout: string;
     navigationStyle: string;
     navItemActiveColor: string;
-    noiseIntensity: number;
     pageTransitionType: string;
     preferenceFontSizePosition: string;
     preferenceLanguagePosition: string;
@@ -847,8 +849,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "29dfb52";
-    readonly builtAt: "2026-10-11T06:19:59.714Z";
+    readonly baseCommitShort: "393743e";
+    readonly builtAt: "2026-10-11T18:02:09.312Z";
 };
 
 interface SarakDesignScopeProps {

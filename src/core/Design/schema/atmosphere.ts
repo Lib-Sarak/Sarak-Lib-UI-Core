@@ -164,15 +164,14 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'systemTone',
             label: 'Tom do Ambiente',
             type: 'select',
-            description: 'Tom cromático geral do ambiente, além do simples claro/escuro de `mode` — Cibernético e Militar Tático imprimem uma personalidade cromática própria (não só luminosidade) a toda a paleta.',
+            description: 'Personalidade gráfica do fundo, além do claro/escuro de `mode` — Neutro não acrescenta nada; Cibernético desenha uma grade de HUD e um brilho de horizonte na cor de textura; Militar Tático desenha o mesmo HUD em monocromo, de saturação baixa. Escuro e Claro não são tons: quem escolhe o modo é `mode`.',
             axis: 'color',
             options: [
-                { value: 'dark', label: 'Escuro Profundo' },
-                { value: 'light', label: 'Claro Cromado' },
+                { value: 'none', label: 'Neutro (sem tom)' },
                 { value: 'cyber', label: 'Cibernético' },
                 { value: 'tactical', label: 'Militar Tático' }
             ],
-            defaultValue: 'dark',
+            defaultValue: 'none',
             cssVars: ['--sarak-system-tone']
         },
 
@@ -198,30 +197,10 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-bg-pattern-opacity', '--theme-texture-opacity']
         },
         {
-            id: 'atmosphereNoiseOpacity',
-            label: 'Opacidade do Ruído da Atmosfera',
-            type: 'slider',
-            description: 'Opacidade de um overlay de ruído/grão aplicado sobre toda a atmosfera de fundo — dá uma sensação analógica/filmica sutil. Nota: compartilha as mesmas `cssVars` de `noiseIntensity` (ambos escrevem `--sarak-noise-opacity`) — pendência de duplicação a investigar fora do escopo desta spec.',
-            axis: 'texture',
-            constraints: { min: 0, max: 1, step: 0.01 },
-            defaultValue: 0.05,
-            cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
-        },
-        {
-            id: 'noiseIntensity',
-            label: 'Intensidade de Ruído',
-            type: 'slider',
-            description: 'Intensidade do overlay de ruído — mesmo efeito visual de `atmosphereNoiseOpacity`. Nota: token declara as mesmas `cssVars` de `atmosphereNoiseOpacity` (`--sarak-noise-opacity`), portanto um sobrescreve o outro em runtime dependendo da ordem de processamento — pendência de duplicação a investigar fora do escopo desta spec (documentado, não corrigido).',
-            axis: 'texture',
-            constraints: { min: 0, max: 1, step: 0.01 },
-            defaultValue: 0.05,
-            cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
-        },
-        {
             id: 'bgNoiseDensity',
-            label: 'Densidade de Ruído (BG)',
+            label: 'Intensidade do Ruído (Grão)',
             type: 'slider',
-            description: 'Densidade (quantidade de grãos por área) do padrão de ruído de fundo — diferente de opacidade, controla o quão "granulado fino vs. grosso" é o efeito.',
+            description: 'Intensidade do grão de filme aplicado sobre toda a tela e do padrão de ruído de fundo (`texture: noise`) — 0 desliga; valores baixos dão uma sensação analógica sutil, valores altos tornam o grão o traço dominante. É o único controle de ruído do fundo.',
             axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,

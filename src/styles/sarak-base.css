@@ -12,6 +12,7 @@
    padrao da lib. O porque de ser subcamada de `components` esta em `_elements.css`. */
 @import "./_elements.css" layer(components.sarak-elements);
 @import "./_touch.css" layer(components.sarak-elements);
+@import "./_background.css" layer(components.sarak-elements);
 @import "./_theme.css" layer(sarak-lib);
 @import "./_colors.css" layer(sarak-lib);
 @import "./_base.css" layer(sarak-lib);

@@ -49,7 +49,7 @@ describe('Caracterização — minimalist-airy antes/depois da reconciliação (
 
         expect(result.easeOut).toBe('cubic-bezier(0, 0, 0.2, 1)');
         expect(result.surfaceMaterial).toBe('sleek');
-        expect(result.systemTone).toBe('light');
+        expect(result.systemTone).toBe('none');
         expect(result.shadowColorMode).toBe('neutral');
         expect(result.btnStyleType).toBe('matte');
         expect(result.cardVariant).toBe('classic');
@@ -69,7 +69,7 @@ describe('Caracterização — minimalist-airy antes/depois da reconciliação (
         expect(result.colorBgBody).toBe('#F9FAFB');
         expect(result.cardBorderRadius).toBe(0);
         expect(result.cardRadiusTL).toBe(32);
-        expect(result.headingFont).toBe('"Inter", sans-serif');
+        expect(result.headingFont).toBe("'Inter', sans-serif");
         expect(result.h1Size).toBe(36);
         expect(result.borderType).toBe('solid');
         expect(result.btnRadiusTL).toBe(120);

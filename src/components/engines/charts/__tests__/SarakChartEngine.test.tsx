@@ -78,9 +78,9 @@ afterEach(() => vi.restoreAllMocks());
 
 describe('tokens do tema do gráfico', () => {
     it('usa chartColorPalette como primeira cor da série', () => {
-        const option = readOption({ type: 'bar' }, { chartColorPalette: 'cornflowerblue' });
-        expect(option.color).toEqual(expect.arrayContaining(['cornflowerblue']));
-        expect((option.color as string[])[0]).toBe('cornflowerblue');
+        const option = readOption({ type: 'bar' }, { chartColorPalette: '#2a78d6' });
+        expect(option.color).toEqual(expect.arrayContaining(['#2a78d6']));
+        expect((option.color as string[])[0]).toBe('#2a78d6');
     });
 
     it('aplica chartGridOpacity às linhas dos eixos', () => {
@@ -139,23 +139,23 @@ describe('props visuais do motor', () => {
         const option = readOption({
             type: 'area',
             config: { title: 'Receita', showAnimation: false, showGradients: false, thickness: PROP_LINE_THICKNESS },
-        }, { chartColorPalette: 'darkorchid', chartThickness: 2 });
+        }, { chartColorPalette: '#9b4fd6', chartThickness: 2 });
         const series = firstSeries(option);
 
         expect((option.title as Record<string, unknown>).text).toBe('Receita');
         expect(option.animation).toBe(false);
         expect((series.lineStyle as Record<string, unknown>).width).toBe(PROP_LINE_THICKNESS);
-        expect((series.areaStyle as Record<string, unknown>).color).toBe('darkorchid');
+        expect((series.areaStyle as Record<string, unknown>).color).toBe('#9b4fd6');
     });
 
     it('desliga gradientes também na barra', () => {
         const option = readOption({ type: 'bar', config: { showGradients: false } }, {
-            chartColorPalette: 'darkorchid',
+            chartColorPalette: '#9b4fd6',
         });
         const series = firstSeries(option);
         const emphasis = series.emphasis as Record<string, unknown>;
-        expect((series.itemStyle as Record<string, unknown>).color).toBe('darkorchid');
-        expect((emphasis.itemStyle as Record<string, unknown>).color).toBe('darkorchid');
+        expect((series.itemStyle as Record<string, unknown>).color).toBe('#9b4fd6');
+        expect((emphasis.itemStyle as Record<string, unknown>).color).toBe('#9b4fd6');
     });
 });
 

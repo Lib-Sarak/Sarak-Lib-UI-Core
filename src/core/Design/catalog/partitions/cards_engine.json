@@ -918,8 +918,8 @@
   },
   {
     "tokenId": "cardShadowSpread",
-    "name": "Espalhamento da Sombra do Card",
-    "description": "A distância e desfoque da projeção de sombra do cartão no ambiente.",
+    "name": "Opacidade da Sombra do Card",
+    "description": "Opacidade, em %, da sombra base do cartão. A cor vem de shadowColorMode e a geometria dos quatro tokens cardShadow*.",
     "type": "number",
     "importance": 70,
     "categories": [
@@ -944,7 +944,140 @@
       "max": 200
     },
     "relatedTokens": [
-      "cardGlowIntensity"
+      "cardGlowIntensity",
+      "shadowColorMode",
+      "cardShadowOffsetX",
+      "cardShadowOffsetY",
+      "cardShadowBlur",
+      "cardShadowExpansion"
+    ]
+  },
+  {
+    "tokenId": "cardShadowOffsetX",
+    "name": "Sombra do Card: Deslocamento X",
+    "description": "Deslocamento horizontal, em pixels, da sombra base do cartão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth",
+      "geometry"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-offset-x"
+    ],
+    "allowedValues": {
+      "min": -60,
+      "max": 60
+    },
+    "relatedTokens": [
+      "cardShadowSpread"
+    ]
+  },
+  {
+    "tokenId": "cardShadowOffsetY",
+    "name": "Sombra do Card: Deslocamento Y",
+    "description": "Deslocamento vertical, em pixels, da sombra base do cartão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth",
+      "geometry"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-offset-y"
+    ],
+    "allowedValues": {
+      "min": -60,
+      "max": 60
+    },
+    "relatedTokens": [
+      "cardShadowSpread"
+    ]
+  },
+  {
+    "tokenId": "cardShadowBlur",
+    "name": "Sombra do Card: Desfoque",
+    "description": "Desfoque, em pixels, da sombra base do cartão; 0 dá a sombra dura.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth",
+      "geometry"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardShadowSpread"
+    ]
+  },
+  {
+    "tokenId": "cardShadowExpansion",
+    "name": "Sombra do Card: Expansão",
+    "description": "Expansão (spread), em pixels, da sombra base do cartão; negativa contrai.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth",
+      "geometry"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-expansion"
+    ],
+    "allowedValues": {
+      "min": -40,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardShadowSpread"
     ]
   },
   {
@@ -1142,7 +1275,6 @@
   },
   {
     "tokenId": "cardVariant",
-    "visualImpact": "cards",
     "name": "Variante de Card",
     "description": "Estilo pré-definido arquitetural do cartão (Ex: Classic, Sleek Title, Action).",
     "type": "select",

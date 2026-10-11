@@ -62,9 +62,9 @@ export const buildCandlestickSeries = (
             data: validItems.map(({ values }) => [values[0], values[1], values[2], values[3]]),
             itemStyle: {
                 color: theme.primaryColor,
-                color0: theme.palette[5],
+                color0: theme.statusColors.statusErrorColor,
                 borderColor: theme.primaryColor,
-                borderColor0: theme.palette[5],
+                borderColor0: theme.statusColors.statusErrorColor,
             },
         }],
     };

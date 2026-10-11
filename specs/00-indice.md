@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "110"
+proximo_numero_plan: "113"
 ---
 
 # 0. O que é este arquivo
@@ -42,14 +42,18 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
+| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-112-o-resto-do-arsenal-desenha | 🟠 Em revisão | specs/09-temas-e-presets.md |
+| 2 | [plan-111-todo-token-visual-desenha](plan/plan-111-todo-token-visual-desenha.md) | Fazer cada token visual que o painel oferece desenhar o que promete, gradiente, material de superficie, cor e forma da sombra, tom do sistema, estilo do switch, ruido, fontes, texturas em tema claro e paleta de graficos, e impedir por gate que um valor emitido pelo motor volte a ficar sem leitor | — | 🟢 Aprovado | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/03-superficie-publica.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 3 | [plan-112-o-resto-do-arsenal-desenha](plan/plan-112-o-resto-do-arsenal-desenha.md) | Fazer os tokens visuais que a plan-111 deixou na excecao do gate desenharem, o desfoque de vidro do cartao funcionar no navegador e a cor de textura chegar a todas as texturas, e estender o token-reader ao schema inteiro, sem excecao restante | plan-111-todo-token-visual-desenha | 🟡 Em execução | arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> ✅ **A fila zerou em 2026-10-11.** As plans 104 a 109 foram executadas, aprovadas, sintetizadas e removidas; o
-> repositório está pronto para o merge na `main` e a tag 8.0.0.
+> 🚦 **Despacho de 2026-10-11 — 112, sozinha na árvore**, depois da aprovação da 111. A `plan-110` (lote 0 aprovado) espera
+> a 112. O `npm run build` e o `cromo-css-real:check` precisam de rede: quem os roda é o revisor; o executor escreve os casos
+> de `browser-tests/`.
 
 > ⚪ **A `plan-109` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
 >

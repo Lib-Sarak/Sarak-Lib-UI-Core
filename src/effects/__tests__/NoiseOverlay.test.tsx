@@ -26,7 +26,7 @@ describe('NoiseOverlay', () => {
     });
 
     it('a opacidade vem do token, com fallback 0 — invisível até o tema pedir', () => {
-        expect(montar().className).toContain('opacity-[var(--sarak-noise-opacity,0)]');
+        expect(montar().className).toContain('opacity-[var(--sarak-noise-density,0)]');
     });
 
     it('a textura é um SVG inline: nenhuma requisição de rede', () => {

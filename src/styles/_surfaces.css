@@ -1,29 +1,49 @@
-/* 3.1 SURFACE MASTER (v8.5 INDUSTRIAL MATERIALS) */
+/* 3.1 SURFACE MASTER — MATERIAIS DA SUPERFÍCIE */
 :root {
     --surface-intensity: var(--sarak-surface-intensity, 0.05);
 }
 
-/* Metallic */
-[data-surface="metallic"]::before {
-    opacity: 1 !important;
-    background: linear-gradient(135deg, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 0%, rgba(255,255,255,calc(var(--surface-intensity) * 0.2)) 25%, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 50%, rgba(255,255,255,calc(var(--surface-intensity) * 0.15)) 75%, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 100%);
-    background-size: 400% 400%; mix-blend-mode: soft-light;
+/* Leitor de `surfaceMaterial` (`data-sx-surface-material`) e de `surfaceIntensity`.
+   O motor emite o atributo no `html`/`body`; o material pinta as SUPERFÍCIES — cartões e
+   painéis —, nunca o fundo da página. Cada material mexe só no que o torna reconhecível
+   (brilho, desfoque, relevo) e deixa cor, raio e borda ao tema.
+
+   `!important` porque `[data-sx-texture] .sarak-card` (`_atmosphere.css`) e `.sarak-card`
+   (`_cards.css`) já escrevem `background`/`backdrop-filter` com `!important`: entre
+   importantes, vence a de maior especificidade e, empatando, a que vem depois. Esta
+   regra tem a mesma especificidade e vem depois. Escreve `background-image`, não o
+   atalho `background`, para a cor do cartão continuar sendo a do tema.
+
+   Só `backdrop-filter`, sem a forma `-webkit-` ao lado: o build funde as duas num único
+   `-webkit-backdrop-filter` e a propriedade sem prefixo — a que o navegador computa — some. */
+
+/* Vidro fosco: translúcido, com desfoque forte e saturação. */
+[data-sx-surface-material="frosted"] :is(.sarak-card, .bg-theme-card) {
+    backdrop-filter: blur(calc(8px + var(--surface-intensity, 0.5) * 32px)) saturate(160%) !important;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.18 + var(--glass-opacity, 0.1) * 0.4)), rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.04))) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.3)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
 
-/* Brushed */
-[data-surface="brushed"]::before {
-    opacity: 1 !important;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 0px, rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 1px, transparent 1px, transparent 3px), linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
-    mix-blend-mode: overlay;
+/* Polido: liso e reflexivo, com um reflexo diagonal e uma quina de luz. */
+[data-sx-surface-material="sleek"] :is(.sarak-card, .bg-theme-card) {
+    background-image: linear-gradient(115deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.24)) 0%, rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.14)) 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.4)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
 
-/* Acrylic */
-[data-surface="acrylic"] { backdrop-filter: blur(40px) saturate(220%) contrast(110%) !important; }
-[data-surface="acrylic"]::before { opacity: 1 !important; background: radial-gradient(at top left, rgba(255,255,255,calc(var(--surface-intensity) * 1.5)), transparent 70%); }
+/* Industrial: chapa metálica — veio fino, bisel claro em cima e escuro embaixo. */
+[data-sx-surface-material="industrial"] :is(.sarak-card, .bg-theme-card) {
+    background-image:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 0, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.14)), rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.22))) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.35)), inset 0 -2px 0 rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.7)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
+}
 
-/* Matte */
-[data-surface="matte"] { background-color: var(--card-bg) !important; backdrop-filter: none !important; }
-[data-surface="matte"]::before { display: none; }
+/* Orgânico: fosco e macio — sem desfoque nem brilho, só uma sombra interna suave. */
+[data-sx-surface-material="organic"] :is(.sarak-card, .bg-theme-card) {
+    backdrop-filter: none !important;
+    background-image: radial-gradient(120% 120% at 30% 20%, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.06)), transparent 62%) !important;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.16)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
+}
 
 /* 3.2 NEO-BORDERS (v6.0) */
 [data-border="inlet"] .bg-theme-card, [data-border="inlet"] .sarak-shell-sidebar, [data-border="inlet"] .sarak-shell-header {
@@ -35,14 +55,6 @@
 }
 [data-border="beveled"] .bg-theme-card, [data-border="beveled"] .sarak-shell-sidebar, [data-border="beveled"] .sarak-shell-header {
     border-top: 1px solid rgba(255,255,255,0.25) !important; border-left: 1px solid rgba(255,255,255,0.2) !important; border-bottom: 3px solid rgba(0,0,0,0.6) !important; border-right: 3px solid rgba(0,0,0,0.5) !important;
-}
-
-/* 8. ADVANCED MATERIALS (v6.8) */
-[data-surface="metallic"] .sarak-card, [data-surface="metallic"] section {
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.05) 100%) !important; border: 1px solid rgba(255,255,255,0.15) !important; box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), var(--dynamic-shadow);
-}
-[data-surface="brushed"] .sarak-card {
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 2px), color-mix(in srgb, var(--card-bg), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
 }
 
 /* 9. NEO-BORDERS (v6.8) */
@@ -62,5 +74,19 @@
 [data-shadow-orientation="inner"] .sarak-card, [data-shadow-orientation="inner"] .bg-theme-card {
     box-shadow: inset 0 2px 10px rgba(0,0,0,calc(var(--shadow-intensity) * 0.5)) !important;
 }
-[data-shadow-color-mode="match"] { --dynamic-shadow: 0 10px 40px -10px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), var(--shadow-intensity, 0.5)); }
-[data-shadow-color-mode="adaptive"].dark { --dynamic-shadow: 0 15px 50px -15px rgba(0,0,0,0.8); }
+
+/* 11. COR DA SOMBRA — leitor de `shadowColorMode` (`data-sx-shadow-color-mode`).
+   Escolhe a COR da sombra base do cartão (`_cards.css` a compõe com a geometria dos
+   tokens `cardShadow*` e a opacidade `cardShadowSpread`). Sem o atributo vale o preto. */
+[data-sx-shadow-color-mode="neutral"] {
+    --sarak-card-shadow-color: #000;
+}
+/* Tingida pela primária: a sombra de um cartão ganha a cor da marca. */
+[data-sx-shadow-color-mode="colored"] {
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #3b82f6) 88%, #000);
+}
+/* Ambiente: derivada do fundo — o fundo do tema escurecido, sem virar preto puro nem
+   marca. Em tema claro vira um cinza suave; em tema escuro, quase preto. */
+[data-sx-shadow-color-mode="ambient"] {
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #0a0a0c)) 45%, #000);
+}

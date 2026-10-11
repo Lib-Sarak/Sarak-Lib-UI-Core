@@ -90,11 +90,11 @@ describe('múltiplas barras', () => {
             type: 'bar',
             data: [{ name: 'A', actual: CURRENT_SERIES_VALUE, forecast: FORECAST_SERIES_VALUE }],
             series: [{ key: 'actual' }, { key: 'forecast' }],
-        }, { chartColorPalette: 'crimson', secondaryColor: 'dodgerblue' });
+        }, { chartColorPalette: '#c0392b', secondaryColor: '#2a78d6' });
         const series = option.series as Array<Record<string, unknown>>;
 
         expect(series).toHaveLength(2);
-        expect(series.map(readSeriesColor)).toEqual(['crimson', 'dodgerblue']);
+        expect(series.map(readSeriesColor)).toEqual(['#c0392b', '#2a78d6']);
     });
 });
 

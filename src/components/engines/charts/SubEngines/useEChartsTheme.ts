@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { CHART_COLOR_TOKENS } from './builders/types';
+import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
+import { CHART_STATUS_TOKENS } from './builders/types';
+import type { ChartStatusToken } from './builders/types';
+import { deriveCategoricalPalette } from './categoricalPalette';
+import type { PaletteMode } from './categoricalPalette';
+import { rgbToHex } from './oklch';
 
 const CHART_THEME_FALLBACK_COLOR = '#3b82f6';
+const SURFACE_FALLBACK: Record<PaletteMode, string> = { light: '#fcfcfb', dark: '#1a1a19' };
+const RGB_CHANNEL_MAX = 255;
 const DEFAULT_CHART_GRID_OPACITY = 0.05;
 const DEFAULT_CHART_THICKNESS = 2;
 const DEFAULT_CHART_FONT_SIZE = 11;
@@ -30,6 +37,8 @@ export interface EChartsBaseOption extends Record<string, unknown> {
 export interface EChartsTheme {
     baseOption: EChartsBaseOption;
     palette: string[];
+    /** Cores de estado, FORA da paleta: só semântica de alta/baixa ou escolha explícita da série. */
+    statusColors: Record<ChartStatusToken, string>;
     primaryColor: string;
     secondaryColor: string;
     textColor: string;
@@ -62,8 +71,27 @@ function resolveDesignColor(value: unknown): string {
     return typeof value === 'string' && value.trim() ? value : CHART_THEME_FALLBACK_COLOR;
 }
 
+/** Qualquer cor CSS opaca que o motor sabe ler → `#rrggbb`. */
+function toHex(value: unknown): string {
+    const color = resolveDesignColor(value);
+    const parseable = /^(#|rgb|hsl)/i.test(color.trim());
+    const { r, g, b } = parseToRgba(parseable ? color : CHART_THEME_FALLBACK_COLOR);
+    return rgbToHex([r / RGB_CHANNEL_MAX, g / RGB_CHANNEL_MAX, b / RGB_CHANNEL_MAX]);
+}
+
 function resolvePalette(design: ResolvedDesign): string[] {
-    return CHART_COLOR_TOKENS.map((token) => resolveDesignColor(design[token]));
+    const mode: PaletteMode = design.mode === 'light' ? 'light' : 'dark';
+    const surface = design.colorBgBody ? toHex(design.colorBgBody) : SURFACE_FALLBACK[mode];
+    return deriveCategoricalPalette({
+        brand: [design.chartColorPalette, design.secondaryColor, design.accentColor, design.tertiaryColor].map(toHex),
+        mode,
+        surface,
+    });
+}
+
+function resolveStatusColors(design: ResolvedDesign): Record<ChartStatusToken, string> {
+    const entries = CHART_STATUS_TOKENS.map((token) => [token, resolveDesignColor(design[token])] as const);
+    return Object.fromEntries(entries) as Record<ChartStatusToken, string>;
 }
 
 function resolveThemeSettings(design: ResolvedDesign): ChartThemeSettings {
@@ -73,6 +101,7 @@ function resolveThemeSettings(design: ResolvedDesign): ChartThemeSettings {
     const bodyFont = design.bodyFont || 'Inter';
     return {
         palette,
+        statusColors: resolveStatusColors(design),
         primaryColor: palette[0],
         secondaryColor: palette[1],
         textColor: resolveDesignColor(design.textColorSecondary),

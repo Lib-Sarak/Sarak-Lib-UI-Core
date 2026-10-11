@@ -275,14 +275,57 @@ export const CardSchema: ComponentSchema = {
         // --- EFEITOS & GLOW ---
         {
             id: 'cardShadowSpread',
-            label: 'Espalhamento da Sombra',
+            label: 'Opacidade da Sombra do Card',
             type: 'slider',
-            description: 'Espalhamento (spread), em pixels, da sombra base do card — valores maiores aumentam a área ocupada pela sombra antes do desfoque, dando mais presença/peso ao card.',
+            description: 'Opacidade da sombra base do card, em % (0 a 200; 20 = 20%) — a cor vem de `shadowColorMode` e a geometria de `cardShadowOffsetX`, `cardShadowOffsetY`, `cardShadowBlur` e `cardShadowExpansion`. Valores altos dão peso e presença ao card.',
             axis: 'elevation',
-            unit: 'px',
             constraints: { min: 0, max: 200 },
             defaultValue: 20,
             cssVars: ['--sarak-card-shadow-spread']
+        },
+        {
+            id: 'cardShadowOffsetX',
+            label: 'Sombra: Deslocamento Horizontal',
+            type: 'slider',
+            description: 'Deslocamento horizontal da sombra base do card, em pixels — 0 centraliza; valores positivos jogam a sombra para a direita (a sombra dura deslocada do brutalismo, combinada a Desfoque 0).',
+            axis: 'elevation',
+            unit: 'px',
+            constraints: { min: -60, max: 60 },
+            defaultValue: 0,
+            cssVars: ['--sarak-card-shadow-offset-x']
+        },
+        {
+            id: 'cardShadowOffsetY',
+            label: 'Sombra: Deslocamento Vertical',
+            type: 'slider',
+            description: 'Deslocamento vertical da sombra base do card, em pixels — valores positivos a jogam para baixo (luz vinda de cima). No hover, a sombra desce mais 10px.',
+            axis: 'elevation',
+            unit: 'px',
+            constraints: { min: -60, max: 60 },
+            defaultValue: 20,
+            cssVars: ['--sarak-card-shadow-offset-y']
+        },
+        {
+            id: 'cardShadowBlur',
+            label: 'Sombra: Desfoque',
+            type: 'slider',
+            description: 'Desfoque (blur) da sombra base do card, em pixels — 0 dá a sombra dura e recortada; valores altos a difundem numa névoa macia.',
+            axis: 'elevation',
+            unit: 'px',
+            constraints: { min: 0, max: 120 },
+            defaultValue: 50,
+            cssVars: ['--sarak-card-shadow-blur']
+        },
+        {
+            id: 'cardShadowExpansion',
+            label: 'Sombra: Expansão',
+            type: 'slider',
+            description: 'Expansão (spread) geométrica da sombra base do card, em pixels — negativa encolhe a sombra para dentro do card (elevação contida); positiva a engorda para além das bordas.',
+            axis: 'elevation',
+            unit: 'px',
+            constraints: { min: -40, max: 40 },
+            defaultValue: -12,
+            cssVars: ['--sarak-card-shadow-expansion']
         },
         {
             id: 'cardGlowColor',

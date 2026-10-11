@@ -18,28 +18,58 @@ function wrapperWithDesign(design: Record<string, unknown>): React.ComponentType
     return ({ children }) => React.createElement(UIContext.Provider, { value }, children);
 }
 
+const STATUS_COLORS = {
+    statusSuccessColor: '#2e8b57', statusWarningColor: '#ffa500',
+    statusErrorColor: '#dc143c', statusInfoColor: '#1e90ff',
+};
+
 describe('paleta e tokens do tema de gráficos', () => {
-    it('resolve os sete tokens e a paleta categórica do design', () => {
+    it('resolve os tokens do gráfico e deriva a paleta categórica das cores de marca', () => {
         const { result } = renderHook(() => useEChartsTheme(), {
             wrapper: wrapperWithDesign({
-                chartColorPalette: 'cornflowerblue', secondaryColor: 'darkorchid', accentColor: 'coral',
-                statusSuccessColor: 'seagreen', statusWarningColor: 'orange', statusErrorColor: 'crimson',
-                statusInfoColor: 'dodgerblue', tertiaryColor: 'rebeccapurple', chartGridOpacity: GRID_OPACITY,
+                mode: 'light', colorBgBody: '#fcfcfb',
+                chartColorPalette: '#2a78d6', secondaryColor: '#eb6834', accentColor: '#1baf7a', tertiaryColor: '#8a6cc2',
+                ...STATUS_COLORS, chartGridOpacity: GRID_OPACITY,
                 chartShowGrid: false, chartTooltipBg: 'mediumseagreen', chartType: 'bar',
                 chartThickness: LINE_THICKNESS, chartSmoothing: false,
             }),
         });
 
-        expect(result.current.palette).toEqual([
-            'cornflowerblue', 'darkorchid', 'coral', 'seagreen',
-            'orange', 'crimson', 'dodgerblue', 'rebeccapurple',
-        ]);
+        expect(result.current.palette).toHaveLength(8);
+        expect(result.current.palette[0]).toBe('#2a78d6');
+        expect(result.current.primaryColor).toBe(result.current.palette[0]);
+        expect(result.current.secondaryColor).toBe(result.current.palette[1]);
         expect(result.current.chartGridOpacity).toBe(GRID_OPACITY);
         expect(result.current.chartShowGrid).toBe(false);
         expect(result.current.chartTooltipBg).toBe('mediumseagreen');
         expect(result.current.chartType).toBe('bar');
         expect(result.current.chartThickness).toBe(LINE_THICKNESS);
         expect(result.current.chartSmoothing).toBe(false);
+    });
+});
+
+describe('cores de estado fora da paleta', () => {
+    it('nenhuma cor de estado entra nas séries automáticas, e elas seguem disponíveis em statusColors', () => {
+        const { result } = renderHook(() => useEChartsTheme(), {
+            wrapper: wrapperWithDesign({
+                mode: 'dark', colorBgBody: '#1a1a19',
+                chartColorPalette: '#2a78d6', secondaryColor: '#eb6834', accentColor: '#1baf7a', tertiaryColor: '#8a6cc2',
+                ...STATUS_COLORS,
+            }),
+        });
+
+        for (const status of Object.values(STATUS_COLORS)) {
+            expect(result.current.palette).not.toContain(status);
+        }
+        expect(result.current.statusColors).toEqual(STATUS_COLORS);
+    });
+
+    it('o modo claro e o escuro derivam paletas diferentes da mesma marca', () => {
+        const brand = { chartColorPalette: '#2a78d6', secondaryColor: '#eb6834', accentColor: '#1baf7a', tertiaryColor: '#8a6cc2' };
+        const light = renderHook(() => useEChartsTheme(), { wrapper: wrapperWithDesign({ mode: 'light', colorBgBody: '#ffffff', ...brand }) });
+        const dark = renderHook(() => useEChartsTheme(), { wrapper: wrapperWithDesign({ mode: 'dark', colorBgBody: '#0b0f17', ...brand }) });
+
+        expect(light.result.current.palette).not.toEqual(dark.result.current.palette);
     });
 });
 
@@ -62,11 +92,11 @@ describe('tipografia e espaçamento do tema', () => {
 });
 
 describe('fallback do tema', () => {
-    it('usa uma cor de fallback única quando o design não traz cores', () => {
+    it('sem cores no design, deriva a paleta das cores de reserva e a repassa ao ECharts', () => {
         const { result } = renderHook(() => useEChartsTheme(), { wrapper: wrapperWithDesign({}) });
 
         expect(result.current.palette).toHaveLength(8);
-        expect(new Set(result.current.palette).size).toBe(1);
         expect(result.current.baseOption.color).toEqual(result.current.palette);
+        expect(result.current.statusColors.statusSuccessColor).toMatch(/^#/);
     });
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
+import { resolveSwitchStyles } from './switchStyles';
 
 /**
  * Hook para centralizar e abstrair o cálculo de estilos dinâmicos baseados no Design Engine.
@@ -128,33 +129,7 @@ export const useAtomicStyles = () => {
     const getSwitchStyles = (
         design: SarakThemePayload | undefined,
         checked: boolean
-    ) => {
-        const activeBg = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6))';
-        const thumbBg = 'var(--sarak-switch-thumb, #ffffff)';
-        const blurAmount = design?.switchBackdropBlur || 4;
-        const styleType = design?.switchStyleType || 'tactile';
-
-        const trackStyle: React.CSSProperties = {
-            backgroundColor: checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1))',
-        };
-
-        if (blurAmount > 0) {
-            trackStyle.backdropFilter = `blur(${blurAmount}px)`;
-            trackStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-        }
-
-        if (styleType === 'glass') {
-            trackStyle.backgroundColor = checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1))';
-            trackStyle.border = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';
-        }
-
-        const thumbStyle: React.CSSProperties = {
-            backgroundColor: thumbBg,
-            transform: checked ? 'translateX(100%)' : 'translateX(0)',
-        };
-
-        return { trackStyle, thumbStyle };
-    };
+    ) => resolveSwitchStyles(design, checked);
 
     // Cor da marca (check, traço, ponto) que assenta sobre o fundo ativo do controle.
     const getChoiceMarkColor = (): string => 'var(--sarak-switch-thumb, #ffffff)';

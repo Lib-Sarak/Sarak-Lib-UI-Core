@@ -1,6 +1,6 @@
 import * as builders from './optionBuilders';
 import { buildAxisOptions, buildTitleOption, buildTooltipOption } from './axisOptions';
-import { CHART_COLOR_TOKENS } from './builders/types';
+import { resolveChartColorToken } from './builders/types';
 import type {
     ChartBuilderConfig, ChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartType,
 } from './builders/types';
@@ -8,7 +8,6 @@ import type {
 const SERIES_CHART_TYPES = ['bar', 'line', 'area'] as const;
 const DEFAULT_STACK_NAME = 'chart-stack';
 const SELF_CONTAINED_TYPES: readonly SarakChartType[] = ['waterfall', 'sankey', 'calendar'];
-const COLOR_TOKEN_NOT_FOUND = -1;
 const DEFAULT_SERIES_INDEX = 0;
 
 type SeriesChartType = typeof SERIES_CHART_TYPES[number];
@@ -81,9 +80,8 @@ export function hasRenderableSeriesData(data: unknown, series: readonly ChartSer
 
 function resolveSeriesColor(color: ChartColorToken | undefined, index: number, theme: ChartTheme): string {
     if (theme.palette.length === 0) return theme.primaryColor;
-    const tokenIndex = color ? CHART_COLOR_TOKENS.indexOf(color) : COLOR_TOKEN_NOT_FOUND;
-    const paletteIndex = tokenIndex === COLOR_TOKEN_NOT_FOUND ? index : tokenIndex;
-    return theme.palette[paletteIndex % theme.palette.length] ?? theme.primaryColor;
+    if (color) return resolveChartColorToken(theme, color);
+    return theme.palette[index % theme.palette.length] ?? theme.primaryColor;
 }
 
 function buildTypeOption(

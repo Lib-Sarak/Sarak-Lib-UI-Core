@@ -117,7 +117,7 @@ export const buildHeatmapSeries = (
         left: 'center',
         bottom: '0%',
         show: false,
-        inRange: { color: [theme.surfaceColor, theme.primaryColor, theme.palette[5]] },
+        inRange: { color: [theme.surfaceColor, theme.primaryColor, theme.statusColors.statusErrorColor] },
     },
     series: [{
         type: 'heatmap',

@@ -18,7 +18,7 @@ vi.mock('echarts-for-react', async () => {
 });
 
 const THEME = {
-    chartColorPalette: 'royalblue',
+    chartColorPalette: '#2a78d6',
     statusSuccessColor: 'seagreen',
     statusErrorColor: 'crimson',
 };

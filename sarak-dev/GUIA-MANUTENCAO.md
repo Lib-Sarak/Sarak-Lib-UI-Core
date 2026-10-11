@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 439 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **439** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 441 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **441** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 439 |
-| `SarakDesignTokens` (tipo público) | ids | 439 |
+| `catalog/partitions/` | tokens | 441 |
+| `SarakDesignTokens` (tipo público) | ids | 441 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (30)
+### B.3 Gates registrados (31)
 
 | Comando | O que roda |
 | --- | --- |
@@ -346,6 +346,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run public-types:check` | `node gates/scripts/contrato/check-public-types-parity.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
+| `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |

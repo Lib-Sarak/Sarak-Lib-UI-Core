@@ -66,8 +66,6 @@ describe('DESIGN_MANIFEST', () => {
         expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
         expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
         expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
-        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('50')).toBe(0.5);
-        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('invalid')).toBe(0);
     });
 
     // `headingLetterSpacing`, `chartPalette`, `useTabularNums`, `scaleRatio`

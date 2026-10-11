@@ -152,6 +152,7 @@ anel1 "paridade doc × código de persistência" "R17 — Não transcrever fonte
 anel1 "merge de classe no átomo"           "R35 — A classe do chamador vence a do átomo" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
 anel1 "porta única de ícones"             "R39 — Todo ícone da lib passa pela porta de ícones" "npm run icon-port:check" gates/scripts/contrato/check-icon-port.mjs
 anel1 "paridade token de cromo × consumidor" "— (05-cromo-e-slots §2.4)" "npm run chrome-token-parity:check" gates/scripts/contrato/check-chrome-token-parity.mjs
+anel1 "leitor de todo valor emitido pelo motor" "R40 — Todo valor que o motor emite tem leitor" "npm run token-reader:check" gates/scripts/contrato/check-token-reader.mjs
 anel1 "citação do rastro de execução"       "R36 — O código não cita o rastro de execução" "npm run trail-citation:check" gates/scripts/contrato/check-trail-citation.mjs --staged
 # `build-info:check` NÃO entra aqui, mesmo motivo do `package:check` (spec 02
 # §4.1): exige `dist/` buildado. Mora só no `gates:full`.

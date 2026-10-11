@@ -50,7 +50,6 @@ describe('useThemeCustomizationData', () => {
         expect(groupFor('bodyFont')).toBe('fontes');
         expect(groupFor('primaryColor')).toBe('cores');
         expect(groupFor('texture')).toBe('fundo');
-        expect(groupFor('cardVariant')).toBe('cards');
         expect(groupFor('bgBaseColor')).toBe('fundo');
         [
             'layoutDensity',
@@ -59,7 +58,9 @@ describe('useThemeCustomizationData', () => {
             'colorBgBody',
             'accentColor',
             'colorPalette',
-            'bgGradientMode'
+            'bgGradientMode',
+            // escolhe QUAL cartão o SarakCardGrid desenha, não um estilo
+            'cardVariant'
         ].forEach((tokenId) => {
             expect(groupFor(tokenId)).toBeUndefined();
         });

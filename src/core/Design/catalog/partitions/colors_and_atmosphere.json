@@ -806,7 +806,7 @@
     "tokenId": "systemTone",
     "visualImpact": "fundo",
     "name": "Tom do Ambiente",
-    "description": "Orientação do clima (dark profundo, claro cromado, cibernético verde).",
+    "description": "Personalidade gráfica do fundo: neutro, cibernético (grade de HUD e brilho de horizonte) ou militar tático (HUD monocromo).",
     "type": "select",
     "importance": 95,
     "categories": [
@@ -828,8 +828,7 @@
       "--sarak-system-tone"
     ],
     "allowedValues": [
-      "dark",
-      "light",
+      "none",
       "cyber",
       "tactical"
     ],
@@ -909,75 +908,9 @@
     ]
   },
   {
-    "tokenId": "atmosphereNoiseOpacity",
-    "name": "Opacidade do Noise Atmosférico",
-    "description": "Visibilidade do ruído visual (granulação) aplicado sobre toda a tela.",
-    "type": "number",
-    "importance": 60,
-    "categories": [
-      "efeitos",
-      "colors-and-atmosphere",
-      "ruído"
-    ],
-    "tags": [
-      "noise",
-      "film-grain",
-      "atmosphere"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-noise-opacity"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 1,
-      "step": 0.05
-    },
-    "relatedTokens": [
-      "noiseIntensity"
-    ]
-  },
-  {
-    "tokenId": "noiseIntensity",
-    "name": "Intensidade do Noise",
-    "description": "Nível de contraste e força da granulação da tela.",
-    "type": "number",
-    "importance": 55,
-    "categories": [
-      "efeitos",
-      "colors-and-atmosphere",
-      "ruído"
-    ],
-    "tags": [
-      "noise",
-      "intensity",
-      "grain"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-noise-intensity"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 1,
-      "step": 0.05
-    },
-    "relatedTokens": [
-      "atmosphereNoiseOpacity"
-    ]
-  },
-  {
     "tokenId": "bgNoiseDensity",
-    "name": "Densidade do Noise de Fundo",
-    "description": "Quão agrupados são os pixels gerados pelo efeito de grain no background.",
+    "name": "Intensidade do Ruído (Grão)",
+    "description": "Intensidade do grão de filme sobre toda a tela e do padrão de ruído de fundo. É o único controle de ruído do fundo; 0 desliga.",
     "type": "number",
     "importance": 50,
     "categories": [
@@ -996,15 +929,15 @@
       "DesignInjector"
     ],
     "cssVariables": [
-      "--sarak-bg-noise-density"
+      "--sarak-noise-density"
     ],
     "allowedValues": {
-      "min": 1,
-      "max": 100,
-      "step": 1
+      "min": 0,
+      "max": 1,
+      "step": 0.01
     },
     "relatedTokens": [
-      "noiseIntensity"
+      "bgNoiseAnimation"
     ]
   },
   {
@@ -1034,7 +967,7 @@
       false
     ],
     "relatedTokens": [
-      "noiseIntensity"
+      "bgNoiseDensity"
     ]
   },
   {
@@ -1363,7 +1296,7 @@
   {
     "tokenId": "shadowColorMode",
     "name": "Modo de Cor da Sombra",
-    "description": "A sombra é puro preto neutro ou sofre tonalização baseada na cor de fundo (tinted).",
+    "description": "Cor da sombra: preto neutro, tingida pela cor primária (colored) ou derivada da cor de fundo (ambient).",
     "type": "select",
     "importance": 65,
     "categories": [
@@ -1382,11 +1315,12 @@
       "DesignInjector"
     ],
     "cssVariables": [
-      "--sarak-shadow-color-mode"
+      "--shadow-color-mode"
     ],
     "allowedValues": [
       "neutral",
-      "tinted"
+      "colored",
+      "ambient"
     ],
     "relatedTokens": [
       "shadowIntensity"
