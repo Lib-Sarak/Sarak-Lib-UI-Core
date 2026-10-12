@@ -38,6 +38,11 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
     const overlayOpacity = design?.imageCardOverlayOpacity ?? 0.5;
     const hoverZoom = design?.imageCardHoverZoom ?? 1.05;
     const hoverStyle = design?.cardHoverStyle || 'lift';
+    // `glow-only` não move o cartão: o brilho é o efeito, então acende na cor primária em vez do
+    // tom quase transparente do brilho de repouso (`cardGlowColor`).
+    const hoverGlowColor = hoverStyle === 'glow-only'
+        ? 'color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent)'
+        : 'var(--sarak-card-glow-color, rgba(0, 242, 255, 0.05))';
     const contentStack = getFlexStyles('column', undefined, undefined, '0px');
 
     return (
@@ -70,7 +75,7 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
 
             {/* Overlay Layer */}
             <div 
-                className="absolute inset-0 transition-opacity duration-300"
+                className="absolute inset-0 transition-opacity duration-[var(--duration-normal,0.3s)]"
                 style={{
                     backgroundColor: 'var(--sarak-card-bg)',
                     opacity: overlayOpacity
@@ -89,9 +94,9 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
             </div>
 
             {/* Hover Glow Effect */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)] pointer-events-none"
                  style={{
-                     boxShadow: `inset 0 0 var(--sarak-image-card-glow-blur, 40px) var(--sarak-card-glow-color, rgba(0,242,255,0.05))`
+                     boxShadow: `inset 0 0 var(--sarak-image-card-glow-blur, 40px) ${hoverGlowColor}`
                  }}
             />
         </motion.div>

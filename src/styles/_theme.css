@@ -97,12 +97,6 @@
                    var(--sarak-btn-radius-bl, var(--radius-btn));
 }
 .rounded-input { border-radius: var(--radius-input); }
-/* Fundo e desfoque do cartão vêm de `_cards.css` e `_card-defaults.css`: a declaração que
-   havia aqui era sempre vencida por elas. */
-.bg-theme-card { 
-    box-shadow: var(--sarak-dynamic-shadow);
-}
-
 .sarak-vignette-layer {
     position: fixed; inset: 0; pointer-events: none; z-index: 9999;
     background: var(--sarak-vignette);

@@ -70,7 +70,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         </div>
 
         <div 
-          className={`shadow-xl border text-[var(--color-theme-title,#ffffff)] transition-all`}
+          className={`shadow-[var(--dynamic-shadow)] border text-[var(--color-theme-title,#ffffff)] transition-all`}
           style={bubbleStyle}
         >
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
@@ -79,13 +79,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         {msg.metadata && (
           <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {msg.metadata.model && (
-              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-mono text-[var(--text-muted,#94a3b8)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-mono text-[var(--text-muted,#94a3b8)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <SarakIcon name="Cpu" size={10} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                 {msg.metadata.model}
               </div>
             )}
             {msg.metadata.reasoning && (
-              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-medium text-[var(--text-muted,#94a3b8)] italic" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-medium text-[var(--text-muted,#94a3b8)] italic" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <SarakIcon name="Search" size={10} />
                 {msg.metadata.reasoning}
               </div>

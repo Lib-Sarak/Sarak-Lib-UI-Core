@@ -86,7 +86,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {/* Mobile Nav Drawer */}
                 {navBar && isMobileNavOpen && (
                     <div className="absolute inset-0 z-50 flex">
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileNavOpen(false)} />
+                        <div className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" onClick={() => setIsMobileNavOpen(false)} />
                         <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-r border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left">
                             <div className="flex justify-end mb-4">
                                 <SarakIconButton
@@ -105,7 +105,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {/* Mobile Side Panel (Bottom Sheet / Right Drawer) */}
                 {sidePanel && sidePanelAsDrawerOnMobile && isSidePanelOpen && (
                     <div className="absolute inset-0 z-50 flex justify-end">
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsSidePanelOpen(false)} />
+                        <div className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" onClick={() => setIsSidePanelOpen(false)} />
                         <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-l border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right">
                             <div className="flex justify-start mb-4">
                                 <SarakIconButton

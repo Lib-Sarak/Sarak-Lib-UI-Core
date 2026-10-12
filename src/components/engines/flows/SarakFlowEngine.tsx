@@ -18,6 +18,12 @@ export interface SarakFlowEngineProps {
     onConnect?: ReactFlowProps['onConnect'];
 }
 
+/** Padrão do grid de fundo por `flowGridStyle`; valor desconhecido cai em pontos (o padrão do token). */
+const GRID_VARIANTS: Record<string, (typeof BackgroundVariant)[keyof typeof BackgroundVariant]> = {
+    dots: BackgroundVariant.Dots,
+    lines: BackgroundVariant.Lines,
+};
+
 /**
  * Sarak Flow Engine v7.0
  * Interactive node-based logic engine powered by ReactFlow.
@@ -36,7 +42,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 className="sarak-flow-instance"
             >
                 <Background 
-                    variant={flowGridStyle === 'lines' ? BackgroundVariant.Lines : BackgroundVariant.Dots} 
+                    variant={GRID_VARIANTS[String(flowGridStyle)] ?? BackgroundVariant.Dots} 
                     gap={24} 
                     size={1} 
                     color={mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} 

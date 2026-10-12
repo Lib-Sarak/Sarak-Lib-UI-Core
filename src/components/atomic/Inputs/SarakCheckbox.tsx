@@ -97,7 +97,7 @@ export const SarakCheckbox: React.FC<SarakCheckboxProps> = ({
                     />
 
                     <div
-                        className="w-5 h-5 rounded transition-all duration-200 flex items-center justify-center border"
+                        className="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
                         style={checkboxStyle}
                     >
                         {isChecked && (

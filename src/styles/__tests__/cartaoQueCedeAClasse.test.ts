@@ -36,7 +36,7 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
     });
 
     it('o padrão cobre raio, traço, largura da borda, desfoque e transição — e não a cor da superfície', () => {
-        const block = bodyOf(defaults, '.sarak-card,\n.bg-theme-card');
+        const block = bodyOf(defaults, '.sarak-card,\n.bg-theme-card {');
         for (const property of ['border-radius', 'border-style', 'border-top-width', 'backdrop-filter', 'transition']) {
             expect(block, property).toContain(`${property}:`);
         }
@@ -53,8 +53,9 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
     });
 });
 
-describe('a superfície do tema chega ao cartão, sem !important', () => {
-    const surface = bodyOf(atmosphere, '[data-sx-texture] .card, [data-sx-texture] .sarak-card');
+describe('a superfície do tema chega ao cartão, na camada que cede, sem !important', () => {
+    const surface = bodyOf(defaults, '.sarak-card,\n.bg-theme-card,\n.card {');
+    const clip = bodyOf(atmosphere, '[data-sx-texture] .card, [data-sx-texture] .sarak-card');
 
     it('o fundo é background-color (o atalho zerava o background-image) e leva a opacidade da superfície', () => {
         expect(surface).toMatch(/background-color: color-mix\(in srgb, var\(--sarak-card-bg[^;]*--sarak-card-opacity/);
@@ -65,19 +66,49 @@ describe('a superfície do tema chega ao cartão, sem !important', () => {
         expect(surface).toMatch(/border-color: color-mix\([^;]*--sarak-card-border-opacity/);
     });
 
-    it('o recorte geométrico lê --sarak-card-clip-path', () => {
-        expect(surface).toMatch(/clip-path: var\(--sarak-card-clip-path, none\);/);
+    it('a superfície vale também sem escopo nem textura (cartão sem tema montado e o .card da lib)', () => {
+        expect(defaults).toMatch(/\.sarak-card,\n\.bg-theme-card,\n\.card \{\n\s*background-color:/);
+    });
+
+    it('o recorte geométrico lê --sarak-card-clip-path e fica na camada final', () => {
+        expect(clip).toMatch(/clip-path: var\(--sarak-card-clip-path, none\);/);
+        expect(clip).not.toMatch(/background-color:|border-color:/);
     });
 
     it('nada disso é !important', () => {
         expect(surface).not.toMatch(/!important/);
+        expect(clip).not.toMatch(/!important/);
         expect(bodyOf(cards, '.sarak-card, .bg-theme-card')).not.toMatch(/!important/);
     });
 
-    it('o piso do cartão sem tema continua em _cards.css: fundo e cor da borda', () => {
+    it('_cards.css não escreve mais a cor do fundo, a da borda nem a opacidade do cartão inteiro', () => {
         const block = bodyOf(cards, '.sarak-card, .bg-theme-card');
-        expect(block).toMatch(/background-color: var\(--sarak-card-bg, var\(--theme-card\)\);/);
-        expect(block).toMatch(/border-color: var\(--sarak-card-border-color, var\(--theme-border\)\);/);
+        expect(block).not.toMatch(/\bbackground-color:/);
+        expect(block).not.toMatch(/\bborder-color:/);
+        expect(block).not.toMatch(/\bopacity:/);
+    });
+
+    it('o fundo ativo do .bg-theme-card cede à classe: mora na camada de baixo, não em _utilities.css', () => {
+        expect(bodyOf(defaults, '.bg-theme-card:active')).toContain('background-color: var(--theme-primary-active);');
+        expect(bodyOf(withoutComments(read('_utilities.css')), '.bg-theme-card:active')).not.toContain('background-color');
+    });
+});
+
+describe('sombra declarada e glow-only', () => {
+    it('cardShadow declarada vira a sombra do cartão (repouso e hover); none deixa a composta valer', () => {
+        expect(cards).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card \{[^}]*--sarak-card-shadow-full:\s*var\(--sarak-card-shadow\)/);
+        expect(cards).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:hover \{[^}]*box-shadow: var\(--sarak-card-shadow-full\)/);
+    });
+
+    it('glow-only acende a camada de brilho e acrescenta o halo, sem mover o cartão', () => {
+        const hover = bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {');
+        expect(hover).toContain('transform: none;');
+        expect(hover).toMatch(/box-shadow:[^;]*--sarak-card-shadow-full[^;]*color-mix/);
+        expect(bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before')).toContain('opacity: 1;');
+    });
+
+    it('o tema não declara box-shadow morto em .bg-theme-card', () => {
+        expect(withoutComments(read('_theme.css'))).not.toMatch(/\.bg-theme-card\s*\{[^}]*box-shadow/);
     });
 });
 

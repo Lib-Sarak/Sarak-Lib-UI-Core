@@ -222,9 +222,9 @@ do cartão e a duração de `motionDuration*` nunca chegavam à tela, e o modo e
 | A transição do cartão era `all 0.3s` e `transform`/`box-shadow` 0,4 s, literais; o brilho do cartão e a camada de textura 0,5 s; `main`/`section` e os títulos 0,4 s; botão e campo 0,2 s. | Leem `--duration-normal`/`--duration-fast`/`--duration-slow`, que `motionDuration*` emite: **o tema passa a mandar na duração.** **No tema padrão**, `transform` e `box-shadow` do cartão sem tema montado passam de 0,4 s a 0,3 s, o brilho e a camada de textura de 0,5 s a 0,6 s, e `main`/`section` e os títulos de 0,4 s a 0,3 s; botão e campo seguem em 0,2 s. |
 | `aurora-classic` fixava `opacity: 0.7 !important` e as cores `#8b5cf6`/`#06b6d4`. | A opacidade lê `textureOpacity`/`cardTextureOpacity` (a reserva é o padrão do token, 0,1) e as cores leem `--theme-secondary`/`--theme-accent`. |
 
-**O que não muda:** a COR do fundo e da borda do cartão continua do tema — uma classe `bg-[…]` ou `border-[…]` que
-repete a cor do tema num `.card` não a apaga, e o `cardSurfaceOpacity` segue valendo. Uma classe de fundo diferente da
-do tema num cartão da lib vence o `hover:bg-*`, não a superfície: use `style` inline ou `!bg-*`.
+**O que não muda:** a COR do fundo e da borda do cartão continua do tema quando o componente não escolhe outra. (Que
+a classe `bg-*`/`border-*` e o `hover:bg-*` do componente passam a vencer a superfície do tema é a nota seguinte, do
+mesmo MAJOR.)
 
 **O que fazer:** quem escreveu `rounded-*`, `border-2` ou `transition-*` num cartão e via o motor vencer passa a ver
 a própria classe; a que não quer, a remove. Um teste seu que lia o `border-radius` ou o `transition` de um
@@ -259,6 +259,40 @@ sem Provider em `#3b82f6` lê `#00f2ff`.
 
 O `variable-contract:check` passa a barrar, em `src/`, variável com mais de um dono (salvo mestre + exceção declarada),
 nome lido que nenhum token, CSS ou código escreve, e reserva diferente do padrão do token.
+
+### O componente lê o token que o nomeia: botão primário e secundário, sombra e superfície do cartão, tabela, sobreposições, alternador, modal, chat e `AuthForm`
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam a cor do
+botão, a superfície e a sombra do cartão, e valores que eram fixos em componente. O padrão visual muda em **dois**
+pontos, ambos marcados abaixo; o resto é o tema passando a mandar.
+
+| Antes | Depois |
+|---|---|
+| O botão primário desenhava `--sarak-primary-color` com texto `--text-muted` (`#94a3b8`): reprovava contraste em 27 das 28 combinações tema × modo (pior 1,06), e `btnPrimaryBg`/`btnPrimaryText` não tinham leitor na lib — só o painel os lia. | Lê **`btnPrimaryBg`** e **`btnPrimaryText`** (padrão `#00f2ff` e `#000000`), no `SarakButton` e no `SarakIconButton`. No `borderline`, o contorno segue a cor primária e o hover preenche com o par do token. **Diferença no tema padrão: o texto do primário passa de cinza a preto sobre o ciano — é a correção de legibilidade.** |
+| O secundário desenhava a cor do cartão; `btnSecondaryBg` só valia nos estilos `neon` e `frosted`, e o `SarakIconButton` os fixava em `rgba(0,0,0,0.4)`/`rgba(255,255,255,0.05)`. O hover usava texto mudo sobre a primária. | Lê **`btnSecondaryBg`** em todo estilo (o `cyberpunk` segue sendo contorno sem preenchimento, por desenho). **Diferença no tema padrão: o secundário passa da cor do cartão a 5% de branco** — o valor do próprio token. O hover usa o par primário legível. |
+| `cardShadow` não tinha leitor: declarar uma sombra não mudava nada, e a descrição do schema prometia que `"none"` desativava a sombra. | Declarada, **é a sombra do cartão** (repouso e hover; o brilho interno continua somado). `none` — o padrão — não declara nada e deixa a sombra composta pelos tokens `cardShadow*` valer. Para tirar a sombra, zere os tokens numéricos. |
+| A superfície do tema (fundo e cor da borda) vencia, por camada, a `bg-*`/`hover:bg-*`/`active:bg-*`/`border-*` do componente e do consumidor; os cartões da lib repetiam `bg-[var(--color-theme-card)]` e `border-[var(--border-color)]`. | A superfície mora na subcamada `components.sarak-elements`, **antes** das utilitárias: **a classe de fundo, o `hover:bg-*`, o `active:bg-*` e a cor de borda do componente e do consumidor vencem.** Os cartões da lib deixaram de repetir a classe de fundo e de cor de borda — a superfície vem do tema, de um lugar só. O recorte geométrico (`clip-path`) segue do tema. |
+| `cardSurfaceOpacity` escrevia `opacity` no cartão inteiro (o texto saía a 80%) **e** na cor do fundo: o efeito vinha dobrado. | Age só na superfície: o cartão fica opaco, o fundo é translúcido — também sem tema montado. **Diferença no tema padrão: o texto e o conteúdo do cartão deixam de sair a 80% de opacidade.** |
+| `cardHoverStyle: 'glow-only'` não acrescentava brilho (e o `SarakImageCard` ainda tirava a sombra). | Acende: a camada de brilho vai a opacidade plena e o cartão ganha um halo na cor primária no hover. |
+| `.bg-theme-card:active` fixava o fundo na camada final (vencia `active:bg-*`), e `.bg-theme-card { box-shadow }` nunca valia (a regra do cartão vinha depois). | O fundo ativo é padrão e cede à classe; a declaração morta saiu. |
+| A tabela desenhava `bg-white/5` no cabeçalho, `hover:bg-white/[0.02]` e `border-white/[0.02]` na linha e `bg-white/5 rounded-md` no esqueleto. | Leem `tableHeaderBg`, `tableRowHoverBg`, `tableBorderColor` e `skeletonRowRadius` (4 px; era `rounded-md`). |
+| As sobreposições do `SarakAnalyticalPage` e do `SarakSpotlight` eram `bg-black/50 backdrop-blur-sm`. | Leem `modalOverlayColor` e `modalOverlayBlur` (o Spotlight, `searchBackdropBlur`). **No tema padrão o véu passa de 50% a 40% de preto**, o valor do token. |
+| O polegar do `PremiumSwitch` era `bg-white`; os botões do modal trocavam o raio do botão por `rounded-md`; as etiquetas do chat eram `rounded-md` e a bolha `shadow-xl`; o aviso, o erro e o fundo do `AuthForm` eram `amber`/`red`/`emerald`; a etiqueta de rascunho dos cartões era `bg-black/60` com sombra ciano fixa; a sombra do `SarakActionCard` era usada como cor de texto. | Leem `switchThumbBg`, `btnBorderRadius`, `chatBubbleRadius` (e a sombra dinâmica do tema), `statusWarningColor`/`statusErrorColor`/`statusSuccessColor`, a cor de cartão e `cardGlowColor`, e a cor primária. |
+| 16 durações de transição eram literais (`duration-200…700`, `120ms`) em alternador, caixa de seleção, rádio, barra de progresso, cromo, brilho dos cartões, imagem e lista de mensagens. | Leem `--duration-fast`/`-normal`/`-slow`, que `motionDuration*` emite. **No tema padrão:** 500 ms e 700 ms viram 0,6 s (brilho dos cartões, camada de brilho da imagem, entrada do estado vazio do chat) e o Kanban passa de 0,12 s a 0,2 s. As animações de `framer-motion` (`duration` em JavaScript) seguem fixas. |
+| `flowGridStyle: 'dots'` só era lido pelo painel. | O `SarakFlowEngine` lê as duas opções por nome. |
+
+**O que fazer:** quem usava `bg-*`/`hover:bg-*` num cartão e via a superfície do tema vencer passa a ver a própria
+classe; quem a escrevia só para repetir a cor do tema pode remover (o `style` inline continua valendo). Quem lia, em
+teste, o texto do primário (`#94a3b8`) lê `#000000`; quem lia a `opacity` do `.sarak-card` lê `1`. Tema que declarava
+`btnPrimaryBg`/`btnPrimaryText` e não os via passa a vê-los: confira o contraste do par.
+
+O motor passa a emitir o atributo `data-sx-<kebab>` também para os tokens de tipo `text` (`cardShadow`, `inputShadow`,
+`sidebarShadow` e `motionEaseMain`/`Out`/`In`): é o que deixa o CSS distinguir uma sombra declarada de `none`. Seis
+atributos novos no `html`/`body` (e na ilha, no Modo Embarcado); nenhum é lido por regra do consumidor.
+
+O `token-reader:check` deixa de contar o painel de customização como leitor de token que tem componente na lib: o
+painel só conta para os tokens declarados em `PANEL_OWN_TOKENS` (a geometria da própria pré-visualização e os que a
+lib ainda não tem componente para consumir), com o motivo de cada um.
 
 ### Exports removidos do barril público
 

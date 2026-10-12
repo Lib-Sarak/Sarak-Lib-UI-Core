@@ -52,7 +52,7 @@ export const useAtomicStyles = () => {
                     ? `0 0 15px ${glowColor}`
                     : `0 0 5px ${glowColor}`;
                 dynamicStyle.border = `1px solid ${glowColor}`;
-                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg)';
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
                 return dynamicStyle;
             }
             
@@ -89,7 +89,7 @@ export const useAtomicStyles = () => {
             }
             
             if (variant === 'secondary') {
-                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg)';
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             }
             return dynamicStyle;
         }

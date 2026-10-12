@@ -169,8 +169,9 @@ export const useDesignVariables = (
                 }
             }
 
-            // Injeção de Atributos de Estado (data-sx-*)
-            if (token.type === 'select' || token.type === 'boolean' || token.type === 'font') {
+            // Injeção de Atributos de Estado (data-sx-*). O `text` entra para o CSS distinguir "declarado" de
+            // `none` (a sombra do cartão): a variável, sozinha, não diz se o tema escreveu algo.
+            if (token.type === 'select' || token.type === 'boolean' || token.type === 'font' || token.type === 'text') {
                 attributes[`data-sx-${kebabId}`] = isResponsiveValue ? String(value.desk) : String(value);
             }
         });

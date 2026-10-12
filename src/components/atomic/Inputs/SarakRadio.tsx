@@ -101,7 +101,7 @@ export const SarakRadio: React.FC<SarakRadioProps> = ({
                     />
 
                     <div
-                        className="w-5 h-5 rounded-full transition-all duration-200 flex items-center justify-center border"
+                        className="w-5 h-5 rounded-full transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
                         style={radioStyle}
                     >
                         {isChecked && (

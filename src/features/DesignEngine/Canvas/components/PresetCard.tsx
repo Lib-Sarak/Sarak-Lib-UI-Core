@@ -58,7 +58,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
         borderTopRightRadius: cornerRadius(design, 'cardRadiusTR'),
         borderBottomRightRadius: cornerRadius(design, 'cardRadiusBR'),
         borderBottomLeftRadius: cornerRadius(design, 'cardRadiusBL'),
-        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-layout-gap-md,16px)'})`,
+        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-card-backdrop-blur, 12px)'})`,
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
             : design.cardShadowSpread

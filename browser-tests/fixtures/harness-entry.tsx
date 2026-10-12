@@ -104,6 +104,11 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `dono-superficie`: `surfaceColor` e `cardBackgroundColor` diferentes — cada um com a própria variável.
  *   - `dono-raio-sistema`: `borderRadius` (5) e `cardBorderRadius` (20) diferentes — cada um com a própria variável.
  *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
+ *   - `componente-botao`: `btnPrimaryBg`/`btnPrimaryText`/`btnSecondaryBg` em três cores distintas e distintas da primária;
+ *     `componente-botao-neon`: o secundário sob o estilo neon (que escreve o fundo por `style`).
+ *   - `componente-sombra`: `cardShadow` declarada (a sombra dura vermelha); `componente-superficie`: `cardSurfaceOpacity` 0,5.
+ *   - `componente-brilho`: `cardHoverStyle` = `glow-only`; `componente-tabela`: os três tokens de cor da tabela em cores
+ *     conhecidas; `componente-duracao`: `motionDurationNormal` = 0,9 s.
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
@@ -184,6 +189,13 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
     'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
     'cascata-raio-catalogo': { catalogSectionRadius: 1 },
+    'componente-botao': { btnPrimaryBg: 'rgb(255, 0, 0)', btnPrimaryText: 'rgb(0, 255, 0)', btnSecondaryBg: 'rgb(0, 0, 255)' },
+    'componente-botao-neon': { btnStyleType: 'neon', btnSecondaryBg: 'rgb(0, 0, 255)' },
+    'componente-sombra': { cardShadow: '10px 10px 0px 0px rgb(255, 0, 0)' },
+    'componente-superficie': { cardSurfaceOpacity: 0.5 },
+    'componente-brilho': { cardHoverStyle: 'glow-only' },
+    'componente-tabela': { tableHeaderBg: 'rgb(1, 2, 3)', tableRowHoverBg: 'rgb(4, 5, 6)', tableBorderColor: 'rgb(7, 8, 9)' },
+    'componente-duracao': { motionDurationNormal: 0.9 },
     'dono-raio-mestre': { cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, btnBorderRadius: { mob: 30, tab: 30, desk: 30 } },
     'dono-raio-canto': {
         cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, cardRadiusTL: { mob: 0, tab: 0, desk: 0 },
@@ -293,6 +305,9 @@ const App: React.FC = () => {
  *   - `texturas-cor`: uma textura por família de leitor da cor de textura (gradiente, máscara de SVG, tecido) e um
  *     elemento `glow-reveal` (a animação que lê a mesma cor).
  *   - `busca`: a paleta `SarakSearch` aberta, cujo painel lê `--dynamic-shadow`.
+ *   - `componente`: o que o componente lê do token — o botão primário e o secundário, um `.sarak-card` puro, com
+ *     classe de fundo e com classe de fundo no hover, um contêiner `.card` com classe de fundo, um cartão interativo,
+ *     a tabela e um alternador.
  *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
  *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
  *     contêiner `.card` sem classe, o `SarakKanban` (fundo por `style` inline em `<section>`/`<article>`) e
@@ -591,6 +606,21 @@ const CascadeScene: React.FC = () => (
     </div>
 );
 
+/** A classe de fundo e a de fundo no hover existem no `dist/sarak.css`: o Tailwind só gera o que os fontes da lib citam. */
+const ComponentScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="botao-primario"><SarakButton>Primário</SarakButton></div>
+        <div data-probe="botao-secundario"><SarakButton variant="secondary">Secundário</SarakButton></div>
+        <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
+        <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,#1e293b)]">Cartão com fundo por classe</div></div>
+        <div data-probe="cartao-classe-hover"><div className="sarak-card hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]">Cartão com fundo no hover</div></div>
+        <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,#1e293b)]">Contêiner com fundo por classe</div></div>
+        <div data-probe="cartao-interativo"><SarakCard interactive>Cartão interativo</SarakCard></div>
+        <div data-probe="tabela"><SarakTable data={SCHEMA_ROWS} columns={[{ key: 'nome', label: 'Nome' }]} responsive={false} /></div>
+        <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
+    </div>
+);
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -616,6 +646,7 @@ const SCENES: Record<string, React.FC> = {
     busca: SearchScene,
     schema: SchemaScene,
     cascata: CascadeScene,
+    componente: ComponentScene,
     'schema-modal': SchemaModalScene,
 };
 

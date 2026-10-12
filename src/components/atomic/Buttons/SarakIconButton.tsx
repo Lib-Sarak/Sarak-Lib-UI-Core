@@ -37,7 +37,9 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';
-    const glowColor = design?.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)';
+    // O brilho é a variável do token (`btnNeonGlowColor`): vale também sob o escopo embarcado, e o perigo
+    // acende na cor de erro do tema, não num vermelho fixo.
+    const glowColor = 'var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4))';
     const blurAmount = design?.btnBackdropBlur || 0;
 
     // Tamanhos estritamente quadrados
@@ -51,18 +53,18 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const baseClasses = `inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
 
     // Computar cores base
-    const baseColor = variant === 'danger' ? 'var(--sarak-status-error-color,#ef4444)' : 'var(--sarak-primary-color,#00f2ff)';
-    const baseTextColor = variant === 'danger' ? 'var(--color-theme-on-primary, #020617)' : 'var(--text-muted,#94a3b8)';
-    const localGlow = variant === 'danger' ? 'rgba(239, 68, 68, 0.5)' : glowColor;
+    const localGlow = variant === 'danger'
+        ? 'color-mix(in srgb, var(--sarak-status-error-color, #ef4444) 50%, transparent)'
+        : glowColor;
 
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {
             'primary': () => {
-                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#00f2ff)] bg-transparent hover:bg-[var(--sarak-primary-color,#00f2ff)] hover:text-[var(--text-muted,#94a3b8)] active:scale-[0.95] text-[var(--sarak-primary-color,#00f2ff)]';
-                const base = 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95]';
+                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#00f2ff)] bg-transparent hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] active:scale-[0.95] text-[var(--sarak-primary-color,#00f2ff)]';
+                const base = 'bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.95]';
                 return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20` : base;
             },
-            'secondary': () => 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#00f2ff)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.95]',
+            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.95]',
             'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
             'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
@@ -93,7 +95,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             'secondary': () => {
                 dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
                 dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
-                dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             },
             'ghost': () => {
                 dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
@@ -118,7 +120,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.backgroundColor = 'rgba(255,255,255,0.05)';
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             }
         };
 

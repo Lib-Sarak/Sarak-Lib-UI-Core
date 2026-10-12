@@ -69,7 +69,7 @@ const ManagementGroupCardContent = <TItem extends Record<string, unknown>>({
     return <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`${containerLayout.className ?? ''} card h-full overflow-hidden rounded-[var(--sarak-card-radius,12px)] border bg-[var(--color-theme-card,#1e293b)]`}
+        className={`${containerLayout.className ?? ''} card h-full overflow-hidden rounded-[var(--sarak-card-radius,12px)] border`}
         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
     >
         <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-white/[0.02]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>

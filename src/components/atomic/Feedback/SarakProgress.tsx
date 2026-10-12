@@ -75,7 +75,7 @@ const ProgressTrack = ({ accessibleLabel, max, value, indeterminate, color }: {
         ) : (
             <div
                 aria-hidden="true"
-                className="h-full transition-[width] duration-300"
+                className="h-full transition-[width] duration-[var(--duration-normal,0.3s)]"
                 style={{ width: `${(value / max) * 100}%`, backgroundColor: color, borderRadius: 'inherit' }}
             />
         )}

@@ -68,10 +68,10 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const authText = (key: AuthLabelKey): string => labels?.[key] ?? text(key);
     
     return (
-        <div className="w-full lg:w-2/5 flex items-center justify-center bg-theme-body border-l border-[var(--border-color,#334155)]-border shadow-[-20px_0_50px_rgba(0,0,0,0.5)] relative" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*2.5)' }}>
+        <div className="w-full lg:w-2/5 flex items-center justify-center bg-theme-body border-l border-[var(--border-color,#334155)] shadow-[-20px_0_50px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_50%,transparent)] relative" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*2.5)' }}>
             {/* Floating Elements in Background */}
             <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-theme-primary/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl animate-pulse [animation-delay:3s]"></div>
+            <div className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-[color-mix(in_srgb,var(--sarak-status-success-color,#10b981)_5%,transparent)] rounded-full blur-3xl animate-pulse [animation-delay:3s]"></div>
 
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -107,12 +107,12 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                             exit={{ opacity: 0, height: 0, y: -20 }}
                             className={`border rounded-xl flex items-center text-sm font-medium shadow-lg transition-all ${
                                 errorVariant === 'warning'
-                                    ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                                    : "bg-red-500/10 border-red-500/20 text-red-400"
+                                    ? "bg-[color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_10%,transparent)] border-[color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_30%,transparent)] text-[var(--sarak-status-warning-color,#f59e0b)]"
+                                    : "bg-[color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_10%,transparent)] border-[color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_20%,transparent)] text-[var(--sarak-status-error-color,#ef4444)]"
                             }`}
                             style={{ gap: 'var(--sarak-layout-gap-sm,8px)', padding: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-lg,24px)' }}
                         >
-                            <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${errorVariant === 'warning' ? "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" : "bg-red-500"}`}></div>
+                            <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${errorVariant === 'warning' ? "bg-[var(--sarak-status-warning-color,#f59e0b)] shadow-[0_0_10px_color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_50%,transparent)]" : "bg-[var(--sarak-status-error-color,#ef4444)]"}`}></div>
                             <span className="flex-1">{error}</span>
                         </motion.div>
                     )}

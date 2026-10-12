@@ -25,6 +25,16 @@
  *        textual não vê o literal junto do id) tem de ter, para CADA opção, um arquivo de
  *        teste que cita o id e o valor: é a prova por opção que a leitura declarada pede.
  *
+ * Regra (iv) — O PAINEL NÃO É LEITOR DE TOKEN QUE TEM COMPONENTE NA LIB. O painel
+ * (`src/features/DesignEngine/`) lê o token para desenhar a pré-visualização; se o componente
+ * real não o lê, o painel mostra uma coisa e a tela outra (foi como `btnPrimaryBg` e
+ * `cardShadow` passaram: "lidos" só pelo painel, enquanto o botão e o cartão reais os
+ * ignoravam). Por isso a leitura do painel não conta para (i) nem (ii). A única exceção é
+ * `PANEL_OWN_TOKENS`: o token que é do próprio painel (geometria da pré-visualização, da
+ * moldura de dispositivo, do painel lateral) ou que a lib ainda não tem componente para
+ * consumir (declarado no schema). Cada entrada traz o MOTIVO, e o gate acusa entrada
+ * obsoleta (token inexistente, já lido por componente da lib, ou que nem o painel lê).
+ *
  * Leitor declarado: o arquivo que guarda a tabela (ou que entrega o valor à propriedade CSS)
  * traz, em comentário, `@sarak-token-reader <id>[, <id>…] tabela` (a tabela cita o literal de
  * cada opção) ou `… direto` (o valor da opção é o próprio valor CSS; não há tabela). Em CSS
@@ -53,9 +63,12 @@
  * 5. (ii) só cobre `select` com `value: '…'` literal no próprio schema (inline ou
  *    constante do mesmo arquivo); `type: 'boolean'`/`font` e opções computadas ficam
  *    fora. Um valor lido por regex ou por prefixo (`startsWith`) não é reconhecido.
- * 6. Leitor em componente = arquivo fora de schema, catálogo, gerados, presets,
- *    testes e do próprio manifesto. O painel de customização conta como leitor: ele
- *    é um consumidor legítimo (renderiza o preview), mas não prova o efeito no app.
+ * 6. Leitor em componente = arquivo fora de schema, catálogo, gerados, presets, testes,
+ *    do próprio manifesto e do PAINEL (`/features/DesignEngine/`, regra iv): o painel só
+ *    conta para os tokens de `PANEL_OWN_TOKENS`. Quem decide que um token é "do painel"
+ *    é a declaração humana em `PANEL_OWN_TOKENS` — o gate não deduz "tem componente na
+ *    lib"; ele confere que, declarado, o token não é lido por componente da lib (senão a
+ *    entrada é obsoleta) e que, não declarado, não é lido SÓ pelo painel.
  * 7. A opção `none` é a AUSÊNCIA do efeito: não há o que ler, e o gate a isenta. Um
  *    token cujo único valor útil é `none` fica invisível aqui.
  * 8. Id lido por chave computada (`design[token]`) não é reconhecido como leitura;
@@ -92,11 +105,55 @@ const escapeRe = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  */
 export const ALLOWLIST = [];
 
+/**
+ * Tokens que o PAINEL lê e que não têm componente da lib para lê-los, cada um com o MOTIVO.
+ * Esvazia sozinha como a `ALLOWLIST`: entrada cujo token já tem leitor na lib, que o painel
+ * nem lê, ou que não existe no schema, é erro (remova). Token que ganhar componente sai
+ * daqui no mesmo commit em que o componente passa a lê-lo.
+ */
+const PREVIEW_GEOMETRY = 'geometria da pré-visualização do painel (cartão de preset, moldura de dispositivo, painel lateral): é o desenho do próprio painel, não de componente da lib';
+const NO_LIB_COMPONENT = 'o schema declara que não há componente da lib que o consuma (pendência de cobertura); só a pré-visualização do painel o lê';
+const NO_TYPE_VARIANT = 'escala tipográfica sem variante de componente da lib que a use; só a pré-visualização do painel a lê';
+export const PANEL_OWN_TOKENS = {
+    securityShieldGlow: NO_LIB_COMPONENT,
+    securityPulseSpeed: NO_LIB_COMPONENT,
+    trackingSubtle: NO_TYPE_VARIANT,
+    typeScaleDisplay: NO_TYPE_VARIANT,
+    cardHoverLift: 'elevação dos cartões de exemplo do "kitchen sink" do painel (o hover dos cartões da lib é `cardHoverTranslate`)',
+    controlHeightToggle: 'altura do toggle exibido no "kitchen sink" do painel',
+    progressBarMaxWidth: 'largura da barra de progresso exibida no "kitchen sink" do painel',
+    layoutPreviewMaxH: PREVIEW_GEOMETRY,
+    designEngineSidebarMinWidth: PREVIEW_GEOMETRY,
+    designEngineSidebarMaxWidth: PREVIEW_GEOMETRY,
+    deviceDesktopMinWidth: PREVIEW_GEOMETRY,
+    deviceFrameRadius: PREVIEW_GEOMETRY,
+    devicePhoneHeight: PREVIEW_GEOMETRY,
+    devicePhoneNotchRadius: PREVIEW_GEOMETRY,
+    deviceTabletHeight: PREVIEW_GEOMETRY,
+    presetCardHoverShadowOffsetY: PREVIEW_GEOMETRY,
+    presetCardShadowBlur: PREVIEW_GEOMETRY,
+    presetCardShadowOffsetY: PREVIEW_GEOMETRY,
+    presetCardShadowSpread: PREVIEW_GEOMETRY,
+    presetGlowShadowBlur: PREVIEW_GEOMETRY,
+    presetGlowShadowBlurLg: PREVIEW_GEOMETRY,
+    presetGridTextureSize: PREVIEW_GEOMETRY,
+    presetMatteShadowBlur1: PREVIEW_GEOMETRY,
+    presetMatteShadowBlur2: PREVIEW_GEOMETRY,
+    presetMatteShadowOffsetY2: PREVIEW_GEOMETRY,
+    presetMatteShadowSpread1: PREVIEW_GEOMETRY,
+    presetMatteShadowSpread2: PREVIEW_GEOMETRY,
+    presetMiniCardHeight: PREVIEW_GEOMETRY,
+    presetMiniCardMaxWidth: PREVIEW_GEOMETRY,
+    presetPreviewMinHeight: PREVIEW_GEOMETRY,
+    presetPreviewPaddingY: PREVIEW_GEOMETRY,
+};
+
 /** Valor de opção que é a ausência do efeito — não há leitor a exigir. */
 const ABSENCE_VALUES = new Set(['none']);
 
 const SCHEMA_DIR = 'src/core/Design/schema';
 const MANIFEST_FILE = 'src/core/Provider/manifest.ts';
+const PANEL_PATH_FRAGMENT = '/features/DesignEngine/';
 const EXCLUDED_PATH_FRAGMENTS = [
     '/__tests__/',
     '/core/Design/schema/',
@@ -231,15 +288,28 @@ function collectMarkers(files) {
     return markers;
 }
 
-/** O que o gate lê: o CSS inteiro de `src/`, os componentes/hooks (TS) fora das camadas excluídas, os leitores declarados e os testes. */
+const isPanelFile = (file) => file.split(path.sep).join('/').includes(PANEL_PATH_FRAGMENT);
+
+/**
+ * O que o gate lê. `css`/`code`/`markers` são a LIB (fora das camadas excluídas e do painel);
+ * `panelCss`/`panelCode` são o painel, que só conta para `PANEL_OWN_TOKENS`.
+ */
 export function collectSources(root) {
     const src = path.join(root, 'src');
-    const rawCss = walk(src, (f) => f.endsWith('.css') && !isExcluded(f)).map((f) => fs.readFileSync(f, 'utf8'));
-    const css = rawCss.join('\n');
-    const rawCode = walk(src, (f) => /\.tsx?$/.test(f) && !/\.d\.ts$/.test(f) && !isExcluded(f))
-        .map((f) => fs.readFileSync(f, 'utf8'));
-    const tests = walk(src, (f) => /\.(tsx?|mjs)$/.test(f) && isTestFile(f)).map((f) => fs.readFileSync(f, 'utf8'));
-    return { css, code: rawCode.map(stripComments), markers: collectMarkers([...rawCode, ...rawCss]), tests };
+    const read = (f) => fs.readFileSync(f, 'utf8');
+    const cssFiles = walk(src, (f) => f.endsWith('.css') && !isExcluded(f));
+    const codeFiles = walk(src, (f) => /\.tsx?$/.test(f) && !/\.d\.ts$/.test(f) && !isExcluded(f));
+    const libCss = cssFiles.filter((f) => !isPanelFile(f)).map(read);
+    const libCode = codeFiles.filter((f) => !isPanelFile(f)).map(read);
+    const tests = walk(src, (f) => /\.(tsx?|mjs)$/.test(f) && isTestFile(f)).map(read);
+    return {
+        css: libCss.join('\n'),
+        code: libCode.map(stripComments),
+        panelCss: cssFiles.filter(isPanelFile).map(read).join('\n'),
+        panelCode: codeFiles.filter(isPanelFile).map(read).map(stripComments),
+        markers: collectMarkers([...libCode, ...libCss]),
+        tests,
+    };
 }
 
 function loadSchemas(root) {
@@ -315,26 +385,64 @@ function markerFindings({ markers, schemas }) {
         .map((id) => ({ kind: 'marker', tokenId: id, detail: '@sarak-token-reader em token inexistente ou sem opções literais' }));
 }
 
-const FINDING_LABEL = { var: 'variável', option: 'opção', test: 'teste da opção', marker: 'declaração' };
+const FINDING_LABEL = { var: 'variável', option: 'opção', test: 'teste da opção', marker: 'declaração', panel: 'declaração do painel' };
+
+/** Achados de leitura (regras i e ii) de UM token sobre as fontes dadas. */
+function unreadFindings({ token, entry, css, code, declared }) {
+    const bySelectOptions = token.type === 'select' && Boolean(token.options);
+    const options = bySelectOptions ? optionFindings({ token, entry, css, code, declared }) : [];
+    const candidates = [...new Set([...entry.vars, ...token.cssVars, `--sarak-${toKebabCase(token.id)}`])];
+    const readByVar = candidates.some((name) => codeHasVar(code, css, name)) || code.some((text) => codeReadsId(text, token.id));
+    const readByAttr = bySelectOptions ? options.length === 0 : cssReadsAttribute(css, token.id);
+    const found = [...options];
+    if (!readByVar && !readByAttr) found.push({ kind: 'var', tokenId: token.id, detail: candidates.join(', ') });
+    return found;
+}
+
+/** Fontes de leitura de UM token: a lib, e o painel só quando o token é declarado em `PANEL_OWN_TOKENS`. */
+function sourcesFor(id, sources, panelTokens) {
+    if (!Object.hasOwn(panelTokens, id)) return { css: sources.css, code: sources.code };
+    return { css: `${sources.css}\n${sources.panelCss}`, code: [...sources.code, ...sources.panelCode] };
+}
+
+/** Entrada de `PANEL_OWN_TOKENS` obsoleta: token inexistente, já lido pela lib, ou que nem o painel lê. */
+function panelFindings({ panelTokens, schemas, manifest, sources }) {
+    const findings = [];
+    for (const id of Object.keys(panelTokens)) {
+        const token = schemas.get(id);
+        if (!token) {
+            findings.push({ kind: 'panel', tokenId: id, detail: 'PANEL_OWN_TOKENS cita token que não existe no schema' });
+            continue;
+        }
+        const entry = manifest[id] ?? { vars: [], attr: null, classPrefix: null };
+        const declared = sources.markers.get(id);
+        const lib = sourcesFor(id, sources, {});
+        const withPanel = sourcesFor(id, sources, panelTokens);
+        if (unreadFindings({ token, entry, declared, ...lib }).length === 0) {
+            findings.push({ kind: 'panel', tokenId: id, detail: 'PANEL_OWN_TOKENS obsoleta: um componente da lib já lê o token — remova a entrada' });
+        } else if (unreadFindings({ token, entry, declared, ...withPanel }).length > 0) {
+            findings.push({ kind: 'panel', tokenId: id, detail: 'PANEL_OWN_TOKENS obsoleta: nem o painel lê o token — remova a entrada' });
+        }
+    }
+    return findings;
+}
 
 /** Todo valor emitido sem leitor. Cada achado: `{ kind, tokenId, value?, detail }`. */
-export function checkTokenReader({ root = ROOT, allowlist = ALLOWLIST } = {}) {
+export function checkTokenReader({ root = ROOT, allowlist = ALLOWLIST, panelTokens = PANEL_OWN_TOKENS } = {}) {
     const manifest = parseManifest(fs.readFileSync(path.join(root, MANIFEST_FILE), 'utf8'));
     const schemas = loadSchemas(root);
-    const { css, code, markers, tests } = collectSources(root);
-    const findings = markerFindings({ markers, schemas });
+    const sources = collectSources(root);
+    const findings = [
+        ...markerFindings({ markers: sources.markers, schemas }),
+        ...panelFindings({ panelTokens, schemas, manifest, sources }),
+    ];
 
     for (const [id, token] of schemas) {
         const entry = manifest[id] ?? { vars: [], attr: null, classPrefix: null };
-        const declared = markers.get(id);
-        const bySelectOptions = token.type === 'select' && Boolean(token.options);
-        const options = bySelectOptions ? optionFindings({ token, entry, css, code, declared }) : [];
-        findings.push(...options);
-        if (bySelectOptions && declared) findings.push(...testFindings({ token, tests }));
-        const candidates = [...new Set([...entry.vars, ...token.cssVars, `--sarak-${toKebabCase(id)}`])];
-        const readByVar = candidates.some((name) => codeHasVar(code, css, name)) || code.some((text) => codeReadsId(text, id));
-        const readByAttr = bySelectOptions ? options.length === 0 : cssReadsAttribute(css, id);
-        if (!readByVar && !readByAttr) findings.push({ kind: 'var', tokenId: id, detail: candidates.join(', ') });
+        const declared = sources.markers.get(id);
+        const { css, code } = sourcesFor(id, sources, panelTokens);
+        findings.push(...unreadFindings({ token, entry, css, code, declared }));
+        if (token.type === 'select' && token.options && declared) findings.push(...testFindings({ token, tests: sources.tests }));
     }
 
     const covers = (a, f) => a.tokenId === f.tokenId && (a.kind === undefined || a.kind === f.kind)

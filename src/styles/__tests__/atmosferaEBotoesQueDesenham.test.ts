@@ -116,7 +116,7 @@ describe('borderStyle — o valor de cada opção chega ao border-style declarad
         const solidFrame = surfaces.slice(surfaces.indexOf('[data-sx-border-type="solid"]'));
         expect(solidFrame.slice(0, solidFrame.indexOf('}'))).toContain('border-style: var(--border-style, solid) !important;');
         expect(read('_card-defaults.css')).toMatch(/border-style: var\(--border-style, solid\);/);
-        expect(read('_atmosphere.css')).toMatch(/border-color: color-mix\(in srgb, var\(--sarak-card-border-color/);
+        expect(read('_card-defaults.css')).toMatch(/border-color: color-mix\(in srgb, var\(--sarak-card-border-color/);
     });
 
     it('os três caminhos de borda declaram border-style a partir de --border-style', () => {

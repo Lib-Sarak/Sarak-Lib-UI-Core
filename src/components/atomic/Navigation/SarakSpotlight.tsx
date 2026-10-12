@@ -119,7 +119,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[9999] flex items-start justify-center pt-[12vh] bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] flex items-start justify-center pt-[12vh] bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]"
             style={{ paddingLeft: 'var(--sarak-layout-gap-md, 16px)', paddingRight: 'var(--sarak-layout-gap-md, 16px)', paddingBottom: 'var(--sarak-layout-gap-md, 16px)' }}
             role="presentation"
             onClick={() => setOpen(false)}

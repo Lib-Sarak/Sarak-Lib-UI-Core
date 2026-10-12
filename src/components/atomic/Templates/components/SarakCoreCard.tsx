@@ -93,7 +93,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
             // plan-41: `@container` plantado aqui — o painel de detalhes abaixo usa
             // `getGridStyles` (classe `@min-[…]`, container query), que precisa de um
             // ancestral com `container-type` para casar.
-            className={`@container ${rootFlex.className} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden`}
+            className={`@container ${rootFlex.className} sarak-card group transition-all h-fit relative overflow-hidden`}
             style={{ 
                 ...rootFlex.style,
                 transitionDuration: 'var(--duration-normal, 0.3s)',
@@ -105,7 +105,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
             data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}
-            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />
             <div className="border-beam-effect" />
 
             <div className="p-theme relative z-10" style={{ padding: 'var(--sarak-layout-gap-lg,24px)' }}>

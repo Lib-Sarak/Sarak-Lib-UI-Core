@@ -93,7 +93,7 @@ interface SarakTableGridHeaderProps<TData extends Record<string, unknown>> {
 const SarakTableGridHeader = <TData extends Record<string, unknown>>({ columns, interactions, selectable, cellDensityClass }: SarakTableGridHeaderProps<TData>): ReactElement => {
     const text = useLibraryText();
     return (
-        <thead><tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
+        <thead><tr className="bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] border-b border-[var(--border-color,#334155)]">
             {selectable && <th className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectAllVisibleRows')} checked={interactions.allVisibleSelected} indeterminate={interactions.partiallySelected} onChange={interactions.toggleAll} /></th>}
             {columns.map((column) => <th key={column.key} className={'text-2xs font-black text-theme-muted uppercase ' + cellDensityClass} style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)', textAlign: column.align ?? 'left' }}><SarakTableSortButton columnId={column.key} label={column.label} sort={interactions.sort} onSort={interactions.changeSort} /></th>)}
         </tr></thead>
@@ -130,7 +130,7 @@ const SarakTableGridRow = <TData extends Record<string, unknown>>({ row, rowKey,
     const text = useLibraryText();
     const { staggerDelay } = useMotionTokens();
     return (
-        <motion.tr key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * staggerDelay }} className={['border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group', zebra && index % 2 === 1 ? ZEBRA_ROW_CLASS : ''].join(' ')} tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
+        <motion.tr key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * staggerDelay }} className={['border-b border-[var(--sarak-table-border,rgba(255,255,255,0.05))] hover:bg-[var(--sarak-table-row-hover,rgba(255,255,255,0.02))] transition-colors group', zebra && index % 2 === 1 ? ZEBRA_ROW_CLASS : ''].join(' ')} tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
             {selectable && <td className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectRow', { row: String(rowKey) })} checked={interactions.selectedKeys.has(rowKey)} onChange={(checked) => interactions.toggleRow(rowKey, checked)} /></td>}
             {columns.map((column) => <td key={column.key} className={['font-medium', 'text-theme-text', density === 'compact' ? 'text-xs' : 'text-sm', cellDensityClass].join(' ')} style={{ textAlign: column.align ?? 'left' }}>{column.render ? column.render(row) : String(row[column.key] ?? '')}</td>)}
         </motion.tr>
@@ -146,7 +146,7 @@ const createSkeletonRows = (columnKeys: string[], selectable: boolean, cellDensi
     Array.from({ length: SKELETON_ROW_COUNT }, (_, rowIndex) => (
         <tr key={'skeleton-' + rowIndex} className="animate-pulse">
             {selectable && <td className={cellDensityClass} />}
-            {columnKeys.map((column) => <td key={'skeleton-' + column} className={cellDensityClass}><div className="h-4 bg-white/5 rounded-md w-3/4" /></td>)}
+            {columnKeys.map((column) => <td key={'skeleton-' + column} className={cellDensityClass}><div className="h-4 bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] rounded-[var(--sarak-skeleton-row-radius,4px)] w-3/4" /></td>)}
         </tr>
     ));
 

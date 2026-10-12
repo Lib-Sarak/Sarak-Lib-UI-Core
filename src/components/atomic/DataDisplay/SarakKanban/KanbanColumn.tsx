@@ -90,7 +90,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
                 borderRadius: 'var(--sarak-card-radius, 12px)',
                 background: 'var(--color-theme-card, var(--sarak-surface-color, transparent))',
                 border: `var(--sarak-border-width, 1px) solid ${isOver ? 'var(--sarak-primary-color, currentColor)' : 'var(--border-color, currentColor)'}`,
-                transition: 'border-color 120ms',
+                transition: 'border-color var(--duration-fast, 0.2s)',
             }}
         >
             <header

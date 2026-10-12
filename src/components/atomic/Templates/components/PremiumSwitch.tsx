@@ -11,7 +11,7 @@ export const PremiumSwitch: React.FC<{ checked: boolean; onChange: () => void }>
     >
         <motion.div 
             layout
-            className="w-4 h-4 rounded-full bg-white shadow-md"
+            className="w-4 h-4 rounded-full bg-[var(--sarak-switch-thumb,#ffffff)] shadow-md"
             animate={{ x: checked ? 16 : 0 }}
             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         />

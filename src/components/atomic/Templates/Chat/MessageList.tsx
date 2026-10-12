@@ -24,7 +24,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
       style={{ flexDirection: 'column', padding: 'var(--sarak-layout-gap-md,16px)', gap: 'var(--sarak-layout-gap-md,16px)' }}
     >
       {messages.length === 0 && (
-        <div className={`${emptyStateStack.className} h-full text-center animate-in fade-in zoom-in duration-700`} style={emptyStateStack.style}>
+        <div className={`${emptyStateStack.className} h-full text-center animate-in fade-in zoom-in duration-[var(--duration-slow,0.6s)]`} style={emptyStateStack.style}>
           <div className="w-20 h-20 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative group/terminal" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>
              <div className="absolute inset-0 bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] rounded-3xl blur-2xl opacity-0 group-hover/terminal:opacity-100 transition-opacity"></div>
             <SarakIcon name="Terminal" size={36} className="text-[var(--sarak-primary-color,#00f2ff)] relative z-10" />

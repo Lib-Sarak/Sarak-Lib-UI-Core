@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
     ALLOWLIST,
+    PANEL_OWN_TOKENS,
     checkTokenReader,
     parseManifest,
     parseSchemaTokens,
@@ -335,7 +336,7 @@ describe('ALLOWLIST', () => {
             { tokenId: 'fontScale', motivo: 'teste' },
         ];
 
-        const { open, stale } = checkTokenReader({ root, allowlist });
+        const { open, stale } = checkTokenReader({ root, allowlist, panelTokens: {} });
 
         expect(open).toEqual([]);
         expect(stale).toEqual([]);
@@ -492,6 +493,80 @@ describe('checkTokenReader — leitor DECLARADO: tabela e passagem direta (regra
         const { open } = checkTokenReader({ root, allowlist: [] });
 
         expect(open).toContainEqual(expect.objectContaining({ kind: 'marker', tokenId: 'tokenInexistente' }));
+    });
+});
+
+describe('checkTokenReader — regra (iv): o painel não é leitor de token que tem componente na lib', () => {
+    const panelRead = {
+        'src/features/DesignEngine/Canvas/Preview.tsx': "export const p = (design) => design.glassBlur;",
+    };
+    const libRead = { 'src/components/atomic/Glass.tsx': "export const g = (design) => design.glassBlur;" };
+    const surfaceRule = { 'src/styles/a.css': '[data-sx-surface-material="frosted"] .x { opacity: 1; }' };
+
+    it('MUTAÇÃO: token lido só pelo painel é achado (o painel mostra uma coisa e a tela outra)', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule, ...panelRead });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: {} });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'var', tokenId: 'glassBlur' }));
+    });
+
+    it('token lido por componente da lib passa, esteja o painel a lê-lo ou não', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule, ...panelRead, ...libRead });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: {} });
+
+        expect(open.filter((f) => f.tokenId === 'glassBlur')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: opção lida só por literal no painel é achado', () => {
+        const root = createFixtureRoot({
+            ...baseFiles,
+            'src/features/DesignEngine/Canvas/Preview.tsx': "export const p = (design) => design.surfaceMaterial === 'frosted';",
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: {} });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'option', tokenId: 'surfaceMaterial', value: 'frosted' }));
+    });
+
+    it('o token declarado em PANEL_OWN_TOKENS tem o painel como leitor', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule, ...panelRead });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: { glassBlur: 'geometria do próprio painel' } });
+
+        expect(open.filter((f) => f.tokenId === 'glassBlur')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: entrada obsoleta — o token já é lido por componente da lib', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule, ...panelRead, ...libRead });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: { glassBlur: 'geometria do próprio painel' } });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'panel', tokenId: 'glassBlur' }));
+    });
+
+    it('MUTAÇÃO: entrada obsoleta — nem o painel lê o token', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: { glassBlur: 'geometria do próprio painel' } });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'panel', tokenId: 'glassBlur' }));
+    });
+
+    it('MUTAÇÃO: entrada para token que não existe no schema é achado', () => {
+        const root = createFixtureRoot({ ...baseFiles, ...surfaceRule, ...libRead });
+
+        const { open } = checkTokenReader({ root, allowlist: [], panelTokens: { tokenFantasma: 'motivo qualquer' } });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'panel', tokenId: 'tokenFantasma' }));
+    });
+
+    it('toda entrada de PANEL_OWN_TOKENS traz motivo', () => {
+        for (const [id, motivo] of Object.entries(PANEL_OWN_TOKENS)) {
+            expect(typeof id).toBe('string');
+            expect(motivo.length, `motivo de ${id}`).toBeGreaterThan(20);
+        }
     });
 });
 

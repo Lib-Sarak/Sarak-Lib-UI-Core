@@ -99,11 +99,11 @@ const ModalWizardFooter = ({
     const text = useLibraryText();
     return (
         <div className="flex w-full items-center justify-between">
-            <SarakButton type="button" variant="ghost" onClick={onBack} disabled={stepIndex === 0} className="text-sm normal-case font-normal tracking-normal rounded-md disabled:opacity-50" style={WIZARD_BUTTON_STYLE}>
+            <SarakButton type="button" variant="ghost" onClick={onBack} disabled={stepIndex === 0} className="text-sm normal-case font-normal tracking-normal disabled:opacity-50" style={WIZARD_BUTTON_STYLE}>
                 {text('modalWizardBack')}
             </SarakButton>
             <span className="text-xs text-[var(--theme-muted)]">{stepIndex + 1} / {steps.length}</span>
-            <SarakButton type="button" variant="ghost" onClick={onAdvance} className="text-sm normal-case font-normal tracking-normal rounded-md" style={WIZARD_BUTTON_STYLE}>
+            <SarakButton type="button" variant="ghost" onClick={onAdvance} className="text-sm normal-case font-normal tracking-normal" style={WIZARD_BUTTON_STYLE}>
                 {stepIndex === lastStep ? text('modalWizardFinish') : text('modalWizardNext')}
             </SarakButton>
         </div>
@@ -119,7 +119,7 @@ const ModalHeader = ({
         <div className={clsx('border-b border-[var(--theme-border)] bg-black/10', headerClass)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
             {title && <h2 id={titleId} className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h2>}
             {!hideCloseButton && (
-                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-white rounded-md hover:bg-white/10', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
+                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-white hover:bg-white/10', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
             )}
         </div>
     );

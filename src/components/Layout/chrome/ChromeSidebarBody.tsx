@@ -100,7 +100,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 {isVisible && (
                     <aside
                         {...surfaceProps}
-                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-300 ${resolveChromeAsidePositionClass(sidebarPosition)}`}
+                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
                             width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
                             // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a

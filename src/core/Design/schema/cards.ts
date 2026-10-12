@@ -471,7 +471,7 @@ export const CardSchema: ComponentSchema = {
             id: 'cardShadow',
             label: 'Sombra do Card (CSS)',
             type: 'text',
-            description: 'Definição CSS completa de `box-shadow` do card — permite compor sombras arbitrárias (múltiplas camadas) que os tokens numéricos individuais não cobrem. "none" desativa qualquer sombra.',
+            description: 'Definição CSS completa de `box-shadow` do card — permite compor sombras arbitrárias (múltiplas camadas) que os tokens numéricos individuais não cobrem. Declarada, substitui a sombra composta pelos tokens `cardShadow*` (em repouso e no hover); "none" (o padrão) não declara nada e deixa essa sombra composta valer.',
             axis: 'elevation',
             defaultValue: 'none',
             cssVars: ['--sarak-card-shadow']

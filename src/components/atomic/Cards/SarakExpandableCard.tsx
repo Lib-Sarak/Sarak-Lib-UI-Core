@@ -51,7 +51,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+            <div className={`${layout.containerClass} sarak-card border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className={layout.contentClass}>
                 <div className={layout.headerClass}>
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
@@ -124,7 +124,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                                     </div>
                                 </div>
                                 <div
-                                    className={`sarak-card flex-1 w-full relative flex min-h-0 bg-[var(--color-theme-card,#1e293b)] rounded-sarak border border-[var(--border-color,#334155)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}
+                                    className={`sarak-card flex-1 w-full relative flex min-h-0 rounded-sarak border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}
                                     style={{ flexDirection: 'column' }}
                                 >
                                     {children}

@@ -633,19 +633,13 @@
 }
 
 
-/* A SUPERFÍCIE do cartão sob o tema: fundo translúcido (`cardSurfaceOpacity`) e borda com
-   `cardBorderOpacity`. Sem `!important`: o `style` inline do componente a vence, e é
-   `background-color`/`border-color` — não o atalho `background`, que zerava o
-   `background-image` do componente. O raio, a largura da borda, o desfoque e a transição
-   moram em `_card-defaults.css` (camada que cede à classe), e o reset de
-   `main`/`section`/`article` também. Aqui fica ainda o recorte geométrico:
-   `--sarak-card-clip-path` é `none` sem corte (o polígono de `_cards.css`, com corte 0,
-   ainda recortaria a sombra), e `body.is-geometric` (`_utilities.css`) o vence por ser
-   `!important`. */
+/* O RECORTE GEOMÉTRICO do cartão sob o tema. `--sarak-card-clip-path` é `none` sem corte (o
+   polígono de `_cards.css`, com corte 0, ainda recortaria a sombra), e `body.is-geometric`
+   (`_utilities.css`) o vence por ser `!important`. A superfície (cor do fundo e da borda, com as
+   opacidades), o raio, a largura da borda, o desfoque e a transição moram em
+   `_card-defaults.css`, na camada que cede à classe. */
 [data-sx-texture] .card, [data-sx-texture] .sarak-card, [data-sx-texture] .bg-theme-card,
 .sarak-design-scope .card, .sarak-design-scope .sarak-card {
-    background-color: color-mix(in srgb, var(--sarak-card-bg, rgba(15, 23, 42, 0.6)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
-    border-color: color-mix(in srgb, var(--sarak-card-border-color, rgba(255,255,255,0.1)), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
     clip-path: var(--sarak-card-clip-path, none);
 }
 

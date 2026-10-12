@@ -1,19 +1,14 @@
 /* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.5) */
-/* Raio, largura da borda, desfoque e transição do cartão moram em `_card-defaults.css` (subcamada
-   que cede à classe e ao `style` do componente). Aqui fica a SUPERFÍCIE do tema (cor do fundo e
-   da borda, sem `!important`) e o que o componente não escolhe por classe: caixa de
+/* Raio, largura da borda, desfoque, transição e a SUPERFÍCIE do cartão (cor do fundo e da borda,
+   com as opacidades do tema) moram em `_card-defaults.css` (subcamada que cede à classe e ao
+   `style` do componente). Aqui fica o que o componente não escolhe por classe: caixa de
    posicionamento, preenchimento, sombra, brilho e movimento. */
 .sarak-card, .bg-theme-card {
     position: relative;
     isolation: isolate;
     
     padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
-    
-    /* Fundo Base (Sovereign Glass) */
-    background-color: var(--sarak-card-bg, var(--theme-card));
-    border-color: var(--sarak-card-border-color, var(--theme-border));
-    opacity: var(--sarak-card-surface-opacity, 0.8);
-    
+
     /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
        direção de `shadowOrientation` (`--sarak-shadow-dir-x/y`, `_surfaces.css`; sem o
        atributo, para baixo), cor de `shadowColorMode` (sem o atributo, preto) e opacidade de
@@ -76,6 +71,18 @@
         color-mix(in srgb, var(--sarak-card-shadow-color, #000) 60%, transparent);
 }
 
+/* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do
+   cartão — em repouso e sob o ponteiro — no lugar da composta pelos tokens `cardShadow*`; `none`
+   (o padrão) deixa a composta valer. O brilho interno (`cardInnerGlow*`) continua somado. */
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card {
+    --sarak-card-shadow-full:
+        var(--sarak-card-shadow),
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
+}
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card:hover {
+    box-shadow: var(--sarak-card-shadow-full);
+}
+
 /* CARTÃO INTERATIVO: o hover (brilho e movimento) vale só para o cartão cuja superfície inteira
    responde ao ponteiro — o que traz `data-sx-card-interactive="true"` (`SarakTitleCard`,
    `SarakImageCard` e o `SarakCard` com a prop `interactive`). Cartão contêiner (painel de chat,
@@ -90,7 +97,8 @@
 
 /* ESTILO DE HOVER (`cardHoverStyle`): o atributo `data-sx-card-hover-style` vem do motor.
    `lift` sobe `cardHoverTranslate` px (negativo = sobe); `expand` cresce um pouco;
-   `glow-only` não move o cartão (só o brilho acima). */
+   `glow-only` não move o cartão e acende o brilho: a camada de brilho vai a opacidade plena e o
+   cartão ganha um halo na cor primária (a sombra declarada vale, somada ao halo). */
 [data-sx-card-hover-style="lift"] .sarak-card[data-sx-card-interactive="true"]:hover {
     transform: translateY(var(--sarak-card-hover-y, -4px));
 }
@@ -99,6 +107,12 @@
 }
 [data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
     transform: none;
+    box-shadow:
+        var(--sarak-card-shadow-full),
+        0 0 calc(var(--sarak-card-shadow-blur, 50px) * 0.5) color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent);
+}
+[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before {
+    opacity: 1;
 }
 
 /* Movimento reduzido e modo de desempenho: o cartão não se move no hover. */

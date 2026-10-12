@@ -19,7 +19,7 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
         
   </style>
   <div
-    class="mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden "
+    class="mock-container sarak-card group transition-all relative overflow-hidden "
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
@@ -28,7 +28,7 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
     style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
     <div
-      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
     />
     <div
       class="border-beam-effect"

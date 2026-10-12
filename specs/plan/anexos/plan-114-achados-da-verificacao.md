@@ -159,3 +159,16 @@ L5.10 aponta para o schema, não para o tema: "desligado" (`securityPulseSpeed` 
 | L5.11 | painel — controle do raio mestre | com o canto declarado num tema salvo, mover o mestre não muda o canto (o canto é exceção, §L2.1): o controle mostra a relação mestre × canto e permite voltar o canto ao mestre |
 
 > **Correção do anexo (lote 2):** os nomes `--sarak-primary-color-bg`, `--sarak-status-*-color-bg/-border`, `--theme-error-bg`, `--theme-primary-border` e `--theme-secondary-border` de L2.2 **são emitidos** (variantes cromáticas de `generateVariants`); o defeito real deles era a reserva divergente (L2.3).
+
+### Herdado do veredito do lote 3 (2026-10-12)
+
+| # | Lote | Onde | O que fazer |
+|---|---|---|---|
+| L4.4 | 4 | `SarakStats.tsx:105` | `hover:bg-white/[0.04]` passou a aparecer (lote 3) e some no claro |
+| L4.5 | 4 | `MessageBubble.tsx:37-39` | estilo `solid` pinta o texto na mesma cor do fundo |
+| L4.6 | 4 | `SarakIconButton.tsx` (`frosted`) | borda `rgba(255,255,255,0.1)` e sombra preta fixas |
+| L4.7 | 4 | `_cards.css` — `.sarak-card:hover { border-color }` | na camada final, vence `hover:border-*` do componente e do consumidor (mesma classe de L3.16) |
+| L4.8 | 4 | `SarakCatalogGrid.tsx:148` | `hover:border-[var(--border-color,#334155)]-primary/30` é classe quebrada, não gera CSS |
+| L4.9 | 4 | `PremiumSwitch.tsx:9` | `rgba(var(--sarak-primary-color,#00f2ff),0.3)` é inválido: o brilho do alternador ligado não aparece |
+| L4.10 | 4 | `framer-motion` com `duration` literal: `SarakExpandableCard.tsx:88`, `SarakExpandableMatrix.tsx:185`, `SarakPageTransition.tsx:63`, `SarakImageCard.tsx:61`, `AuthForm.tsx:79`, `AuthHero.tsx:34,48`, `SarakTooltip.tsx:185`, `MessageList.tsx:47-49` | ler `motionDuration*` (`useMotionTokens.ts`) e ceder ao movimento reduzido |
+| L5.12 | 5 | `PANEL_OWN_TOKENS` de `check-token-reader.mjs`: `securityShieldGlow`, `securityPulseSpeed`, `trackingSubtle`, `typeScaleDisplay`; e `cardHoverLift` × `cardHoverTranslate` | componente existe → leitor; não existe → sai do schema (com `removedTokenKeys.ts`); duplicata → funde. A lista do painel fica só com o que é de fato do painel |

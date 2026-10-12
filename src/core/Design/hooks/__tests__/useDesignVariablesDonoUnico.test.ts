@@ -107,3 +107,18 @@ describe('o raio do sistema responsivo sobrevive à validação', () => {
         expect(validated.borderRadius).toEqual({ mob: 5, tab: 6, desk: 7 });
     });
 });
+
+describe('token de texto: o CSS distingue "declarado" de none pelo atributo', () => {
+    it('cardShadow emite o atributo data-sx-card-shadow com o valor declarado', () => {
+        const { result } = renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), cardShadow: '0 0 4px red' }));
+
+        expect(result.current.attributes['data-sx-card-shadow']).toBe('0 0 4px red');
+        expect(result.current.variables['--sarak-card-shadow']).toBe('0 0 4px red');
+    });
+
+    it('sem cardShadow declarada o atributo é none (o padrão do token)', () => {
+        const { result } = renderHook(() => useDesignVariables(sarakGetDefaultDesignState()));
+
+        expect(result.current.attributes['data-sx-card-shadow']).toBe('none');
+    });
+});

@@ -3,7 +3,7 @@
 exports[`SarakChart > matches snapshot to ensure no layout regressions during type fixes 1`] = `
 <DocumentFragment>
   <div
-    class="card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)] mocked-container"
+    class="card relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)] mocked-container"
   >
     <div
       class="flex items-center relative z-10"

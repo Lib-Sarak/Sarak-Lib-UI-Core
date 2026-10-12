@@ -22,7 +22,7 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                     style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}
                 >
                     <div
-                        className="card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)] shadow-lg w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
+                        className="card border rounded-[var(--sarak-card-radius,12px)] shadow-lg w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
                         onClick={(e) => e.stopPropagation()}
                         style={{ animationDuration: 'var(--duration-normal, 0.3s)' }}
                     >

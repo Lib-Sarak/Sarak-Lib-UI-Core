@@ -118,7 +118,7 @@ export const SarakChart = <TData extends Record<string, unknown> = Record<string
     const dateKey = mapping?.date ?? 'date';
     const maximum = Math.max(...records.map((item) => numericValue(item, valueKey)), 1);
 
-    return <div className={mergeSarakClasses('card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]', containerLayout.className)} style={containerLayout.style}>
+    return <div className={mergeSarakClasses('card relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]', containerLayout.className)} style={containerLayout.style}>
         <ChartHeading label={label} />
         {loading && hasData && <span className="sr-only" role="status" aria-live="polite">{text('spinnerLoading')}</span>}
         {error && hasData && <SarakDataErrorNotice error={error} onRetry={retry} />}

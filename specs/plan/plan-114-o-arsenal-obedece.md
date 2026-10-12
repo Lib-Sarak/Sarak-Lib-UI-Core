@@ -307,6 +307,94 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 - Não repeti a suíte completa do `vitest` depois do último conserto do gate (decisão acima); a do `playwright` foi repetida com o código final.
 - Não rodei `npm run build`, `cromo-css-real:check` nem o `build:css:scoped` com este código; o `dist/` está intacto no `git status`.
 
+## Resumo da execução — lote 3 (componente) — 2026-10-12
+
+**Resultado:** Concluído (lote 3), com **cinco decisões abertas para o revisor** (itens 1, 2, 3, 4 e 5 de *Decisões e suposições*).
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+(`git status --short` vazio; `HEAD` `596af0ba`, o lote 2 commitado. Nada em `specs/` foi tocado, salvo esta plan: o `status` e este bloco.)
+
+**O que foi feito** (cada item do anexo reconferido no `HEAD` atual)
+- **L3.1** `SarakButton.tsx:62-63` e `SarakIconButton.tsx:61-62`: o primário lê `--sarak-btn-primary-bg` / `--sarak-btn-primary-text` (reservas `#00f2ff`/`#000000`, o padrão dos tokens); no `borderline` o hover preenche com o par. Texto `--text-muted` sobre a primária saiu.
+- **L3.2** `SarakButton.tsx:66`, `SarakIconButton.tsx:65,96,121`, `useAtomicStyles.ts:55,92`: o secundário lê `--sarak-btn-secondary-bg` em todo estilo (o `cyberpunk` segue contorno, por desenho); hover com o par primário.
+- **L3.3** `_cards.css` (bloco "SOMBRA DECLARADA"): `cardShadow` declarada vira `--sarak-card-shadow-full` e a sombra do hover; `none` deixa a composta. Para o CSS distinguir os dois, `useDesignVariables.ts:173-176` passa a emitir `data-sx-*` também para token `text`. Descrição do schema (`cards.ts:473`) corrigida (dizia que `none` desativava a sombra).
+- **L3.4** `SarakTableViewParts.tsx:96,133,149`: `--sarak-table-header-bg`, `--sarak-table-row-hover`, `--sarak-table-border`, `--sarak-skeleton-row-radius`.
+- **L3.5** `SarakAnalyticalPage.tsx:89,108` e `SarakSpotlight.tsx:122`: `--sarak-modal-overlay-color` + `--sarak-modal-blur` (Spotlight: `--sarak-search-backdrop-blur`).
+- **L3.6** `PremiumSwitch.tsx`: polegar `--sarak-switch-thumb`. **L3.7** `SarakModal.tsx:102,106,122`: `rounded-md` saiu, vale `rounded-btn`.
+- **L3.8** `SarakIconButton.tsx:40,54-56`: brilho é a variável `--sarak-btn-neon-glow-color` (vale também no escopo embarcado) e o do perigo é `color-mix` da cor de erro do tema (era `rgba(239,68,68,0.5)`).
+- **L3.9** Title/Action/SearchCard: etiqueta de rascunho `bg-[--color-theme-card]` + sombra `--sarak-card-glow-color` (era `bg-black/60` + ciano fixo).
+- **L3.10** `MessageBubble.tsx`: etiquetas `rounded-[var(--sarak-chat-radius,12px)]`; a bolha `shadow-[var(--dynamic-shadow)]` (era `shadow-xl`).
+- **L3.11** `AuthForm.tsx`: aviso/erro/fundo/ponto leem `--sarak-status-warning/error/success-color` (`color-mix`); sombra lateral usa `--sarak-card-shadow-color`; classe `border-…-border` quebrada corrigida.
+- **L3.12** 15 `duration-200/300/500/700` → `duration-[var(--duration-fast|normal|slow,…)]` (`SarakSwitch`, `SarakProgress`, `SarakCheckbox`, `SarakRadio`, `ChromeSidebarBody`, `ChromeTopbarBody`, 4 cartões, `SarakActionCard`, `SarakImageCard`×2, `MessageList`) e `KanbanColumn.tsx:93` (`120ms` → `--duration-fast`).
+- **L3.13** `_cards.css`: `opacity` do cartão inteiro saiu; `cardSurfaceOpacity` age só no `color-mix` do fundo, **inclusive sem tema montado** (mesma expressão, agora também em `.card`).
+- **L3.14** `_cards.css` (`glow-only`): camada de brilho a opacidade 1 e halo na cor primária a 40% no hover; `SarakImageCard.tsx:42-45,98`: o brilho de `glow-only` é a primária (não o `cardGlowColor` de 5%).
+- **L3.15** `SarakActionCard.tsx`: `--sarak-shadow-glow` como cor de texto → `--sarak-primary-color`.
+- **L3.16** 17 cartões/contêineres da lib perderam `bg-[var(--color-theme-card,…)]` **e** `border-[var(--border-color,…)]` (a cor de borda também cedia à classe); a superfície (fundo e cor da borda, com as opacidades) mora em `_card-defaults.css` (`components.sarak-elements`), para `.sarak-card`, `.bg-theme-card` e `.card`; só o `clip-path` ficou em `_atmosphere.css`. O guarda `css-que-so-o-navegador-mede.spec.ts` ("um cartão real da lib computa a superfície de cartão") segue verde.
+- **L3.17** `.bg-theme-card:active { background-color }` saiu de `_utilities.css` para `_card-defaults.css`. **L3.18** `.bg-theme-card { box-shadow }` morta saiu de `_theme.css`.
+- **L3.19** `PresetCard.tsx:61`: reserva do desfoque é `var(--sarak-card-backdrop-blur, 12px)` (era o token de gap).
+- **Fora da lista, necessário para o gate:** `SarakFlowEngine.tsx:22-27,46` lê `flowGridStyle` por nome (`dots`/`lines`) — só o painel lia `dots`.
+- **Trava** `gates/scripts/contrato/check-token-reader.mjs`: o painel (`/features/DesignEngine/`) deixa de contar como leitor; só conta para `PANEL_OWN_TOKENS` (32 tokens, cada um com motivo), com achado `panel` para entrada obsoleta (token inexistente, já lido pela lib, ou que nem o painel lê). Limite 6 do cabeçalho (R18) reescrito; regra (iv) documentada. Já ligada ao Anel 1 e à CI.
+- `docs/migracoes.md`: subseção MAJOR nova na `## 8.0.0` e o parágrafo "O que não muda" do lote 1 corrigido (dizia que a classe de fundo não vencia a superfície). `sarak-ui/docs/migracoes.md` regenerado (`guide`).
+
+**Arquivos alterados** (57 modificados e 2 novos, fora `specs/`)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/_card-defaults.css`, `_cards.css`, `_atmosphere.css`, `_theme.css`, `_utilities.css` | alterado | superfície na camada que cede; sombra declarada; glow-only; sem opacity no cartão; mortos removidos |
+| `src/components/atomic/Buttons/SarakButton.tsx`, `SarakIconButton.tsx`, `hooks/useAtomicStyles.ts` | alterado | tokens do botão |
+| `src/components/**` (cartões, tabela, sobreposição, switch, modal, chat, AuthForm, durações, FlowEngine) | alterado | valores fixos → token |
+| `src/core/Design/hooks/useDesignVariables.ts`, `schema/cards.ts` | alterado | atributo para token `text`; descrição do `cardShadow` |
+| `src/features/DesignEngine/Canvas/components/PresetCard.tsx` | alterado | reserva do desfoque |
+| `gates/scripts/contrato/check-token-reader.mjs` + `__tests__/check-token-reader.test.mjs` | alterado | regra (iv), `PANEL_OWN_TOKENS`, 8 casos novos |
+| `src/components/atomic/__tests__/componenteQueLeOToken.test.tsx` | criado | 19 casos (classe/estilo e texto dos fontes) |
+| `src/core/Design/hooks/__tests__/useDesignVariablesDonoUnico.test.ts`, `src/styles/__tests__/cartaoQueCedeAClasse.test.ts`, `atmosferaEBotoesQueDesenham.test.ts` | alterado | atributo `text`; textos dos parciais no novo lugar |
+| 9 `*.snap` (ActionCard, SearchCard, TitleCard, Chart, CoreCard, PreviewCanvas, PresetsCatalog, ThemeSidebarContent, EngineCustomizationTab) | alterado | regravados; o diff é só classe/atributo/reserva acima |
+| `browser-tests/componente-le-o-token.spec.ts` | criado | 16 casos, com contraprova |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cena `componente` e 7 recortes `componente-*` |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | nota MAJOR (e cópia do kit) |
+
+**Verificações executadas**
+- `npx vitest run` (suíte completa, depois do último conserto de código) → **467 arquivos, 3080 testes, todos verdes**.
+- `npx tsc --noEmit` → 0 (um erro TS2709 meu em `SarakFlowEngine.tsx` foi corrigido; repetido, 0). `check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- Anel 1, na ordem do hook, `guide:check` por último: dev-kit, barril, catálogo, zero-marca, deep-import, gate-limits, container-query (2), persistence-doc, class-merge, icon-port, chrome-token-parity, token-reader, css-important, trail-citation, token-types, variable-contract, migration-anchor, guide → **19 de 19 com exit 0** (`dev-kit` e `guide` regenerados antes).
+- Anel 0 simulado (`config.json` do hook sobre as linhas adicionadas do `git diff HEAD` e os 2 arquivos novos de fora de `specs/`) → 1088 linhas, **0 achados**.
+- **Navegador, fora do repositório, sem tocar `dist/`** (o `npm run build` reescreveria os arquivos rastreados de `dist/`): worktree copiado para `%TEMP%` (`tsup` + `@tailwindcss/cli` + `build-scoped-css` + `copy-base-css` + `inject-css`, sem `--dts` nem os `*:check`, junção para `node_modules`), removido ao fim. Suíte inteira do `playwright`: **215 de 215** (199 anteriores + 16 novos). O `componente-le-o-token.spec.ts` sobre o build do **`HEAD`** (`git archive` + o spec e o harness novos): **13 falham, 3 passam** — os 3 são contraprovas (cardShadow sem declaração, superfície sem classe, secundário neon, que já lia o token). **Isto não substitui o `npm run build` + `cromo-css-real:check` do revisor.**
+- **A trava contra o `HEAD`:** o gate novo sobre `git archive HEAD src` → exit 1 com `btnPrimaryBg`, `btnPrimaryText`, `cardShadow`, `tableRowHoverBg` e `flowGridStyle = "dots"`; no worktree, exit 0. **Mutação:** cópia de `src/` com `--sarak-btn-primary-bg` trocado por `--sarak-primary-color` nos componentes (o painel ainda o lê) → exit 1 acusando `btnPrimaryBg`.
+
+**Critérios de aceite**
+- [x] Lote 3: L3.1–L3.15 obedecem ao token — evidência: spec do navegador (16) e `componenteQueLeOToken.test.tsx` (19).
+- [x] L3.16–L3.19 — evidência: guarda `css-que-so-o-navegador-mede` verde; `cartaoQueCedeAClasse.test.ts`; `bg-*`/`hover:bg-*` por classe vencem (casos 7 e 9 do spec).
+- [x] O painel não conta como leitor — evidência: gate no `HEAD` (exit 1) e mutação.
+- [x] Casos de `browser-tests/` com contraprova do padrão — acima.
+- [x] Suíte completa, `tsc`, `audit:baseline`, Anel 1, Anel 0 — acima.
+- [x] Nota MAJOR do lote em `## 8.0.0`.
+
+**Decisões e suposições**
+1. **`data-sx-*` passa a ser emitido para token `text`** (6 tokens: `cardShadow`, `inputShadow`, `sidebarShadow`, `motionEaseMain/Out/In`), não só `cardShadow`. Era o jeito de o CSS distinguir "declarada" de `none` sem comparar valor; custa 6 atributos novos no `html`/`body`. Alternativa mais estreita: derivar só um atributo para `cardShadow` no hook. Se preferir, troco.
+2. **`PANEL_OWN_TOKENS` é declaração humana, não dedução** (o gate não sabe "tem componente na lib"). 32 entradas: geometria da pré-visualização (`preset*`, `device*`, `designEngine*`, `layoutPreviewMaxH`), `cardHoverLift`, `controlHeightToggle`, `progressBarMaxWidth`, e **quatro que são pendência de produto, não do painel**: `securityShieldGlow`/`securityPulseSpeed` (o schema já declara "sem componente consumidor") e `trackingSubtle`/`typeScaleDisplay` (escala sem variante de componente que a use — dar leitura exigiria variante nova no `SarakTypography`, API pública). O revisor decide se vira plan.
+3. **O padrão visual muda em quatro pontos, todos na nota MAJOR:** texto do primário passa de `#94a3b8` a `#000000` (o esperado); o secundário passa da cor do cartão a 5% de branco (valor do `btnSecondaryBg`); o texto do cartão deixa de sair a 80% de opacidade; o véu do `AnalyticalPage`/`Spotlight` passa de 50% a 40% de preto. Mais as durações de 500/700 ms → 0,6 s e o Kanban 0,12 → 0,2 s.
+4. **Tirei também `border-[var(--border-color)]` dos cartões da lib, não só o fundo** — com a superfície na camada que cede, a classe de cor de borda venceria `cardBorderColor`/`cardBorderOpacity`. O `.card` ganhou o fundo/borda do tema também fora de escopo (antes só sob `.sarak-design-scope`/textura), para tirar a classe sem deixar `.card` sem fundo sem Provider.
+5. **Sem token novo.** A sombra da bolha do chat não tem token: usa `--dynamic-shadow` (sombra do tema, a mesma de `SarakSearch`). A cor do halo de `glow-only` é a primária a 40%, não `cardGlowColor` (padrão com alfa 0,05, invisível).
+6. Durações de `framer-motion` (JavaScript) ficaram fixas — L3.12 lista classes `duration-*`; ver *Achados*.
+7. L3.8 reconferido: a leitura do `design.btnNeonGlowColor` já existia; o "fixo" era a reserva literal e o vermelho do perigo — ambos corrigidos.
+8. Os 9 snapshots foram regravados com `-u` depois de conferir o diff (só classe, atributo `data-sx-*` e reserva de desfoque).
+9. `.sarak-card:hover { border-color }` (`_cards.css`, camada final) continua vencendo `hover:border-*`: o pedido do lote 3 era o fundo; não toquei.
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakCatalogGrid.tsx:148` — `hover:border-[var(--border-color,#334155)]-primary/30` é classe quebrada (resíduo de substituição), não gera CSS.
+- `PremiumSwitch.tsx:9` — `shadow-[0_0_10px_rgba(var(--sarak-primary-color,#00f2ff),0.3)]` é inválido (`rgba(var(#hex))`): o brilho do alternador ligado não aparece.
+- `framer-motion` com `duration` literal: `SarakExpandableCard.tsx:88`, `SarakExpandableMatrix.tsx:185`, `SarakPageTransition.tsx:63`, `SarakImageCard.tsx:61`, `AuthForm.tsx:79`, `AuthHero.tsx:34,48`, `SarakTooltip.tsx:185`, `MessageList.tsx:47-49`.
+- `SarakStats.tsx:105` — `hover:bg-white/[0.04]` agora aparece (e some no claro: L4). `MessageBubble.tsx:37-39` — estilo `solid` pinta o texto na mesma cor do fundo (L4).
+- `SarakIconButton.tsx` frosted — bordas `rgba(255,255,255,0.1)` e sombra preta fixas (L4).
+- `cardHoverLift` e `cardHoverTranslate` são tokens que fazem a mesma coisa (o primeiro só no "kitchen sink").
+
+**Pendências / riscos**
+- Não rodei `npm run build` nem `cromo-css-real:check` por inteiro (acima); `dist/` está intacto no `git status`.
+- Consumidor que escrevia `bg-*`/`hover:bg-*` num cartão e via a superfície do tema vencer passa a ver a própria classe (nota MAJOR); não abri o ERP.
+- O `DesignEngine` mostra a primária com o par `btnPrimaryBg`/`btnPrimaryText` — agora igual ao componente; temas com `btnPrimaryBg: transparent` (golden-hour, blueprint-protocol, cyberpunk-neon) passam a ter o botão primário transparente de fato. Contraste desses pares é do lote 4.
+
 ---
 
 # 10. Veredito
@@ -335,3 +423,18 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 **Para os lotes seguintes (entram no anexo):** `PresetCard.tsx` com reserva de gap no desfoque (L3.19); o slider mestre do painel não limpa o canto declarado de um tema salvo (L5.11).
 
 **Próximo:** lote 3 (componente), depois do commit deste lote.
+
+## Veredito — 2026-10-12 — lote 3 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK; `playwright test` sobre esse `dist/`: **215/215**, com os 16 casos de `componente-le-o-token.spec.ts` e o guarda "um cartão real da lib computa a superfície de cartão" verde; suíte completa 467/467 arquivos, 3080/3080 testes; `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK; varredura do padrão "Segredo atribuido" nas linhas adicionadas e nos não rastreados: 0. Conferido no código o botão primário (`SarakButton.tsx:60-63`): o par `btnPrimaryBg`/`btnPrimaryText`; nos três temas com `btnPrimaryBg: transparent` o estilo é contorno (`borderline`/`cyberpunk`), com o texto do tema — legível; o contraste desses pares é do lote 4.
+
+**Decisões do executor:**
+1. Atributo `data-sx-*` também para token `text` — **aceita** (6 atributos; mesma convenção dos demais tipos).
+2. `PANEL_OWN_TOKENS` (32, declaração humana com motivo) — **aceita como mecanismo**, mas as quatro entradas que são pendência de produto não ficam na lista: `securityShieldGlow`, `securityPulseSpeed` (sem componente consumidor), `trackingSubtle`, `typeScaleDisplay` (sem variante que os use) e o par `cardHoverLift` × `cardHoverTranslate` entram no **lote 5** com a regra da `plan-113`: componente existe → leitor; não existe → sai do schema; duplicata → funde.
+3. e 4. Mudanças de padrão declaradas na nota MAJOR; fundo **e** cor de borda fora dos cartões — **aceitas**.
+5. Sem token novo (sombra da bolha = `--dynamic-shadow`; halo de `glow-only` = primária a 40%) — **aceita**.
+9. `.sarak-card:hover { border-color }` na camada final vence `hover:border-*` — mesma classe de L3.16: entra no **lote 4**.
+
+**Achados do executor roteados** (anexo, "herdado do veredito do lote 3"): lote 4 — `SarakStats.tsx:105` (hover branco que agora aparece), `MessageBubble.tsx:37-39` (estilo `solid` com texto da cor do fundo), `SarakIconButton` `frosted` (borda e sombra fixas), hover de borda do cartão, `SarakCatalogGrid.tsx:148` (classe quebrada), `PremiumSwitch.tsx:9` (sombra inválida), durações literais de `framer-motion`; lote 5 — os itens da decisão 2.
+
+**Próximo:** lote 4 (modo claro e contraste), depois do commit deste lote.

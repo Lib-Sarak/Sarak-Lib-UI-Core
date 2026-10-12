@@ -64,7 +64,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
             animate={{ opacity: 1, y: 0 }}
             // O painel de detalhes usa container queries e precisa de um ancestral
             // com `container-type` para que suas classes responsivas sejam aplicadas.
-            className={`@container ${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit ${className}`}
+            className={`@container ${layout.containerClass} sarak-card group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
@@ -75,13 +75,13 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
             data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Ambient Atmosphere */}
-            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />
             <div className="border-beam-effect" />
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(0,242,255,0.05))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -134,14 +134,14 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
+                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-primary-color,#00f2ff)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
                         style={{
                             padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                             transitionDuration: 'var(--duration-normal, 0.3s)',
                             borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-card-radius,12px)'
                         }}
                     >
-                        <SarakIcon name="ChevronDown" className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}`} />
+                        <SarakIcon name="ChevronDown" className={`w-3.5 h-3.5 transition-transform duration-[var(--duration-normal,0.3s)] ${isExpanded ? 'rotate-180 text-[var(--sarak-primary-color,#00f2ff)]' : ''}`} />
                     </motion.button>
                 </div>
 

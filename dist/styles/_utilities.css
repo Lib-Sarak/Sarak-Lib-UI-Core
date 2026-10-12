@@ -31,7 +31,6 @@
    `!important`: entre camadas a ordem se inverte para importantes, e nesta camada, a
    última, uma utilitária `!important` ainda vence. */
 .bg-theme-card:active {
-    background-color: var(--theme-primary-active);
     transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
     transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0, 0, 0.2, 1));
 }
