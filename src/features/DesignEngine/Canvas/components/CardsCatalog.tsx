@@ -61,11 +61,10 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                 {/*
                     Escopamos as CSS custom properties do preset via DesignScope (mesmo mecanismo
                     de produção) em vez de montar um `style` inline com valores finais: o CSS real
-                    de `.sarak-card` (incl. o "Nuclear Sovereignty Reset" de _atmosphere.css, que lê
-                    as variáveis --sarak-card-* com !important a partir de QUALQUER ancestral com
-                    data-sx-texture — sempre presente no app real via SarakAppChrome) consome essas
-                    variáveis diretamente. Sobrescrever a propriedade final perde a briga de
-                    especificidade; escopar a variável que a regra já lê, não.
+                    de `.sarak-card` (o padrão de `_card-defaults.css`, que lê as variáveis
+                    --sarak-card-* a partir de QUALQUER ancestral com data-sx-texture — sempre
+                    presente no app real via SarakAppChrome) consome essas variáveis diretamente.
+                    Escopar a variável que a regra já lê é o que acompanha o tema do preset.
                 */}
                 <SarakDesignScope
                     design={{ mode: 'dark', ...preset.design } as SarakDesignState}

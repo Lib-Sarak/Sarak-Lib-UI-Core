@@ -365,8 +365,28 @@ na tela de quem já o tinha salvo.
 **Os sete tokens de gráfico têm consumidor.** `chartColorPalette` (a cor da 1.ª série), `chartGridOpacity`,
 `chartShowGrid`, `chartTooltipBg`, `chartType` (o formato quando o gráfico não diz qual), `chartThickness` e
 `chartSmoothing` são lidos pelo motor de gráficos ([[03-superficie-publica]] §6.8): mudar um deles no tema muda o
-gráfico desenhado. As demais séries tomam as cores do próprio design (secundária, destaque, as quatro de status e
-a terciária, nessa ordem — `CHART_COLOR_TOKENS`), sem token próprio de paleta.
+gráfico desenhado. A paleta das séries é derivada das quatro cores de marca do tema (`chartColorPalette`,
+secundária, destaque e terciária) e nunca usa cor de status ([[03-superficie-publica]] §6.8).
+
+### 4.4.4 O que o tema declara — fontes, e os tokens que saíram
+
+**Fonte é um valor da lista.** `bodyFont`, `headingFont`, `monoFont` e `identityFontFamily` recebem o `value`
+exato de `THEME_FONTS` (`src/core/Design/schema/typography.ts`), no formato `"'Nome', categoria-genérica"`; a
+URL do Google Fonts que o Provider injeta é derivada da mesma lista (`buildGoogleFontsUrl`), então só fonte da
+lista carrega. `identityFontFamily` aceita ainda o padrão, que herda a fonte de títulos do tema.
+
+**Token que saiu do schema é descartado com aviso**, e o valor salvo cai no padrão (`removedTokenKeys.ts`, a
+régua viva). Um tema não declara mais o que se fundiu num token que desenha nem o que não era de tema — a
+lista de [[02-design-engine]] §10 é o que cada token desenha hoje. Saíram, por família: os três controles de
+ruído viraram `bgNoiseDensity`; a família de movimento `anim*`/`easeMain`/`easeOut` virou `motion*`; os
+tokens de peça interna do painel (pré-visualização de preset, largura do telefone, tecla, perspectiva e órbita
+do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borderRadiusSm/Md/Lg`,
+`contrastCurve`, `scrollbarWidth`, `scrollbarThumbColor`, `formLayoutDirection`, `layerElevationFactor`,
+`matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha; e
+`aiPanelBg`, `identityRedirectUrl`, `industrialRegistry` e `inputSuccessColor` saíram sem
+substituto. `layout` saiu do schema (as opções nunca tiveram regra) e segue como chave aceita do payload, que o painel usa. Opções que saíram: `systemTone` `dark`/`light` (fica `none` · `cyber` · `tactical`) e os materiais
+`metallic`/`brushed`/`acrylic`/`matte`. A nota de cada mudança, com o destino do valor salvo, está em
+`docs/migracoes.md` (`## 8.0.0`).
 
 ## 4.5 Exportar — o substituto do "salvar no banco"
 

@@ -18,10 +18,15 @@
     display: none !important;
 }
 
-/* Specific Card Eco Mode */
+/* Specific Card Eco Mode — o cartão inteiro, e não só o `.bg-theme-card`: o material `frosted`
+   (`_surfaces.css`, `!important`, especificidade 0-2-0) vence o `*` de cima, que é 0-1-0; este
+   seletor empata com ele e vem depois. */
 [data-perf-mode="eco"] .bg-theme-card {
     backdrop-filter: none !important;
     transition-duration: 0.1s !important;
+}
+:is(.sarak-eco-mode, [data-performance="eco"], [data-perf-mode="eco"]) :is(.sarak-card, .bg-theme-card, .card) {
+    backdrop-filter: none !important;
 }
 
 /* O grão animado (`bgNoiseAnimation`) é um pseudoelemento: o seletor `*` acima não o alcança. */

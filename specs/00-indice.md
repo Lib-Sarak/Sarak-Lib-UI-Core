@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "114"
+proximo_numero_plan: "115"
 ---
 
 # 0. O que é este arquivo
@@ -42,19 +42,25 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-113-o-schema-que-o-painel-oferece-desenha | 🟠 Em revisão | specs/09-temas-e-presets.md |
-| 2 | [plan-111-todo-token-visual-desenha](plan/plan-111-todo-token-visual-desenha.md) | Fazer cada token visual que o painel oferece desenhar o que promete, gradiente, material de superficie, cor e forma da sombra, tom do sistema, estilo do switch, ruido, fontes, texturas em tema claro e paleta de graficos, e impedir por gate que um valor emitido pelo motor volte a ficar sem leitor | — | 🟢 Aprovado | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/03-superficie-publica.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
-| 3 | [plan-112-o-resto-do-arsenal-desenha](plan/plan-112-o-resto-do-arsenal-desenha.md) | Fazer os tokens visuais que a plan-111 deixou na excecao do gate desenharem, o desfoque de vidro do cartao funcionar no navegador e a cor de textura chegar a todas as texturas, e estender o token-reader ao schema inteiro, sem excecao restante | plan-111-todo-token-visual-desenha | 🟢 Aprovada | arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
-| 4 | [plan-113-o-schema-que-o-painel-oferece-desenha](plan/plan-113-o-schema-que-o-painel-oferece-desenha.md) | Resolver os 70 tokens que a plan-112 declarou na excecao do token-reader, dando leitor ao que tem componente, fundindo duplicatas, retirando o que nao e de tema e provando por opcao o que chega por tabela, ate a ALLOWLIST ficar vazia antes de os temas serem refeitos | plan-112-o-resto-do-arsenal-desenha | 🟢 Aprovada | arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-114-o-arsenal-obedece | 🟠 Em revisão | specs/09-temas-e-presets.md |
+| 2 | [plan-114-o-arsenal-obedece](plan/plan-114-o-arsenal-obedece.md) | Corrigir tudo o que a verificacao completa de 2026-10-12 mediu entre o token e a tela, em cinco lotes revisados um a um, e travar cada classe de defeito com gate, antes de os temas serem refeitos | — | 🟡 Em execução | arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Fila de 2026-10-11 — 113, sozinha na árvore**, depois do commit da 112 (aprovada). A `plan-110` (lote 0 aprovado) espera
-> a 113: o dono decidiu fechar os 70 tokens sem leitor antes de refazer os temas. O `npm run build` e o `cromo-css-real:check` precisam de rede: quem os roda é o revisor; o executor escreve os casos
-> de `browser-tests/`.
+> 🚦 **Fila de 2026-10-12 — 114, sozinha na árvore.** A `plan-110` (lote 0 aprovado) espera a 114: o dono pediu uma
+> verificação completa do arsenal antes de refazer os temas. O `npm run build` e o `cromo-css-real:check` são do revisor;
+> o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **As `plan-111`, `plan-112` e `plan-113` foram SINTETIZADAS e REMOVIDAS em 2026-10-12.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **111** | [[02-design-engine]] **§10 (nova)** — gradiente de fundo, tom, ruído único, materiais, geometria e cor da sombra, texturas na cor de textura · [[03-superficie-publica]] §6.8 — paleta categórica derivada das quatro cores de marca, sem cor de status · [[09-temas-e-presets]] §4.4.3 e **§4.4.4 (nova)** — fonte é valor de `THEME_FONTS`, URL derivada da lista; opções e tokens que saíram · [[00-regras-e-invariantes]] **R40 (nova)** e §1.3/§4 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (`token-reader:check`) · `00-contexto` §2 (a regra que um agente viola sem perceber). Ficou de fora: nada |
+> | **112** | [[02-design-engine]] §10 — moldura (`borderType`), direção e camadas da sombra, `--dynamic-shadow`, `colorDepth`/`colorVariation`, vidro do cartão e a regra do `backdrop-filter` sozinho (§10.7) · [[09-temas-e-presets]] §4.4.4 — os 7 tokens fundidos · R40 — escopo no schema inteiro. Ficou de fora: nada |
+> | **113** | [[02-design-engine]] §10 — hover só em cartão interativo, família `motion*`, componentes que leem tokens próprios, leitor declarado (`@sarak-token-reader`) · [[09-temas-e-presets]] §4.4.4 — os tokens que saíram ou se fundiram · R40 — exceção vazia, nome ancorado · [[01-gates-e-baseline]] §2.2. Ficou de fora: as variáveis com dois donos e o que a verificação completa encontrar — promovidos à `plan-114` |
 
 > ⚪ **A `plan-109` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
 >

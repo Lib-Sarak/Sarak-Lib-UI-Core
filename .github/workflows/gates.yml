@@ -91,7 +91,8 @@ jobs:
             #                          do pre-commit, não na cadeia de build/gates:full.
             #   - token-reader:check : mesmo padrão — vive só no Anel 1 do pre-commit;
             #                          o build não o encadeia.
-            - name: Os 8 *:check que o gates:full não alcança
+            #   - css-important:check : mesmo padrão — vive só no Anel 1 do pre-commit.
+            - name: Os 9 *:check que o gates:full não alcança
               run: |
                   npm run plan-index:check
                   npm run gate-limits:check
@@ -101,6 +102,7 @@ jobs:
                   npm run class-merge:check
                   npm run chrome-token-parity:check
                   npm run token-reader:check
+                  npm run css-important:check
 
     # ---------------------------------------------------------------------
     # CROMO-CSS-REAL — a única medição de CSS RENDERIZADO (valor computado, não

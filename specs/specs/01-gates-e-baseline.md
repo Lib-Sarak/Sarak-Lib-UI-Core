@@ -78,6 +78,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos. **E** nenhum arquivo desse escopo importa `tailwind-merge` (por `import`, `require` ou `import()`) fora da porta `hooks/mergeSarakClasses.ts`; `__tests__/` fica livre | **R35** | ~0,2 s |
+| Leitor de token | `npm run token-reader:check` | Todo token do schema tem leitor: a variável que o motor emite (`--sarak-<kebab>` e `cssVars`) é lida em `var(` com o nome ancorado (prefixo não conta), toda opção de `select` tem regra `[data-sx-<kebab>="…"]`, `classPrefix` ou componente que a acessa pelo valor, e leitor declarado por `@sarak-token-reader <id> tabela|direto` tem teste por opção. `ALLOWLIST` com motivo, que se esvazia sozinha — e está vazia | **R40** | ~1,8 s |
 | Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito d…` (*de*, *do*, *da*, *desta*, *dos*… — *veredito final* não casa) ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
 | Porta de ícones | `npm run icon-port:check` | Nenhum `.ts`/`.tsx` de `src/` importa `lucide-react`, `@phosphor-icons/react` ou `@tabler/icons-react` (por `import`, reexport, `require()` ou `import()`) fora de `components/atomic/Icon/families/`; o painel de autoria (`features/DesignEngine/`) fica fora, declarado | **R39** | ~0,9 s |
@@ -167,6 +168,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
+| `token-reader` | Anel 1 | — | — | — | ✅ **explícito** |
 | `prefix` · `kit-names` | — | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
 | `icon-port` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |

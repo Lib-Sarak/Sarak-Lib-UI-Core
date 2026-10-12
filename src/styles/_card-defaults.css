@@ -1,0 +1,89 @@
+/* =========================================
+   PADRÕES DO CARTÃO E DO CONTÊINER DE CONTEÚDO — o componente e o consumidor vencem
+   =========================================
+   Mora na subcamada `components.sarak-elements` (ver `sarak-base.css` e a ordem de camadas
+   em `arquitetura/02-design-engine.md` §9.1): fica ANTES de `utilities`, então a classe
+   utilitária de um componente — `rounded-[…]`, `border-2`, `backdrop-blur-…`,
+   `transition-…` — e o `style` inline vencem o padrão daqui, e sem classe o padrão vale.
+
+   Nenhuma declaração é `!important`: uma importante na camada de baixo venceria, pela
+   inversão de camadas, até a utilitária `!important` e o estilo inline do consumidor.
+
+   O que fica de fora, de propósito:
+   - a SUPERFÍCIE do cartão sob o tema — cor do fundo (`cardBackgroundColor` com
+     `cardSurfaceOpacity`) e cor da borda (`cardBorderColor` com `cardBorderOpacity`) —,
+     que é do tema e chega ao cartão em `_cards.css` e `_atmosphere.css`, na camada final e
+     SEM `!important`: o `style` inline do componente a vence, a classe de fundo ou de cor
+     de borda que repete a cor do tema não a apaga;
+   - o modo eco e o movimento reduzido (`_performance.css`, `_motion.css`, `!important` na
+     camada final — vencem o cartão);
+   - a moldura e o material da superfície (`_surfaces.css`, escolha explícita de token). */
+
+/* Cartão sem tema montado: o piso. Com o Design Engine, a regra de baixo (escopo) assume. */
+.sarak-card,
+.bg-theme-card {
+    border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px)))
+                   var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px)))
+                   var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px)))
+                   var(--sarak-card-radius-bl, var(--sarak-card-radius, var(--radius-theme, 12px)));
+
+    border-style: var(--border-style, solid);
+    border-top-width: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px));
+    border-bottom-width: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px));
+    border-left-width: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px));
+    border-right-width: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px));
+
+    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
+
+    transition: transform var(--duration-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1)),
+                box-shadow var(--duration-normal, 0.3s) ease,
+                border-color var(--duration-fast, 0.2s) ease,
+                background-color var(--duration-normal, 0.3s) ease;
+}
+
+/* Geometria do cartão sob o tema — `.card` é a âncora do contêiner do consumidor (só
+   superfície e geometria, sem padding nem sombra próprios). Os quatro cantos, a largura da
+   borda, o traço, o desfoque e a transição; a cor do fundo e da borda é a superfície do tema,
+   em `_atmosphere.css`. A transição é `all` porque o contêiner do consumidor muda de cor,
+   de sombra e de posição ao ponteiro. */
+[data-sx-texture] :is(.card, .sarak-card, .bg-theme-card),
+.sarak-design-scope :is(.card, .sarak-card) {
+    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
+
+    border-radius: var(--sarak-card-radius-tl, 12px) var(--sarak-card-radius-tr, 12px) var(--sarak-card-radius-br, 12px) var(--sarak-card-radius-bl, 12px);
+
+    /* O traço é o de `borderStyle` (sólido por padrão). */
+    border-style: var(--border-style, solid);
+    border-top-width: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px));
+    border-bottom-width: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px));
+    border-left-width: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px));
+    border-right-width: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px));
+
+    transition: all var(--duration-normal, 0.3s) ease;
+}
+
+/* Contêiner de conteúdo transparente por padrão: a textura e a atmosfera do tema aparecem
+   atrás de `main`/`section`/`article`. É o PADRÃO — a classe `bg-*` do componente, o
+   `background` inline e o CSS do consumidor vencem (o Kanban, por exemplo, pinta a própria
+   coluna e o próprio cartão). */
+body:not([data-sx-texture="none"]) main,
+body:not([data-sx-texture="none"]) section,
+body:not([data-sx-texture="none"]) .sarak-module-container,
+body:not([data-sx-texture="none"]) article,
+body:not([data-sx-texture="none"]) .module-content,
+[data-sx-texture] main,
+[data-sx-texture] section,
+[data-sx-texture] article,
+[data-sx-texture] .sarak-module-container,
+.sarak-design-scope:not([data-sx-texture="none"]) main,
+.sarak-design-scope:not([data-sx-texture="none"]) section,
+.layout-glass main, .layout-glass section, .SarakAtmosphereLayer + div, main.texture-active {
+    background-color: transparent;
+    background-image: none;
+}
+
+[data-sx-theme] main, [data-sx-theme] section, [data-sx-theme] article, [data-sx-theme] .sarak-module-container,
+[data-sx-surface] main, [data-sx-surface] section, [data-sx-surface] .sarak-module-container,
+[data-sx-texture] main, [data-sx-texture] section, [data-sx-texture] .sarak-module-container, [data-sx-texture] .module-wrapper {
+    transition: background-color var(--duration-normal, 0.4s) ease, border-color var(--duration-normal, 0.4s) ease;
+}

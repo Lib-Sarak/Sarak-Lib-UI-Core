@@ -15,7 +15,7 @@
     background-repeat: repeat;
     will-change: opacity;
     opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.08));
-    transition: opacity 0.5s ease;
+    transition: opacity var(--duration-slow, 0.5s) ease;
     filter: saturate(var(--sarak-saturation, 100%)) contrast(var(--sarak-contrast, 100%));
     /* Subpixel Precision Fix */
     backface-visibility: hidden;
@@ -44,7 +44,7 @@
     overflow: hidden;
     will-change: opacity;
     opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.08));
-    transition: opacity 0.5s ease;
+    transition: opacity var(--duration-slow, 0.5s) ease;
     filter: saturate(var(--sarak-saturation, 100%)) contrast(var(--sarak-contrast, 100%));
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -390,9 +390,9 @@
 .sarak-card[data-sx-card-texture-type="aurora-classic"]::after,
 [data-sx-card-texture-type="aurora-classic"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="aurora-classic"]::after {
-    background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, #8b5cf6 0%, transparent 50%), radial-gradient(circle at 50% 50%, #06b6d4 0%, transparent 50%);
+    background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--theme-secondary, #8b5cf6) 0%, transparent 50%), radial-gradient(circle at 50% 50%, var(--theme-accent, #06b6d4) 0%, transparent 50%);
     filter: blur(100px);
-    opacity: 0.7 !important;
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.7)));
     animation: aurora-classic-drift 30s linear infinite;
 }
 
@@ -633,49 +633,20 @@
 }
 
 
-/* NUCLEAR SOVEREIGNTY RESET (v6.8.6 - TRANSPARENCY BREACH) */
-[data-sx-theme] main, [data-sx-theme] section, [data-sx-theme] article, [data-sx-theme] .sarak-module-container, 
-[data-sx-surface] main, [data-sx-surface] section, [data-sx-surface] .sarak-module-container, 
-[data-sx-texture] main, [data-sx-texture] section, [data-sx-texture] .sarak-module-container, [data-sx-texture] .module-wrapper {
-    transition: background-color 0.4s ease, border-color 0.4s ease;
-}
-
-body:not([data-sx-texture="none"]) main, 
-body:not([data-sx-texture="none"]) section, 
-body:not([data-sx-texture="none"]) .sarak-module-container, 
-body:not([data-sx-texture="none"]) article, 
-body:not([data-sx-texture="none"]) .module-content,
-[data-sx-texture] main, 
-[data-sx-texture] section, 
-[data-sx-texture] article, 
-[data-sx-texture] .sarak-module-container, 
-.sarak-design-scope:not([data-sx-texture="none"]) main,
-.sarak-design-scope:not([data-sx-texture="none"]) section,
-.layout-glass main, .layout-glass section, .SarakAtmosphereLayer + div, main.texture-active {
-    background-color: transparent !important;
-    background-image: none !important;
-}
-
+/* A SUPERFÍCIE do cartão sob o tema: fundo translúcido (`cardSurfaceOpacity`) e borda com
+   `cardBorderOpacity`. Sem `!important`: o `style` inline do componente a vence, e é
+   `background-color`/`border-color` — não o atalho `background`, que zerava o
+   `background-image` do componente. O raio, a largura da borda, o desfoque e a transição
+   moram em `_card-defaults.css` (camada que cede à classe), e o reset de
+   `main`/`section`/`article` também. Aqui fica ainda o recorte geométrico:
+   `--sarak-card-clip-path` é `none` sem corte (o polígono de `_cards.css`, com corte 0,
+   ainda recortaria a sombra), e `body.is-geometric` (`_utilities.css`) o vence por ser
+   `!important`. */
 [data-sx-texture] .card, [data-sx-texture] .sarak-card, [data-sx-texture] .bg-theme-card,
 .sarak-design-scope .card, .sarak-design-scope .sarak-card {
-    /* Superfície Atômica */
-    background: color-mix(in srgb, var(--sarak-card-bg, #0f172a), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8)))) !important;
-    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)) !important;
-    
-    /* Geometria Soberana */
-    border-radius: var(--sarak-card-radius-tl, 12px) var(--sarak-card-radius-tr, 12px) var(--sarak-card-radius-br, 12px) var(--sarak-card-radius-bl, 12px) !important;
-    clip-path: var(--sarak-card-clip-path, none) !important;
-    
-    /* Engenharia de Bordas — o traço é o de `borderStyle` (sólido por padrão). */
-    border-style: var(--border-style, solid) !important;
-    border-color: color-mix(in srgb, var(--sarak-card-border-color, rgba(255,255,255,0.1)), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1)))) !important;
-    
-    border-top-width: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px)) !important;
-    border-bottom-width: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px)) !important;
-    border-left-width: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px)) !important;
-    border-right-width: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px)) !important;
-
-    transition: all 0.3s ease !important;
+    background-color: color-mix(in srgb, var(--sarak-card-bg, #0f172a), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
+    border-color: color-mix(in srgb, var(--sarak-card-border-color, rgba(255,255,255,0.1)), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
+    clip-path: var(--sarak-card-clip-path, none);
 }
 
 /* Sarak Media Background Support */

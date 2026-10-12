@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**39 regras: 36 verificáveis (§2) e 3 de conduta (§3).**
+**40 regras: 37 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
-| ⚠️ escopo menor que a regra | **13** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** |
+| ⚠️ escopo menor que a regra | **14** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** · **R40** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -1360,6 +1360,44 @@ Lê import, reexport, `require()` e `import()` por AST, e o teste dele tem um ca
   escapa.
 - **Só os três nomes de pacote e seus subcaminhos.** Uma quarta família com outro nome não é reconhecida.
 
+## R40 — Todo valor que o motor emite tem leitor
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate é textual: prova que a referência existe, não que ela
+produz efeito visível; o leitor declarado por marcador é afirmação humana.
+
+**Enunciado.** Todo token do schema que o painel oferece muda a tela. A variável que o motor emite
+(`--sarak-<kebab>` e as `cssVars` do token) é lida por um CSS ou componente da lib, e toda opção de um `select`
+tem regra (`[data-sx-<kebab>="<opção>"]`, `classPrefix`) ou componente que a acessa pelo valor. Quando o valor
+chega ao leitor por tabela em JS ou direto à propriedade CSS, o arquivo do leitor declara
+`@sarak-token-reader <id> tabela|direto` em comentário, e cada opção tem teste que cita o id e o valor. Token
+sem leitor ganha leitor no componente que o rótulo nomeia, se funde no token que já desenha, ou sai do schema
+(o valor salvo cai em `removedTokenKeys.ts` e no padrão). A exceção (`ALLOWLIST`) exige motivo, se esvazia
+sozinha e está **vazia**.
+
+**Por quê.** O painel oferecia controles que não mudavam nada: em 2026-10-11, depois de os gradientes, os
+materiais, a sombra e as texturas passarem a desenhar, o escopo ampliado ao schema inteiro ainda achou 70 tokens
+sem nenhum leitor. Um tema autorado com cuidado sobre esses controles não aparece na tela, e o usuário que arrasta
+o controle conclui que o painel está quebrado.
+
+**Certo × Errado.**
+
+```
+ERRADO   schema: cardHeaderBg  →  emite --sarak-card-header-bg  →  nenhum CSS lê      ← controle morto
+CERTO    SarakCardHeader: bg-[var(--sarak-card-header-bg,transparent)]                 ← o rótulo desenha
+CERTO    // @sarak-token-reader pageTransitionType tabela  + teste por opção           ← leitor por tabela declarado
+```
+
+**Cobrada por:** `check-token-reader.mjs` (`npm run token-reader:check`, em `gates/scripts/contrato/`), no Anel 1
+do `.githooks/pre-commit` e no passo de `*:check` da CI. O teste do gate tem caso de mutação por regra (leitor
+apagado, opção sem regra, linha da tabela apagada, caso de teste apagado, nome lido só por prefixo). A prova de
+efeito é de `browser-tests/` ([[01-gates-e-baseline]] §2.6).
+
+**O vão.** Os limites estão no cabeçalho do gate (R18) e saem na própria execução. Os principais:
+- **Só a direção emitido → lido.** Variável lida que nenhum token emite é do `auditor_ghostvars` (R7).
+- **Textual.** Citação em comentário de CSS ou em string solta conta como leitura; leitor sob seletor que nunca
+  casa conta como vivo.
+- **O marcador é declarativo.** Não prova que a tabela é consultada em runtime, nem que o teste afirma o efeito.
+
 ---
 
 # 3. Regras de conduta
@@ -1504,6 +1542,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R37** | **Todo nome do barril público carrega o prefixo da biblioteca** | **✅** | `check-public-prefix.mjs` — cadeia do `build`, depois do `public-types:check`; allowlist vazia | `npm run prefix:check` |
 | **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
 | **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
+| **R40** | **Todo valor que o motor emite tem leitor** | **⚠️** | `check-token-reader.mjs` — schema inteiro, `ALLOWLIST` vazia; textual, marcador `@sarak-token-reader` declarativo, só a direção emitido → lido | `npm run token-reader:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |

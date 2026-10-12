@@ -236,6 +236,10 @@
       "comando": "npm run build && playwright test --config=browser-tests/playwright.config.ts"
     },
     {
+      "nome": "npm run css-important:check",
+      "comando": "node gates/scripts/contrato/check-css-important-visual.mjs"
+    },
+    {
       "nome": "npm run deep-import:check",
       "comando": "node gates/scripts/contrato/check-no-deep-import.mjs"
     },

@@ -204,6 +204,36 @@ O desfoque do cartão passa a ter um nome só: `--sarak-card-backdrop-blur` (o a
 fixo lê o valor novo. O `token-reader:check` fecha com a exceção vazia: todo token do schema tem leitor, e o que o motor
 lê por tabela ou passagem direta é declarado no próprio leitor (`@sarak-token-reader`) e provado por teste por opção.
 
+### O motor deixa de impor o cartão: o raio, a borda, o desfoque e a transição do componente vencem; o eco e o movimento reduzido continuam vencendo o cartão
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. A mudança é de
+cascata: um bloco do motor escrevia, com `!important` e a partir do `.sarak-design-scope` (que envolve tudo), raio,
+fundo, borda, recorte e transição em todo `.card`, `.sarak-card` e `.bg-theme-card`, e outro apagava o fundo de todo
+`<main>`, `<section>` e `<article>`. Por isso o raio de `catalogSectionRadius`, o fundo do Kanban, o hover de borda
+do cartão e a duração de `motionDuration*` nunca chegavam à tela, e o modo eco não tirava o desfoque do `.sarak-card`.
+
+| Antes | Depois |
+|---|---|
+| `rounded-[…]`, `border-2`, `backdrop-blur-…` e `transition-…` num cartão perdiam para o motor. Só a variável do canto (`--sarak-card-radius-*`) chegava. | O raio, a largura e o traço da borda, o desfoque e a transição do cartão moram na subcamada `components.sarak-elements`, **antes** das utilitárias: **a classe e o `style` do componente vencem**; sem classe, o padrão do tema vale como antes. |
+| A superfície do cartão sob o tema (fundo translúcido, borda com opacidade) e o recorte geométrico eram `!important`, o que também zerava o `background-image` do componente (o atalho `background`). | Seguem do tema, **sem `!important`** e em `background-color`/`border-color`: o `style` inline do componente e o `background-image` dele coexistem com a superfície. |
+| `.sarak-card:hover { border-color }` nunca aparecia. | Aparece: é a borda de hover do cartão (a moldura `cyber`/`glow`/`none`, escolhida por token, continua vencendo). |
+| O reset de `main`/`section`/`article`/`.sarak-module-container` era `!important` e deixava transparente o fundo de qualquer um — o Kanban (colunas e cartões) e o do consumidor. | É o padrão transparente, sem `!important`: **o fundo que o componente ou o consumidor escreve aparece.** Sem fundo próprio, segue transparente. |
+| O modo eco cortava o desfoque só do `.bg-theme-card`; o `.sarak-card` sob o material `frosted` (o padrão) seguia desfocado. `prefers-reduced-motion` perdia para a transição do cartão. | O eco corta o desfoque de `.sarak-card`, `.bg-theme-card` e `.card`; o movimento reduzido (pelo token e pela preferência do sistema) vence a transição do cartão. |
+| A transição do cartão era `all 0.3s` e `transform`/`box-shadow` 0,4 s, literais; o brilho do cartão e a camada de textura 0,5 s; `main`/`section` e os títulos 0,4 s; botão e campo 0,2 s. | Leem `--duration-normal`/`--duration-fast`/`--duration-slow`, que `motionDuration*` emite: **o tema passa a mandar na duração.** **No tema padrão**, `transform` e `box-shadow` do cartão sem tema montado passam de 0,4 s a 0,3 s, o brilho e a camada de textura de 0,5 s a 0,6 s, e `main`/`section` e os títulos de 0,4 s a 0,3 s; botão e campo seguem em 0,2 s. |
+| `aurora-classic` fixava `opacity: 0.7 !important` e as cores `#8b5cf6`/`#06b6d4`. | A opacidade lê `textureOpacity`/`cardTextureOpacity` (a reserva continua 0,7) e as cores leem `--theme-secondary`/`--theme-accent`. |
+
+**O que não muda:** a COR do fundo e da borda do cartão continua do tema — uma classe `bg-[…]` ou `border-[…]` que
+repete a cor do tema num `.card` não a apaga, e o `cardSurfaceOpacity` segue valendo. Uma classe de fundo diferente da
+do tema num cartão da lib vence o `hover:bg-*`, não a superfície: use `style` inline ou `!bg-*`.
+
+**O que fazer:** quem escreveu `rounded-*`, `border-2` ou `transition-*` num cartão e via o motor vencer passa a ver
+a própria classe; a que não quer, a remove. Um teste seu que lia o `border-radius` ou o `transition` de um
+`.sarak-card` lê o valor novo.
+
+O `css-important:check` passa a barrar `!important` visual em seletor amplo do motor (`src/styles/`): nenhuma
+declaração de fundo, borda, raio, sombra, filtro, opacidade, transição, recorte ou cor vence a classe do componente,
+salvo o modo eco, o movimento reduzido, o fundo do `body` e a escolha explícita de token por atributo com valor.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

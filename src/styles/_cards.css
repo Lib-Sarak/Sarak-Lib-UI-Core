@@ -1,24 +1,17 @@
 /* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.5) */
+/* Raio, largura da borda, desfoque e transição do cartão moram em `_card-defaults.css` (subcamada
+   que cede à classe e ao `style` do componente). Aqui fica a SUPERFÍCIE do tema (cor do fundo e
+   da borda, sem `!important`) e o que o componente não escolhe por classe: caixa de
+   posicionamento, preenchimento, sombra, brilho e movimento. */
 .sarak-card, .bg-theme-card {
     position: relative;
     isolation: isolate;
     
-    /* Geometria de Alta Fidelidade (Assimetria & Raio) */
-    border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-bl, var(--sarak-card-radius, var(--radius-theme, 12px)));
-    
-    /* Suporte a Bordas Independentes */
-    border-top: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-bottom: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-left: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-right: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    
     padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
     
     /* Fundo Base (Sovereign Glass) */
-    background-color: var(--sarak-card-bg, var(--theme-card)) !important;
+    background-color: var(--sarak-card-bg, var(--theme-card));
+    border-color: var(--sarak-card-border-color, var(--theme-border));
     opacity: var(--sarak-card-surface-opacity, 1);
     
     /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
@@ -37,12 +30,9 @@
         inset 0 0 var(--sarak-card-inner-glow-width, 0px) var(--sarak-card-inner-glow-color, transparent);
     box-shadow: var(--sarak-card-shadow-full);
     
-    /* Transição Fluida */
-    transition: transform 0.4s var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1)), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
-    
-    /* Motor de Filtros — só a forma sem prefixo: com as duas lado a lado o build deixa
-       apenas `-webkit-` e o Chromium não desfoca (ver _surfaces.css, topo). */
-    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
+    /* O desfoque (`backdrop-filter`) mora em `_card-defaults.css` — só a forma sem prefixo:
+       com as duas lado a lado o build deixa apenas `-webkit-` e o Chromium não desfoca
+       (ver _surfaces.css, topo). */
 
     /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
     clip-path: polygon(
@@ -71,7 +61,7 @@
         transparent 70%
     );
     opacity: var(--sarak-card-glow-intensity, 0);
-    transition: opacity 0.5s ease;
+    transition: opacity var(--duration-slow, 0.5s) ease;
 }
 
 /* INTERACTIVE STATES */

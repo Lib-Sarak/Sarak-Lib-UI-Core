@@ -48,6 +48,7 @@
         "icon-port:check": "node gates/scripts/contrato/check-icon-port.mjs",
         "chrome-token-parity:check": "node gates/scripts/contrato/check-chrome-token-parity.mjs",
         "token-reader:check": "node gates/scripts/contrato/check-token-reader.mjs",
+        "css-important:check": "node gates/scripts/contrato/check-css-important-visual.mjs",
         "trail-citation:check": "node gates/scripts/contrato/check-trail-citation.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",
         "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",

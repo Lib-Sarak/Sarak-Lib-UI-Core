@@ -4,7 +4,7 @@ titulo: "Design Engine — como um objeto design vira tela"
 dominio: "Core / Design Engine / Provider"
 status: "🟢 Vigente"
 tags: ["arquitetura", "design-engine", "provider", "css-variables", "drafting", "escopo", "persistencia"]
-relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]"]
 ---
 
 # 1. Propósito
@@ -252,3 +252,85 @@ borda fora do default. O mesmo comando roda `browser-tests/css-que-so-o-navegado
 `card` no nome sob textura, hover sem Provider, `body` que cede à classe de entrelinha, valores de estilo inline
 dos átomos (frosted, foco, `neumorphism`, switch, intervalo, acordeão) e a seta do `SarakSelect` numa célula que
 estica — cada caso com a contraprova de que o padrão sem classe não muda.
+
+# 10. O arsenal visual — o que cada token desenha
+
+**Todo token do schema muda a tela, e a mudança tem leitor.** O painel oferece o controle, o motor emite a
+variável e o atributo (§4), e um CSS ou componente da lib os lê. O gate `token-reader:check` cobra isso para o
+schema inteiro, sem exceção declarada ([[00-regras-e-invariantes]] R40). Os tokens abaixo são os que exigem
+contrato além de "a variável chega à propriedade".
+
+## 10.1 Fundo e atmosfera
+
+- **Gradiente** (`bgGradientMode`: `none` · `linear` (padrão) · `radial` · `mesh`) — `src/styles/_background.css`,
+  camada `components.sarak-elements`, pinta o `body` (ou o escopo). `linear` vai do fundo à camada 1 tingida pela
+  primária, no ângulo de `bgGradientAngle`; `radial` acende um foco no topo; `mesh` são quatro manchas — primária,
+  destaque, `colorBgLayer2` e camada 1. Ordem: tom › gradiente › cor do `body`.
+- **Tom do sistema** (`systemTone`: `none` (padrão) · `cyber` · `tactical`) — camada de tom em `_background.css`.
+- **Ruído**: um controle só, `bgNoiseDensity` (`--sarak-noise-density`), lido por `NoiseOverlay` e
+  `.texture-noise`. `bgNoiseAnimation` anima o grão (padrão 0, estático); para sob `prefers-reduced-motion` e no
+  modo de desempenho que corta animação.
+- **Vinheta**: `vignetteSoftness` governa a parada transparente do degradê; o padrão reproduz o desenho base.
+- **Texturas**: toda textura pinta com a **cor de textura** do tema (`textureColor`, que gera variantes, então
+  `--theme-texture-color-rgb` existe). Textura feita de SVG embutido é máscara com `background-color` da cor de
+  textura — `var()` dentro de data URI não resolve. O anel de foco (`--theme-primary-focus`) é da primária.
+
+## 10.2 Superfície, moldura e sombra
+
+- **Material** (`surfaceMaterial`: `frosted` (padrão) · `sleek` · `industrial` · `organic`) — `_surfaces.css`,
+  sobre os cartões. O desfoque do `frosted` parte de `cardBackdropBlur` e soma a intensidade do material; o
+  desfoque do cartão tem um nome só, `--sarak-card-backdrop-blur`.
+- **Moldura** (`borderType`: `solid` (padrão) · `cyber` · `double` · `glow` · `none`) — `data-sx-border-type`;
+  `cyber` e `glow` nascem da cor de textura; `none` apaga o contorno sem mexer na caixa. `borderStyle` vale no
+  cartão.
+- **Sombra**: geometria por `cardShadowOffsetX/Y`, `cardShadowBlur`, `cardShadowExpansion` (padrão
+  `0 20px 50px -12px`); cor por `shadowColorMode` (`neutral` · `colored` · `ambient`); **direção** por
+  `shadowOrientation` (`bottom` (padrão) · `center` · `top` · `bottom-right` · `dynamic`), que só fixa o vetor
+  `--sarak-shadow-dir-x/y` consumido pela sombra do cartão e pela sombra em camadas. `dynamic` segue a luz, o
+  oposto do ponteiro: o `DesignInjector` escreve `--sarak-light-x/y` no `html` só com a opção ativa; sem ponteiro,
+  vale `bottom`.
+- **Sombra em camadas** `--sarak-dynamic-shadow` (contato + projeção, `_theme.css`), espelhada em
+  `--dynamic-shadow` (lida pela paleta de busca, pela busca do cromo e por `.shadow-theme`). `layeredShadows`
+  multiplica a opacidade das duas camadas (0 apaga, 1 é o desenho base).
+
+## 10.3 Cor
+
+`colorDepth` e `colorVariation` dão forma às variantes de interação (`computeColorVariants`): `hover` clareia e
+`active` escurece pelo fator `1 ± 0,1 × depth`, e o matiz abre `(variation − 1) × 8°` entre os dois. Em 1/1 a
+saída é a de sempre.
+
+## 10.4 Cartão
+
+- **Hover só em cartão interativo.** Interativo é o cartão cuja superfície inteira responde ao ponteiro e traz
+  `data-sx-card-interactive="true"`: `SarakTitleCard`, `SarakImageCard` e o `SarakCard` com a prop `interactive`.
+  `cardHoverStyle` (`lift` (padrão) · `glow-only` · `expand`) e `cardHoverTranslate` movem só esse; cartão
+  contêiner (painel de chat, matriz, `SarakCard` sem a prop) não se move em nenhum valor. `cardHoverGlowIncrease`
+  soma ao brilho base no hover. Movimento reduzido e modo de desempenho cortam o movimento.
+- Cabeçalho e rodapé (`cardHeader*`, `cardFooter*`), botão de ação (`cardActionBtn*`) e busca do cartão
+  (`cardSearch*`) leem os próprios tokens; a classe do consumidor ainda vence ([[03-superficie-publica]] §6.1.1).
+
+## 10.5 Movimento
+
+Uma família só: `motion*` (`motionDurationInstant/Fast/Normal/Slow`, `motionEaseMain/In/Out`,
+`motionStaggerDelay`), com unidade no valor emitido (`--duration-*` repassam o valor; multiplicar por `1s`
+invalida a declaração). `motionDurationInstant` é o aperto do botão (`:active`); `motionEaseIn` é a saída de
+sobreposição (modal, scrim, busca); `motionStaggerDelay` é a cascata de entrada das linhas da tabela e das séries
+do gráfico (`useMotionTokens.ts`).
+
+## 10.6 Componentes que leem tokens próprios
+
+Campo (`inputPadding`), tooltip (`tooltipRadius`, `tooltipBg`, `tooltipTextColor`, `tooltipBorderColor`), modal
+(`colorBgModal`, `modalOverlayBlur`, `modalOverlayColor`), toast (`zIndexToast`), tabela (`tableZebraStriping`,
+`tableBorderRadius`, este pelos quatro cantos como variável do contêiner), botão (`btnGhostHoverBg`,
+`btnNeonPulseSpeed`), badge de status (`statusGlowBlur`), nome da marca no cromo (`identityPadding`,
+`identityFontFamily` — padrão: a fonte de títulos do tema —, `identityFontWeight`, `identityTracking`), indicador
+de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmoothing`).
+
+## 10.7 Regras de CSS que o build impõe
+
+- **`backdrop-filter` vai sozinho.** O lightningcss, ao receber `backdrop-filter` e `-webkit-backdrop-filter`
+  juntos, publica só a forma com prefixo — que o Chromium não computa. A lib declara só a forma sem prefixo; o
+  build gera as duas. `browser-tests/` cobra que nenhuma regra do `dist/sarak.css` traga só a prefixada.
+- **Leitor por tabela é declarado.** Quando o valor chega ao leitor por mapa em JS ou direto à propriedade, o
+  arquivo do leitor traz `@sarak-token-reader <id> tabela|direto` em comentário, e cada opção tem teste que cita o
+  id e o valor ([[01-gates-e-baseline]] §2.2).

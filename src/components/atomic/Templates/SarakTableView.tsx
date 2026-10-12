@@ -9,9 +9,9 @@ import { SarakDataErrorNotice } from './SarakDataErrorNotice';
 import { SarakDataFreshness } from './SarakDataFreshness';
 
 /**
- * O raio do contêiner vem de `tableBorderRadius`. A regra `[data-sx-texture] .card` (`_atmosphere.css`)
- * escreve o raio com `!important` a partir dos quatro cantos do cartão e vence qualquer classe; por isso
- * o token entra pelos cantos, como variável do próprio elemento — o que a regra importante lê.
+ * O raio do contêiner vem de `tableBorderRadius`. O padrão do cartão (`_card-defaults.css`) lê os quatro
+ * cantos `--sarak-card-radius-*` e cede à classe `rounded-[…]` do contêiner; o token entra também pelos
+ * cantos, como variável do próprio elemento, para os descendentes que herdam o raio da tabela.
  */
 const TABLE_CORNER_RADIUS = 'var(--sarak-table-border-radius, var(--sarak-card-radius, 12px))';
 const TABLE_RADIUS_STYLE = {

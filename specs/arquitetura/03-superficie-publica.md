@@ -401,10 +401,15 @@ Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catá
 `SarakChartEngine` desenha com **ECharts** (Apache-2.0) e é carregado sob demanda (§7.1). O que ele promete:
 
 - **O tema manda.** As cores, a fonte, a borda, a grade e o tooltip saem do design resolvido — inclusive os sete tokens
-  de gráfico ([[09-temas-e-presets]]). A cor de cada série segue a **paleta categórica** do tema, nesta ordem:
-  `chartColorPalette` → `secondaryColor` → `accentColor` → `statusSuccessColor` → `statusWarningColor` →
-  `statusErrorColor` → `statusInfoColor` → `tertiaryColor`. Uma série pode pedir uma cor pelo **nome** de um
-  desses tokens, nunca por valor.
+  de gráfico ([[09-temas-e-presets]]). A cor de cada série segue a **paleta categórica derivada das cores de
+  marca** (`SubEngines/categoricalPalette.ts`): oito cores, as quatro primeiras a partir de `chartColorPalette`,
+  `secondaryColor`, `accentColor` e `tertiaryColor`, nesta ordem, e as quatro seguintes como variações delas.
+  Cada cor é ajustada ao critério computável da skill `dataviz` (luminosidade OKLCH na faixa do modo, croma
+  acima do piso, contraste contra a superfície, distância entre vizinhas inclusive sob protanopia e
+  deuteranopia); cor de marca que já cumpre passa intacta. **Cor de status nunca entra na paleta**: ela é de
+  estado e só aparece quando a série a pede. Uma série pode pedir uma cor pelo **nome** de um token de marca
+  (`CHART_BRAND_TOKENS`) ou de status (`statusSuccessColor`, `statusWarningColor`, `statusErrorColor`,
+  `statusInfoColor`), nunca por valor.
 - **`type` é opcional**: sem ele vale o `chartType` do tema; a prop explícita vence. `config.title`,
   `showAnimation`, `showGradients` e `thickness` (padrão: `chartThickness` do tema) mudam o desenho.
 - **Várias séries.** `series` (`{ key, label?, type?: 'bar' | 'line' | 'area', stack?, axis?: 'left' | 'right', dashed?,

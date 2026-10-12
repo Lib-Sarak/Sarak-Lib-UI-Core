@@ -31,7 +31,9 @@ import {
     SarakAppChrome,
     SarakButton,
     SarakCalendar,
+    SarakCatalogGrid,
     SarakGantt,
+    SarakKanban,
     SarakCustomizationPanel,
     SarakIconButton,
     SarakInput,
@@ -97,6 +99,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `camadas-zero` / `camadas-dobro`: `layeredShadows` 0 e 2 (o padrão é 1).
  *   - `vidro-cartao` / `vidro-cartao-fosco`: `cardBackdropBlur` = 24 (o padrão é 12), sob o material `sleek` e sob o `frosted` padrão.
  *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
+ *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
@@ -176,6 +179,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'schema-hover-brilho': { cardHoverStyle: 'glow-only' },
     'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
     'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
+    'cascata-raio-catalogo': { catalogSectionRadius: 1 },
     'schema-ruido': { texture: 'noise', bgNoiseAnimation: 2 },
     'schema-sem-suavizacao': { textSmoothing: false },
 };
@@ -278,6 +282,10 @@ const App: React.FC = () => {
  *   - `texturas-cor`: uma textura por família de leitor da cor de textura (gradiente, máscara de SVG, tecido) e um
  *     elemento `glow-reveal` (a animação que lê a mesma cor).
  *   - `busca`: a paleta `SarakSearch` aberta, cujo painel lê `--dynamic-shadow`.
+ *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
+ *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
+ *     contêiner `.card` sem classe, o `SarakKanban` (fundo por `style` inline em `<section>`/`<article>`) e
+ *     um `<section>` solto sem fundo, para a contraprova de que o padrão transparente continua.
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
@@ -555,6 +563,22 @@ const SchemaModalScene: React.FC = () => (
     <SarakModal isOpen onClose={() => undefined} title="Diálogo">Conteúdo do diálogo</SarakModal>
 );
 
+const CASCADE_CATALOG_ITEMS = [{ id: 'item-a', display_name: 'Item A', organization: 'Organização', category: 'a' }];
+const CASCADE_KANBAN_COLUMNS = [{ id: 'fazer', title: 'A fazer', cards: [{ id: 'c1', title: 'Cartão do quadro' }] }];
+
+const CascadeScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="catalogo"><SarakCatalogGrid title="Catálogo de prova" items={CASCADE_CATALOG_ITEMS} /></div>
+        <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
+        <div data-probe="cartao-raio-por-classe"><div className="sarak-card rounded-full">Cartão com raio por classe</div></div>
+        <div data-probe="cartao-conteiner"><div className="card">Contêiner sem classe de raio</div></div>
+        <div data-probe="kanban">
+            <SarakKanban columns={CASCADE_KANBAN_COLUMNS} />
+        </div>
+        <div data-probe="secao-solta"><section>Seção sem fundo próprio</section></div>
+    </div>
+);
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -579,6 +603,7 @@ const SCENES: Record<string, React.FC> = {
     'texturas-cor': TextureColorScene,
     busca: SearchScene,
     schema: SchemaScene,
+    cascata: CascadeScene,
     'schema-modal': SchemaModalScene,
 };
 

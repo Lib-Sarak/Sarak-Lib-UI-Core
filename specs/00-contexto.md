@@ -65,7 +65,7 @@ reescritas aqui.
 
 **Específicas deste repositório** — as regras vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md),
 em **duas categorias** (verificáveis e de conduta), cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴.
-Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As cinco que um agente
+Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As seis que um agente
 viola sem perceber:
 
 - **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, **o código vence**.
@@ -77,6 +77,10 @@ viola sem perceber:
 - **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater — o que
   vale é a **convergência**, e o número vive em `npm run audit` → `auditor_paridade` e em
   `sarak-dev/state.json` → `design.tokens`. Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
+- **Token sem leitor não entra** *(R40)*. Todo token que o painel oferece muda a tela: criar, renomear ou mudar
+  opção de token exige o leitor no componente (ou a regra CSS por opção) e o teste, no mesmo commit;
+  `npm run token-reader:check` cobra, com a exceção vazia. O que cada token desenha está em
+  [`arquitetura/02-design-engine.md`](arquitetura/02-design-engine.md) §10.
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
 - **O baseline do `run_audit` NÃO é zero — compare com ele, nunca com zero.** A fonte viva é

@@ -97,9 +97,9 @@
                    var(--sarak-btn-radius-bl, var(--radius-btn));
 }
 .rounded-input { border-radius: var(--radius-input); }
+/* Fundo e desfoque do cartão vêm de `_cards.css` e `_card-defaults.css`: a declaração que
+   havia aqui era sempre vencida por elas. */
 .bg-theme-card { 
-    background-color: var(--color-theme-card); 
-    backdrop-filter: blur(var(--sarak-blur-master)) saturate(var(--sarak-glass-saturation, 1.2));
     box-shadow: var(--sarak-dynamic-shadow);
 }
 
