@@ -26,6 +26,12 @@ export interface SarakDesignToken {
     unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
     cssVars?: string[];         // Variáveis CSS que este token controla
     generateVariants?: boolean; // Se verdadeiro, gera variantes de cor automáticas
+    /**
+     * Id do token MESTRE de que este é exceção (ex.: `cardRadiusTL` é exceção de `cardBorderRadius`).
+     * O mestre escreve as variáveis de todos os cantos; a exceção só as sobrescreve quando o tema a
+     * declara — com valor diferente do padrão do schema. Sem declarar, o mestre chega ao canto.
+     */
+    exceptionOf?: string;
     constraints?: {
         min?: number;
         max?: number;

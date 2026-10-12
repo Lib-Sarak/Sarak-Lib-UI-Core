@@ -69,17 +69,17 @@ const GeometricOrbit: React.FC = (): React.ReactElement => (
         className="w-[var(--sarak-empty-state-orb-outer,500px)] h-[var(--sarak-empty-state-orb-outer,500px)] border border-dashed border-white/5 rounded-full flex items-center justify-center relative"
     >
         <div className="w-[var(--sarak-empty-state-orb-inner,300px)] h-[var(--sarak-empty-state-orb-inner,300px)] border border-dashed border-white/10 rounded-full" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_15px_var(--sarak-primary-color,#3b82f6)]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_15px_var(--sarak-primary-color,#00f2ff)]" />
     </motion.div>
 );
 
 const GeometricCaption = ({ title, caption }: { title: string; caption: string }): React.ReactElement => (
     <div className="absolute z-10 text-center">
-        <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} className="text-[var(--sarak-primary-color,#3b82f6)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
+        <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} className="text-[var(--sarak-primary-color,#00f2ff)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
             <SarakIcon name="Box" size={40} strokeWidth={1} />
         </motion.div>
         <motion.h2 variants={EMPTY_STATE_ITEM_VARIANTS} className="text-2xl font-black uppercase text-white/10" style={{ letterSpacing: 'var(--sarak-tracking-ultra, 0.8em)', marginLeft: 'var(--sarak-empty-state-void-letter-offset, 0.8em)' }}>{title}</motion.h2>
-        <motion.p variants={EMPTY_STATE_ITEM_VARIANTS} className="text-2xs uppercase text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{caption}</motion.p>
+        <motion.p variants={EMPTY_STATE_ITEM_VARIANTS} className="text-2xs uppercase text-[var(--sarak-primary-color,#00f2ff)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{caption}</motion.p>
     </div>
 );
 
@@ -93,10 +93,10 @@ const GeometricEmptyState = ({ primaryColor, title, caption }: { primaryColor?: 
 
 const AbstractArtwork: React.FC = (): React.ReactElement => (
     <>
-        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: ABSTRACT_GLOW_DURATION_SECONDS, repeat: Infinity }} className="absolute w-[var(--sarak-empty-state-orb-inner,300px)] h-[var(--sarak-empty-state-orb-inner,300px)] rounded-full bg-[var(--sarak-primary-color,#3b82f6)]/5 blur-[var(--sarak-empty-state-orb-blur,100px)]" />
+        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: ABSTRACT_GLOW_DURATION_SECONDS, repeat: Infinity }} className="absolute w-[var(--sarak-empty-state-orb-inner,300px)] h-[var(--sarak-empty-state-orb-inner,300px)] rounded-full bg-[var(--sarak-primary-color,#00f2ff)]/5 blur-[var(--sarak-empty-state-orb-blur,100px)]" />
         <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} className="relative" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 2)' }}>
             <div className="relative z-10 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl" style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
-                <SarakIcon name="Sparkles" size={48} className="text-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
+                <SarakIcon name="Sparkles" size={48} className="text-[var(--sarak-primary-color,#00f2ff)] animate-pulse" />
             </div>
             <motion.div animate={{ rotate: ABSTRACT_ORBIT_ROTATION_DEGREES }} transition={{ duration: ABSTRACT_ORBIT_DURATION_SECONDS, repeat: Infinity, ease: 'linear' }} className="absolute -inset-4 border border-white/5 rounded-[var(--sarak-empty-state-ring-radius,2rem)] border-dashed" />
         </motion.div>
@@ -106,7 +106,7 @@ const AbstractArtwork: React.FC = (): React.ReactElement => (
 const AbstractCaption = ({ systemLabel, firstLine, secondLine }: { systemLabel: string; firstLine: string; secondLine: string }): React.ReactElement => (
     <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} className="text-center z-10">
         <h2 className="text-sm font-black uppercase text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>{systemLabel}</h2>
-        <div className="h-px w-12 bg-[var(--sarak-primary-color,#3b82f6)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
+        <div className="h-px w-12 bg-[var(--sarak-primary-color,#00f2ff)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
         <p className="text-2xs text-white/20 uppercase tracking-widest max-w-[var(--sarak-empty-state-caption-max-width,280px)] leading-loose">{firstLine} <br />{secondLine}</p>
     </motion.div>
 );

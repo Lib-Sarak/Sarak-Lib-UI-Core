@@ -99,6 +99,10 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `camadas-zero` / `camadas-dobro`: `layeredShadows` 0 e 2 (o padrão é 1).
  *   - `vidro-cartao` / `vidro-cartao-fosco`: `cardBackdropBlur` = 24 (o padrão é 12), sob o material `sleek` e sob o `frosted` padrão.
  *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
+ *   - `dono-raio-mestre` / `dono-raio-canto`: o raio mestre do cartão (20) e do botão (30) sozinho, e com um canto declarado
+ *     (`cardRadiusTL` e `btnRadiusTR` = 0). O padrão do canto é 8/12/12 e 6/8/8: com o mestre em outro valor, só o mestre chega.
+ *   - `dono-superficie`: `surfaceColor` e `cardBackgroundColor` diferentes — cada um com a própria variável.
+ *   - `dono-raio-sistema`: `borderRadius` (5) e `cardBorderRadius` (20) diferentes — cada um com a própria variável.
  *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
@@ -180,6 +184,13 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
     'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
     'cascata-raio-catalogo': { catalogSectionRadius: 1 },
+    'dono-raio-mestre': { cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, btnBorderRadius: { mob: 30, tab: 30, desk: 30 } },
+    'dono-raio-canto': {
+        cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, cardRadiusTL: { mob: 0, tab: 0, desk: 0 },
+        btnBorderRadius: { mob: 30, tab: 30, desk: 30 }, btnRadiusTR: { mob: 0, tab: 0, desk: 0 },
+    },
+    'dono-superficie': { surfaceColor: '#123456', cardBackgroundColor: '#654321' },
+    'dono-raio-sistema': { borderRadius: { mob: 5, tab: 5, desk: 5 }, cardBorderRadius: { mob: 20, tab: 20, desk: 20 } },
     'schema-ruido': { texture: 'noise', bgNoiseAnimation: 2 },
     'schema-sem-suavizacao': { textSmoothing: false },
 };
@@ -570,6 +581,7 @@ const CascadeScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
         <div data-probe="catalogo"><SarakCatalogGrid title="Catálogo de prova" items={CASCADE_CATALOG_ITEMS} /></div>
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
+        <div data-probe="botao"><SarakButton>Botão de prova</SarakButton></div>
         <div data-probe="cartao-raio-por-classe"><div className="sarak-card rounded-full">Cartão com raio por classe</div></div>
         <div data-probe="cartao-conteiner"><div className="card">Contêiner sem classe de raio</div></div>
         <div data-probe="kanban">
@@ -607,11 +619,27 @@ const SCENES: Record<string, React.FC> = {
     'schema-modal': SchemaModalScene,
 };
 
+/**
+ * `?tema=dono-*` vira um TEMA ATIVO do consumidor com só os tokens do recorte. O tema vence a `config`,
+ * então é o caminho em que o canto do raio "não declarado" de um tema chega à tela.
+ */
+function ownerThemeFromParams(): { id: string; name: string; design: Record<string, unknown> } | undefined {
+    const name = searchParams.get('tema') ?? '';
+    if (!name.startsWith('dono-')) return undefined;
+    return { id: 'tema-de-prova', name: 'Tema de prova', design: { mode: 'dark', ...TOKEN_VARIANTS[name] } };
+}
+
 function renderScene(Scene: React.FC): React.ReactElement {
     if (searchParams.get('cena') === 'sem-provider') return <Scene />;
     // `?tema-ativo=<id>` liga um tema de referência inteiro (ex.: `minimalist-airy`, claro); ausente, nada muda.
     const activeThemeId = searchParams.get('tema-ativo') ?? undefined;
-    return <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={activeThemeId}><Scene /></SarakUIProvider>;
+    // `?modo=embarcado` liga o Modo Embarcado: as variáveis vão para a ilha, e o CSS responsivo para `.sarak-scope`.
+    const options = searchParams.get('modo') === 'embarcado' ? { mode: 'embedded' as const } : undefined;
+    const ownerTheme = ownerThemeFromParams();
+    if (ownerTheme) {
+        return <SarakUIProvider config={{ mode: 'dark' }} customThemes={[ownerTheme]} activeThemeId={ownerTheme.id} options={options}><Scene /></SarakUIProvider>;
+    }
+    return <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={activeThemeId} options={options}><Scene /></SarakUIProvider>;
 }
 
 const SceneComponent = SCENES[searchParams.get('cena') ?? ''];

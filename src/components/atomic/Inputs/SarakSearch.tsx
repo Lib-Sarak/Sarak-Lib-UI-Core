@@ -117,7 +117,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                             style={{ background: 'transparent', fontSize: 'var(--sarak-type-scale-xl, 20px)' }}
                         />
                         <div
-                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"
+                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#00f2ff)]/10 border border-[var(--sarak-primary-color,#00f2ff)]/20 text-2xs text-[var(--sarak-primary-color,#00f2ff)] font-bold uppercase tracking-widest"
                             style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
                         >
                             <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><SarakIcon name="Command" size={10} /></span>
@@ -139,15 +139,15 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                                             key={item.id}
                                             type={onSelect ? 'button' : undefined}
                                             onClick={onSelect ? () => selectItem(item.id) : undefined}
-                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer w-full text-left"
+                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#00f2ff)]/5 transition-all cursor-pointer w-full text-left"
                                             style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
                                         >
                                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
+                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#00f2ff)] group-hover:bg-[var(--sarak-primary-color,#00f2ff)]/10 transition-all border border-[var(--border-color,#334155)]">
                                                     <SarakIcon name="Command" size={16} />
                                                 </div>
                                                 <div className="flex" style={{ flexDirection: 'column' }}>
-                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{item.label}</span>
+                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#00f2ff)]">{item.label}</span>
                                                     <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
                                                 </div>
                                             </div>

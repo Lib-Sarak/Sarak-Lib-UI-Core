@@ -188,7 +188,7 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
                           className={mergeSarakClasses(
                               'fixed z-[var(--z-index-tooltip, 9000)] text-xs font-bold whitespace-nowrap',
                               'bg-[var(--sarak-tooltip-bg,var(--theme-surface))] text-[var(--sarak-tooltip-text,var(--color-theme-title,#ffffff))]',
-                              'border border-[var(--sarak-tooltip-border,var(--theme-border))] shadow-lg rounded-[var(--sarak-tooltip-radius,0.375rem)] pointer-events-none',
+                              'border border-[var(--sarak-tooltip-border,var(--theme-border))] shadow-lg rounded-[var(--sarak-tooltip-radius,6px)] pointer-events-none',
                               className,
                           )}
                           style={{

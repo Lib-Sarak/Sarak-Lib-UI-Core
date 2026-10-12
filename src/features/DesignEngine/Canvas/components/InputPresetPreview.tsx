@@ -19,7 +19,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
             const borderStyles: Record<string, () => void> = {
                 'none': () => { styles.borderWidth = 0; },
                 'underline': () => {
-                    styles.borderWidth = '0 0 var(--sarak-border-width, 2px) 0';
+                    styles.borderWidth = '0 0 var(--sarak-border-width, 1px) 0';
                     styles.borderStyle = 'solid';
                 }
             };

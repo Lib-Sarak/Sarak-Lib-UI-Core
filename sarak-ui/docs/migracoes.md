@@ -220,7 +220,7 @@ do cartão e a duração de `motionDuration*` nunca chegavam à tela, e o modo e
 | O reset de `main`/`section`/`article`/`.sarak-module-container` era `!important` e deixava transparente o fundo de qualquer um — o Kanban (colunas e cartões) e o do consumidor. | É o padrão transparente, sem `!important`: **o fundo que o componente ou o consumidor escreve aparece.** Sem fundo próprio, segue transparente. |
 | O modo eco cortava o desfoque só do `.bg-theme-card`; o `.sarak-card` sob o material `frosted` (o padrão) seguia desfocado. `prefers-reduced-motion` perdia para a transição do cartão. | O eco corta o desfoque de `.sarak-card`, `.bg-theme-card` e `.card`; o movimento reduzido (pelo token e pela preferência do sistema) vence a transição do cartão. |
 | A transição do cartão era `all 0.3s` e `transform`/`box-shadow` 0,4 s, literais; o brilho do cartão e a camada de textura 0,5 s; `main`/`section` e os títulos 0,4 s; botão e campo 0,2 s. | Leem `--duration-normal`/`--duration-fast`/`--duration-slow`, que `motionDuration*` emite: **o tema passa a mandar na duração.** **No tema padrão**, `transform` e `box-shadow` do cartão sem tema montado passam de 0,4 s a 0,3 s, o brilho e a camada de textura de 0,5 s a 0,6 s, e `main`/`section` e os títulos de 0,4 s a 0,3 s; botão e campo seguem em 0,2 s. |
-| `aurora-classic` fixava `opacity: 0.7 !important` e as cores `#8b5cf6`/`#06b6d4`. | A opacidade lê `textureOpacity`/`cardTextureOpacity` (a reserva continua 0,7) e as cores leem `--theme-secondary`/`--theme-accent`. |
+| `aurora-classic` fixava `opacity: 0.7 !important` e as cores `#8b5cf6`/`#06b6d4`. | A opacidade lê `textureOpacity`/`cardTextureOpacity` (a reserva é o padrão do token, 0,1) e as cores leem `--theme-secondary`/`--theme-accent`. |
 
 **O que não muda:** a COR do fundo e da borda do cartão continua do tema — uma classe `bg-[…]` ou `border-[…]` que
 repete a cor do tema num `.card` não a apaga, e o `cardSurfaceOpacity` segue valendo. Uma classe de fundo diferente da
@@ -233,6 +233,32 @@ a própria classe; a que não quer, a remove. Um teste seu que lia o `border-rad
 O `css-important:check` passa a barrar `!important` visual em seletor amplo do motor (`src/styles/`): nenhuma
 declaração de fundo, borda, raio, sombra, filtro, opacidade, transição, recorte ou cor vence a classe do componente,
 salvo o modo eco, o movimento reduzido, o fundo do `body` e a escolha explícita de token por atributo com valor.
+
+### Uma variável, um dono: o raio mestre chega aos cantos, as semânticas que dividiam um nome ganham nome próprio, todo nome lido existe e toda reserva é o padrão do token
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo; o campo opcional
+`exceptionOf` entra em `SarakDesignToken`. Mudam as variáveis CSS que o motor escreve (algumas deixam de existir ou
+mudam de valor) e a leitura sem Provider.
+
+| Antes | Depois |
+|---|---|
+| `cardBorderRadius` e `btnBorderRadius` escreviam os quatro cantos e `cardRadiusTL…BR`/`btnRadiusTL…BR` os reescreviam **sempre**, com o próprio padrão, e vinham depois: o slider mestre não tinha efeito. | O mestre escreve os quatro cantos; o canto é **exceção** (`exceptionOf`) e só escreve quando o tema o declara com valor diferente do padrão do schema. Vale nos dois modos de injeção. Os temas embarcados deixaram de repetir o canto igual ao mestre; os que têm cantos diferentes do mestre seguem como estavam. |
+| `--radius-theme`, `--theme-gap`, `--theme-border-width` eram escritos por dois tokens (o sistema e o cartão); `--theme-surface` e `--theme-card-border`, idem; quem vencia dependia do modo e da ordem. | Um dono cada: `--radius-theme` é de `borderRadius` (o do cartão é `--sarak-card-radius`); `--theme-gap`, de `layoutGap` (o padding do cartão é `--sarak-card-padding-md`); `--theme-border-width`, de `borderWidth` (a do cartão é `--sarak-card-border-width`); `--theme-surface` e `--surface-color`, de `surfaceColor`; `--theme-card-border` é só a variante derivada do fundo do cartão (a cor da borda é `--sarak-card-border-color`/`--theme-border`). |
+| `--theme-surface` era o fundo do cartão (translúcido por padrão): lido por `SarakBadge`, `SarakModal`, `SarakTabs`, `SarakTooltip` e o painel. | É a cor de superfície do tema (`#1e293b` no padrão): o fundo do modal, da dica e da aba ativa **deixa de ser translúcido** e passa a seguir `surfaceColor`. As variantes `--theme-surface-rgb`/`-bg`/`-border`/`-10`… deixam de ser emitidas (ninguém as lia). |
+| `--sarak-bg-base` era escrito por `colorBgBody` e por `bgBaseColor` (vencia este). | Só `bgBaseColor`. O valor na tela não muda. |
+| `validateDesign` forçava todo `borderRadius` que não fosse número a `12`: o raio do sistema responsivo (do tema ou do painel) nunca chegava a `--radius-theme`. | Só a ausência recebe o piso: o padrão do schema (8 / 10 / 12 por faixa) passa a valer, e o responsivo do tema também. |
+| Nomes lidos que nada emitia: `--sarak-bg-body-rgb` e `--sarak-sidebar-bg-rgb` (por isso `--bg-body-rgb` era **sempre** o claro `248, 250, 252`), `--sarak-max-width`, e dez nomes nos mocks do painel. | Os dois canais são emitidos; `.sarak-safe-container` lê `--sarak-max-content-width`; os mocks leem as variáveis reais. |
+| Reservas `var(--x, F)` contra o padrão do token: **298 leituras**, 137 delas da primária (`#3b82f6` contra `#00f2ff`), mais fundo, texto, borda, tipografia, espaçamento, textura. | A reserva é o padrão do token (o piso mobile-first, no responsivo). **Sem Provider** o que se vê é o tema padrão: primária `#00f2ff`, corpo `#050505`, texto `#ffffff`, títulos em `Outfit`, espaçamento de 8 px, brilho do cartão a 0,05. Com Provider nada muda — a variável existe. |
+| `BEZIER_CURVES` gravava chaves sem `--` (`standard`…): `setProperty` sem efeito. | Gravadas como `--sarak-bezier-standard`/`-decelerate`/`-accelerate`/`-sharp`. |
+| A pré-visualização de tema (`PresetCard`) lia chaves de tokens responsivos que nunca entram em `variables` e usava uma cor como largura de borda. | Lê o valor do tema (ponto `desk`) e o canto só quando declarado. |
+
+**O que fazer:** quem lia `--radius-theme` esperando o raio do cartão passa a ler `--sarak-card-radius`; quem lia
+`--theme-surface` esperando o fundo do cartão lê `--sarak-card-bg`/`--theme-card`. Quem tinha um canto salvo (`cardRadiusTL`
+igual ao antigo mestre) e quer que o mestre volte a valer remove o canto do tema. Um teste seu que fixava a primária
+sem Provider em `#3b82f6` lê `#00f2ff`.
+
+O `variable-contract:check` passa a barrar, em `src/`, variável com mais de um dono (salvo mestre + exceção declarada),
+nome lido que nenhum token, CSS ou código escreve, e reserva diferente do padrão do token.
 
 ### Exports removidos do barril público
 

@@ -237,7 +237,7 @@ export const validateDesign = (design: unknown): SarakDesignState => {
     // passada, para sempre, medido no console de um consumidor real (ERP). Zero
     // consumidor de qualquer uma das duas em toda a `src/`, fora deste arquivo.
     if (typeof s.animationSpeed !== 'number') s.animationSpeed = 0.4;
-    if (typeof s.borderRadius !== 'number') s.borderRadius = 12;
+    if (s.borderRadius === undefined) s.borderRadius = 12; // responsivo: só a AUSÊNCIA recebe o piso
 
     if (!s.atmosphere) s.atmosphere = { texture: 'dots', noise: 0.05, opacity: 0.1, spotlight: true };
     if (!s.specialized) s.specialized = { chatBubbleStyle: 'glass', flowGridStyle: 'dots', chartType: 'line' };

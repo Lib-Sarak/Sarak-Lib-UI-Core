@@ -230,6 +230,83 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 - Quem tem `rounded-*`/`border-2`/`transition-*` num `.sarak-card`/`.card` passa a ver a própria classe (nota MAJOR). Procurei no próprio repositório: os componentes de L1.1 passam a ter o raio que declaram; não abri o ERP.
 - Não rodei `npm run build` nem `cromo-css-real:check` por inteiro (acima); `dist/` está intacto no `git status`.
 
+## Resumo da execução — lote 2 (variável) — 2026-10-12
+
+**Resultado:** Concluído (lote 2), com **três decisões abertas para o revisor** (itens 1, 3 e 6 de *Decisões e suposições*) e uma correção de causa raiz fora da lista do anexo (`validateDesign` forçava `borderRadius` a 12).
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+(`git status --short` vazio; `HEAD` `fc257131`, o lote 1 commitado. Nada em `specs/` foi tocado, salvo esta plan: o `status` e este bloco.)
+
+**O que foi feito**
+- **L2.1 — mestre + exceção.** `exceptionOf` entra em `SarakDesignToken` (`src/core/Design/types.ts`) e nos oito cantos (`schema/cards.ts` `cardRadiusTL/TR/BL/BR`, `schema/buttons.ts` `btnRadiusTL/TR/BL/BR`). O laço de tokens de `useDesignVariables.ts` não escreve o canto quando ele está ausente ou igual ao padrão do schema (`designVariableHelpers.ts`, `isUndeclaredException`, que compara o responsivo por ponto: a validação reordena as chaves e a comparação por `JSON.stringify` falhava em silêncio). O mestre, que já listava as variáveis dos cantos em `cssVars`, passa a chegar a eles — nos dois modos, porque só um escritor sobra.
+- **L2.1 — nome próprio.** `--radius-theme` fica só com `borderRadius` (`cards.ts`: saiu de `cardBorderRadius`); `--theme-gap`, só com `layoutGap` (saiu de `cardPaddingMd`); `--theme-border-width`, só com `borderWidth` (saiu de `cardBorderWidth`; `_surfaces.css:73` lê `--sarak-card-border-width`); `--theme-surface`, só com `surfaceColor` (saiu de `cardBackgroundColor`, `colors.ts:125`; `_base.css:17` deixa de ler `--theme-surface-border`); `--theme-card-border` fica só como variante derivada do fundo do cartão (saiu de `cardBorderColor`, `colors.ts:134`); `--sarak-bg-base`, só com `bgBaseColor` (saiu de `colorBgBody`, `atmosphere.ts:65` — o valor que a tela já via).
+- **Temas embarcados** (`presets/themes/*.ts`, 10 arquivos, 72 linhas removidas): os cantos que repetiam o mestre saíram — sem mudar o desenho, e sem isso o slider mestre continuaria sem efeito nesses temas. Os cantos que diferem do mestre ficaram (cyberpunk-neon, minimalist-airy, neo-brutalism, neumorphic-mobile têm mestre ≠ cantos por desenho).
+- **Causa raiz achada pelo navegador:** `src/core/Provider/utils/validation.ts:240` forçava todo `borderRadius` que não fosse número a `12`, descartando o responsivo do tema e do painel (a prosa acima dele afirmava o contrário). Agora só a ausência recebe o piso.
+- **L2.2 — nome lido existe.** `_colors.css` lia `--sarak-bg-body-rgb`/`--sarak-sidebar-bg-rgb`, que ninguém emitia (por isso `--bg-body-rgb` era sempre `248, 250, 252`): o hook os emite (`designVariableHelpers.ts`, `emitColorChannels`). `_base.css:78` lê `--sarak-max-content-width`. Os 10 nomes dos mocks do painel (`--theme-text-sec`, `--sarak-radius`, `--sarak-radius-sm`, `--sarak-status-success/-error`, `--theme-main`, `--theme-shadow`, `--font-tab/-subtitle/-body`) leem as variáveis reais.
+- **L2.3 — reserva = padrão.** 298 reservas em 88 arquivos reescritas com `gates/scripts/contrato/helpers/fix-fallbacks.ts` (ferramenta de manutenção, `--write`): 137 da primária (`#3b82f6` → `#00f2ff`), 9 de `-bg`, o resto em fundo, texto, borda, tipografia, espaçamento e textura. `PresetCard.tsx` deixou de ler chaves de token responsivo que nunca entram em `variables` e de usar cor como largura de borda.
+- **L2.4.** `BEZIER_CURVES` grava `--sarak-bezier-standard/-decelerate/-accelerate/-sharp` (`constants.ts`); a prosa falsa saiu de `atmosphere.ts` (`bgBaseColor`, `colorBgLayer1/2`), `colors.ts:131`, `layers.ts:37` (afirmava `zIndexModal` duplicado: medido, 0 ids duplicados) e `_base.css:43-47`.
+- **Trava** `gates/scripts/contrato/check-variable-contract.ts` (+ `helpers/variable-contract-core.ts`), `npm run variable-contract:check`: três regras (um dono, nome lido existe, reserva = padrão), LIMITES DECLARADOS no cabeçalho, `ALLOWLIST` vazia que acusa entrada vencida. Ligada ao Anel 1 (`.githooks/pre-commit`, bloco após o `token-types:check`) e à CI (`.github/workflows/gates.yml`).
+- **Testes.** `gates/.../__tests__/check-variable-contract.test.ts` (17, com casos plantados), `src/core/Design/hooks/__tests__/useDesignVariablesDonoUnico.test.ts` (12). Navegador: `browser-tests/variavel-com-dono.spec.ts` (9) e, em `fixtures/harness-entry.tsx`, o recorte `dono-*` (tema ativo do consumidor, não `config`: o tema vence a config) e `?modo=embarcado`.
+- Testes existentes ajustados ao padrão novo: `NoiseOverlay`, `SarakScrim`, `SarakModal.surfaceTokens`, `SarakInput.paddingToken`, `SarakTooltip.radiusToken`, `ChromeSidebarBody`, `MessageList`, `atmosferaEBotoesQueDesenham`, `cartaoQueCedeAClasse`; 13 snapshots regravados.
+- `docs/migracoes.md` — subseção MAJOR na `## 8.0.0` (e o parêntese da `aurora-classic`, do lote 1, que ficou falso); `gates/baselines/audit-baseline.json` regravado (`--write`); `sarak-dev/` e `sarak-ui/` regenerados.
+
+**Arquivos alterados** (151 modificados e 6 novos, fora `specs/`; a lista é a do `git status`)
+| Grupo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/types.ts`, `schema/{cards,buttons,colors,atmosphere,layers}.ts` | alterado | `exceptionOf`, donos únicos, prosa |
+| `src/core/Design/hooks/useDesignVariables.ts`, `designVariableHelpers.ts` (novo) | alterado/criado | exceção não declarada não escreve; canais `r, g, b` |
+| `src/core/Provider/utils/validation.ts`, `constants.ts`, `components/DesignInjector.tsx` | alterado | `borderRadius` responsivo; Bezier com `--`; reserva da fonte |
+| `src/core/Design/presets/themes/*.ts` (10) | alterado | cantos redundantes removidos |
+| `src/styles/*.css` (12), `src/components/**` e `src/features/**` (≈100) | alterado | reservas = padrão; leitores migrados; mocks |
+| `gates/scripts/contrato/check-variable-contract.ts`, `helpers/variable-contract-core.ts`, `helpers/fix-fallbacks.ts` | criado | a trava e a ferramenta de reescrita |
+| `.githooks/pre-commit`, `.github/workflows/gates.yml`, `package.json` | alterado | liga a trava |
+| testes e 13 snapshots | alterado/criado | ver acima |
+| `browser-tests/variavel-com-dono.spec.ts` (novo), `fixtures/harness-entry.tsx` | criado/alterado | 9 casos, nos dois modos |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md`, `sarak-dev/*`, `gates/baselines/audit-baseline.json` | alterado | nota MAJOR e gerados |
+
+**Verificações executadas**
+- `npx vitest run` (suíte completa) → 466 arquivos, 3046 testes: **3044 passaram, 2 falharam** — `check-class-merge` (timeout de 5 s sob carga; passa isolado) e meu próprio gate (o `designVariableHelpers.ts` novo não estava na lista de arquivos que escrevem variável; consertado). Os dois arquivos, rodados de novo juntos: **32 de 32**. **Não repeti a suíte inteira depois desse conserto.**
+- `npx tsc --noEmit` → 0 erros. `check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12" (antes: `hardcoded` 0→2 e `cleancode` 0→2 por meu código; consertados — `PresetCard.tsx` com `var()`+reserva, `validation.ts` ≤ 250 linhas).
+- Anel 1, na ordem do hook, `guide:check` por último: 20 gates (plan×índice, `dev-kit`, barril, catálogo, zero-marca, deep-import, gate-limits, container-query (2), persistence-doc, class-merge, icon-port, chrome-token-parity, token-reader, css-important, trail-citation, token-types, **variable-contract**, migration-anchor, guide). Primeira passada: 19 com exit 0 e `trail-citation` acusando uma linha minha em `validation.ts` (juntei dois comentários antigos e a linha passou a contar como adicionada); consertado, `trail-citation` exit 0 e `audit:baseline` igual ao baseline em seguida. Não repeti os outros 19 depois disso (o conserto só tocou comentário).
+- Anel 0 simulado (`config.json` do hook sobre as linhas adicionadas do `git diff HEAD` e os 7 arquivos novos de fora de `specs/`): 1606 linhas, 139 arquivos, **0 achados** (feito antes deste bloco).
+- **Trava contra o `HEAD` anterior:** o gate novo rodado sobre `git archive HEAD src` → **exit 1: 14 variáveis com dois donos, 14 nomes sem dono, 298 reservas fora do padrão**; no worktree → exit 0 (3428 leituras, 1974 reservas conferidas). Casos plantados no `check-variable-contract.test.ts` (dois donos, exceção sem mestre, nome sem dono, nome citado só em array, reserva azul, variante `-bg` antiga).
+- **Navegador, fora do repositório e sem tocar `dist/`:** o `npm run build` reescreveria os 40 arquivos rastreados de `dist/`; em vez disso compilei o worktree em `%TEMP%` (`tsup` + `@tailwindcss/cli` + `inject-css`, sem `--dts` nem os `*:check`), com junção para `node_modules`, e removi no fim. Suíte inteira do `playwright` sobre ele: **199 de 199** (190 anteriores + 9 novos), duas vezes (a segunda, com o código final). Os 9 casos sobre o código do **`HEAD`** (mesmo procedimento, `git archive`): **8 falham, 1 passa** (a contraprova "sem tema"). Isto **não substitui** o `npm run build` + `cromo-css-real:check` do revisor.
+
+**Critérios de aceite**
+- [x] Lote 2: zero variável com dois donos (mestre + exceção funcionando) — evidência: `variable-contract:check` exit 0 (14 no `HEAD`); `variavel-com-dono.spec.ts` casos 1-6, nos modos App e Embarcado.
+- [x] Zero nome lido sem dono — gate (14 no `HEAD`); inclui os mocks do painel.
+- [x] Zero reserva divergente do padrão — gate (298 no `HEAD`); 1974 conferidas.
+- [x] Bezier com `--` — `constants.ts`; teste `DesignInjector` existente verde.
+- [x] `--theme-surface` igual a `--surface-color` — caso 8 do spec e teste do hook.
+- [x] Travas do lote com limites no cabeçalho, caso de mutação e falha no `HEAD` — acima.
+- [ ] **"Uma trava por classe… falhando no `HEAD` anterior e passando depois"** vale para as três regras do lote 2, mas o `auditor_ghostvars` **não foi estendido** (decisão 2).
+
+**Decisões e suposições**
+1. **O canto é exceção quando difere do padrão do schema, não "quando existe na chave".** O estado do Provider é `{ ...padrões, ...tema, ...config }`: a chave do canto sempre existe, com o objeto padrão. "Declarado" só pode significar "diferente do padrão". Efeito colateral aceito: um tema que quer o canto **igual ao padrão do schema** (8/12/12) com mestre diferente não consegue expressá-lo. Tema que declara canto escalar (todos os embarcados com cantos diferentes do mestre) segue mandando.
+2. **Gate novo em TypeScript (`tsx`), não extensão do `auditor_ghostvars`.** O auditor tem quatro limites que o plano pede para fechar: aceita qualquer literal como emissor, expande `-rgb`/`-bg`… de **qualquer** base (por isso `--sarak-bg-body-rgb` passava), pula a pasta `Mocks` e lê o manifesto, que "nunca alimentou CSS". Um gate que importa o schema de verdade (`master-map.ts`) resolve a emissão pela mesma lógica do hook e confere o padrão de cada token; o auditor segue como está (e melhorou 1 consumo: o literal `var(--x, 16px)` numa mensagem de `resolveToken.ts`, reescrita).
+3. **O anexo L2.2 lista nomes que SÃO emitidos.** `--sarak-primary-color-bg`, `--sarak-status-*-color-bg/-border`, `--theme-error-bg`, `--theme-primary-border`, `--theme-secondary-border` nascem das variantes cromáticas (`generateVariants`) dos tokens `primaryColor`, `statusErrorColor`… — o gate modela a emissão do hook e não os acusa. O conjunto real foi de 14 nomes: 2 de `_colors.css`, 1 de `_base.css` (`--sarak-max-width`), 10 dos mocks do painel e 1 literal de mensagem em `resolveToken.ts`. Os `-bg` e `-border` entraram em L2.3 por outro motivo: a reserva azul contradizia a variante do tema.
+4. **Reserva de token responsivo = o ponto `mob`** (piso mobile-first); o gate aceita qualquer dos três pontos. Reserva em `rem` virou `px` do padrão do schema (`1rem` → `16px`): o `html` desta lib tem `font-size` de 14 px, então `1rem` não era 16 px.
+5. **Reserva interpolada em template** (`${flowNodeRadius || 12}px`, `SarakFlowEngine`) não é julgada: o valor vem de prop, não de tema.
+6. **Cada reserva reescrita é o padrão do token, mesmo onde o efeito sem Provider piora ou é estranho** — o revisor pode querer exceção declarada: `opacity: var(--sarak-card-surface-opacity, 0.8)` (`_cards.css`; o `0,8` já é a opacidade que o cartão tem com Provider, e é o defeito L3.13 do lote 3); `--sarak-btn-neon-pulse-speed` `0s` (a classe `.sarak-btn-neon-pulse` não anima sem Provider); `--sarak-noise-density` `0,05` (o `NoiseOverlay` tinha `0` de propósito, "invisível até o tema pedir"; o Provider sempre emite a variável, então só afeta o primeiro quadro); `--sarak-card-hover-y` `-4px` (o cartão interativo sobe sem Provider); `--sarak-sidebar-active-color`/`-hover-color` `transparent` (o item ativo perde o tom azul sem Provider).
+7. **Os quatro temas com mestre ≠ cantos não foram redesenhados** (§3.2): o mestre segue "ignorado" para o cartão neles, por desenho deles; é assunto da plan-110.
+8. `_base.css` ainda redeclara `--theme-gap`/`--radius-theme`/`--theme-surface`/`--theme-card` no `body` como piso; com um dono só, deixou de sombrear um valor concorrente, e o inline do motor no `body` vence.
+9. `SarakTableView.tsx:17-22` mantém o workaround `--sarak-card-radius-*` (do lote da tabela).
+
+**Achados fora do escopo (não corrigidos)**
+- `NoiseOverlay` e a classe `.sarak-btn-neon-pulse`: ver decisão 6 — se a reserva "de proposta" deve ser regra declarada, é a `ALLOWLIST` do gate.
+- Os temas `cyberpunk-neon`, `minimalist-airy`, `neo-brutalism`, `neumorphic-mobile`: mestre ≠ cantos (decisão 7).
+- `minimalist-airy`: `btnRadiusTL…BR` = 9999, que `validateDesign` corta a 120 (L5.10, lote 5).
+- `PresetCard.tsx`: `backdropFilter` com `var(--sarak-layout-gap-md,16px)` como reserva de desfoque (gap usado como blur).
+- O painel (lote 5): o slider mestre agora alcança os cantos nos temas sem canto; um tema com canto escalar salvo segue "preso" até o canto ser limpo — o controle do painel não limpa o canto ao mover o mestre.
+
+**Pendências / riscos**
+- O efeito na tela dos 298 reservas só aparece **sem Provider**; com Provider a variável existe. O que muda COM Provider: `--theme-surface` (modal, dica, aba ativa, badge `soft`) passa de translúcido a `surfaceColor`; `--radius-theme` do sistema passa a ser o responsivo 8/10/12 (era sempre 12 por causa de `validation.ts`); `--bg-body-rgb`/`--bg-sidebar-rgb` passam a ser o tema (eram sempre o claro). Nada disso tem caso de navegador próprio além de `--theme-surface` e `--radius-theme`.
+- Não repeti a suíte completa do `vitest` depois do último conserto do gate (decisão acima); a do `playwright` foi repetida com o código final.
+- Não rodei `npm run build`, `cromo-css-real:check` nem o `build:css:scoped` com este código; o `dist/` está intacto no `git status`.
+
 ---
 
 # 10. Veredito
@@ -243,3 +320,18 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 **Decisão 1 do executor (a superfície do tema segue na camada final, sem `!important`) — aceita para este lote.** O guarda `css-que-so-o-navegador-mede.spec.ts` ("um cartão real da lib computa a superfície de cartão") é contrato vigente, e os cartões da lib repetem `bg-[var(--color-theme-card,…)]`, que apagaria `cardSurfaceOpacity`. O caminho que cumpre as duas metades do pedido passa a ser do **lote 3**: tirar dos cartões da lib a classe de fundo redundante (a superfície vem do tema, de um lugar só) e então rebaixar a superfície para a camada que cede, para que `bg-*`/`hover:bg-*` do componente e do consumidor vençam. Entram no lote 3, junto: `_utilities.css:33` (`.bg-theme-card:active` na camada final vence `active:bg-*`) e `_theme.css:100-102` (sombra de `.bg-theme-card` sempre vencida). O anexo ganha esses itens em L3.
 
 **Próximo:** lote 2 (variável), depois do commit deste lote.
+
+## Veredito — 2026-10-12 — lote 2 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK; `playwright test` sobre esse `dist/`: **199/199**, com os 9 casos de `variavel-com-dono.spec.ts` (modos App e Embarcado); suíte completa 466/466 arquivos, 3046/3046 testes (repetida pelo revisor depois do último conserto do executor); `tsc` 0; `audit:baseline --with-tsc` igual ao baseline — o baseline regravado só **apertou** (`auditor_ghostvars` 1 → 0; campo novo `contraparteFaltando` em 0), nada afrouxou; Anel 1 inteiro OK, com o `variable-contract:check` novo; varredura do padrão "Segredo atribuido" nas linhas adicionadas e nos não rastreados: 0. **Mutação feita pelo revisor** (cópia de `src/` fora do repo, `buildReport`): uma reserva azul e um nome sem dono plantados → 1 e 1 acusados; contra o `src` do `HEAD` anterior → 298 reservas e 15 nomes sem dono.
+
+**Decisões do executor:**
+1. Canto é exceção quando difere do padrão do schema — **aceita**; o limite (tema que quer o canto igual ao padrão com mestre diferente não o expressa) vai declarado na síntese.
+2. Gate novo em vez de estender o `auditor_ghostvars` — **aceita** (o gate modela a emissão do hook; os limites do auditor estão declarados em `01-gates-e-baseline` §4.3).
+3. O anexo L2.2 listava nomes que são emitidos como variantes cromáticas — **correção aceita**; o erro era do anexo.
+4. e 5. Reserva de token responsivo = `mob`; reserva interpolada de prop não julgada — **aceitas**.
+6. Reserva = padrão mesmo onde o efeito sem Provider muda — **aceita como regra**: sem Provider a lib desenha o tema padrão; nenhuma exceção declarada.
+
+**Para os lotes seguintes (entram no anexo):** `PresetCard.tsx` com reserva de gap no desfoque (L3.19); o slider mestre do painel não limpa o canto declarado de um tema salvo (L5.11).
+
+**Próximo:** lote 3 (componente), depois do commit deste lote.

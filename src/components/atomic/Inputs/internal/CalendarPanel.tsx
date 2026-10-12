@@ -29,7 +29,7 @@ export interface CalendarPanelProps {
     onSelectDay: (date: Date) => void;
 }
 
-const DAY_PRIMARY = 'var(--sarak-primary-color,#3b82f6)';
+const DAY_PRIMARY = 'var(--sarak-primary-color,#00f2ff)';
 const DAY_MUTED = 'var(--text-muted,#94a3b8)';
 
 /** Cor/fundo da célula de dia por estado — via `style` (não `className`), porque o
@@ -148,7 +148,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                             // `style` sempre vence, então é o único jeito confiável de a célula
                             // selecionada/fora-do-mês continuar legível.
                             style={dayCellStyle(cell.outside, selected, between)}
-                            className={`h-8 tabular-nums ${!selected ? 'hover:bg-[var(--sarak-primary-color,#3b82f6)]/10' : ''}`}
+                            className={`h-8 tabular-nums ${!selected ? 'hover:bg-[var(--sarak-primary-color,#00f2ff)]/10' : ''}`}
                         >
                             {cell.date.getDate()}
                         </SarakButton>

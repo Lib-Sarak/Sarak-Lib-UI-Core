@@ -114,7 +114,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
 
                 {/* Variante 2: In-line Comments */}
                 <div className="sarak-card flex-1 border border-[var(--theme-border)] bg-transparent rounded-2xl p-5 flex flex-col gap-4 relative">
-                    <div className="text-[10px] font-black uppercase text-[var(--theme-text-sec)] tracking-widest border-b border-[var(--theme-border)] pb-2">
+                    <div className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest border-b border-[var(--theme-border)] pb-2">
                         Thread In-Line (Comentários)
                     </div>
                     <div className="flex-1 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
@@ -122,14 +122,14 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                             <div className="w-6 h-6 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center mt-1"><SarakIcon name="User" size={10} className="text-[var(--theme-primary)]" /></div>
                             <div className="flex-1">
                                 <div className="text-[10px] font-bold text-[var(--theme-title)] mb-1">DevOps Team <span className="text-white/20 font-normal ml-2">Há 2 horas</span></div>
-                                <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed">O deploy falhou na stage 4 devido a falta de variáveis de ambiente. Alguém pode verificar?</div>
+                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed">O deploy falhou na stage 4 devido a falta de variáveis de ambiente. Alguém pode verificar?</div>
                             </div>
                         </div>
                         <div className="flex gap-3 ml-6">
                             <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-emerald-500" /></div>
                             <div className="flex-1">
                                 <div className="text-[10px] font-bold text-emerald-500 mb-1">CI/CD Bot <span className="text-white/20 font-normal ml-2">Há 5 min</span></div>
-                                <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed border border-emerald-500/20 bg-emerald-500/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
+                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed border border-emerald-500/20 bg-emerald-500/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
                             </div>
                         </div>
                     </div>

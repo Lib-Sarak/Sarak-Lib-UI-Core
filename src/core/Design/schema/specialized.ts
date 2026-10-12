@@ -14,7 +14,7 @@ export const SpecializedSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do indicador de "pensando" dos chats (os três pontos e o avatar do assistente enquanto a resposta é gerada). O padrão acompanha a cor primária do tema; troque por uma cor própria para dar identidade de IA ao brilho.',
             axis: 'elevation',
-            defaultValue: 'var(--sarak-primary-color, #3b82f6)',
+            defaultValue: 'var(--sarak-primary-color, #00f2ff)',
             cssVars: ['--sarak-ai-glow']
         },
         {

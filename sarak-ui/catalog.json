@@ -5485,6 +5485,7 @@
       "--sarak-bg-base",
       "--sarak-bg-base-color",
       "--sarak-bg-body",
+      "--sarak-bg-body-rgb",
       "--sarak-bg-gradient-angle",
       "--sarak-bg-gradient-mode",
       "--sarak-bg-layer-1",
@@ -5529,12 +5530,8 @@
       "--sarak-btn-primary-bg-light",
       "--sarak-btn-primary-bg-rgb",
       "--sarak-btn-primary-text",
-      "--sarak-btn-radius-b-l",
-      "--sarak-btn-radius-b-r",
       "--sarak-btn-radius-bl",
       "--sarak-btn-radius-br",
-      "--sarak-btn-radius-t-l",
-      "--sarak-btn-radius-t-r",
       "--sarak-btn-radius-tl",
       "--sarak-btn-radius-tr",
       "--sarak-btn-secondary-bg",
@@ -5614,12 +5611,8 @@
       "--sarak-card-opacity",
       "--sarak-card-padding-md",
       "--sarak-card-radius",
-      "--sarak-card-radius-b-l",
-      "--sarak-card-radius-b-r",
       "--sarak-card-radius-bl",
       "--sarak-card-radius-br",
-      "--sarak-card-radius-t-l",
-      "--sarak-card-radius-t-r",
       "--sarak-card-radius-tl",
       "--sarak-card-radius-tr",
       "--sarak-card-search-bg-focus",
@@ -6001,6 +5994,7 @@
       "--sarak-shell-brand-logo-size",
       "--sarak-sidebar-active-color",
       "--sarak-sidebar-bg",
+      "--sarak-sidebar-bg-rgb",
       "--sarak-sidebar-blur",
       "--sarak-sidebar-collapsed-width",
       "--sarak-sidebar-color",
@@ -8521,6 +8515,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "1c149da2c7a7"
+    "kitHash": "2530d5da57ca"
   }
 }

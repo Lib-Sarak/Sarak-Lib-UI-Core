@@ -28,7 +28,7 @@
 
 /* Typography Personalities */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading, 'Inter', sans-serif);
+    font-family: var(--font-heading, 'Outfit', sans-serif);
     color: var(--text-title, var(--theme-title, #ffffff));
     transition: all var(--duration-normal, 0.4s) ease;
 }
@@ -51,10 +51,10 @@ h2 {
 
 h3 {
     font-size: var(--sarak-h3-size, 24px);
-    font-weight: var(--sarak-h2-weight, 600);
+    font-weight: var(--sarak-h2-weight, 700);
 }
 
-h3, h4 { font-family: var(--font-heading, 'Inter', sans-serif); }
+h3, h4 { font-family: var(--font-heading, 'Outfit', sans-serif); }
 
 /* Sincronização de Tipografia Dinâmica — sem `!important`: regra de elemento já vence o
    valor herdado; o `!important` só servia para vencer a classe no próprio título. */

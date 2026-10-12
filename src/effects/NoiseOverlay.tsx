@@ -9,7 +9,7 @@ export const NoiseOverlay: React.FC = () => {
 
     return (
         <div 
-            className="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0)] transition-opacity duration-1000"
+            className="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0.05)] transition-opacity duration-1000"
             style={{ 
                 mixBlendMode: 'overlay',
                 backgroundImage: `url("${noiseSvg}")`,

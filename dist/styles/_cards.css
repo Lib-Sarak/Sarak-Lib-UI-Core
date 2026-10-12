@@ -12,7 +12,7 @@
     /* Fundo Base (Sovereign Glass) */
     background-color: var(--sarak-card-bg, var(--theme-card));
     border-color: var(--sarak-card-border-color, var(--theme-border));
-    opacity: var(--sarak-card-surface-opacity, 1);
+    opacity: var(--sarak-card-surface-opacity, 0.8);
     
     /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
        direção de `shadowOrientation` (`--sarak-shadow-dir-x/y`, `_surfaces.css`; sem o
@@ -27,7 +27,7 @@
         color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-card-shadow-spread, 20) * 1%)), transparent);
     --sarak-card-shadow-full:
         var(--sarak-card-shadow-base),
-        inset 0 0 var(--sarak-card-inner-glow-width, 0px) var(--sarak-card-inner-glow-color, transparent);
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
     box-shadow: var(--sarak-card-shadow-full);
     
     /* O desfoque (`backdrop-filter`) mora em `_card-defaults.css` — só a forma sem prefixo:
@@ -92,7 +92,7 @@
    `lift` sobe `cardHoverTranslate` px (negativo = sobe); `expand` cresce um pouco;
    `glow-only` não move o cartão (só o brilho acima). */
 [data-sx-card-hover-style="lift"] .sarak-card[data-sx-card-interactive="true"]:hover {
-    transform: translateY(var(--sarak-card-hover-y, 0px));
+    transform: translateY(var(--sarak-card-hover-y, -4px));
 }
 [data-sx-card-hover-style="expand"] .sarak-card[data-sx-card-interactive="true"]:hover {
     transform: scale(1.02);
@@ -118,15 +118,15 @@
    o fundo transparente é a identidade do estilo. Os padrões reproduzem o primário do botão
    (cor primária do tema, texto `--text-muted`, altura `py-4`, raio do botão). */
 .sarak-card-action-btn {
-    padding-block: var(--sarak-card-action-btn-padding, 1rem);
+    padding-block: var(--sarak-card-action-btn-padding, 16px);
     border-radius: var(--sarak-card-action-btn-radius, var(--radius-btn));
 }
 .sarak-card-action-btn--filled {
-    background-color: var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #3b82f6));
+    background-color: var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #00f2ff));
     color: var(--sarak-card-action-btn-text, var(--text-muted, #94a3b8));
 }
 .sarak-card-action-btn--filled:hover {
-    background-color: var(--sarak-card-action-btn-hover-bg, var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #3b82f6)));
+    background-color: var(--sarak-card-action-btn-hover-bg, var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #00f2ff)));
 }
 
 /* CAMPO do SarakSearchCard: placeholder, fundo e texto focados valem só dentro do cartão
@@ -134,7 +134,7 @@
    `SarakInput` escreve fundo, texto e placeholder por classe utilitária (`bg-[var(--sarak-input-bg…)]`),
    que vem de uma camada depois desta e venceria o token do cartão (medido em navegador). */
 .sarak-search-card input::placeholder {
-    color: var(--sarak-card-search-placeholder, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent)) !important;
+    color: var(--sarak-card-search-placeholder, var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent))) !important;
 }
 .sarak-search-card input:focus {
     background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, #1e293b))) !important;

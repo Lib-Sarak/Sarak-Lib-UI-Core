@@ -51,8 +51,8 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
     h3: {
         fontFamily: 'var(--font-heading, var(--sarak-font-h, "Outfit", sans-serif))',
         fontSize: 'var(--sarak-type-scale-xl, 20px)',
-        fontWeight: 'var(--sarak-h2-weight, 600)',
-        lineHeight: 'var(--sarak-h2-lh, 1.3)',
+        fontWeight: 'var(--sarak-h2-weight, 700)',
+        lineHeight: 'var(--sarak-h2-lh, 1.2)',
     },
     body: {
         fontFamily: 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))',
@@ -64,7 +64,7 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
         fontFamily: 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))',
         fontSize: 'var(--sarak-type-scale-caption, 12px)',
         fontWeight: 'var(--sarak-body-weight, var(--sarak-b-weight, 400))',
-        lineHeight: 'var(--sarak-body-lh, var(--sarak-line-height, 1.4))',
+        lineHeight: 'var(--sarak-body-lh, var(--sarak-line-height, 1.6))',
     },
     mono: {
         fontFamily: 'var(--font-mono, var(--sarak-font-m, "JetBrains Mono", monospace))',

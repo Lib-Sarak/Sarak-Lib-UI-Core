@@ -58,7 +58,7 @@
 }
 
 .sarak-btn-neon-pulse {
-    animation: sarak-btn-neon-pulse var(--sarak-btn-neon-pulse-speed, 1.5s) ease-in-out infinite;
+    animation: sarak-btn-neon-pulse var(--sarak-btn-neon-pulse-speed, 0s) ease-in-out infinite;
 }
 
 .sarak-btn-neon-pulse:hover {

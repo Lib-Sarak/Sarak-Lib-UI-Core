@@ -38,7 +38,7 @@ export interface SarakUploaderProps {
 /** Borda por estado, espelhando os tokens semânticos da Sarak (Spec 11, Regra 3). */
 const borderFor = (dragActive: boolean, dragReject: boolean, hasError: boolean): string => {
     if (dragReject || hasError) return 'var(--sarak-status-error-color,#ef4444)';
-    if (dragActive) return 'var(--sarak-primary-color,#3b82f6)';
+    if (dragActive) return 'var(--sarak-primary-color,#00f2ff)';
     return 'var(--sarak-input-border-color, var(--border-color,#334155))';
 };
 

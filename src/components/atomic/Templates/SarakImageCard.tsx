@@ -91,7 +91,7 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
             {/* Hover Glow Effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                  style={{
-                     boxShadow: `inset 0 0 var(--sarak-image-card-glow-blur, 40px) var(--sarak-card-glow-color, rgba(0,242,255,0.1))`
+                     boxShadow: `inset 0 0 var(--sarak-image-card-glow-blur, 40px) var(--sarak-card-glow-color, rgba(0,242,255,0.05))`
                  }}
             />
         </motion.div>

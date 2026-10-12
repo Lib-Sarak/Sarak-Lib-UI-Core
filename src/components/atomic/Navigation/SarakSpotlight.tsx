@@ -171,7 +171,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                             onClick={() => choose(item)}
                             className={`flex items-center cursor-pointer text-sm ${
                                 index === active
-                                    ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)]'
+                                    ? 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--color-theme-card,#1e293b)]'
                                     : 'text-[var(--sarak-text-main,#ffffff)]'
                             }`}
                             style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}

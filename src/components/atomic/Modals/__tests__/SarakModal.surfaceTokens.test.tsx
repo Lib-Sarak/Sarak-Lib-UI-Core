@@ -23,7 +23,7 @@ describe('SarakModal — véu e superfície governados por token', () => {
     it('o véu lê a cor do token modalOverlayColor (--sarak-modal-overlay-color), não um preto fixo', () => {
         render(<SarakModal isOpen onClose={() => undefined} title="Aviso">Corpo</SarakModal>);
         const scrim = screen.getByRole('dialog', { name: 'Aviso' }).previousElementSibling;
-        expect(scrim?.className).toContain('bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.6))]');
+        expect(scrim?.className).toContain('bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))]');
         expect(scrim?.className).not.toContain('bg-black/60');
     });
 

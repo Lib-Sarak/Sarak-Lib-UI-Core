@@ -135,7 +135,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         // repinta ao vivo quando o tema muda (custom properties resolvem no computed-value).
         const fontScope = isEmbedded ? scopeElement : document.body;
         if (fontScope) {
-            const FONT_MAIN = 'var(--font-main, var(--sarak-font-b, system-ui, sans-serif))';
+            const FONT_MAIN = 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))';
             if (fontScope.style.fontFamily !== FONT_MAIN) fontScope.style.fontFamily = FONT_MAIN;
         }
 

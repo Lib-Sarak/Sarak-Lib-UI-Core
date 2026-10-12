@@ -27,6 +27,12 @@ interface SarakDesignToken {
     unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
     cssVars?: string[];
     generateVariants?: boolean;
+    /**
+     * Id do token MESTRE de que este é exceção (ex.: `cardRadiusTL` é exceção de `cardBorderRadius`).
+     * O mestre escreve as variáveis de todos os cantos; a exceção só as sobrescreve quando o tema a
+     * declara — com valor diferente do padrão do schema. Sem declarar, o mestre chega ao canto.
+     */
+    exceptionOf?: string;
     constraints?: {
         min?: number;
         max?: number;
@@ -820,8 +826,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "56c3324";
-    readonly builtAt: "2026-10-12T06:12:18.266Z";
+    readonly baseCommitShort: "fc25713";
+    readonly builtAt: "2026-10-12T08:55:12.928Z";
 };
 
 interface SarakDesignScopeProps {

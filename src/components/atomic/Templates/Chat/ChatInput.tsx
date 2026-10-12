@@ -53,14 +53,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <div className="flex" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {attachments.map((att, i) => (
-              <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] border border-[var(--border-color,#334155)] rounded-xl relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
-                <SarakIcon name="File" size={14} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+              <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] border border-[var(--border-color,#334155)] rounded-xl relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
+                <SarakIcon name="File" size={14} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                 <span className="text-xs font-medium text-[var(--color-theme-title,#ffffff)] max-w-[var(--sarak-chat-attachment-name-max-width,150px)] truncate">{att.name}</span>
                 <SarakIconButton
                   onClick={() => removeAttachment(i)}
                   icon={<SarakIcon name="X" size={12} />}
                   variant="ghost"
-                  className="hover:bg-[var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))] hover:text-[var(--sarak-status-error-color,#ef4444)]"
+                  className="hover:bg-[var(--sarak-status-error-color-bg,rgba(239,68,68,0.15))] hover:text-[var(--sarak-status-error-color,#ef4444)]"
                   style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
                 />
               </div>
@@ -80,7 +80,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               className="text-left shadow-lg"
               style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}
             >
-               <SarakIcon name="Cpu" size={18} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+               <SarakIcon name="Cpu" size={18} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                <div className="flex" style={modelLabelStack.style}>
                   <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase font-bold tracking-tight leading-none" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Modelo Manual Ativo</span>
                   <span className="text-xs font-semibold text-[var(--color-theme-title,#ffffff)]">{selectedRoute?.display_name || "Selecionar..."}</span>
@@ -113,7 +113,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       )}
 
       <div className="relative group/input">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#3b82f6)] to-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#00f2ff)] to-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
         <div className="relative flex items-center bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden shadow-sm rounded-[var(--sarak-card-radius,12px)]" style={{ paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
 

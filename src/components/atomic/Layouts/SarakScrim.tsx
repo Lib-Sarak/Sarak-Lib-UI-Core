@@ -63,7 +63,7 @@ export const SarakScrim: React.FC<SarakScrimProps> = ({
         'data-testid': testId,
         onClick: onClose,
         className: `fixed inset-0 z-40 border-0 cursor-default ${className}`.trim(),
-        style: { background: 'var(--sarak-modal-overlay, rgba(0,0,0,0.5))', ...style },
+        style: { background: 'var(--sarak-modal-overlay, rgba(0,0,0,0.4))', ...style },
     };
 
     if (!animate) return <button {...sharedProps} />;

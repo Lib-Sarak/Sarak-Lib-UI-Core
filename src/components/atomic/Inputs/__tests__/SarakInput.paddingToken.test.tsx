@@ -6,7 +6,7 @@ import { SarakSelect } from '../SarakSelect';
 import { SarakTextarea } from '../SarakTextarea';
 import { sarakGetAllDesignTokens } from '../../../../core/Design/master-map';
 
-const PADDING_READER = 'py-[var(--sarak-input-padding,1rem)]';
+const PADDING_READER = 'py-[var(--sarak-input-padding,16px)]';
 const PX_PER_REM = 16;
 
 describe('inputPadding — o padding vertical do campo lê --sarak-input-padding', () => {
@@ -27,7 +27,7 @@ describe('inputPadding — o padding vertical do campo lê --sarak-input-padding
         expect(className).toContain('px-4');
     });
 
-    it('o valor padrão do schema (px) é o que o fallback de 1rem desenhava', () => {
+    it('a reserva do leitor é o padrão do schema, em px', () => {
         const token = sarakGetAllDesignTokens().find((item) => item.id === 'inputPadding');
         expect(token?.defaultValue).toBe(PX_PER_REM);
     });

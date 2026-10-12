@@ -70,7 +70,7 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         const { container } = renderBody({});
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('margin: var(--sarak-tab-section-margin');
-        expect(style).toContain('height: calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))');
+        expect(style).toContain('height: calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))');
     });
 });
 
@@ -86,7 +86,7 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
     it('sidebarBlur/sidebarShadow chegam à sidebar por token, com fallback', () => {
         const { container } = renderBody({});
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
-        expect(style).toContain('var(--sarak-sidebar-blur, 0px)');
+        expect(style).toContain('var(--sarak-sidebar-blur, 10px)');
         expect(style).toContain('var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))');
     });
 

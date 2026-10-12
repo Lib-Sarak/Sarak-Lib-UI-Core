@@ -66,7 +66,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     width: var(--sarak-flow-handle-size, 8px);
                     height: var(--sarak-flow-handle-size, 8px);
                     background: ${primaryColor};
-                    border: var(--sarak-border-width, 2px) solid white;
+                    border: var(--sarak-border-width, 1px) solid white;
                 }
                 .react-flow__edge-path {
                     stroke: rgba(255, 255, 255, 0.2);

@@ -100,7 +100,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
                     alignItems: 'center',
                     gap: 'var(--sarak-layout-gap-sm, 8px)',
                     padding: 'var(--sarak-kanban-header-padding-y, 4px) var(--sarak-layout-gap-sm, 8px)',
-                    fontWeight: 'var(--sarak-body-weight, 600)',
+                    fontWeight: 'var(--sarak-body-weight, 400)',
                     fontSize: 'var(--sarak-type-scale-caption, 12px)',
                     textTransform: 'uppercase',
                     letterSpacing: 'var(--sarak-kanban-header-tracking, 0.04em)',

@@ -68,7 +68,8 @@ export const ButtonsSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
-            cssVars: ['--sarak-btn-radius-tl']
+            cssVars: ['--sarak-btn-radius-tl'],
+            exceptionOf: 'btnBorderRadius'
         },
         {
             id: 'btnRadiusTR',
@@ -80,7 +81,8 @@ export const ButtonsSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
-            cssVars: ['--sarak-btn-radius-tr']
+            cssVars: ['--sarak-btn-radius-tr'],
+            exceptionOf: 'btnBorderRadius'
         },
         {
             id: 'btnRadiusBL',
@@ -92,7 +94,8 @@ export const ButtonsSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
-            cssVars: ['--sarak-btn-radius-bl']
+            cssVars: ['--sarak-btn-radius-bl'],
+            exceptionOf: 'btnBorderRadius'
         },
         {
             id: 'btnRadiusBR',
@@ -104,7 +107,8 @@ export const ButtonsSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
-            cssVars: ['--sarak-btn-radius-br']
+            cssVars: ['--sarak-btn-radius-br'],
+            exceptionOf: 'btnBorderRadius'
         },
 
         // --- INTERAÇÃO ---

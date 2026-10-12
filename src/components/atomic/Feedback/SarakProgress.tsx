@@ -61,7 +61,7 @@ const ProgressTrack = ({ accessibleLabel, max, value, indeterminate, color }: {
         style={{
             height: 'var(--sarak-progress-bar-height, 8px)',
             borderRadius: 'var(--sarak-progress-bar-radius, 8px)',
-            backgroundColor: 'var(--theme-border, #334155)',
+            backgroundColor: 'var(--theme-border, rgba(255,255,255,0.1))',
         }}
     >
         {indeterminate ? (

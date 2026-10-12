@@ -107,7 +107,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             {error && <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />}
             <AnimatePresence>
                 {activeModal && onCreate && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}

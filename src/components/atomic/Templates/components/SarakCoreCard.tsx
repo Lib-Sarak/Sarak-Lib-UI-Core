@@ -30,7 +30,7 @@ const renderChips = (values: string[], label?: string) => {
                 <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{label}</span>
             )}
             {values.map((value: string) => (
-                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
+                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
                     <SarakIcon name="Zap" size={10} /> {value}
                 </div>
             ))}
@@ -112,10 +112,10 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
 
                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(getVal(item, mapping?.subtitle) ?? '')}
                         </span>
-                        <h4 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors">
+                        <h4 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#00f2ff)] transition-colors">
                             {String(getVal(item, mapping?.title) || '')}
                         </h4>
                     </div>
@@ -181,7 +181,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                                 {!!description && (
                                     <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                                         {!!descriptionLabel && (
-                                            <span className="text-3xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{descriptionLabel}</span>
+                                            <span className="text-3xs font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{descriptionLabel}</span>
                                         )}
                                         <p className="text-xs text-[var(--text-muted,#94a3b8)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>

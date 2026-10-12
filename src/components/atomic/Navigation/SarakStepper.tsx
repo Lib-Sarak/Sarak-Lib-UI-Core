@@ -27,9 +27,9 @@ const stateOf = (index: number, current: number): StepState =>
     index < current ? 'done' : index === current ? 'current' : 'todo';
 
 const markerClass: Record<StepState, string> = {
-    done: 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)] border-[var(--sarak-primary-color,#3b82f6)]',
+    done: 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--color-theme-card,#1e293b)] border-[var(--sarak-primary-color,#00f2ff)]',
     current:
-        'bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] border-[var(--sarak-primary-color,#3b82f6)] font-bold',
+        'bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#00f2ff)] border-[var(--sarak-primary-color,#00f2ff)] font-bold',
     todo: 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] border-[var(--border-color,#334155)]',
 };
 
@@ -72,7 +72,7 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                                 <span
                                     className={`${
                                         isVertical ? 'w-px h-6' : 'h-px w-10'
-                                    } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#3b82f6)]' : 'bg-[var(--border-color,#334155)]'}`}
+                                    } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#00f2ff)]' : 'bg-[var(--border-color,#334155)]'}`}
                                     style={isVertical
                                         ? { marginBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
                                         : { marginInline: 'var(--sarak-layout-gap-sm, 8px)' }}

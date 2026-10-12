@@ -9,7 +9,7 @@ export interface SwitchStyles {
     thumbStyle: React.CSSProperties;
 }
 
-const ACTIVE_BG = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6))';
+const ACTIVE_BG = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff))';
 const THUMB_BG = 'var(--sarak-switch-thumb, #ffffff)';
 const IDLE_TRACK_BG = 'var(--color-theme-card, rgba(255,255,255,0.1))';
 const GLASS_BORDER = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';

@@ -126,7 +126,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
 
     // DESKTOP & TABLET Layout
     return (
-        <div className="flex w-full h-full gap-[var(--sarak-layout-gap,1.5rem)]">
+        <div className="flex w-full h-full gap-[var(--sarak-layout-gap,16px)]">
             {navBar && (
                 <div className={`shrink-0 flex flex-col ${isTablet ? 'w-48' : 'w-64'}`}>
                     {navBar}

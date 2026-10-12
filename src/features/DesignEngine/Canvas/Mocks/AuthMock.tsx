@@ -43,7 +43,7 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
           
           <div className="flex flex-col gap-1 mb-2">
             <h2 className="text-xl font-bold text-white">Login do Sistema</h2>
-            <p className="text-sm text-[var(--theme-text-sec)]">Insira suas credenciais para continuar.</p>
+            <p className="text-sm text-[var(--text-secondary)]">Insira suas credenciais para continuar.</p>
           </div>
 
           <div className="flex flex-col gap-4">

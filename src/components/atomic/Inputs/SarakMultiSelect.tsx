@@ -26,7 +26,7 @@ export interface SarakMultiSelectProps {
 }
 
 const FIELD =
-    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))] transition-colors';
+    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))] transition-colors';
 
 /**
  * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
@@ -150,7 +150,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                                 aria-selected={false}
                                 // onMouseDown (não onClick) para selecionar antes do blur do input.
                                 onMouseDown={(e) => { e.preventDefault(); add(opt.value); }}
-                                className="cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
+                                className="cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#00f2ff)]/10"
                                 style={{ padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                             >
                                 {opt.label}
@@ -176,7 +176,7 @@ const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }: ChipProps): Re
 
     return (
         <span
-            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]"
+            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#00f2ff)]/15 text-[var(--sarak-primary-color,#00f2ff)]"
             style={{
                 gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
                 paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',

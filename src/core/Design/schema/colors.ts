@@ -122,16 +122,16 @@ export const ColorsSchema: ComponentSchema = {
             // `-10`…`-50`, `-hover`, `-active`, `-light`). Remover a duplicata sem herdar
             // esta linha apagava todas — desduplicar é FUNDIR, não descartar.
             generateVariants: true,
-            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
+            cssVars: ['--card-bg', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
         },
         {
             id: 'cardBorderColor',
             label: 'Borda dos Cards',
             type: 'color',
-            description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte. Ver nota de duplicação em `cardBackgroundColor`.',
+            description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte.',
             axis: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color', '--theme-card-border']
+            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         }
     ]
 };

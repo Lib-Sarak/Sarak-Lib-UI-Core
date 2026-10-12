@@ -56,7 +56,7 @@ const TableHeading = <TData extends Record<string, unknown>>({ label, role, dens
     const headingClass = ['font-black', 'text-theme-title', 'tracking-tight', density === 'spacious' ? 'text-2xl' : 'text-xl'].join(' ');
     return (
         <div>
-            {label && <h3 className={headingClass} style={{ fontWeight: 'var(--sarak-h1-weight,700)', color: role === 'primary' ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--color-theme-title,currentColor)' }}>{label}</h3>}
+            {label && <h3 className={headingClass} style={{ fontWeight: 'var(--sarak-h1-weight,900)', color: role === 'primary' ? 'var(--sarak-primary-color,#00f2ff)' : 'var(--color-theme-title,currentColor)' }}>{label}</h3>}
             <p className="text-theme-muted text-xs">{text('tableRowsFound', { count: filteredData.length })}</p>
         </div>
     );

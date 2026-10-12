@@ -154,7 +154,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 variant === 'underlined' && isActive ? (
                                     <motion.div
                                         layoutId="sarak-tabs-underline"
-                                        className="absolute bottom-[length:calc(var(--sarak-border-width,1px)*-1)] left-0 right-0 h-[length:var(--sarak-border-width,2px)] bg-[var(--theme-primary)]"
+                                        className="absolute bottom-[length:calc(var(--sarak-border-width,1px)*-1)] left-0 right-0 h-[length:var(--sarak-border-width,1px)] bg-[var(--theme-primary)]"
                                         initial={false}
                                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     />

@@ -34,7 +34,7 @@ export const LayersSchema: ComponentSchema = {
             id: 'zIndexModal',
             label: 'Modal Z-Index',
             type: 'slider',
-            description: 'Índice de empilhamento (z-index) de modais/diálogos — deve ficar acima da navegação, mas abaixo de tooltips. Nota: existe um token homônimo (mesmo `id`) em `engineering.ts`, com range diferente (sem min/max) — `engineering.ts` vem ANTES de `layers.ts` em `MASTER_DESIGN_MAP.components`, então é a definição de `engineering.ts` que o `agent-design-operator` de fato preenche/valida hoje (`deduplicateById`, primeira ocorrência); esta entrada em `layers.ts` fica sombreada nesse consumidor específico. Pendência de higiene de schema — Spec 01/`backlog_cobertura.md`.',
+            description: 'Índice de empilhamento (z-index) de modais/diálogos — deve ficar acima da navegação, mas abaixo de tooltips.',
             axis: 'elevation',
             constraints: { min: 1000, max: 5000, step: 100 },
             defaultValue: 2000,

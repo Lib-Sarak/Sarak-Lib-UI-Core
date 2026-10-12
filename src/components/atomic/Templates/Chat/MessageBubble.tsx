@@ -22,8 +22,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
   // Cantos arredondados dinâmicos e cores data-driven
   if (isUser) {
     bubbleStyle.borderRadius = 'var(--sarak-chat-radius, 12px) 0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
-    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#3b82f6))';
-    bubbleStyle.borderColor = 'var(--theme-primary-border, transparent)';
+    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#00f2ff))';
+    bubbleStyle.borderColor = 'var(--theme-primary-border, rgba(0,242,255,0.25))';
   } else {
     bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
     
@@ -34,9 +34,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         bubbleStyle.padding = '0';
       },
       'solid': () => {
-        bubbleStyle.backgroundColor = 'var(--sarak-primary-color,#3b82f6)';
+        bubbleStyle.backgroundColor = 'var(--sarak-primary-color,#00f2ff)';
         bubbleStyle.borderColor = 'transparent';
-        bubbleStyle.color = 'var(--sarak-primary-color,#3b82f6)';
+        bubbleStyle.color = 'var(--sarak-primary-color,#00f2ff)';
       },
       'glass': () => {
         bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,#1e293b))';
@@ -59,13 +59,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingLeft: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
           {msg.role === 'assistant' ? (
             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-              <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] flex items-center justify-center">
-                 <SarakIcon name="Bot" size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+              <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] flex items-center justify-center">
+                 <SarakIcon name="Bot" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
               </div>
               <span className="text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">Sarak Assistant</span>
             </div>
           ) : (
-            <span className="text-2xs font-bold text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-widest">Requisitante</span>
+            <span className="text-2xs font-bold text-[var(--sarak-primary-color,#00f2ff)] uppercase tracking-widest">Requisitante</span>
           )}
         </div>
 
@@ -80,7 +80,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
           <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {msg.metadata.model && (
               <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-mono text-[var(--text-muted,#94a3b8)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                <SarakIcon name="Cpu" size={10} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                <SarakIcon name="Cpu" size={10} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                 {msg.metadata.model}
               </div>
             )}

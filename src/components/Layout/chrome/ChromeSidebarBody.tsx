@@ -108,12 +108,12 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             // cromo apresentacional não tem).
                             minWidth: 'var(--sidebar-min-width, 150px)',
                             maxWidth: 'var(--sidebar-max-width, 450px)',
-                            margin: 'var(--sarak-tab-section-margin, 0px)',
-                            height: 'calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))',
+                            margin: 'var(--sarak-tab-section-margin, 8px)',
+                            height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
                             background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
                             borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
-                            backdropFilter: 'blur(var(--sarak-sidebar-blur, 0px))',
+                            backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
                         }}
                     >

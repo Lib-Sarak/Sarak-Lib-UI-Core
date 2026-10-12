@@ -25,7 +25,7 @@ describe('colorBgLayer2 — a terceira mancha da malha lê a camada 2', () => {
     });
 
     it('o padrão do token é a primária: a malha de hoje não muda', () => {
-        expect(tokenOf(AtmosphereSchema, 'colorBgLayer2')?.defaultValue).toBe('var(--sarak-primary-color, #3b82f6)');
+        expect(tokenOf(AtmosphereSchema, 'colorBgLayer2')?.defaultValue).toBe('var(--sarak-primary-color, #00f2ff)');
     });
 });
 
@@ -85,7 +85,7 @@ describe('textSmoothing — uma regra por valor, no atributo que o motor emite',
 describe('btnNeonPulseSpeed — o pulso do neon', () => {
     it('a classe de pulso anima com a duração do token e cede no hover', () => {
         const css = read('_animations.css');
-        expect(css).toMatch(/\.sarak-btn-neon-pulse \{\s*animation: sarak-btn-neon-pulse var\(--sarak-btn-neon-pulse-speed, 1\.5s\)/);
+        expect(css).toMatch(/\.sarak-btn-neon-pulse \{\s*animation: sarak-btn-neon-pulse var\(--sarak-btn-neon-pulse-speed, 0s\)/);
         expect(css).toMatch(/\.sarak-btn-neon-pulse:hover \{\s*animation: none;/);
     });
 

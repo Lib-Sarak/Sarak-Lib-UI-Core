@@ -4,6 +4,7 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
+import { emitColorChannels, isUndeclaredException } from './designVariableHelpers';
 
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
@@ -78,6 +79,9 @@ export const useDesignVariables = (
         // 1. PROCESSAMENTO ATÔMICO (Do Token para a Variável)
         tokens.forEach(token => {
             const value = design[token.id] ?? token.defaultValue;
+            // Exceção de um token mestre (canto de raio): só escreve quando o tema a declara. No padrão,
+            // o mestre — que já escreve as variáveis do canto — é quem chega a ele.
+            if (token.exceptionOf && isUndeclaredException(design[token.id], token.defaultValue)) return;
             const kebabId = toKebabCase(token.id);
             const autoVar = `--sarak-${kebabId}`;
             
@@ -191,6 +195,8 @@ export const useDesignVariables = (
                 variables[alias] = value;
             }
         });
+
+        emitColorChannels(variables, anchorColor, variantShape);
 
         const primaryColor = variables['--theme-primary'] || variables['--primary-color'] || '#3b82f6';
         const { r, g, b } = parseToRgba(primaryColor);

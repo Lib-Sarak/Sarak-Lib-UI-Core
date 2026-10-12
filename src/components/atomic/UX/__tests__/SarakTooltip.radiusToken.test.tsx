@@ -11,7 +11,7 @@ describe('tooltipRadius — o raio da caixa do tooltip lê --sarak-tooltip-radiu
         render(<SarakTooltip content="Dica" delay={0}><button type="button">alvo</button></SarakTooltip>);
         fireEvent.focus(screen.getByRole('button', { name: 'alvo' }));
         const tooltip = await screen.findByRole('tooltip');
-        expect(tooltip.className).toContain('rounded-[var(--sarak-tooltip-radius,0.375rem)]');
+        expect(tooltip.className).toContain('rounded-[var(--sarak-tooltip-radius,6px)]');
     });
 
     it('fundo, texto e borda leem tooltipBg, tooltipTextColor e tooltipBorderColor, com o tema como reserva', async () => {

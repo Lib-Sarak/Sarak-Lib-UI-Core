@@ -162,7 +162,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                             key={index} 
                                             className="text-xs font-black text-white uppercase tracking-wider italic border-l-2 border-[var(--theme-primary)] pl-3 my-2 text-left"
                                             style={{
-                                                fontFamily: 'var(--font-tab, var(--font-heading))'
+                                                fontFamily: 'var(--font-heading)'
                                             }}
                                         >
                                             {paragraph}
@@ -174,7 +174,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                         key={index} 
                                         className="text-xs text-slate-300 leading-relaxed text-justify"
                                         style={{
-                                            fontFamily: 'var(--font-body, inherit)'
+                                            fontFamily: 'var(--font-main, inherit)'
                                         }}
                                     >
                                         {paragraph}

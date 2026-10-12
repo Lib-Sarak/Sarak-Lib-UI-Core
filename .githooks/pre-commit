@@ -170,6 +170,17 @@ if ! npx tsx scripts/generate-token-types.ts --check; then
   exit 1
 fi
 echo "[Sarak] Anel 1 (tipos de token) OK."
+
+# Contrato das variáveis de design (um dono por variável, todo nome lido existe, reserva = padrão do
+# token). Em TypeScript, pelo mesmo motivo do gate de tipos acima: lê o schema de verdade.
+if ! npx tsx gates/scripts/contrato/check-variable-contract.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: contrato das variáveis de design"
+  echo "   Regra violada : — (02-design-engine §4 e §9.1)"
+  echo "   Veja o detalhe: npm run variable-contract:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (contrato das variáveis) OK."
 fi
 
 # =============================================================================

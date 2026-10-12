@@ -3,7 +3,7 @@
 exports[`SarakTitleCard (Characterization) > matches snapshot before any removal 1`] = `
 <DocumentFragment>
   <div
-    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0)] transition-opacity duration-1000"
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0.05)] transition-opacity duration-1000"
     style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
   />
   <style
@@ -44,24 +44,24 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
           style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            class="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             123
           </span>
           <h4
-            class="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
+            class="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#00f2ff)] transition-colors truncate"
             style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: 900; letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #ffffff));"
           >
             Test Item
           </h4>
         </div>
         <div
-          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
+          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#00f2ff)]"
           style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,12px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
         >
           <svg
-            class="text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform"
+            class="text-[var(--sarak-primary-color,#00f2ff)] group-hover:scale-110 transition-transform"
             fill="currentColor"
             height="18"
             viewBox="0 0 256 256"
@@ -98,8 +98,8 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
             style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.375); padding-top: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
-              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
-              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 4px);"
+              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 1px);"
             >
               <svg
                 class=""
@@ -118,8 +118,8 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
               </span>
             </div>
             <div
-              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
-              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 4px);"
+              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 1px);"
             >
               <svg
                 class=""

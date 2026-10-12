@@ -129,7 +129,7 @@ export function CardGridHeader<TData extends Record<string, unknown>>(props: Car
     return <div className={`${block.className} @container`} style={block.style}>
         <div className={`${row.className} md:items-center justify-between`} style={row.style}>
             <div>
-                {props.label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{props.label}</h3>}
+                {props.label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>{props.label}</h3>}
                 <p className="text-[var(--text-muted,#94a3b8)] opacity-60 text-xs" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{text('tableRowsFound', { count: props.rowCount })}</p>
             </div>
             <CardGridSearch search={props.search} setSearch={props.setSearch} />

@@ -7,7 +7,7 @@ exports[`getDefaultDesignState — caracterização dos 7 ids antes duplicados >
   "cardBorderColor": "rgba(255, 255, 255, 0.1)",
   "colorBgBody": "#050505",
   "colorBgLayer1": "#0f0f0f",
-  "colorBgLayer2": "var(--sarak-primary-color, #3b82f6)",
+  "colorBgLayer2": "var(--sarak-primary-color, #00f2ff)",
   "zIndexModal": 2000,
 }
 `;

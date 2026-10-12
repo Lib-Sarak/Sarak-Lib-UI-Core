@@ -140,7 +140,7 @@ const PaginationNumberButton = ({ view, text, onChange, token }: PaginationNumbe
     if (token === 'ellipsis') return <span className="min-w-9 h-9 inline-flex items-center justify-center text-[var(--text-muted,#94a3b8)] select-none" aria-hidden="true">…</span>;
     const isCurrent = token === view.currentPage;
     const className = isCurrent
-        ? `${baseBtn} bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)]`
+        ? `${baseBtn} bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--color-theme-card,#1e293b)]`
         : `${baseBtn} text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]`;
     return <SarakButton variant="ghost" aria-current={isCurrent ? 'page' : undefined} className={className} style={pageBtnStyle} onClick={() => changePage(view, onChange, token)}>{token}</SarakButton>;
 };

@@ -31,7 +31,7 @@ export interface CalendarDayCellProps {
 }
 
 const GAP_XS = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)';
-const RADIUS = 'var(--sarak-card-radius, 6px)';
+const RADIUS = 'var(--sarak-card-radius, 8px)';
 const MUTED = 'var(--sarak-text-muted, var(--theme-muted, currentColor))';
 const MAIN = 'var(--sarak-text-main, var(--color-theme-title, inherit))';
 const CAPTION = 'var(--sarak-type-scale-caption, 12px)';

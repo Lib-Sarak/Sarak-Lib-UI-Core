@@ -43,7 +43,7 @@ function getButtonClasses(
         'border border-white/5 hover:border-white/10',
         hideLabel ? 'w-12 h-12 justify-center' : 'w-full justify-start',
         variant === 'solid' || designVariant === 'solid'
-            ? 'shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20 hover:shadow-[var(--sarak-primary-color,#3b82f6)]/40 hover:-translate-y-0.5'
+            ? 'shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20 hover:shadow-[var(--sarak-primary-color,#00f2ff)]/40 hover:-translate-y-0.5'
             : 'hover:bg-white/[0.08] hover:text-theme-title',
         className,
     );

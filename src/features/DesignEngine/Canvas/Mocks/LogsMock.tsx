@@ -11,12 +11,12 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                 initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                 animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                 transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                className="sarak-card shadow-[var(--theme-shadow)] overflow-hidden relative p-0"
+                className="sarak-card shadow-[var(--dynamic-shadow)] overflow-hidden relative p-0"
             >
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-2xs relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
-                        <tr style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}>
+                        <tr style={{ fontFamily: 'var(--font-heading)' }}>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Payload</th>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Status</th>
                         </tr>

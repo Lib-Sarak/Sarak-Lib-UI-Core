@@ -74,8 +74,8 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
         )} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
             {label && (
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
-                    <SarakIcon name="Settings" size={20} className="text-[var(--sarak-primary-color,#3b82f6)]" />
-                    <h3 className="text-2xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>
+                    <SarakIcon name="Settings" size={20} className="text-[var(--sarak-primary-color,#00f2ff)]" />
+                    <h3 className="text-2xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>
                         {label}
                     </h3>
                 </div>
@@ -109,9 +109,9 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                         marginBottom: 'var(--sarak-layout-gap-md,16px)',
                         padding: 'var(--sarak-layout-gap-md,16px)',
                         gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)',
-                        backgroundColor: status.type === 'success' ? 'var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))' : 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))',
-                        borderColor: status.type === 'success' ? 'var(--sarak-status-success-color-border,rgba(34,197,94,0.2))' : 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))',
-                        color: status.type === 'success' ? 'var(--sarak-status-success-color,#22c55e)' : 'var(--sarak-status-error-color,#ef4444)',
+                        backgroundColor: status.type === 'success' ? 'var(--sarak-status-success-color-bg,rgba(16,185,129,0.15))' : 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.15))',
+                        borderColor: status.type === 'success' ? 'var(--sarak-status-success-color-border,rgba(16,185,129,0.25))' : 'var(--sarak-status-error-color-border,rgba(239,68,68,0.25))',
+                        color: status.type === 'success' ? 'var(--sarak-status-success-color,#10b981)' : 'var(--sarak-status-error-color,#ef4444)',
                     }}
                 >
                     <SarakIcon name={status.type === 'success' ? 'CheckCircle2' : 'AlertCircle'} size={16} />

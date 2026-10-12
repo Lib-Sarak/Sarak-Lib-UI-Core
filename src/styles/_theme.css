@@ -3,11 +3,11 @@
   --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, #00f2ff));
   --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7000ff));
   
-  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #0a0a0c));
-  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #0a0a0c));
+  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #050505));
+  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #050505));
   --color-theme-card: var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6)));
   --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, rgba(10, 10, 12, 0.8)));
-  --color-theme-topbar: var(--sarak-topbar-bg, rgba(10, 10, 12, 0.8));
+  --color-theme-topbar: var(--sarak-topbar-bg, #000000);
   
   --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1)));
   --color-theme-text: var(--text-main, #ffffff);
@@ -62,8 +62,8 @@
   --scroll-thumb-hover: var(--sarak-scroll-thumb-hover-opacity, 0.5);
   
   /* --- 8. EFEITOS ESPECIAIS --- */
-  --sarak-blur-master: var(--sarak-glass-blur, 12px);
-  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.1));
+  --sarak-blur-master: var(--sarak-glass-blur, 16px);
+  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.05));
   
   /* Motor de Sombras Multi-Camada (Física Real) — contato + projeção. A direção vem de
      `shadowOrientation` (`--sarak-shadow-dir-x/y`), a cor de `shadowColorMode`, e

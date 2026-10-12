@@ -23,7 +23,7 @@ const range = (count: number, step: number = 1): number[] =>
 
 const SELECT =
     // sarak-allow-hardcode: piso absoluto de 16px do campo com ponteiro de dedo — abaixo disso o Safari do iPhone dá zoom ao focar.
-    'rounded-input py-2 px-2 text-sm [@media(pointer:coarse)]:text-[length:max(16px,1em)] tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]';
+    'rounded-input py-2 px-2 text-sm [@media(pointer:coarse)]:text-[length:max(16px,1em)] tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
 
 /**
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)

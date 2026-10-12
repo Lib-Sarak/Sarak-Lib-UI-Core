@@ -107,7 +107,7 @@ describe('o que saiu da camada final', () => {
 
     it('o !important de aurora-classic saiu: a opacidade lê os tokens de textura', () => {
         expect(atmosphere).not.toMatch(/opacity: 0\.7 !important/);
-        expect(atmosphere).toMatch(/aurora-classic[\s\S]*?opacity: var\(--sarak-card-texture-opacity, var\(--sarak-bg-pattern-opacity, var\(--theme-texture-opacity, 0\.7\)\)\);/);
+        expect(atmosphere).toMatch(/aurora-classic[\s\S]*?opacity: var\(--sarak-card-texture-opacity, var\(--sarak-bg-pattern-opacity, var\(--theme-texture-opacity, 0\.1\)\)\);/);
         expect(atmosphere).not.toMatch(/#8b5cf6 0%|#06b6d4 0%/);
     });
 });

@@ -150,3 +150,12 @@ L5.10 aponta para o schema, não para o tema: "desligado" (`securityPulseSpeed` 
 | L3.16 | cartões da lib com `bg-[var(--color-theme-card,…)]` (`SarakTitleCard`, `SarakCatalogGrid`, `SarakChart`, `SarakStats`…) e a superfície do tema em `_atmosphere.css` (camada final) | tirar a classe de fundo redundante dos cartões (a superfície vem do tema, de um lugar só) e rebaixar a superfície para `components.sarak-elements`, para que `bg-*`/`hover:bg-*` do componente e do consumidor vençam; o guarda "cartão real computa a superfície" continua verde |
 | L3.17 | `_utilities.css:33` | `.bg-theme-card:active { background-color }` na camada final vence `active:bg-*` |
 | L3.18 | `_theme.css:100-102` | `box-shadow` de `.bg-theme-card` sempre vencido por `_cards.css` (código morto) |
+
+### Herdado do veredito do lote 2 (2026-10-12)
+
+| # | Onde | O que fazer |
+|---|---|---|
+| L3.19 | `PresetCard.tsx` | `backdropFilter` com `var(--sarak-layout-gap-md,16px)` como reserva de desfoque (gap usado como blur) |
+| L5.11 | painel — controle do raio mestre | com o canto declarado num tema salvo, mover o mestre não muda o canto (o canto é exceção, §L2.1): o controle mostra a relação mestre × canto e permite voltar o canto ao mestre |
+
+> **Correção do anexo (lote 2):** os nomes `--sarak-primary-color-bg`, `--sarak-status-*-color-bg/-border`, `--theme-error-bg`, `--theme-primary-border` e `--theme-secondary-border` de L2.2 **são emitidos** (variantes cromáticas de `generateVariants`); o defeito real deles era a reserva divergente (L2.3).

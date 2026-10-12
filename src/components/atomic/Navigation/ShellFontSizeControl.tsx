@@ -28,7 +28,7 @@ export const ShellFontSizeControl: React.FC = () => {
         <div
             role="group"
             aria-label={t('fontSizeGroupAriaLabel')}
-            className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,2px)] rounded-[var(--sarak-card-radius,8px)] p-[var(--sarak-layout-gap-sm,2px)] bg-[var(--theme-muted,#94a3b8)]/10"
+            className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] p-[var(--sarak-layout-gap-sm,8px)] bg-[var(--theme-muted,rgba(255,255,255,0.4))]/10"
         >
             {OPTIONS.map((opt) => (
                 <button
@@ -37,9 +37,9 @@ export const ShellFontSizeControl: React.FC = () => {
                     aria-pressed={current === opt.value}
                     title={opt.full}
                     onClick={() => sarak?.updatePreferences({ fontSize: opt.value })}
-                    className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,4px)] rounded-[var(--sarak-card-radius,6px)] text-xs font-black transition-colors ${
+                    className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] text-xs font-black transition-colors ${
                         current === opt.value
-                            ? 'bg-[var(--sarak-nav-active-color,#3b82f6)] text-[var(--color-theme-on-primary,#fff)]'
+                            ? 'bg-[var(--sarak-nav-active-color,#00f2ff)] text-[var(--color-theme-on-primary,#fff)]'
                             : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#fff)]'
                     }`}
                 >

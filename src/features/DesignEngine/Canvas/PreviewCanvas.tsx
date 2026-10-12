@@ -156,7 +156,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     background: transparent;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: var(--sarak-scroll-thumb-color, rgba(255,255,255,0.2));
+                    background: var(--sarak-scroll-thumb-color, #ffffff);
                     border-radius: var(--sarak-scroll-radius, 10px);
                     border: var(--sarak-scroll-padding, 2px) solid transparent;
                     background-clip: padding-box;
@@ -164,7 +164,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                     background: var(--theme-primary, #00f2ff);
                     background-clip: padding-box;
-                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.8);
+                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.5);
                 }
             `}} />
         </SarakDesignScope>

@@ -66,7 +66,7 @@ const getAvatarStyle = (size: SarakAvatarSize, style?: React.CSSProperties): Rea
     borderRadius: '50%',
     backgroundColor: 'var(--sarak-surface-color, var(--theme-surface, transparent))',
     color: 'var(--sarak-text-main, var(--theme-title, currentColor))',
-    fontWeight: 'var(--sarak-body-weight, 700)',
+    fontWeight: 'var(--sarak-body-weight, 400)',
     lineHeight: 1,
     ...AVATAR_SIZE_STYLES[size],
     ...style,

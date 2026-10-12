@@ -127,7 +127,7 @@ function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; 
                 justifyContent: 'flex-start',
                 overflow: 'hidden',
                 border: 'none',
-                borderRadius: 'var(--sarak-card-radius, 6px)',
+                borderRadius: 'var(--sarak-card-radius, 8px)',
                 // Trilha opaca (o tom misturado à cor de fundo do tema): o título fica sobre ela, nunca sobre o
                 // preenchimento, e o contraste com o texto principal não depende da cor do tom.
                 background: `color-mix(in srgb, ${tone} 22%, var(--color-theme-body, Canvas))`,

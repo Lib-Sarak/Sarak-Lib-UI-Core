@@ -20,7 +20,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 8, tab: 12, desk: 12 },
-            cssVars: ['--radius-theme', '--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
+            cssVars: ['--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
         },
         {
             id: 'cardRadiusTL',
@@ -32,7 +32,8 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 8, tab: 12, desk: 12 },
-            cssVars: ['--sarak-card-radius-tl']
+            cssVars: ['--sarak-card-radius-tl'],
+            exceptionOf: 'cardBorderRadius'
         },
         {
             id: 'cardRadiusTR',
@@ -44,7 +45,8 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 8, tab: 12, desk: 12 },
-            cssVars: ['--sarak-card-radius-tr']
+            cssVars: ['--sarak-card-radius-tr'],
+            exceptionOf: 'cardBorderRadius'
         },
         {
             id: 'cardRadiusBL',
@@ -56,7 +58,8 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 8, tab: 12, desk: 12 },
-            cssVars: ['--sarak-card-radius-bl']
+            cssVars: ['--sarak-card-radius-bl'],
+            exceptionOf: 'cardBorderRadius'
         },
         {
             id: 'cardRadiusBR',
@@ -68,7 +71,8 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 8, tab: 12, desk: 12 },
-            cssVars: ['--sarak-card-radius-br']
+            cssVars: ['--sarak-card-radius-br'],
+            exceptionOf: 'cardBorderRadius'
         },
         {
             id: 'cardGeometricCut',
@@ -115,7 +119,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
-            cssVars: ['--card-border-width', '--theme-border-width', '--sarak-card-border-width']
+            cssVars: ['--card-border-width', '--sarak-card-border-width']
         },
         {
             id: 'cardBorderOpacity',
@@ -391,7 +395,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 16, tab: 20, desk: 24 },
-            cssVars: ['--sarak-card-padding-md', '--theme-gap']
+            cssVars: ['--sarak-card-padding-md']
         },
 
         // --- ESTRUTURA (LAYOUT DATA-DRIVEN) ---

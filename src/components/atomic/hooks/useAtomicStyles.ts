@@ -106,7 +106,7 @@ export const useAtomicStyles = () => {
         const blurAmount = design?.inputBackdropBlur || 0;
         
         const borderColor = 'var(--sarak-input-border-color, var(--border-color,#334155))';
-        const focusColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color,#3b82f6))';
+        const focusColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color,#00f2ff))';
 
         const dynamicStyle: React.CSSProperties = {};
         
@@ -163,7 +163,7 @@ export const useAtomicStyles = () => {
     // Anel de foco dos controles de escolha: cor do foco de input, largura do token de foco.
     const getChoiceFocusRing = (focused: boolean): string =>
         focused
-            ? '0 0 0 var(--sarak-focus-width, 2px) var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))'
+            ? '0 0 0 var(--sarak-focus-width, 2px) var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))'
             : 'none';
 
     const getCheckboxStyles = (
@@ -172,9 +172,9 @@ export const useAtomicStyles = () => {
         indeterminate: boolean = false,
         focused: boolean = false
     ): React.CSSProperties => {
-        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #3b82f6))';
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #00f2ff))';
         const borderColor = 'var(--sarak-input-border-color, var(--border-color, #334155))';
-        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))';
 
         const dynamicStyle: React.CSSProperties = {
             backgroundColor: checked || indeterminate ? activeBg : 'transparent',
@@ -192,9 +192,9 @@ export const useAtomicStyles = () => {
         checked: boolean,
         focused: boolean = false
     ): React.CSSProperties => {
-        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #3b82f6))';
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #00f2ff))';
         const borderColor = 'var(--sarak-input-border-color, var(--border-color, #334155))';
-        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #3b82f6))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))';
 
         const dynamicStyle: React.CSSProperties = {
             backgroundColor: checked ? activeBg : 'transparent',

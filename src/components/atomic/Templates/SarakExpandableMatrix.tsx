@@ -142,7 +142,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                         style={{
                             backgroundColor: 'var(--sarak-matrix-item-bg, rgba(255,255,255,0.02))',
                             borderRadius: 'var(--sarak-matrix-radius, 12px)',
-                            borderColor: expandedId === item.id ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
+                            borderColor: expandedId === item.id ? 'var(--sarak-primary-color,#00f2ff)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
                             backdropFilter: 'blur(var(--sarak-matrix-blur, 10px))'
                         }}
                     >
@@ -156,7 +156,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                     renderItemHeader(item)
                                 ) : (
                                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
-                                        <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] flex items-center justify-center text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)]">
+                                        <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,#334155)]">
                                             <SarakIcon name="Shield" size={20} />
                                         </div>
                                         <div>

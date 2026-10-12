@@ -87,11 +87,11 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     // (`#00f2ff`, sempre emitido), não o literal do JSX.
     const tone = active
         ? isVertical
-            ? 'font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
-            : 'font-bold bg-[var(--sarak-topbar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
+            ? 'font-bold bg-[var(--sarak-sidebar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
+            : 'font-bold bg-[var(--sarak-topbar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
         : isVertical
-            ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))]'
-            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,rgba(255,255,255,0.04))]';
+            ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
+            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
 
     const disabledClass = disabled
         ? 'text-[var(--text-muted,#94a3b8)] cursor-not-allowed pointer-events-none'

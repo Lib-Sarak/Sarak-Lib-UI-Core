@@ -88,7 +88,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 font-black uppercase text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -97,7 +97,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
-                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
@@ -106,7 +106,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Section Header */}
                 <div className={layout.headerClass}>
                     <div className="flex" style={{ flexDirection: 'column' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                         Painel de Filtros
                     </span>
                     <h4 className="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight">
@@ -142,7 +142,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                            <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Visão Computacional</span>
                         </div>
                         <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
@@ -168,7 +168,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                            <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Modo Conversacional</span>
                         </div>
                             <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />

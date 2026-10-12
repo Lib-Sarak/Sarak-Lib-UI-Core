@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (32)
+### B.3 Gates registrados (33)
 
 | Comando | O que roda |
 | --- | --- |
@@ -350,13 +350,14 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
+| `npm run variable-contract:check` | `npx tsx gates/scripts/contrato/check-variable-contract.ts` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
 **Auditores agregados por `run_audit.mjs` (12):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs` · `auditor_contraste.mjs`
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-11)
+### B.4 Baseline dos auditores (medido em 2026-10-12)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -364,7 +365,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | --- | --- | --- |
 | `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **1** |
+| `auditor_ghostvars.mjs` | consumos | **0** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -376,6 +377,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_composicaoatomica.mjs` | violacoes | **2** |
 | `auditor_contraste.mjs` | reprovados | **0** |
 | `auditor_contraste.mjs` | reprovadosModoOposto | **0** |
+| `auditor_contraste.mjs` | contraparteFaltando | **0** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 

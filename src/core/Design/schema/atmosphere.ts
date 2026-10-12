@@ -62,13 +62,13 @@ export const AtmosphereSchema: ComponentSchema = {
             // Os 3 últimos vieram da declaração homônima de `colors.ts`, desduplicada
             // pela plan-07. Sem herdá-los, `--theme-body` deixava de ser emitida — a
             // duplicata não era redundante, era uma UNIÃO de aliases.
-            cssVars: ['--sarak-bg-body', '--theme-bg', '--theme-body', '--bg-body', '--sarak-bg-base']
+            cssVars: ['--sarak-bg-body', '--theme-bg', '--theme-body', '--bg-body']
         },
         {
             id: 'colorBgLayer1',
             label: 'Background Layer 1',
             type: 'color',
-            description: 'Cor de fundo da primeira camada de profundidade acima do body. Nota: mesmo `id` existe em `colors.ts` — mesma pendência de duplicação de `colorBgBody`.',
+            description: 'Cor de fundo da primeira camada de profundidade acima do body. Variável própria: `--sarak-bg-layer-1`.',
             axis: 'color',
             defaultValue: '#0f0f0f',
             cssVars: ['--sarak-bg-layer-1', '--theme-surface-1']
@@ -77,9 +77,9 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'colorBgLayer2',
             label: 'Background Layer 2',
             type: 'color',
-            description: 'Cor da segunda camada de profundidade do fundo: a terceira mancha da malha (`bgGradientMode: mesh`), ao lado da camada 1. O padrão é a própria cor primária — a malha de hoje; troque por um tom de superfície para dar uma segunda camada de profundidade. Nota: mesmo `id` existe em `colors.ts` — mesma pendência de duplicação de `colorBgBody`.',
+            description: 'Cor da segunda camada de profundidade do fundo: a terceira mancha da malha (`bgGradientMode: mesh`), ao lado da camada 1. O padrão é a própria cor primária — a malha de hoje; troque por um tom de superfície para dar uma segunda camada de profundidade. Variável própria: `--sarak-bg-layer-2`.',
             axis: 'color',
-            defaultValue: 'var(--sarak-primary-color, #3b82f6)',
+            defaultValue: 'var(--sarak-primary-color, #00f2ff)',
             cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
         },
         // --- BACKGROUND GLOBAL ---
@@ -87,7 +87,7 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'bgBaseColor',
             label: 'Cor de Fundo Base',
             type: 'color',
-            description: 'Cor de fundo base do sistema de atmosfera. Nota: mesmo `id` existe em `system.ts` — mesma pendência de duplicação de `colorBgBody`.',
+            description: 'Cor de fundo base do sistema de atmosfera — a base das superfícies de vidro e dos painéis sobrepostos (`--sarak-bg-base`, de que este token é o único dono). `colorBgBody` pinta o corpo da página.',
             axis: 'color',
             defaultValue: '#0a0a0c',
             cssVars: ['--sarak-bg-base']

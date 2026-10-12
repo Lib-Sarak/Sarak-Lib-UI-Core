@@ -15,7 +15,7 @@ export const CustomizationPanel: React.FC = () => {
         <div className="flex flex-col h-full animate-in fade-in zoom-in duration-500 overflow-hidden">
             {/* Header */}
             <div className="p-4 pb-2 shrink-0">
-                <div className="mb-3 text-[var(--sarak-type-scale-xl,18px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
+                <div className="mb-3 text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
                     Personalizar o tema
                 </div>
             </div>

@@ -10,7 +10,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
       style="gap: calc(var(--sarak-layout-gap-md,16px) / 2);"
     >
       <svg
-        class="text-[var(--sarak-primary-color,#3b82f6)]"
+        class="text-[var(--sarak-primary-color,#00f2ff)]"
         fill="none"
         height="16"
         stroke="currentColor"
@@ -30,7 +30,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
       </svg>
       <h3
         class="text-xl font-black text-theme-title tracking-tight"
-        style="font-weight: var(--sarak-h1-weight,700);"
+        style="font-weight: var(--sarak-h1-weight,900);"
       >
         Test Chart
       </h3>
@@ -44,7 +44,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
         style="flex-direction: column; gap: 0px;"
       >
         <div
-          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#3b82f6)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div
@@ -65,7 +65,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
         style="flex-direction: column; gap: 0px;"
       >
         <div
-          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#3b82f6)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div

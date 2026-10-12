@@ -58,7 +58,7 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                             duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5,
                             ease: 'circOut',
                         }}
-                        className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#3b82f6)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+                        className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
                     >
                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,#1e293b)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
@@ -91,8 +91,8 @@ function ChartHeading({ label }: { label?: string }): ReactElement | null {
     if (!label) return null;
     return (
         <div className="flex items-center relative z-10" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-            <SarakIcon name="TrendingUp" size={16} className="text-[var(--sarak-primary-color,#3b82f6)]" />
-            <h3 className="text-xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>
+            <SarakIcon name="TrendingUp" size={16} className="text-[var(--sarak-primary-color,#00f2ff)]" />
+            <h3 className="text-xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>
                 {label}
             </h3>
         </div>

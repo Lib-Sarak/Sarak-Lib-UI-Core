@@ -1,6 +1,6 @@
 /* Os padrões de ELEMENTO de título, texto e `body` moram em `_elements.css`, numa camada
    que cede à classe utilitária. */
-.font-tab { font-family: var(--font-heading, 'Inter', sans-serif); }
+.font-tab { font-family: var(--font-heading, 'Outfit', sans-serif); }
 
 /* Atomic Font Scaling Integration */
 [data-font-scale="pp"] { --sarak-font-size: 10px; --font-size-factor: 0.7; }

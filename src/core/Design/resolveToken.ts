@@ -99,7 +99,7 @@ const warnUnknownToken = (value: string, options: ResolveTokenOptions): void => 
         `[Sarak UI] Valor de espaçamento inválido "${value}" em ${target} — ignorado. ` +
             `Você quis dizer "${suggestToken(value)}"? ` +
             `Tokens válidos: ${SPACING_TOKEN_NAMES.join(', ')}; ` +
-            `ou um comprimento CSS (16px, 1rem, var(--x, 16px)). ` +
+            `ou um comprimento CSS (16px, 1rem) ou uma variável CSS com reserva. ` +
             `Aplicando o padrão do Design Engine.`,
     );
 };

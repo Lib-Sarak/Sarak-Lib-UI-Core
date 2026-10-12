@@ -14,9 +14,9 @@
     z-index: -1; /* Behind content */
     background-repeat: repeat;
     will-change: opacity;
-    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.08));
+    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1));
     transition: opacity var(--duration-slow, 0.5s) ease;
-    filter: saturate(var(--sarak-saturation, 100%)) contrast(var(--sarak-contrast, 100%));
+    filter: saturate(var(--sarak-saturation, 1)) contrast(var(--sarak-contrast, 1));
     /* Subpixel Precision Fix */
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -28,7 +28,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
+    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
     pointer-events: none;
     mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
     z-index: -1;
@@ -43,9 +43,9 @@
     z-index: -1;
     overflow: hidden;
     will-change: opacity;
-    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.08));
+    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1));
     transition: opacity var(--duration-slow, 0.5s) ease;
-    filter: saturate(var(--sarak-saturation, 100%)) contrast(var(--sarak-contrast, 100%));
+    filter: saturate(var(--sarak-saturation, 1)) contrast(var(--sarak-contrast, 1));
     backface-visibility: hidden;
     transform: translateZ(0);
 }
@@ -63,18 +63,18 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
+    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
     pointer-events: none;
     mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
 }
 
 .sarak-shell-sidebar .SarakAtmosphereLayer {
-    opacity: var(--sarak-sidebar-noise-opacity, var(--sarak-bg-pattern-opacity, 0.08));
+    opacity: var(--sarak-sidebar-noise-opacity, var(--sarak-bg-pattern-opacity, 0.1));
 }
 
 .bg-theme-card .SarakAtmosphereLayer,
 .sarak-card .SarakAtmosphereLayer {
-    opacity: var(--sarak-card-texture-opacity, 0.05);
+    opacity: var(--sarak-card-texture-opacity, 0.03);
     z-index: 1;
 }
 
@@ -90,13 +90,13 @@
     z-index: 1;
     border-radius: inherit;
     background-repeat: repeat;
-    opacity: var(--sarak-card-texture-opacity, 0.05);
+    opacity: var(--sarak-card-texture-opacity, 0.03);
 }
 
 /* Glass Fidelity Engine */
 .sarak-glass, 
 [data-glass="1"] {
-    backdrop-filter: blur(var(--sarak-glass-blur, 12px)) saturate(var(--sarak-glass-saturation, 180%));
+    backdrop-filter: blur(var(--sarak-glass-blur, 16px)) saturate(var(--sarak-glass-saturation, 1.2));
     background-color: color-mix(in srgb, var(--sarak-bg-base), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
     border: var(--sarak-glass-edge-width, 1px) solid var(--sarak-glass-edge-color, rgba(255,255,255,0.1));
 }
@@ -135,7 +135,7 @@
 [data-sx-card-texture-type="noise"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="noise"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: var(--sarak-card-texture-opacity, 0.05);
+    opacity: var(--sarak-card-texture-opacity, 0.03);
 }
 
 .texture-grain::before,
@@ -294,7 +294,7 @@
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='white' stroke-width='1'%3E%3Cpath d='M10 10h20v20h-20z'/%3E%3Cpath d='M30 20h40M70 20v40'/%3E%3Ccircle cx='10' cy='10' r='2' fill='white'/%3E%3C/g%3E%3C/svg%3E");
     -webkit-mask-size: 150px 150px;
     mask-size: 150px 150px;
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.2)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
 }
 
 .texture-paper::before,
@@ -390,9 +390,9 @@
 .sarak-card[data-sx-card-texture-type="aurora-classic"]::after,
 [data-sx-card-texture-type="aurora-classic"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="aurora-classic"]::after {
-    background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--theme-secondary, #8b5cf6) 0%, transparent 50%), radial-gradient(circle at 50% 50%, var(--theme-accent, #06b6d4) 0%, transparent 50%);
+    background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--theme-secondary, #7000ff) 0%, transparent 50%), radial-gradient(circle at 50% 50%, var(--theme-accent, #ff00d4) 0%, transparent 50%);
     filter: blur(100px);
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.7)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
     animation: aurora-classic-drift 30s linear infinite;
 }
 
@@ -497,10 +497,10 @@
 .sarak-card[data-sx-card-texture-type="carbon-tech"]::after,
 [data-sx-card-texture-type="carbon-tech"] :is(.card, .bg-theme-card)::after,
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="carbon-tech"]::after {
-    background: linear-gradient(45deg, var(--theme-texture-color, #111) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #111) 75%, var(--theme-texture-color, #111)), linear-gradient(45deg, var(--theme-texture-color, #111) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #111) 75%, var(--theme-texture-color, #111));
+    background: linear-gradient(45deg, var(--theme-texture-color, #ffffff) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #ffffff) 75%, var(--theme-texture-color, #ffffff)), linear-gradient(45deg, var(--theme-texture-color, #ffffff) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #ffffff) 75%, var(--theme-texture-color, #ffffff));
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.15)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
 }
 
 .texture-topo-deep::before,
@@ -582,7 +582,7 @@
         rgba(0,0,0,0.3) 20px, rgba(0,0,0,0.3) 25px);
     -webkit-mask-size: 200px 100%;
     mask-size: 200px 100%;
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.15)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
     filter: contrast(120%) brightness(0.8);
 }
 
@@ -594,7 +594,7 @@
 :is(.card, .bg-theme-card)[data-sx-card-texture-type="stucco"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='5' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='50' lighting-color='white'%3E%3CfeDistantLight azimuth='45' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
     background-size: 512px 512px;
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.2)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
     mix-blend-mode: overlay;
 }
 
@@ -608,7 +608,7 @@
                 radial-gradient(circle at 100% 0%, var(--theme-secondary) 0%, transparent 40%),
                 radial-gradient(circle at 0% 100%, var(--theme-primary) 0%, transparent 40%);
     filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='goo'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='3'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='100'/%3E%3C/filter%3E%3C/svg%3E#goo");
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.3)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
 }
 
 .texture-nebula::before,
@@ -623,7 +623,7 @@
                 radial-gradient(2px 2px at 150px 150px, var(--theme-texture-color, white), transparent);
     background-size: 100% 100%, 100% 100%, 200px 200px, 300px 300px;
     filter: blur(40px) contrast(150%);
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.4)));
+    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));
     animation: nebula-drift 60s linear infinite alternate;
 }
 
@@ -644,7 +644,7 @@
    `!important`. */
 [data-sx-texture] .card, [data-sx-texture] .sarak-card, [data-sx-texture] .bg-theme-card,
 .sarak-design-scope .card, .sarak-design-scope .sarak-card {
-    background-color: color-mix(in srgb, var(--sarak-card-bg, #0f172a), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
+    background-color: color-mix(in srgb, var(--sarak-card-bg, rgba(15, 23, 42, 0.6)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
     border-color: color-mix(in srgb, var(--sarak-card-border-color, rgba(255,255,255,0.1)), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
     clip-path: var(--sarak-card-clip-path, none);
 }

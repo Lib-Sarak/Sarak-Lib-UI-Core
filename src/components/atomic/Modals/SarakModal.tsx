@@ -169,7 +169,7 @@ const ModalFrame = ({ disableOverlayClick, onClose, children }: {
     return (
     <AnimatePresence>
         <div className="fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center" style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: MODAL_EXIT_SECONDS } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.6))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: MODAL_EXIT_SECONDS } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
             {children}
         </div>
     </AnimatePresence>

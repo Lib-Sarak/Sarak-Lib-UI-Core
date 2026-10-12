@@ -83,7 +83,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 12px))' }}
+                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 16px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: 0.3 }}
                             // `@container` plantado aqui, não na raiz do card — o

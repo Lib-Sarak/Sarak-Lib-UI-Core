@@ -20,7 +20,7 @@ describe('MessageList — aiGlowColor', () => {
 
         expect(dots).toHaveLength(3);
         for (const dot of dots) {
-            expect(dot.className).toContain('bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#3b82f6))]');
+            expect(dot.className).toContain('bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))]');
         }
     });
 });

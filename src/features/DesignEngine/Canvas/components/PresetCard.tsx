@@ -4,7 +4,31 @@ import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
+import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { Layout, ArrowRight } from 'lucide-react';
+
+const TOKEN_DEFAULTS = sarakGetDefaultDesignState();
+const FALLBACK_RADIUS = 'var(--sarak-card-radius, 12px)';
+
+/** Valor de token em CSS para a miniatura: o ponto `desk` de um token responsivo, e `px` num número. */
+const toCssLength = (value: SarakTokenValue | undefined, fallback: string): string => {
+    const raw = value !== null && typeof value === 'object' ? value.desk : value;
+    if (typeof raw === 'number') return `${raw}px`;
+    return raw === undefined || raw === '' ? fallback : String(raw);
+};
+
+const isDefaultCorner = (value: SarakTokenValue, defaultValue: SarakTokenValue): boolean => {
+    if (typeof value === 'object' && typeof defaultValue === 'object') {
+        return value.mob === defaultValue.mob && value.tab === defaultValue.tab && value.desk === defaultValue.desk;
+    }
+    return value === defaultValue;
+};
+
+/** O canto é exceção do raio mestre: só vale quando o tema o declara com valor diferente do padrão. */
+const cornerRadius = (design: Record<string, SarakTokenValue>, cornerId: string): string => {
+    const declared = design[cornerId] !== undefined && !isDefaultCorner(design[cornerId], TOKEN_DEFAULTS[cornerId]);
+    return toCssLength(declared ? design[cornerId] : design.cardBorderRadius, FALLBACK_RADIUS);
+};
 
 export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: SarakThemePreset, currentMode: string, onApply: () => void, index: number }) => {
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
@@ -21,18 +45,19 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
     const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #0a0a0c)');
     const isLight = design.mode === 'light';
 
+    const borderWidth = toCssLength(design.cardBorderWidth, 'var(--sarak-border-width, 1px)');
     const cardStyle = {
-        backgroundColor: variables['--sarak-card-background-color'] || (isLight ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.05)'),
-        borderTopWidth: variables['--sarak-card-border-top'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
-        borderRightWidth: variables['--sarak-card-border-right'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
-        borderBottomWidth: variables['--sarak-card-border-bottom'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
-        borderLeftWidth: variables['--sarak-card-border-left'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
-        borderColor: variables['--sarak-card-border-color'] || (isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'),
+        backgroundColor: String(design.cardBackgroundColor || (isLight ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.05)')),
+        borderTopWidth: variables['--sarak-card-border-top'] || borderWidth,
+        borderRightWidth: variables['--sarak-card-border-right'] || borderWidth,
+        borderBottomWidth: variables['--sarak-card-border-bottom'] || borderWidth,
+        borderLeftWidth: variables['--sarak-card-border-left'] || borderWidth,
+        borderColor: String(design.cardBorderColor || (isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)')),
         borderStyle: variables['--sarak-border-style'] || 'solid',
-        borderTopLeftRadius: variables['--sarak-card-radius-t-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
-        borderTopRightRadius: variables['--sarak-card-radius-t-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
-        borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
-        borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
+        borderTopLeftRadius: cornerRadius(design, 'cardRadiusTL'),
+        borderTopRightRadius: cornerRadius(design, 'cardRadiusTR'),
+        borderBottomRightRadius: cornerRadius(design, 'cardRadiusBR'),
+        borderBottomLeftRadius: cornerRadius(design, 'cardRadiusBL'),
         backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-layout-gap-md,16px)'})`,
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
@@ -122,7 +147,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
                             {/* Card 3: Status */}
                             <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
-                                <div className="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
+                                <div className="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
                             </div>
                         </div>
 

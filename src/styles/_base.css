@@ -14,7 +14,7 @@ body {
   --theme-body: var(--bg-body);
   --theme-sidebar: var(--bg-sidebar);
   --theme-card: var(--theme-surface, var(--card-bg));
-  --theme-border: var(--theme-surface-border, var(--border-color));
+  --theme-border: var(--sarak-card-border-color, var(--border-color));
   --theme-muted: var(--text-muted);
   
   --theme-primary: var(--primary-color);
@@ -27,14 +27,14 @@ body {
      no `body` vence esta regra. Cada reserva cai numa cor que existe SEM o engine —
      `--primary-color` e irmãs só nascem com ele — e nunca na própria variável, que seria
      um ciclo (inválido) e deixaria o hover de botão sem fundo. */
-  --theme-primary-hover: color-mix(in srgb, var(--primary-color, #3b82f6), #000 10%);
-  --theme-primary-active: color-mix(in srgb, var(--primary-color, #3b82f6), #000 20%);
+  --theme-primary-hover: color-mix(in srgb, var(--primary-color, #00f2ff), #000 10%);
+  --theme-primary-active: color-mix(in srgb, var(--primary-color, #00f2ff), #000 20%);
   /* O anel de foco é da PRIMÁRIA. Lia a cor de textura, e só acertava porque a variável `-rgb` dela
      nunca existia: emitida, o foco do campo e do botão passaria a ser branco no tema padrão. */
   --theme-primary-focus: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.4);
 
-  --theme-secondary-hover: color-mix(in srgb, var(--secondary-color, #64748b), #000 10%);
-  --theme-secondary-active: color-mix(in srgb, var(--secondary-color, #64748b), #000 20%);
+  --theme-secondary-hover: color-mix(in srgb, var(--secondary-color, #7000ff), #000 10%);
+  --theme-secondary-active: color-mix(in srgb, var(--secondary-color, #7000ff), #000 20%);
 
   --theme-accent-hover: color-mix(in srgb, var(--accent-color, #06b6d4), #000 10%);
   --theme-accent-active: color-mix(in srgb, var(--accent-color, #06b6d4), #000 20%);
@@ -43,10 +43,11 @@ body {
      Engine montado. Com engine: a variável real do mesmo conceito vence (é ela que
      o `useDesignVariables.ts` injeta com especificidade maior). Sem engine: cai no
      mesmo literal de sempre. `--radius-theme` usa `--sarak-border-radius` (não a si
-     mesma) porque o token `borderRadius` já emite `--radius-theme` diretamente
-     (`system.ts:90`) — apontar para o próprio nome seria circular. */
+     mesma) porque o token `borderRadius` — o ÚNICO dono de `--radius-theme` — já a
+     emite diretamente (`system.ts`, `borderRadius`); apontar para o próprio nome seria
+     circular. O raio do cartão tem nome próprio, `--sarak-card-radius`. */
   --theme-gap: var(--sarak-layout-gap, 20px);
-  --theme-pad: var(--sarak-layout-padding, 1.5rem);
+  --theme-pad: var(--sarak-layout-padding, 16px);
   --radius-theme: var(--sarak-border-radius, 12px);
   --theme-card-padding: var(--sarak-layout-padding, 24px);
   
@@ -75,7 +76,7 @@ body::before {
 /* Industrial Safe Area Motor */
 .sarak-safe-container {
     width: 100%;
-    max-width: var(--sarak-max-width, none);
+    max-width: var(--sarak-max-content-width, none);
     margin-left: auto;
     margin-right: auto;
 }

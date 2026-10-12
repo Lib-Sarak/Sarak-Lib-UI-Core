@@ -84,7 +84,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 style={{ ...badgeFlex.style, padding: 'calc(var(--sarak-layout-gap-md,16px)*0.25) var(--sarak-layout-gap-sm,8px)' }}
                 className={`${badgeFlex.className} rounded-full border text-2xs font-bold uppercase transition-all cursor-pointer select-none ${
                     isActive
-                    ? 'bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border-[var(--border-color,#334155)] shadow-[0_0_8px_rgba(var(--sarak-primary-color,#3b82f6),0.15)]'
+                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border-[var(--border-color,#334155)] shadow-[0_0_8px_rgba(var(--sarak-primary-color,#00f2ff),0.15)]'
                     : 'bg-[var(--text-muted,#94a3b8)]/5 text-[var(--text-muted,#94a3b8)] border-[var(--border-color,#334155)] hover:bg-[var(--text-muted,#94a3b8)]/10 hover:text-[var(--color-theme-title,#ffffff)]'
                 }`}
             >
@@ -102,11 +102,11 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 onClick={() => onToggle(parentId, item.id)}
                 style={{ ...switchFlex.style, padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)' }}
                 className={`${switchFlex.className} rounded-lg border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/40 hover:bg-[var(--text-muted,#94a3b8)]/5 transition-all cursor-pointer select-none min-w-[var(--sarak-matrix-node-min-width,140px)] flex-grow ${
-                    isActive ? 'border-[var(--border-color,#334155)] bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))]/5' : ''
+                    isActive ? 'border-[var(--border-color,#334155)] bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5' : ''
                 }`}
             >
                 <div className={switchInnerFlex.className} style={{ ...switchInnerFlex.style, paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
-                    <span className={`text-2xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#3b82f6)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
+                    <span className={`text-2xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#00f2ff)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
                         {item.name || item.id}
                     </span>
                     {item.description && <span className="text-3xs text-[var(--text-muted,#94a3b8)] line-clamp-1">{item.description}</span>}
@@ -127,7 +127,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 style={{ ...cardFlex.style, padding: 'var(--sarak-layout-gap-md,16px)' }}
                 className={`${cardFlex.className} rounded-xl border transition-all ${
                     isActive
-                    ? 'bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))]/5 border-[var(--border-color,#334155)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5 border-[var(--border-color,#334155)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
                     : 'bg-[var(--color-theme-card,#1e293b)]/40 border-[var(--border-color,#334155)] hover:border-[var(--text-muted,#94a3b8)]/30'
                 }`}
             >
@@ -197,7 +197,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                                 <SarakIcon name="ChevronDown" size={12} />
                             </motion.div>
                         )}
-                        <span className={`text-xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#3b82f6)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
+                        <span className={`text-xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#00f2ff)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
                             {item.name || item.id}
                         </span>
                         {item.description && <span className="text-2xs text-[var(--text-muted,#94a3b8)] hidden sm:inline">- {item.description}</span>}

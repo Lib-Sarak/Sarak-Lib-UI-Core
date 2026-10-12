@@ -54,7 +54,7 @@ export function KanbanCardContent({ card }: { card: SarakKanbanCard }) {
             <div
                 style={{
                     fontSize: 'calc(var(--sarak-type-scale-caption, 12px) * 1.15)',
-                    fontWeight: 'var(--sarak-body-weight, 600)',
+                    fontWeight: 'var(--sarak-body-weight, 400)',
                     color: 'var(--sarak-text-main, var(--color-theme-title, inherit))',
                 }}
             >

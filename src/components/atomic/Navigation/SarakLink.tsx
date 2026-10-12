@@ -52,7 +52,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
     const dynamicStyle: React.CSSProperties = {
         ...style,
         gap: 'var(--sarak-layout-gap-sm, 8px)',
-        outlineColor: 'var(--sarak-primary-color, #3b82f6)',
+        outlineColor: 'var(--sarak-primary-color, #00f2ff)',
         outlineWidth: 'var(--sarak-focus-width, 2px)',
     };
 
@@ -70,7 +70,7 @@ export const SarakLink: React.FC<SarakLinkProps> = ({
             aria-disabled={safe ? undefined : true}
             target={effectiveTarget}
             rel={effectiveRel}
-            className={`inline-flex items-center text-[var(--sarak-primary-color,#3b82f6)] underline-offset-2 hover:underline hover:brightness-110 transition-colors outline-none focus-visible:outline rounded-sm ${className}`}
+            className={`inline-flex items-center text-[var(--sarak-primary-color,#00f2ff)] underline-offset-2 hover:underline hover:brightness-110 transition-colors outline-none focus-visible:outline rounded-sm ${className}`}
             style={dynamicStyle}
             onClick={handleClick}
         >

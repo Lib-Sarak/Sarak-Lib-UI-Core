@@ -3,7 +3,7 @@
 exports[`SarakSearchCard (Characterization) > matches snapshot before any removal 1`] = `
 <DocumentFragment>
   <div
-    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0)] transition-opacity duration-1000"
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-density,0.05)] transition-opacity duration-1000"
     style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
   />
   <style
@@ -44,7 +44,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
           style="flex-direction: column;"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            class="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             Painel de Filtros
@@ -68,7 +68,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
             class="relative w-full flex items-center"
           >
             <div
-              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
+              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
             >
               <svg
                 class="w-3.5 h-3.5"
@@ -84,7 +84,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
               </svg>
             </div>
             <input
-              class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-[var(--sarak-input-padding,1rem)] pl-11 pr-4 w-full "
+              class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-[var(--sarak-input-padding,16px)] pl-11 pr-4 w-full "
               id=":r0:"
               placeholder="Buscar modelo ou tech..."
               style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
@@ -115,7 +115,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
               style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sarak-primary-color,#3b82f6)]"
+                class="text-[var(--sarak-primary-color,#00f2ff)]"
                 fill="currentColor"
                 height="12"
                 viewBox="0 0 256 256"
@@ -148,7 +148,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -216,7 +216,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
               style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sarak-primary-color,#3b82f6)]"
+                class="text-[var(--sarak-primary-color,#00f2ff)]"
                 fill="currentColor"
                 height="12"
                 viewBox="0 0 256 256"
@@ -249,7 +249,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"

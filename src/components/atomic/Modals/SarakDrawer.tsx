@@ -62,7 +62,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     const animDuration = `${animDurationMs}ms`;
     const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
     const zIndex = (design?.zIndexModal as number) || 1000;
-    const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))';
+    const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))';
 
     useEffect(() => {
         if (isOpen) {
@@ -103,7 +103,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             transitionTimingFunction: String(animEasing),
             backgroundColor: String(design?.bgBaseColor || 'var(--color-theme-card,#1e293b)'),
             // sidebarShadow é o token de elevação composta disponível no sistema (não há modalShadow dedicado)
-            boxShadow: String(design?.sidebarShadow || '0 var(--sarak-layout-gap-sm, 10px) var(--sarak-layout-gap-lg, 25px) rgba(0,0,0,0.5)'),
+            boxShadow: String(design?.sidebarShadow || '0 var(--sarak-layout-gap-sm, 10px) var(--sarak-layout-gap-lg, 24px) rgba(0,0,0,0.5)'),
             zIndex: (parseInt(String(zIndex)) || 1000) + 1,
         };
 

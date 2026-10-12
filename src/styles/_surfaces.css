@@ -1,6 +1,6 @@
 /* 3.1 SURFACE MASTER — MATERIAIS DA SUPERFÍCIE */
 :root {
-    --surface-intensity: var(--sarak-surface-intensity, 0.05);
+    --surface-intensity: var(--sarak-surface-intensity, 0.5);
     /* Placeholder de campo: o texto do campo a 30% — o mesmo que `placeholder:…/30` dos campos desenha.
        Mora aqui para o padrão de `cardSearchPlaceholderColor` poder ser um `var()` (cor de token aceita
        `var(--x, …)`, não `color-mix` cru). */
@@ -70,7 +70,7 @@
 /* Dupla linha: `double` só aparece a partir de 3px de espessura. */
 [data-sx-border-type="double"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
     border-style: double !important;
-    border-width: max(3px, var(--theme-border-width, 3px)) !important;
+    border-width: max(3px, var(--sarak-card-border-width, 1px)) !important;
 }
 /* Neon: contorno e halo na cor de textura. */
 [data-sx-border-type="glow"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
@@ -111,10 +111,10 @@
 }
 /* Tingida pela primária: a sombra de um cartão ganha a cor da marca. */
 [data-sx-shadow-color-mode="colored"] {
-    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #3b82f6) 88%, #000);
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 88%, #000);
 }
 /* Ambiente: derivada do fundo — o fundo do tema escurecido, sem virar preto puro nem
    marca. Em tema claro vira um cinza suave; em tema escuro, quase preto. */
 [data-sx-shadow-color-mode="ambient"] {
-    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #0a0a0c)) 45%, #000);
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #050505)) 45%, #000);
 }

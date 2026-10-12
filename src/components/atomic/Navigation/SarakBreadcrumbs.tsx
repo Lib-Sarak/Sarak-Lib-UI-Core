@@ -57,7 +57,7 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
                             isLast
                                 ? 'text-[var(--sarak-text-main,#ffffff)] font-medium'
                                 : 'text-[var(--text-muted,#94a3b8)]'
-                        } ${interactive ? 'cursor-pointer hover:text-[var(--sarak-primary-color,#3b82f6)]' : ''}`}
+                        } ${interactive ? 'cursor-pointer hover:text-[var(--sarak-primary-color,#00f2ff)]' : ''}`}
                     >
                         {item.icon}
                         {item.label}

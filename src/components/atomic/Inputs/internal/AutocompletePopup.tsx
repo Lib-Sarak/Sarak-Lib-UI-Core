@@ -47,7 +47,7 @@ const AutocompleteOptionRow = <TOption extends AutocompleteOption,>(
             className="cursor-pointer text-sm text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
             style={{
                 padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md, 16px)',
-                backgroundColor: isActive ? 'var(--sarak-primary-color, #3b82f6)' : 'transparent',
+                backgroundColor: isActive ? 'var(--sarak-primary-color, #00f2ff)' : 'transparent',
             }}
         >
             {option.label}
@@ -108,13 +108,13 @@ export const AutocompletePopup = <TOption extends AutocompleteOption,>(
             className="rounded-input border shadow-lg"
             style={{
                 position: 'absolute',
-                zIndex: 'var(--sarak-z-base, 10)',
+                zIndex: 'var(--sarak-z-base, 1)',
                 width: '100%',
                 maxHeight: 'calc(var(--sarak-layout-gap-lg, 24px) * 12)',
                 overflowY: 'auto',
                 marginTop: 'var(--sarak-layout-gap-sm, 8px)',
-                borderColor: 'var(--sarak-input-border-color, var(--theme-border, #334155))',
-                backgroundColor: 'var(--sarak-input-bg, var(--theme-card, #1e293b))',
+                borderColor: 'var(--sarak-input-border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                backgroundColor: 'var(--sarak-input-bg, var(--theme-card, rgba(15,23,42,0.6)))',
             }}
         >
             <AutocompleteOptionsList
