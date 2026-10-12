@@ -3,6 +3,10 @@ import React from 'react';
 import { SarakThemePayload } from '../../../core/Provider/types';
 import { resolveSwitchStyles } from './switchStyles';
 
+/** Relevo do campo neumórfico: a sombra e a luz derivam da cor de sombra e da cor de texto do tema. */
+const NEUMORPH_DARK = 'color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 20%, transparent)';
+const NEUMORPH_LIGHT = 'color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent)';
+
 /** Variantes do estilo neon que têm halo em repouso — só nelas o pulso tem o que pulsar. */
 const NEON_PULSE_VARIANTS = ['primary', 'danger', 'secondary'];
 
@@ -134,9 +138,9 @@ export const useAtomicStyles = () => {
 
         if (shadowType === 'neumorphism') {
             if (!isFocused) {
-                dynamicStyle.boxShadow = 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -5px -5px 10px rgba(255,255,255,0.05)';
+                dynamicStyle.boxShadow = `inset 2px 2px 5px ${NEUMORPH_DARK}, inset -5px -5px 10px ${NEUMORPH_LIGHT}`;
             } else {
-                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px rgba(255,255,255,0.05)`;
+                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px ${NEUMORPH_LIGHT}`;
             }
         } 
         

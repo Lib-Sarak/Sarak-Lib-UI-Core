@@ -34,7 +34,7 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
         <div className={`@container ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').className}`} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').style, marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
             <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/5"></div>
+                    <div className="w-full border-t border-theme-tint"></div>
                 </div>
                 <span className="relative bg-theme-body font-black text-theme-muted uppercase" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', fontSize: 'var(--sarak-type-scale-tiny, 8px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>{text('authSocialDivider')}</span>
             </div>

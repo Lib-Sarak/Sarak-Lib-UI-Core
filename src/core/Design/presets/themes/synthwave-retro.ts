@@ -147,7 +147,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 0,
         switchPulseColor: '#ffb238',
-        primaryColor: '#ff6b35',
+        primaryColor: '#ff9068',
         secondaryColor: '#ffb238',
         tertiaryColor: '#7209b7',
         accentColor: '#ff3d81',
@@ -201,7 +201,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         chatBubbleStyle: 'solid',
         chatAnimationSpeed: 0.1,
         statusSuccessColor: '#10b981',
-        statusErrorColor: '#ef4444',
+        statusErrorColor: '#f37373',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 0,
@@ -236,6 +236,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         matrixBorderColor: '#ff6b35',
         matrixBlur: 0,
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
+        inputErrorColor: '#ff8f91',
     },
     contraparte: {
         mode: 'light',
@@ -292,5 +293,9 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         matrixBorderColor: '#f0c9a8',
         navItemActiveColor: '#a83f16',
         navActiveMarkerColor: '#a83f16',
+        primaryColor: '#ce3700',
+        statusSuccessColor: '#0c855d',
+        statusErrorColor: '#e71414',
+        inputErrorColor: '#e10004',
     }
 };

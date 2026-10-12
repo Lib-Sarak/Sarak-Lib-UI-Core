@@ -133,12 +133,12 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         className="flex border-t border-[var(--border-color,#334155)]/20 w-full"
                         style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <span className="font-black text-white/20 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
+                        <span className="font-black text-theme-tint-strong uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
 
                     {/* Vision Switch */}
                     <div
                         onClick={() => handleToggle('vision')}
-                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        className="flex items-center justify-between hover:bg-theme-tint border border-transparent hover:border-theme-tint transition-all cursor-pointer rounded-lg"
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
@@ -151,7 +151,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     {/* Web Switch */}
                     <div
                         onClick={() => handleToggle('web')}
-                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        className="flex items-center justify-between hover:bg-theme-tint border border-transparent hover:border-theme-tint transition-all cursor-pointer rounded-lg"
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
@@ -164,7 +164,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     {/* Chat Switch */}
                     <div
                         onClick={() => handleToggle('chat')}
-                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        className="flex items-center justify-between hover:bg-theme-tint border border-transparent hover:border-theme-tint transition-all cursor-pointer rounded-lg"
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>

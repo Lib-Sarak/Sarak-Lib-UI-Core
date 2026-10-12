@@ -111,7 +111,7 @@ export const dataTerminal: SarakThemePreset = {
         chatUserBg: '#00963a',
         chatBubbleStyle: 'solid',
         chatAnimationSpeed: 0.1,
-        primaryColor: '#00963a',
+        primaryColor: '#008232',
         secondaryColor: '#0a3d1f',
         tertiaryColor: '#6b8a75',
         accentColor: '#00d24f',
@@ -193,8 +193,8 @@ export const dataTerminal: SarakThemePreset = {
         aiGlowColor: '#00963a',
         flowNodeRadius: 0,
         flowGridStyle: 'lines',
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#ef4444',
+        statusSuccessColor: '#0c855d',
+        statusErrorColor: '#e71414',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 0,
@@ -242,6 +242,7 @@ export const dataTerminal: SarakThemePreset = {
         textSmoothing: true,
         textGlowIntensity: 0,
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
+        inputErrorColor: '#e60003',
     },
     contraparte: {
         mode: 'dark',
@@ -296,5 +297,9 @@ export const dataTerminal: SarakThemePreset = {
         matrixBorderColor: '#123d1e',
         navItemActiveColor: '#00ff41',
         navActiveMarkerColor: '#00ff41',
+        primaryColor: '#009138',
+        statusSuccessColor: '#0d8e64',
+        statusErrorColor: '#ec2828',
+        inputErrorColor: '#f50003',
     }
 };

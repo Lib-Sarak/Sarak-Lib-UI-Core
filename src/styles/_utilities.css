@@ -75,5 +75,5 @@ body.is-geometric .sarak-shell-header,
 /* Scrollbars customizadas (refatoração Data-Driven) */
 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent); border-radius: 10px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }

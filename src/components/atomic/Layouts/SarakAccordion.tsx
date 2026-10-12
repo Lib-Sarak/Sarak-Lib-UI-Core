@@ -71,7 +71,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                 type="button"
                 variant="ghost"
                 fullWidth
-                className="justify-between text-left normal-case font-normal tracking-normal hover:bg-white/5"
+                className="justify-between text-left normal-case font-normal tracking-normal hover:bg-theme-tint"
                 style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
                 onClick={toggleOpen}
             >

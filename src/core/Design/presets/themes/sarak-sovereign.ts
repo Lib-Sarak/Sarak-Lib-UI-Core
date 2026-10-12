@@ -283,5 +283,9 @@ export const sarakSovereignTheme: SarakThemePreset = {
         matrixItemBg: '#e6e6e605',
         matrixBorderColor: '#e6e6e613',
         navItemActiveColor: '#007f86',
+        primaryColor: '#007980',
+        statusSuccessColor: '#0b7c56',
+        statusErrorColor: '#de1313',
+        inputErrorColor: '#e10003',
     }
 };

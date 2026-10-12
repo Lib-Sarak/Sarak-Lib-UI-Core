@@ -5916,6 +5916,16 @@
       "--sarak-navigation-style",
       "--sarak-noise-density",
       "--sarak-noise-speed",
+      "--sarak-on-accent",
+      "--sarak-on-chat-user",
+      "--sarak-on-error",
+      "--sarak-on-info",
+      "--sarak-on-muted",
+      "--sarak-on-overlay",
+      "--sarak-on-secondary",
+      "--sarak-on-success",
+      "--sarak-on-surface",
+      "--sarak-on-warning",
       "--sarak-page-transition-type",
       "--sarak-preference-font-size-position",
       "--sarak-preference-language-position",
@@ -8515,6 +8525,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "2530d5da57ca"
+    "kitHash": "bfff358931ec"
   }
 }

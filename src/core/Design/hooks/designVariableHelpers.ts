@@ -1,4 +1,5 @@
 import { computeColorVariants } from '../../Provider/utils/color-engine';
+import { isLiteralColor, pickOnColor } from '../../Provider/utils/on-color';
 
 /** Mesmo valor de token; o objeto responsivo se compara por ponto (a validação reordena as chaves). */
 const isSameTokenValue = (a: unknown, b: unknown): boolean => {
@@ -43,3 +44,32 @@ export const emitColorChannels = (
         }
     });
 };
+
+/** Variável de "texto sobre a cor" → a variável da cor sólida sobre a qual ela assenta. */
+const ON_COLOR_SOURCES: Record<string, string> = {
+    '--theme-on-primary': '--theme-primary',
+    '--sarak-on-secondary': '--sarak-secondary-color',
+    '--sarak-on-accent': '--sarak-accent-color',
+    '--sarak-on-success': '--sarak-status-success-color',
+    '--sarak-on-error': '--sarak-status-error-color',
+    '--sarak-on-warning': '--sarak-status-warning-color',
+    '--sarak-on-info': '--sarak-status-info-color',
+    '--sarak-on-chat-user': '--sarak-chat-user-bg',
+    '--sarak-on-overlay': '--sarak-modal-overlay',
+    '--sarak-on-muted': '--sarak-text-muted',
+};
+
+/**
+ * Emite `--sarak-on-surface` (o texto de maior contraste sobre o corpo) e uma `--sarak-on-*` por cor sólida
+ * (`ON_COLOR_SOURCES`). Cor que não é literal (`var()`, `color-mix`) não emite: vale a reserva do componente.
+ */
+export function emitOnColors(variables: Record<string, string>, anchorColor: string): void {
+    // O corpo (literal) sustenta a cor translúcida; sem ele, o fundo padrão do modo (a âncora é preta no escuro).
+    const body = variables['--sarak-bg-body'];
+    const underColor = isLiteralColor(body) ? body : anchorColor === '#000000' ? '#050505' : '#ffffff';
+    variables['--sarak-on-surface'] = pickOnColor(underColor);
+    Object.entries(ON_COLOR_SOURCES).forEach(([name, sourceVar]) => {
+        const source = variables[sourceVar];
+        if (isLiteralColor(source)) variables[name] = pickOnColor(source, underColor);
+    });
+}

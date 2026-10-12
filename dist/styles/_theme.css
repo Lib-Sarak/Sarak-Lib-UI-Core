@@ -14,6 +14,11 @@
   --color-theme-on-primary: var(--theme-on-primary, #020617);
   --color-theme-title: var(--sarak-topbar-title-color, var(--theme-title, #ffffff));
   --color-theme-muted: var(--theme-muted, rgba(255, 255, 255, 0.4));
+  /* Véus de realce derivados da cor de texto do tema: nos dois modos aparecem sobre a superfície
+     (branco translúcido no escuro, escuro translúcido no claro). `bg-theme-tint*`, `border-theme-tint*`. */
+  --color-theme-tint: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
+  --color-theme-tint-hover: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent);
+  --color-theme-tint-strong: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent);
   
   /* --- 2. GEOMETRIA & ESCALAS --- */
   --radius-sarak: var(--sarak-card-border-radius, var(--radius-theme, 12px));

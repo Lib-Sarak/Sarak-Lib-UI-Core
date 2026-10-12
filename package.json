@@ -49,6 +49,7 @@
         "chrome-token-parity:check": "node gates/scripts/contrato/check-chrome-token-parity.mjs",
         "token-reader:check": "node gates/scripts/contrato/check-token-reader.mjs",
         "css-important:check": "node gates/scripts/contrato/check-css-important-visual.mjs",
+        "fixed-translucent:check": "node gates/scripts/contrato/check-fixed-translucent.mjs",
         "variable-contract:check": "npx tsx gates/scripts/contrato/check-variable-contract.ts",
         "trail-citation:check": "node gates/scripts/contrato/check-trail-citation.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",

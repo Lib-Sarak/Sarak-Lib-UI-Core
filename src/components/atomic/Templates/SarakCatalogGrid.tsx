@@ -145,7 +145,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        className="card border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
+                                        className="card border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)] transition-all"
                                         style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}
                                     >
                                         <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>

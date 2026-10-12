@@ -125,8 +125,8 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 36 pares', () => {
-    expect(PAIRS.length).toBe(36);
+  it('tem exatamente 67 pares (36 originais + 31 que os componentes desenham)', () => {
+    expect(PAIRS.length).toBe(67);
   });
 
   it('todo par exige 4,5:1 — nenhum relaxamento para "texto grande"', () => {
@@ -135,6 +135,79 @@ describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da pl
 
   it('todo par declara ao menos um elo de fundo', () => {
     expect(PAIRS.every((p) => Array.isArray(p.bgChain) && p.bgChain.length > 0)).toBe(true);
+  });
+});
+
+// O verificador mede os pares que os COMPONENTES desenham: a tinta a 10%
+// (`token@0.1`), o texto que o motor escolhe sobre a cor sólida (`on:`) e o badge suave (`mix:`).
+describe('pares que os componentes desenham', () => {
+  const base = { ...sarakGetDefaultDesignState(), mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff' } as Record<string, unknown>;
+  const pairOf = (fg: string, first: string): ContrastPair => {
+    const found = PAIRS.find((p) => p.fg === fg && p.bgChain[0] === first);
+    if (!found) throw new Error(`par ausente: ${fg} / ${first}`);
+    return found;
+  };
+
+  it('um elo `token@0.1` é a cor do token com o alfa multiplicado por 0,1', () => {
+    const design = { ...base, primaryColor: '#000000' };
+
+    const result = resolveChain(['primaryColor@0.1', 'colorBgBody'], design);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.rgb[0]).toBeCloseTo(229.5, 1); // 10% preto sobre branco
+  });
+
+  it('`on:` mede o texto ESCOLHIDO sobre a cor sólida — passa sobre qualquer cor opaca', () => {
+    for (const color of ['#ffff00', '#00ff00', '#ff0000', '#808080', '#7f7fff', '#0b1020']) {
+      const design = { ...base, primaryColor: color };
+      const result = evaluatePair(pairOf('on:primaryColor', 'primaryColor'), design);
+
+      expect(result.pulado, color).toBe(false);
+      if (!result.pulado) expect(result.ratio, color).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('`on:` sobre cor que não é literal é DECLARADO como pulado, não chutado', () => {
+    const result = evaluatePair(pairOf('on:primaryColor', 'primaryColor'), { ...base, primaryColor: 'hsl(10, 50%, 50%)' });
+
+    expect(result.pulado).toBe(true);
+  });
+
+  it('MUTAÇÃO: sobre um fundo de meio-tom o badge suave (`mix:`) reprova', () => {
+    const design = { ...base, colorBgBody: '#808080', cardBackgroundColor: '#808080', statusWarningColor: '#808080' };
+
+    const result = evaluatePair(pairOf('mix:statusWarningColor', 'statusWarningColor@0.1'), design);
+
+    expect(result.pulado).toBe(false);
+    if (!result.pulado) {
+      expect(result.pass).toBe(false);
+      expect(result.ratio).toBeLessThan(4.5);
+    }
+  });
+
+  it('CONTRAPROVA: sobre o fundo claro o mesmo badge passa', () => {
+    const design = { ...base, statusWarningColor: '#fde047' };
+
+    const result = evaluatePair(pairOf('mix:statusWarningColor', 'statusWarningColor@0.1'), design);
+
+    expect(result.pulado).toBe(false);
+    if (!result.pulado) expect(result.pass).toBe(true);
+  });
+
+  it('MUTAÇÃO: a mensagem de erro de campo (`inputErrorColor`) fraca sobre o corpo reprova', () => {
+    const weak = evaluatePair(pairOf('inputErrorColor', 'colorBgBody'), { ...base, inputErrorColor: '#ff8f91' });
+    const strong = evaluatePair(pairOf('inputErrorColor', 'colorBgBody'), { ...base, inputErrorColor: '#c70002' });
+
+    expect(weak.pulado || weak.pass).toBe(false);
+    expect(!strong.pulado && strong.pass).toBe(true);
+  });
+
+  it('MUTAÇÃO: o primário translúcido de um tema embarcado reintroduzido abaixo de 4,5:1 faz o tema reprovar', () => {
+    const theme = { ...SARAK_GLOBAL_THEMES[0], design: { ...(SARAK_GLOBAL_THEMES[0].design as Record<string, unknown>), inputErrorColor: '#ffb3b3', colorBgBody: '#ffffff', mode: 'light' } } as SarakThemePreset;
+
+    const report = auditTheme(theme);
+
+    expect(report.falhas.some((f) => f.pair.fg === 'inputErrorColor')).toBe(true);
   });
 });
 

@@ -172,3 +172,9 @@ L5.10 aponta para o schema, não para o tema: "desligado" (`securityPulseSpeed` 
 | L4.9 | 4 | `PremiumSwitch.tsx:9` | `rgba(var(--sarak-primary-color,#00f2ff),0.3)` é inválido: o brilho do alternador ligado não aparece |
 | L4.10 | 4 | `framer-motion` com `duration` literal: `SarakExpandableCard.tsx:88`, `SarakExpandableMatrix.tsx:185`, `SarakPageTransition.tsx:63`, `SarakImageCard.tsx:61`, `AuthForm.tsx:79`, `AuthHero.tsx:34,48`, `SarakTooltip.tsx:185`, `MessageList.tsx:47-49` | ler `motionDuration*` (`useMotionTokens.ts`) e ceder ao movimento reduzido |
 | L5.12 | 5 | `PANEL_OWN_TOKENS` de `check-token-reader.mjs`: `securityShieldGlow`, `securityPulseSpeed`, `trackingSubtle`, `typeScaleDisplay`; e `cardHoverLift` × `cardHoverTranslate` | componente existe → leitor; não existe → sai do schema (com `removedTokenKeys.ts`); duplicata → funde. A lista do painel fica só com o que é de fato do painel |
+
+### Herdado do veredito do lote 4 (2026-10-12)
+
+| # | Lote | Onde | O que fazer |
+|---|---|---|---|
+| L5.13 | 5 | `src/features/DesignEngine/**` (painel e mocks) | `bg-white/…`/`text-white/…` fixos: o painel e a pré-visualização seguem o modo do tema que mostram; o `fixed-translucent:check` passa a cobrir `src/features/` |

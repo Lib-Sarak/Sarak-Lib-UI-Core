@@ -3,6 +3,7 @@ import { SarakIcon } from "../../Icon/SarakIcon";
 import { motion } from 'framer-motion';
 
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useMotionTokens } from '../../hooks/useMotionTokens';
 
 interface AuthHeroProps {
     branding?: {
@@ -12,6 +13,7 @@ interface AuthHeroProps {
 }
 
 export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
+    const { durations } = useMotionTokens();
     const { getFlexStyles } = useStructuralStyles();
 
     return (
@@ -31,7 +33,7 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                     animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.8, type: "spring" }}
+                    transition={{ duration: durations.slow, type: "spring" }}
                     className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-lg-primary/20 border border-[var(--border-color,#334155)]-border"
                     style={{ borderRadius: 'var(--radius-btn, 12px)' }}
                 >
@@ -45,8 +47,8 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8 }}
-                    className="text-6xl font-black tracking-tighter bg-gradient-to-r from-theme-primary via-white to-theme-primary bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent uppercase"
+                    transition={{ delay: 0.2, duration: durations.slow }}
+                    className="text-6xl font-black tracking-tighter bg-gradient-to-r from-theme-primary via-[var(--color-theme-title,#ffffff)] to-theme-primary bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent uppercase"
                 >
                     {branding?.name}
                 </motion.h1>

@@ -159,6 +159,28 @@ test.describe('cartão', () => {
         });
     });
 
+    test('hover:border-* do componente vence a borda de hover do cartão', async () => {
+        await withScene('componente', undefined, async (page) => {
+            const card = probe(page, 'cartao-borda-hover').locator('.sarak-card');
+            const fromClass = await resolveExpression(card, 'border-top-color', 'color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 30%, transparent)');
+            const themeHover = await resolveExpression(card, 'border-top-color', 'rgba(var(--theme-primary-rgb), 0.4)');
+            expect(fromClass, 'a borda da classe precisa diferir da de hover do tema, ou o caso não distingue nada').not.toBe(themeHover);
+
+            await card.hover();
+            await expect(card).toHaveCSS('border-top-color', fromClass);
+        });
+    });
+
+    test('CONTRAPROVA: sem classe de borda, o hover do cartão computa a borda de hover do tema', async () => {
+        await withScene('componente', undefined, async (page) => {
+            const card = probe(page, 'cartao-puro').locator('.sarak-card');
+            const themeHover = await resolveExpression(card, 'border-top-color', 'rgba(var(--theme-primary-rgb), 0.4)');
+
+            await card.hover();
+            await expect(card).toHaveCSS('border-top-color', themeHover);
+        });
+    });
+
     test('cardSurfaceOpacity age só na superfície: o cartão fica opaco e o fundo translúcido', async () => {
         await withScene('componente', 'componente-superficie', async (page) => {
             const card = probe(page, 'cartao-puro').locator('.sarak-card');

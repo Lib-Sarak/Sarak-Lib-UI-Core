@@ -30,13 +30,21 @@ describe('useMotionTokens', () => {
 
     it('sem Provider, devolve a curva de entrada e a cascata de fábrica', () => {
         const { result } = renderHook(() => useMotionTokens());
-        expect(result.current).toEqual({ easeIn: [0.4, 0, 1, 1], staggerDelay: 0.05 });
+        expect(result.current).toEqual({ easeIn: [0.4, 0, 1, 1], staggerDelay: 0.05, durations: { fast: 0.2, normal: 0.3, slow: 0.6 } });
     });
 
     it('lê motionEaseIn e motionStaggerDelay do tema', () => {
         mockDesign = { motionEaseIn: 'cubic-bezier(0.5, 0, 0.75, 0)', motionStaggerDelay: 0.12 };
         const { result } = renderHook(() => useMotionTokens());
-        expect(result.current).toEqual({ easeIn: [0.5, 0, 0.75, 0], staggerDelay: 0.12 });
+        expect(result.current).toEqual({ easeIn: [0.5, 0, 0.75, 0], staggerDelay: 0.12, durations: { fast: 0.2, normal: 0.3, slow: 0.6 } });
+    });
+
+    it('lê motionDuration* do tema, e reducedMotion zera as três', () => {
+        mockDesign = { motionDurationFast: 0.1, motionDurationNormal: 0.45, motionDurationSlow: 1.2 };
+        expect(renderHook(() => useMotionTokens()).result.current.durations).toEqual({ fast: 0.1, normal: 0.45, slow: 1.2 });
+
+        mockDesign = { ...mockDesign, reducedMotion: true };
+        expect(renderHook(() => useMotionTokens()).result.current.durations).toEqual({ fast: 0, normal: 0, slow: 0 });
     });
 
     it('curva que o motor não entende cai na de fábrica; atraso 0 desliga a cascata', () => {

@@ -33,7 +33,7 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
     const { design } = useSarakUI();
 
     const activeColor = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff))';
-    const trackColor = 'rgba(255, 255, 255, 0.1)';
+    const trackColor = 'color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent)';
 
     return (
         <SarakFormGroup className={`${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>

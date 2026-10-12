@@ -24,6 +24,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
     bubbleStyle.borderRadius = 'var(--sarak-chat-radius, 12px) 0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
     bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#00f2ff))';
     bubbleStyle.borderColor = 'var(--theme-primary-border, rgba(0,242,255,0.25))';
+    bubbleStyle.color = 'var(--sarak-on-chat-user, var(--theme-on-primary, #020617))';
   } else {
     bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
     
@@ -36,7 +37,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
       'solid': () => {
         bubbleStyle.backgroundColor = 'var(--sarak-primary-color,#00f2ff)';
         bubbleStyle.borderColor = 'transparent';
-        bubbleStyle.color = 'var(--sarak-primary-color,#00f2ff)';
+        bubbleStyle.color = 'var(--theme-on-primary, #020617)';
       },
       'glass': () => {
         bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,#1e293b))';

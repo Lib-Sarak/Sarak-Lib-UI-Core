@@ -22,6 +22,10 @@ export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
  * @sarak-encapsula button — a razão de existir deste componente é encapsular o
  *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
+// Borda e sombra do vidro: derivadas da cor de texto e da cor de sombra do tema, nos dois modos.
+const FROSTED_EDGE = 'color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent)';
+const FROSTED_SHADOW = 'color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 30%, transparent)';
+
 export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     variant = 'primary',
     size = 'md',
@@ -66,7 +70,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             },
             'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.95]',
             'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
-            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
+            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#ffffff)] hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
         return strats[v] ? strats[v]() : '';
     };
@@ -107,19 +111,19 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             'primary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
+                dynamicStyle.boxShadow = `0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 ${FROSTED_SHADOW}`;
             },
             'danger': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
+                dynamicStyle.boxShadow = `0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 ${FROSTED_SHADOW}`;
             },
             'secondary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
                 dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             }
         };

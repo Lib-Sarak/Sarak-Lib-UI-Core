@@ -62,7 +62,7 @@ export const kineticFlowTheme: SarakThemePreset = {
         btnActiveScale: 0.98,
         btnPrimaryBg: '#ff0055',
         btnPrimaryText: '#000000',
-        btnSecondaryBg: 'rgba(255, 255, 255, 0.05)',
+        btnSecondaryBg: 'rgba(255, 255, 255, 0.03)',
         btnGhostHoverBg: 'rgba(255, 255, 255, 0.05)',
         btnStyleType: 'matte',
         btnNeonGlowColor: 'rgba(0, 242, 255, 0.4)',
@@ -300,5 +300,9 @@ export const kineticFlowTheme: SarakThemePreset = {
         matrixItemBg: '#fdeef3',
         matrixBorderColor: 'rgba(255, 0, 85, 0.15)',
         navItemActiveColor: '#007568',
+        primaryColor: '#db0049',
+        statusSuccessColor: '#008066',
+        statusErrorColor: '#e6004c',
+        inputErrorColor: '#e10003',
     }
 };

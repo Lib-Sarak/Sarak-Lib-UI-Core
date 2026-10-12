@@ -122,3 +122,41 @@ describe('token de texto: o CSS distingue "declarado" de none pelo atributo', ()
         expect(result.current.attributes['data-sx-card-shadow']).toBe('none');
     });
 });
+
+describe('texto sobre cor sólida: o motor escolhe o de maior contraste', () => {
+    const on = (overrides: Record<string, unknown>) => build(overrides).variables;
+
+    it('cor clara recebe texto escuro e cor escura recebe texto claro, em cada status', () => {
+        const light = on({ statusErrorColor: '#fde047', statusSuccessColor: '#0b1020', statusWarningColor: '#ffff00', statusInfoColor: '#101830', secondaryColor: '#ffffff' });
+
+        expect(light['--sarak-on-error']).toBe('#020617');
+        expect(light['--sarak-on-success']).toBe('#ffffff');
+        expect(light['--sarak-on-warning']).toBe('#020617');
+        expect(light['--sarak-on-info']).toBe('#ffffff');
+        expect(light['--sarak-on-secondary']).toBe('#020617');
+    });
+
+    it('a primária também segue o contraste: --theme-on-primary', () => {
+        expect(on({ primaryColor: '#ffeb3b' })['--theme-on-primary']).toBe('#020617');
+        expect(on({ primaryColor: '#1a237e' })['--theme-on-primary']).toBe('#ffffff');
+    });
+
+    it('a bolha do usuário translúcida compõe sobre o corpo antes de escolher', () => {
+        const dark = on({ mode: 'dark', colorBgBody: '#050505', chatUserBg: 'rgba(255, 255, 255, 0.05)' });
+        const light = on({ mode: 'light', colorBgBody: '#ffffff', chatUserBg: 'rgba(0, 0, 0, 0.05)' });
+
+        expect(dark['--sarak-on-chat-user']).toBe('#ffffff');
+        expect(light['--sarak-on-chat-user']).toBe('#020617');
+    });
+
+    it('--sarak-on-surface é o texto de maior contraste sobre o corpo, nos dois modos', () => {
+        expect(on({ mode: 'dark', colorBgBody: '#0d1016' })['--sarak-on-surface']).toBe('#ffffff');
+        expect(on({ mode: 'light', colorBgBody: '#f9fafb' })['--sarak-on-surface']).toBe('#020617');
+    });
+
+    it('cor que não é literal (var, color-mix) não emite a variável: a reserva do componente vale', () => {
+        const variables = on({ statusErrorColor: 'var(--theme-primary)' });
+
+        expect(variables['--sarak-on-error']).toBeUndefined();
+    });
+});

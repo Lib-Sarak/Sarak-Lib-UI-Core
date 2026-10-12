@@ -17,6 +17,7 @@ import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { motion, AnimatePresence } from 'framer-motion';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export type SarakTooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
@@ -103,6 +104,7 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
     className,
     disabled = false,
 }) => {
+    const { durations } = useMotionTokens();
     const [isVisible, setIsVisible] = useState(false);
     const [coords, setCoords] = useState<Coords | null>(null);
     const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -182,7 +184,7 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
                           initial={initial}
                           animate={{ opacity: 1, y: 0, x: 0 }}
                           exit={initial}
-                          transition={{ duration: 0.15 }}
+                          transition={{ duration: durations.fast }}
                           role="tooltip"
                           data-sarak-tooltip="true"
                           className={mergeSarakClasses(

@@ -7,6 +7,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { RecursiveMatrixNode } from './components/RecursiveMatrixNode';
 
 import type { SarakMatrixTreeNode } from './components/matrixTree';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakMatrixNodeConfig<TNode = SarakMatrixTreeNode> {
     /** Variante visual de renderização do nó */
@@ -70,6 +71,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
     renderItemHeader,
     manifest
 }: SarakExpandableMatrixProps<TData>) => {
+    const { durations } = useMotionTokens();
     const { getContainerStyles, getFlexStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
     const subItemsStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
@@ -182,7 +184,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3, ease: 'circOut' }}
+                                    transition={{ duration: durations.normal, ease: 'circOut' }}
                                     className="overflow-hidden"
                                 >
                                     <div

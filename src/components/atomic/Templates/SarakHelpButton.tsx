@@ -26,8 +26,8 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                         onClick={(e) => e.stopPropagation()}
                         style={{ animationDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-white/5" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                            <h3 className="text-sm font-bold text-white flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
+                        <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+                            <h3 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)] flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
                                 <div className="w-6 h-6 rounded-full bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#00f2ff)] font-black">?</div>
                                 Indicator Information
                             </h3>
@@ -35,7 +35,7 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                                 onClick={() => setIsOpen(false)}
                                 icon={<SarakIcon name="X" size={20} />}
                                 variant="ghost"
-                                className="text-slate-400 hover:text-white"
+                                className="text-[var(--text-muted,#94a3b8)] hover:text-[var(--color-theme-title,#ffffff)]"
                             />
                         </div>
                         <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>

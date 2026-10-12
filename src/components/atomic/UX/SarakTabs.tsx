@@ -67,7 +67,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                 className={mergeSarakClasses(
                     "flex items-center",
                     variant === 'underlined' && "border-b border-[var(--theme-border)]",
-                    variant === 'pills' && "bg-black/10 rounded-xl",
+                    variant === 'pills' && "bg-theme-tint rounded-xl",
                     listClassName
                 )}
                 style={
@@ -120,13 +120,13 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 ],
                                 variant === 'pills' && [
                                     "z-10",
-                                    isActive ? "text-white" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]"
+                                    isActive ? "text-[var(--theme-on-primary,#020617)]" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]"
                                 ],
                                 variant === 'enclosed' && [
                                     "border-t border-x border-transparent",
                                     isActive
                                         ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--color-theme-title,#ffffff)] z-10"
-                                        : "bg-black/10 text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-black/20"
+                                        : "bg-theme-tint text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-theme-tint-hover"
                                 ]
                             )}
                             leftIcon={

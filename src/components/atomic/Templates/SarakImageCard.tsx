@@ -4,6 +4,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { CardSchema } from '../../../core/Design/schema/cards';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { resolveCardHoverMotion } from '../Cards/cardHoverMotion';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakImageCardProps {
     /** Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia. */
@@ -31,6 +32,7 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
     className = '',
     onClick
 }) => {
+    const { durations } = useMotionTokens();
     const { design } = useSarakUI();
     const { getFlexStyles } = useStructuralStyles();
 
@@ -57,13 +59,13 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
                 borderStyle: 'solid',
                 borderColor: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))',
                 backgroundColor: 'var(--sarak-card-bg)',
-                boxShadow: hoverStyle === 'glow-only' ? 'none' : '0 var(--sarak-image-card-shadow-offset-y, 10px) var(--sarak-image-card-shadow-blur, 30px) calc(var(--sarak-image-card-shadow-spread, 10px) * -1) rgba(0,0,0,0.5)',
+                boxShadow: hoverStyle === 'glow-only' ? 'none' : '0 var(--sarak-image-card-shadow-offset-y, 10px) var(--sarak-image-card-shadow-blur, 30px) calc(var(--sarak-image-card-shadow-spread, 10px) * -1) color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 50%, transparent)',
             }}
         >
             {/* Background Image Layer */}
             <motion.div 
                 className="absolute inset-0 w-full h-full"
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: durations.normal, ease: "easeOut" }}
                 whileHover={{ scale: hoverZoom }}
             >
                 <img 

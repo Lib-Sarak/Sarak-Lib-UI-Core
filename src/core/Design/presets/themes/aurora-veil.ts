@@ -111,7 +111,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         chatUserBg: '#7a5fa8',
         chatBubbleStyle: 'glass',
         chatAnimationSpeed: 0.15,
-        primaryColor: '#9b7fc4',
+        primaryColor: '#805cb4',
         secondaryColor: '#7a5fa8',
         tertiaryColor: '#c8b8e0',
         accentColor: '#e0a5c8',
@@ -193,8 +193,8 @@ export const auroraVeilTheme: SarakThemePreset = {
         aiGlowColor: '#9b7fc4',
         flowNodeRadius: 20,
         flowGridStyle: 'dots',
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#ef4444',
+        statusSuccessColor: '#0b815a',
+        statusErrorColor: '#e21313',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 9999,
@@ -242,6 +242,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         textSmoothing: true,
         textGlowIntensity: 0,
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
+        inputErrorColor: '#dc0002',
     },
     contraparte: {
         mode: 'dark',
@@ -296,5 +297,9 @@ export const auroraVeilTheme: SarakThemePreset = {
         matrixBorderColor: 'rgba(200, 184, 224, 0.14)',
         navItemActiveColor: '#e5dcf5',
         navActiveMarkerColor: '#c8b8e0',
+        primaryColor: '#9678c1',
+        statusSuccessColor: '#0d986a',
+        statusErrorColor: '#f04848',
+        inputErrorColor: '#ff2f30',
     }
 };

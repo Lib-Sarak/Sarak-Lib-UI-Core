@@ -289,5 +289,9 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         matrixItemBg: '#0d1c1205',
         matrixBorderColor: '#0d1c1213',
         navItemActiveColor: '#007a3d',
+        primaryColor: '#008021',
+        statusSuccessColor: '#0b7c56',
+        statusErrorColor: '#de1313',
+        inputErrorColor: '#e10003',
     }
 };

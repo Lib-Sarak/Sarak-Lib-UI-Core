@@ -72,7 +72,7 @@ const ManagementGroupCardContent = <TItem extends Record<string, unknown>>({
         className={`${containerLayout.className ?? ''} card h-full overflow-hidden rounded-[var(--sarak-card-radius,12px)] border`}
         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
     >
-        <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-white/[0.02]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+        <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
             <h3 className="text-theme-title font-bold">{groupName}</h3>
             <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
                 {groupActions.map((action) => (

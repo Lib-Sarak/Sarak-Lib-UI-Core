@@ -62,6 +62,13 @@ Os gates são o **piso**, não a meta: um tema que passa em tudo e é genérico 
 - Contraste de texto ≥ 4,5:1 nos dois modos (**R31**, `auditor_contraste`); diversidade medida
   (`themes:diversity`); nenhum aviso no console (`shippedThemesConsoleClean.test.ts`); valor dentro do contrato do
   token (`tokenContractParity.test.ts`); nenhuma chave órfã (`auditor_presets`).
+- **O contraste mede o que os componentes desenham** (`plan-114`, lote 4): `verify_contrast.ts` cobre 67 pares,
+  inclusive a cor primária, as de status e a de erro de campo **como texto** sobre o corpo e o cartão (botão
+  contorno e fantasma, link, badge, mensagem de erro). A primária de um tema é, portanto, também uma cor de texto: a
+  direção de arte escolhe uma primária que passe 4,5:1 sobre o corpo nos dois modos, ou o tema reprova. O texto
+  sobre cor sólida (badge, botão de perigo/sucesso, bolha do chat) é escolhido pelo motor por contraste — o tema não
+  o declara. Em 2026-10-12 o lote 4 trocou a luminosidade de 84 valores dos temas atuais para passar; o lote 1
+  desta plan os redesenha.
 
 **Os temas são carregados na abertura do barril** (`SARAK_GLOBAL_THEMES` é exportado): cada KB a mais pesa no boot
 de todo consumidor. Por isso o lote 0 mede o peso atual e propõe um teto.

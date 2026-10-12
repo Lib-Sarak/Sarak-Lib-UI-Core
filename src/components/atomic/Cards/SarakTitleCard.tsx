@@ -131,7 +131,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 <div className={layout.footerClass}>
                     <div className="flex w-full" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}>
                         {!!context && (
-                        <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
+                        <div className="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)] tracking-wider">
                             <span>Contexto</span>
                             <span className="text-2xs font-mono text-[var(--text-muted,#94a3b8)]">
                                 {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : String(context)} tokens

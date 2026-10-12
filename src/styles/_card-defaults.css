@@ -33,6 +33,12 @@
     border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
 }
 
+/* Borda do cartão sob o ponteiro: padrão, vence a cor da superfície; `hover:border-*` do componente e do
+   consumidor a vencem (a moldura `cyber`/`glow`/`none`, escolhida por token, segue vencendo na camada final). */
+.sarak-card:hover {
+    border-color: rgba(var(--theme-primary-rgb), 0.4);
+}
+
 /* Cartão pressionado: o fundo ativo é padrão, `active:bg-*` do componente o vence. */
 .bg-theme-card:active {
     background-color: var(--theme-primary-active);

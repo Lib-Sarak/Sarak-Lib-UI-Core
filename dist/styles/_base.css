@@ -110,29 +110,29 @@ body::before {
 }
 
 .custom-scrollbar-sidebar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
 }
 
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 40%, transparent);
     border-radius: 10px;
     border: 2px solid transparent;
     background-clip: content-box;
 }
 
 .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.6);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 60%, transparent);
 }
 
 /* Force scrollbar track visibility */
 .custom-scrollbar-sidebar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
 }
 
 /* Force scrollbar to stay visible on Firefox */
 .custom-scrollbar-sidebar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.1);
+    scrollbar-color: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent) color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
 }
 
 /* Horizontal Industrial Scrollbar */
@@ -141,12 +141,12 @@ body::before {
 }
 
 .custom-scrollbar-horizontal::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 2%, transparent);
     border-radius: 10px;
 }
 
 .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--text-main, #ffffff) 30%, transparent);
     border-radius: 10px;
 }
 

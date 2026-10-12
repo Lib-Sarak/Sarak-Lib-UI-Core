@@ -111,7 +111,7 @@ export const goldenHourTheme: SarakThemePreset = {
         chatUserBg: '#a5730f',
         chatBubbleStyle: 'solid',
         chatAnimationSpeed: 0.15,
-        primaryColor: '#d9a441',
+        primaryColor: '#92691d',
         secondaryColor: '#a5730f',
         tertiaryColor: '#5c4310',
         accentColor: '#f0c869',
@@ -194,8 +194,8 @@ export const goldenHourTheme: SarakThemePreset = {
         aiGlowColor: '#d9a441',
         flowNodeRadius: 12,
         flowGridStyle: 'dots',
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#ef4444',
+        statusSuccessColor: '#0c855d',
+        statusErrorColor: '#e71414',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 6,
@@ -243,6 +243,7 @@ export const goldenHourTheme: SarakThemePreset = {
         textSmoothing: true,
         textGlowIntensity: 0,
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
+        inputErrorColor: '#e60003',
     },
     contraparte: {
         mode: 'dark',
@@ -296,5 +297,9 @@ export const goldenHourTheme: SarakThemePreset = {
         matrixBorderColor: '#4a3a18',
         navItemActiveColor: '#f0c869',
         navActiveMarkerColor: '#f0c869',
+        primaryColor: '#b07e23',
+        statusSuccessColor: '#0e9c6d',
+        statusErrorColor: '#f04e4e',
+        inputErrorColor: '#ff3336',
     }
 };

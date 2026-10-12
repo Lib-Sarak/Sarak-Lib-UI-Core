@@ -395,6 +395,78 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 - Consumidor que escrevia `bg-*`/`hover:bg-*` num cartão e via a superfície do tema vencer passa a ver a própria classe (nota MAJOR); não abri o ERP.
 - O `DesignEngine` mostra a primária com o par `btnPrimaryBg`/`btnPrimaryText` — agora igual ao componente; temas com `btnPrimaryBg: transparent` (golden-hour, blueprint-protocol, cyberpunk-neon) passam a ter o botão primário transparente de fato. Contraste desses pares é do lote 4.
 
+## Resumo da execução — lote 4 (modo claro e contraste) — 2026-10-12
+
+**Resultado:** Concluído (lote 4), com **quatro decisões abertas para o revisor** (itens 1, 2, 3 e 4 de *Decisões e suposições*).
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+(`git status --short` vazio; `HEAD` `4844dae1`, o lote 3 commitado. Nada em `specs/` foi tocado, salvo esta plan: o `status` e este bloco.)
+
+**O que foi feito** (anexo L4.1 a L4.10 reconferido no `HEAD` atual)
+- **Texto sobre cor sólida por contraste — como é escolhido:** o motor, em runtime, não o tema. `src/core/Provider/utils/on-color.ts` (novo) tem `pickOnColor(cor, sob)`: a razão WCAG de `#020617` e de `#ffffff` sobre a cor (translúcida compõe antes sobre o corpo) e fica com a maior — nunca abaixo de 4,5:1 sobre cor opaca. `designVariableHelpers.ts` (`emitOnColors`) emite `--sarak-on-surface` (o texto sobre o corpo) e uma `--sarak-on-*` por cor sólida: `secondary`, `accent`, `success`, `error`, `warning`, `info`, `chat-user`, `overlay`, `muted`; `--theme-on-primary` (que era "claro se a luminosidade HSL > 55") passa a usar a mesma função. Cor que não é literal (`var()`, `color-mix`) não emite, e a reserva do componente vale. Não há token novo: é derivado.
+- **L4.1 — ~45 brancos/pretos translúcidos fixos:** `_theme.css` (`@theme`) ganha `--color-theme-tint`, `-tint-hover`, `-tint-strong` = `color-mix(--text-main 5%/10%/20%, transparent)`, e os componentes passam a `bg-theme-tint*`, `border-theme-tint*`, `text-theme-tint-strong`, `text-[var(--text-muted)]`/`text-[var(--text-main)]` (a substituição de classe passou por 14 arquivos, e o resto à mão; ao todo 38 arquivos de `src/components/**`: tabela, estado vazio, cartão de busca, social, título, núcleo, modal, abas, ajuda, accordion, chat, fluxo, estatísticas, grupo de gestão…). Inline: `SarakSlider` (trilha), `useAtomicStyles` (neumorfismo), `SarakIconButton` (`frosted`: borda e sombra), `SarakDrawer`, `SarakImageCard`, `RecursiveMatrixNode`, `_utilities.css` e `_base.css` (barras de rolagem). `SarakLightbox` (fundo próprio escuro) é a exceção declarada.
+- **L4.2 — texto sobre cor sólida:** `SarakBadge` sólido (`--theme-on-primary`, `--sarak-on-secondary`, `--sarak-on-<status>`, `--sarak-on-muted`), `SarakButton`/`SarakIconButton` perigo e sucesso, aba ativa em pílula (`SarakTabs`), `MessageBubble` (usuário `--sarak-on-chat-user`; estilo `solid` pinta `--theme-on-primary`, L4.5), `SarakChatEngine` (bolha do usuário, botão de envio, vidro lê `--sarak-card-bg`/borda), `useModalLayoutStyles` (fechar flutuante: `--sarak-on-overlay`), `AuthHero` (`via-[--color-theme-title]`).
+- **Badge suave:** `SarakBadge` pinta o texto `color-mix(<status|marca> 40%, var(--sarak-on-surface))`.
+- **L4.4** `SarakStats` (`hover:bg-theme-tint`) · **L4.5** acima · **L4.6** `SarakIconButton` `frosted` · **L4.7** `.sarak-card:hover { border-color }` saiu de `_cards.css` para `_card-defaults.css` (cede a `hover:border-*`) · **L4.8** `SarakCatalogGrid.tsx:148` · **L4.9** `PremiumSwitch.tsx:9` (`color-mix`).
+- **L4.10:** `useMotionTokens` ganha `durations: { fast, normal, slow }` (de `motionDuration*`; `reducedMotion` zera as três); `SarakExpandableCard`, `SarakExpandableMatrix`, `SarakPageTransition`, `SarakImageCard`, `AuthForm`, `AuthHero`, `SarakTooltip` e o indicador de digitação do `MessageList` leem. A transformação em reduzido já era do `MotionConfig` do Provider.
+- **Verificador (`gates/scripts/audit/verify_contrast.ts`):** de 36 a **67 pares**; elo `token@0.1` (tinta), texto `on:<token>` (o escolhido pelo motor, mesma função) e `mix:<token>` (o badge suave); o par real do botão primário (`btnPrimaryText`/`btnPrimaryBg`) já estava e agora é o que o botão desenha. Limites (R18) atualizados no cabeçalho (3, 3a, 3b).
+- **Temas embarcados — 84 valores** (script de uma vez, descartado; só luminosidade, mesma matiz/saturação, em 14 temas): `primaryColor`, `statusSuccessColor`, `statusErrorColor`, `inputErrorColor` onde são texto; `btnSecondaryBg` em `industrial-terminal`, `kinetic-flow`, `blueprint-protocol`; e contrapartes de L4.3: `sidebarHoverColor`/`topbarHoverColor` do `minimalist-airy` e `matrixItemBg` do `neumorphic-mobile` no escuro (herdavam o do claro).
+- **Trava de L4.1:** `gates/scripts/contrato/check-fixed-translucent.mjs` (`npm run fixed-translucent:check`), limites no cabeçalho, ligada ao Anel 1 (`.githooks/pre-commit`) e à CI (`gates.yml`, passo "Os 11 *:check").
+- `auditor_ghostvars.mjs`: lê também `designVariableHelpers.ts` como emissor de runtime (o helper que o hook chama).
+- `docs/migracoes.md`: subseção MAJOR nova na `## 8.0.0`; `sarak-ui/docs/migracoes.md` e `sarak-dev/` regenerados.
+
+**Arquivos alterados** (82 modificados e 4 novos, fora `specs/`)
+| Grupo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/on-color.ts` (novo), `color-engine.ts`, `src/core/Design/hooks/useDesignVariables.ts`, `designVariableHelpers.ts` | criado/alterado | escolha por contraste e emissão `--sarak-on-*` |
+| `src/styles/_theme.css`, `_base.css`, `_utilities.css`, `_cards.css`, `_card-defaults.css` | alterado | tintas, rolagem, hover de borda |
+| `src/components/**` (38 arquivos) | alterado | branco/preto fixo → tema; texto por contraste; durações |
+| `src/components/atomic/hooks/useMotionTokens.ts` | alterado | `durations` |
+| `src/core/Design/presets/themes/*.ts` (14) | alterado | 84 valores + 3 contrapartes |
+| `gates/scripts/audit/verify_contrast.ts` + `__tests__/verify_contrast.test.ts`, `auditor_ghostvars.mjs` | alterado | 67 pares; emissor de runtime |
+| `gates/scripts/contrato/check-fixed-translucent.mjs` + `__tests__/…test.mjs` (novos), `.githooks/pre-commit`, `.github/workflows/gates.yml`, `package.json` | criado/alterado | a trava e a ligação |
+| testes: `SarakBadge`, `useMotionTokens`, `useDesignVariablesDonoUnico`, 7 `*.snap` | alterado | contrato novo; snapshots regravados (só classe, atributo e valor de tema) |
+| `browser-tests/modo-claro-legivel.spec.ts` (novo), `componente-le-o-token.spec.ts`, `fixtures/harness-entry.tsx` | criado/alterado | 7 casos novos + 2 do hover de borda; cena `legivel` e recortes `legivel-*` |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md`, `sarak-dev/*` | alterado | nota MAJOR e gerados |
+
+**Verificações executadas**
+- `npx vitest run` (suíte completa, depois do último conserto): **3100 passaram, 3 falharam e 14 foram puladas** — `check-kit-names`, `check-token-reader` e `SarakPDFViewerImpl` por timeout sob carga e `kitGenerator` pulado por timeout do `beforeAll`; os quatro arquivos, rodados juntos: **75 de 75**. A rodada anterior da suíte inteira (mesmo código, antes de regravar a ordem de uma chave em 2 snapshots) deu 3115 de 3117, com os 2 snapshots; regravados, passam. **Não consegui uma passada única 100% limpa da suíte completa.**
+- `npx tsc --noEmit` → 0. `check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12" (passei por `hardcoded` 0→1, `cleancode` 0→2 e `ghostvars` 0→11 do meu código; consertados: reserva do hex, `useDesignVariables.ts` ≤ 250 linhas, `color-engine.ts` ≤ 250 linhas e o auditor lendo o helper).
+- Anel 1, na ordem do hook, `guide:check` por último: dev-kit, barril, catálogo, zero-marca, deep-import, gate-limits, container-query (2), persistence-doc, class-merge, icon-port, chrome-token-parity, token-reader, css-important, **fixed-translucent**, trail-citation, token-types, variable-contract, migration-anchor, guide → **20 de 20 com exit 0** (`trail-citation` acusou 4 linhas minhas citando "plan-114/lote 4" e foi consertado; repetido).
+- Anel 0 simulado (`config.json` do hook sobre as linhas adicionadas do `git diff HEAD` e os 4 arquivos novos de fora de `specs/`) → 1973 linhas, **0 achados**.
+- **Contraste:** `verify_contrast.ts` → exit 0, 67 pares, 14 temas × 2 modos, 0 reprovado, 0 pulado. **Contra os temas do `HEAD`** (verificador novo, `git archive HEAD` dos temas): **exit 1, 39 par-tema reprovados no nativo e 66 no oposto**. Mutações em `verify_contrast.test.ts` (`mix:` sobre meio-tom, `inputErrorColor` fraco, tema embarcado com par reintroduzido): falham como esperado.
+- **Navegador, fora do repositório e sem tocar `dist/`:** worktree copiado para `%TEMP%` (`tsup` + `@tailwindcss/cli` + `build-scoped-css` + `copy-base-css` + `inject-css`), removido ao fim. Suíte inteira do `playwright`: **224 de 224** (215 + 9 novos). Os dois specs novos sobre o **`HEAD`**: **5 falham, 20 passam** (os passes são contraprovas e os casos que o `HEAD` já cumpria). **Não substitui o `npm run build` + `cromo-css-real:check` do revisor.**
+- **A trava `fixed-translucent:check` contra o `HEAD` anterior** (script novo sobre `git archive HEAD src/components src/styles`): **exit 1, 100 ocorrências**; no worktree, exit 0 com 1 exceção declarada. Plantados e passantes em `check-fixed-translucent.test.mjs` (23 casos).
+
+**Critérios de aceite**
+- [x] Lote 4: zero branco/preto translúcido fixo em componente onde o tema decide — evidência: `fixed-translucent:check` exit 0.
+- [x] Texto sobre cor sólida por contraste — evidência: `modo-claro-legivel.spec.ts` (claro e escuro) e `useDesignVariablesDonoUnico.test.ts`.
+- [x] Pares desenhados medidos e verdes nos 14 temas × 2 modos — evidência: `verify_contrast.ts` exit 0 (67 pares); falha no `HEAD`.
+- [x] L4.3 contrapartes — evidência: `minimalist-airy`/`neumorphic-mobile` passam no oposto.
+- [x] L4.4–L4.10 — evidência acima.
+- [x] Trava, caso de mutação, falha no `HEAD` anterior — acima.
+
+**Decisões e suposições**
+1. **O texto sobre cor sólida é escolhido pelo motor, em runtime, por WCAG** (não por token "texto sobre a cor" no schema, que cada tema teria de manter). Mudança visível no tema padrão, declarada na nota MAJOR: o texto de botão de perigo/sucesso e dos badges sólidos passa de branco a `#020617`, e o badge sólido primário (`#00f2ff`) idem. Se o dono prefere o texto claro nas cores de status, o conserto é a cor do status, não a função.
+2. **Badge suave: mistura 40% da cor com 60% do texto de maior contraste**, não a cor crua. É o que faz o par passar sem trocar a cor de marca de todos os temas; custa saturação no badge. Os pares de texto "cru" (`primaryColor`/`statusErrorColor`/`statusSuccessColor`/`inputErrorColor` sobre corpo e cartão) continuam exigidos e os 84 valores de tema são o conserto — **o revisor deve olhar `primaryColor` de `golden-hour`, `aurora-veil`, `neumorphic-mobile`, `blueprint-protocol`, `synthwave-retro`**, que mudam de forma visível (mesma matiz, outra luminosidade).
+3. **Pares novos de verificador que medem "por construção"** (`on:`) só travam a leitura e a parseabilidade da cor; a prova do texto escolhido está no navegador.
+4. **O detector é textual, de `src/components/**` e cinco parciais de CSS**; fora dele, de propósito: `_atmosphere.css`/`_surfaces.css` (texturas e materiais), `src/features/` (painel), hex sólido (`#fff`) e `rgb(255 255 255 / 5%)` — limites no cabeçalho. `text-white`/`text-black` sólidos também são acusados.
+5. As `durations` de `framer-motion` mudam de valor no padrão: 0,15 s→0,2 s (tooltip), 0,8 s→0,6 s (`AuthHero`), 0,4 s→0,3 s (`SarakImageCard`).
+6. Cada `-tint` usa a cor de texto do tema; `bg-black/10`/`/20` (cabeçalho do modal, abas) passou a ser tinta clara a 5%/10% no escuro (antes escurecia): declarado na nota.
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakExpandableMatrix.tsx`, `SarakCoreCard.tsx` e outros usam `text-3xs`/`text-2xs` sobre `--text-muted`: o par `textColorMuted` passa nos 14 temas, mas o corpo de 9–10 px está abaixo do que a WCAG chama de texto normal — não medido.
+- `SarakModal.tsx:119,158` agora usa tinta do texto em vez de escurecer: a hierarquia visual do cabeçalho muda no escuro (declarado).
+- `src/features/DesignEngine/**` (painel e mocks) segue com `bg-white/…`/`text-white/…`: fora do escopo do detector.
+- `kitGenerator.test.mjs` e `check-kit-names.test.mjs` estouram timeout quando a suíte roda sob carga (passam isolados).
+
+**Pendências / riscos**
+- Não rodei `npm run build` nem `cromo-css-real:check` por inteiro; `dist/` intacto.
+- Tema salvo por usuário não recebe os 84 valores (valor persistido vence); o consumidor com tema próprio claro e `statusErrorColor` padrão vê o texto do botão de perigo escolhido pelo contraste, não branco.
+
 ---
 
 # 10. Veredito
@@ -438,3 +510,17 @@ depois do veredito do revisor. Cada item do anexo termina corrigido, ou fora com
 **Achados do executor roteados** (anexo, "herdado do veredito do lote 3"): lote 4 — `SarakStats.tsx:105` (hover branco que agora aparece), `MessageBubble.tsx:37-39` (estilo `solid` com texto da cor do fundo), `SarakIconButton` `frosted` (borda e sombra fixas), hover de borda do cartão, `SarakCatalogGrid.tsx:148` (classe quebrada), `PremiumSwitch.tsx:9` (sombra inválida), durações literais de `framer-motion`; lote 5 — os itens da decisão 2.
 
 **Próximo:** lote 4 (modo claro e contraste), depois do commit deste lote.
+
+## Veredito — 2026-10-12 — lote 4 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK; `playwright test` sobre esse `dist/`: **224/224**, com `modo-claro-legivel.spec.ts` (claro e escuro) e o hover de borda do cartão; suíte completa **468/468 arquivos, 3117/3117 testes, numa passada única limpa** rodada pelo revisor (o executor não tinha conseguido uma); `tsc` 0; `audit:baseline --with-tsc` igual ao baseline (sem regravar); Anel 1 inteiro OK, com o `fixed-translucent:check` novo; varredura do padrão "Segredo atribuido" nas linhas adicionadas e nos não rastreados: 0. Conferido no diff dos temas que as trocas são de luminosidade da mesma matiz (ex.: `golden-hour` primária `#d9a441` → `#92691d`).
+
+**Decisões do executor:**
+1. Texto sobre cor sólida escolhido pelo motor, em runtime, por WCAG (`on-color.ts`, `--sarak-on-*`) — **aceita**: é a única forma de o par passar em tema do consumidor sem exigir um token por cor; o texto escuro nos botões de perigo/sucesso e badges sólidos do tema padrão vai na nota MAJOR.
+2. Badge suave como mistura da cor com o texto de maior contraste; 84 valores de tema trocados em luminosidade — **aceita**. As primárias que mudaram de forma visível (`golden-hour`, `aurora-veil`, `neumorphic-mobile`, `blueprint-protocol`, `synthwave-retro`) são redesenhadas no lote 1 da `plan-110`, que ganhou a restrição medida em §2: a primária é também cor de texto e passa 4,5:1 sobre o corpo nos dois modos.
+3. Pares `on:` que medem por construção, com a prova do texto escolhido no navegador — **aceita**.
+4. Detector textual com escopo em `src/components/**` e cinco parciais; `src/features/` (painel e mocks) fora — **aceita para este lote**; o painel entra no lote 5.
+
+**Fora do escopo, registrado:** corpo de texto de 9–10 px (`text-3xs`/`text-2xs`) sobre `--text-muted` abaixo do tamanho que a WCAG chama de texto normal — não é medido por nenhuma trava; fica para a vitrine da `plan-110` e para o backlog se persistir. Timeout de `kitGenerator`/`check-kit-names` sob carga: não reproduzido na passada do revisor.
+
+**Próximo:** lote 5 (painel e contrato numérico), depois do commit deste lote.

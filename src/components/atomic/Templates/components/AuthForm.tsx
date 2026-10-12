@@ -8,6 +8,7 @@ import { AuthFormFields } from './AuthFormFields';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
+import { useMotionTokens } from '../../hooks/useMotionTokens';
 
 type AuthLabelKey = Extract<LibraryTextKey, `auth${string}`>;
 
@@ -63,6 +64,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     socialConfig,
     onForgot,
 }) => {
+    const { durations } = useMotionTokens();
     const { getFlexStyles } = useStructuralStyles();
     const text = useLibraryText();
     const authText = (key: AuthLabelKey): string => labels?.[key] ?? text(key);
@@ -76,7 +78,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: durations.slow }}
                 className="w-full max-w-md"
             >
                 <div className="block lg:hidden text-center" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*2.5)' }}>

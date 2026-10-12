@@ -61,7 +61,7 @@
 
 /* INTERACTIVE STATES */
 .sarak-card:hover {
-    border-color: rgba(var(--theme-primary-rgb), 0.4);
+    /* A borda de hover (padrão do cartão) mora em `_card-defaults.css`, onde `hover:border-*` a vence. */
     /* Hover: a mesma sombra, 10px mais baixa e mais difusa, a 60% de opacidade. */
     box-shadow:
         calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))

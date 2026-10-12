@@ -40,11 +40,11 @@ function getButtonClasses(
         'flex items-center transition-sarak group/soc active:scale-[0.97] normal-case tracking-normal font-normal',
         'bg-[var(--color-theme-card,rgba(255,255,255,0.03))]',
         'text-[var(--color-theme-text,rgba(255,255,255,0.5))]',
-        'border border-white/5 hover:border-white/10',
+        'border border-theme-tint hover:border-theme-tint-hover',
         hideLabel ? 'w-12 h-12 justify-center' : 'w-full justify-start',
         variant === 'solid' || designVariant === 'solid'
             ? 'shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20 hover:shadow-[var(--sarak-primary-color,#00f2ff)]/40 hover:-translate-y-0.5'
-            : 'hover:bg-white/[0.08] hover:text-theme-title',
+            : 'hover:bg-theme-tint-hover hover:text-theme-title',
         className,
     );
 }
@@ -72,7 +72,7 @@ const SocialButtonIcon = ({ icon, hideLabel, variant }: SocialButtonIconProps): 
         className={cn(
             'flex items-center justify-center transition-sarak',
             hideLabel ? 'w-full h-full' : 'w-8 h-8',
-            variant === 'solid' ? 'bg-white/20 group-hover/soc:rotate-[10deg]' : 'bg-white/5 group-hover/soc:bg-white/10',
+            variant === 'solid' ? 'bg-theme-tint-strong group-hover/soc:rotate-[10deg]' : 'bg-theme-tint group-hover/soc:bg-theme-tint-hover',
         )}
         style={{ borderRadius: 'calc(var(--radius-btn, 12px) * 0.8)' }}
     >

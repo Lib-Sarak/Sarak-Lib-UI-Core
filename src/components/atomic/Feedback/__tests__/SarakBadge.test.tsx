@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import * as ComponentModule from '../SarakBadge';
 import { SarakBadge } from '../SarakBadge';
+import { ON_COLOR_DARK, pickOnColor } from '../../../../core/Provider/utils/on-color';
 
 const STATUS_THEME_COLOR_KEYS = [
     'statusSuccessColor',
@@ -40,9 +41,15 @@ function getRelativeLuminance(color: unknown): number | undefined {
     return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
 }
 
-function getBlackContrastRatio(background: unknown): number | undefined {
+/** Contraste do texto que o motor ESCOLHE (`pickOnColor`) sobre a cor sólida do status. */
+function getChosenContrastRatio(background: unknown): number | undefined {
     const luminance = getRelativeLuminance(background);
-    return luminance === undefined ? undefined : (luminance + 0.05) / 0.05;
+    const channels = parseHexColor(background);
+    if (luminance === undefined || !channels) return undefined;
+    const chosen = pickOnColor(String(background));
+    const chosenLuminance = chosen === ON_COLOR_DARK ? getRelativeLuminance('#020617') ?? 0 : 1;
+    const [lighter, darker] = luminance > chosenLuminance ? [luminance, chosenLuminance] : [chosenLuminance, luminance];
+    return (lighter + 0.05) / (darker + 0.05);
 }
 
 describe('SarakBadge export', () => {
@@ -86,16 +93,31 @@ describe('SarakBadge status variants', () => {
 });
 
 describe('SarakBadge solid status contrast', () => {
-    it.each(['success', 'danger', 'warning', 'info'] as const)(
-        'uses a dark foreground for the solid %s status',
-        (variant) => {
-            render(<SarakBadge variant={variant} soft={false}>Rótulo</SarakBadge>);
+    it.each([
+        { variant: 'success' as const, property: '--sarak-on-success' },
+        { variant: 'danger' as const, property: '--sarak-on-error' },
+        { variant: 'warning' as const, property: '--sarak-on-warning' },
+        { variant: 'info' as const, property: '--sarak-on-info' },
+    ])('o status sólido $variant lê o texto escolhido pelo contraste ($property), não preto fixo', ({ variant, property }) => {
+        render(<SarakBadge variant={variant} soft={false}>Rótulo</SarakBadge>);
 
-            expect(screen.getByText(/Rótulo/).className).toContain('text-black');
-        },
-    );
+        const badge = screen.getByText(/Rótulo/);
+        expect(badge.style.color).toContain(property);
+        expect(badge.className).not.toContain('text-black');
+    });
 
-    it('keeps the foreground at WCAG AA contrast against bundled status colors in both theme modes', () => {
+    it('os badges sólidos primário e secundário leem o texto escolhido, não branco fixo', () => {
+        render(<>
+            <SarakBadge variant="primary" soft={false}>Primário</SarakBadge>
+            <SarakBadge variant="secondary" soft={false}>Secundário</SarakBadge>
+        </>);
+
+        expect(screen.getByText('Primário').className).toContain('--theme-on-primary');
+        expect(screen.getByText('Secundário').className).toContain('--sarak-on-secondary');
+        expect(screen.getByText('Primário').className).not.toContain('text-white');
+    });
+
+    it('o texto que o motor escolhe passa de 4,5:1 sobre as cores de status dos temas, nos dois modos', () => {
         for (const theme of SARAK_GLOBAL_THEMES) {
             const palettes: Array<{ label: string; colors: object }> = [
                 { label: `${theme.id} (base)`, colors: theme.design },
@@ -110,7 +132,7 @@ describe('SarakBadge solid status contrast', () => {
 
             for (const palette of palettes) {
                 for (const key of STATUS_THEME_COLOR_KEYS) {
-                    const ratio = getBlackContrastRatio(Reflect.get(palette.colors, key));
+                    const ratio = getChosenContrastRatio(Reflect.get(palette.colors, key));
                     expect(ratio, `${palette.label}: ${key}`).toBeDefined();
                     if (ratio !== undefined) {
                         expect(ratio, `${palette.label}: ${key}`).toBeGreaterThanOrEqual(4.5);

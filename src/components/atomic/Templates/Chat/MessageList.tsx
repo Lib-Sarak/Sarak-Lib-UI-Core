@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Message } from './types';
 import { MessageBubble } from './MessageBubble';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useMotionTokens } from '../../hooks/useMotionTokens';
 
 interface MessageListProps {
   messages: Message[];
@@ -14,6 +15,7 @@ interface MessageListProps {
 }
 
 export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, isProcessingFiles, scrollRef }) => {
+    const { durations } = useMotionTokens();
   const { getFlexStyles } = useStructuralStyles();
   const emptyStateStack = getFlexStyles('column', 'center', 'center', 'var(--sarak-layout-gap-md,16px)');
 
@@ -44,9 +46,9 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
         <div className="flex justify-start">
           <div className="bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-2xl rounded-tl-none shadow-sm" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
             <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
-              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
-              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
+              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
+              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: 0.2 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
+              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: 0.4 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
             </div>
             {isProcessingFiles && <p className="text-3xs font-mono text-[var(--text-muted,#94a3b8)] uppercase tracking-widest animate-pulse" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>Codificando Imagens...</p>}
           </div>

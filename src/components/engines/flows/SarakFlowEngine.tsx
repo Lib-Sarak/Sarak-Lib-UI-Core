@@ -24,16 +24,19 @@ const GRID_VARIANTS: Record<string, (typeof BackgroundVariant)[keyof typeof Back
     lines: BackgroundVariant.Lines,
 };
 
+/** Véu da cor de texto do tema (grade, máscara): aparece sobre a superfície nos dois modos. */
+const TEXT_TINT_5 = 'color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent)';
+
 /**
  * Sarak Flow Engine v7.0
  * Interactive node-based logic engine powered by ReactFlow.
  */
 const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConnect }) => {
     const { design } = useSarakUI();
-    const { primaryColor, mode, flowGridStyle, flowNodeRadius } = design || {};
+    const { primaryColor, flowGridStyle, flowNodeRadius } = design || {};
 
     return (
-        <div className="w-full h-full min-h-[var(--sarak-engine-min-h-lg,500px)] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-white/5 overflow-hidden relative">
+        <div className="w-full h-full min-h-[var(--sarak-engine-min-h-lg,500px)] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-theme-tint overflow-hidden relative">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -45,25 +48,25 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     variant={GRID_VARIANTS[String(flowGridStyle)] ?? BackgroundVariant.Dots} 
                     gap={24} 
                     size={1} 
-                    color={mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} 
+                    color={TEXT_TINT_5}
                 />
-                <Controls className="bg-white/5 border-white/10 text-white fill-white" />
+                <Controls className="bg-theme-tint border-theme-tint-hover text-[var(--text-main,#ffffff)] fill-[var(--text-main,#ffffff)]" />
                 <MiniMap 
-                    style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 'var(--sarak-layout-gap-md,16px)' }}
+                    style={{ backgroundColor: 'color-mix(in srgb, var(--sarak-card-bg, rgba(15, 23, 42, 0.6)) 50%, transparent)', borderRadius: 'var(--sarak-layout-gap-md,16px)' }}
                     nodeColor={() => primaryColor}
-                    maskColor="rgba(255,255,255,0.05)"
+                    maskColor={TEXT_TINT_5}
                 />
-                <Panel position="top-right" className="bg-[var(--theme-card)] p-2 rounded-lg border border-white/5 backdrop-blur-md">
-                    <span className="text-2xs font-bold uppercase tracking-widest text-white/40">Flow Optimizer Active</span>
+                <Panel position="top-right" className="bg-[var(--theme-card)] p-2 rounded-lg border border-theme-tint backdrop-blur-md">
+                    <span className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">Flow Optimizer Active</span>
                 </Panel>
             </ReactFlow>
 
             <style>{`
                 .react-flow__node {
                     border-radius: var(--sarak-flow-node-radius, ${flowNodeRadius || 12}px);
-                    background: rgba(15, 15, 20, 0.8);
-                    border: var(--sarak-border-width, 1px) solid rgba(255, 255, 255, 0.1);
-                    color: white;
+                    background: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6))) 80%, transparent);
+                    border: var(--sarak-border-width, 1px) solid color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent);
+                    color: var(--text-main, #ffffff);
                     font-size: var(--sarak-type-scale-xs, 11px);
                     padding: var(--sarak-flow-node-padding, 10px);
                     backdrop-filter: blur(var(--sarak-flow-node-blur, 5px));
@@ -72,10 +75,10 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     width: var(--sarak-flow-handle-size, 8px);
                     height: var(--sarak-flow-handle-size, 8px);
                     background: ${primaryColor};
-                    border: var(--sarak-border-width, 1px) solid white;
+                    border: var(--sarak-border-width, 1px) solid var(--sarak-bg-base, #0a0a0c);
                 }
                 .react-flow__edge-path {
-                    stroke: rgba(255, 255, 255, 0.2);
+                    stroke: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent);
                     stroke-width: 2;
                 }
             `}</style>

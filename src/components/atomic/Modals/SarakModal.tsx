@@ -116,10 +116,10 @@ const ModalHeader = ({
     const text = useLibraryText();
     if (!title && hideCloseButton) return null;
     return (
-        <div className={clsx('border-b border-[var(--theme-border)] bg-black/10', headerClass)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
+        <div className={clsx('border-b border-[var(--theme-border)] bg-theme-tint', headerClass)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
             {title && <h2 id={titleId} className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h2>}
             {!hideCloseButton && (
-                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-white hover:bg-white/10', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
+                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-theme-tint-hover', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
             )}
         </div>
     );
@@ -155,7 +155,7 @@ const ModalPanel = ({
 };
 
 const ModalFooter = ({ className, children }: { className: string; children: React.ReactNode }): React.ReactElement => (
-    <div className={clsx('border-t border-[var(--theme-border)] bg-black/10', className)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
+    <div className={clsx('border-t border-[var(--theme-border)] bg-theme-tint', className)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
         {children}
     </div>
 );

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakPageTransitionProps {
     children: React.ReactNode;
@@ -40,6 +41,7 @@ const variantsMap = {
 };
 
 export const SarakPageTransition: React.FC<SarakPageTransitionProps> = ({ children, locationKey }) => {
+    const { durations } = useMotionTokens();
     const { design } = useSarakUI();
     const { getContainerStyles } = useStructuralStyles();
     
@@ -60,7 +62,7 @@ export const SarakPageTransition: React.FC<SarakPageTransitionProps> = ({ childr
                 animate="animate"
                 exit="exit"
                 variants={selectedVariants}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: durations.normal, ease: [0.16, 1, 0.3, 1] }}
                 className={`w-full h-full flex-1 ${getContainerStyles().className}`}
             >
                 {children}

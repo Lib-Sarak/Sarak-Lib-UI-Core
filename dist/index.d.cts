@@ -826,8 +826,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "596af0b";
-    readonly builtAt: "2026-10-12T19:04:06.187Z";
+    readonly baseCommitShort: "4844dae";
+    readonly builtAt: "2026-10-12T21:47:43.715Z";
 };
 
 interface SarakDesignScopeProps {
@@ -878,14 +878,6 @@ interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Elemento exibido dentro do botão; é obrigatório, e sem ele o botão não mostra um glifo; `isLoading` o substitui pelo indicador. */
     icon: React__default.ReactNode;
 }
-/**
- * Componente Atômico: SarakIconButton
- * Um botão iconográfico com restrições geométricas exatas.
- * Implementa taxonomia completa (Neon, Frosted) adaptada para proporções quadradas/circulares.
- *
- * @sarak-encapsula button — a razão de existir deste componente é encapsular o
- *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
- */
 declare const SarakIconButton: React__default.FC<SarakIconButtonProps>;
 
 interface SarakSocialButtonProps {

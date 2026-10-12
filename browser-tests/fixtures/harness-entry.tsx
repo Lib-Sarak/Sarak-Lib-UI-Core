@@ -42,6 +42,7 @@ import {
     SarakSearch,
     SarakSelect,
     SarakSwitch,
+    SarakTabs,
     SarakTextarea,
     SarakTimePicker,
     SarakTitleCard,
@@ -104,6 +105,8 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `dono-superficie`: `surfaceColor` e `cardBackgroundColor` diferentes — cada um com a própria variável.
  *   - `dono-raio-sistema`: `borderRadius` (5) e `cardBorderRadius` (20) diferentes — cada um com a própria variável.
  *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
+ *   - `legivel-claro` / `legivel-escuro`: modo claro (corpo e cartão brancos) com primária e status CLAROS, e modo escuro com
+ *     primária e status ESCUROS — o texto sobre a cor sólida tem de inverter (escuro sobre o claro, claro sobre o escuro).
  *   - `componente-botao`: `btnPrimaryBg`/`btnPrimaryText`/`btnSecondaryBg` em três cores distintas e distintas da primária;
  *     `componente-botao-neon`: o secundário sob o estilo neon (que escreve o fundo por `style`).
  *   - `componente-sombra`: `cardShadow` declarada (a sombra dura vermelha); `componente-superficie`: `cardSurfaceOpacity` 0,5.
@@ -189,6 +192,8 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
     'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
     'cascata-raio-catalogo': { catalogSectionRadius: 1 },
+    'legivel-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', primaryColor: '#ffeb3b', secondaryColor: '#fff176', statusErrorColor: '#fde047', statusSuccessColor: '#10b981' },
+    'legivel-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#1a237e', secondaryColor: '#311b92', statusErrorColor: '#101830', statusSuccessColor: '#10b981' },
     'componente-botao': { btnPrimaryBg: 'rgb(255, 0, 0)', btnPrimaryText: 'rgb(0, 255, 0)', btnSecondaryBg: 'rgb(0, 0, 255)' },
     'componente-botao-neon': { btnStyleType: 'neon', btnSecondaryBg: 'rgb(0, 0, 255)' },
     'componente-sombra': { cardShadow: '10px 10px 0px 0px rgb(255, 0, 0)' },
@@ -308,6 +313,8 @@ const App: React.FC = () => {
  *   - `componente`: o que o componente lê do token — o botão primário e o secundário, um `.sarak-card` puro, com
  *     classe de fundo e com classe de fundo no hover, um contêiner `.card` com classe de fundo, um cartão interativo,
  *     a tabela e um alternador.
+ *   - `legivel`: o que o componente desenha sobre a cor sólida e sobre a superfície do tema — badge sólido (primário, perigo)
+ *     e suave (sucesso), botão de perigo, abas em pílula (a bandeja de tinta) e o alternador da barra de prova.
  *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
  *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
  *     contêiner `.card` sem classe, o `SarakKanban` (fundo por `style` inline em `<section>`/`<article>`) e
@@ -614,10 +621,23 @@ const ComponentScene: React.FC = () => (
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
         <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,#1e293b)]">Cartão com fundo por classe</div></div>
         <div data-probe="cartao-classe-hover"><div className="sarak-card hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]">Cartão com fundo no hover</div></div>
+        <div data-probe="cartao-borda-hover"><div className="sarak-card hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)]">Cartão com borda no hover</div></div>
         <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,#1e293b)]">Contêiner com fundo por classe</div></div>
         <div data-probe="cartao-interativo"><SarakCard interactive>Cartão interativo</SarakCard></div>
         <div data-probe="tabela"><SarakTable data={SCHEMA_ROWS} columns={[{ key: 'nome', label: 'Nome' }]} responsive={false} /></div>
         <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
+    </div>
+);
+
+const LEGIBLE_TABS = [{ id: 'a', label: 'Primeira' }, { id: 'b', label: 'Segunda' }];
+
+const LegibleScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="badge-solido-primario"><SarakBadge variant="primary" soft={false}>Primário</SarakBadge></div>
+        <div data-probe="badge-solido-perigo"><SarakBadge variant="danger" soft={false}>Perigo</SarakBadge></div>
+        <div data-probe="badge-suave-sucesso"><SarakBadge variant="success">Sucesso</SarakBadge></div>
+        <div data-probe="botao-perigo"><SarakButton variant="danger">Excluir</SarakButton></div>
+        <div data-probe="abas"><SarakTabs variant="pills" tabs={LEGIBLE_TABS} activeTab="a" onChange={NOOP} /></div>
     </div>
 );
 
@@ -647,6 +667,7 @@ const SCENES: Record<string, React.FC> = {
     schema: SchemaScene,
     cascata: CascadeScene,
     componente: ComponentScene,
+    legivel: LegibleScene,
     'schema-modal': SchemaModalScene,
 };
 

@@ -23,6 +23,14 @@ const STATUS_COLOR_PROPERTIES: Partial<Record<SarakBadgeVariant, string>> = {
     info: '--sarak-status-info-color',
 };
 
+/** O texto de cada status sólido: o de maior contraste sobre a cor do status (emitido pelo motor). */
+const STATUS_ON_COLOR_PROPERTIES: Partial<Record<SarakBadgeVariant, string>> = {
+    success: '--sarak-on-success',
+    danger: '--sarak-on-error',
+    warning: '--sarak-on-warning',
+    info: '--sarak-on-info',
+};
+
 const BASE_CLASSES = 'inline-flex items-center justify-center font-bold tracking-wide transition-colors whitespace-nowrap';
 const SIZE_CLASSES: Record<SarakBadgeSize, string> = {
     sm: 'px-1.5 py-0.5',
@@ -31,20 +39,20 @@ const SIZE_CLASSES: Record<SarakBadgeSize, string> = {
 };
 const VARIANT_CLASSES: Record<SarakBadgeVariant, { soft: string; solid: string }> = {
     primary: {
-        soft: 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] border border-[var(--theme-primary)]/20',
-        solid: 'bg-[var(--theme-primary)] text-white border border-transparent',
+        soft: 'bg-[var(--theme-primary)]/10 text-[color-mix(in_srgb,var(--theme-primary)_40%,var(--sarak-on-surface,#ffffff))] border border-[var(--theme-primary)]/20',
+        solid: 'bg-[var(--theme-primary)] text-[var(--theme-on-primary,#020617)] border border-transparent',
     },
     secondary: {
-        soft: 'bg-[var(--theme-secondary)]/10 text-[var(--theme-secondary)] border border-[var(--theme-secondary)]/20',
-        solid: 'bg-[var(--theme-secondary)] text-white border border-transparent',
+        soft: 'bg-[var(--theme-secondary)]/10 text-[color-mix(in_srgb,var(--theme-secondary)_40%,var(--sarak-on-surface,#ffffff))] border border-[var(--theme-secondary)]/20',
+        solid: 'bg-[var(--theme-secondary)] text-[var(--sarak-on-secondary,#ffffff)] border border-transparent',
     },
-    success: { soft: 'border', solid: 'border border-transparent text-black' },
-    danger: { soft: 'border', solid: 'border border-transparent text-black' },
-    warning: { soft: 'border', solid: 'border border-transparent text-black' },
-    info: { soft: 'border', solid: 'border border-transparent text-black' },
+    success: { soft: 'border', solid: 'border border-transparent' },
+    danger: { soft: 'border', solid: 'border border-transparent' },
+    warning: { soft: 'border', solid: 'border border-transparent' },
+    info: { soft: 'border', solid: 'border border-transparent' },
     muted: {
         soft: 'bg-[var(--theme-surface)] text-[var(--theme-muted)] border border-transparent',
-        solid: 'bg-[var(--theme-muted)] text-[var(--theme-surface)] border border-transparent',
+        solid: 'bg-[var(--theme-muted)] text-[var(--sarak-on-muted,#020617)] border border-transparent',
     },
 };
 
@@ -60,7 +68,9 @@ function getStatusStyle(variant: SarakBadgeVariant, soft: boolean): React.CSSPro
     if (!property) return {};
     const statusColor = `var(${property}, var(--sarak-primary-color, currentColor))`;
     return {
-        color: soft ? statusColor : undefined,
+        // Suave: a cor do status misturada ao texto de maior contraste sobre o corpo (40/60) — o contraste do par é medido por
+        // `verify_contrast.ts` (`mix:`). Sólido: o texto escolhido pelo motor sobre a cor do status.
+        color: soft ? `color-mix(in srgb, ${statusColor} 40%, var(--sarak-on-surface, #ffffff))` : `var(${STATUS_ON_COLOR_PROPERTIES[variant]}, var(--theme-on-primary, #020617))`,
         backgroundColor: soft ? `color-mix(in srgb, ${statusColor} 10%, transparent)` : statusColor,
         borderColor: soft ? `color-mix(in srgb, ${statusColor} 20%, transparent)` : 'transparent',
         // Brilho do status (`statusGlowBlur`): com 0 o raio some e a sombra não aparece.

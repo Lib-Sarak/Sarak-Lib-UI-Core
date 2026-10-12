@@ -198,8 +198,8 @@ export const minimalistAiry: SarakThemePreset = {
         aiGlowColor: '#3b82f6',
         flowNodeRadius: 8,
         flowGridStyle: 'dots',
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#ef4444',
+        statusSuccessColor: '#0c855d',
+        statusErrorColor: '#e71414',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 0,
@@ -247,9 +247,12 @@ export const minimalistAiry: SarakThemePreset = {
         textSmoothing: true,
         textGlowIntensity: 0,
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
+        inputErrorColor: '#e10003',
     },
     contraparte: {
         mode: 'dark',
+        sidebarHoverColor: '#171b24',
+        topbarHoverColor: '#171b24',
         sidebarColor: '#090b10',
         topbarColor: '#0b0e14',
         topbarTitleColor: '#fbfcfe',
@@ -296,5 +299,9 @@ export const minimalistAiry: SarakThemePreset = {
         scrollThumbColor: '#1c2531',
         matrixItemBg: '#262626',
         matrixBorderColor: '#3333331a',
+        primaryColor: '#637fbb',
+        statusSuccessColor: '#0d9367',
+        statusErrorColor: '#ee3b3b',
+        inputErrorColor: '#ff0609',
     }
 };

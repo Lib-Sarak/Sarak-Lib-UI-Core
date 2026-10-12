@@ -65,8 +65,8 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
             },
             'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98]',
             'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
-            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-xl shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.98]',
-            'success': () => 'bg-[var(--theme-success,#10b981)] text-white hover:brightness-110 shadow-xl shadow-[var(--theme-success,#10b981)]/20 active:scale-[0.98]',
+            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#ffffff)] hover:brightness-110 shadow-xl shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.98]',
+            'success': () => 'bg-[var(--theme-success,#10b981)] text-[var(--sarak-on-success,#ffffff)] hover:brightness-110 shadow-xl shadow-[var(--theme-success,#10b981)]/20 active:scale-[0.98]',
             'outline': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-primary-color,#00f2ff)]/10 active:scale-[0.98]'
         };
         return strats[v] ? strats[v]() : '';

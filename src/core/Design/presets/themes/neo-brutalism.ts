@@ -283,5 +283,9 @@ export const neobrutalismTheme: SarakThemePreset = {
         scrollThumbColor: '#0a0a0a',
         matrixItemBg: '#f5f5f5',
         matrixBorderColor: '#000000',
+        primaryColor: '#eb0000',
+        statusSuccessColor: '#0c855d',
+        statusErrorColor: '#e71414',
+        inputErrorColor: '#eb0003',
     }
 };

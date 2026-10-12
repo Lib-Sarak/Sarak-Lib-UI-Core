@@ -9,6 +9,7 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakExpandableCardProps {
     /** Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio. */
@@ -36,6 +37,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
     contentClassName = "",
     baseHeight = 300
 }) => {
+    const { durations } = useMotionTokens();
     const globalUI = useSarakUI();
     const design = globalUI.design;
     const layout = useCardLayoutStyles(design);
@@ -85,7 +87,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 16px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: durations.normal }}
                             // `@container` plantado aqui, não na raiz do card — o
                             // conteúdo com `@min-[…]` (`bodyPadding`/`headerMargin`) vive
                             // dentro do `createPortal` (renderiza em `document.body`, fora

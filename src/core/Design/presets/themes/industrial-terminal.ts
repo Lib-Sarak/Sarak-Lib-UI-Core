@@ -128,7 +128,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         btnActiveScale: 0.95,
         btnPrimaryBg: '#ff9900',
         btnPrimaryText: '#000000',
-        btnSecondaryBg: '#333333',
+        btnSecondaryBg: 'rgba(51, 51, 51, 0.49)',
         btnGhostHoverBg: '#1f1f1f',
         btnStyleType: 'matte',
         btnNeonGlowColor: 'transparent',
@@ -262,7 +262,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         textColorMaster: '#7a4a00',
         textColorSecondary: '#8a5a00',
         textColorMuted: '#6b6355',
-        btnSecondaryBg: '#d8d0bf',
+        btnSecondaryBg: 'rgba(216, 208, 191, 0.45)',
         btnGhostHoverBg: '#e9e4d9',
         inputBg: '#faf8f3',
         inputTextColor: '#0a0a0a',
@@ -278,5 +278,9 @@ export const industrialTerminalTheme: SarakThemePreset = {
         scrollThumbColor: '#ff9900',
         matrixItemBg: '#f0ede6',
         matrixBorderColor: '#c9beac',
+        primaryColor: '#995c00',
+        statusSuccessColor: '#995c00',
+        statusErrorColor: '#d12a00',
+        inputErrorColor: '#dc0002',
     }
 };

@@ -102,7 +102,7 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
 
     return (
         <div
-            className="card hover:bg-white/[0.04] transition-all rounded-[var(--sarak-card-radius,12px)]"
+            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,12px)]"
             style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
         >
             {config?.icon && <div className="text-theme-muted" aria-hidden="true">{config.icon}</div>}

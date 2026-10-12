@@ -127,7 +127,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 style={{ ...cardFlex.style, padding: 'var(--sarak-layout-gap-md,16px)' }}
                 className={`${cardFlex.className} rounded-xl border transition-all ${
                     isActive
-                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5 border-[var(--border-color,#334155)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5 border-[var(--border-color,#334155)] shadow-[0_4px_20px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_20%,transparent)]'
                     : 'bg-[var(--color-theme-card,#1e293b)]/40 border-[var(--border-color,#334155)] hover:border-[var(--text-muted,#94a3b8)]/30'
                 }`}
             >

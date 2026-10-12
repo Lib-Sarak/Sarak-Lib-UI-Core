@@ -294,6 +294,39 @@ O `token-reader:check` deixa de contar o painel de customização como leitor de
 painel só conta para os tokens declarados em `PANEL_OWN_TOKENS` (a geometria da própria pré-visualização e os que a
 lib ainda não tem componente para consumir), com o motivo de cada um.
 
+### O modo claro é legível: branco e preto fixos saem dos componentes, o texto sobre cor sólida é escolhido pelo contraste, e os temas embarcados passam nos pares que os componentes desenham
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam a cor do texto
+sobre cor sólida, o realce de hover e de moldura nos dois modos, o valor de alguns tokens dos temas embarcados e a
+duração das animações de `framer-motion`. O padrão visual muda em **dois** pontos marcados abaixo.
+
+| Antes | Depois |
+|---|---|
+| ~45 lugares escreviam branco ou preto translúcido fixo (`bg-white/5`, `border-white/10`, `bg-black/10`, `text-white/40`, `rgba(255,255,255,…)`): sob um tema claro o realce sumia, e o texto de rótulo ficava ilegível. | O realce deriva da **cor de texto do tema**: as utilitárias `bg-theme-tint`, `bg-theme-tint-hover`, `bg-theme-tint-strong` (e `border-`/`text-`) são `color-mix` de `--text-main` a 5%, 10% e 20%. No escuro dá o mesmo branco translúcido; no claro, o escuro translúcido. **Diferença no tema padrão:** o cabeçalho e o rodapé do modal e a bandeja das abas em pílula, que eram preto a 10%, passam a ser a cor de texto a 5%. |
+| O texto sobre cor sólida era fixo: `text-white` no badge sólido primário e secundário, no botão de perigo e de sucesso, na aba ativa em pílula e no envio do chat; `text-black` nos badges de status sólidos; branco a 90% na bolha do usuário. | O motor escolhe, para cada cor sólida, o texto de **maior contraste WCAG** entre `#020617` e `#ffffff` e o emite: `--theme-on-primary` (que era "claro se a luminosidade HSL passa de 55") e as novas `--sarak-on-secondary`, `-accent`, `-success`, `-error`, `-warning`, `-info`, `-chat-user`, `-muted`, `-overlay` e `--sarak-on-surface`. A escolha nunca fica abaixo de 4,5:1 sobre cor opaca. Cor que não é literal (`var()`, `color-mix`) não emite a variável, e a reserva do componente vale. **Diferença no tema padrão:** o texto do botão de perigo e de sucesso e dos badges de status sólidos passa de branco a `#020617` (sobre `#ef4444` e `#10b981` o escuro tem mais contraste que o branco), e o do badge sólido primário (`#00f2ff`) de branco a escuro. |
+| O badge suave pintava o texto com a cor crua do status/da marca (reprovava 4,5:1 sobre o corpo ou o cartão em 17 de 28 combinações). | O texto é `color-mix(<cor> 40%, --sarak-on-surface)`: a cor misturada ao texto de maior contraste sobre o corpo. A matiz continua, mais escura no claro e mais clara no escuro. |
+| `.sarak-card:hover { border-color }` na camada final vencia `hover:border-*`. | O hover de borda do cartão é padrão na subcamada que cede: `hover:border-*` do componente e do consumidor o vencem (a moldura `cyber`/`glow`/`none`, por token, segue vencendo). |
+| A bolha do assistente do `SarakChatEngine` em vidro usava `rgba(0,0,0,0.4)` e branco; o estilo `solid` da bolha do `SarakChat` pintava o texto na cor do fundo; o `SarakFlowEngine` fixava nós, controles, mini-mapa e arestas em branco sobre preto; o `SarakIconButton` `frosted` fixava borda branca e sombra preta. | Leem a superfície, a borda e a cor de texto do tema (`--sarak-card-bg`, `--sarak-card-border-color`, `--text-main`), com a bolha sólida em `--theme-on-primary`. |
+| Barras de rolagem (`.custom-scrollbar-*`) em branco translúcido fixo. | Cor de texto do tema a 5%–60%. |
+| A classe quebrada `hover:border-[var(--border-color,#334155)]-primary/30` do `SarakCatalogGrid` não gerava CSS; o brilho do `PremiumSwitch` ligado era `rgba(var(#hex),0.3)`, inválido. | Corrigidos: a borda de hover do catálogo e o brilho do alternador aparecem. |
+| As animações de `framer-motion` (`SarakExpandableCard`, `SarakExpandableMatrix`, `SarakPageTransition`, `SarakImageCard`, `AuthForm`, `AuthHero`, `SarakTooltip`, indicador de digitação do chat) tinham `duration` literal (0,15 s a 0,8 s). | Leem `motionDurationFast`/`Normal`/`Slow` por `useMotionTokens().durations`, e o `reducedMotion` do tema as zera. **No tema padrão:** a entrada do `AuthHero` passa de 0,8 s a 0,6 s (a do `AuthForm` segue em 0,6 s), o `SarakImageCard` de 0,4 s a 0,3 s, o tooltip de 0,15 s a 0,2 s. |
+
+**Temas embarcados — 84 valores trocados** (só a luminosidade, mantidas a matiz e a saturação) para os pares que os
+componentes desenham passarem de 4,5:1 nos 14 temas × 2 modos: `primaryColor` quando é texto (botão `ghost`/`outline`,
+link) sobre o corpo e o cartão; `statusSuccessColor`, `statusErrorColor` e `inputErrorColor` quando são texto;
+`btnSecondaryBg` (mais translúcido) em `industrial-terminal`, `kinetic-flow` e `blueprint-protocol`; e as contrapartes
+que herdavam a cor do modo nativo — `sidebarHoverColor`/`topbarHoverColor` do `minimalist-airy` no escuro e
+`matrixItemBg` do `neumorphic-mobile` no escuro. **Tema salvo por usuário não muda** (valor persistido vence o padrão).
+
+**O que fazer:** um teste seu que lia `color: rgb(255, 255, 255)` num botão de perigo, num badge sólido ou na bolha do
+chat lê agora o texto escolhido pelo contraste. Quem escreveu `bg-white/5` ou `text-white` num componente próprio e
+o quer legível no claro usa `bg-theme-tint` e `text-[var(--text-main)]`, ou `text-[var(--sarak-on-error)]` sobre a cor
+de status.
+
+O `verify_contrast.ts` passa de 36 a **67 pares**, os que os componentes desenham (texto sobre cor sólida, badge
+suave, erro de campo, hover de navegação e de tabela, item de matriz, botão secundário), e o `fixed-translucent:check`
+passa a barrar, em `src/components/`, branco/preto translúcido e `text-white`/`text-black` fixos.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

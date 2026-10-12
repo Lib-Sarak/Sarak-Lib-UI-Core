@@ -248,6 +248,10 @@
       "comando": "node scripts/generate-dev-kit.mjs --check"
     },
     {
+      "nome": "npm run fixed-translucent:check",
+      "comando": "node gates/scripts/contrato/check-fixed-translucent.mjs"
+    },
+    {
       "nome": "npm run gate-limits:check",
       "comando": "node gates/scripts/contrato/check-gate-limits.mjs"
     },

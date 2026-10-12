@@ -291,5 +291,9 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         matrixItemBg: '#f3eaf1',
         matrixBorderColor: '#e6d4e2',
         navItemActiveColor: '#7a0048',
+        primaryColor: '#db006d',
+        statusSuccessColor: '#0b815a',
+        statusErrorColor: '#e21313',
+        inputErrorColor: '#e10003',
     }
 };

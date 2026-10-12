@@ -83,7 +83,11 @@ const STYLES_DIR = path.resolve('src/styles');
 // hook que injeta as variáveis em runtime. Ficaram fora do registro por anos, e
 // é o que fazia a sonda de escopo ampliado acusar variável que EXISTE.
 const MANIFEST_FILE = path.resolve('src/core/Provider/manifest.ts');
-const RUNTIME_VARS_FILE = path.resolve('src/core/Design/hooks/useDesignVariables.ts');
+// O hook e o helper que ele chama (`emitColorChannels`, `emitOnColors`) escrevem variáveis em runtime.
+const RUNTIME_VARS_FILES = [
+  path.resolve('src/core/Design/hooks/useDesignVariables.ts'),
+  path.resolve('src/core/Design/hooks/designVariableHelpers.ts'),
+];
 const CONSUMER_DIRS = [
   path.resolve('src/components'),
   path.resolve('src/features'),
@@ -183,8 +187,8 @@ for (const file of walk(STYLES_DIR, ['.css'])) {
 // O hook de RUNTIME (`useDesignVariables.ts`) escreve `variables['--x'] = ...`
 // de verdade — é emissão comprovada por construção, sem precisar de checagem
 // adicional (diferente do manifesto, ver R7b abaixo).
-if (fs.existsSync(RUNTIME_VARS_FILE)) {
-  const src = fs.readFileSync(RUNTIME_VARS_FILE, 'utf8');
+for (const runtimeFile of RUNTIME_VARS_FILES.filter((file) => fs.existsSync(file))) {
+  const src = fs.readFileSync(runtimeFile, 'utf8');
   for (const m of src.matchAll(/['"`](--[a-z0-9-]+)['"`]/g)) registry.add(m[1]);
 }
 

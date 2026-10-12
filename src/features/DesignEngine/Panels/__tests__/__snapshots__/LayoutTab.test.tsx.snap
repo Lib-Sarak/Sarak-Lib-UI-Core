@@ -394,7 +394,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               max="400"
               min="200"
               step="5"
-              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+              style="background-color: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
               type="range"
               value="260"
             />
