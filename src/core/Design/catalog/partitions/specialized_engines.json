@@ -420,36 +420,6 @@
     ]
   },
   {
-    "tokenId": "matrixSearchBg",
-    "name": "Fundo da Busca (Matriz)",
-    "description": "Cor de fundo alocada especificamente para o campo de busca embutido na matriz.",
-    "type": "color",
-    "importance": 65,
-    "categories": [
-      "cores",
-      "layout",
-      "specialized-engines"
-    ],
-    "tags": [
-      "matrix",
-      "search",
-      "background",
-      "advanced"
-    ],
-    "databaseColumn": "specialized_engines",
-    "schemaOrigin": "advanced.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-matrix-search-bg"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "matrixItemBg"
-    ]
-  },
-  {
     "tokenId": "matrixBlur",
     "name": "Desfoque de Vidro (Matriz)",
     "description": "Grau de backdrop-filter para gerar glassmorphism sobrepondo itens na Matriz Expandida.",

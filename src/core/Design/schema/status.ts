@@ -3,7 +3,7 @@ import { ComponentSchema } from '../types';
 const BADGE_RADIUS_MAX = 100;
 const BADGE_RADIUS_DEFAULT = 99;
 const STATUS_GLOW_BLUR_MAX = 24;
-const STATUS_GLOW_BLUR_DEFAULT = 8;
+const STATUS_GLOW_BLUR_DEFAULT = 0;
 const PROGRESS_BAR_HEIGHT_MAX = 32;
 const PROGRESS_BAR_HEIGHT_DEFAULT = 8;
 const PROGRESS_BAR_RADIUS_MAX = 32;
@@ -72,7 +72,7 @@ export const StatusSchema: ComponentSchema = {
             id: 'statusGlowBlur',
             label: 'Desfoque do Glow de Status',
             type: 'slider',
-            description: 'Raio de desfoque do brilho (glow) que pode acompanhar um indicador de status para chamar mais atenção (ex. status crítico piscando) — quanto maior, mais suave/espalhado o brilho.',
+            description: 'Raio de desfoque do brilho (glow) em volta do SarakBadge nas variantes de status (sucesso, perigo, aviso, info), na cor do próprio status — quanto maior, mais suave/espalhado o brilho. 0 (padrão) = sem brilho.',
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: STATUS_GLOW_BLUR_MAX },

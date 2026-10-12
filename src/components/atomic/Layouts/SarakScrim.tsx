@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakScrimProps {
     /** Fecha a camada — chamado ao clique em qualquer ponto do scrim. */
@@ -55,6 +56,7 @@ export const SarakScrim: React.FC<SarakScrimProps> = ({
     durationMs = 300,
     testId,
 }) => {
+    const { easeIn } = useMotionTokens();
     const sharedProps = {
         type: 'button' as const,
         'aria-label': ariaLabel,
@@ -71,7 +73,7 @@ export const SarakScrim: React.FC<SarakScrimProps> = ({
             {...sharedProps}
             initial={{ opacity: 0 }}
             animate={{ opacity: visible ? 1 : 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: durationMs / 1000, ease: easeIn } }}
             transition={{ duration: durationMs / 1000 }}
         />
     );

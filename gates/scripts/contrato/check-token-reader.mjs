@@ -19,12 +19,21 @@
  *        também está lido: a variável é só o outro canal do mesmo valor.
  *   (ii) OPÇÃO — cada token `select` de opções literais tem, para CADA opção, uma regra CSS
  *        (`[data-sx-<kebab>="valor"]`, atributo que o motor de fato emite, ou a
- *        `classPrefix` do manifesto) ou um leitor em componente (arquivo que acessa o
- *        id do token e contém o valor como literal).
+ *        `classPrefix` do manifesto), um leitor em componente (arquivo que acessa o
+ *        id do token e contém o valor como literal) ou um leitor DECLARADO (abaixo).
+ *   (iii) TESTE — o token cujo leitor é declarado (tabela ou passagem direta, onde o gate
+ *        textual não vê o literal junto do id) tem de ter, para CADA opção, um arquivo de
+ *        teste que cita o id e o valor: é a prova por opção que a leitura declarada pede.
+ *
+ * Leitor declarado: o arquivo que guarda a tabela (ou que entrega o valor à propriedade CSS)
+ * traz, em comentário, `@sarak-token-reader <id>[, <id>…] tabela` (a tabela cita o literal de
+ * cada opção) ou `… direto` (o valor da opção é o próprio valor CSS; não há tabela). Em CSS
+ * a declaração vai num comentário de bloco ao lado da regra que repassa a variável.
  *
  * Uso: `node gates/scripts/contrato/check-token-reader.mjs` — toda ausência sem
  * exceção declarada é bloqueio. A exceção é `ALLOWLIST`, com motivo, e se esvazia
- * sozinha: entrada que deixou de ser achado também é bloqueio (remova-a).
+ * sozinha: entrada que deixou de ser achado também é bloqueio (remova-a). Hoje ela está
+ * VAZIA: o mecanismo continua para a próxima ampliação de escopo.
  *
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
@@ -55,6 +64,15 @@
  *    `--theme-texture-color-rgb` antes de `textureColor` ganhar variantes: 24 leitores
  *    caíam todos no fallback, em silêncio) é o gate inverso, e continua sem dono — hoje o
  *    caso se prova por teste.
+ * 10. LEITOR POR TABELA OU PASSAGEM DIRETA É DECLARADO, não deduzido. O gate confere que o
+ *    token existe, que a tabela traz o literal de cada opção (entre aspas ou como chave de
+ *    objeto sem aspas) e que há teste por opção (arquivo `__tests__`/`*.test.*` que cita o
+ *    id e o literal). NÃO prova que o teste afirma o efeito, nem que a tabela é consultada em
+ *    runtime: a declaração é humana e o teste é textual. Apagar a linha da tabela ou o caso do
+ *    teste faz o gate acusar.
+ * 11. O nome da variável é ANCORADO: `--sarak-layout` não conta como lida por
+ *    `var(--sarak-layout-gap-md, …)` (o caractere seguinte não pode continuar o identificador).
+ *    Continua textual: citação em comentário de CSS ou em string solta também conta (limite 4).
  * -------------------------------------------------------------------------
  */
 import fs from 'fs';
@@ -66,45 +84,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 const toKebabCase = (str) => str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 const escapeRe = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// Os três grupos abaixo são o que o escopo ampliado ao schema inteiro (2026-10-11) revelou DEPOIS
-// de os 11 tokens da exceção anterior serem resolvidos — nenhum deles estava na medição que
-// originou a exceção. Dar leitor ou retirar do schema é decisão do dono, em plan própria.
-const SEM_MENCAO = 'Nenhuma menção fora de schema, catálogo e presets (medido em 2026-10-11): o painel oferece, o motor emite e nada lê. Dar leitor ou retirar do schema é decisão do dono.';
-const LIDO_POR_TABELA = 'O valor chega ao leitor por tabela, normalizador ou passagem direta ao estilo, sem literal da opção (limites 5 e 8): o gate textual não o vê. Falta o teste por opção do leitor.';
-const OPCAO_SEM_REGRA = 'Variável lida, mas as opções do schema não têm regra nem literal em leitor (a `classPrefix` `layout-` não tem `.layout-grid`/`.layout-flex`/`.layout-masonry`). Dar leitor ou retirar a opção.';
-
-const SEM_MENCAO_IDS = [
-    'matrixSearchBg', 'animInstant', 'animFast', 'colorBgLayer2', 'bgNoiseAnimation', 'vignetteSoftness',
-    'identityPadding', 'identityFontFamily', 'identityFontWeight', 'identityTracking', 'identityRedirectUrl',
-    'btnGhostHoverBg', 'btnNeonPulseSpeed', 'themeDropdownMaxHeight',
-    'cardActionBtnPrimaryBg', 'cardActionBtnHoverBg', 'cardActionBtnText', 'cardActionBtnBorderRadius', 'cardActionBtnPadding',
-    'cardSearchBgFocus', 'cardSearchPlaceholderColor', 'cardSearchTextFocusColor',
-    'cardHeaderBg', 'cardHeaderBorder', 'cardHeaderPadding', 'cardFooterBg', 'cardFooterBorder',
-    'cardHoverTranslate', 'cardHoverGlowIncrease', 'managementGroupDescMaxWidth',
-    'presetCardHoverShadowBlur', 'presetCardHoverShadowSpread', 'devicePhoneWidth',
-    'colorBgModal', 'zIndexToast', 'formLayoutDirection', 'inputPadding', 'inputSuccessColor', 'layerElevationFactor',
-    'motionEaseOut', 'motionEaseIn', 'motionDurationInstant', 'motionStaggerDelay',
-    'modalOverlayBlur', 'tooltipRadius', 'aiPanelBg', 'aiGlowColor',
-    'visualPerspective', 'visualTranslateOffsetSm', 'visualTranslateZMd', 'visualDotGridSize', 'visualOrbBlur',
-    'kbdMinWidth', 'statusGlowBlur', 'industrialRegistry', 'tableZebraStriping', 'tableBorderRadius', 'textSmoothing',
-];
-
-const LIDO_POR_TABELA_IDS = [
-    'pageTransitionType', 'cardHoverStyle', 'btnStyleType', 'cardTitleFontWeight', 'mobileNavigationStyle',
-    'chromeSearchPosition', 'chromeUserPosition', 'chromeNotificationsPosition',
-    'layoutGridTemplate', 'maxContentWidth', 'borderStyle',
-];
-
 /**
  * Achados que o gate aceita enquanto existirem, cada um com o MOTIVO. Esvazia sozinha:
- * entrada que o gate já não acusa é erro. `kind` (`var` = regra i, `option` = regra ii) e
- * `value` são opcionais e estreitam a entrada; sem eles, ela cobre o token inteiro.
+ * entrada que o gate já não acusa é erro. `kind` (`var` = regra i, `option` = regra ii,
+ * `test` = regra iii) e `value` são opcionais e estreitam a entrada; sem eles, ela cobre o
+ * token inteiro. Está VAZIA: todo token do schema tem leitor.
  */
-export const ALLOWLIST = [
-    ...SEM_MENCAO_IDS.map((tokenId) => ({ tokenId, motivo: SEM_MENCAO })),
-    ...LIDO_POR_TABELA_IDS.map((tokenId) => ({ tokenId, motivo: LIDO_POR_TABELA })),
-    { tokenId: 'layout', kind: 'option', motivo: OPCAO_SEM_REGRA },
-];
+export const ALLOWLIST = [];
 
 /** Valor de opção que é a ausência do efeito — não há leitor a exigir. */
 const ABSENCE_VALUES = new Set(['none']);
@@ -227,13 +213,33 @@ const isExcluded = (file) => {
     return EXCLUDED_PATH_FRAGMENTS.some((fragment) => normalized.includes(fragment)) || /\.(test|spec)\.\w+$/.test(normalized);
 };
 
-/** O que o gate lê: o CSS inteiro de `src/` e os componentes/hooks (TS) fora das camadas excluídas. */
+const READER_MARKER = /@sarak-token-reader\s+([A-Za-z0-9_]+(?:\s*,\s*[A-Za-z0-9_]+)*)\s+(tabela|direto)\b/g;
+const isTestFile = (file) => /\.(test|spec)\.\w+$/.test(file) || file.split(path.sep).includes('__tests__');
+
+/** Leitores declarados: `id → { kind, texts }`, com o texto (sem comentários) de cada arquivo que declara. */
+function collectMarkers(files) {
+    const markers = new Map();
+    for (const raw of files) {
+        for (const match of raw.matchAll(READER_MARKER)) {
+            for (const id of match[1].split(',').map((s) => s.trim())) {
+                const entry = markers.get(id) ?? { kind: match[2], texts: [] };
+                entry.texts.push(stripComments(raw));
+                markers.set(id, entry);
+            }
+        }
+    }
+    return markers;
+}
+
+/** O que o gate lê: o CSS inteiro de `src/`, os componentes/hooks (TS) fora das camadas excluídas, os leitores declarados e os testes. */
 export function collectSources(root) {
     const src = path.join(root, 'src');
-    const css = walk(src, (f) => f.endsWith('.css') && !isExcluded(f)).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
-    const code = walk(src, (f) => /\.tsx?$/.test(f) && !/\.d\.ts$/.test(f) && !isExcluded(f))
-        .map((f) => stripComments(fs.readFileSync(f, 'utf8')));
-    return { css, code };
+    const rawCss = walk(src, (f) => f.endsWith('.css') && !isExcluded(f)).map((f) => fs.readFileSync(f, 'utf8'));
+    const css = rawCss.join('\n');
+    const rawCode = walk(src, (f) => /\.tsx?$/.test(f) && !/\.d\.ts$/.test(f) && !isExcluded(f))
+        .map((f) => fs.readFileSync(f, 'utf8'));
+    const tests = walk(src, (f) => /\.(tsx?|mjs)$/.test(f) && isTestFile(f)).map((f) => fs.readFileSync(f, 'utf8'));
+    return { css, code: rawCode.map(stripComments), markers: collectMarkers([...rawCode, ...rawCss]), tests };
 }
 
 function loadSchemas(root) {
@@ -253,16 +259,33 @@ function codeReadsId(text, id) {
         || new RegExp(`\\{[^{}]*\\b${id}\\b[^{}]*\\}\\s*=\\s*[\\w.]+`).test(text);
 }
 
+/** O nome da variável termina ali: o caractere seguinte não continua o identificador (`--x` ≠ `--x-gap`). */
 function codeHasVar(code, cssText, name) {
-    return cssText.includes(`var(${name}`) || code.some((text) => text.includes(name));
+    const named = new RegExp(`${escapeRe(name)}(?![\\w-])`);
+    const inVar = new RegExp(`var\\(${escapeRe(name)}(?![\\w-])`);
+    return inVar.test(cssText) || code.some((text) => named.test(text));
 }
 
-function optionHasReader({ token, entry, css, code, value }) {
+const IDENTIFIER = /^[A-Za-z_$][\w$]*$/;
+
+/** O valor da opção como literal: entre aspas, ou como chave de objeto sem aspas (`zoom: {…}`). */
+function valueLiteral(value) {
+    const quoted = `['"\`]${escapeRe(value)}['"\`]`;
+    const bareKey = IDENTIFIER.test(value) ? `|(?<![\\w.$-])${escapeRe(value)}\\s*:(?!:)` : '';
+    return new RegExp(`${quoted}${bareKey}`);
+}
+
+/** Leitor declarado: `direto` cobre toda opção; `tabela` exige o literal da opção na tabela. */
+const declaredReadsOption = (declared, value) =>
+    Boolean(declared) && (declared.kind === 'direto' || declared.texts.some((text) => valueLiteral(value).test(text)));
+
+function optionHasReader({ token, entry, css, code, declared, value }) {
     const attrName = `data-sx-${toKebabCase(token.id)}`;
     const quoted = `["']?${escapeRe(value)}["']?`;
     if (new RegExp(`\\[${attrName}\\s*(?:[~|^$*]?=)\\s*${quoted}\\s*\\]`).test(css)) return true;
     if (entry.classPrefix && new RegExp(`\\.${escapeRe(entry.classPrefix + value)}(?![\\w-])`).test(css)) return true;
-    const literal = new RegExp(`['"\`]${escapeRe(value)}['"\`]`);
+    if (declaredReadsOption(declared, value)) return true;
+    const literal = valueLiteral(value);
     return code.some((text) => codeReadsId(text, token.id) && literal.test(text));
 }
 
@@ -270,25 +293,44 @@ function optionHasReader({ token, entry, css, code, value }) {
 const cssReadsAttribute = (css, id) => new RegExp(`\\[data-sx-${escapeRe(toKebabCase(id))}(?![\\w-])`).test(css);
 
 /** Achados de opção (regra ii) de um token `select` de opções literais. */
-function optionFindings({ token, entry, css, code }) {
+function optionFindings({ token, entry, css, code, declared }) {
     return token.options
         .filter((value) => !ABSENCE_VALUES.has(value))
-        .filter((value) => !optionHasReader({ token, entry, css, code, value }))
+        .filter((value) => !optionHasReader({ token, entry, css, code, declared, value }))
         .map((value) => ({ kind: 'option', tokenId: token.id, value, detail: `data-sx-${toKebabCase(token.id)}="${value}"` }));
 }
+
+/** Achados de teste (regra iii): opção de token com leitor declarado sem teste que cite o id e o valor. */
+function testFindings({ token, tests }) {
+    return token.options
+        .filter((value) => !ABSENCE_VALUES.has(value))
+        .filter((value) => !tests.some((text) => text.includes(token.id) && valueLiteral(value).test(text)))
+        .map((value) => ({ kind: 'test', tokenId: token.id, value, detail: `nenhum teste cita ${token.id} com "${value}"` }));
+}
+
+/** Declaração de leitor sobre token que não existe ou que não é `select` de opções literais. */
+function markerFindings({ markers, schemas }) {
+    return [...markers.keys()]
+        .filter((id) => !schemas.has(id) || !schemas.get(id).options)
+        .map((id) => ({ kind: 'marker', tokenId: id, detail: '@sarak-token-reader em token inexistente ou sem opções literais' }));
+}
+
+const FINDING_LABEL = { var: 'variável', option: 'opção', test: 'teste da opção', marker: 'declaração' };
 
 /** Todo valor emitido sem leitor. Cada achado: `{ kind, tokenId, value?, detail }`. */
 export function checkTokenReader({ root = ROOT, allowlist = ALLOWLIST } = {}) {
     const manifest = parseManifest(fs.readFileSync(path.join(root, MANIFEST_FILE), 'utf8'));
     const schemas = loadSchemas(root);
-    const { css, code } = collectSources(root);
-    const findings = [];
+    const { css, code, markers, tests } = collectSources(root);
+    const findings = markerFindings({ markers, schemas });
 
     for (const [id, token] of schemas) {
         const entry = manifest[id] ?? { vars: [], attr: null, classPrefix: null };
+        const declared = markers.get(id);
         const bySelectOptions = token.type === 'select' && Boolean(token.options);
-        const options = bySelectOptions ? optionFindings({ token, entry, css, code }) : [];
+        const options = bySelectOptions ? optionFindings({ token, entry, css, code, declared }) : [];
         findings.push(...options);
+        if (bySelectOptions && declared) findings.push(...testFindings({ token, tests }));
         const candidates = [...new Set([...entry.vars, ...token.cssVars, `--sarak-${toKebabCase(id)}`])];
         const readByVar = candidates.some((name) => codeHasVar(code, css, name)) || code.some((text) => codeReadsId(text, id));
         const readByAttr = bySelectOptions ? options.length === 0 : cssReadsAttribute(css, id);
@@ -314,7 +356,7 @@ function main() {
     if (open.length > 0) {
         console.log(`[ERROR] ${open.length} valor(es) emitido(s) sem leitor:`);
         for (const f of open) {
-            console.log(`  - ${f.kind === 'var' ? 'variável' : 'opção'} ${f.tokenId}${f.value !== undefined ? ` = "${f.value}"` : ''}: ${f.detail}`);
+            console.log(`  - ${FINDING_LABEL[f.kind]} ${f.tokenId}${f.value !== undefined ? ` = "${f.value}"` : ''}: ${f.detail}`);
         }
     }
     if (stale.length > 0) {

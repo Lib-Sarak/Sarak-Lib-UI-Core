@@ -15,6 +15,9 @@
    disparando, e quem espera por eles não trava. O `framer-motion` não passa por aqui — ele
    anima por JavaScript e é governado pelo `MotionConfig` do `SarakUIProvider`. */
 
+:root[data-sx-reduced-motion="true"],
+:root[data-sx-reduced-motion="true"]::before,
+:root[data-sx-reduced-motion="true"]::after,
 :root[data-sx-reduced-motion="true"] *,
 :root[data-sx-reduced-motion="true"] *::before,
 :root[data-sx-reduced-motion="true"] *::after {
@@ -27,6 +30,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    :root,
+    :root::before,
+    :root::after,
     :root *,
     :root *::before,
     :root *::after {

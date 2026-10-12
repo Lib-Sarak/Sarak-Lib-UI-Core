@@ -12,19 +12,18 @@ export const CardActionSchema: ComponentSchema = {
             id: 'cardActionBtnPrimaryBg',
             label: 'Fundo do Botão de Ação',
             type: 'color',
-            description: 'Cor de fundo do botão de ação principal (ex. "Executar") dentro do Card de Ação. Costuma espelhar `btnPrimaryBg` para consistência visual com os demais botões primários do sistema. Gera variantes automáticas de hover/active.',
+            description: 'Cor de fundo do botão de ação principal (ex. "Executar") dentro do Card de Ação. Por padrão segue a cor primária do tema, como o botão primário do sistema.',
             axis: 'color',
-            defaultValue: '#00f2ff',
-            generateVariants: true,
+            defaultValue: 'var(--sarak-primary-color, #3b82f6)',
             cssVars: ['--sarak-card-action-btn-bg']
         },
         {
             id: 'cardActionBtnHoverBg',
             label: 'Fundo do Botão no Hover',
             type: 'color',
-            description: 'Cor de fundo do botão de ação do card ao passar o mouse — sinaliza que o botão é clicável e reage à interação.',
+            description: 'Cor de fundo do botão de ação do card ao passar o mouse — sinaliza que o botão é clicável e reage à interação. Por padrão repete o fundo normal (o botão só clareia no hover).',
             axis: 'color',
-            defaultValue: 'rgba(0, 242, 255, 0.8)',
+            defaultValue: 'var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #3b82f6))',
             cssVars: ['--sarak-card-action-btn-hover-bg']
         },
         {
@@ -33,7 +32,7 @@ export const CardActionSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto/ícone dentro do botão de ação do card — deve manter contraste alto contra `cardActionBtnPrimaryBg`.',
             axis: 'color',
-            defaultValue: '#090d16',
+            defaultValue: 'var(--text-muted, #94a3b8)',
             cssVars: ['--sarak-card-action-btn-text']
         },
         {
@@ -56,7 +55,7 @@ export const CardActionSchema: ComponentSchema = {
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 4, max: 24 },
-            defaultValue: 12,
+            defaultValue: 16,
             cssVars: ['--sarak-card-action-btn-padding']
         },
         {

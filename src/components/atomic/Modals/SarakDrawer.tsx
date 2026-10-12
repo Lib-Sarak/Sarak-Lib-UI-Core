@@ -57,9 +57,10 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
     const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
 
-    const animSlow = design?.animSlow;
-    const animDuration = typeof animSlow === 'number' ? `${animSlow}ms` : '400ms';
-    const animEasing = (design?.easeMain as string) || 'ease-in-out';
+    const motionSlow = design?.motionDurationSlow;
+    const animDurationMs = typeof motionSlow === 'number' ? Math.round(motionSlow * 1000) : 400;
+    const animDuration = `${animDurationMs}ms`;
+    const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
     const zIndex = (design?.zIndexModal as number) || 1000;
     const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))';
 
@@ -71,13 +72,13 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             document.body.style.overflow = '';
             const timer = setTimeout(() => {
                 setShouldRender(false);
-            }, parseInt(String(animDuration)) || 400);
+            }, animDurationMs);
             return () => clearTimeout(timer);
         }
         return () => {
             document.body.style.overflow = '';
         };
-    }, [isOpen, animDuration]);
+    }, [isOpen, animDurationMs]);
 
     if (!shouldRender) return null;
 
@@ -134,7 +135,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             <SarakScrim
                 animate
                 visible={isOpen}
-                durationMs={typeof animSlow === 'number' ? animSlow : 400}
+                durationMs={animDurationMs}
                 onClose={onClose}
                 ariaLabel={t('drawerCloseAriaLabel')}
                 testId="sarak-drawer-overlay"

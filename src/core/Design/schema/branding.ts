@@ -1,4 +1,8 @@
 import { ComponentSchema } from '../types';
+import { FONT_OPTIONS } from './typography';
+
+/** O padrão da marca: herda a fonte de títulos do tema (e, sem ela, a do corpo). */
+const IDENTITY_FONT_INHERIT = 'var(--font-heading, var(--font-main, inherit))';
 
 /**
  * SCHEMA: MARCA & BRANDING
@@ -29,11 +33,11 @@ export const BrandingSchema: ComponentSchema = {
             id: 'identityPadding',
             label: 'Padding do Container',
             type: 'slider',
-            description: 'Espaçamento interno, em pixels, ao redor do bloco de identidade (logo/nome) — controla o "respiro" entre a marca e as bordas do seu container na navegação.',
+            description: 'Espaçamento interno, em pixels, ao redor do bloco de identidade (logo/nome) — soma-se ao respiro base do bloco no cromo. 0 (padrão) mantém o respiro de sempre.',
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 0, max: 64 },
-            defaultValue: 16,
+            defaultValue: 0,
             cssVars: ['--sarak-identity-padding']
         },
 
@@ -42,9 +46,12 @@ export const BrandingSchema: ComponentSchema = {
             id: 'identityFontFamily',
             label: 'Fonte do Logo',
             type: 'font',
-            description: 'Família tipográfica usada no nome da marca (quando renderizado como texto, não imagem). Escolha uma fonte que reflita o caráter da marca — pode divergir da fonte do corpo do sistema para dar identidade própria.',
+            description: 'Família tipográfica usada no nome da marca (quando renderizado como texto, não imagem). O padrão herda a fonte de títulos do tema. Escolha uma fonte que reflita o caráter da marca — pode divergir da fonte do corpo do sistema para dar identidade própria.',
             axis: 'texture',
-            defaultValue: 'Inter',
+            constraints: {
+                options: [{ id: IDENTITY_FONT_INHERIT, label: 'Fonte de títulos do tema (padrão)' }, ...FONT_OPTIONS]
+            },
+            defaultValue: IDENTITY_FONT_INHERIT,
             cssVars: ['--sarak-identity-font']
         },
         {
@@ -61,23 +68,15 @@ export const BrandingSchema: ComponentSchema = {
             id: 'identityTracking',
             label: 'Espaçamento (Tracking)',
             type: 'slider',
-            description: 'Espaçamento entre caracteres (tracking) do nome da marca, em `em`. Valores positivos afastam as letras (clima editorial/premium, comum em wordmarks maiúsculos); valores negativos as aproximam.',
+            description: 'Espaçamento entre caracteres (tracking) do nome da marca, em `em`. Valores positivos afastam as letras (clima editorial/premium, comum em wordmarks maiúsculos); valores negativos as aproximam. O padrão (-0.025em) é o aperto de títulos do cromo.',
             axis: 'density',
             unit: 'em',
             constraints: { min: -0.1, max: 0.5, step: 0.01 },
-            defaultValue: 0,
+            defaultValue: -0.025,
             cssVars: ['--sarak-identity-tracking']
         },
 
         // --- COMPORTAMENTO ---
-        {
-            id: 'identityRedirectUrl',
-            label: 'Link de Redirecionamento',
-            type: 'text',
-            description: 'URL para onde o usuário é levado ao clicar no logo/nome da marca na navegação — tipicamente a rota raiz ("/") ou o dashboard principal. Comportamento funcional, não afeta a aparência.',
-            defaultValue: '/',
-            cssVars: ['--sarak-identity-link']
-        },
         {
             id: 'identityHoverEffect',
             label: 'Efeito ao Hover',

@@ -53,12 +53,13 @@
     );
 }
 
-/* Mesh: quatro manchas em baixa opacidade — primária, destaque, primária, camada. */
+/* Mesh: quatro manchas em baixa opacidade — primária, destaque, camada 2, camada 1. A terceira
+   é a camada 2 do fundo (`colorBgLayer2`); o padrão do token é a própria primária. */
 [data-sx-bg-gradient-mode="mesh"] {
     --sarak-bg-gradient-image:
         radial-gradient(at 12% 8%, color-mix(in srgb, var(--sarak-primary-color, #3b82f6) 30%, transparent) 0, transparent 55%),
         radial-gradient(at 88% 14%, color-mix(in srgb, var(--sarak-accent-color, #f43f5e) 24%, transparent) 0, transparent 52%),
-        radial-gradient(at 82% 92%, color-mix(in srgb, var(--sarak-primary-color, #3b82f6) 20%, transparent) 0, transparent 56%),
+        radial-gradient(at 82% 92%, color-mix(in srgb, var(--sarak-bg-layer-2, var(--sarak-primary-color, #3b82f6)) 20%, transparent) 0, transparent 56%),
         radial-gradient(at 8% 90%, color-mix(in srgb, var(--sarak-bg-layer-1, var(--sarak-bg-body, #0f0f0f)) 80%, transparent) 0, transparent 60%);
     --sarak-bg-gradient-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
     --sarak-bg-gradient-repeat: no-repeat, no-repeat, no-repeat, no-repeat;

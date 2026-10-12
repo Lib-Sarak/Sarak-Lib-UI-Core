@@ -981,6 +981,12 @@
           "type": "string",
           "optional": true,
           "doc": "Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move."
         }
       ]
     },
@@ -5002,7 +5008,6 @@
       "--sarak-heading-font",
       "--sarak-icon-stroke",
       "--sarak-layered-shadows",
-      "--sarak-layout",
       "--sarak-layout-density",
       "--sarak-layout-gap",
       "--sarak-layout-gap-lg",

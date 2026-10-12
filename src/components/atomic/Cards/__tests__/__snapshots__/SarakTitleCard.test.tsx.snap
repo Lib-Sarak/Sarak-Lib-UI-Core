@@ -23,6 +23,7 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
+    data-sx-card-interactive="true"
     data-sx-card-texture-type="none"
     style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
@@ -50,7 +51,7 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
           </span>
           <h4
             class="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
-            style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #ffffff));"
+            style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: 900; letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #ffffff));"
           >
             Test Item
           </h4>

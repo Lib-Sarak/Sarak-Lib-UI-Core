@@ -109,7 +109,7 @@ com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o de
   `it`). É chave do payload, fora do gabarito visual — o `auditor_presets` a conhece pela lista de chaves
   extras do payload, então não a acusa como órfã.
 - **Valor enumerado.** Token de `select` só aceita as opções do schema (`bodySize` é `12/14/16/18/20px`;
-  `easeMain` tem sete curvas). Valor fora da lista é descartado em runtime com aviso — a suíte acusa
+  `cardHoverStyle` tem três opções). Valor fora da lista é descartado em runtime com aviso — a suíte acusa
   (`tokenContractParity`).
 - **Mídia de fundo.** Tema shippado **nunca** aponta `globalBackgroundImageUrl` para servidor de terceiro:
   use as atmosferas geradas pela lib ou deixe vazio (`specs/specs/09-temas-e-presets.md` §5.1).

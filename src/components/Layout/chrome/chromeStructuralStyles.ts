@@ -59,6 +59,8 @@ export const resolveChromeNavbarLayoutClass = (layout: ChromeNavbarLayout): stri
 export const resolveChromeContentAlignmentClass = (alignment: ChromeContentAlignment): string =>
     CONTENT_ALIGNMENT_CLASS[alignment] ?? CONTENT_ALIGNMENT_CLASS.stretch;
 
+// @sarak-token-reader maxContentWidth direto
+// As opções de `maxContentWidth` já são larguras CSS: vão direto para `max-width`.
 export const resolveChromeContentStyle = (
     layoutDensity: ChromeLayoutDensity,
     maxContentWidth: string,

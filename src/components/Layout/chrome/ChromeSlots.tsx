@@ -24,34 +24,41 @@ export const ChromeBrand: React.FC<{
 }> = ({ brand, logo, horizontal, compact }) => {
     if (!logo && !brand?.name && !brand?.logoUrl) return null;
     return (
-        <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
-            {logo
-                ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
-                : brand?.logoUrl && (
-                    // `shellBrandLogoSize`/`brandLogoSizeCollapsed` (Spec 05 §2.4) — altura
-                    // por token em vez do quadrado fixo; a largura acompanha por
-                    // `object-contain`, igual ao Shell (`SidebarNav`/`TopbarNav`).
-                    <img
-                        src={brand.logoUrl}
-                        alt=""
-                        className="object-contain shrink-0"
-                        style={{ height: compact ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)' }}
-                    />
+        // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
+        // base do bloco); o bloco interno mantém a anatomia de sempre.
+        <div className="min-w-0" style={{ padding: 'var(--sarak-identity-padding, 0px)' }}>
+            <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
+                {logo
+                    ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
+                    : brand?.logoUrl && (
+                        // `shellBrandLogoSize`/`brandLogoSizeCollapsed` (Spec 05 §2.4) — altura
+                        // por token em vez do quadrado fixo; a largura acompanha por
+                        // `object-contain`, igual ao Shell (`SidebarNav`/`TopbarNav`).
+                        <img
+                            src={brand.logoUrl}
+                            alt=""
+                            className="object-contain shrink-0"
+                            style={{ height: compact ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)' }}
+                        />
+                    )}
+                {brand?.name && !compact && (
+                    <span
+                        className="truncate"
+                        style={{
+                            // Tipografia do nome da marca: `identityFontFamily`/`identityFontWeight`/`identityTracking`.
+                            fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
+                            fontWeight: 'var(--sarak-identity-weight, 700)',
+                            letterSpacing: 'var(--sarak-identity-tracking, -0.025em)',
+                            color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))',
+                            // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
+                            // por orientação, mesmo par de tokens que o Shell já consome.
+                            maxWidth: horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)',
+                        }}
+                    >
+                        {brand.name}
+                    </span>
                 )}
-            {brand?.name && !compact && (
-                <span
-                    className="truncate font-bold tracking-tight"
-                    style={{
-                        fontFamily: 'var(--font-heading, var(--font-main, inherit))',
-                        color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))',
-                        // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
-                        // por orientação, mesmo par de tokens que o Shell já consome.
-                        maxWidth: horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)',
-                    }}
-                >
-                    {brand.name}
-                </span>
-            )}
+            </div>
         </div>
     );
 };

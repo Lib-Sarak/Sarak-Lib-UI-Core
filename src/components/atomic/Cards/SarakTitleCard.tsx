@@ -3,8 +3,14 @@ import { motion } from 'framer-motion';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { resolveCardHoverMotion } from './cardHoverMotion';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
+
+/** Pesos que `cardTitleFontWeight` oferece: o valor do tema vale por instância (prop `design`); fora da lista, vale a variável global. */
+const TITLE_FONT_WEIGHTS = ['300', '400', '500', '600', '700', '900'];
+const resolveTitleFontWeight = (value: unknown): string =>
+    TITLE_FONT_WEIGHTS.find((weight) => weight === String(value)) ?? 'var(--sarak-card-title-font-weight, 900)';
 
 export interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
     /** Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`. */
@@ -49,12 +55,13 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4, scale: 1.01 }}
+            whileHover={resolveCardHoverMotion(design)}
             className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
+            data-sx-card-interactive="true"
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
@@ -92,7 +99,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                             className="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
-                                fontWeight: 'var(--sarak-card-title-font-weight, 900)' as React.CSSProperties['fontWeight'],
+                                fontWeight: resolveTitleFontWeight(design.cardTitleFontWeight) as React.CSSProperties['fontWeight'],
                                 letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)',
                                 color: 'var(--sarak-card-title-color, var(--theme-title, #ffffff))'
                             }}

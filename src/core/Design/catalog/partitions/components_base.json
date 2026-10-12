@@ -1,20 +1,5 @@
 [
   {
-    "tokenId": "formLayoutDirection",
-    "name": "Direção do Formulário",
-    "description": "Controla a posição da label em relação ao campo (empilhado ou em linha).",
-    "type": "select",
-    "importance": 85,
-    "categories": ["layout", "inputs", "forms"],
-    "tags": ["form", "input", "layout"],
-    "databaseColumn": "components_base",
-    "schemaOrigin": "inputs.ts",
-    "digitalTwins": ["SarakInput"],
-    "cssVariables": [],
-    "allowedValues": ["stack", "inline"],
-    "relatedTokens": []
-  },
-  {
     "tokenId": "inputIconPosition",
     "name": "Posição do Ícone no Input",
     "description": "De qual lado o ícone é renderizado dentro do campo de texto.",
@@ -1451,16 +1436,6 @@
     ]
   },
   {
-    "tokenId": "inputSuccessColor",
-    "label": "Cor de Sucesso",
-    "type": "color",
-    "importance": 80,
-    "defaultValue": "#52c41a",
-    "cssVars": [
-      "--sarak-input-success-color"
-    ]
-  },
-  {
     "tokenId": "iconButtonGlowBlurSm",
     "label": "Glow do Icon Button: Desfoque Pequeno",
     "type": "number",
@@ -1499,14 +1474,6 @@
     "importance": 35,
     "defaultValue": 16,
     "cssVars": ["--sarak-icon-button-frosted-shadow-blur"]
-  },
-  {
-    "tokenId": "themeDropdownMaxHeight",
-    "label": "Altura Máxima do Dropdown de Temas",
-    "type": "number",
-    "importance": 30,
-    "defaultValue": 400,
-    "cssVars": ["--sarak-theme-dropdown-max-height"]
   },
   {
     "tokenId": "actionGlowShadowOffsetY",

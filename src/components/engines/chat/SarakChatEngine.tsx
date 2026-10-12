@@ -170,8 +170,8 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                     })}
                     {isLoading && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start gap-4">
-                            <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center animate-pulse">
-                                <SarakIcon name="Bot" size={14} className="text-[var(--theme-primary)]" />
+                            <div className="w-8 h-8 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))]/20 flex items-center justify-center animate-pulse">
+                                <SarakIcon name="Bot" size={14} className="text-[var(--sarak-ai-glow,var(--theme-primary))]" />
                             </div>
                             <div 
                                 className="flex gap-1 items-center p-4 border border-theme"
@@ -180,9 +180,9 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                     backgroundColor: 'var(--sarak-chat-user-bg, rgba(255, 255, 255, 0.05))'
                                 }}
                             >
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce [animation-delay:0.2s]" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce [animation-delay:0.4s]" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce [animation-delay:0.2s]" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce [animation-delay:0.4s]" />
                             </div>
                         </motion.div>
                     )}

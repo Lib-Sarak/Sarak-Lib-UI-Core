@@ -69,12 +69,7 @@ interface SarakDesignTokens {
     actionGlowShadowOffsetY: number;
     actionGlowShadowSpread: number;
     aiGlowColor: string;
-    aiPanelBg: string;
     animEnabled: boolean;
-    animFast: number;
-    animInstant: number;
-    animNormal: number;
-    animSlow: number;
     authHeroOrbBlur: number;
     badgeRadius: number;
     bgBaseColor: string;
@@ -208,13 +203,10 @@ interface SarakDesignTokens {
     deviceFrameRadius: number;
     devicePhoneHeight: number;
     devicePhoneNotchRadius: number;
-    devicePhoneWidth: number;
     deviceTabletHeight: number;
     dotGridDotOffset: number;
     dotGridDotSize: number;
     dotGridTileSize: number;
-    easeMain: string;
-    easeOut: string;
     emptyStateCaptionMaxWidth: number;
     emptyStateOrbBlur: number;
     emptyStateOrbInner: number;
@@ -231,7 +223,6 @@ interface SarakDesignTokens {
     focusRingWidth: number;
     formFieldDensity: string;
     formLabelPosition: string;
-    formLayoutDirection: string;
     glassBlur: number;
     glassEdgeColor: string;
     glassEdgeWidth: number;
@@ -271,7 +262,6 @@ interface SarakDesignTokens {
     identityFontWeight: number;
     identityHoverEffect: string;
     identityPadding: number;
-    identityRedirectUrl: string;
     identityTracking: number;
     imageCardGlowBlur: number;
     imageCardHoverZoom: number;
@@ -279,7 +269,6 @@ interface SarakDesignTokens {
     imageCardShadowBlur: number;
     imageCardShadowOffsetY: number;
     imageCardShadowSpread: number;
-    industrialRegistry: boolean;
     inputBackdropBlur: number;
     inputBg: string;
     inputBorderColor: string;
@@ -291,7 +280,6 @@ interface SarakDesignTokens {
     inputIconPosition: string;
     inputPadding: number;
     inputShadow: string;
-    inputSuccessColor: string;
     inputTextColor: string;
     isAutoHideEnabled: boolean;
     isNavHidden: boolean;
@@ -299,12 +287,7 @@ interface SarakDesignTokens {
     kanbanCardRadius: number;
     kanbanHeaderPaddingY: number;
     kanbanHeaderTracking: number;
-    kbdMinWidth: number;
-    layerBackdropBlur: number;
-    layerBackdropOpacity: number;
     layeredShadows: number;
-    layerElevationFactor: number;
-    layout: string;
     layoutDensity: string;
     layoutGap: number | SarakResponsiveValue<number>;
     layoutGapLg: number | SarakResponsiveValue<number>;
@@ -314,7 +297,6 @@ interface SarakDesignTokens {
     layoutGridTemplate: string;
     layoutPadding: number | SarakResponsiveValue<number>;
     layoutPreviewMaxH: number;
-    managementGroupDescMaxWidth: number;
     managementGroupListMaxHeight: number;
     matrixBlur: number;
     matrixBorderColor: string;
@@ -322,7 +304,6 @@ interface SarakDesignTokens {
     matrixItemBg: string;
     matrixNodeMinWidth: number;
     matrixRadius: number;
-    matrixSearchBg: string;
     maxContentWidth: string;
     mobileNavigationStyle: string;
     modalActionAlignment: string;
@@ -357,9 +338,7 @@ interface SarakDesignTokens {
     preferenceModePosition: string;
     preferenceNavCollapsePosition: string;
     preferenceNavigationStylePosition: string;
-    presetCardHoverShadowBlur: number;
     presetCardHoverShadowOffsetY: number;
-    presetCardHoverShadowSpread: number;
     presetCardShadowBlur: number;
     presetCardShadowOffsetY: number;
     presetCardShadowSpread: number;
@@ -437,7 +416,7 @@ interface SarakDesignTokens {
     tabGap: number | SarakResponsiveValue<number>;
     tableActionPosition: string;
     tableBorderColor: string;
-    tableBorderRadius: number;
+    tableBorderRadius: number | SarakResponsiveValue<number>;
     tableCellPadding: number | SarakResponsiveValue<number>;
     tableDensity: string;
     tableHeaderBg: string;
@@ -453,7 +432,6 @@ interface SarakDesignTokens {
     texture: string;
     textureColor: string;
     textureOpacity: number;
-    themeDropdownMaxHeight: number;
     titleColor: string;
     toastAccentWidth: number;
     toastMaxWidth: number;
@@ -488,11 +466,6 @@ interface SarakDesignTokens {
     typeScaleXs: number;
     vignetteOpacity: number;
     vignetteSoftness: number;
-    visualDotGridSize: number;
-    visualOrbBlur: number;
-    visualPerspective: number;
-    visualTranslateOffsetSm: number;
-    visualTranslateZMd: number;
     zIndexBase: number;
     zIndexModal: number;
     zIndexSidebar: number;
@@ -629,7 +602,7 @@ interface SarakThemePayloadExtras {
     chatAnimationSpeed?: number;
     chartType?: string;
     chartShowGrid?: boolean;
-    cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
+    cardHoverStyle?: 'lift' | 'glow-only' | 'expand';
     cardTextureType?: string;
     cardGeometricCut?: number;
     cardVariant?: 'classic' | 'title' | 'action' | 'search';
@@ -797,8 +770,10 @@ interface SarakUIContextType {
  * Lista de chaves aceitas fora do schema (`ALLOWED_EXTRA_KEYS`) e o export público das
  * variáveis/transformações. NÃO é o emissor: quem escreve variável (`--sarak-<kebab>` e as
  * `cssVars` do schema) e atributo (`data-sx-<kebab>`) de TODO token é `useDesignVariables.ts`,
- * a partir do schema. O `attr` e o `vars` daqui nunca alimentaram CSS real — por isso o
- * `token-reader:check` lê o schema inteiro, e usa este arquivo só para o `classPrefix`.
+ * a partir do schema. O `vars` daqui nunca alimentou CSS real, e `attr` só aparece onde é o
+ * próprio `data-sx-<kebab>` que o motor emite — por isso o `token-reader:check` lê o schema
+ * inteiro e usa este arquivo só para o `classPrefix`. Entrada vazia (`{}`) só mantém a chave
+ * aceita no payload (`ALLOWED_EXTRA_KEYS`).
  */
 declare const SARAK_DESIGN_MANIFEST: Record<string, {
     vars?: string[];
@@ -845,8 +820,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "a72e0bc";
-    readonly builtAt: "2026-10-11T20:29:04.450Z";
+    readonly baseCommitShort: "73c742f";
+    readonly builtAt: "2026-10-12T04:18:07.825Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1671,9 +1646,11 @@ interface SarakCardProps {
     children?: ReactNode;
     /** Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema. */
     className?: string;
+    /** Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move. */
+    interactive?: boolean;
 }
 /** Cartão genérico que expõe cabeçalho, corpo e rodapé por notação de ponto. */
-declare const SarakCard: (({ children, className }: SarakCardProps) => React.JSX.Element) & {
+declare const SarakCard: (({ children, className, interactive }: SarakCardProps) => React.JSX.Element) & {
     Header: ({ children, className }: SarakCardHeaderProps) => React$1.ReactElement;
     Body: ({ children, className }: SarakCardBodyProps) => React$1.ReactElement;
     Footer: ({ children, className }: SarakCardFooterProps) => React$1.ReactElement;

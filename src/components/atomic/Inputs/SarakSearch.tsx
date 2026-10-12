@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from './SarakInput';
+import { useMotionTokens } from '../hooks/useMotionTokens';
+
+/** A saída da paleta acelera pela curva `motionEaseIn`; a duração é a de uma micro-interação. */
+const SEARCH_EXIT_SECONDS = 0.2;
 
 /** Um resultado fornecido pelo aplicativo ao palette. */
 export interface SarakSearchItem {
@@ -33,6 +37,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
     // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
+    const { easeIn } = useMotionTokens();
     const { searchStyle, systemName } = design || {};
     const [query, setQuery] = useState('');
 
@@ -69,7 +74,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    exit={{ opacity: 0, transition: { ease: easeIn, duration: SEARCH_EXIT_SECONDS } }}
                     onClick={onClose}
                     className={`absolute inset-0 bg-[var(--color-theme-card,#1e293b)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
                 />
@@ -82,7 +87,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -20, transition: { ease: easeIn, duration: SEARCH_EXIT_SECONDS } }}
                     className="relative w-full bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
                     style={{
                         maxWidth: 'var(--sarak-search-dropdown-width, 400px)',

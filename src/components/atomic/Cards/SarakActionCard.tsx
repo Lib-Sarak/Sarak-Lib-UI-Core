@@ -125,7 +125,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         variant="primary"
                         onClick={() => onAction && onAction(item)}
                         rightIcon={<SarakIcon name="ExternalLink" size={10} className="stroke-[3]" />}
-                        className="flex-1 text-3xs font-black uppercase tracking-widest"
+                        className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled'}`}
                     >
                         {actionLabel}
                     </SarakButton>

@@ -41,7 +41,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
       'glass': () => {
         bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,#1e293b))';
         bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--border-color,#334155))';
-        bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 10px))';
+        bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 12px))';
       }
     };
     

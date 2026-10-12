@@ -31,7 +31,7 @@ export const THEME_FONTS = [
     { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" }
 ];
 
-const FONT_OPTIONS = THEME_FONTS.map(font => ({
+export const FONT_OPTIONS = THEME_FONTS.map(font => ({
     id: font.value,
     label: `${font.name} [${font.category}]`
 }));

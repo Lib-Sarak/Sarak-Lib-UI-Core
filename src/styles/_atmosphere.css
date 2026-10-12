@@ -22,12 +22,13 @@
     transform: translateZ(0);
 }
 
-/* Global Vignette */
+/* Global Vignette. A parada transparente sai de `vignetteSoftness` (padrão 50 → 20%): quanto
+   mais suave, mais cedo o escurecimento começa; 0 deixa só um aro fino na borda. */
 [data-sx-texture]:not([data-sx-texture="none"])::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 20%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
+    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
     pointer-events: none;
     mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
     z-index: -1;
@@ -62,7 +63,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 20%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
+    background: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
     pointer-events: none;
     mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
 }
@@ -126,6 +127,7 @@
 [data-sx-texture="noise"]::before {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     opacity: var(--sarak-noise-density, 0.05);
+    animation: sarak-noise-shift var(--sarak-noise-speed, 0s) steps(1, end) infinite;
 }
 
 [data-sx-card-texture-type="noise"] .sarak-card::after,
@@ -658,14 +660,14 @@ body:not([data-sx-texture="none"]) .module-content,
 .sarak-design-scope .card, .sarak-design-scope .sarak-card {
     /* Superfície Atômica */
     background: color-mix(in srgb, var(--sarak-card-bg, #0f172a), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8)))) !important;
-    backdrop-filter: blur(var(--sarak-card-blur, 12px)) !important;
+    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)) !important;
     
     /* Geometria Soberana */
     border-radius: var(--sarak-card-radius-tl, 12px) var(--sarak-card-radius-tr, 12px) var(--sarak-card-radius-br, 12px) var(--sarak-card-radius-bl, 12px) !important;
     clip-path: var(--sarak-card-clip-path, none) !important;
     
-    /* Engenharia de Bordas */
-    border-style: solid !important;
+    /* Engenharia de Bordas — o traço é o de `borderStyle` (sólido por padrão). */
+    border-style: var(--border-style, solid) !important;
     border-color: color-mix(in srgb, var(--sarak-card-border-color, rgba(255,255,255,0.1)), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1)))) !important;
     
     border-top-width: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px)) !important;

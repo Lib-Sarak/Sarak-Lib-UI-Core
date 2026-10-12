@@ -193,11 +193,11 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'btnNeonPulseSpeed',
             label: 'Velocidade de Pulso (s)',
             type: 'slider',
-            description: 'Duração (em segundos) de um ciclo de pulsação do brilho neon — só relevante quando `btnStyleType` é \'neon\'. Valores baixos (0.5-1s) = pulsação rápida/urgente; valores altos (2-4s) = pulsação lenta/ambiente.',
+            description: 'Duração (em segundos) de um ciclo de pulsação do brilho neon — só relevante quando `btnStyleType` é \'neon\'. 0 (padrão) = brilho parado, sem pulso. Valores baixos (0.5-1s) = pulsação rápida/urgente; valores altos (2-4s) = pulsação lenta/ambiente.',
             axis: 'motion',
             unit: 's',
-            constraints: { min: 0.5, max: 4, step: 0.1 },
-            defaultValue: 1.5,
+            constraints: { min: 0, max: 4, step: 0.1 },
+            defaultValue: 0,
             cssVars: ['--sarak-btn-neon-pulse-speed']
         },
         {
@@ -270,17 +270,6 @@ export const ButtonsSchema: ComponentSchema = {
         },
 
         // --- DROPDOWN DO THEME TOGGLE (Spec 27) ---
-        {
-            id: 'themeDropdownMaxHeight',
-            label: 'Altura Máxima do Dropdown de Temas',
-            type: 'slider',
-            description: 'Altura máxima, em pixels, do menu dropdown aberto pelo seletor de temas — acima desse limite o conteúdo recebe scroll interno. Ajuste conforme a quantidade de temas cadastrados no sistema, para evitar um dropdown que ultrapasse a viewport.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 200, max: 800 },
-            defaultValue: 400,
-            cssVars: ['--sarak-theme-dropdown-max-height']
-        },
 
         // --- SOMBRA DE AÇÃO (GLOW) COMPARTILHADA (Spec 27 — Catalog/Form/Management Grid) ---
         {

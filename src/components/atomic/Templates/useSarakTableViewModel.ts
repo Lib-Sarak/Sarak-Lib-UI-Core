@@ -11,6 +11,7 @@ import type { SarakTableViewProps } from './SarakTableViewParts';
 interface SarakTableLayout {
     collapseToCards: boolean;
     cellDensityClass: string;
+    zebraStriping: boolean;
     containerClassName: string;
     containerStyle: ReturnType<ReturnType<typeof useStructuralStyles>['getContainerStyles']>['style'];
 }
@@ -35,7 +36,7 @@ const useSarakTableLayout = (responsive: boolean): SarakTableLayout => {
     const { cellDensityClass } = useTableLayoutStyles(design);
     const { getContainerStyles } = useStructuralStyles();
     const container = getContainerStyles();
-    return { collapseToCards: responsive && device === 'smartphone', cellDensityClass, containerClassName: container.className, containerStyle: container.style };
+    return { collapseToCards: responsive && device === 'smartphone', cellDensityClass, zebraStriping: design.tableZebraStriping === true, containerClassName: container.className, containerStyle: container.style };
 };
 
 const createSarakTableColumns = <TData extends Record<string, unknown>>(
@@ -66,7 +67,7 @@ const createSarakTableViewProps = <TData extends Record<string, unknown>>({ prop
         collapseToCards: layout.collapseToCards, canRefresh, showSearch: props.showSearch ?? true, selectable: props.selectable ?? false,
         search: tableData.search, onSearchChange: tableData.setSearch, onRefresh: () => void tableData.loadData(),
         onRetry: props.onRetry ?? (canRefresh ? () => void tableData.loadData() : undefined), onRowClick: props.onRowClick,
-        emptyMessage: props.emptyMessage, cellDensityClass: layout.cellDensityClass, containerClassName: layout.containerClassName,
+        emptyMessage: props.emptyMessage, cellDensityClass: layout.cellDensityClass, zebraStriping: layout.zebraStriping, containerClassName: layout.containerClassName,
         containerStyle: layout.containerStyle,
     };
 };

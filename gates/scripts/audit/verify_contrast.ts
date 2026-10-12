@@ -1,9 +1,11 @@
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este verificador NÃO vê
 // -------------------------------------------------------------------------
-// 1. Só resolve HEX (#rgb/#rrggbb), rgb()/rgba() e a palavra `transparent`.
-//    `hsl()`, `var()`, gradiente ou qualquer valor não-parseável faz o par
-//    ser DECLARADO como pulado (não determinístico) — nunca chuta uma cor.
+// 1. Só resolve HEX (#rgb/#rrggbb), rgb()/rgba() e a palavra `transparent`, mais os
+//    `var(--theme-…)` que apontam para outro TOKEN de cor do próprio tema
+//    (`THEME_VAR_TOKENS`: o padrão de `tooltipBg` é `var(--theme-surface)`). `hsl()`,
+//    qualquer outro `var()`, gradiente ou valor não-parseável faz o par ser
+//    DECLARADO como pulado (não determinístico) — nunca chuta uma cor.
 // 2. A composição de alfa usa a CADEIA declarada em `PAIRS[].bgChain`
 //    (o token de fundo + as bases que o sustentam, da mais próxima à mais
 //    distante). Se o último elo da cadeia ainda resolver translúcido, o par
@@ -192,9 +194,30 @@ export function compositeOverOpaque(top: Rgba, bottomRgb: [number, number, numbe
 
 export type ChainResolution = { ok: true; rgb: [number, number, number] } | { ok: false; reason: string };
 
+/** Variável de tema que um token de cor pode usar como valor → o token de cor que ela espelha. */
+const THEME_VAR_TOKENS: Record<string, string> = {
+    '--theme-surface': 'surfaceColor',
+    '--color-theme-title': 'titleColor',
+    '--theme-border': 'cardBorderColor',
+    '--sarak-primary-color': 'primaryColor',
+};
+
+const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]*))?\)$/;
+
+/** O valor do token, seguindo `var(--tema)` até o token que ele espelha (uma volta só; sem laço). */
+function designValue(design: Record<string, unknown>, tokenId: string): unknown {
+    const raw = design[tokenId];
+    if (typeof raw !== 'string') return raw;
+    const match = raw.trim().match(VAR_RE);
+    if (!match) return raw;
+    const target = THEME_VAR_TOKENS[match[1]];
+    if (target && typeof design[target] === 'string' && !VAR_RE.test(design[target] as string)) return design[target];
+    return match[2] ?? raw;
+}
+
 /** Resolve uma cadeia de fundo (mais próximo → mais distante) para RGB opaco, ou declara por quê não deu. */
 export function resolveChain(chain: string[], design: Record<string, unknown>): ChainResolution {
-    const colors = chain.map((tokenId) => ({ tokenId, color: parseColor(design[tokenId]) }));
+    const colors = chain.map((tokenId) => ({ tokenId, color: parseColor(designValue(design, tokenId)) }));
     const unparseable = colors.find((c) => c.color === null);
     if (unparseable) return { ok: false, reason: `valor não parseável em "${unparseable.tokenId}": ${JSON.stringify(design[unparseable.tokenId])}` };
 
@@ -234,7 +257,7 @@ export function evaluatePair(pair: ContrastPair, design: Record<string, unknown>
     const bg = resolveChain(pair.bgChain, design);
     if (!bg.ok) return { pair, pulado: true, motivo: bg.reason };
 
-    const fgColor = parseColor(design[pair.fg]);
+    const fgColor = parseColor(designValue(design, pair.fg));
     if (!fgColor) return { pair, pulado: true, motivo: `valor de texto não parseável em "${pair.fg}": ${JSON.stringify(design[pair.fg])}` };
 
     const fgRgb: [number, number, number] = fgColor.a >= 0.999 ? [fgColor.r, fgColor.g, fgColor.b] : compositeOverOpaque(fgColor, bg.rgb);

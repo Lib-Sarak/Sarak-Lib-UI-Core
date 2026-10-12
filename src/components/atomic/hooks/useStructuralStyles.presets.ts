@@ -34,6 +34,7 @@ export type ResponsiveSpacingPreset = keyof typeof RESPONSIVE_SPACING_PRESETS;
 // `:where(&)` zera a especificidade do seletor do default — fica (0,0,0), abaixo de QUALQUER
 // classe (0,1,0) no filho, como `col-span-6` escrito por quem consome — que por isso sempre vence,
 // não importa a ordem de geração do CSS.
+// @sarak-token-reader layoutGridTemplate tabela
 export const GRID_LAYOUT_STRATEGIES: Record<string, string> = {
     'col-12': 'grid w-full grid-cols-1 @min-[768px]:grid-cols-12 @min-[768px]:[:where(&)>*]:col-span-6 @min-[1024px]:[:where(&)>*]:col-span-4 @min-[1280px]:[:where(&)>*]:col-span-3',
     'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',

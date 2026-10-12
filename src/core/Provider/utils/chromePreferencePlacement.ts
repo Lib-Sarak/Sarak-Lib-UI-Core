@@ -47,6 +47,8 @@ export const splitPreferencesByPlacement = (
     };
 };
 
+// @sarak-token-reader chromeSearchPosition, chromeUserPosition, chromeNotificationsPosition tabela
+// A posição de cada widget (`pinned`, `menu` ou `off`) vem do tema e decide em que lista ele entra.
 export const splitChromeWidgetsByPlacement = (
     design: Record<string, unknown> | undefined,
     ceilings: ChromeWidgetCeilings = {},

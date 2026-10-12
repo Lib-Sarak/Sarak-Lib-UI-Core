@@ -67,7 +67,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group transition-all h-fit ${className}`}
+            className={`${layout.containerClass} sarak-card sarak-search-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group transition-all h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'

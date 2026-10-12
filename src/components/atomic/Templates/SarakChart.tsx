@@ -4,6 +4,7 @@ import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
 import { SarakSpinner } from '../Feedback/SarakSpinner';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useChartData } from './hooks/useChartData';
 import { SarakDataErrorNotice } from './SarakDataErrorNotice';
@@ -42,6 +43,7 @@ interface ChartBarsProps<TData extends Record<string, unknown>> {
 }
 
 function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, dateKey, maximum, barStack }: ChartBarsProps<TData>): ReactElement {
+    const { staggerDelay } = useMotionTokens();
     return <>
         {records.map((item, index) => {
             const value = numericValue(item, valueKey);
@@ -52,7 +54,7 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                         initial={{ height: 0 }}
                         animate={{ height: Math.max(height, 5) + '%' }}
                         transition={{
-                            delay: index * 0.05,
+                            delay: index * staggerDelay,
                             duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5,
                             ease: 'circOut',
                         }}

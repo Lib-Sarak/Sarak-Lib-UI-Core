@@ -84,3 +84,31 @@ describe('splitChromeWidgetsByPlacement', () => {
         expect(result.menu).not.toContain('user');
     });
 });
+
+describe('splitChromeWidgetsByPlacement — uma opção por vez, por token de posição', () => {
+    // O nome do token aparece por extenso: é o que prova, opção a opção, que cada posição tem efeito.
+    const WIDGET_BY_TOKEN = [
+        ['chromeSearchPosition', 'search'],
+        ['chromeUserPosition', 'user'],
+        ['chromeNotificationsPosition', 'notifications'],
+    ] as const;
+
+    it.each(WIDGET_BY_TOKEN)("%s: 'pinned' fixa o widget na barra e o oferece", (tokenId, widget) => {
+        const result = splitChromeWidgetsByPlacement({ [tokenId]: 'pinned' });
+        expect(result.pinned).toContain(widget);
+        expect(result.offered).toContain(widget);
+    });
+
+    it.each(WIDGET_BY_TOKEN)("%s: 'menu' tira o widget da barra e o põe no menu do ⚙", (tokenId, widget) => {
+        const result = splitChromeWidgetsByPlacement({ [tokenId]: 'menu' });
+        expect(result.pinned).not.toContain(widget);
+        expect(result.menu).toContain(widget);
+    });
+
+    it.each(WIDGET_BY_TOKEN)("%s: 'off' não oferece o widget em lugar nenhum", (tokenId, widget) => {
+        const result = splitChromeWidgetsByPlacement({ [tokenId]: 'off' });
+        expect(result.offered).not.toContain(widget);
+        expect(result.pinned).not.toContain(widget);
+        expect(result.menu).not.toContain(widget);
+    });
+});

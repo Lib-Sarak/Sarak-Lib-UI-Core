@@ -158,33 +158,6 @@
     ]
   },
   {
-    "tokenId": "identityRedirectUrl",
-    "name": "Link de Redirecionamento da Marca",
-    "description": "A rota/URL para a qual o usuário é enviado ao clicar no logotipo no menu de navegação.",
-    "type": "string",
-    "importance": 20,
-    "categories": [
-      "identidade",
-      "navegacao",
-      "comportamento"
-    ],
-    "tags": [
-      "ux",
-      "link"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "branding.ts",
-    "digitalTwins": [
-      "SidebarNav",
-      "TopbarNav"
-    ],
-    "cssVariables": [
-      "--sarak-identity-link"
-    ],
-    "allowedValues": null,
-    "relatedTokens": []
-  },
-  {
     "tokenId": "identityHoverEffect",
     "name": "Efeito Hover no Logo",
     "description": "Animação disparada ao passar o mouse sobre o logotipo.",
@@ -248,34 +221,6 @@
       "mode",
       "colorBgBody"
     ]
-  },
-  {
-    "tokenId": "layout",
-    "name": "Modo de Layout Global",
-    "description": "Define se a estrutura base de contêineres usará CSS Grid ou Flexbox. Altera radicalmente a distribuição espacial primária.",
-    "type": "select",
-    "importance": 85,
-    "categories": [
-      "layout",
-      "estrutura",
-      "alinhamento"
-    ],
-    "tags": [
-      "arquitetura",
-      "engine",
-      "core"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "grid",
-      "flex"
-    ],
-    "relatedTokens": []
   },
   {
     "tokenId": "layoutDensity",
@@ -736,36 +681,6 @@
       "step": 0.5
     },
     "relatedTokens": [
-      "iconFamily"
-    ]
-  },
-  {
-    "tokenId": "industrialRegistry",
-    "name": "Modo de Registro Industrial",
-    "description": "Uma flag global que engatilha o modo 'Industrial' (interfaces técnicas de alta densidade sem muitas bordas arredondadas).",
-    "type": "boolean",
-    "importance": 90,
-    "categories": [
-      "tema",
-      "comportamento",
-      "global"
-    ],
-    "tags": [
-      "core",
-      "arquitetura",
-      "industrial"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector",
-      "SarakUIProvider"
-    ],
-    "cssVariables": [],
-    "allowedValues": null,
-    "relatedTokens": [
-      "borderRadius",
-      "layoutDensity",
       "iconFamily"
     ]
   }

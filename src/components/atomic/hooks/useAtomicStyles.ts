@@ -3,6 +3,23 @@ import React from 'react';
 import { SarakThemePayload } from '../../../core/Provider/types';
 import { resolveSwitchStyles } from './switchStyles';
 
+/** Variantes do estilo neon que têm halo em repouso — só nelas o pulso tem o que pulsar. */
+const NEON_PULSE_VARIANTS = ['primary', 'danger', 'secondary'];
+
+/**
+ * Classe que liga o pulso do halo neon (`@keyframes` em `_animations.css`, duração em
+ * `--sarak-btn-neon-pulse-speed`). Sem classe o botão fica estático: velocidade 0 (padrão)
+ * ou ausente = sem pulso.
+ */
+export const resolveNeonPulseClass = (
+    design: SarakThemePayload | undefined,
+    variant: string
+): string => {
+    if (design?.btnStyleType !== 'neon') return '';
+    if (!NEON_PULSE_VARIANTS.includes(variant)) return '';
+    return Number(design.btnNeonPulseSpeed) > 0 ? 'sarak-btn-neon-pulse' : '';
+};
+
 /**
  * Hook para centralizar e abstrair o cálculo de estilos dinâmicos baseados no Design Engine.
  * Evita poluição visual nos componentes e respeita a paridade com CSS Variables.
@@ -48,6 +65,15 @@ export const useAtomicStyles = () => {
             }
         } 
         
+        if (styleType === 'cyberpunk') {
+            // Wireframe anguloso: só o contorno na cor do brilho, cantos retos, sem preenchimento.
+            dynamicStyle.backgroundColor = 'transparent';
+            dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${glowColor}`;
+            dynamicStyle.borderRadius = 0;
+            dynamicStyle.boxShadow = isHovered ? `0 0 10px ${glowColor}` : 'none';
+            return dynamicStyle;
+        }
+
         if (styleType === 'frosted') {
             const isFrostedTarget = ['primary', 'secondary', 'danger', 'success', 'outline'].includes(variant);
             if (!isFrostedTarget) return dynamicStyle;

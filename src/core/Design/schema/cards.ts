@@ -92,7 +92,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 100 },
             defaultValue: 12,
-            cssVars: ['--sarak-card-backdrop-blur', '--sarak-card-blur', '--sarak-glass-blur']
+            cssVars: ['--sarak-card-backdrop-blur']
         },
         {
             id: 'cardSurfaceOpacity',
@@ -225,30 +225,30 @@ export const CardSchema: ComponentSchema = {
             id: 'cardHeaderBg',
             label: 'Fundo do Header',
             type: 'color',
-            description: 'Cor de fundo da seção de cabeçalho do card — normalmente sutilmente diferente do corpo do card, para separar visualmente o título das demais informações.',
+            description: 'Cor de fundo da seção de cabeçalho do card — transparente por padrão, deixando o cabeçalho se misturar ao corpo; um tom sutilmente diferente separa visualmente o título das demais informações. Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.03)',
+            defaultValue: 'transparent',
             cssVars: ['--sarak-card-header-bg']
         },
         {
             id: 'cardHeaderBorder',
             label: 'Linha Divisora (Bottom)',
             type: 'color',
-            description: 'Cor da linha divisória na base do cabeçalho do card, separando-o do corpo.',
+            description: 'Cor da linha divisória na base do cabeçalho do card, separando-o do corpo — transparente por padrão (sem linha). Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            defaultValue: 'transparent',
             cssVars: ['--sarak-card-header-border']
         },
         {
             id: 'cardHeaderPadding',
             label: 'Padding Vertical',
             type: 'slider',
-            description: 'Espaçamento interno vertical do cabeçalho do card, em pixels, com valores independentes por breakpoint.',
+            description: 'Espaçamento interno vertical do cabeçalho do card, em pixels, com valores independentes por breakpoint — 0 por padrão. Vale para a peça `SarakCard.Header`.',
             axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 12, tab: 16, desk: 16 },
+            defaultValue: { mob: 0, tab: 0, desk: 0 },
             cssVars: ['--sarak-card-header-padding']
         },
 
@@ -266,9 +266,9 @@ export const CardSchema: ComponentSchema = {
             id: 'cardFooterBorder',
             label: 'Linha Divisora (Top)',
             type: 'color',
-            description: 'Cor da linha divisória no topo do rodapé do card, separando-o do corpo.',
+            description: 'Cor da linha divisória no topo do rodapé do card, separando-o do corpo — transparente por padrão (sem linha). Vale para a peça `SarakCard.Footer`.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            defaultValue: 'transparent',
             cssVars: ['--sarak-card-footer-border']
         },
 
@@ -363,10 +363,10 @@ export const CardSchema: ComponentSchema = {
             id: 'cardHoverGlowIncrease',
             label: 'Aumento de Brilho',
             type: 'slider',
-            description: 'Quanto o brilho do card (`cardGlowIntensity`) aumenta adicionalmente no hover — reforça o feedback de interatividade combinado com `cardHoverTranslate`.',
+            description: 'Quanto o brilho do card (`cardGlowIntensity`) aumenta adicionalmente no hover — reforça o feedback de interatividade combinado com `cardHoverTranslate`. 0 por padrão (o hover não ganha brilho).',
             axis: 'elevation',
             constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.2,
+            defaultValue: 0,
             cssVars: ['--sarak-card-hover-glow']
         },
         {
@@ -577,17 +577,6 @@ export const CardSchema: ComponentSchema = {
             defaultValue: 340,
             cssVars: ['--sarak-management-group-list-max-height']
         },
-        {
-            id: 'managementGroupDescMaxWidth',
-            label: 'Management Group: Largura Máxima da Descrição',
-            type: 'slider',
-            description: 'Largura máxima, em pixels, do texto de descrição de um item dentro do `ManagementGroupCard` — evita que descrições longas quebrem o layout do card.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 60, max: 400 },
-            defaultValue: 140,
-            cssVars: ['--sarak-management-group-desc-max-width']
-        },
 
         // --- TEMPLATES: RECURSIVE MATRIX NODE (Spec 27) ---
         {
@@ -648,28 +637,6 @@ export const CardSchema: ComponentSchema = {
             constraints: { min: 0, max: 30 },
             defaultValue: 10,
             cssVars: ['--sarak-preset-card-hover-shadow-offset-y']
-        },
-        {
-            id: 'presetCardHoverShadowBlur',
-            label: 'Preview de Preset: Sombra de Hover — Desfoque',
-            type: 'slider',
-            description: 'Raio de desfoque da sombra de hover de um card de preview de preset.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 80 },
-            defaultValue: 40,
-            cssVars: ['--sarak-preset-card-hover-shadow-blur']
-        },
-        {
-            id: 'presetCardHoverShadowSpread',
-            label: 'Preview de Preset: Sombra de Hover — Espalhamento',
-            type: 'slider',
-            description: 'Espalhamento da sombra de hover de um card de preview de preset.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 30 },
-            defaultValue: 10,
-            cssVars: ['--sarak-preset-card-hover-shadow-spread']
         },
         {
             id: 'presetGlowShadowBlur',
@@ -873,17 +840,6 @@ export const CardSchema: ComponentSchema = {
         },
 
         // --- DESIGN ENGINE CANVAS: PREVIEW CANVAS (MOCKUP DE DISPOSITIVO) (Spec 28) ---
-        {
-            id: 'devicePhoneWidth',
-            label: 'Preview Canvas: Largura do Telefone',
-            type: 'slider',
-            description: 'Largura, em pixels, do mockup de dispositivo "telefone" exibido no canvas de preview responsivo da ferramenta de customização.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 300, max: 450 },
-            defaultValue: 375,
-            cssVars: ['--sarak-device-phone-width']
-        },
         {
             id: 'devicePhoneHeight',
             label: 'Preview Canvas: Altura do Telefone',

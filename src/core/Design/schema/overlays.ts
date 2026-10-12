@@ -22,7 +22,7 @@ const MODAL_WIDTH_FULL_MIN = 640;
 const MODAL_WIDTH_FULL_MAX = 1920;
 const MODAL_WIDTH_FULL_DEFAULT = 1280;
 const TOOLTIP_RADIUS_MAX = 12;
-const TOOLTIP_RADIUS_DEFAULT = 4;
+const TOOLTIP_RADIUS_DEFAULT = 6;
 const TOAST_WIDTH_MIN_REM = 8;
 const TOAST_MIN_WIDTH_MAX_REM = 30;
 const TOAST_MIN_WIDTH_DEFAULT_REM = 15;
@@ -172,7 +172,7 @@ export const OverlaysSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo da caixa de tooltip (dica contextual) — normalmente escura/opaca mesmo em temas claros, para garantir legibilidade e destacar-se como um elemento flutuante temporário.',
             axis: 'color',
-            defaultValue: '#0f172a',
+            defaultValue: 'var(--theme-surface)',
             cssVars: ['--sarak-tooltip-bg']
         },
         {
@@ -192,7 +192,7 @@ export const OverlaysSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto exibido dentro da caixa de tooltip — deve manter contraste alto contra `tooltipBg`.',
             axis: 'color',
-            defaultValue: '#0f172a',
+            defaultValue: 'var(--color-theme-title, #ffffff)',
             cssVars: ['--sarak-tooltip-text']
         },
         {
@@ -201,7 +201,7 @@ export const OverlaysSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor da borda da caixa de tooltip — costuma ser sutil, só para separar o tooltip visualmente do que está atrás dele.',
             axis: 'color',
-            defaultValue: '#cbd5e1',
+            defaultValue: 'var(--theme-border)',
             cssVars: ['--sarak-tooltip-border']
         },
 

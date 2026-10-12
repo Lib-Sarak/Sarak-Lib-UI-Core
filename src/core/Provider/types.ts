@@ -63,7 +63,7 @@ interface SarakThemePayloadExtras {
     chatAnimationSpeed?: number;
     chartType?: string;
     chartShowGrid?: boolean;
-    cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
+    cardHoverStyle?: 'lift' | 'glow-only' | 'expand';
     cardTextureType?: string;
     cardGeometricCut?: number;
     cardVariant?: 'classic' | 'title' | 'action' | 'search';

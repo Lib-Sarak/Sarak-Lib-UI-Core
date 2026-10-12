@@ -349,9 +349,7 @@
       "SarakCard"
     ],
     "cssVariables": [
-      "--sarak-card-backdrop-blur",
-      "--sarak-card-blur",
-      "--sarak-glass-blur"
+      "--sarak-card-backdrop-blur"
     ],
     "allowedValues": {
       "min": 0,
@@ -1973,22 +1971,7 @@
     "digitalTwins": ["ManagementGroupCard"],
     "cssVariables": ["--sarak-management-group-list-max-height"],
     "allowedValues": { "min": 100, "max": 800, "step": 10 },
-    "relatedTokens": ["managementGroupDescMaxWidth"]
-  },
-  {
-    "tokenId": "managementGroupDescMaxWidth",
-    "name": "Management Group: Largura Máxima da Descrição",
-    "description": "Largura máxima antes do truncamento do texto de descrição do item.",
-    "type": "number",
-    "importance": 40,
-    "categories": ["cards", "layout", "cards-engine"],
-    "tags": ["management-group", "truncate", "template"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": ["ManagementGroupCard"],
-    "cssVariables": ["--sarak-management-group-desc-max-width"],
-    "allowedValues": { "min": 60, "max": 400, "step": 10 },
-    "relatedTokens": ["managementGroupListMaxHeight"]
+    "relatedTokens": []
   },
   {
     "tokenId": "matrixNodeMinWidth",
@@ -2063,37 +2046,7 @@
     "digitalTwins": ["AtmosphereCatalog", "CardsCatalog", "InputPresetPreview", "PresetCard", "TypographyCatalog"],
     "cssVariables": ["--sarak-preset-card-hover-shadow-offset-y"],
     "allowedValues": { "min": 0, "max": 30, "step": 1 },
-    "relatedTokens": ["presetCardHoverShadowBlur", "presetCardHoverShadowSpread"]
-  },
-  {
-    "tokenId": "presetCardHoverShadowBlur",
-    "name": "Preview de Preset: Sombra de Hover — Desfoque",
-    "description": "Raio de desfoque da sombra de hover duplicada nos catálogos de preview do Design Engine.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["cards", "efeitos", "cards-engine"],
-    "tags": ["preset-preview", "shadow", "design-engine"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": ["AtmosphereCatalog", "CardsCatalog", "InputPresetPreview", "PresetCard", "TypographyCatalog"],
-    "cssVariables": ["--sarak-preset-card-hover-shadow-blur"],
-    "allowedValues": { "min": 0, "max": 80, "step": 1 },
-    "relatedTokens": ["presetCardHoverShadowOffsetY", "presetCardHoverShadowSpread"]
-  },
-  {
-    "tokenId": "presetCardHoverShadowSpread",
-    "name": "Preview de Preset: Sombra de Hover — Espalhamento",
-    "description": "Espalhamento (negativo) da sombra de hover duplicada nos catálogos de preview do Design Engine.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["cards", "efeitos", "cards-engine"],
-    "tags": ["preset-preview", "shadow", "design-engine"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": ["AtmosphereCatalog", "CardsCatalog", "InputPresetPreview", "PresetCard", "TypographyCatalog"],
-    "cssVariables": ["--sarak-preset-card-hover-shadow-spread"],
-    "allowedValues": { "min": 0, "max": 30, "step": 1 },
-    "relatedTokens": ["presetCardHoverShadowOffsetY", "presetCardHoverShadowBlur"]
+    "relatedTokens": []
   },
   {
     "tokenId": "presetGlowShadowBlur",
@@ -2366,21 +2319,6 @@
     "relatedTokens": []
   },
   {
-    "tokenId": "devicePhoneWidth",
-    "name": "Preview Canvas: Largura do Telefone",
-    "description": "Largura do frame de mockup de telefone no PreviewCanvas do Design Engine.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["cards", "layout", "cards-engine"],
-    "tags": ["preview-canvas", "device-mock", "design-engine"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": ["PreviewCanvas"],
-    "cssVariables": ["--sarak-device-phone-width"],
-    "allowedValues": { "min": 300, "max": 450, "step": 5 },
-    "relatedTokens": ["devicePhoneHeight"]
-  },
-  {
     "tokenId": "devicePhoneHeight",
     "name": "Preview Canvas: Altura do Telefone",
     "description": "Altura do frame de mockup de telefone no PreviewCanvas do Design Engine.",
@@ -2393,7 +2331,7 @@
     "digitalTwins": ["PreviewCanvas"],
     "cssVariables": ["--sarak-device-phone-height"],
     "allowedValues": { "min": 600, "max": 1000, "step": 10 },
-    "relatedTokens": ["devicePhoneWidth", "deviceTabletHeight"]
+    "relatedTokens": ["deviceTabletHeight"]
   },
   {
     "tokenId": "deviceTabletHeight",

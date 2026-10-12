@@ -4,6 +4,7 @@ export type ChromeMobileNavigationMode = 'bottom' | 'drawer';
 /** Acima disto a barra da base não comporta os destinos (alvo de toque + rótulo legível) e a gaveta assume. */
 export const BOTTOM_NAV_MAX_ITEMS = 5;
 
+// @sarak-token-reader mobileNavigationStyle tabela
 /** Valor fora da lista (tema antigo, JSON escrito à mão) cai em `auto`, o default do schema. */
 export const resolveMobileNavigationStyle = (value: unknown): ChromeMobileNavigationStyle =>
     value === 'bottom' || value === 'drawer' ? value : 'auto';

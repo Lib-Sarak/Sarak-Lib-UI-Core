@@ -106,7 +106,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do container de conteúdo de modais/diálogos — diferente do overlay/scrim atrás do modal (`modalOverlayColor` em `overlays.ts`), esta é a cor do próprio painel do modal.',
             axis: 'color',
-            defaultValue: 'rgba(15, 15, 15, 0.8)',
+            defaultValue: 'var(--theme-surface)',
             cssVars: ['--sarak-bg-modal', '--theme-modal-bg']
         },
         // --- CORES DE COMPONENTES ---

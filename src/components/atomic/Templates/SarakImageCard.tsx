@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { CardSchema } from '../../../core/Design/schema/cards';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { resolveCardHoverMotion } from '../Cards/cardHoverMotion';
 
 export interface SarakImageCardProps {
     /** Endereço da imagem de fundo; é obrigatório e, sem uma fonte válida, a camada de imagem fica vazia. */
@@ -42,7 +43,8 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
     return (
         <motion.div
             onClick={onClick}
-            whileHover={hoverStyle === 'lift' ? { y: -4, scale: 1.01 } : hoverStyle === 'expand' ? { scale: 1.02 } : {}}
+            whileHover={resolveCardHoverMotion(design)}
+            data-sx-card-interactive="true"
             className={`relative overflow-hidden group cursor-pointer ${className}`}
             style={{
                 borderRadius: 'var(--sarak-card-radius, 12px)',

@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../../Buttons/SarakButton';
 import SarakDataCards from './SarakDataCards';
 import { SarakDataTableHeader } from './SarakDataTableHeader';
@@ -24,6 +25,8 @@ const getTableState = <T,>(model: SarakDataTableViewModel<T>, text: ReturnType<t
 
 export const SarakDataTableView = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => {
     const text = useLibraryText();
+    // Átomo-de-dados: tolera montar sem SarakUIProvider (sem listras).
+    const zebra = useSarakUIOptional()?.design?.tableZebraStriping === true;
     const state = getTableState(model, text);
     if (state) return state;
     if (model.collapseToCards) {
@@ -33,7 +36,7 @@ export const SarakDataTableView = <T,>({ model }: SarakDataTableViewProps<T>): R
         <div ref={model.scrollRef} data-sarak-datatable="true" role="table" className={model.props.className} style={{ height: model.props.height ?? '100%', maxWidth: '100%', overflow: 'auto', position: 'relative' }}>
             <div style={{ width: model.containerWidth, position: 'relative', height: (model.props.headerHeight ?? 44) + model.virtualTotalSize }}>
                 <SarakDataTableHeader columns={model.ordered} widths={model.widths} offsets={model.offsets} background={HEADER_BACKGROUND} headerHeight={model.props.headerHeight ?? 44} dragId={model.dragId} sort={model.interactions.sort} selectable={model.props.selectable ?? false} allVisibleSelected={model.interactions.allVisibleSelected} partiallySelected={model.interactions.partiallySelected} onDragStart={model.setDragId} onDrop={model.onDrop} onSort={model.interactions.changeSort} onToggleAll={model.interactions.toggleAll} onResizeStart={model.onResizeStart} />
-                <SarakDataTableRows columns={model.ordered} rows={model.virtualRows} widths={model.widths} offsets={model.offsets} containerWidth={model.containerWidth} headerHeight={model.props.headerHeight ?? 44} automaticHeight={model.isAutomaticRowHeight} cellBackground={CELL_BACKGROUND} selectable={model.props.selectable ?? false} selectedKeys={model.interactions.selectedKeys} onToggleRow={model.interactions.toggleRow} onRowClick={model.props.onRowClick} measureElement={model.virtualizerMeasureElement} />
+                <SarakDataTableRows columns={model.ordered} rows={model.virtualRows} widths={model.widths} offsets={model.offsets} containerWidth={model.containerWidth} headerHeight={model.props.headerHeight ?? 44} automaticHeight={model.isAutomaticRowHeight} cellBackground={CELL_BACKGROUND} zebra={zebra} selectable={model.props.selectable ?? false} selectedKeys={model.interactions.selectedKeys} onToggleRow={model.interactions.toggleRow} onRowClick={model.props.onRowClick} measureElement={model.virtualizerMeasureElement} />
             </div>
         </div>
     );

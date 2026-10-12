@@ -234,3 +234,27 @@ describe('PAIRS — nenhuma cadeia termina em fundo que pode ser translúcido', 
     nav.forEach((r) => expect(!r.pulado && r.pass).toBe(true));
   });
 });
+
+describe('var(--tema) que espelha outro token de cor do próprio tema', () => {
+    const base = {
+        ...sarakGetDefaultDesignState(),
+        colorBgBody: '#000000',
+        surfaceColor: '#101010',
+        titleColor: '#ffffff',
+        tooltipBg: 'var(--theme-surface)',
+        tooltipTextColor: 'var(--color-theme-title, #ffffff)',
+    } as Record<string, unknown>;
+
+    it('o padrão de tooltipBg/tooltipTextColor resolve pelo surfaceColor e pelo titleColor — o par é medido', () => {
+        const par = PAIRS.find((p) => p.fg === 'tooltipTextColor') as ContrastPair;
+        const result = evaluatePair(par, base);
+        expect(result.pulado).toBe(false);
+        expect(result.pulado === false && result.ratio).toBeGreaterThan(10);
+    });
+
+    it('var() de variável desconhecida segue pulada, sem chutar cor', () => {
+        const par = PAIRS.find((p) => p.fg === 'tooltipTextColor') as ContrastPair;
+        const result = evaluatePair(par, { ...base, tooltipTextColor: 'var(--minha-cor)' });
+        expect(result.pulado).toBe(true);
+    });
+});

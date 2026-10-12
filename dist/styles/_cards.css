@@ -38,11 +38,11 @@
     box-shadow: var(--sarak-card-shadow-full);
     
     /* Transição Fluida */
-    transition: transform 0.4s var(--sarak-ease-main), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
+    transition: transform 0.4s var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1)), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
     
     /* Motor de Filtros — só a forma sem prefixo: com as duas lado a lado o build deixa
        apenas `-webkit-` e o Chromium não desfoca (ver _surfaces.css, topo). */
-    backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
+    backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
 
     /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
     clip-path: polygon(
@@ -84,4 +84,69 @@
         calc(var(--sarak-card-shadow-blur, 50px) + 10px)
         var(--sarak-card-shadow-expansion, -12px)
         color-mix(in srgb, var(--sarak-card-shadow-color, #000) 60%, transparent);
+}
+
+/* CARTÃO INTERATIVO: o hover (brilho e movimento) vale só para o cartão cuja superfície inteira
+   responde ao ponteiro — o que traz `data-sx-card-interactive="true"` (`SarakTitleCard`,
+   `SarakImageCard` e o `SarakCard` com a prop `interactive`). Cartão contêiner (painel de chat,
+   matriz, formulário) não anuncia clique, então não se move nem brilha, em nenhum valor de
+   `cardHoverStyle`.
+
+   Brilho no hover: soma `cardHoverGlowIncrease` à intensidade base (`cardGlowIntensity`).
+   O padrão do aumento é 0, então sem tema o hover não ganha brilho — como antes. */
+.sarak-card[data-sx-card-interactive="true"]:hover::before {
+    opacity: min(1, calc(var(--sarak-card-glow-intensity, 0) + var(--sarak-card-hover-glow, 0)));
+}
+
+/* ESTILO DE HOVER (`cardHoverStyle`): o atributo `data-sx-card-hover-style` vem do motor.
+   `lift` sobe `cardHoverTranslate` px (negativo = sobe); `expand` cresce um pouco;
+   `glow-only` não move o cartão (só o brilho acima). */
+[data-sx-card-hover-style="lift"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: translateY(var(--sarak-card-hover-y, 0px));
+}
+[data-sx-card-hover-style="expand"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: scale(1.02);
+}
+[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: none;
+}
+
+/* Movimento reduzido e modo de desempenho: o cartão não se move no hover. */
+@media (prefers-reduced-motion: reduce) {
+    [data-sx-card-hover-style] .sarak-card[data-sx-card-interactive="true"]:hover {
+        transform: none !important;
+    }
+}
+:is(.sarak-eco-mode, [data-performance="eco"], [data-perf-mode="eco"]) .sarak-card:hover {
+    transform: none !important;
+}
+
+/* PEÇAS DE COMPOSIÇÃO do SarakCard: as classes do cabeçalho e do rodapé vêm do componente
+   (utilitárias arbitrárias, que o `className` do consumidor ainda sobrescreve). */
+
+/* BOTÃO DE AÇÃO do SarakActionCard. Fundo/texto só no estilo preenchido: no `borderline`
+   o fundo transparente é a identidade do estilo. Os padrões reproduzem o primário do botão
+   (cor primária do tema, texto `--text-muted`, altura `py-4`, raio do botão). */
+.sarak-card-action-btn {
+    padding-block: var(--sarak-card-action-btn-padding, 1rem);
+    border-radius: var(--sarak-card-action-btn-radius, var(--radius-btn));
+}
+.sarak-card-action-btn--filled {
+    background-color: var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #3b82f6));
+    color: var(--sarak-card-action-btn-text, var(--text-muted, #94a3b8));
+}
+.sarak-card-action-btn--filled:hover {
+    background-color: var(--sarak-card-action-btn-hover-bg, var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #3b82f6)));
+}
+
+/* CAMPO do SarakSearchCard: placeholder, fundo e texto focados valem só dentro do cartão
+   de busca — os campos fora dele seguem os tokens de campo. `!important` porque o próprio
+   `SarakInput` escreve fundo, texto e placeholder por classe utilitária (`bg-[var(--sarak-input-bg…)]`),
+   que vem de uma camada depois desta e venceria o token do cartão (medido em navegador). */
+.sarak-search-card input::placeholder {
+    color: var(--sarak-card-search-placeholder, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent)) !important;
+}
+.sarak-search-card input:focus {
+    background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, #1e293b))) !important;
+    color: var(--sarak-card-search-text-focus, var(--sarak-input-text-color, var(--text-muted, #94a3b8))) !important;
 }

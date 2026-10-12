@@ -1359,6 +1359,12 @@
           "type": "string",
           "optional": true,
           "doc": "Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move."
         }
       ]
     },
@@ -5472,12 +5478,7 @@
       "--sarak-action-glow-shadow-spread",
       "--sarak-ai-glow",
       "--sarak-ai-glow-color",
-      "--sarak-ai-panel-bg",
       "--sarak-anim-enabled",
-      "--sarak-anim-fast",
-      "--sarak-anim-instant",
-      "--sarak-anim-normal",
-      "--sarak-anim-slow",
       "--sarak-auth-hero-orb-blur",
       "--sarak-b-weight",
       "--sarak-badge-radius",
@@ -5552,30 +5553,10 @@
       "--sarak-button-icon-position",
       "--sarak-button-width-strategy",
       "--sarak-card-action-btn-bg",
-      "--sarak-card-action-btn-bg-10",
-      "--sarak-card-action-btn-bg-20",
-      "--sarak-card-action-btn-bg-30",
-      "--sarak-card-action-btn-bg-40",
-      "--sarak-card-action-btn-bg-50",
-      "--sarak-card-action-btn-bg-active",
-      "--sarak-card-action-btn-bg-bg",
-      "--sarak-card-action-btn-bg-border",
-      "--sarak-card-action-btn-bg-hover",
-      "--sarak-card-action-btn-bg-light",
-      "--sarak-card-action-btn-bg-rgb",
       "--sarak-card-action-btn-border-radius",
       "--sarak-card-action-btn-hover-bg",
       "--sarak-card-action-btn-padding",
       "--sarak-card-action-btn-primary-bg",
-      "--sarak-card-action-btn-primary-bg-10",
-      "--sarak-card-action-btn-primary-bg-20",
-      "--sarak-card-action-btn-primary-bg-30",
-      "--sarak-card-action-btn-primary-bg-40",
-      "--sarak-card-action-btn-primary-bg-50",
-      "--sarak-card-action-btn-primary-bg-bg",
-      "--sarak-card-action-btn-primary-bg-border",
-      "--sarak-card-action-btn-primary-bg-hover",
-      "--sarak-card-action-btn-primary-bg-rgb",
       "--sarak-card-action-btn-radius",
       "--sarak-card-action-btn-text",
       "--sarak-card-action-click-scale",
@@ -5602,7 +5583,6 @@
       "--sarak-card-bg-hover",
       "--sarak-card-bg-light",
       "--sarak-card-bg-rgb",
-      "--sarak-card-blur",
       "--sarak-card-border-bottom",
       "--sarak-card-border-color",
       "--sarak-card-border-left",
@@ -5769,13 +5749,10 @@
       "--sarak-device-frame-radius",
       "--sarak-device-phone-height",
       "--sarak-device-phone-notch-radius",
-      "--sarak-device-phone-width",
       "--sarak-device-tablet-height",
       "--sarak-dot-grid-dot-offset",
       "--sarak-dot-grid-dot-size",
       "--sarak-dot-grid-tile-size",
-      "--sarak-ease-main",
-      "--sarak-ease-out",
       "--sarak-empty-state-caption-max-width",
       "--sarak-empty-state-orb-blur",
       "--sarak-empty-state-orb-inner",
@@ -5800,7 +5777,6 @@
       "--sarak-font-m",
       "--sarak-form-field-density",
       "--sarak-form-label-position",
-      "--sarak-form-layout-direction",
       "--sarak-glass-blur",
       "--sarak-glass-edge-color",
       "--sarak-glass-edge-width",
@@ -5850,9 +5826,7 @@
       "--sarak-identity-font-weight",
       "--sarak-identity-hover",
       "--sarak-identity-hover-effect",
-      "--sarak-identity-link",
       "--sarak-identity-padding",
-      "--sarak-identity-redirect-url",
       "--sarak-identity-tracking",
       "--sarak-identity-weight",
       "--sarak-image-card-glow-blur",
@@ -5861,7 +5835,6 @@
       "--sarak-image-card-shadow-blur",
       "--sarak-image-card-shadow-offset-y",
       "--sarak-image-card-shadow-spread",
-      "--sarak-industrial-registry",
       "--sarak-input-backdrop-blur",
       "--sarak-input-bg",
       "--sarak-input-bg-10",
@@ -5884,7 +5857,6 @@
       "--sarak-input-icon-position",
       "--sarak-input-padding",
       "--sarak-input-shadow",
-      "--sarak-input-success-color",
       "--sarak-input-text-color",
       "--sarak-is-auto-hide-enabled",
       "--sarak-is-nav-hidden",
@@ -5892,13 +5864,7 @@
       "--sarak-kanban-card-radius",
       "--sarak-kanban-header-padding-y",
       "--sarak-kanban-header-tracking",
-      "--sarak-kbd-min-w",
-      "--sarak-kbd-min-width",
-      "--sarak-layer-backdrop-blur",
-      "--sarak-layer-backdrop-opacity",
-      "--sarak-layer-elevation-factor",
       "--sarak-layered-shadows",
-      "--sarak-layout",
       "--sarak-layout-density",
       "--sarak-layout-gap",
       "--sarak-layout-gap-lg",
@@ -5909,7 +5875,6 @@
       "--sarak-layout-padding",
       "--sarak-layout-preview-max-h",
       "--sarak-line-height",
-      "--sarak-management-group-desc-max-width",
       "--sarak-management-group-list-max-height",
       "--sarak-matrix-blur",
       "--sarak-matrix-border-color",
@@ -5917,7 +5882,6 @@
       "--sarak-matrix-item-bg",
       "--sarak-matrix-node-min-width",
       "--sarak-matrix-radius",
-      "--sarak-matrix-search-bg",
       "--sarak-max-content-width",
       "--sarak-mobile-navigation-style",
       "--sarak-modal-action-alignment",
@@ -5965,9 +5929,7 @@
       "--sarak-preference-mode-position",
       "--sarak-preference-nav-collapse-position",
       "--sarak-preference-navigation-style-position",
-      "--sarak-preset-card-hover-shadow-blur",
       "--sarak-preset-card-hover-shadow-offset-y",
-      "--sarak-preset-card-hover-shadow-spread",
       "--sarak-preset-card-shadow-blur",
       "--sarak-preset-card-shadow-offset-y",
       "--sarak-preset-card-shadow-spread",
@@ -6184,7 +6146,6 @@
       "--sarak-texture-color-light",
       "--sarak-texture-color-rgb",
       "--sarak-texture-opacity",
-      "--sarak-theme-dropdown-max-height",
       "--sarak-title-color",
       "--sarak-toast-accent-width",
       "--sarak-toast-max-width",
@@ -6224,11 +6185,6 @@
       "--sarak-vignette-color",
       "--sarak-vignette-opacity",
       "--sarak-vignette-softness",
-      "--sarak-visual-dot-grid-size",
-      "--sarak-visual-orb-blur",
-      "--sarak-visual-perspective",
-      "--sarak-visual-translate-offset-sm",
-      "--sarak-visual-translate-z-md",
       "--sarak-z-base",
       "--sarak-z-index-base",
       "--sarak-z-index-modal",
@@ -6362,7 +6318,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 434,
+    "count": 407,
     "responsiveCapable": [
       "borderRadius",
       "btnBorderRadius",
@@ -6397,6 +6353,7 @@
       "sidebarMinWidth",
       "sidebarWidth",
       "tabGap",
+      "tableBorderRadius",
       "tableCellPadding",
       "tabSectionMargin",
       "topbarHeight"
@@ -6428,33 +6385,8 @@
         "responsive": false
       },
       {
-        "id": "aiPanelBg",
-        "type": "string",
-        "responsive": false
-      },
-      {
         "id": "animEnabled",
         "type": "boolean",
-        "responsive": false
-      },
-      {
-        "id": "animFast",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "animInstant",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "animNormal",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "animSlow",
-        "type": "number",
         "responsive": false
       },
       {
@@ -7123,11 +7055,6 @@
         "responsive": false
       },
       {
-        "id": "devicePhoneWidth",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "deviceTabletHeight",
         "type": "number",
         "responsive": false
@@ -7145,16 +7072,6 @@
       {
         "id": "dotGridTileSize",
         "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "easeMain",
-        "type": "string",
-        "responsive": false
-      },
-      {
-        "id": "easeOut",
-        "type": "string",
         "responsive": false
       },
       {
@@ -7234,11 +7151,6 @@
       },
       {
         "id": "formLabelPosition",
-        "type": "string",
-        "responsive": false
-      },
-      {
-        "id": "formLayoutDirection",
         "type": "string",
         "responsive": false
       },
@@ -7438,11 +7350,6 @@
         "responsive": false
       },
       {
-        "id": "identityRedirectUrl",
-        "type": "string",
-        "responsive": false
-      },
-      {
         "id": "identityTracking",
         "type": "number",
         "responsive": false
@@ -7475,11 +7382,6 @@
       {
         "id": "imageCardShadowSpread",
         "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "industrialRegistry",
-        "type": "boolean",
         "responsive": false
       },
       {
@@ -7538,11 +7440,6 @@
         "responsive": false
       },
       {
-        "id": "inputSuccessColor",
-        "type": "string",
-        "responsive": false
-      },
-      {
         "id": "inputTextColor",
         "type": "string",
         "responsive": false
@@ -7578,33 +7475,8 @@
         "responsive": false
       },
       {
-        "id": "kbdMinWidth",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "layerBackdropBlur",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "layerBackdropOpacity",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "layeredShadows",
         "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "layerElevationFactor",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "layout",
-        "type": "string",
         "responsive": false
       },
       {
@@ -7653,11 +7525,6 @@
         "responsive": false
       },
       {
-        "id": "managementGroupDescMaxWidth",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "managementGroupListMaxHeight",
         "type": "number",
         "responsive": false
@@ -7690,11 +7557,6 @@
       {
         "id": "matrixRadius",
         "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "matrixSearchBg",
-        "type": "string",
         "responsive": false
       },
       {
@@ -7868,17 +7730,7 @@
         "responsive": false
       },
       {
-        "id": "presetCardHoverShadowBlur",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "presetCardHoverShadowOffsetY",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "presetCardHoverShadowSpread",
         "type": "number",
         "responsive": false
       },
@@ -8269,8 +8121,8 @@
       },
       {
         "id": "tableBorderRadius",
-        "type": "number",
-        "responsive": false
+        "type": "number | SarakResponsiveValue<number>",
+        "responsive": true
       },
       {
         "id": "tableCellPadding",
@@ -8344,11 +8196,6 @@
       },
       {
         "id": "textureOpacity",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "themeDropdownMaxHeight",
         "type": "number",
         "responsive": false
       },
@@ -8523,31 +8370,6 @@
         "responsive": false
       },
       {
-        "id": "visualDotGridSize",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "visualOrbBlur",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "visualPerspective",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "visualTranslateOffsetSm",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "visualTranslateZMd",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "zIndexBase",
         "type": "number",
         "responsive": false
@@ -8699,6 +8521,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "a5b46fbbb0e4"
+    "kitHash": "1c149da2c7a7"
   }
 }

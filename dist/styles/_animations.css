@@ -47,3 +47,34 @@
 
 .animate-sarak-float { animation: sarak-float 4s infinite ease-in-out; }
 .animate-sarak-glow { animation: sarak-glow-pulse 3s infinite ease-in-out; }
+
+/* Pulso do halo dos botões em `btnStyleType: neon` — leitor de `btnNeonPulseSpeed`.
+   A classe só é posta pelo botão quando a velocidade é maior que 0 (padrão: parado). Uma
+   animação vence o `box-shadow` inline, por isso o pulso cede no hover: aí vale o halo
+   reforçado de `useAtomicStyles`. Cor do halo = `btnNeonGlowColor`. */
+@keyframes sarak-btn-neon-pulse {
+    0%, 100% { box-shadow: 0 0 10px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4)); }
+    50% { box-shadow: 0 0 20px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4)); }
+}
+
+.sarak-btn-neon-pulse {
+    animation: sarak-btn-neon-pulse var(--sarak-btn-neon-pulse-speed, 1.5s) ease-in-out infinite;
+}
+
+.sarak-btn-neon-pulse:hover {
+    animation: none;
+}
+
+/* Grão de filme vivo — leitor de `bgNoiseAnimation` (`--sarak-noise-speed`, segundos por
+   ciclo). O padrão é 0s: sem duração a animação não tem efeito e o grão fica parado. Cada
+   quadro é um salto (`steps(1)`) de posição do ladrilho — só `background-position` do
+   pseudoelemento, sem repintar o layout. Movimento reduzido e o modo eco cortam a duração
+   (`_motion.css`, `_performance.css`). */
+@keyframes sarak-noise-shift {
+    0% { background-position: 0 0; }
+    20% { background-position: -23px 17px; }
+    40% { background-position: 31px -29px; }
+    60% { background-position: -17px -41px; }
+    80% { background-position: 43px 13px; }
+    100% { background-position: 0 0; }
+}

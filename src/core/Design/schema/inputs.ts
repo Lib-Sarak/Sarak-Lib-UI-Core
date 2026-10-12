@@ -9,20 +9,6 @@ export const InputsSchema: ComponentSchema = {
     label: 'Campo de Entrada (Input)',
     tokens: [
         {
-            id: 'formLayoutDirection',
-            label: 'Direção do Formulário',
-            type: 'select',
-            description: 'Direção geral de um formulário: Empilhado (label acima do campo, o mais responsivo) ou Em linha (label à esquerda do campo, economiza altura em telas largas).',
-            axis: 'geometry',
-            constraints: {
-                options: [
-                    { id: 'stack', value: 'stack', label: 'Empilhado (Top)' },
-                    { id: 'inline', value: 'inline', label: 'Em linha (Left)' }
-                ]
-            },
-            defaultValue: 'stack'
-        },
-        {
             id: 'inputIconPosition',
             label: 'Posição do Ícone',
             type: 'select',
@@ -57,7 +43,7 @@ export const InputsSchema: ComponentSchema = {
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 0, max: 32 },
-            defaultValue: 12,
+            defaultValue: 16,
             cssVars: ['--sarak-input-padding']
         },
         {
@@ -149,15 +135,6 @@ export const InputsSchema: ComponentSchema = {
             axis: 'color',
             defaultValue: '#ff4d4f',
             cssVars: ['--sarak-input-error-color']
-        },
-        {
-            id: 'inputSuccessColor',
-            label: 'Cor de Sucesso',
-            type: 'color',
-            description: 'Cor de borda/texto aplicada ao campo de entrada quando a validação passa (ex. e-mail válido) — convencionalmente verde, deve se manter coerente com `statusSuccessColor` do resto do sistema.',
-            axis: 'color',
-            defaultValue: '#52c41a',
-            cssVars: ['--sarak-input-success-color']
         },
 
         // --- MULTI-SELECT (Spec 27) ---

@@ -28,9 +28,10 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     const [height, setHeight] = useState<number | 'auto'>(defaultOpen ? 'auto' : 0);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const animNormal = design?.animNormal;
-    const animDuration = typeof animNormal === 'number' ? `${animNormal}ms` : '300ms';
-    const animEasing = (design?.easeMain as string) || 'ease-in-out';
+    const motionNormal = design?.motionDurationNormal;
+    const animDurationMs = typeof motionNormal === 'number' ? Math.round(motionNormal * 1000) : 300;
+    const animDuration = `${animDurationMs}ms`;
+    const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
     const borderRadius = (design?.borderRadius as string | number) || 'var(--sarak-card-radius,12px)';
     const borderColor = 'var(--border-color,#334155)';
 
@@ -46,7 +47,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
             
             const timer = setTimeout(() => {
                 setHeight('auto');
-            }, parseInt(animDuration) || 300);
+            }, animDurationMs);
             return () => clearTimeout(timer);
         } else {
             setHeight(contentRef.current.scrollHeight);
@@ -55,7 +56,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                 setHeight(0);
             });
         }
-    }, [isOpen, animDuration]);
+    }, [isOpen, animDurationMs]);
 
     return (
         <div

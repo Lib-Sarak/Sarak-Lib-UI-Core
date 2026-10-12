@@ -130,3 +130,19 @@ describe('SarakBadge status shape', () => {
         expect(badge).toHaveTextContent('Pronto');
     });
 });
+
+describe('SarakBadge — statusGlowBlur', () => {
+    it('as variantes de status desenham o brilho com o raio do token, na cor do status', () => {
+        render(<SarakBadge variant="danger">Falha</SarakBadge>);
+
+        const shadow = screen.getByText('Falha').style.boxShadow;
+        expect(shadow).toContain('var(--sarak-status-glow-blur, 0px)');
+        expect(shadow).toContain('--sarak-status-error-color');
+    });
+
+    it('as variantes que não são de status não levam brilho', () => {
+        render(<SarakBadge variant="primary">Rótulo</SarakBadge>);
+
+        expect(screen.getByText('Rótulo').style.boxShadow).toBe('');
+    });
+});

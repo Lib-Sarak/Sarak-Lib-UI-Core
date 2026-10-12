@@ -16,6 +16,9 @@ interface SarakDataTableCellProps<T> {
     selectionWidth: number;
 }
 
+/** Fundo da linha alternada: a cor do texto a 4% sobre o que há atrás, legível nos dois modos. */
+const ZEBRA_BACKGROUND = 'color-mix(in srgb, currentColor 4%, transparent)';
+
 const isInteractiveTarget = (target: EventTarget): boolean =>
     target instanceof Element && Boolean(target.closest('button,input,a,select,textarea,[role="button"],[role="checkbox"]'));
 
@@ -57,6 +60,7 @@ export function SarakDataTableRow<T>({ row, props }: SarakDataTableRowProps<T>):
         position: 'absolute', top: props.headerHeight + start, left: 0, display: 'flex', width: props.containerWidth,
         height: props.automaticHeight ? undefined : size,
         borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,#334155))',
+        ...(props.zebra && virtualIndex % 2 === 1 ? { backgroundColor: ZEBRA_BACKGROUND } : null),
     };
     return (
         <div key={entry.key ?? virtualKey} role="row" data-index={virtualIndex} ref={props.automaticHeight ? props.measureElement : undefined} tabIndex={props.onRowClick ? 0 : undefined} onClick={(event) => handleRowClick(event, entry.row, props.onRowClick)} onKeyDown={(event) => handleRowKeyDown(event, entry.row, props.onRowClick)} style={style}>

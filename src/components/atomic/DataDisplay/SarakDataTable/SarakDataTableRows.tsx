@@ -20,6 +20,8 @@ export interface SarakDataTableRowsProps<T> {
     headerHeight: number;
     automaticHeight: boolean;
     cellBackground: string;
+    /** Alterna o fundo das linhas ímpares do índice virtual (`tableZebraStriping`). */
+    zebra?: boolean;
     selectable: boolean;
     selectedKeys: Set<Key>;
     onToggleRow: (key: Key, checked: boolean) => void;

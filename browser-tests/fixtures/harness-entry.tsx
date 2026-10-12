@@ -21,6 +21,13 @@ import { createRoot } from 'react-dom/client';
 import {
     SarakUIProvider,
     SarakAccordion,
+    SarakActionCard,
+    SarakBadge,
+    SarakCard,
+    SarakModal,
+    SarakSearchCard,
+    SarakTable,
+    SarakTooltip,
     SarakAppChrome,
     SarakButton,
     SarakCalendar,
@@ -90,6 +97,8 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `camadas-zero` / `camadas-dobro`: `layeredShadows` 0 e 2 (o padrão é 1).
  *   - `vidro-cartao` / `vidro-cartao-fosco`: `cardBackdropBlur` = 24 (o padrão é 12), sob o material `sleek` e sob o `frosted` padrão.
  *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
+ *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
+ *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'borda-tracejada': { borderStyle: 'dashed' },
@@ -150,6 +159,25 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'movimento-reduzido': { reducedMotion: true },
     'navegacao-celular-base': { mobileNavigationStyle: 'bottom' },
     'navegacao-celular-gaveta': { mobileNavigationStyle: 'drawer' },
+    'schema-cartao': {
+        cardHeaderBg: '#ff0000', cardHeaderBorder: '#00ff00', cardHeaderPadding: 20,
+        cardFooterBg: '#0000ff', cardFooterBorder: '#ffff00',
+        cardHoverTranslate: -10, cardHoverGlowIncrease: 0.5,
+        cardActionBtnPrimaryBg: '#ff0000', cardActionBtnText: '#00ff00', cardActionBtnBorderRadius: 20, cardActionBtnPadding: 24,
+        cardSearchBgFocus: '#ff0000', cardSearchTextFocusColor: '#00ff00', cardSearchPlaceholderColor: '#0000ff',
+    },
+    'schema-campos': {
+        inputPadding: 24, tooltipRadius: 12, modalOverlayBlur: 20, colorBgModal: '#ff0000',
+        tableZebraStriping: true, tableBorderRadius: 0, statusGlowBlur: 12,
+        identityPadding: 24, identityFontWeight: 300, identityTracking: 0.2, identityFontFamily: 'Georgia, serif',
+    },
+    'schema-tokens-cor': { tooltipBg: '#ff0000', tooltipTextColor: '#00ff00', tooltipBorderColor: '#0000ff', modalOverlayColor: 'rgba(255, 0, 0, 0.5)' },
+    'schema-hover-expand': { cardHoverStyle: 'expand' },
+    'schema-hover-brilho': { cardHoverStyle: 'glow-only' },
+    'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
+    'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
+    'schema-ruido': { texture: 'noise', bgNoiseAnimation: 2 },
+    'schema-sem-suavizacao': { textSmoothing: false },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -497,6 +525,36 @@ const SearchScene: React.FC = () => (
     </div>
 );
 
+const SCHEMA_ROWS = [{ nome: 'Ana' }, { nome: 'Bia' }, { nome: 'Caio' }];
+
+/** Uma peça de cada token da `plan-113`; o recorte (`?tema=schema-*`) é o que muda, a cena é a mesma. */
+const SchemaScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="cartao-interativo"><SarakCard interactive>Cartão clicável</SarakCard></div>
+        <div data-probe="cartao">
+            <SarakCard>
+                <SarakCard.Header>Cabeçalho</SarakCard.Header>
+                <SarakCard.Body>Corpo</SarakCard.Body>
+                <SarakCard.Footer>Rodapé</SarakCard.Footer>
+            </SarakCard>
+        </div>
+        <div data-probe="acao"><SarakActionCard item={{ nome: 'Ação' }} mapping={{ title: 'nome' }} /></div>
+        <div data-probe="busca-cartao"><SarakSearchCard item={{}} /></div>
+        <div data-probe="campo-fora"><SarakInput placeholder="fora do cartão" /></div>
+        <div data-probe="badge"><SarakBadge variant="danger">Falha</SarakBadge></div>
+        <div data-probe="ghost"><SarakButton variant="ghost">Fantasma</SarakButton></div>
+        <div data-probe="tooltip"><SarakTooltip content="Dica"><button type="button">Alvo</button></SarakTooltip></div>
+        <div data-probe="tabela">
+            <SarakTable data={SCHEMA_ROWS} columns={[{ key: 'nome', label: 'Nome' }]} responsive={false} />
+        </div>
+    </div>
+);
+
+/** O diálogo aberto, sozinho: o véu dele intercepta o ponteiro, então não divide cena com as sondas de hover. */
+const SchemaModalScene: React.FC = () => (
+    <SarakModal isOpen onClose={() => undefined} title="Diálogo">Conteúdo do diálogo</SarakModal>
+);
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -520,6 +578,8 @@ const SCENES: Record<string, React.FC> = {
     'texturas-claras': LightTexturesScene,
     'texturas-cor': TextureColorScene,
     busca: SearchScene,
+    schema: SchemaScene,
+    'schema-modal': SchemaModalScene,
 };
 
 function renderScene(Scene: React.FC): React.ReactElement {

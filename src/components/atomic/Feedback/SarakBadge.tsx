@@ -63,6 +63,8 @@ function getStatusStyle(variant: SarakBadgeVariant, soft: boolean): React.CSSPro
         color: soft ? statusColor : undefined,
         backgroundColor: soft ? `color-mix(in srgb, ${statusColor} 10%, transparent)` : statusColor,
         borderColor: soft ? `color-mix(in srgb, ${statusColor} 20%, transparent)` : 'transparent',
+        // Brilho do status (`statusGlowBlur`): com 0 o raio some e a sombra não aparece.
+        boxShadow: `0 0 var(--sarak-status-glow-blur, 0px) ${statusColor}`,
     };
 }
 

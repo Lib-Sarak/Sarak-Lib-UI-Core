@@ -40,7 +40,7 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
     const labelId = `${textareaId}-label`;
 
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
-    const shapeClasses = 'rounded-input p-4';
+    const shapeClasses = 'rounded-input px-4 py-[var(--sarak-input-padding,1rem)]';
     
     const widthClass = fullWidth ? 'w-full' : '';
     const disabledClass = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';

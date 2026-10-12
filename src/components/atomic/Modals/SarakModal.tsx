@@ -7,6 +7,7 @@ import { SarakButton } from '../Buttons/SarakButton';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 import { useModalBehavior } from './hooks/useModalBehavior';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
 
@@ -85,6 +86,8 @@ const MODAL_ENTER_SCALE = 0.95;
 const MODAL_ENTER_OFFSET_Y = 20;
 const MODAL_TRANSITION_DAMPING = 25;
 const MODAL_TRANSITION_STIFFNESS = 300;
+/** A saída é um tween (a mola não aceita curva): `motionEaseIn` governa a aceleração. */
+const MODAL_EXIT_SECONDS = 0.2;
 const WIZARD_BUTTON_STYLE: React.CSSProperties = {
     paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
     paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
@@ -126,6 +129,7 @@ const ModalPanel = ({
     size, maxWidth, className, dialogRef, handleTrap, title, titleId, children, header, footer,
 }: ModalPanelProps): React.ReactElement => {
     const text = useLibraryText();
+    const { easeIn } = useMotionTokens();
     return (
         <motion.div
             ref={dialogRef}
@@ -133,14 +137,14 @@ const ModalPanel = ({
             onKeyDown={handleTrap}
             initial={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y }}
+            exit={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y, transition: { type: 'tween', ease: easeIn, duration: MODAL_EXIT_SECONDS } }}
             transition={{ type: 'spring', damping: MODAL_TRANSITION_DAMPING, stiffness: MODAL_TRANSITION_STIFFNESS }}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
             aria-label={!title ? text('dialogDefaultAriaLabel') : undefined}
             data-size={size}
-            className={mergeSarakClasses('relative w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden flex', MODAL_WIDTH_FALLBACK_CLASSES[size], className)}
+            className={mergeSarakClasses('relative w-full bg-[var(--sarak-bg-modal,var(--theme-surface))] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden flex', MODAL_WIDTH_FALLBACK_CLASSES[size], className)}
             style={{ flexDirection: 'column', maxWidth }}
         >
             {header}
@@ -160,14 +164,17 @@ const ModalFrame = ({ disableOverlayClick, onClose, children }: {
     disableOverlayClick: boolean;
     onClose: () => void;
     children: React.ReactNode;
-}): React.ReactElement => (
+}): React.ReactElement => {
+    const { easeIn } = useMotionTokens();
+    return (
     <AnimatePresence>
         <div className="fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center" style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: MODAL_EXIT_SECONDS } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.6))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
             {children}
         </div>
     </AnimatePresence>
-);
+    );
+};
 
 export const SarakModal = (props: SarakModalProps): React.ReactElement | null => {
     const { isOpen, onClose, title, children, footer, steps, onComplete, disableOverlayClick = false, hideCloseButton = false, className, size = 'lg' } = props;

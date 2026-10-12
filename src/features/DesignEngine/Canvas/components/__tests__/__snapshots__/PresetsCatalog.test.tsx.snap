@@ -99,7 +99,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </div>
         <button
           aria-label="Fechar galeria"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-2 px-4 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]"
           title="Fechar galeria"
           type="button"
         >

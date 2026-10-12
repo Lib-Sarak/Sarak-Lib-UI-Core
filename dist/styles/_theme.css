@@ -32,14 +32,11 @@
   --z-index-modal: var(--sarak-z-modal, 2000);
   --z-index-tooltip: var(--sarak-z-tooltip, 9000);
   
-  --layer-backdrop-blur: var(--sarak-layer-backdrop-blur, 10px);
-  --layer-backdrop-bg: rgba(0, 0, 0, var(--sarak-layer-backdrop-opacity, 0.4));
-  
   /* --- 4. MOVIMENTO (Motion) --- */
   --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
-  --duration-fast: calc(var(--sarak-motion-dur-fast, 0.2) * 1s);
-  --duration-normal: calc(var(--sarak-motion-dur-normal, 0.3) * 1s);
-  --duration-slow: calc(var(--sarak-motion-dur-slow, 0.6) * 1s);
+  --duration-fast: var(--sarak-motion-dur-fast, 0.2s);
+  --duration-normal: var(--sarak-motion-dur-normal, 0.3s);
+  --duration-slow: var(--sarak-motion-dur-slow, 0.6s);
   
   /* --- 5. STATUS SEMÂNTICOS --- */
   --color-status-success: var(--sarak-status-success-color, #10b981);
@@ -85,7 +82,7 @@
   --sarak-surface-roughness: var(--sarak-glass-roughness, 0.05);
 
   /* Viewport Effects */
-  --sarak-vignette: radial-gradient(circle, transparent 50%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
+  --sarak-vignette: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
 }
 
 /* Utilitários Globais de Sincronização */

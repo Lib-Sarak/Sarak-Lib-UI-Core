@@ -47,7 +47,7 @@ describe('Caracterização — minimalist-airy antes/depois da reconciliação (
         const merged = { ...sarakGetDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
         const result = validateDesign(merged);
 
-        expect(result.easeOut).toBe('cubic-bezier(0, 0, 0.2, 1)');
+        expect(result.motionEaseOut).toBe('cubic-bezier(0, 0, 0.2, 1)');
         expect(result.surfaceMaterial).toBe('sleek');
         expect(result.systemTone).toBe('none');
         expect(result.shadowColorMode).toBe('neutral');

@@ -72,9 +72,10 @@ export const TablesSchema: ComponentSchema = {
             type: 'slider',
             description: 'Raio de borda do container da tabela, em pixels. 0 = cantos retos/técnicos; valores altos = container arredondado, combinando com o clima geral de cards do tema.',
             axis: 'geometry',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 8,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--sarak-table-border-radius']
         },
         {

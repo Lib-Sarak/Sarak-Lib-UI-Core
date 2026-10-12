@@ -3,6 +3,7 @@ import type { CSSProperties, ReactElement, KeyboardEvent, MouseEvent } from 'rea
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { LibraryTextFn } from '../../../core/i18n/useLibraryText';
 import { SarakIcon } from '../Icon/SarakIcon';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 import { SarakInput } from '../Inputs';
 import { SarakIconButton } from '../Buttons';
 import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
@@ -11,7 +12,6 @@ import { SarakTableCards, SarakTableSelectionCheckbox } from './SarakTableCards'
 import type { SarakTableColumn } from './SarakTableProps';
 
 const ROW_ENTRY_OFFSET = 10;
-const ROW_ANIMATION_DELAY = 0.05;
 
 export interface SarakTableViewProps<TData extends Record<string, unknown>> {
     filteredData: TData[];
@@ -37,6 +37,8 @@ export interface SarakTableViewProps<TData extends Record<string, unknown>> {
     onRowClick?: (row: TData) => void;
     emptyMessage?: string;
     cellDensityClass: string;
+    /** Alterna o fundo das linhas pares (`tableZebraStriping`); omitido, sem listras. */
+    zebraStriping?: boolean;
     containerClassName: string;
     containerStyle?: CSSProperties;
 }
@@ -107,6 +109,7 @@ interface SarakTableGridRowProps<TData extends Record<string, unknown>> {
     interactions: TableInteractionsResult<TData>;
     selectable: boolean;
     cellDensityClass: string;
+    zebra: boolean;
     onRowClick?: (row: TData) => void;
 }
 
@@ -123,15 +126,19 @@ const handleTableRowKeyDown = <TData,>(event: KeyboardEvent<HTMLTableRowElement>
     onRowClick?.(row);
 };
 
-const SarakTableGridRow = <TData extends Record<string, unknown>>({ row, rowKey, index, columns, density, interactions, selectable, cellDensityClass, onRowClick }: SarakTableGridRowProps<TData>): ReactElement => {
+const SarakTableGridRow = <TData extends Record<string, unknown>>({ row, rowKey, index, columns, density, interactions, selectable, cellDensityClass, zebra, onRowClick }: SarakTableGridRowProps<TData>): ReactElement => {
     const text = useLibraryText();
+    const { staggerDelay } = useMotionTokens();
     return (
-        <motion.tr key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * ROW_ANIMATION_DELAY }} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group" tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
+        <motion.tr key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * staggerDelay }} className={['border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group', zebra && index % 2 === 1 ? ZEBRA_ROW_CLASS : ''].join(' ')} tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
             {selectable && <td className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectRow', { row: String(rowKey) })} checked={interactions.selectedKeys.has(rowKey)} onChange={(checked) => interactions.toggleRow(rowKey, checked)} /></td>}
             {columns.map((column) => <td key={column.key} className={['font-medium', 'text-theme-text', density === 'compact' ? 'text-xs' : 'text-sm', cellDensityClass].join(' ')} style={{ textAlign: column.align ?? 'left' }}>{column.render ? column.render(row) : String(row[column.key] ?? '')}</td>)}
         </motion.tr>
     );
 };
+
+/** Fundo da linha par: a cor do texto a 4% sobre o que há atrás, legível nos dois modos. */
+const ZEBRA_ROW_CLASS = 'bg-[color-mix(in_srgb,currentColor_4%,transparent)]';
 
 const SKELETON_ROW_COUNT = 5;
 
@@ -152,7 +159,7 @@ const SarakTableGridBody = <TData extends Record<string, unknown>>({ props }: Sa
         <AnimatePresence mode="popLayout">
             {props.loading
                 ? createSkeletonRows(props.columnKeys, props.selectable, props.cellDensityClass)
-                : props.interactions.entries.map(({ row, key }, index) => <SarakTableGridRow key={key} row={row} rowKey={key} index={index} columns={props.columns} density={props.density} interactions={props.interactions} selectable={props.selectable} cellDensityClass={props.cellDensityClass} onRowClick={props.onRowClick} />)}
+                : props.interactions.entries.map(({ row, key }, index) => <SarakTableGridRow key={key} row={row} rowKey={key} index={index} columns={props.columns} density={props.density} interactions={props.interactions} selectable={props.selectable} cellDensityClass={props.cellDensityClass} zebra={props.zebraStriping === true} onRowClick={props.onRowClick} />)}
         </AnimatePresence>
     </tbody>
 );

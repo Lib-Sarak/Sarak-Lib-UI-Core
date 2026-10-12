@@ -94,3 +94,15 @@ describe('_motion.css — reducedMotion e prefers-reduced-motion', () => {
         expect(EngineeringSchema.tokens.find((item) => item.id === 'reducedMotion')?.type).toBe('boolean');
     });
 });
+
+describe('movimento reduzido — alcança o pseudoelemento do próprio :root', () => {
+    it('as duas portas (token e preferência do SO) listam :root::before e :root::after', () => {
+        // O grão de ruído é `html[data-sx-texture="noise"]::before`: `:root *` só chega aos descendentes.
+        const tokenDoor = motion.slice(motion.indexOf(':root[data-sx-reduced-motion="true"]'), motion.indexOf('@media'));
+        expect(tokenDoor).toContain(':root[data-sx-reduced-motion="true"]::before');
+        expect(tokenDoor).toContain(':root[data-sx-reduced-motion="true"]::after');
+        const mediaDoor = motion.slice(motion.indexOf('@media (prefers-reduced-motion: reduce)'));
+        expect(mediaDoor).toContain(':root::before');
+        expect(mediaDoor).toContain(':root::after');
+    });
+});

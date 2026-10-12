@@ -41,3 +41,32 @@ describe('SarakIconButton', () => {
         expect(classes).not.toContain('rounded-btn');
     });
 });
+
+describe('SarakIconButton — leitores de btnGhostHoverBg, btnNeonPulseSpeed e btnStyleType cyberpunk', () => {
+    const montar = (config: Record<string, unknown>, variant: 'primary' | 'ghost' = 'primary') => {
+        render(
+            <SarakUIProvider config={config}>
+                <SarakIconButton variant={variant} icon={<span>x</span>} aria-label="ação" />
+            </SarakUIProvider>,
+        );
+        return screen.getByRole('button', { name: 'ação' });
+    };
+
+    it('o hover do ghost lê --sarak-btn-ghost-hover', () => {
+        expect(montar({}, 'ghost').className).toContain('hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))]');
+    });
+
+    it('neon com velocidade > 0 liga o pulso; sem velocidade fica parado', () => {
+        expect(montar({ btnStyleType: 'neon', btnNeonPulseSpeed: 1 }).className).toContain('sarak-btn-neon-pulse');
+    });
+
+    it('neon com velocidade 0 não leva a classe de pulso', () => {
+        expect(montar({ btnStyleType: 'neon', btnNeonPulseSpeed: 0 }).className).not.toContain('sarak-btn-neon-pulse');
+    });
+
+    it('cyberpunk é wireframe: sem preenchimento e cantos retos', () => {
+        const button = montar({ btnStyleType: 'cyberpunk' });
+        expect(button.style.backgroundColor).toBe('transparent');
+        expect(button.style.borderRadius).toBe('0px');
+    });
+});

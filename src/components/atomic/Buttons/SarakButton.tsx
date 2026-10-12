@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { useAtomicStyles } from '../hooks/useAtomicStyles';
+import { useAtomicStyles, resolveNeonPulseClass } from '../hooks/useAtomicStyles';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useButtonLayoutStyles } from './hooks/useButtonLayoutStyles';
 
@@ -54,7 +54,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
         lg: 'py-5 px-8 text-base'
     };
 
-    const baseClasses = `${containerClass} ${iconOrderClass} font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn ${sizeClasses[size]}`;
+    const baseClasses = `${containerClass} ${iconOrderClass} font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn ${sizeClasses[size]}`;
 
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {
@@ -64,7 +64,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
                 return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20` : base;
             },
             'secondary': () => 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98]',
-            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
             'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-xl shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.98]',
             'success': () => 'bg-[var(--theme-success,#10b981)] text-white hover:brightness-110 shadow-xl shadow-[var(--theme-success,#10b981)]/20 active:scale-[0.98]',
             'outline': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--sarak-primary-color,#3b82f6)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 active:scale-[0.98]'
@@ -83,7 +83,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
     
     return (
         <button
-            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, resolveNeonPulseClass(design, variant), disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}

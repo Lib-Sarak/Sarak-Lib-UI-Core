@@ -26,7 +26,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
         </div>
         <button
           aria-expanded="false"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98]"
           type="button"
         >
           <span>

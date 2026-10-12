@@ -20,3 +20,15 @@ describe('resolveChromeContentStyle', () => {
         );
     });
 });
+
+describe('resolveChromeContentStyle — as cinco opções de `maxContentWidth` chegam a `max-width`', () => {
+    it.each([
+        ['1000px'],
+        ['1200px'],
+        ['1440px'],
+        ['1600px'],
+        ['100%'],
+    ])('maxContentWidth %s vira exatamente a largura máxima da região de conteúdo', (maxContentWidth) => {
+        expect(resolveChromeContentStyle('comfortable', maxContentWidth).maxWidth).toBe(maxContentWidth);
+    });
+});

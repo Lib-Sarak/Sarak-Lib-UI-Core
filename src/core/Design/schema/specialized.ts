@@ -9,21 +9,12 @@ export const SpecializedSchema: ComponentSchema = {
     label: 'Ícones e Estética',
     tokens: [
         {
-            id: 'aiPanelBg',
-            label: 'Fundo do Painel IA',
-            type: 'color',
-            description: 'Cor de fundo de um painel dedicado a interações de IA. Nota: token catalogado sem componente "Painel IA" consumidor identificado no momento — ver backlog de cobertura, spec 01.',
-            axis: 'color',
-            defaultValue: 'rgba(0, 0, 0, 0.4)',
-            cssVars: ['--sarak-ai-panel-bg']
-        },
-        {
             id: 'aiGlowColor',
             label: 'Cor do Brilho IA',
             type: 'color',
-            description: 'Cor de brilho associada a elementos de IA (ex. indicador de "pensando"/streaming). Mesma pendência de `aiPanelBg`: sem consumidor identificado no momento.',
+            description: 'Cor do indicador de "pensando" dos chats (os três pontos e o avatar do assistente enquanto a resposta é gerada). O padrão acompanha a cor primária do tema; troque por uma cor própria para dar identidade de IA ao brilho.',
             axis: 'elevation',
-            defaultValue: '#00f2ff',
+            defaultValue: 'var(--sarak-primary-color, #3b82f6)',
             cssVars: ['--sarak-ai-glow']
         },
         {
@@ -287,61 +278,6 @@ export const SpecializedSchema: ComponentSchema = {
         },
 
         // --- VISUAL ENGINE (Spec 28) ---
-        {
-            id: 'visualPerspective',
-            label: 'Visual Engine: Perspectiva 3D',
-            type: 'slider',
-            description: 'Distância de perspectiva CSS 3D (`perspective`), em pixels, usada por composições visuais com profundidade/rotação — valores baixos exageram o efeito 3D (distorção forte); valores altos suavizam a profundidade percebida.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 400, max: 2000 },
-            defaultValue: 1024,
-            cssVars: ['--sarak-visual-perspective']
-        },
-        {
-            id: 'visualTranslateOffsetSm',
-            label: 'Visual Engine: Offset de Translação (Pequeno)',
-            type: 'slider',
-            description: 'Deslocamento pequeno, em pixels, usado em translações 2D/3D de elementos decorativos do motor visual.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 0, max: 60 },
-            defaultValue: 20,
-            cssVars: ['--sarak-visual-translate-offset-sm']
-        },
-        {
-            id: 'visualTranslateZMd',
-            label: 'Visual Engine: Translação Z (Médio)',
-            type: 'slider',
-            description: 'Deslocamento no eixo Z (profundidade), em pixels, usado em composições 3D do motor visual — controla o quão "à frente" ou "atrás" um elemento parece estar.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 0, max: 100 },
-            defaultValue: 40,
-            cssVars: ['--sarak-visual-translate-z-md']
-        },
-        {
-            id: 'visualDotGridSize',
-            label: 'Visual Engine: Tamanho da Grade de Pontos',
-            type: 'slider',
-            description: 'Tamanho, em pixels, da célula da grade de pontos decorativa usada em composições do motor visual — equivalente a `dotGridTileSize`, mas neste contexto específico.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 5, max: 40 },
-            defaultValue: 15,
-            cssVars: ['--sarak-visual-dot-grid-size']
-        },
-        {
-            id: 'visualOrbBlur',
-            label: 'Visual Engine: Desfoque do Orb',
-            type: 'slider',
-            description: 'Intensidade do desfoque de orbes decorativos usados em composições do motor visual — mesmo conceito de `emptyStateOrbBlur`/`authHeroOrbBlur`, neste contexto específico.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 150 },
-            defaultValue: 60,
-            cssVars: ['--sarak-visual-orb-blur']
-        },
 
         // --- DESIGN ENGINE: PAINEL LATERAL DA FERRAMENTA (Spec 28) ---
         {
@@ -377,16 +313,5 @@ export const SpecializedSchema: ComponentSchema = {
             defaultValue: 120,
             cssVars: ['--sarak-layout-preview-max-h']
         },
-        {
-            id: 'kbdMinWidth',
-            label: 'Design Engine: Largura Mínima da Tecla (Kbd)',
-            type: 'slider',
-            description: 'Largura mínima, em pixels, de um elemento visual `<kbd>` (representação de tecla de atalho) exibido na UI da ferramenta de customização.',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 16, max: 48 },
-            defaultValue: 28,
-            cssVars: ['--sarak-kbd-min-w']
-        }
     ]
 };

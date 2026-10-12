@@ -77,9 +77,9 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'colorBgLayer2',
             label: 'Background Layer 2',
             type: 'color',
-            description: 'Cor de fundo da segunda camada de profundidade. Nota: mesmo `id` existe em `colors.ts` — mesma pendência de duplicação de `colorBgBody`.',
+            description: 'Cor da segunda camada de profundidade do fundo: a terceira mancha da malha (`bgGradientMode: mesh`), ao lado da camada 1. O padrão é a própria cor primária — a malha de hoje; troque por um tom de superfície para dar uma segunda camada de profundidade. Nota: mesmo `id` existe em `colors.ts` — mesma pendência de duplicação de `colorBgBody`.',
             axis: 'color',
-            defaultValue: '#1a1a1a',
+            defaultValue: 'var(--sarak-primary-color, #3b82f6)',
             cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
         },
         // --- BACKGROUND GLOBAL ---
@@ -210,11 +210,11 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'bgNoiseAnimation',
             label: 'Velocidade do Ruído',
             type: 'slider',
-            description: 'Velocidade de animação do padrão de ruído de fundo, em segundos por ciclo — 0 mantém o ruído estático; valores baixos dão um efeito de "TV estática" sutil e vivo.',
+            description: 'Velocidade do grão de filme da textura `noise`, em segundos por ciclo — 0 (padrão) mantém o grão parado; valores baixos dão um efeito de "TV estática" vivo, valores altos uma oscilação lenta. Respeita movimento reduzido e o modo de desempenho eco, que o param.',
             axis: 'motion',
             unit: 's',
             constraints: { min: 0, max: 10, step: 0.1 },
-            defaultValue: 1,
+            defaultValue: 0,
             cssVars: ['--sarak-noise-speed']
         },
 

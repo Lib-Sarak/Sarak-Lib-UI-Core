@@ -198,6 +198,38 @@ describe('checkTokenReader — regra (i): variável sem leitor', () => {
         expect(open.some((f) => f.tokenId === 'glassBlur')).toBe(false);
     });
 
+    it('MUTAÇÃO: var(--glass-blur-extra) NÃO lê --glass-blur — o nome da variável é ancorado', () => {
+        const prefixOnly = createFixtureRoot({
+            ...baseFiles,
+            'src/styles/a.css': '.x { backdrop-filter: blur(var(--glass-blur-extra, 4px)); }',
+        });
+        const exact = createFixtureRoot({
+            ...baseFiles,
+            'src/styles/a.css': '.x { backdrop-filter: blur(var(--glass-blur, 4px)); } .y { gap: var(--glass-blur-extra); }',
+        });
+
+        expect(checkTokenReader({ root: prefixOnly, allowlist: [] }).open.some((f) => f.kind === 'var' && f.tokenId === 'glassBlur')).toBe(true);
+        expect(checkTokenReader({ root: exact, allowlist: [] }).open.some((f) => f.kind === 'var' && f.tokenId === 'glassBlur')).toBe(false);
+    });
+
+    it('MUTAÇÃO: o literal da variável num componente também é ancorado', () => {
+        const prefixOnly = createFixtureRoot({
+            ...baseFiles,
+            'src/components/Blur.tsx': "export const style = { filter: 'blur(var(--glass-blur-extra, 4px))' };",
+        });
+
+        expect(checkTokenReader({ root: prefixOnly, allowlist: [] }).open.some((f) => f.kind === 'var' && f.tokenId === 'glassBlur')).toBe(true);
+    });
+
+    it('declarar a variável (sem lê-la) não é leitura', () => {
+        const declared = createFixtureRoot({
+            ...baseFiles,
+            'src/styles/a.css': ':root { --glass-blur: 4px; }',
+        });
+
+        expect(checkTokenReader({ root: declared, allowlist: [] }).open.some((f) => f.kind === 'var' && f.tokenId === 'glassBlur')).toBe(true);
+    });
+
     it('o id acessado num componente também lê o token', () => {
         const root = createFixtureRoot({
             ...baseFiles,
@@ -322,12 +354,144 @@ describe('ALLOWLIST', () => {
         expect(stale).toEqual([{ tokenId: 'surfaceMaterial', motivo: 'obsoleta' }]);
     });
 
-    it('toda entrada declarada no gate traz motivo', () => {
-        expect(ALLOWLIST.length).toBeGreaterThan(0);
+    it('termina VAZIA: todo token do schema tem leitor, e o mecanismo continua', () => {
+        expect(ALLOWLIST).toEqual([]);
+    });
+
+    it('entrada que alguém declarar no gate traz motivo', () => {
         for (const entry of ALLOWLIST) {
             expect(typeof entry.tokenId).toBe('string');
             expect(entry.motivo.length).toBeGreaterThan(20);
         }
+    });
+});
+
+const TABLE_SCHEMA = `
+export const TransitionSchema = {
+    id: 'transition',
+    tokens: [
+        {
+            id: 'pageTransition',
+            type: 'select',
+            constraints: { options: [{ id: 'fade', value: 'fade' }, { id: 'slide-up', value: 'slide-up' }, { id: 'none', value: 'none' }] },
+            cssVars: ['--sarak-page-transition']
+        },
+        {
+            id: 'maxWidth',
+            type: 'select',
+            options: [{ value: '1000px', label: 'Estreito' }, { value: '100%', label: 'Fluido' }],
+        }
+    ]
+};
+`;
+
+const TABLE_READER = `
+// @sarak-token-reader pageTransition tabela
+const variants = { fade: { opacity: 0 }, 'slide-up': { y: 20 }, none: {} };
+export const pick = (design) => variants[design.pageTransition];
+`;
+
+const TABLE_TEST = `
+it('pageTransition fade', () => { render({ pageTransition: 'fade' }); });
+it('pageTransition slide-up', () => { render({ pageTransition: 'slide-up' }); });
+`;
+
+describe('checkTokenReader — leitor DECLARADO: tabela e passagem direta (regras ii e iii)', () => {
+    const files = { ...baseFiles, 'src/core/Design/schema/transition.ts': TABLE_SCHEMA };
+
+    it('chave de objeto sem aspas conta como o literal da opção, no componente que acessa o id', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.tsx': 'export const pick = (design) => ({ fade: 1, "slide-up": 2 })[design.pageTransition];',
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.filter((f) => f.tokenId === 'pageTransition')).toEqual([]);
+    });
+
+    it('a tabela declarada cobre cada opção; com um teste por opção o token passa', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER,
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.filter((f) => f.tokenId === 'pageTransition')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: apagar a linha da tabela de uma opção faz o gate acusar a opção', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER.replace(" 'slide-up': { y: 20 },", ''),
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'option', tokenId: 'pageTransition', value: 'slide-up' }));
+    });
+
+    it('MUTAÇÃO: apagar o caso de teste de uma opção faz o gate acusar o teste', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER,
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST.replace("it('pageTransition slide-up', () => { render({ pageTransition: 'slide-up' }); });", ''),
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open.filter((f) => f.tokenId === 'pageTransition')).toEqual([
+            expect.objectContaining({ kind: 'test', value: 'slide-up' }),
+        ]);
+    });
+
+    it('a opção `none` é ausência: nem tabela nem teste a exigem', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER.replace(', none: {}', ''),
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+        });
+
+        const { findings } = checkTokenReader({ root, allowlist: [] });
+
+        expect(findings.some((f) => f.tokenId === 'pageTransition' && f.value === 'none')).toBe(false);
+    });
+
+    it('passagem direta cobre toda opção, mas a prova por opção continua sendo exigida', () => {
+        const reader = '// @sarak-token-reader maxWidth direto\nexport const style = (w) => ({ maxWidth: w });';
+        const withTests = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER,
+            'src/components/Width.ts': reader,
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+            'src/components/__tests__/Width.test.ts': "it('maxWidth', () => { ['1000px', '100%'].forEach(() => 0); });",
+        });
+        const withoutTests = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER,
+            'src/components/Width.ts': reader,
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+        });
+
+        expect(checkTokenReader({ root: withTests, allowlist: [] }).open.filter((f) => f.tokenId === 'maxWidth')).toEqual([]);
+        expect(checkTokenReader({ root: withoutTests, allowlist: [] }).open.filter((f) => f.tokenId === 'maxWidth').map((f) => f.value))
+            .toEqual(['1000px', '100%']);
+    });
+
+    it('declaração para token que não existe no schema é achado', () => {
+        const root = createFixtureRoot({
+            ...files,
+            'src/components/Pick.ts': TABLE_READER,
+            'src/components/Ghost.ts': '// @sarak-token-reader tokenInexistente tabela\nexport const x = 1;',
+            'src/components/__tests__/Pick.test.ts': TABLE_TEST,
+        });
+
+        const { open } = checkTokenReader({ root, allowlist: [] });
+
+        expect(open).toContainEqual(expect.objectContaining({ kind: 'marker', tokenId: 'tokenInexistente' }));
     });
 });
 

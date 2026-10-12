@@ -9,6 +9,8 @@ export interface SarakPageTransitionProps {
     locationKey: string;
 }
 
+// @sarak-token-reader pageTransitionType tabela
+// Uma entrada por opção de `pageTransitionType`; o valor do tema escolhe a linha.
 const variantsMap = {
     fade: {
         initial: { opacity: 0 },

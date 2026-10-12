@@ -19,7 +19,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
         
   </style>
   <div
-    class="mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group transition-all h-fit "
+    class="mock-container sarak-card sarak-search-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group transition-all h-fit "
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
@@ -84,7 +84,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
               </svg>
             </div>
             <input
-              class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
+              class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-[var(--sarak-input-padding,1rem)] pl-11 pr-4 w-full "
               id=":r0:"
               placeholder="Buscar modelo ou tech..."
               style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"

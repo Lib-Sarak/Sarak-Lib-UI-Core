@@ -152,6 +152,58 @@ Um teste seu que fixava o `box-shadow` do painel de busca como `none`, ou o `bac
 O `token-reader:check` passa a olhar o schema inteiro, não só o que o manifesto cita; os tokens que o escopo novo
 revelou sem leitor estão declarados, com o motivo, na `ALLOWLIST` do próprio gate.
 
+### O schema que o painel oferece desenha: 37 tokens ganham leitor, duas famílias de movimento viram uma e 27 saem do schema
+
+**Classificação: MAJOR (sai na 8.0.0).** Tokens saem do schema (o tipo `SarakDesignTokens` perde 27 chaves, de 434 para
+407), a opção `3d-tilt` de `cardHoverStyle` sai, e controles que o painel já oferecia passam a mudar a tela de todo
+tema que os carregava (valor persistido vence o padrão, então quem tinha um valor salvo passa a vê-lo desenhar).
+Nenhum nome saiu do barril público.
+
+**O que passa a desenhar** (cada um, no componente que o rótulo nomeia; o valor padrão reproduz o desenho de antes, salvo
+onde a coluna da direita diz o contrário):
+
+| Token(s) | Onde desenha | Diferença no padrão |
+|---|---|---|
+| `cardHeaderBg`, `cardHeaderBorder`, `cardHeaderPadding`, `cardFooterBg`, `cardFooterBorder` | `SarakCard.Header` e `SarakCard.Footer` (as peças de composição; os cartões de domínio desenham o próprio cabeçalho) | Os padrões do schema passam a ser os que reproduzem o desenho (transparente, sem linha, sem padding); os 14 temas, que carregavam `rgba(255,255,255,0.03)` e afins, passam a ver o cabeçalho tingido |
+| `cardHoverTranslate`, `cardHoverGlowIncrease`, `cardHoverStyle` | o **cartão interativo**: o que traz `data-sx-card-interactive="true"` (`SarakTitleCard`, `SarakImageCard` e o `SarakCard` com a nova prop `interactive`). `lift`, `glow-only` e `expand` valem só para ele; cartão contêiner (chat, matriz, formulário, `SarakCard` sem a prop) não se move nem brilha | Os cartões que subiam (`SarakTitleCard`, `SarakImageCard`) seguem subindo; nenhum outro passa a subir. O aumento de brilho padrão passa de 0,2 para 0 |
+| `cardActionBtnPrimaryBg`, `cardActionBtnHoverBg`, `cardActionBtnText`, `cardActionBtnBorderRadius`, `cardActionBtnPadding` | o botão do `SarakActionCard` | Os padrões deixam de ser cian fixo e seguem a cor primária do tema; o raio tem valor próprio e deixa de seguir `btnBorderRadius` e os cantos assimétricos do botão |
+| `cardSearchBgFocus`, `cardSearchPlaceholderColor`, `cardSearchTextFocusColor` | o campo do `SarakSearchCard` | Os padrões seguem os tokens de campo |
+| `inputPadding` | `SarakInput`, `SarakSelect`, `SarakTextarea` (e os campos derivados) | Padrão 12 → 16 (o que `py-4` desenhava) |
+| `tooltipRadius`, `tooltipBg`, `tooltipTextColor`, `tooltipBorderColor` | `SarakTooltip` | Raio padrão 4 → 6 (o que `rounded-md` desenhava); as três cores passam a ter padrão que reproduz o desenho (superfície, título e borda do tema) e os temas que as declaravam passam a vê-las |
+| `modalOverlayBlur`, `modalOverlayColor`, `colorBgModal` | véu e painel do `SarakModal` | `colorBgModal` padrão passa a `var(--theme-surface)`; o véu do modal passa a ler `modalOverlayColor` (0,4 de opacidade no padrão; antes um preto fixo a 0,6) |
+| `zIndexToast` | pilha do `SarakToast` | Padrão 2000 → 9000 (a camada em que a pilha já desenhava) |
+| `tableZebraStriping`, `tableBorderRadius` | `SarakTable` e `SarakDataTable` (listras); contêiner da `SarakTable` (raio, que entra pelos cantos do cartão porque `[data-sx-texture] .card` o escreve com `!important`) | `tableBorderRadius` passa a ser responsivo (8 no celular, 12 acima); um tema com `cardBorderRadius` ≠ 12 vê a tabela em 12 |
+| `btnGhostHoverBg`, `btnNeonPulseSpeed`, `btnStyleType` `cyberpunk` | botão `ghost`, pulso do neon, estilo wireframe | `btnNeonPulseSpeed` padrão 1,5 → 0 (o neon sempre foi estático; só pulsa quando o tema pede) |
+| `statusGlowBlur` | `SarakBadge` nas variantes de status (a lib não tem `SarakStatus`) | Padrão 8 → 0 |
+| `identityPadding`, `identityFontFamily`, `identityFontWeight`, `identityTracking` | nome da marca do cromo (`ChromeBrand`, `SarakShellNav`) | Padrões passam a ser o que a marca desenhava (padding 0, fonte de títulos, 700, -0,025 em). O controle de `identityFontFamily` no painel oferece o item "Fonte de títulos do tema (padrão)" e as fontes do tema |
+| `colorBgLayer2`, `textSmoothing`, `vignetteSoftness`, `bgNoiseAnimation`, `aiGlowColor` | terceira mancha da malha de fundo; `-webkit-font-smoothing`; parada da vinheta; animação do grão; indicador "pensando" dos dois chats | `colorBgLayer2` padrão passa a ser a primária; `bgNoiseAnimation` padrão 1 → 0 (grão estático, como sempre foi); `aiGlowColor` padrão deixa de ser cian e segue a primária; `textSmoothing` ligado só tem efeito no macOS |
+
+**O movimento passa a ter uma família só (`motion*`).** `animInstant`, `animFast`, `animNormal`, `animSlow`, `easeMain` e
+`easeOut` saem; os leitores migraram (`transition-sarak`, botão, campo, cartão, `SarakAccordion`, `SarakDrawer`).
+`motionDurationInstant` governa o aperto (`:active`) de botão e cartão, `motionEaseIn` a saída do modal, do véu e da paleta
+de busca, `motionStaggerDelay` a cascata das linhas da tabela e das barras do gráfico. **Correção que vem junto:**
+`--duration-fast|normal|slow` eram `calc(0.3s * 1s)`, inválidas, e toda transição que as usava caía a 0 s; agora valem o
+tempo do token. Diferenças no padrão: a gaveta passa de 500 ms para 600 ms, a curva de saída do aperto muda de
+`cubic-bezier(0.4,0,0.2,1)` para `(0,0,0.2,1)`, e o tema `blueprint-protocol` passa a usar a curva `motionEaseMain` que já declarava.
+
+**O que se funde** (o valor salvo cai no padrão do destino): `formLayoutDirection` → `formLabelPosition`;
+`layerElevationFactor` → `layeredShadows`; `matrixSearchBg` → tokens de campo (a busca da matriz é um `SarakInput`).
+
+**O que sai** (sem leitor, e sem componente que o rótulo nomeie): `aiPanelBg`, `identityRedirectUrl` (o link da marca é do
+consumidor), `industrialRegistry`, `inputSuccessColor` (nenhum campo tem estado de sucesso), `layout` (as três opções nunca
+tiveram regra; a estratégia de grade é `layoutGridTemplate`; a chave continua aceita no payload) e as peças internas do
+painel da lib `managementGroupDescMaxWidth`, `presetCardHoverShadowBlur`, `presetCardHoverShadowSpread`, `devicePhoneWidth`,
+`kbdMinWidth`, `themeDropdownMaxHeight`, `visualPerspective`, `visualTranslateOffsetSm`, `visualTranslateZMd`,
+`visualDotGridSize`, `visualOrbBlur`. A opção `3d-tilt` de `cardHoverStyle` sai (o tema `nebula-space` passa a `expand`).
+O desfoque do cartão passa a ter um nome só: `--sarak-card-backdrop-blur` (o alias `--sarak-card-blur` deixou de ser emitido, e `--sarak-glass-blur` é só de `glassBlur`: antes `cardBackdropBlur` a escrevia também e o último na ordem vencia). `layerBackdropBlur` e `layerBackdropOpacity` saem fundidos em `modalOverlayBlur` e `modalOverlayColor`: nenhum componente lia o véu das camadas.
+
+**Também passam a valer:** `borderStyle` nos cartões (a moldura sólida e o escopo de design não fixam mais `solid`); os tokens de cor do cartão de busca, que o campo vencia por classe utilitária; o movimento reduzido alcança o grão de ruído, que mora no `::before` do próprio `html`; o aperto de `SarakButton` e `SarakIconButton` dura `motionDurationInstant`. `SarakCard` ganha a prop `interactive` (aditiva).
+
+**O que fazer:** quem salvou um dos tokens que saem não precisa fazer nada (o aviso some ao regravar o tema). Quem tinha
+`cardHoverStyle: '3d-tilt'` volta a `lift`. Um teste seu que fixava o cabeçalho de `SarakCard` sem fundo ou a tabela com raio
+fixo lê o valor novo. O `token-reader:check` fecha com a exceção vazia: todo token do schema tem leitor, e o que o motor
+lê por tabela ou passagem direta é declarado no próprio leitor (`@sarak-token-reader`) e provado por teste por opção.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

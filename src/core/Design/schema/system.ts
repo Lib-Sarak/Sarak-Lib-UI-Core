@@ -10,20 +10,6 @@ export const SystemSchema: ComponentSchema = {
     label: 'Configurações de Layout',
     tokens: [
         {
-            id: 'layout',
-            label: 'Modo de Layout',
-            type: 'select',
-            description: 'Estratégia de posicionamento macro usada pelo sistema para organizar containers — Grid System (colunas fixas, mais previsível) ou Flexbox Layout (fluxo flexível, mais adaptável a conteúdo variável).',
-            axis: 'geometry',
-            defaultValue: 'grid',
-            options: [
-                { value: 'grid', label: 'Grid System' },
-                { value: 'flex', label: 'Flexbox Layout' },
-                { value: 'masonry', label: 'Masonry (Alvenaria)' }
-            ]
-        },
-
-        {
             id: 'layoutDensity',
             label: 'Densidade Visual',
             type: 'select',
@@ -165,15 +151,6 @@ export const SystemSchema: ComponentSchema = {
             defaultValue: { mob: 24, tab: 32, desk: 36 },
             cssVars: ['--sarak-layout-gap-lg']
         },
-        ...ICON_TOKENS,
-        // --- SCROLLBARS ---
-        // --- CORE ENGINEERING ---
-        {
-            id: 'industrialRegistry',
-            label: 'Modo do Registro Industrial',
-            type: 'boolean',
-            description: 'Chave de modo interno do motor de registro de componentes (Camada 6) — controla um comportamento de bootstrap/registro em tempo de execução, não uma propriedade visual. Mantenha ligado a menos que esteja depurando o próprio motor de registro.',
-            defaultValue: true
-        }
+        ...ICON_TOKENS
     ]
 };

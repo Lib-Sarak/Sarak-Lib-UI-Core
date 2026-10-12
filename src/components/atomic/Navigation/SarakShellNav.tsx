@@ -161,7 +161,13 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         />
                     ) : null}
                     {brand.name ? (
-                        <span className="font-bold tracking-tight text-[var(--sarak-text-main,#ffffff)] truncate">
+                        <span
+                            className="text-[var(--sarak-text-main,#ffffff)] truncate"
+                            style={{
+                                fontWeight: 'var(--sarak-identity-weight, 700)',
+                                letterSpacing: 'var(--sarak-identity-tracking, -0.025em)',
+                            }}
+                        >
                             {brand.name}
                         </span>
                     ) : null}

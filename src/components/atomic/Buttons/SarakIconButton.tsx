@@ -1,6 +1,7 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { resolveNeonPulseClass } from '../hooks/useAtomicStyles';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
@@ -47,7 +48,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
         lg: 'w-12 h-12 text-lg'
     };
 
-    const baseClasses = `inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
+    const baseClasses = `inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
 
     // Computar cores base
     const baseColor = variant === 'danger' ? 'var(--sarak-status-error-color,#ef4444)' : 'var(--sarak-primary-color,#3b82f6)';
@@ -62,7 +63,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
                 return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20` : base;
             },
             'secondary': () => 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.95]',
-            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
             'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
         return strats[v] ? strats[v]() : '';
@@ -123,13 +124,20 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
 
         if (styleType === 'neon' && neonStyles[variant]) neonStyles[variant]();
         if (styleType === 'frosted' && frostedStyles[variant]) frostedStyles[variant]();
+        if (styleType === 'cyberpunk') {
+            // Wireframe anguloso: contorno na cor do brilho, cantos retos, sem preenchimento.
+            dynamicStyle.backgroundColor = 'transparent';
+            dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
+            dynamicStyle.borderRadius = 0;
+            dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
+        }
     };
     
     applyDynamicStyles();
 
     return (
         <button
-            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, resolveNeonPulseClass(design, variant), disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}

@@ -52,38 +52,7 @@ export const LayersSchema: ComponentSchema = {
         },
 
         // --- BACKDROPS ---
-        {
-            id: 'layerBackdropBlur',
-            label: 'Blur do Fundo (Modal)',
-            type: 'slider',
-            description: 'Intensidade do desfoque aplicado ao conteúdo atrás de um modal/overlay aberto — separa visualmente o conteúdo em primeiro plano do restante da tela, reforçando a hierarquia de foco.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 40, step: 1 },
-            defaultValue: 10,
-            cssVars: ['--sarak-layer-backdrop-blur']
-        },
-        {
-            id: 'layerBackdropOpacity',
-            label: 'Escurecimento do Fundo',
-            type: 'slider',
-            description: 'Opacidade da camada escura (scrim) aplicada atrás de um modal/overlay aberto — quanto maior, mais o conteúdo de fundo é obscurecido, reforçando que ele está temporariamente inativo.',
-            axis: 'elevation',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.4,
-            cssVars: ['--sarak-layer-backdrop-opacity']
-        },
 
         // --- ELEVAÇÃO DINÂMICA ---
-        {
-            id: 'layerElevationFactor',
-            label: 'Fator de Elevação',
-            type: 'slider',
-            description: 'Multiplicador aplicado à intensidade de sombras/profundidade de elementos elevados (cards, modais, dropdowns) — valores acima de 1 exageram a sensação de profundidade; abaixo de 1 achatam o visual (clima mais flat/minimalista).',
-            axis: 'elevation',
-            constraints: { min: 0.5, max: 2, step: 0.1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-layer-elevation-factor']
-        }
     ]
 };

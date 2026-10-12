@@ -23,3 +23,13 @@
     backdrop-filter: none !important;
     transition-duration: 0.1s !important;
 }
+
+/* O grão animado (`bgNoiseAnimation`) é um pseudoelemento: o seletor `*` acima não o alcança. */
+.sarak-eco-mode [data-sx-texture="noise"]::before,
+.sarak-eco-mode[data-sx-texture="noise"]::before,
+[data-performance="eco"] [data-sx-texture="noise"]::before,
+[data-performance="eco"][data-sx-texture="noise"]::before,
+[data-perf-mode="eco"] [data-sx-texture="noise"]::before,
+[data-perf-mode="eco"][data-sx-texture="noise"]::before {
+    animation: none;
+}

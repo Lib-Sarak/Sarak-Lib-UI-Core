@@ -17,6 +17,35 @@ export const REMOVED_TOKEN_KEYS = new Set<string>([
     'contrastCurve',       // o único mecanismo de contraste do CSS é `globalContrast`
     'scrollbarWidth',      // duplicatas de `scrollWidth`/`scrollThumbColor`, que o CSS lê
     'scrollbarThumbColor',
+    // Família de movimento única (ver docs/migracoes.md, `## 8.0.0`): `motion*` sobrevive; o valor salvo cai no padrão.
+    'animInstant',
+    'animFast',
+    'animNormal',
+    'animSlow',
+    'easeMain',
+    'easeOut',
+    // Fundidos no token que já desenha: o valor salvo cai no padrão do destino.
+    'formLayoutDirection', // → formLabelPosition
+    'layerElevationFactor', // → layeredShadows
+    'matrixSearchBg', // → tokens de campo (a busca da matriz é um SarakInput)
+    'layerBackdropBlur', // → modalOverlayBlur (nenhum componente lia o véu das camadas)
+    'layerBackdropOpacity', // → modalOverlayColor
+    // Retirados: peça interna do painel da lib, ou propriedade da aplicação que não é de tema.
+    'aiPanelBg',
+    'inputSuccessColor', // nenhum campo tem estado de sucesso
+    'identityRedirectUrl',
+    'industrialRegistry',
+    'managementGroupDescMaxWidth',
+    'presetCardHoverShadowBlur',
+    'presetCardHoverShadowSpread',
+    'devicePhoneWidth',
+    'kbdMinWidth',
+    'themeDropdownMaxHeight',
+    'visualPerspective',
+    'visualTranslateOffsetSm',
+    'visualTranslateZMd',
+    'visualDotGridSize',
+    'visualOrbBlur',
 ]);
 
 // Aviso ÚNICO por sessão (precedente: persistenceStrategy.ts, hasWarnedRemoteWithoutPort).

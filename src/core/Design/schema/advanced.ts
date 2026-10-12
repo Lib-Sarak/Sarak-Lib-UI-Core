@@ -49,15 +49,6 @@ export const AdvancedSchema: ComponentSchema = {
             cssVars: ['--sarak-matrix-border-color']
         },
         {
-            id: 'matrixSearchBg',
-            label: 'Fundo da Busca',
-            type: 'color',
-            description: 'Cor de fundo da barra de busca embutida no topo da matriz expansível, usada para filtrar os nós exibidos.',
-            axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
-            cssVars: ['--sarak-matrix-search-bg']
-        },
-        {
             id: 'matrixBlur',
             label: 'Desfoque de Vidro (Blur)',
             type: 'slider',
