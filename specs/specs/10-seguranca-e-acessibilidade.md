@@ -116,15 +116,19 @@ que existe para o caso de alguém chamar `applyConfig`/`setDesign` sem passar po
 **importa** o mesmo predicado em vez de reimplementá-lo. As duas barreiras aceitam e recusam o mesmo
 conjunto por construção, não por teste espelhado.
 
-### d) `COLOR_PATTERN` rejeita `url()`
+### d) Nenhum valor de cor busca recurso
 
 ```ts
-/^(#[0-9a-fA-F]{3,8}|rgba?\(…\)|hsla?\(…\)|var\(--…\)|transparent|currentColor|inherit|none)$/
+isValidColor = isSafeCssString && !RESOURCE_IN_COLOR && COLOR_PATTERN
+// COLOR_PATTERN: hex | rgb()/rgba() | hsl()/hsla() | var(--x, reserva) | color-mix(in <espaço>, …) | palavras-chave
+// RESOURCE_IN_COLOR: url | image | image-set | cross-fade | element | paint | src — qualquer caixa, com prefixo de fabricante — e a barra invertida
 ```
 
-`validation.ts:43-46`, com o motivo escrito no comentário: **`url()` não tem razão de aparecer num valor
-de cor e é vetor clássico de SSRF/injeção.** Um tema hostil não consegue fazer o browser buscar recurso
-externo por um token de cor.
+`src/core/Provider/utils/validation.ts` (`isValidColor`, exportado para o painel gravar só o que o tema aceitaria).
+A lista negativa vale para o valor **inteiro**, em qualquer ramo — inclusive a reserva de `var()` e os argumentos de
+`color-mix` —, e a barra invertida é recusada porque escreveria o nome da função por escape. Um tema hostil não
+consegue fazer o browser buscar recurso externo por um token de cor. **Limite declarado:** a reserva de `var()`
+aceita texto sem `;<>{}` que não é cor (ex.: `1px solid red`); isso não busca recurso, mas não é cor.
 
 > **Por que isto é a garantia central, e não um detalhe:** o tema é o **único** dado que a lib processa
 > em todo boot, vindo de um lugar que ela não controla (`localStorage` é gravável por qualquer script da

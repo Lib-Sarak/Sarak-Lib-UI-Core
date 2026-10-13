@@ -65,7 +65,7 @@ reescritas aqui.
 
 **Específicas deste repositório** — as regras vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md),
 em **duas categorias** (verificáveis e de conduta), cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴.
-Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As seis que um agente
+Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As sete que um agente
 viola sem perceber:
 
 - **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, **o código vence**.
@@ -81,6 +81,10 @@ viola sem perceber:
   opção de token exige o leitor no componente (ou a regra CSS por opção) e o teste, no mesmo commit;
   `npm run token-reader:check` cobra, com a exceção vazia. O que cada token desenha está em
   [`arquitetura/02-design-engine.md`](arquitetura/02-design-engine.md) §10.
+- **O motor dá o padrão; o componente decide** *(R41-R43)*. Nada de `!important` em seletor amplo, de variável
+  com dois donos, de reserva diferente do padrão do token, nem de branco/preto fixo em componente: a cor vem do tema.
+  `css-important`, `variable-contract` e `fixed-translucent` cobram no Anel 1
+  ([`arquitetura/02-design-engine.md`](arquitetura/02-design-engine.md) §10.8-10.11).
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
 - **O baseline do `run_audit` NÃO é zero — compare com ele, nunca com zero.** A fonte viva é

@@ -334,3 +334,47 @@ de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmooth
 - **Leitor por tabela é declarado.** Quando o valor chega ao leitor por mapa em JS ou direto à propriedade, o
   arquivo do leitor traz `@sarak-token-reader <id> tabela|direto` em comentário, e cada opção tem teste que cita o
   id e o valor ([[01-gates-e-baseline]] §2.2).
+
+## 10.8 Cascata — o motor dá o padrão, o componente decide
+
+O motor não impõe com `!important`, em seletor amplo, propriedade visual que o componente controla por token ou
+classe. O padrão do cartão e do contêiner mora em `src/styles/_card-defaults.css`, na camada
+`components.sarak-elements`, **sem `!important`**: superfície (fundo e cor da borda com `cardSurfaceOpacity` e
+`cardBorderOpacity`), raio dos quatro cantos, traço e largura da borda, desfoque, transição, hover de borda, e o
+reset transparente de `main`/`section`/`article`. A classe utilitária e o `style` do componente — da lib ou do
+consumidor — vencem. Os cartões da lib não repetem classe de fundo nem de cor de borda: a superfície vem do tema,
+de um lugar só. Ficam com `!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido
+(`_motion.css`) e a escolha de token por atributo com valor (material e moldura em `_surfaces.css`). A trava é o
+`css-important:check` ([[00-regras-e-invariantes]] R41).
+
+## 10.9 Uma variável, um dono
+
+Cada variável CSS tem um token dono. A exceção é declarada: o canto de raio (`cardRadiusTL/TR/BL/BR`,
+`btnRadiusTL/TR/BL/BR`) tem `exceptionOf` apontando o mestre, e o motor não o escreve quando ele está ausente ou
+igual ao padrão do schema — aí o mestre, que lista os cantos em `cssVars`, chega a eles. Nomes que eram de duas
+semânticas são de uma só: `--radius-theme` (raio do sistema), `--theme-gap` (gap do layout),
+`--theme-border-width` (borda do sistema), `--theme-surface` (superfície, igual a `--surface-color`) e
+`--sarak-bg-base` (`bgBaseColor`). Todo nome lido existe (emitido ou declarado em CSS da lib), e toda reserva
+`var(--x, F)` é o padrão do token (o ponto `mob` em token responsivo; palavra-chave é aceita): sem Provider, a lib
+desenha o tema padrão. As curvas Bezier são `--sarak-bezier-standard/-decelerate/-accelerate/-sharp`. A trava é o
+`variable-contract:check` (R42).
+
+## 10.10 Cor que segue o tema e texto sobre cor sólida
+
+Componente não fixa branco nem preto onde o tema decide a cor: as tintas `--color-theme-tint`, `-tint-hover` e
+`-tint-strong` são `color-mix` da cor de texto do tema (5%, 10%, 20%) e valem nos dois modos (`bg-theme-tint`,
+`border-theme-tint`…). O texto sobre cor sólida é **escolhido pelo motor**, não declarado: `pickOnColor`
+(`src/core/Provider/utils/on-color.ts`) fica, entre `#020617` e `#ffffff`, com o de maior razão WCAG sobre a cor
+(a translúcida é composta sobre o corpo antes), e o motor emite `--theme-on-primary`, `--sarak-on-surface` e uma
+`--sarak-on-*` por cor sólida (secundária, destaque, status, bolha do usuário, véu, apagada). O badge suave pinta
+o texto como mistura da cor com o texto de maior contraste. A trava é o `fixed-translucent:check` (R43); o
+contraste dos pares desenhados é do `auditor_contraste` (R31).
+
+## 10.11 O componente lê o token que o nomeia
+
+O botão primário desenha `btnPrimaryBg`/`btnPrimaryText`; o secundário, `btnSecondaryBg` em todo estilo;
+`cardShadow` declarada substitui a sombra composta do cartão (o atributo `data-sx-*` também sai para token
+`text`); `cardSurfaceOpacity` age só na superfície; tabela, sobreposições, switch, modal, chat e formulário de
+entrada leem os próprios tokens; durações de classe e de `framer-motion` leem `motionDuration*`
+(`useMotionTokens`, que zera sob movimento reduzido). A pré-visualização do painel **não conta como leitor**: um
+token que tem componente na lib é lido pelo componente ([[00-regras-e-invariantes]] R40).

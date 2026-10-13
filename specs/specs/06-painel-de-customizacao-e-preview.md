@@ -160,9 +160,10 @@ token:
 
 | `token.type` | Controle | Onde |
 | --- | --- | --- |
-| `color` | `ColorControl` | `components/controls/ColorControl.tsx` |
-| `slider` / `number` | slider com `min`/`max`/`step` do próprio token | `components/controls/BasicControls.tsx` |
-| `select` | select populado por `constraints.options` | idem |
+| `color` | `ColorControl` — o seletor edita o canal opaco e **preserva o alfa**, há controle de opacidade, e o campo de texto aceita `var()`/`color-mix()`; só grava o que `isValidColor` aceita | `components/controls/ColorControl.tsx` |
+| `slider` / `number` | slider com a faixa de `tokenBounds` e o sufixo da `unit` declarada (sem unidade, o número vem cru); token responsivo edita `mob`/`tab`/`desk` e grava sempre o objeto inteiro (`ResponsiveSliderControl`) | `components/controls/BasicControls.tsx` |
+| `select` / `font` | select populado por `constraints.options`; grava o `value` da opção (o `id` e o `value` coincidem) | idem |
+| `text` / `string` | campo de texto (sombra, curva) | idem |
 | `boolean` | switch | idem |
 | `image` / `file` | `MediaUploaderControl` | `components/controls/MediaUploaderControl.tsx` |
 | estruturais de layout | `LayoutControls` | `components/controls/LayoutControls.tsx` |
@@ -170,6 +171,12 @@ token:
 Mais `HelpTooltip`, que exibe a `description` do token — a mesma string que documenta o token no catálogo.
 **A descrição escrita no schema é a ajuda que o autor de tema lê.** Isso é o que torna as descrições dos
 tokens uma obrigação de produto, não um comentário.
+
+**Mestre e exceção.** Ao lado do raio mestre e de cada canto, `ExceptionRelation` mostra a relação (quantos cantos
+têm valor próprio; "segue o mestre"; "valor próprio") e devolve o canto, ou todos, ao mestre.
+
+**Todo tipo tem controle**, nos dois despachantes; o `panel-contract:check` cobra ([[00-regras-e-invariantes]] R44).
+O painel e os mocks seguem o modo do tema que mostram: nenhum branco ou preto fixo em `src/features/` (R43).
 
 **Selo de dispositivo.** Todo controle de token com `isResponsive` mostra, acima do controle, para qual
 dispositivo o valor editado vale — **"Só no Mobile"**, **"Só no Tablet"** ou **"Desktop"**, conforme o dispositivo

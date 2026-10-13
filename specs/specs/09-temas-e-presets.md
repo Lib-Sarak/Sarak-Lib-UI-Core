@@ -385,8 +385,14 @@ do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borde
 `matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha; e
 `aiPanelBg`, `identityRedirectUrl`, `industrialRegistry` e `inputSuccessColor` saíram sem
 substituto. `layout` saiu do schema (as opções nunca tiveram regra) e segue como chave aceita do payload, que o painel usa. Opções que saíram: `systemTone` `dark`/`light` (fica `none` · `cyber` · `tactical`) e os materiais
-`metallic`/`brushed`/`acrylic`/`matte`. A nota de cada mudança, com o destino do valor salvo, está em
-`docs/migracoes.md` (`## 8.0.0`).
+`metallic`/`brushed`/`acrylic`/`matte`. Saíram também `securityShieldGlow`, `securityPulseSpeed`,
+`trackingSubtle`, `typeScaleDisplay` (sem componente que os use) e `cardHoverLift` (duplicata de `cardHoverTranslate`).
+A nota de cada mudança, com o destino do valor salvo, está em `docs/migracoes.md` (`## 8.0.0`).
+
+**O schema oferece as intenções que um tema declara**, sem sentinela: *sem animação* é `motionDuration*` em 0;
+*pílula* é o máximo do raio do token (que já excede metade da altura do controle); `identityTracking` é em px. A
+faixa de cada token tem uma fonte só (`src/core/Design/utils/tokenBounds.ts`: `constraints` manda), usada pelo
+painel e pela validação.
 
 ## 4.5 Exportar — o substituto do "salvar no banco"
 
@@ -588,7 +594,7 @@ As quatro acima perguntam *"o tema tem as chaves certas, com valores dentro do c
 passar nas quatro e ainda entregar **texto ilegível** — foi exatamente o que aconteceu: `auditor_presets`
 verde com **12 dos 18** reprovando AA, e ninguém sabia.
 
-`verify_contrast.ts` mede **36 pares texto/fundo reais**, a **4,5:1 em todos** (a WCAG só permite 3:1 para
+`verify_contrast.ts` mede **os pares texto/fundo que os componentes desenham** (a contagem sai na execução; ver §6.7), a **4,5:1 em todos** (a WCAG só permite 3:1 para
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
 cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
 superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
@@ -601,6 +607,22 @@ contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado.
 
 **O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos temas shippados; dado
 de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
+
+## 6.6 Valor de tema fora do contrato numérico é acusado
+
+`validateDesign` corta em runtime o número fora da faixa (o consumidor não quebra). Para o que a **lib embarca**, o
+corte silencioso escondia a intenção do autor: `auditTokenContract` acusa o valor fora de `min`/`max` (inclusive em
+cada ponto responsivo), o `tokenContractParity.test.ts` falha, e o `panel-contract:check` confere temas e presets
+([[00-regras-e-invariantes]] R44).
+
+## 6.7 O contraste mede o que o componente desenha
+
+`verify_contrast.ts` mede os pares que os componentes de fato pintam, nos 14 temas × 2 modos: inclusive a cor
+primária, as de status e a de erro de campo **como texto** sobre o corpo e o cartão (botão contorno e fantasma,
+link, badge suave, mensagem de erro), a tinta de hover sobre a superfície e o par real do botão primário
+(`btnPrimaryText` sobre `btnPrimaryBg`). Consequência para quem desenha tema: **a primária é também cor de texto** e
+passa 4,5:1 sobre o corpo nos dois modos. O texto sobre cor sólida (badge sólido, botão de perigo e sucesso, bolha
+do chat) não é declarado pelo tema: o motor o escolhe por contraste ([[02-design-engine]] §10.10).
 
 # 7. Como criar um tema que passa em tudo, sem um único warn
 

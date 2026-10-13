@@ -7,7 +7,7 @@ status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]"]
-depende_de: "plan-114-o-arsenal-obedece"
+depende_de: "plan-115-fechamento-do-arsenal"
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md"
 ---

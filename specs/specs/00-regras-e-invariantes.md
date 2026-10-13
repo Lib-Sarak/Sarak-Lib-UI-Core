@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**40 regras: 37 verificáveis (§2) e 3 de conduta (§3).**
+**44 regras: 41 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
-| ⚠️ escopo menor que a regra | **14** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** · **R40** |
+| ⚠️ escopo menor que a regra | **18** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** · **R40** · **R41** · **R42** · **R43** · **R44** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -1002,7 +1002,7 @@ ERRADO   silêncio                     — o consumidor assume que passa
 dentro do `npm run audit`, com teste próprio. **Baseline: `reprovados: 0` e `reprovadosModoOposto: 0`** — o
 gate mede **duas passadas**, o modo nativo do tema e a contraparte gerada.
 
-**A fronteira, decidida pelo dono e agora escrita:** **36 pares reais** texto/fundo, levantados cruzando
+**A fronteira, decidida pelo dono e agora escrita:** **os pares reais** texto/fundo (36 na decisão; desde a `plan-114`, os que os componentes desenham — a contagem sai na execução), levantados cruzando
 `src/core/Design/catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
 componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem relaxamento: a WCAG só permite 3:1
 para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
@@ -1392,11 +1392,91 @@ do `.githooks/pre-commit` e no passo de `*:check` da CI. O teste do gate tem cas
 apagado, opção sem regra, linha da tabela apagada, caso de teste apagado, nome lido só por prefixo). A prova de
 efeito é de `browser-tests/` ([[01-gates-e-baseline]] §2.6).
 
+A pré-visualização do painel (`src/features/DesignEngine/`) **não conta como leitor**, salvo para os tokens que são
+do próprio painel (`PANEL_OWN_TOKENS`, cada um com motivo).
+
 **O vão.** Os limites estão no cabeçalho do gate (R18) e saem na própria execução. Os principais:
 - **Só a direção emitido → lido.** Variável lida que nenhum token emite é do `auditor_ghostvars` (R7).
 - **Textual.** Citação em comentário de CSS ou em string solta conta como leitura; leitor sob seletor que nunca
   casa conta como vivo.
 - **O marcador é declarativo.** Não prova que a tabela é consultada em runtime, nem que o teste afirma o efeito.
+
+## R41 — O motor dá o padrão; o componente decide
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate lê só `src/styles/*.css`; `!important` montado em TypeScript
+(injetor de estilo) e regra normal da camada final que vence a classe não são vistos.
+
+**Enunciado.** O CSS do motor não escreve, com `!important` em seletor amplo, propriedade visual que o componente
+controla por token ou por classe. O padrão mora na camada `components.sarak-elements` (`_card-defaults.css`), sem
+`!important`, e a classe utilitária e o `style` do componente vencem. Usam `!important`: o modo eco, o movimento
+reduzido e a escolha de token por atributo com valor ([[02-design-engine]] §10.8).
+
+**Por quê.** Em 2026-10-12 um bloco `!important` do cartão valia sempre (pelo `.sarak-design-scope`) e atropelava
+raio, fundo, borda, hover, transição e o modo eco de todos os cartões; o reset de `main`/`section`/`article`
+deixava o Kanban transparente. Enquanto ele existia, corrigir componente não aparecia na tela.
+
+**Cobrada por:** `check-css-important-visual.mjs` (`npm run css-important:check`), no Anel 1 e na CI; acusa a
+exceção vencida.
+
+**O vão.** Os limites estão no cabeçalho do gate (R18): seletor estreitado por atributo com valor passa, mesmo
+quando o atributo é sempre emitido; `!important` em TypeScript e regra sem `!important` da camada final não são
+lidos.
+
+## R42 — Uma variável, um dono; reserva é o padrão; nome lido existe
+
+**Estado:** ⚠️ **escopo menor que a regra** — os nomes derivados pelo motor (aliases, canais, `--sarak-on-*`) não
+têm a reserva julgada; declaração sob seletor que nunca casa conta como dono.
+
+**Enunciado.** Cada variável CSS tem um token dono; a exceção é declarada (`exceptionOf`) e só vale quando difere
+do padrão. Todo nome lido em `var()` é emitido pelo motor ou declarado em CSS da lib. Toda reserva `var(--x, F)` é
+o padrão do token (o ponto `mob` em token responsivo; palavra-chave é aceita): sem Provider, a lib desenha o tema
+padrão ([[02-design-engine]] §10.9).
+
+**Por quê.** Em 2026-10-12, 14 variáveis tinham dois donos (o raio mestre nunca chegava aos cantos; a superfície e o
+fundo do cartão disputavam `--theme-surface`), cerca de 20 nomes eram lidos sem dono e 266 reservas divergiam do
+padrão (134 só na cor primária): o resultado mudava conforme o modo e o tema.
+
+**Cobrada por:** `check-variable-contract.ts` (`npm run variable-contract:check`), no Anel 1 e na CI; importa o
+schema real e modela a emissão do motor.
+
+**O vão.** Limites no cabeçalho do gate (R18): leitura por `getPropertyValue`, nomes derivados, a disputa entre o
+valor inline e o `<style>` responsivo.
+
+## R43 — Componente não fixa branco nem preto onde o tema decide
+
+**Estado:** ⚠️ **escopo menor que a regra** — textual; as texturas e materiais (`_atmosphere.css`, `_surfaces.css`)
+ficam fora por desenho.
+
+**Enunciado.** Componente da lib e painel não usam branco ou preto fixo (translúcido ou sólido, em classe ou
+estilo) onde o tema decide a cor: a cor vem de token ou de `color-mix` da cor de texto/superfície do tema. O texto
+sobre cor sólida é escolhido pelo motor por contraste ([[02-design-engine]] §10.10). Fundo próprio escuro, como o
+do `SarakLightbox`, é exceção declarada.
+
+**Por quê.** Os componentes nasceram para o tema escuro: em 2026-10-12, cerca de 44 brancos translúcidos sumiam no
+tema claro (estado vazio, tabela, cartão de busca, botões sociais), e 447 no painel.
+
+**Cobrada por:** `check-fixed-translucent.mjs` (`npm run fixed-translucent:check`), sobre `src/components/**`,
+`src/features/**` e parciais de CSS, no Anel 1 e na CI.
+
+**O vão.** Limites no cabeçalho do gate (R18).
+
+## R44 — O painel grava o que mostra; o tema embarcado respeita o contrato numérico
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate confere faixa e grade do padrão, mas a grade (`step`) dos
+valores de tema não é conferida.
+
+**Enunciado.** Todo tipo de token tem controle nos dois despachantes do painel; opção de `select` grava o próprio
+`value` (`id` = `value`); o padrão está dentro da faixa e da grade que o painel desenha; valor de tema ou preset
+embarcado fora da faixa do token é **acusado**, não cortado em silêncio ([[06-painel-de-customizacao-e-preview]] §3,
+[[09-temas-e-presets]] §6.6).
+
+**Por quê.** Em 2026-10-12, 37 sliders responsivos mostravam `NaN` e apagavam os breakpoints, um `select` não
+gravava nada válido, 7 tokens não tinham controle e 41 valores dos temas eram cortados sem aviso.
+
+**Cobrada por:** `check-panel-contract.ts` (`npm run panel-contract:check`), no Anel 1 e na CI; e
+`tokenContractParity.test.ts` (`auditTokenContract` acusa valor fora da faixa).
+
+**O vão.** Limites no cabeçalho do gate (R18).
 
 ---
 
@@ -1534,7 +1614,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
-| R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
+| R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **os pares que os componentes desenham (a contagem sai na execução), 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
@@ -1543,6 +1623,10 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
 | **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
 | **R40** | **Todo valor que o motor emite tem leitor** | **⚠️** | `check-token-reader.mjs` — schema inteiro, `ALLOWLIST` vazia; textual, marcador `@sarak-token-reader` declarativo, só a direção emitido → lido | `npm run token-reader:check` |
+| **R41** | **O motor dá o padrão; o componente decide** | **⚠️** | `check-css-important-visual.mjs` — só `src/styles/*.css`; não vê `!important` em TypeScript nem regra normal da camada final | `npm run css-important:check` |
+| **R42** | **Uma variável, um dono; reserva é o padrão; nome lido existe** | **⚠️** | `check-variable-contract.ts` — importa o schema; não julga nomes derivados nem a disputa inline × `<style>` | `npm run variable-contract:check` |
+| **R43** | **Componente não fixa branco nem preto onde o tema decide** | **⚠️** | `check-fixed-translucent.mjs` — textual; texturas e materiais fora | `npm run fixed-translucent:check` |
+| **R44** | **O painel grava o que mostra; tema embarcado no contrato numérico** | **⚠️** | `check-panel-contract.ts` + `tokenContractParity.test.ts` — não confere a grade dos valores de tema | `npm run panel-contract:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |

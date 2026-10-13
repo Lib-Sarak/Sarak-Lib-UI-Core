@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "115"
+proximo_numero_plan: "116"
 ---
 
 # 0. O que é este arquivo
@@ -42,17 +42,23 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-114-o-arsenal-obedece | 🟠 Em revisão | specs/09-temas-e-presets.md |
-| 2 | [plan-114-o-arsenal-obedece](plan/plan-114-o-arsenal-obedece.md) | Corrigir tudo o que a verificacao completa de 2026-10-12 mediu entre o token e a tela, em cinco lotes revisados um a um, e travar cada classe de defeito com gate, antes de os temas serem refeitos | — | 🟢 Aprovada | arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-115-fechamento-do-arsenal | 🟠 Em revisão | specs/09-temas-e-presets.md |
+| 2 | [plan-115-fechamento-do-arsenal](plan/plan-115-fechamento-do-arsenal.md) | Corrigir o residuo que a re-auditoria de fechamento da plan-114 mediu nos pontos cegos das travas, em tres lotes revisados um a um, fechar os furos das proprias travas e repetir a re-auditoria ate zero, antes de os temas serem refeitos | — | 🟡 Em execução | arquitetura/02-design-engine.md + specs/06-painel-de-customizacao-e-preview.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Fila de 2026-10-12 — 114, sozinha na árvore.** A `plan-110` (lote 0 aprovado) espera a 114: o dono pediu uma
-> verificação completa do arsenal antes de refazer os temas. O `npm run build` e o `cromo-css-real:check` são do revisor;
+> 🚦 **Fila de 2026-10-13 — 115, sozinha na árvore.** A `plan-110` (lote 0 aprovado) espera a 115: o dono decidiu
+> fechar o resíduo da re-auditoria antes de refazer os temas. O `npm run build` e o `cromo-css-real:check` são do revisor;
 > o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-114` foi SINTETIZADA e REMOVIDA em 2026-10-13** (com o anexo `plan-114-achados-da-verificacao.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **114** | [[02-design-engine]] **§10.8 a §10.11 (novas)** — cascata (o padrão do cartão na camada que cede, sem `!important`), uma variável com um dono (mestre + exceção por `exceptionOf`, reserva = padrão, Bezier com `--`), tintas e texto sobre cor sólida por contraste (`--sarak-on-*`), componente que lê o próprio token · [[06-painel-de-customizacao-e-preview]] §3 — controles por tipo (slider responsivo, `select` grava o valor, unidade declarada, cor com alfa, `ExceptionRelation`) · [[09-temas-e-presets]] §4.4.4 (intenções e tokens que saíram), **§6.6 e §6.7 (novas)** — contrato numérico acusado, contraste dos pares desenhados, a primária como cor de texto · [[10-seguranca-e-acessibilidade]] §2.1d — nenhum valor de cor busca recurso · [[00-regras-e-invariantes]] **R41 a R44 (novas)**, R40 (o painel não é leitor), R31 e a contagem · [[01-gates-e-baseline]] §2.2 e §2.2.1 (`css-important`, `variable-contract`, `fixed-translucent`, `panel-contract`) · `00-contexto` §2. Ficou de fora: o resíduo da re-auditoria de fechamento — promovido à `plan-115` |
 
 > ⚪ **As `plan-111`, `plan-112` e `plan-113` foram SINTETIZADAS e REMOVIDAS em 2026-10-12.** Destino demonstrado:
 >
