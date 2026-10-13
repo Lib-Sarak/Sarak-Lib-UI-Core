@@ -179,7 +179,7 @@ describe('durações do motor leem os tokens de movimento', () => {
 describe('modo eco: o cartão inteiro perde o desfoque do material', () => {
     it('uma regra de eco mira .sarak-card e .card e vem na camada final, depois do material', () => {
         const performance = withoutComments(read('_performance.css'));
-        expect(performance).toMatch(/:is\(\.sarak-eco-mode, \[data-performance="eco"\], \[data-perf-mode="eco"\]\) :is\(\.sarak-card, \.card\) \{\s*backdrop-filter: none !important;/);
+        expect(performance).toMatch(/\.sarak-eco-mode :is\(\.sarak-card, \.card\) \{\s*backdrop-filter: none !important;/);
         const base = read('sarak-base.css');
         expect(base.indexOf('_performance.css')).toBeGreaterThan(base.indexOf('_card-materials.css'));
     });

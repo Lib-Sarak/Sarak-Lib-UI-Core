@@ -1,6 +1,6 @@
 import React from 'react';
 import { HelpTooltip } from './HelpTooltip';
-import { composeColor, parseLiteralColor, pickerHex } from './colorParts';
+import { composeColor, pickerHex, resolveColorParts } from './colorParts';
 import { isValidColor } from '../../../../core/Provider/utils/validation';
 
 interface ColorControlProps {
@@ -27,7 +27,9 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
         setInvalid(false);
     }, [value]);
 
-    const parts = parseLiteralColor(value || DISPLAY_DEFAULT);
+    // A cor que o valor desenha — também a de `var()`, `color-mix()` e `hsl()`: o seletor e o alfa partem dela,
+    // e não de um branco que o valor nunca teve.
+    const parts = resolveColorParts(value || DISPLAY_DEFAULT);
     const alpha = parts ? parts.alpha : 1;
 
     const commit = (next: string) => {

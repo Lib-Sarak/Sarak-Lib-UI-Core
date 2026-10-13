@@ -60,7 +60,7 @@
         transform: none !important;
     }
 }
-:is(.sarak-eco-mode, [data-performance="eco"], [data-perf-mode="eco"]) .sarak-card:hover {
+.sarak-eco-mode .sarak-card:hover {
     transform: none !important;
 }
 
@@ -76,7 +76,7 @@
 }
 .sarak-card-action-btn--filled {
     background-color: var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #00f2ff));
-    color: var(--sarak-card-action-btn-text, var(--text-muted, #94a3b8));
+    color: var(--sarak-card-action-btn-text, var(--text-muted, rgba(255, 255, 255, 0.4)));
 }
 .sarak-card-action-btn--filled:hover {
     background-color: var(--sarak-card-action-btn-hover-bg, var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #00f2ff)));
@@ -87,9 +87,9 @@
    `SarakInput` escreve fundo, texto e placeholder por classe utilitária (`bg-[var(--sarak-input-bg…)]`),
    que vem de uma camada depois desta e venceria o token do cartão (medido em navegador). */
 .sarak-search-card input::placeholder {
-    color: var(--sarak-card-search-placeholder, var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent))) !important;
+    color: var(--sarak-card-search-placeholder, var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(255, 255, 255, 0.4))) 30%, transparent))) !important;
 }
 .sarak-search-card input:focus {
-    background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, #1e293b))) !important;
-    color: var(--sarak-card-search-text-focus, var(--sarak-input-text-color, var(--text-muted, #94a3b8))) !important;
+    background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, rgba(15, 23, 42, 0.6)))) !important;
+    color: var(--sarak-card-search-text-focus, var(--sarak-input-text-color, var(--text-muted, rgba(255, 255, 255, 0.4)))) !important;
 }

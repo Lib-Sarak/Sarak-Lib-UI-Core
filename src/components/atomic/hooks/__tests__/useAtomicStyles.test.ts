@@ -36,6 +36,25 @@ describe('useAtomicStyles', () => {
         });
     });
 
+    describe('estilo do botão `neumorphism` (relevo suave)', () => {
+        const { getButtonStyles } = useAtomicStyles();
+        const design = { btnStyleType: 'neumorphism' } as never;
+
+        it('em repouso o botão sai da superfície (sombra externa dupla) e não tem borda', () => {
+            const rest = getButtonStyles(design, 'primary', false);
+            expect(String(rest.boxShadow)).toMatch(/^5px 5px 10px .*, -5px -5px 10px /);
+            expect(rest.border).toBe('none');
+        });
+
+        it('sob o ponteiro afunda: a sombra vira interna', () => {
+            expect(String(getButtonStyles(design, 'primary', true).boxShadow)).toMatch(/^inset 3px 3px 6px /);
+        });
+
+        it('CONTRAPROVA: o padrão `matte` não ganha relevo nenhum', () => {
+            expect(getButtonStyles({ btnStyleType: 'matte' } as never, 'primary', false)).toEqual({});
+        });
+    });
+
     describe('sombra do campo (`inputShadow`, token de texto com duas palavras-chave)', () => {
         const { getInputStyles } = useAtomicStyles();
 

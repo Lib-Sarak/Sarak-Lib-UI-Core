@@ -46,7 +46,7 @@ export const kineticFlowTheme: SarakThemePreset = {
         shadowProjectionBlur: 80,
         shadowProjectionAlpha: 0.6,
         vignetteOpacity: 0.6,
-        vignetteSoftness: 100,
+        vignetteSoftness: 60,
         globalSaturation: 1.5,
         globalContrast: 1.2,
         identityAlignment: 'center',

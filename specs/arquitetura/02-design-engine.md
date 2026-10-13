@@ -326,7 +326,12 @@ Campo (`inputPadding`), tooltip (`tooltipRadius`, `tooltipBg`, `tooltipTextColor
 `tableBorderRadius`, este pelos quatro cantos como variável do contêiner), botão (`btnGhostHoverBg`,
 `btnNeonPulseSpeed`), badge de status (`statusGlowBlur`), nome da marca no cromo (`identityPadding`,
 `identityFontFamily` — padrão: a fonte de títulos do tema —, `identityFontWeight`, `identityTracking`), indicador
-de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmoothing`).
+de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmoothing`), alinhamento e hover da marca
+(`identityAlignment`, `identityHoverEffect`, em `.sarak-chrome-brand`), especularidade e rugosidade do vidro
+(`glassSpecularity`, `glassRoughness`, em `.sarak-glass`), camada da barra lateral (`zIndexSidebar`), raio do selo
+(`badgeRadius`) e peso e caixa dos títulos e do corpo (`h1Weight`, `h2Weight`, `bodyWeight`, `headingTransform`,
+lidos direto em `_elements.css`). O estilo de botão `neumorphism` tem desenho próprio (relevo em repouso, sombra
+interna sob o ponteiro). O modo eco é a classe `.sarak-eco-mode`, que o consumidor aplica; nenhum token a escreve.
 
 ## 10.7 Regras de CSS que o build impõe
 

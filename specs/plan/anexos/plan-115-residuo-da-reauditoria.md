@@ -54,3 +54,9 @@ cor que busca recurso (mais de 60 sondas).
 |---|---|---|---|
 | R2.11 | 2 | `scripts/consumer-kit/__tests__/kitGenerator.test.mjs`, `check-container-query-literal`, `generate-token-types.check` | estouram o tempo sob carga (passam isolados) — mesma regra do lote 5 da `plan-114`: limite declarado por caso pesado, com o motivo |
 | R3.5 | 3 | `SarakChat.tsx:45`, `SarakChatEngine.tsx:62` | `!p-0` redundante desde que o padding cede à classe |
+
+### Herdado do veredito do lote 2 (2026-10-13)
+
+| # | Lote | Onde | O que fazer |
+|---|---|---|---|
+| R3.6 | 3 | reservas de alias de fachada em componentes (`var(--text-muted, #94a3b8)`, `--border-color`, `--color-theme-card`): 359 leituras em TypeScript, 323 divergentes do padrão do token | a reserva é o padrão do token dono (R42); o `variable-contract:check` passa a julgar também a reserva de alias em componente (fecha o limite 6) |

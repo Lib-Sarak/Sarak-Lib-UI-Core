@@ -41,7 +41,7 @@ describe('cardHoverStyle — uma regra por opção, no atributo que o motor emit
 
     it('movimento reduzido e modo eco desligam o deslocamento do hover', () => {
         expect(cards).toMatch(/prefers-reduced-motion:\s*reduce\)\s*\{\s*\[data-sx-card-hover-style\] \.sarak-card\[data-sx-card-interactive="true"\]:hover\s*\{\s*transform:\s*none/);
-        expect(cards).toMatch(/\[data-performance="eco"\][^{]*\.sarak-card:hover\s*\{\s*transform:\s*none/);
+        expect(cards).toMatch(/\.sarak-eco-mode \.sarak-card:hover\s*\{\s*transform:\s*none/);
     });
 });
 

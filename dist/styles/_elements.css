@@ -97,6 +97,25 @@ button:focus-visible {
     box-shadow: 0 0 0 4px var(--theme-primary-focus);
 }
 
+/* Peso e caixa dos títulos e do corpo: o valor da opção (`300`…`900`, `uppercase`…) é o próprio valor CSS,
+   entregue pela variável que `h1`/`h2`/`h3`/`body` leem acima.
+   @sarak-token-reader h1Weight, h2Weight, bodyWeight, headingTransform direto */
+
+/* Identidade da marca no cromo (`ChromeBrand`): leitor de `identityAlignment` e `identityHoverEffect`
+   (`data-sx-identity-*` no `html`/`body`). Mora aqui, na camada que cede: o `justify-center` do cromo
+   colapsado e qualquer classe do consumidor vencem. */
+.sarak-chrome-brand {
+    transition: opacity var(--duration-fast, 0.2s) ease, transform var(--duration-fast, 0.2s) ease, filter var(--duration-fast, 0.2s) ease;
+}
+[data-sx-identity-alignment="left"] .sarak-chrome-brand { justify-content: flex-start; }
+[data-sx-identity-alignment="center"] .sarak-chrome-brand { justify-content: center; }
+[data-sx-identity-alignment="right"] .sarak-chrome-brand { justify-content: flex-end; }
+[data-sx-identity-hover-effect="opacity"] .sarak-chrome-brand:hover { opacity: 0.7; }
+[data-sx-identity-hover-effect="scale"] .sarak-chrome-brand:hover { transform: scale(1.04); }
+[data-sx-identity-hover-effect="glow"] .sarak-chrome-brand:hover {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--theme-primary, #00f2ff) 60%, transparent));
+}
+
 /* Padrões do `body`: cedem a qualquer classe utilitária posta nele (`leading-*`, `text-*`,
    `font-*`, `p-*`…). Ficam aqui, num lugar só, e depois de `body, span, p, div` acima para
    a família manter a reserva `'Inter'`. O fundo do `body` é `!important` e por isso mora na

@@ -294,40 +294,6 @@
     ]
   },
   {
-    "tokenId": "cardBackgroundColor",
-    "visualImpact": "cards",
-    "name": "Cor de Fundo do Card",
-    "description": "Cor primária de todas as superfícies de cartão. Em ambientes cyber, usar fundos semitransparentes com Glassmorphism.",
-    "type": "color",
-    "importance": 90,
-    "categories": [
-      "cores",
-      "cards",
-      "superficie"
-    ],
-    "tags": [
-      "background",
-      "glass",
-      "fill"
-    ],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": [
-      "SarakCard"
-    ],
-    "cssVariables": [
-      "--card-bg",
-      "--theme-surface",
-      "--theme-card",
-      "--sarak-card-bg"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "cardBackdropBlur",
-      "cardSurfaceOpacity"
-    ]
-  },
-  {
     "tokenId": "cardBackdropBlur",
     "name": "Intensidade do Backdrop Blur (Glass)",
     "description": "Nível de desfoque de fundo atrás do cartão. Essencial para Glassmorphism premium.",
@@ -423,36 +389,6 @@
     },
     "relatedTokens": [
       "cardBorderColor"
-    ]
-  },
-  {
-    "tokenId": "cardBorderColor",
-    "name": "Cor da Borda do Card",
-    "description": "Coloração da linha que contorna o cartão.",
-    "type": "color",
-    "importance": 60,
-    "categories": [
-      "cores",
-      "cards",
-      "bordas"
-    ],
-    "tags": [
-      "stroke"
-    ],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": [
-      "SarakCard"
-    ],
-    "cssVariables": [
-      "--card-border-color",
-      "--theme-border",
-      "--sarak-card-border-color"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "cardBorderWidth",
-      "cardBorderOpacity"
     ]
   },
   {

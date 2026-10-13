@@ -69,7 +69,6 @@ export const emitColorChannels = (
 const ON_COLOR_SOURCES: Record<string, string> = {
     '--theme-on-primary': '--theme-primary',
     '--sarak-on-secondary': '--sarak-secondary-color',
-    '--sarak-on-accent': '--sarak-accent-color',
     '--sarak-on-success': '--sarak-status-success-color',
     '--sarak-on-error': '--sarak-status-error-color',
     '--sarak-on-warning': '--sarak-status-warning-color',

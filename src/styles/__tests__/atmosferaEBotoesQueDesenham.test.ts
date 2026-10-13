@@ -33,13 +33,20 @@ describe('vignetteSoftness — governa a parada transparente da vinheta', () => 
     it('as duas vinhetas de _atmosphere.css e a de _theme.css leem o token', () => {
         const atmosphere = read('_atmosphere.css');
         expect(atmosphere.match(/transparent clamp\(0%, calc\(100% - var\(--sarak-vignette-softness, 50\) \* 1\.6%\), 95%\)/g)).toHaveLength(2);
-        expect(read('_theme.css')).toMatch(/transparent clamp\(0%, calc\(100% - var\(--sarak-vignette-softness, 50\) \* 1%\), 95%\)/);
+        // O terceiro leitor (`--sarak-vignette`, `.sarak-vignette-layer`) usa o MESMO fator dos outros dois.
+        expect(read('_theme.css')).toMatch(/transparent clamp\(0%, calc\(100% - var\(--sarak-vignette-softness, 50\) \* 1\.6%\), 95%\)/);
     });
 
-    it('com o padrão (50) as paradas são as de sempre: 20% e 50%', () => {
+    it('com o padrão (50) a parada é 20% nos três leitores', () => {
         expect(100 - 50 * 1.6).toBeCloseTo(20);
-        expect(100 - 50 * 1).toBe(50);
         expect(tokenOf(AtmosphereSchema, 'vignetteSoftness')?.defaultValue).toBe(50);
+    });
+
+    it('a faixa do slider acaba onde o CSS satura: 62,5 zera a parada, e o máximo (60) fica logo antes', () => {
+        const max = AtmosphereSchema.tokens.find((token) => token.id === 'vignetteSoftness')?.constraints?.max as number;
+        expect(max).toBeLessThanOrEqual(100 / 1.6);
+        expect(100 - max * 1.6).toBeGreaterThanOrEqual(0);
+        expect(100 - (max + 5) * 1.6, 'cinco pontos acima do máximo já seria < 0 (saturado)').toBeLessThan(0);
     });
 });
 
@@ -61,7 +68,7 @@ describe('bgNoiseAnimation — grão animado, parado por padrão', () => {
     });
 
     it('o modo eco corta a animação do pseudoelemento; movimento reduzido já a zera', () => {
-        expect(read('_performance.css')).toMatch(/\[data-perf-mode="eco"\] \[data-sx-texture="noise"\]::before[\s\S]*animation: none/);
+        expect(read('_performance.css')).toMatch(/\.sarak-eco-mode \[data-sx-texture="noise"\]::before[\s\S]*animation: none/);
         expect(read('_motion.css')).toContain('animation-duration: 0.01ms !important');
     });
 });

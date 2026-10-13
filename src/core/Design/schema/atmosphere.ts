@@ -256,7 +256,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'slider',
             description: 'Rugosidade simulada da superfície de vidro — valores baixos dão um vidro mais liso/polido; valores altos simulam um vidro fosco/áspero, difundindo mais a luz.',
             axis: 'texture',
-            constraints: { min: 0, max: 1, step: 0.05 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
             cssVars: ['--sarak-glass-roughness']
         },
@@ -296,7 +296,7 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'shadowIntensity',
             label: 'Intensidade da Sombra',
             type: 'slider',
-            description: 'Multiplicador geral da intensidade de todas as sombras do sistema — um único controle para tornar as sombras mais sutis (achatado/flat) ou mais dramáticas (profundidade acentuada).',
+            description: 'Opacidade do elemento que usa a classe `.shadow-theme` (de 0,3 a 1,0: 0,3 + intensidade × 0,7) e da sombra em camadas dele — não é um multiplicador das sombras dos cartões, que vêm de `cardShadow*`, `shadowAmbientAlpha` e `shadowProjectionAlpha`.',
             axis: 'elevation',
             constraints: { min: 0, max: 2, step: 0.1 },
             defaultValue: 0.5,
@@ -348,7 +348,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'slider',
             description: 'Opacidade da sombra de contato (curta, rente ao elemento, simula o objeto tocando a superfície) — parte do sistema de sombra em duas camadas (contato + projeção), junto com `shadowProjectionAlpha`.',
             axis: 'elevation',
-            constraints: { min: 0, max: 1, step: 0.05 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.4,
             cssVars: ['--sarak-shadow-ambient-alpha']
         },
@@ -369,7 +369,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'slider',
             description: 'Opacidade da sombra de projeção — controla o quão escura/visível é a sombra longa em relação ao fundo. Combine com `shadowProjectionBlur` para o resultado completo.',
             axis: 'elevation',
-            constraints: { min: 0, max: 1, step: 0.05 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.2,
             cssVars: ['--sarak-shadow-projection-alpha']
         },
@@ -389,9 +389,9 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'vignetteSoftness',
             label: 'Suavidade das Bordas',
             type: 'slider',
-            description: 'Suavidade da transição do efeito vignette — valores baixos criam uma borda escura mais definida/abrupta; valores altos espalham o escurecimento gradualmente por uma área maior da tela.',
+            description: 'Suavidade da transição do efeito vignette — valores baixos criam uma borda escura mais definida/abrupta; valores altos espalham o escurecimento gradualmente por uma área maior da tela. Em 60 o escurecimento já cobre a tela inteira, por isso a faixa termina aí.',
             axis: 'elevation',
-            constraints: { min: 0, max: 200 },
+            constraints: { min: 0, max: 60 },
             defaultValue: 50,
             cssVars: ['--sarak-vignette-softness']
         },

@@ -229,7 +229,8 @@ export function fallbackMatches(fallback: string, token: TokenLike): boolean {
 }
 
 export interface NameIndex {
-    byName: Map<string, { token: TokenLike; item: EmittedName }>;
+    byName: Map<string, { token: TokenLike; item: EmittedName; derived?: boolean }>;
+    /** Nomes derivados (alias de fachada, canal `-rgb`): a reserva em CSS da lib é julgada; em componente, não (limite 6). */
 }
 
 /** Nome → token dono, só para nomes com UM dono (os conflitos são outro achado). */
@@ -251,6 +252,46 @@ export function indexByName(tokens: TokenLike[]): NameIndex {
     return { byName };
 }
 
+/**
+ * Nomes que o motor escreve FORA do laço de tokens mas que valem o valor de um token: o canal `r, g, b` do
+ * fundo do corpo e da sidebar (`emitColorChannels`) e os aliases de fachada (`--accent-color`, `--text-main`…,
+ * o `aliasPairs` do `useDesignVariables`). Entram no índice com o dono do nome de origem, para a reserva deles
+ * ser julgada contra o padrão do mesmo token — antes só o nome do token tinha reserva conferida.
+ */
+export function addDerivedNames(index: NameIndex, runtimeSources: string[]): number {
+    let added = 0;
+    const text = runtimeSources.join('\n');
+    const add = (name: string, source: string, kind: 'rgb' | 'alias'): void => {
+        const owner = index.byName.get(source);
+        if (!owner || index.byName.has(name)) return;
+        const item: EmittedName = kind === 'rgb'
+            ? { name, tokenId: owner.token.id, kind: 'variant', base: source, suffix: 'rgb' }
+            : { name, tokenId: owner.token.id, kind: 'base' };
+        index.byName.set(name, { token: owner.token, item, derived: true });
+        added += 1;
+    };
+    for (const m of text.matchAll(/\[\s*'(--[\w-]+-rgb)'\s*,\s*'(--[\w-]+)'\s*\]/g)) add(m[1], m[2], 'rgb');
+    for (const m of text.matchAll(/\[\s*'(--[\w-]+)'\s*,\s*variables\['(--[\w-]+)'\]/g)) add(m[1], m[2], 'alias');
+    return added;
+}
+
+/**
+ * As variáveis declaradas num CSS, SEM contar a regra cujo seletor nunca casa: toda alternativa do seletor
+ * exige um atributo `[data-…]` que nenhum token emite nem código escreve. Declarar sob um seletor assim não
+ * faz da variável "escrita" — era o caso de `--font-size-factor`, sob `[data-font-scale]`.
+ */
+export function liveDeclaredIn(cssText: string, attributeWriters: ReadonlySet<string>): string[] {
+    const names = new Set<string>();
+    for (const match of cssText.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const alternatives = match[1].split(',').map((item) => item.trim()).filter(Boolean);
+        const attributesOf = (selector: string): string[] => [...selector.matchAll(/\[(data-[\w-]+)/g)].map((m) => m[1]);
+        const isDead = (selector: string): boolean => attributesOf(selector).some((name) => !attributeWriters.has(name));
+        if (alternatives.length > 0 && alternatives.every(isDead)) continue;
+        for (const name of declaredIn(match[2])) names.add(name);
+    }
+    return [...names];
+}
+
 /** A reserva que o padrão do token promete para a variante (cor com `generateVariants`), ou `null` se depende do modo. */
 function expectedVariantFallback(owner: { token: TokenLike; item: EmittedName }, computeVariant: (color: string, suffix: string) => string | null): string | null {
     const { item, token } = owner;
@@ -258,6 +299,17 @@ function expectedVariantFallback(owner: { token: TokenLike; item: EmittedName },
     const accepted = acceptedDefaults(token)[0];
     if (!accepted) return null;
     return computeVariant(accepted, item.suffix);
+}
+
+/**
+ * A reserva de uma variante é a variante do padrão. `-rgb` é um CANAL (`0, 242, 255`), não uma cor: compara
+ * como texto. Antes ele passava por `sameColor`, e `parseToRgba` devolve preto para o que não reconhece — os
+ * dois lados viravam preto e QUALQUER canal (até "banana") passava. Nas outras variantes só vale cor com cor.
+ */
+export function variantFallbackMatches(fallback: string, expected: string, suffix: string | undefined): boolean {
+    if (normalizeText(fallback) === normalizeText(expected)) return true;
+    if (suffix === 'rgb') return false;
+    return looksLikeColor(fallback) && looksLikeColor(expected) && sameColor(fallback, expected);
 }
 
 export interface FallbackScan {
@@ -276,11 +328,13 @@ export function scanFallbacks(
         if (read.fallback === null) continue;
         const owner = index.byName.get(read.name);
         if (!owner) continue;
+        // Nome derivado: a reserva do CSS da lib (o piso sem Provider) é julgada; a de componente, não.
+        if (owner.derived && !read.file.endsWith('.css')) continue;
         if (owner.item.kind === 'variant') {
             const expected = expectedVariantFallback(owner, computeVariant);
             if (expected === null || /^var\(/i.test(read.fallback) || read.fallback === '') continue;
             checked += 1;
-            if (!sameColor(read.fallback, expected) && normalizeText(read.fallback) !== normalizeText(expected)) {
+            if (!variantFallbackMatches(read.fallback, expected, owner.item.suffix)) {
                 findings.push({ file: read.file, line: read.line, name: read.name, fallback: read.fallback, expected });
             }
             continue;

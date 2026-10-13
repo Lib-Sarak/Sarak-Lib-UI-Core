@@ -104,6 +104,39 @@ describe('parseSchemaTokens', () => {
     });
 });
 
+describe('parseSchemaTokens — opção declarada só com `id`', () => {
+    it('lê o id quando a opção não tem `value` (o que o painel grava)', () => {
+        const source = `export const S = { id: 's', tokens: [
+            { id: 'weightToken', type: 'select', constraints: { options: [{ id: '300', label: 'Light' }, { id: '700', label: 'Bold' }] } },
+            { id: 'mixed', type: 'select', constraints: { options: [{ id: 'a', value: 'va', label: 'A' }, { id: 'b', label: 'B' }] } },
+        ] };`;
+        const byId = Object.fromEntries(parseSchemaTokens(source).map((t) => [t.id, t]));
+        expect(byId.weightToken.options).toEqual(['300', '700']);
+        expect(byId.mixed.options).toEqual(['va', 'b']);
+    });
+
+    it('MUTAÇÃO: token cujas opções só têm `id` e nenhum leitor é achado por opção (antes passava "lido")', () => {
+        const schema = `export const S = { id: 's', tokens: [
+            { id: 'headingWeight', type: 'select', constraints: { options: [{ id: '300', label: 'L' }, { id: '700', label: 'B' }] }, cssVars: ['--sarak-heading-weight'] },
+        ] };`;
+        const root = createFixtureRoot({ 'src/core/Provider/manifest.ts': 'export const M: Record<string, {}> = {};', 'src/core/Design/schema/s.ts': schema, 'src/styles/a.css': 'body { color: red; }' });
+        const { open } = checkTokenReader({ root, allowlist: [] });
+        expect(open.filter((f) => f.kind === 'option' && f.tokenId === 'headingWeight').map((f) => f.value)).toEqual(['300', '700']);
+    });
+
+    it('a declaração `@sarak-token-reader … direto` cobre a opção só com `id`, e exige o teste por opção', () => {
+        const schema = `export const S = { id: 's', tokens: [
+            { id: 'headingWeight', type: 'select', constraints: { options: [{ id: '300', label: 'L' }] }, cssVars: ['--sarak-heading-weight'] },
+        ] };`;
+        const css = '/* @sarak-token-reader headingWeight direto */\nh1 { font-weight: var(--sarak-heading-weight, 900); }';
+        const files = { 'src/core/Provider/manifest.ts': 'export const M: Record<string, {}> = {};', 'src/core/Design/schema/s.ts': schema, 'src/styles/a.css': css };
+        const withoutTest = checkTokenReader({ root: createFixtureRoot(files), allowlist: [] }).open;
+        expect(withoutTest.some((f) => f.kind === 'test' && f.tokenId === 'headingWeight' && f.value === '300')).toBe(true);
+        const withTest = checkTokenReader({ root: createFixtureRoot({ ...files, 'src/styles/__tests__/w.test.ts': "expect(emit('headingWeight', '300')).toBe(1);" }), allowlist: [] }).open;
+        expect(withTest.filter((f) => f.tokenId === 'headingWeight')).toEqual([]);
+    });
+});
+
 describe('checkTokenReader — regra (ii): opção sem leitor', () => {
     it('MUTAÇÃO: opção do schema sem regra CSS nem componente é achado', () => {
         const root = createFixtureRoot({ ...baseFiles, 'src/styles/a.css': 'body { color: red; }' });

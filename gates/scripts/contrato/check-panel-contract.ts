@@ -26,8 +26,10 @@
 // 2. (i) julga o padrão do schema e (ii) os temas e presets que a lib embarca (`SARAK_GLOBAL_THEMES`,
 //    `presets/components/*`). Tema do consumidor, tema salvo e JSON importado são julgados por
 //    `validateDesign` em runtime — que corta —, não por este gate.
-// 3. (ii) não confere a grade do `step` de tema: o slider "encaixa" na grade, mas o valor declarado
-//    (0,35 num passo de 0,1) é desenhado como está. Só o padrão do schema é conferido contra o passo.
+// 3. (ii) confere a grade do `step` de tema e preset contando a partir do `min` (ou de 0), com o passo
+//    do schema (ou 1, o do painel sem faixa). Não corrige: o `validateDesign` de runtime NÃO encaixa o valor
+//    na grade — o tema do consumidor com 0,35 num passo de 0,1 é desenhado como está e regravado em outro
+//    valor só quando o usuário mexe no slider.
 // 4. (iii) é TEXTUAL: lê a união `SarakTokenValueType` e os `case '…':` do `DynamicTokenControl` e as chaves
 //    do `ControlRegistry`. Um ramo que existe e renderiza o controle errado passa — o que o controle
 //    GRAVA é do teste do componente, não deste gate. Tipo usado fora do schema também entra (é a união).

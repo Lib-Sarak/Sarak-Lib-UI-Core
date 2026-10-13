@@ -3,7 +3,7 @@
     "tokenId": "primaryColor",
     "visualImpact": "cores",
     "name": "Cor Primária (Base)",
-    "description": "Cor de destaque principal do sistema, usada em botões primários e ações ativas.",
+    "description": "Cor de destaque principal do sistema: links, foco e estados ativos. O fundo do botão primário é `btnPrimaryBg`.",
     "type": "color",
     "importance": 100,
     "categories": [
@@ -101,7 +101,7 @@
   {
     "tokenId": "accentColor",
     "name": "Cor de Acento (Accent)",
-    "description": "Cor vibrante para chamar atenção em micro-elementos, badges ou notificações.",
+    "description": "Cor de acento: terceira cor das séries dos gráficos e uma das manchas da malha de fundo.",
     "type": "color",
     "importance": 85,
     "categories": [
@@ -299,7 +299,7 @@
       "global"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -332,7 +332,7 @@
       "surface"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -362,7 +362,7 @@
       "surface"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -469,99 +469,6 @@
     "allowedValues": null,
     "relatedTokens": [
       "cardBackgroundColor"
-    ]
-  },
-  {
-    "tokenId": "colorBgBody",
-    "name": "Background Geral (Body) - Duplicado",
-    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
-    "type": "color",
-    "importance": 95,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "bg",
-      "body",
-      "global"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-body",
-      "--theme-bg",
-      "--theme-body",
-      "--bg-body",
-      "--sarak-bg-base"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer1"
-    ]
-  },
-  {
-    "tokenId": "colorBgLayer1",
-    "name": "Background Layer 1 - Duplicado",
-    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
-    "type": "color",
-    "importance": 90,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "layer",
-      "bg",
-      "surface"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-layer-1",
-      "--theme-surface-1"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer2"
-    ]
-  },
-  {
-    "tokenId": "colorBgLayer2",
-    "name": "Background Layer 2 - Duplicado",
-    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
-    "type": "color",
-    "importance": 85,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "layer",
-      "bg",
-      "surface"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-layer-2",
-      "--theme-surface-2"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer1"
     ]
   },
   {
@@ -1163,7 +1070,7 @@
     "tokenId": "shadowIntensity",
     "visualImpact": "cards",
     "name": "Intensidade da Sombra",
-    "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",
+    "description": "Opacidade do elemento com a classe `.shadow-theme`; as sombras do cartão vêm de `cardShadow*`.",
     "type": "number",
     "importance": 85,
     "categories": [

@@ -232,36 +232,6 @@
     ]
   },
   {
-    "tokenId": "zIndexModal",
-    "name": "Camada: Modais (Engenharia)",
-    "description": "Variável de engenharia mapeando o índice Z para janelas Modais.",
-    "type": "number",
-    "importance": 85,
-    "categories": [
-      "layout",
-      "camadas",
-      "specialized-engines"
-    ],
-    "tags": [
-      "z-index",
-      "modal",
-      "layer",
-      "engineering"
-    ],
-    "databaseColumn": "specialized_engines",
-    "schemaOrigin": "engineering.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-z-modal"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "zIndexToast"
-    ]
-  },
-  {
     "tokenId": "zIndexToast",
     "name": "Camada: Notificações (Toast)",
     "description": "Variável de engenharia mapeando o índice Z para componentes superpostos de Notificação/Toast.",

@@ -32,15 +32,17 @@ function runCheck() {
 }
 
 describe('generate-token-types --check', () => {
-  // `npx tsx` gasta ~3s por invocação (spawn de processo próprio) — acima do
-  // testTimeout default (5s) sob carga da suíte completa.
+  // `npx tsx` gasta ~3 s por invocação (spawn de processo próprio, que carrega o schema inteiro) — medido
+  // até ~12 s sob a carga da suíte completa; o `testTimeout` padrão é 5 s e os 15 s anteriores ainda estouravam.
+  const SPAWN_TIMEOUT_MS = 60_000;
+
   it('acusa o artefato gerado divergente da fonte', () => {
     fs.writeFileSync(OUT_FILE, `${original}\n// linha estranha plantada pelo teste\n`, 'utf-8');
     expect(runCheck()).toBe(1);
-  }, 15000);
+  }, SPAWN_TIMEOUT_MS);
 
   it('libera o artefato em dia com a fonte', () => {
     fs.writeFileSync(OUT_FILE, original, 'utf-8');
     expect(runCheck()).toBe(0);
-  }, 15000);
+  }, SPAWN_TIMEOUT_MS);
 });

@@ -50,7 +50,7 @@ export const GlobalSchema: ComponentSchema = {
             id: 'bodySize',
             label: 'Tamanho Global das Fontes',
             type: 'select',
-            description: 'Tamanho base da fonte para todo o corpo de texto da aplicação — escala todos os textos proporcionalmente. Valores menores (12-14px) favorecem densidade de informação (dashboards, tabelas); valores maiores (18-20px) favorecem legibilidade/acessibilidade.',
+            description: 'Tamanho da fonte do corpo (`body`): o texto que herda dele muda de tamanho. Componentes com tamanho próprio — a escala tipográfica `typeScale*` em px e as classes `text-*` em rem — não escalam. Valores menores (12-14px) favorecem densidade (dashboards, tabelas); maiores (18-20px), legibilidade.',
             axis: 'density',
             constraints: {
                 options: [

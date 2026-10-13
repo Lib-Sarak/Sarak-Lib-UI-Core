@@ -80,9 +80,9 @@
    sem usar a cor da marca. Acompanha o modo claro/escuro porque lê o texto do tema. */
 [data-sx-system-tone="tactical"] {
     --sarak-bg-tone-image:
-        radial-gradient(circle at 50% 110%, color-mix(in srgb, var(--text-muted, #94a3b8) 10%, transparent) 0%, transparent 50%),
-        linear-gradient(color-mix(in srgb, var(--text-muted, #94a3b8) 16%, transparent) 1px, transparent 1px),
-        linear-gradient(90deg, color-mix(in srgb, var(--text-muted, #94a3b8) 16%, transparent) 1px, transparent 1px);
+        radial-gradient(circle at 50% 110%, color-mix(in srgb, var(--text-muted, rgba(255, 255, 255, 0.4)) 10%, transparent) 0%, transparent 50%),
+        linear-gradient(color-mix(in srgb, var(--text-muted, rgba(255, 255, 255, 0.4)) 16%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--text-muted, rgba(255, 255, 255, 0.4)) 16%, transparent) 1px, transparent 1px);
     --sarak-bg-tone-size: 100% 100%, 24px 24px, 24px 24px;
     --sarak-bg-tone-repeat: no-repeat, repeat, repeat;
 }

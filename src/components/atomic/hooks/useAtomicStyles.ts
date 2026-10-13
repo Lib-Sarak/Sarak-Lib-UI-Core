@@ -7,6 +7,11 @@ import { resolveSwitchStyles } from './switchStyles';
 const NEUMORPH_DARK = 'color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 20%, transparent)';
 const NEUMORPH_LIGHT = 'color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent)';
 
+/** O relevo do botão `neumorphism`: sai da superfície em repouso e afunda (sombra interna) sob o ponteiro. */
+export const neumorphismButtonShadow = (isHovered: boolean): string => isHovered
+    ? `inset 3px 3px 6px ${NEUMORPH_DARK}, inset -3px -3px 6px ${NEUMORPH_LIGHT}`
+    : `5px 5px 10px ${NEUMORPH_DARK}, -5px -5px 10px ${NEUMORPH_LIGHT}`;
+
 /** Variantes do estilo neon que têm halo em repouso — só nelas o pulso tem o que pulsar. */
 const NEON_PULSE_VARIANTS = ['primary', 'danger', 'secondary'];
 
@@ -75,6 +80,14 @@ export const useAtomicStyles = () => {
             dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${glowColor}`;
             dynamicStyle.borderRadius = 0;
             dynamicStyle.boxShadow = isHovered ? `0 0 10px ${glowColor}` : 'none';
+            return dynamicStyle;
+        }
+
+        if (styleType === 'neumorphism') {
+            // Relevo suave (soft UI): o botão sai da superfície com a sombra escura embaixo e a clara em cima, e
+            // afunda (sombra interna) sob o ponteiro. A cor e o texto seguem a variante; só a borda sai.
+            dynamicStyle.border = 'none';
+            dynamicStyle.boxShadow = neumorphismButtonShadow(isHovered);
             return dynamicStyle;
         }
 

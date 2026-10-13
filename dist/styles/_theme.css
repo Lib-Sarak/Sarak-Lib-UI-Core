@@ -88,12 +88,8 @@
       color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-shadow-projection-alpha, 0.2) * var(--sarak-layered-shadows, 1) * 100%)), transparent);
   --dynamic-shadow: var(--sarak-dynamic-shadow);
 
-  /* Óptica de Vidro Avançada */
-  --sarak-surface-specular: rgba(255, 255, 255, var(--sarak-glass-specularity, 0.1));
-  --sarak-surface-roughness: var(--sarak-glass-roughness, 0.05);
-
   /* Viewport Effects */
-  --sarak-vignette: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
+  --sarak-vignette: radial-gradient(circle, transparent clamp(0%, calc(100% - var(--sarak-vignette-softness, 50) * 1.6%), 95%), var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
 }
 
 /* Utilitários Globais de Sincronização */

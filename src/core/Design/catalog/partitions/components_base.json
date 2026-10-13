@@ -864,7 +864,7 @@
     "tokenId": "btnStyleType",
     "visualImpact": "forma",
     "name": "Estilo Base do Botão",
-    "description": "Definição arquitetural visual (Matte, Neon, Frosted/Glass, Borderline) aplicada aos botões.",
+    "description": "Linguagem visual do botão: Matte, Neon, Frosted (vidro), Borderline, Cyberpunk (wireframe) e Neumorphism (relevo suave).",
     "type": "select",
     "importance": 80,
     "categories": [

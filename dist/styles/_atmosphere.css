@@ -93,9 +93,11 @@
 }
 
 /* Glass Fidelity Engine */
-.sarak-glass, 
-[data-glass="1"] {
-    backdrop-filter: blur(var(--sarak-glass-blur, 16px)) saturate(var(--sarak-glass-saturation, 1.2));
+.sarak-glass {
+    /* `glassRoughness` fosqueia o vidro (tira contraste do que ele difrata) e `glassSpecularity` é o brilho de
+       luz na quina de cima. */
+    backdrop-filter: blur(var(--sarak-glass-blur, 16px)) saturate(var(--sarak-glass-saturation, 1.2)) contrast(calc(1 - var(--sarak-glass-roughness, 0.05)));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, var(--sarak-glass-specularity, 0.1));
     background-color: color-mix(in srgb, var(--sarak-bg-base), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
     border: var(--sarak-glass-edge-width, 1px) solid var(--sarak-glass-edge-color, rgba(255,255,255,0.1));
 }
@@ -383,12 +385,7 @@
     to { opacity: 0.6; transform: scale(1.05); }
 }
 
-.texture-aurora-classic::before,
-[data-sx-texture="aurora-classic"]::before,
-[data-sx-card-texture-type="aurora-classic"] .sarak-card::after,
-.sarak-card[data-sx-card-texture-type="aurora-classic"]::after,
-[data-sx-card-texture-type="aurora-classic"] .card::after,
-.card[data-sx-card-texture-type="aurora-classic"]::after {
+.texture-aurora-classic::before {
     background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--theme-secondary, #7000ff) 0%, transparent 50%), radial-gradient(circle at 50% 50%, var(--theme-accent, #ff00d4) 0%, transparent 50%);
     filter: blur(100px);
     opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1)));

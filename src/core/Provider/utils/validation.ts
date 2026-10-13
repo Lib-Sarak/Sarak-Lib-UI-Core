@@ -4,7 +4,7 @@ import { sarakGetAllDesignTokens } from '../../Design/master-map';
 import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import { isSafeCssString, isSafeMediaString } from './cssSafety';
 import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
-import { clampToTokenBounds, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
+import { clampToTokenBounds, isOffTokenGrid, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
 import type { SarakDesignToken } from '../../Design/types';
 
 /**
@@ -152,6 +152,9 @@ const describeDriftReason = (token: SarakDesignToken, value: unknown): string =>
     }
 };
 
+/** Só slider e número têm grade de `step`: texto, cor e enumeração não. */
+const isNumericToken = (token: { type: string }): boolean => token.type === 'slider' || token.type === 'number';
+
 /**
  * Audita um payload de tema (fonte = defaults do MASTER_DESIGN_MAP ou tema/preset
  * shippado pela lib) contra o contrato de cada token, SEM efeito colateral
@@ -169,7 +172,8 @@ export const auditTokenContract = (fonte: string, design: Record<string, unknown
         const motivo = coerceTokenValue(token, value) === undefined
             ? describeDriftReason(token, value)
             // `validateDesign` corta em silêncio para a borda: o tema mostraria outro valor que o declarado.
-            : (isOutsideTokenBounds(value, token) ? 'fora de min/max (cortado para a borda na validação)' : null);
+            : (isOutsideTokenBounds(value, token) ? 'fora de min/max (cortado para a borda na validação)'
+                : (isOffTokenGrid(value, token) && isNumericToken(token) ? 'fora da grade do passo (o slider o regrava em outro valor)' : null));
         if (motivo) drift.push({ token: key, fonte, valor: value, motivo });
     });
     return drift;

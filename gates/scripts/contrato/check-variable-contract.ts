@@ -37,16 +37,29 @@
 // 5. Não prova que o consumo é correto nem que o efeito aparece; o efeito é de `browser-tests/`.
 // 6. Os nomes escritos pelo `useDesignVariables` fora do laço são lidos do texto dele e do de
 //    `designVariableHelpers` (literais entre aspas): um nome citado lá em código real ou em mensagem conta
-//    como escrito.
+//    como escrito. Os aliases de fachada (`aliasPairs`) e os canais `-rgb` emitidos fora do laço entram no
+//    índice com a reserva julgada — só a do CSS da lib (o piso sem Provider). A de COMPONENTE não é
+//    julgada: em 2026-10-13 eram 359 leituras de alias em TS, 323 com reserva diferente do padrão
+//    (`var(--text-muted, #94a3b8)` contra `rgba(255, 255, 255, 0.4)`), e a decisão de uniformá-las é da
+//    plan que as tocar. Um alias que o gate não consegue ler no `aliasPairs` (outra forma de escrever o
+//    par) segue sem reserva conferida.
+// 7. A declaração sob seletor que nunca casa NÃO conta como dono quando o seletor exige `[data-…]` de um
+//    atributo que nenhum token select/boolean/font/text emite nem literal de TypeScript escreve. Seletor
+//    morto por outro motivo (classe que ninguém aplica, elemento que não existe) continua contando como dono.
+// 8. A reserva do canal `-rgb` é conferida como texto (a lista `r, g, b` do padrão), e a das outras
+//    variantes como cor: um canal "banana" é acusado. O canal só é julgado se o nome do token dono é
+//    conhecido; um canal de nome montado em template fica fora (limite 2).
 // -------------------------------------------------------------------------
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { computeColorVariants } from '../../../src/core/Provider/utils/color-engine';
 import {
+    addDerivedNames,
     declaredIn,
     emittedNames,
     indexByName,
+    liveDeclaredIn,
     loadTokens,
     ownerConflicts,
     readsIn,
@@ -54,6 +67,7 @@ import {
     scanFallbacks,
     sourceFiles,
     stripComments,
+    toKebab,
     type FallbackFinding,
     type OwnerConflict,
     type TokenLike,
@@ -77,6 +91,18 @@ export interface ContractReport {
     fallbacksChecked: number;
 }
 
+/** Os atributos `data-…` que alguém escreve: o `data-sx-<kebab>` de token select/boolean/font/text e todo literal de TS. */
+export function attributeWriters(tokens: TokenLike[], codeTexts: string[]): Set<string> {
+    const names = new Set<string>();
+    for (const token of tokens) {
+        if (['select', 'boolean', 'font', 'text'].includes(token.type ?? '')) names.add(`data-sx-${toKebab(token.id)}`);
+    }
+    for (const text of codeTexts) {
+        for (const match of text.matchAll(/['"`{ ](data-[a-z][\w-]*)/g)) names.add(match[1]);
+    }
+    return names;
+}
+
 function computeVariant(color: string, suffix: string): string | null {
     const variants = computeColorVariants(color, '#000000') as unknown as Record<string, string>;
     return variants[suffix] ?? null;
@@ -89,12 +115,17 @@ export function buildReport({ srcDir = path.join(ROOT, 'src'), tokens = loadToke
     const reads: VarRead[] = [];
     // O hook e o módulo de derivados que ele chama escrevem variáveis fora do laço de tokens.
     const runtimeFiles = ['useDesignVariables.ts', 'designVariableHelpers.ts'].map((name) => path.resolve(srcDir, 'core', 'Design', 'hooks', name));
-    for (const file of sourceFiles(srcDir)) {
+    const runtimeTexts: string[] = [];
+    const files = sourceFiles(srcDir).map((file) => ({ file, text: stripComments(fs.readFileSync(file, 'utf8'), file.endsWith('.css')) }));
+    const writers = attributeWriters(tokens, files.filter((entry) => !entry.file.endsWith('.css')).map((entry) => entry.text));
+    for (const { file, text } of files) {
         const isCss = file.endsWith('.css');
-        const text = stripComments(fs.readFileSync(file, 'utf8'), isCss);
         const relative = path.relative(srcDir, file).split(path.sep).join('/');
-        for (const name of declaredIn(text)) defined.add(name);
-        if (runtimeFiles.includes(path.resolve(file))) runtimeNames(text).forEach((name) => defined.add(name));
+        for (const name of isCss ? liveDeclaredIn(text, writers) : declaredIn(text)) defined.add(name);
+        if (runtimeFiles.includes(path.resolve(file))) {
+            runtimeNames(text).forEach((name) => defined.add(name));
+            runtimeTexts.push(text);
+        }
         reads.push(...readsIn(text, relative));
     }
 
@@ -114,6 +145,7 @@ export function buildReport({ srcDir = path.join(ROOT, 'src'), tokens = loadToke
         .sort((a, b) => a.name.localeCompare(b.name));
 
     const index = indexByName(tokens);
+    addDerivedNames(index, runtimeTexts);
     const { findings, checked } = scanFallbacks(reads, index, computeVariant);
 
     return {

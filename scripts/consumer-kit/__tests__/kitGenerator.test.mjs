@@ -12,10 +12,14 @@ const comMarcadores = (miolo) => `prosa antes\n\n<!-- ${MARCA}:INICIO -->\n${mio
 let catalog;
 let generatedOutputs;
 
+// Limite próprio: montar o catálogo do kit lê o schema, os temas e o motor inteiros (~7–9 s medidos isolado) e o
+// `hookTimeout` padrão é 10 s — sob a carga da suíte completa (≈4 workers, jsdom) o hook estourava sem erro do kit.
+const KIT_BUILD_TIMEOUT_MS = 60_000;
+
 beforeAll(() => {
     catalog = buildKitCatalog();
     generatedOutputs = buildKitOutputs(catalog);
-});
+}, KIT_BUILD_TIMEOUT_MS);
 
 describe('injectBlock — o que preserva a prosa e o que derruba o gerador', () => {
     it('substitui só o miolo, preservando a prosa dos dois lados', () => {

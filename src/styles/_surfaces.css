@@ -4,7 +4,7 @@
     /* Placeholder de campo: o texto do campo a 30% — o mesmo que `placeholder:…/30` dos campos desenha.
        Mora aqui para o padrão de `cardSearchPlaceholderColor` poder ser um `var()` (cor de token aceita
        `var(--x, …)`, não `color-mix` cru). */
-    --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent);
+    --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(255, 255, 255, 0.4))) 30%, transparent);
 }
 
 /* `surfaceMaterial` (`data-sx-surface-material`), `surfaceIntensity` e a moldura do CARTÃO

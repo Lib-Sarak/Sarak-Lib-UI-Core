@@ -281,9 +281,9 @@ export const CardSchema: ComponentSchema = {
             id: 'cardShadowSpread',
             label: 'Opacidade da Sombra do Card',
             type: 'slider',
-            description: 'Opacidade da sombra base do card, em % (0 a 200; 20 = 20%) — a cor vem de `shadowColorMode` e a geometria de `cardShadowOffsetX`, `cardShadowOffsetY`, `cardShadowBlur` e `cardShadowExpansion`. Valores altos dão peso e presença ao card.',
+            description: 'Opacidade da sombra base do card, em % (0 a 100; 20 = 20%; acima de 100 a cor já é cheia) — a cor vem de `shadowColorMode` e a geometria de `cardShadowOffsetX`, `cardShadowOffsetY`, `cardShadowBlur` e `cardShadowExpansion`. Valores altos dão peso e presença ao card.',
             axis: 'elevation',
-            constraints: { min: 0, max: 200 },
+            constraints: { min: 0, max: 100 },
             defaultValue: 20,
             cssVars: ['--sarak-card-shadow-spread']
         },

@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  * 1. Só valores COMPUTADOS de propriedades nomeadas; nenhum pixel e nenhuma sobreposição visual.
  * 2. Só Chromium headless, o tema default e os recortes `cascata-raio-catalogo`/`schema-movimento`.
- * 3. O modo eco é ligado pelo atributo `data-perf-mode="eco"` no `<html>`, não pelo token do painel: mede a
+ * 3. O modo eco é ligado pela classe `sarak-eco-mode` no `<html>`, não por token do painel: mede a
  *    regra de CSS, não o caminho que a escolhe.
  * 4. Lê o `dist/` — sem `npm run build` recente, mede o build anterior.
  * -------------------------------------------------------------------------
@@ -163,7 +163,7 @@ test('eco: o .sarak-card perde o desfoque e encurta a transição; sem eco, ele 
         const card = page.locator('[data-probe="cartao-puro"] .sarak-card');
         expect(await readComputed(card, 'backdrop-filter'), 'CONTRAPROVA: fora do eco o cartão desfoca').not.toBe('none');
 
-        await page.evaluate(() => document.documentElement.setAttribute('data-perf-mode', 'eco'));
+        await page.evaluate(() => document.documentElement.classList.add('sarak-eco-mode'));
         await expect(card, 'o modo eco vence o desfoque do material do cartão').toHaveCSS('backdrop-filter', 'none');
         await expect(card, 'o modo eco vence a transição do cartão').toHaveCSS('transition-duration', '0.1s');
     });

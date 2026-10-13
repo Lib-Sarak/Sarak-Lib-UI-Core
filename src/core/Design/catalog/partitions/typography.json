@@ -98,7 +98,7 @@
     "tokenId": "textColorMaster",
     "visualImpact": "cores",
     "name": "Texto Principal",
-    "description": "Cor de alto contraste usada em títulos e parágrafos focais.",
+    "description": "Cor de alto contraste do texto corrente (parágrafos e rótulos). Os títulos usam `titleColor`.",
     "type": "color",
     "importance": 95,
     "categories": [
@@ -626,7 +626,7 @@
   },
   {
     "tokenId": "typeScaleMicro",
-    "name": "Escala Micro (7px)",
+    "name": "Escala Micro",
     "description": "Tamanho de fonte para rótulos micro (badges de rascunho, glifos de status).",
     "type": "number",
     "importance": 40,
@@ -641,7 +641,7 @@
   },
   {
     "tokenId": "typeScaleTiny",
-    "name": "Escala Tiny (8px)",
+    "name": "Escala Tiny",
     "description": "Tamanho de fonte para legendas e subtítulos diminutos.",
     "type": "number",
     "importance": 40,
@@ -656,7 +656,7 @@
   },
   {
     "tokenId": "typeScale3xs",
-    "name": "Escala 3XS (9px)",
+    "name": "Escala 3XS",
     "description": "Tamanho de fonte para rótulos e subtítulos pequenos de cards.",
     "type": "number",
     "importance": 40,
@@ -671,7 +671,7 @@
   },
   {
     "tokenId": "typeScale2xs",
-    "name": "Escala 2XS (10px)",
+    "name": "Escala 2XS",
     "description": "Tamanho de fonte para badges, chips e itens de listagem compactos.",
     "type": "number",
     "importance": 40,
@@ -686,7 +686,7 @@
   },
   {
     "tokenId": "typeScaleCaption",
-    "name": "Escala Caption (12px)",
+    "name": "Escala Caption",
     "description": "Tamanho de fonte para legendas e textos de apoio.",
     "type": "number",
     "importance": 40,
@@ -701,7 +701,7 @@
   },
   {
     "tokenId": "trackingTight",
-    "name": "Tracking Tight (0.2em)",
+    "name": "Tracking Tight",
     "description": "Espaçamento entre letras para rótulos uppercase compactos.",
     "type": "number",
     "importance": 35,
@@ -716,7 +716,7 @@
   },
   {
     "tokenId": "trackingSnug",
-    "name": "Tracking Snug (0.25em)",
+    "name": "Tracking Snug",
     "description": "Espaçamento entre letras para rótulos uppercase, um passo acima do tight.",
     "type": "number",
     "importance": 30,
@@ -731,7 +731,7 @@
   },
   {
     "tokenId": "trackingWide",
-    "name": "Tracking Wide (0.3em)",
+    "name": "Tracking Wide",
     "description": "Espaçamento entre letras para rótulos e badges uppercase.",
     "type": "number",
     "importance": 35,
@@ -746,7 +746,7 @@
   },
   {
     "tokenId": "trackingWider",
-    "name": "Tracking Wider (0.4em)",
+    "name": "Tracking Wider",
     "description": "Espaçamento entre letras para rótulos uppercase mais espaçados.",
     "type": "number",
     "importance": 30,
@@ -761,7 +761,7 @@
   },
   {
     "tokenId": "trackingWidest",
-    "name": "Tracking Widest (0.5em)",
+    "name": "Tracking Widest",
     "description": "Espaçamento entre letras para títulos e badges de destaque.",
     "type": "number",
     "importance": 30,
@@ -776,7 +776,7 @@
   },
   {
     "tokenId": "trackingUltra",
-    "name": "Tracking Ultra (0.8em)",
+    "name": "Tracking Ultra",
     "description": "Espaçamento entre letras máximo, para efeitos de destaque extremo.",
     "type": "number",
     "importance": 25,
@@ -791,7 +791,7 @@
   },
   {
     "tokenId": "typeScaleXs",
-    "name": "Escala XS (11px)",
+    "name": "Escala XS",
     "description": "Tamanho de fonte para rótulos ligeiramente maiores que o 2XS.",
     "type": "number",
     "importance": 40,
@@ -806,7 +806,7 @@
   },
   {
     "tokenId": "typeScaleXl",
-    "name": "Escala XL (20px)",
+    "name": "Escala XL",
     "description": "Tamanho de fonte para glifos/placeholders de destaque em previews.",
     "type": "number",
     "importance": 35,

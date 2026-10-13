@@ -6,9 +6,9 @@
 */
 
 :root, body, .sarak-design-scope {
-  --bg-body-rgb: var(--sarak-bg-body-rgb, 248, 250, 252);
-  --bg-sidebar-rgb: var(--sarak-sidebar-bg-rgb, 241, 245, 249);
-  --bg-card-rgb: var(--sarak-card-bg-rgb, 255, 255, 255);
+  --bg-body-rgb: var(--sarak-bg-body-rgb, 5, 5, 5);
+  --bg-sidebar-rgb: var(--sarak-sidebar-bg-rgb, 0, 0, 0);
+  --bg-card-rgb: var(--sarak-card-bg-rgb, 15, 23, 42);
 
   --text-main: var(--sarak-text-main, #ffffff);
   --text-title: var(--sarak-title-color, #ffffff);

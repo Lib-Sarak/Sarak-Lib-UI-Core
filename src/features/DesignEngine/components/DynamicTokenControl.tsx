@@ -58,6 +58,7 @@ function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange
             return (
                 <ColorControl
                     label={token.label}
+                    description={token.description}
                     value={value as string}
                     onChange={onChange}
                 />
@@ -78,6 +79,7 @@ function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange
             return (
                 <SelectControl
                     label={token.label}
+                    description={token.description}
                     value={value as string}
                     options={token.constraints?.options || token.options || []}
                     isFont={token.type === 'font'}

@@ -57,7 +57,7 @@ export const MotionSchema: ComponentSchema = {
             description: 'Duração, em segundos, de micro-interações rápidas de UI (hover, toggle), em CSS (`--duration-fast`) e em JS.',
             axis: 'motion',
             unit: 's',
-            constraints: { min: 0, max: 0.5, step: 0.05 },
+            constraints: { min: 0, max: 0.5, step: 0.01 },
             defaultValue: 0.2,
             cssVars: ['--sarak-motion-dur-fast']
         },
@@ -68,7 +68,7 @@ export const MotionSchema: ComponentSchema = {
             description: 'Duração, em segundos, de transições de escopo médio: o corpo da página, a classe `transition-sarak`, expandir/recolher um painel (`SarakAccordion`). Ritmo perceptível mas ágil.',
             axis: 'motion',
             unit: 's',
-            constraints: { min: 0, max: 1, step: 0.05 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.3,
             cssVars: ['--sarak-motion-dur-normal']
         },
@@ -79,7 +79,7 @@ export const MotionSchema: ComponentSchema = {
             description: 'Duração, em segundos, de animações mais longas (a gaveta e o véu dela, transições de cena). Use com moderação.',
             axis: 'motion',
             unit: 's',
-            constraints: { min: 0, max: 2, step: 0.1 },
+            constraints: { min: 0, max: 2, step: 0.05 },
             defaultValue: 0.6,
             cssVars: ['--sarak-motion-dur-slow']
         },

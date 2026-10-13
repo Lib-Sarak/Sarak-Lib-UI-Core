@@ -27,7 +27,7 @@ export const ChromeBrand: React.FC<{
         // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
         // base do bloco); o bloco interno mantém a anatomia de sempre.
         <div className="min-w-0" style={{ padding: 'var(--sarak-identity-padding, 0px)' }}>
-            <div className={`flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
+            <div className={`sarak-chrome-brand flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
                 {logo
                     ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
                     : brand?.logoUrl && (

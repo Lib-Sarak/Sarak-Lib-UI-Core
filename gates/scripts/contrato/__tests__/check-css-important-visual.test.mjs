@@ -76,7 +76,7 @@ describe('PLANTADO: o que o gate pega', () => {
 describe('o que o gate deixa passar', () => {
     it('modo eco: classe de modo e atributo com valor', () => {
         expect(violationsOf('.sarak-eco-mode * { transition-duration: 0.1s !important; backdrop-filter: none !important; }')).toEqual([]);
-        expect(violationsOf('[data-performance="eco"] * { box-shadow: none !important; }')).toEqual([]);
+        expect(violationsOf('[data-example="eco"] * { box-shadow: none !important; }')).toEqual([]);
     });
 
     it('movimento reduzido: atributo com valor e @media', () => {

@@ -211,6 +211,21 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
         btnBorderRadius: { mob: 30, tab: 30, desk: 30 }, btnRadiusTR: { mob: 0, tab: 0, desk: 0 },
     },
     'recorte-geometrico': { cardGeometricCut: 20 },
+    'identidade-esquerda': { identityAlignment: 'left' },
+    'identidade-centro': { identityAlignment: 'center' },
+    'identidade-direita': { identityAlignment: 'right' },
+    'identidade-hover-nenhum': { identityHoverEffect: 'none' },
+    'identidade-hover-opacidade': { identityHoverEffect: 'opacity' },
+    'identidade-hover-escala': { identityHoverEffect: 'scale' },
+    'identidade-hover-brilho': { identityHoverEffect: 'glow' },
+    'vidro-rugoso': { glassRoughness: 0.5, glassSpecularity: 0.4 },
+    'vinheta-suave': { vignetteSoftness: 60, texture: 'noise' },
+    'vinheta-seca': { vignetteSoftness: 0, texture: 'noise' },
+    'vinheta-padrao': { texture: 'noise' },
+    'sidebar-camada': { zIndexSidebar: 300 },
+    'selo-quadrado': { badgeRadius: 4 },
+    'peso-leve': { h2Weight: '300', bodyWeight: '300', headingTransform: 'uppercase' },
+    'botao-neumorphism': { btnStyleType: 'neumorphism' },
     'movimento-padrao': { motionDurationFast: 0.45, motionEaseMain: 'cubic-bezier(0.1, 0.7, 0.1, 1)' },
     'moldura-dupla': { borderType: 'double', textureColor: '#1f2937' },
     'dono-mestre-escalar': { cardBorderRadius: 20, btnBorderRadius: 30 },
@@ -333,6 +348,12 @@ const App: React.FC = () => {
  *     e suave (sucesso), botão de perigo, abas em pílula (a bandeja de tinta) e o alternador da barra de prova.
  * `?css=escopado` troca o `sarak.css` global pelo `sarak-scoped.css` (o artefato do Modo Embarcado, com `:root` virado em
  * `.sarak-scope`) antes de montar a cena; sem ele a folha é a global.
+ *
+ *   - `identidade-<esquerda|centro|direita>` / `identidade-hover-<nenhum|opacidade|escala|brilho>`: `identityAlignment` e
+ *     `identityHoverEffect`, medidos no nome da marca do cromo (`.sarak-chrome-brand`).
+ *   - `vidro-rugoso`: `glassRoughness` 0,5 e `glassSpecularity` 0,4, medidos num `.sarak-glass` (cena `cartao-cede`).
+ *   - `vinheta-<suave|seca|padrao>`: `vignetteSoftness` 60, 0 e o padrão (sobre a textura `noise`, que liga a vinheta); `sidebar-camada`: `zIndexSidebar` 300; `selo-quadrado`: `badgeRadius` 4.
+ *   - `peso-leve`: `h2Weight` 300, `bodyWeight` 300 e `headingTransform` uppercase; `botao-neumorphism`: `btnStyleType`.
  *
  *   - `cartao-cede`: o cartão da lib (`.sarak-card`) com e sem classe utilitária de fundo, desfoque, moldura, preenchimento e
  *     sombra, o `.bg-theme-card` só como cor, e um botão com transform inline — a cena em que o material, a moldura, a caixa e o
@@ -671,6 +692,7 @@ const CardYieldsScene: React.FC = () => (
             <div className="sarak-card absolute" style={{ pointerEvents: 'none' }}>Posição por classe</div>
         </div>
         <div data-probe="so-cor"><div className="bg-theme-card">Só a cor do cartão</div></div>
+        <div data-probe="vidro"><div className="sarak-glass">Vidro de prova</div></div>
         <div data-probe="botao-livre"><button type="button">Botão sem estilo</button></div>
         <div data-probe="botao-inline"><button type="button" style={{ transform: 'scale(0.5)' }}>Botão com transform</button></div>
     </div>

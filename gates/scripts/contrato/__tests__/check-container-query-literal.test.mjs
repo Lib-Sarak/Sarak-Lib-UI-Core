@@ -139,12 +139,16 @@ describe('checkSourceRestriction — plan-39, emenda §2.0', () => {
   });
 });
 
+// Limite próprio: os dois casos varrem TODO `src/` (milhares de arquivos) e o `testTimeout` padrão é 5 s — medido
+// ~1–3 s isolado, mas sob a carga da suíte completa a leitura de disco estoura sem que a varredura tenha achado nada.
+const REPO_SCAN_TIMEOUT_MS = 30_000;
+
 describe('check-container-query-literal — repositório real (plan-44)', () => {
   it('nenhuma classe com medida inválida sobrou em src/, comentário incluído em __tests__/', () => {
     expect(findInvalidMeasureContainerQueries()).toEqual([]);
-  });
+  }, REPO_SCAN_TIMEOUT_MS);
 
   it('nenhuma interpolação sobrou em src/ de produção', () => {
     expect(findInterpolatedContainerQueries()).toEqual([]);
-  });
+  }, REPO_SCAN_TIMEOUT_MS);
 });

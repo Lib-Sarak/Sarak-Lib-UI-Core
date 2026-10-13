@@ -1,7 +1,7 @@
 import type { SarakDesignToken } from '../types';
 
 const ICON_STROKE_MAX = 4;
-const ICON_STROKE_STEP = 0.5;
+const ICON_STROKE_STEP = 0.25;
 
 export const ICON_TOKENS: SarakDesignToken[] = [
     {

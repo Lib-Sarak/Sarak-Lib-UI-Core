@@ -60,7 +60,7 @@
  *    elemento satisfaz, ou um componente que ninguém monta, conta como leitor.
  * 4. Não distingue consumo de citação em comentário (mesma limitação de
  *    `auditor_ghostvars.mjs`, specs/specs/01-gates-e-baseline.md §4.3.c).
- * 5. (ii) só cobre `select` com `value: '…'` literal no próprio schema (inline ou
+ * 5. (ii) só cobre `select` com `value: '…'` (ou, sem ele, `id: '…'`) literal no próprio schema (inline ou
  *    constante do mesmo arquivo); `type: 'boolean'`/`font` e opções computadas ficam
  *    fora. Um valor lido por regex ou por prefixo (`startsWith`) não é reconhecido.
  * 6. Leitor em componente = arquivo fora de schema, catálogo, gerados, presets, testes,
@@ -207,9 +207,22 @@ export function parseManifest(source) {
     return entries;
 }
 
-/** Valores `value: '…'` de um bloco de opções. */
+/**
+ * Valores de um bloco de opções: o `value` de cada objeto — e, na falta dele, o `id`, que é o que o
+ * painel grava. Antes só o `value: '…'` era lido, e uma opção declarada só com `id` deixava a lista
+ * vazia: o token passava "lido" sem que nenhuma opção fosse conferida.
+ */
 function optionValues(block) {
-    return Array.from(block.matchAll(/\bvalue:\s*'([^']*)'/g)).map((m) => m[1]);
+    const values = [];
+    let i = block.indexOf('[') + 1;
+    while (i > 0 && i < block.length) {
+        if (block[i] !== '{') { i++; continue; }
+        const { text, end } = takeBalanced(block, i);
+        i = end;
+        const value = (text.match(/\bvalue:\s*'([^']*)'/) || text.match(/\bid:\s*'([^']*)'/) || [])[1];
+        if (value !== undefined) values.push(value);
+    }
+    return values;
 }
 
 /** Lê um schema como TEXTO: `{ id, type, cssVars, options|null }` por token. */

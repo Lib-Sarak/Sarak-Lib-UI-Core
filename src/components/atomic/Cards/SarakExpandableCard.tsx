@@ -48,7 +48,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
 
     // Dynamic height based on global font scale factor, ensuring it scales up
     const dynamicStyle = {
-        minHeight: isExpanded ? '100%' : `calc(${baseHeight}px * var(--font-size-factor, 1))`
+        minHeight: isExpanded ? '100%' : `${baseHeight}px`
     };
 
     return (

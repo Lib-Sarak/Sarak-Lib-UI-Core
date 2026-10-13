@@ -406,6 +406,40 @@ O `channel-dispute:check` passa a barrar, no Anel 1, variável escrita nos dois 
 declarado (em todo par mestre + exceção e formato) e variável inline órfã na troca de tema; o `css-important:check`
 passa a barrar `!important` montado em string ou template de TypeScript em `src/`.
 
+### O painel diz a verdade: descrição em todo controle, número com faixa, cor que não perde o alfa, tokens sem efeito ganham leitor, e o que ninguém lia ou escrevia sai
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam o que o painel
+mostra e grava, a faixa e o passo de nove tokens, o desenho padrão de três componentes (marca do cromo, selo, sidebar) e
+nomes de CSS que nada escrevia.
+
+| Antes | Depois |
+|---|---|
+| A `description` do schema só atravessava no ramo `boolean`: em 391 controles o `?` mostrava "Configuração granular para o parâmetro…". | Todo ramo dos dois despachantes (Command Center e aba de tema) a repassa; um teste abre o `?` de um token por tipo e formato em cada despachante. |
+| O token `number` da aba de tema era um campo sem faixa que gravava `NaN` ao esvaziar. | É o mesmo slider do `slider` (faixa, passo, unidade). O `InputControl` numérico não grava o que não é número e leva o valor para `[min, max]`. |
+| O seletor de cor mostrava branco (`#ffffff`) para `color-mix()`, `var()` sem reserva e `hsl()`, e perdia o alfa da reserva ao ser mexido. | Mostra a cor que o valor desenha (literal, `hsl()`, a que o navegador resolve, ou a reserva literal do `var()`), com o alfa. O texto segue sendo a verdade. |
+| `cardShadowSpread` ia a 200 e `vignetteSoftness` a 200, e o CSS saturava em 100 e em 62,5: metade do slider era morta; a vinheta de `_theme.css` usava outro fator (1%). | `cardShadowSpread` até 100; `vignetteSoftness` até 60 (os temas `kinetic-flow` e `synthwave-retro`, que declaravam 100, declaram 60 — a vinheta de ambos satura igual). Os três leitores usam o mesmo fator (1,6%). |
+| 13 valores de tema fora da grade do `step` (0,02 num passo de 0,05…) eram desenhados de um jeito e regravados de outro ao mexer. | O passo de `glassRoughness`, `shadowAmbientAlpha`, `shadowProjectionAlpha`, `scrollTrackOpacity`, `motionDurationFast`/`Normal` é 0,01; `motionDurationSlow` 0,05; `iconStrokeWidth` 0,25. Os valores dos temas ficam. A auditoria passa a acusar valor de tema fora da grade. |
+| O catálogo tinha 7 tokens duplicados com descrições divergentes (valia a última). | Uma entrada por token. |
+| `primaryColor` dizia "botões primários"; `textColorMaster`, "títulos"; `shadowIntensity`, "multiplicador de todas as sombras"; `bodySize`, "escala todos os textos"; `accentColor`, "badge novo"; 13 rótulos carregavam o valor padrão (`Escala Micro (7px)`). | Dizem o que o código faz (o fundo do botão primário é `btnPrimaryBg`; títulos usam `titleColor`; `shadowIntensity` é a opacidade do `.shadow-theme`; …). Os rótulos perdem o valor. |
+| `btnStyleType: neumorphism` não tinha ramo de botão (saía matte sem sombra). | Tem: relevo suave em repouso, sombra interna sob o ponteiro, sem borda (`SarakButton` e `SarakIconButton`). |
+| `identityAlignment`, `identityHoverEffect`, `glassSpecularity`, `glassRoughness`, `zIndexSidebar` e `badgeRadius` eram emitidos e nada os lia. | Têm leitor: a marca do cromo se alinha e reage ao ponteiro; o `.sarak-glass` ganha o brilho da quina e fosqueia; a sidebar empilha por `zIndexSidebar`; o selo lê `badgeRadius`. |
+| `h1Weight`, `h2Weight`, `bodyWeight` e `headingTransform` (opções só com `id`) passavam o gate sem que nenhuma opção fosse conferida. | O gate lê o `id` quando falta o `value`; o leitor é declarado `direto`, com teste por opção. |
+| Seletores por `data-perf-mode`, `data-performance`, `data-glass`, `data-font-scale`, `data-sx-theme`, `data-sx-surface` e `data-sx-card-texture-type="aurora-classic"` — nada escrevia esses atributos. A tabela de gráfico lia `--animation-speed` e o cartão expansível `--font-size-factor`; `--sarak-on-accent` era escrita e nunca lida. | Saíram. O modo eco é só a classe `sarak-eco-mode`; a duração da barra do gráfico é `motionDurationSlow`; `--sarak-on-accent` não é mais emitida. |
+
+**Diferença no tema padrão — três pontos:** (1) o nome da marca do cromo **esmaece a 70% sob o ponteiro** (o padrão de
+`identityHoverEffect` é `opacity`; antes não havia efeito); (2) os selos (`SarakBadge`) passam de `rounded-md` a **pílula
+(99 px)**, o padrão de `badgeRadius` — a menos que o tema declare outro raio ou o selo use `pill`; (3) a barra do gráfico
+anima em 0,6 s (era 0,75 s) e a sidebar ganha `z-index: 500`.
+
+**O que fazer:** quem ligava o modo eco por `data-performance="eco"`/`data-perf-mode="eco"` passa à classe
+`sarak-eco-mode`; quem lia `--sarak-on-accent`, `--sarak-surface-specular` ou `--sarak-surface-roughness` (nunca lidas
+pela lib) lê `--sarak-accent-color`, `--sarak-glass-specularity` e `--sarak-glass-roughness`; quem usava `data-font-scale`
+usa o token `bodySize`. Um teste que esperava duas entradas de `bgBaseColor` no catálogo espera uma.
+
+O `variable-contract:check` passa a julgar a reserva do canal `-rgb` (antes qualquer lista passava), a de alias de
+fachada e a do canal emitido fora do laço, e a não contar como dono a declaração sob seletor de atributo que ninguém
+escreve; o `token-reader:check` lê o `id` da opção sem `value`; o `panel-contract:check` confere a grade do `step`.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

@@ -181,12 +181,31 @@ interface InputControlProps {
     onChange: (value: string | number) => void;
     type?: string;
     placeholder?: string;
+    /** Faixa, passo e unidade do campo numérico: sem eles o navegador aceita qualquer número. */
+    min?: number;
+    max?: number;
+    step?: number;
+    unit?: string;
 }
 
-export const InputControl: React.FC<InputControlProps> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => {
-    // plan-36: cada tecla digitada atualiza o campo na hora (estado local); só a
-    // propagação para `updateDraft` é debounced.
+const clampNumber = (value: number, min = -Infinity, max = Infinity): number => Math.min(Math.max(value, min), max);
+
+export const InputControl: React.FC<InputControlProps> = ({ label, description, value, onChange, type = 'text', placeholder = '', min, max, step, unit }) => {
+    // Cada tecla atualiza o campo na hora (estado local); só a propagação para `updateDraft` é debounced.
     const [localValue, commitValue] = useDebouncedDraftCommit(value ?? '', onChange);
+    // O texto do campo numérico é próprio: "" e "-" no meio da digitação não são número e nunca são gravados.
+    const [numberText, setNumberText] = React.useState(String(localValue));
+    React.useEffect(() => { setNumberText(String(value ?? '')); }, [value]);
+
+    const handleChange = (text: string): void => {
+        if (type !== 'number') {
+            commitValue(text);
+            return;
+        }
+        setNumberText(text);
+        const parsed = parseFloat(text);
+        if (Number.isFinite(parsed)) commitValue(clampNumber(parsed, min, max));
+    };
 
     return (
         <div className="mb-3">
@@ -198,9 +217,13 @@ export const InputControl: React.FC<InputControlProps> = ({ label, description, 
             </div>
             <SarakInput
                 type={type}
-                value={localValue}
+                value={type === 'number' ? numberText : localValue}
                 placeholder={placeholder}
-                onChange={(e) => commitValue(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
+                min={type === 'number' ? min : undefined}
+                max={type === 'number' ? max : undefined}
+                step={type === 'number' ? step : undefined}
+                aria-label={unit ? `${label} (${unit})` : undefined}
+                onChange={(e) => handleChange(e.target.value)}
             />
         </div>
     );

@@ -17,11 +17,29 @@ interface WidgetProps {
     onChange: (val: SarakTokenValue) => void;
 }
 
+/** Token `number`: o mesmo slider com faixa, passo e unidade do `slider` — nunca um campo solto que grava `NaN`. */
+const NumberControl: React.FC<WidgetProps> = ({ token, value, onChange }) => {
+    const bounds = getTokenBounds(token);
+    return (
+        <SliderControl
+            label={token.label}
+            description={token.description}
+            value={value as number}
+            min={bounds.min}
+            max={bounds.max}
+            step={bounds.step}
+            unit={token.unit}
+            onChange={(val) => onChange(val)}
+        />
+    );
+};
+
 export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
-    color: (props) => <ColorControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    color: (props) => <ColorControl label={props.token.label} description={props.token.description} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
     slider: (props) => (
         <SliderControl 
             label={props.token.label} 
+            description={props.token.description}
             value={props.value as number} 
             min={getTokenBounds(props.token).min} 
             max={getTokenBounds(props.token).max} 
@@ -30,16 +48,16 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
             onChange={(val) => props.onChange(val)} 
         />
     ),
-    select: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options || []} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    font: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options || []} isFont={true} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    select: (props) => <SelectControl label={props.token.label} description={props.token.description} options={props.token.constraints?.options || props.token.options || []} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    font: (props) => <SelectControl label={props.token.label} description={props.token.description} options={props.token.constraints?.options || props.token.options || []} isFont={true} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
     switch: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
     boolean: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
-    input: (props) => <InputControl label={props.token.label} placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
-    string: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
-    number: (props) => <InputControl label={props.token.label} type="number" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    image: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />,
-    file: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
+    input: (props) => <InputControl label={props.token.label} description={props.token.description} placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    text: (props) => <InputControl label={props.token.label} description={props.token.description} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
+    string: (props) => <InputControl label={props.token.label} description={props.token.description} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
+    number: (props) => <NumberControl {...props} />,
+    image: (props) => <MediaUploaderControl label={props.token.label} description={props.token.description} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />,
+    file: (props) => <MediaUploaderControl label={props.token.label} description={props.token.description} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
 };
 
 const DEVICE_BADGES = {

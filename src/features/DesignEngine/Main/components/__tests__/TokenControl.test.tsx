@@ -142,12 +142,12 @@ describe('TokenControl', () => {
             <TokenControl token={tokenResponsive} value={flatValue} onChange={mockOnChange} previewDevice="tablet" />
         );
         
-        // Eleve o displayValue que ainda é flat
-        expect(screen.getByTestId('input-input')).toHaveValue('16');
+        // `number` desenha o mesmo slider com faixa e passo do `slider` (nunca um campo solto que grava `NaN`).
+        expect(screen.getByTestId('slider-input')).toHaveValue(16);
 
         // Se mudar no tablet, deve converter para objeto { mob: 16, tab: X, desk: 16 }
-        fireEvent.change(screen.getByTestId('input-input'), { target: { value: '18' } });
-        
-        expect(mockOnChange).toHaveBeenCalledWith({ mob: 16, tab: '18', desk: 16 });
+        fireEvent.change(screen.getByTestId('slider-input'), { target: { value: '18' } });
+
+        expect(mockOnChange).toHaveBeenCalledWith({ mob: 16, tab: 18, desk: 16 });
     });
 });

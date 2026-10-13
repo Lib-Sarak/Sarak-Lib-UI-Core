@@ -83,7 +83,7 @@ export const TypographySchema: ComponentSchema = {
             id: 'textColorMaster',
             label: 'Texto Principal',
             type: 'color',
-            description: 'Cor de texto padrão usada na maioria do conteúdo — deve ter o maior contraste possível contra o fundo, já que é a cor mais lida em toda a interface.',
+            description: 'Cor de texto padrão do conteúdo — parágrafos, rótulos e a maior parte do que se lê; deve ter o maior contraste possível contra o fundo. Os títulos e cabeçalhos usam `titleColor`.',
             axis: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
@@ -285,7 +285,7 @@ export const TypographySchema: ComponentSchema = {
         // --- MICRO TYPE-SCALE (Spec 26: rótulos, badges, legendas) ---
         {
             id: 'typeScaleMicro',
-            label: 'Escala Micro (7px)',
+            label: 'Escala Micro',
             type: 'slider',
             description: 'Tamanho de fonte da escala tipográfica mais miúda do sistema (7px por padrão) — reservado para rótulos extremamente pequenos onde espaço é crítico (ex. tags densas). Use com cautela para não comprometer legibilidade/acessibilidade.',
             axis: 'density',
@@ -296,7 +296,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleTiny',
-            label: 'Escala Tiny (8px)',
+            label: 'Escala Tiny',
             type: 'slider',
             description: 'Tamanho de fonte da escala "tiny" (8px por padrão) — usado em badges/legendas muito pequenas.',
             axis: 'density',
@@ -307,7 +307,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScale3xs',
-            label: 'Escala 3XS (9px)',
+            label: 'Escala 3XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "3XS" (9px por padrão) — degrau intermediário entre `typeScaleTiny` e `typeScale2xs` na micro-escala de rótulos/badges.',
             axis: 'density',
@@ -318,7 +318,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScale2xs',
-            label: 'Escala 2XS (10px)',
+            label: 'Escala 2XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "2XS" (10px por padrão) — usado em rótulos pequenos e metadados secundários.',
             axis: 'density',
@@ -329,7 +329,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleCaption',
-            label: 'Escala Caption (12px)',
+            label: 'Escala Caption',
             type: 'slider',
             description: 'Tamanho de fonte da escala "caption" (12px por padrão) — usado em legendas de imagens, notas de rodapé e texto auxiliar.',
             axis: 'density',
@@ -340,7 +340,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingTight',
-            label: 'Tracking Tight (0.2em)',
+            label: 'Tracking Tight',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "tight", em `em` — usado em textos maiúsculos pequenos onde é preciso alguma abertura sem exagerar (ex. labels de badge).',
             axis: 'density',
@@ -351,7 +351,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingSnug',
-            label: 'Tracking Snug (0.25em)',
+            label: 'Tracking Snug',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "snug", em `em` — um degrau acima de `trackingTight` na progressão de tracking usada em textos maiúsculos pequenos.',
             axis: 'density',
@@ -362,7 +362,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWide',
-            label: 'Tracking Wide (0.3em)',
+            label: 'Tracking Wide',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "wide", em `em` — dá um clima mais editorial/label a textos maiúsculos curtos (ex. eyebrows, tags de categoria).',
             axis: 'density',
@@ -373,7 +373,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWider',
-            label: 'Tracking Wider (0.4em)',
+            label: 'Tracking Wider',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "wider", em `em` — mais espaçado que `trackingWide`, para textos maiúsculos curtos que precisam de bastante destaque/respiro.',
             axis: 'density',
@@ -384,7 +384,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWidest',
-            label: 'Tracking Widest (0.5em)',
+            label: 'Tracking Widest',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "widest", em `em` — o mais espaçado da progressão comum, usado só em textos muito curtos (1-2 palavras) por questão de legibilidade.',
             axis: 'density',
@@ -395,7 +395,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingUltra',
-            label: 'Tracking Ultra (0.8em)',
+            label: 'Tracking Ultra',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) extremo, em `em` — reservado para efeitos tipográficos muito específicos (ex. uma única palavra/sigla espaçada como elemento decorativo).',
             axis: 'density',
@@ -408,7 +408,7 @@ export const TypographySchema: ComponentSchema = {
         // --- EXTENSÃO DA MICRO TYPE-SCALE (Spec 28: features/DesignEngine) ---
         {
             id: 'typeScaleXs',
-            label: 'Escala XS (11px)',
+            label: 'Escala XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "XS" (11px por padrão) — degrau entre `typeScaleCaption` e o tamanho base do corpo.',
             axis: 'density',
@@ -419,7 +419,7 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleXl',
-            label: 'Escala XL (20px)',
+            label: 'Escala XL',
             type: 'slider',
             description: 'Tamanho de fonte da escala "XL" (20px por padrão) — usado em texto de destaque que não chega a ser um título (ex. lead paragraph, subtítulo de card).',
             axis: 'density',

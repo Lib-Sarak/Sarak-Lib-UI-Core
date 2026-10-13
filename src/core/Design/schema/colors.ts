@@ -12,7 +12,7 @@ export const ColorsSchema: ComponentSchema = {
             id: 'primaryColor',
             label: 'Cor Primária (Base)',
             type: 'color',
-            description: 'Cor de marca principal do sistema — usada em botões primários, links, elementos de destaque e como base para várias variantes automáticas (`generateVariants: true`). É a cor mais impactante na identidade visual.',
+            description: 'Cor de marca principal do sistema — links, anel de foco, estados ativos e elementos de destaque, e a base das variantes automáticas (`generateVariants: true`). O fundo do botão primário é `btnPrimaryBg` (que costuma repetir esta cor), não este token. É a cor mais impactante na identidade visual.',
             axis: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
@@ -42,7 +42,7 @@ export const ColorsSchema: ComponentSchema = {
             id: 'accentColor',
             label: 'Cor de Acento (Accent)',
             type: 'color',
-            description: 'Cor de destaque pontual, usada com moderação para chamar atenção a um elemento específico (ex. um badge "novo") sem competir com a cor primária.',
+            description: 'Cor de acento: a terceira cor das séries dos gráficos e uma das manchas da malha de fundo (`bgGradientMode: mesh`), além das variantes `--theme-accent-*` que o consumidor pode ler. Nenhum componente da lib a usa sozinha — um badge "novo" lê o status, não este token.',
             axis: 'color',
             defaultValue: '#ff00d4',
             cssVars: ['--theme-accent', '--sarak-accent-color']

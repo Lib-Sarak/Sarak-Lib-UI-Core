@@ -102,6 +102,8 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {...surfaceProps}
                         className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
+                            // `zIndexSidebar`: o empilhamento da sidebar sobre o conteúdo (os popovers do cromo nascem dela).
+                            zIndex: 'var(--sarak-z-sidebar, 500)',
                             width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
                             // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a
                             // largura efetiva mesmo sem redimensionamento por arraste (que o

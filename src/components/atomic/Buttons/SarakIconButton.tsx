@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
-import { resolveNeonPulseClass } from '../hooks/useAtomicStyles';
+import { neumorphismButtonShadow, resolveNeonPulseClass } from '../hooks/useAtomicStyles';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
@@ -130,6 +130,10 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
 
         if (styleType === 'neon' && neonStyles[variant]) neonStyles[variant]();
         if (styleType === 'frosted' && frostedStyles[variant]) frostedStyles[variant]();
+        if (styleType === 'neumorphism') {
+            dynamicStyle.border = 'none';
+            dynamicStyle.boxShadow = neumorphismButtonShadow(isHovered);
+        }
         if (styleType === 'cyberpunk') {
             // Wireframe anguloso: contorno na cor do brilho, cantos retos, sem preenchimento.
             dynamicStyle.backgroundColor = 'transparent';

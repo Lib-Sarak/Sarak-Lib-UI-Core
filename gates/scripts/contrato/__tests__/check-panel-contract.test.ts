@@ -71,6 +71,21 @@ describe('(ii) valor de tema dentro do contrato numérico', () => {
         expect(themed({ borderRadius: { mob: 8, tab: 10, desk: 9999 } }).map((d) => d.token)).toEqual(['borderRadius']);
     });
 
+    it('PLANTADO: valor de tema fora da grade do passo (o slider o regrava em outro valor)', () => {
+        // `shadowAmbientAlpha` anda de 0,01 em 0,01; 0,025 cai entre dois passos. Antes só o PADRÃO era conferido.
+        const found = themed({ shadowAmbientAlpha: 0.025 });
+        expect(found.map((d) => d.token)).toEqual(['shadowAmbientAlpha']);
+        expect(found[0].motivo).toContain('grade do passo');
+    });
+
+    it('PLANTADO: um ponto responsivo fora da grade basta', () => {
+        expect(themed({ borderRadius: { mob: 8, tab: 10.5, desk: 12 } }).map((d) => d.token)).toEqual(['borderRadius']);
+    });
+
+    it('PASSA: valor na grade (a partir do mínimo do token), inclusive decimal com erro de ponto flutuante', () => {
+        expect(themed({ shadowAmbientAlpha: 0.07, motionDurationFast: 0.15, iconStrokeWidth: 1.75 })).toEqual([]);
+    });
+
     it('PASSA: o máximo e o mínimo exatos, e o valor "desligado" que a faixa agora oferece', () => {
         expect(themed({ btnBorderRadius: 120, motionDurationFast: 0, motionDurationSlow: 0.35, identityTracking: 4 })).toEqual([]);
     });

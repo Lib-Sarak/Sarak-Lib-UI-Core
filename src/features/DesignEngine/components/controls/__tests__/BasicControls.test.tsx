@@ -97,6 +97,46 @@ describe('InputControl (plan-36 — debounce do commit ao rascunho)', () => {
     });
 });
 
+describe('InputControl numérico — nunca grava NaN e respeita a faixa', () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    const type = (container: HTMLElement, text: string): void => {
+        fireEvent.change(container.querySelector('input') as HTMLInputElement, { target: { value: text } });
+    };
+
+    it('campo vazio e "-" no meio da digitação não são número: nada é gravado', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} onChange={onChange} />);
+        type(container, '');
+        type(container, '-');
+        vi.advanceTimersByTime(500);
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('o texto digitado fica no campo enquanto não é número, e o número válido é gravado uma vez', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} onChange={onChange} />);
+        type(container, '-');
+        expect((container.querySelector('input') as HTMLInputElement).value).toBe('');
+        type(container, '12');
+        vi.advanceTimersByTime(500);
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(12);
+    });
+
+    it('o valor digitado é levado para dentro de [min, max]', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} min={0} max={10} onChange={onChange} />);
+        type(container, '999');
+        vi.advanceTimersByTime(500);
+        expect(onChange).toHaveBeenLastCalledWith(10);
+        const input = container.querySelector('input') as HTMLInputElement;
+        expect(input).toHaveAttribute('min', '0');
+        expect(input).toHaveAttribute('max', '10');
+    });
+});
+
 describe('SwitchControl e SelectControl — permanecem SÍNCRONOS (interação discreta, não há o que debounce)', () => {
     it('SwitchControl chama onChange na hora, sem esperar timer', () => {
         const onChange = vi.fn();

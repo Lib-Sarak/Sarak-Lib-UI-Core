@@ -42,7 +42,7 @@ export const ScrollbarsSchema: ComponentSchema = {
             type: 'slider',
             description: 'Opacidade do trilho (fundo) da barra de rolagem — valores baixos deixam o trilho quase invisível (só o cursor aparece), valores altos tornam o trilho inteiro visível como uma faixa de fundo.',
             axis: 'color',
-            constraints: { min: 0, max: 1, step: 0.05 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
             cssVars: ['--sarak-scroll-track-opacity']
         },

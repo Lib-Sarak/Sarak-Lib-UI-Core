@@ -100,7 +100,8 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
             className={mergeSarakClasses(
                 BASE_CLASSES,
                 SIZE_CLASSES[size],
-                pill ? 'rounded-full' : 'rounded-md',
+                // `pill` é a forma pílula pedida pela chamada; sem ela o raio é o do tema (`badgeRadius`).
+                pill ? 'rounded-full' : 'rounded-[var(--sarak-badge-radius,99px)]',
                 getVariantClass(variant, soft),
                 className,
             )}

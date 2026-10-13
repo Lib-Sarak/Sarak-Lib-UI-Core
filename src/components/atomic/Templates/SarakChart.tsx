@@ -43,7 +43,7 @@ interface ChartBarsProps<TData extends Record<string, unknown>> {
 }
 
 function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, dateKey, maximum, barStack }: ChartBarsProps<TData>): ReactElement {
-    const { staggerDelay } = useMotionTokens();
+    const { staggerDelay, durations } = useMotionTokens();
     return <>
         {records.map((item, index) => {
             const value = numericValue(item, valueKey);
@@ -55,7 +55,7 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                         animate={{ height: Math.max(height, 5) + '%' }}
                         transition={{
                             delay: index * staggerDelay,
-                            duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5,
+                            duration: durations.slow,
                             ease: 'circOut',
                         }}
                         className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"

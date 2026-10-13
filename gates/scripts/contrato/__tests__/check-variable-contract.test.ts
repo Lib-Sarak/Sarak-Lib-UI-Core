@@ -118,6 +118,64 @@ describe('(iii) a reserva é o padrão do token', () => {
     });
 });
 
+describe('(iii) os furos que a reserva tinha — variante de canal, nome derivado e seletor morto', () => {
+    const find = (files: Record<string, string>, tokens: TokenLike[] = [primary]) =>
+        buildReport({ srcDir: srcFixture(files), tokens }).fallbacks;
+
+    it('PLANTADO: o canal `-rgb` com a lista de outra cor (e com "banana") é acusado', () => {
+        // O padrão da primária é `#00f2ff` → `0, 242, 255`. Antes o canal ia por `sameColor` e qualquer lista passava.
+        expect(find({ 'a.css': '.a { color: rgba(var(--sarak-primary-color-rgb, 59, 130, 246), 0.4); }' })).toHaveLength(1);
+        expect(find({ 'a.css': '.a { color: rgba(var(--sarak-primary-color-rgb, banana), 0.4); }' })).toHaveLength(1);
+    });
+
+    it('PASSA: o canal `-rgb` com o do padrão, escrito com ou sem espaço', () => {
+        expect(find({ 'a.css': '.a { color: rgba(var(--sarak-primary-color-rgb, 0, 242, 255), 0.4); }' })).toEqual([]);
+        expect(find({ 'a.css': '.a { color: rgba(var(--sarak-primary-color-rgb, 0,242,255), 0.4); }' })).toEqual([]);
+    });
+
+    it('PLANTADO: a reserva de um ALIAS de fachada em CSS da lib é julgada contra o token de origem', () => {
+        const hook = "const aliasPairs = [['--accent-color', variables['--sarak-accent-color'] || variables['--theme-accent']]];";
+        const accent: TokenLike = { id: 'accentColor', type: 'color', defaultValue: '#ff00d4', cssVars: ['--sarak-accent-color'] };
+        const files = (reserve: string): Record<string, string> => ({
+            'core/Design/hooks/useDesignVariables.ts': hook,
+            'a.css': `.a { color: color-mix(in srgb, var(--accent-color, ${reserve}), #000 10%); }`,
+        });
+        expect(find(files('#06b6d4'), [accent])).toHaveLength(1);
+        expect(find(files('#ff00d4'), [accent])).toEqual([]);
+    });
+
+    it('PLANTADO: o canal emitido fora do laço (`emitColorChannels`) tem a reserva julgada', () => {
+        const body: TokenLike = { id: 'colorBgBody', type: 'color', defaultValue: '#050505', cssVars: ['--sarak-bg-body'] };
+        const helper = "const CHANNEL_SOURCES = [['--sarak-bg-body-rgb', '--sarak-bg-body']];";
+        const files = (reserve: string): Record<string, string> => ({
+            'core/Design/hooks/designVariableHelpers.ts': helper,
+            'a.css': `:root { --bg-body-rgb: var(--sarak-bg-body-rgb, ${reserve}); }`,
+        });
+        expect(find(files('248, 250, 252'), [body])).toHaveLength(1);
+        expect(find(files('5, 5, 5'), [body])).toEqual([]);
+    });
+
+    it('a reserva do alias em COMPONENTE não é julgada (limite 6): só o CSS da lib', () => {
+        const hook = "const aliasPairs = [['--accent-color', variables['--sarak-accent-color']]];";
+        const accent: TokenLike = { id: 'accentColor', type: 'color', defaultValue: '#ff00d4', cssVars: ['--sarak-accent-color'] };
+        const files = { 'core/Design/hooks/useDesignVariables.ts': hook, 'c.tsx': "export const c = 'text-[var(--accent-color,#06b6d4)]';" };
+        expect(find(files, [accent])).toEqual([]);
+    });
+
+    it('PLANTADO: a declaração sob seletor que exige atributo que ninguém escreve NÃO é dono', () => {
+        const css = '[data-font-scale="g"] { --font-size-factor: 1.25; } .a { height: calc(1px * var(--font-size-factor, 1)); }';
+        expect(buildReport({ srcDir: srcFixture({ 'a.css': css }), tokens: [primary] }).ownerless.map((o) => o.name)).toEqual(['--font-size-factor']);
+    });
+
+    it('PASSA: o seletor cujo atributo o motor emite (token select) ou o código escreve é dono', () => {
+        const mode: TokenLike = { id: 'surfaceMaterial', type: 'select', defaultValue: 'frosted', cssVars: [] };
+        const emitted = '[data-sx-surface-material="sleek"] { --so-do-material: 1px; } .a { width: var(--so-do-material); }';
+        expect(buildReport({ srcDir: srcFixture({ 'a.css': emitted }), tokens: [primary, mode] }).ownerless).toEqual([]);
+        const written = { 'a.css': '[data-meu-atributo] { --do-atributo: 1px; } .a { width: var(--do-atributo); }', 'b.tsx': "export const p = { 'data-meu-atributo': '' };" };
+        expect(buildReport({ srcDir: srcFixture(written), tokens: [primary] }).ownerless).toEqual([]);
+    });
+});
+
 describe('o analisador', () => {
     it('lê a reserva aninhada e a leitura sem reserva', () => {
         const reads = readsIn('a { b: var(--x, var(--y, 3px)); c: var(--z); }', 'a.css');

@@ -68,11 +68,11 @@ describe('useThemeCustomizationData', () => {
     it.each([
         ['cardBackgroundColor', 'cards'],
         ['bgBaseColor', 'fundo']
-    ])('marca todas as entradas duplicadas de %s no mesmo grupo', (tokenId, group) => {
+    ])('tem UMA entrada de %s, no grupo dela (o catálogo não repete token)', (tokenId, group) => {
         const entries = getMarkedCatalogEntries().filter((entry) => entry.tokenId === tokenId);
 
-        expect(entries).toHaveLength(2);
-        expect(entries.map((entry) => entry.visualImpact)).toEqual([group, group]);
+        expect(entries).toHaveLength(1);
+        expect(entries.map((entry) => entry.visualImpact)).toEqual([group]);
     });
 
     it('aplica os três modos de visibilidade e mantém Completo abrangente', () => {
