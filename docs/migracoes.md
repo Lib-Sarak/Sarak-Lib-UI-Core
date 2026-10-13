@@ -376,6 +376,36 @@ abaixo do mínimo antigo passa a ser respeitado.
 O gate `panel-contract:check` trava: padrão do schema na faixa e na grade que o painel desenha, valor de tema
 embarcado dentro do contrato numérico, todo tipo do schema com controle e opção com `id` igual ao `value`.
 
+### O motor escreve cada variável por um canal só, a troca de tema não deixa o anterior, e o material, a moldura, a caixa do cartão e o aperto do botão passam a ceder à classe; `bg-theme-card` é só a cor; o tema chega às transições do Tailwind
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam o que o motor
+escreve no `html`/`body` (e na ilha), três regras de CSS que deixam de vencer a classe do componente, o sentido de uma
+classe e o padrão de toda transição do Tailwind sem duração.
+
+| Antes | Depois |
+|---|---|
+| O raio mestre escalar (o caso comum nos temas) escrevia os quatro cantos inline; o canto responsivo ia ao `<style>`, e o inline vencia: **o canto editado não aparecia**, e o mestre responsivo com canto escalar dependia do modo de injeção. | Uma variável, um canal: a variável de um canto declarado é escrita **só pela exceção**, qualquer que seja o formato de cada um (escalar inline, responsivo no `<style>`). O valor que o tema declara chega igual nos modos App e Embarcado e em cada ponto (mob, tab, desk). |
+| A variável inline nunca era removida: trocar de tema (ou um token passar de escalar a responsivo) deixava o valor do tema anterior vencendo. | O injetor lembra o que escreveu em cada elemento e **tira o que o tema novo não escreve** (variáveis e atributos `data-sx-*`); o que o host gravou por fora não é tocado. |
+| O material (`surfaceMaterial`, sempre ligado: `frosted` é o padrão) e a moldura (`borderType`) eram `!important` e venciam `bg-gradient-*`, `backdrop-blur-*`, `border-dashed`, `hover:border-*` e o `style`. | Moram na subcamada `components.sarak-elements` (`_card-materials.css`), **sem `!important`**: a classe e o `style` vencem; sem classe, o token vale. A moldura do `.border-theme` (classe `!important` por desenho) fica na camada final, por atributo com valor. |
+| Preenchimento, sombra (e a sombra sob o ponteiro), recorte geométrico e `position` do `.sarak-card` moravam na camada final e venciam `p-*`, `shadow-*`, `hover:shadow-*`, `absolute`. | Moram em `components.sarak-elements`: a classe vence. O recorte é o `--sarak-card-clip-path` do token (`none` sem corte). |
+| `.bg-theme-card` era a utilitária de cor **e** uma âncora de cartão inteiro (preenchimento de 24 px, sombra, raio, recorte, textura, `:active` que encolhia o contêiner). | É **só a utilitária de cor** (`--color-theme-card`). O cartão inteiro é `.sarak-card`; o contêiner do consumidor, `.card`. Nenhuma regra do motor mira `.bg-theme-card`. |
+| O estado ativo de `button` fixava o `transform` com `!important` (vencia `active:scale-*`, o `style` e o `whileTap`); o recorte `is-geometric`/`data-geometric` usava 15 px fixos e um canto. | O aperto é padrão de elemento e cede (vale `--sarak-btn-active-scale`); o recorte geométrico morreu (nada o emitia a não ser `data-geometric`, que sai dos quatro cartões). |
+| O sequestro do modo claro montava `!important` em TypeScript e repintava, no lightbox da lib, o contador e os botões (branco sobre preto) para a cor do tema: ilegível. | A folha é **sem `!important`**; o lightbox declara `data-sarak-own-palette` e nada dentro dele é repintado. O texto do hospedeiro com `text-white` segue repintado. |
+| `transition-colors`, `transition-all`… sem `duration-*` rodavam a **150 ms** e na curva do Tailwind, e venciam o padrão de elemento que lê o token. | Leem `--default-transition-duration` = `motionDurationFast` (0,2 s no padrão) e `--default-transition-timing-function` = `motionEaseMain`. A classe com `duration-*`/`ease-*` continua decidindo. |
+
+**Diferença no tema padrão:** a transição sem duração passa de 150 para 200 ms; um `p-*` ou `shadow-*` escrito num
+`.sarak-card` (que perdia em silêncio) passa a valer — confira os componentes seus que levam as duas classes.
+
+**O que fazer:** quem usava `bg-theme-card` esperando o cartão inteiro passa a `sarak-card` (ou `card`, no contêiner);
+quem só queria a cor não muda nada e deixa de receber o preenchimento. Quem lia `data-geometric` de um cartão não o
+encontra mais — leia `cardGeometricCut`. Um teste seu que lia o `transform` de um botão pressionado lê o valor do
+padrão de elemento, e não mais o `!important`. Um componente seu que fosse repintado pela ponte do modo claro e
+quiser sair dela põe `data-sarak-own-palette` na raiz.
+
+O `channel-dispute:check` passa a barrar, no Anel 1, variável escrita nos dois canais ou com valor que não é o
+declarado (em todo par mestre + exceção e formato) e variável inline órfã na troca de tema; o `css-important:check`
+passa a barrar `!important` montado em string ou template de TypeScript em `src/`.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

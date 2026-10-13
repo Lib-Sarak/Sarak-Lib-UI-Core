@@ -18,6 +18,26 @@ const isSameTokenValue = (a: unknown, b: unknown): boolean => {
 export const isUndeclaredException = (value: unknown, defaultValue: unknown): boolean =>
     value === undefined || isSameTokenValue(value, defaultValue);
 
+/**
+ * Os nomes de variável CSS de cada exceção DECLARADA (o canto de raio): o dono deles é a exceção, e o token
+ * mestre — que também os lista em `cssVars` — não os escreve. Sem esta regra o mestre e a exceção disputam a
+ * mesma variável por canais diferentes (escalar vai inline, responsivo vai ao `<style>`), e quem vence é o
+ * canal, não o que o tema declara. `autoVarOf` devolve a variável automática (`--sarak-<kebab>`) de um id.
+ */
+export const collectDeclaredExceptionVars = (
+    tokens: ReadonlyArray<{ id: string; exceptionOf?: string; defaultValue: unknown; cssVars?: string[] }>,
+    design: Record<string, unknown>,
+    autoVarOf: (tokenId: string) => string,
+): Set<string> => {
+    const owned = new Set<string>();
+    tokens.forEach((token) => {
+        if (!token.exceptionOf || isUndeclaredException(design[token.id], token.defaultValue)) return;
+        owned.add(autoVarOf(token.id));
+        token.cssVars?.forEach((name) => owned.add(name));
+    });
+    return owned;
+};
+
 /** Variável de canal `r, g, b` → a variável de cor de que ela é o canal. */
 const CHANNEL_SOURCES: Array<[string, string]> = [
     ['--sarak-bg-body-rgb', '--sarak-bg-body'],

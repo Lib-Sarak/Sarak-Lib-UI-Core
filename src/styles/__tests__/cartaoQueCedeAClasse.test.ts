@@ -21,22 +21,27 @@ const bodyOf = (css: string, selector: string): string => {
 };
 
 const defaults = withoutComments(read('_card-defaults.css'));
+const materials = withoutComments(read('_card-materials.css'));
 const cards = withoutComments(read('_cards.css'));
 const atmosphere = withoutComments(read('_atmosphere.css'));
 
 describe('a geometria do cartão mora na subcamada que cede à classe', () => {
-    it('sarak-base.css importa _card-defaults.css em components.sarak-elements, antes de utilities', () => {
+    it('sarak-base.css importa os padrões e os materiais em components.sarak-elements, antes de utilities', () => {
         const base = read('sarak-base.css');
         expect(base).toMatch(/@import "\.\/_card-defaults\.css" layer\(components\.sarak-elements\);/);
+        expect(base).toMatch(/@import "\.\/_card-materials\.css" layer\(components\.sarak-elements\);/);
         expect(base.indexOf('_card-defaults.css')).toBeLessThan(base.indexOf('_theme.css'));
+        expect(base.indexOf('_card-materials.css'), 'o material vem depois do padrão: empata em especificidade e vence').toBeGreaterThan(base.indexOf('_card-defaults.css'));
+        expect(base.indexOf('_card-materials.css')).toBeLessThan(base.indexOf('_theme.css'));
     });
 
-    it('nenhuma declaração de _card-defaults.css é !important (a de baixo venceria a utilitária e o inline)', () => {
+    it('nenhuma declaração de _card-defaults.css nem de _card-materials.css é !important (a de baixo venceria a utilitária e o inline)', () => {
         expect(defaults).not.toMatch(/!important/);
+        expect(materials).not.toMatch(/!important/);
     });
 
     it('o padrão cobre raio, traço, largura da borda, desfoque e transição — e não a cor da superfície', () => {
-        const block = bodyOf(defaults, '.sarak-card,\n.bg-theme-card {');
+        const block = bodyOf(defaults, '.sarak-card {\n    border-radius:');
         for (const property of ['border-radius', 'border-style', 'border-top-width', 'backdrop-filter', 'transition']) {
             expect(block, property).toContain(`${property}:`);
         }
@@ -45,7 +50,7 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
     });
 
     it('a âncora .card sob escopo e textura recebe a geometria', () => {
-        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card, .bg-theme-card)');
+        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card)');
         expect(defaults).toContain('.sarak-design-scope :is(.card, .sarak-card)');
         for (const property of ['border-radius', 'border-style', 'border-left-width', 'backdrop-filter', 'transition']) {
             expect(scoped, property).toContain(`${property}:`);
@@ -54,8 +59,8 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
 });
 
 describe('a superfície do tema chega ao cartão, na camada que cede, sem !important', () => {
-    const surface = bodyOf(defaults, '.sarak-card,\n.bg-theme-card,\n.card {');
-    const clip = bodyOf(atmosphere, '[data-sx-texture] .card, [data-sx-texture] .sarak-card');
+    const surface = bodyOf(defaults, '.sarak-card,\n.card {');
+    const clip = bodyOf(defaults, '.sarak-card,\n.card {\n    clip-path');
 
     it('o fundo é background-color (o atalho zerava o background-image) e leva a opacidade da superfície', () => {
         expect(surface).toMatch(/background-color: color-mix\(in srgb, var\(--sarak-card-bg[^;]*--sarak-card-opacity/);
@@ -67,59 +72,71 @@ describe('a superfície do tema chega ao cartão, na camada que cede, sem !impor
     });
 
     it('a superfície vale também sem escopo nem textura (cartão sem tema montado e o .card da lib)', () => {
-        expect(defaults).toMatch(/\.sarak-card,\n\.bg-theme-card,\n\.card \{\n\s*background-color:/);
+        expect(defaults).toMatch(/\.sarak-card,\n\.card \{\n\s*background-color:/);
     });
 
-    it('o recorte geométrico lê --sarak-card-clip-path e fica na camada final', () => {
+    it('o recorte geométrico lê --sarak-card-clip-path e mora na camada que cede à classe', () => {
         expect(clip).toMatch(/clip-path: var\(--sarak-card-clip-path, none\);/);
         expect(clip).not.toMatch(/background-color:|border-color:/);
+        expect(atmosphere, 'a camada final não recorta o cartão').not.toMatch(/clip-path:/);
     });
 
     it('nada disso é !important', () => {
         expect(surface).not.toMatch(/!important/);
         expect(clip).not.toMatch(/!important/);
-        expect(bodyOf(cards, '.sarak-card, .bg-theme-card')).not.toMatch(/!important/);
     });
 
-    it('_cards.css não escreve mais a cor do fundo, a da borda nem a opacidade do cartão inteiro', () => {
-        const block = bodyOf(cards, '.sarak-card, .bg-theme-card');
-        expect(block).not.toMatch(/\bbackground-color:/);
-        expect(block).not.toMatch(/\bborder-color:/);
-        expect(block).not.toMatch(/\bopacity:/);
+    it('_cards.css não tem mais a regra-base do cartão (cor, borda, opacidade, preenchimento, sombra, recorte)', () => {
+        expect(cards).not.toMatch(/^\.sarak-card(?:,\s*\.[\w-]+)*\s*\{/m);
+        expect(cards).not.toMatch(/box-shadow:/);
+        expect(cards).not.toMatch(/clip-path:/);
     });
 
-    it('o fundo ativo do .bg-theme-card cede à classe: mora na camada de baixo, não em _utilities.css', () => {
-        expect(bodyOf(defaults, '.bg-theme-card:active')).toContain('background-color: var(--theme-primary-active);');
-        expect(bodyOf(withoutComments(read('_utilities.css')), '.bg-theme-card:active')).not.toContain('background-color');
+    it('a caixa do cartão (posição, preenchimento, sombra) cede à classe: mora na camada de baixo', () => {
+        const box = bodyOf(defaults, '.sarak-card {\n    position: relative;');
+        for (const property of ['position:', 'isolation:', 'padding:', 'box-shadow:', '--sarak-card-shadow-full:']) {
+            expect(box, property).toContain(property);
+        }
+        expect(box).not.toMatch(/!important/);
+    });
+});
+
+describe('o nome bg-theme-card tem um sentido só: a utilitária de cor', () => {
+    it('nenhum CSS do motor trata .bg-theme-card como âncora de cartão', () => {
+        const files = fs.readdirSync(STYLES).filter((name) => name.endsWith('.css'));
+        for (const name of files) {
+            expect(withoutComments(read(name)), name).not.toContain('bg-theme-card');
+        }
     });
 });
 
 describe('sombra declarada e glow-only', () => {
     it('cardShadow declarada vira a sombra do cartão (repouso e hover); none deixa a composta valer', () => {
-        expect(cards).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card \{[^}]*--sarak-card-shadow-full:\s*var\(--sarak-card-shadow\)/);
-        expect(cards).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:hover \{[^}]*box-shadow: var\(--sarak-card-shadow-full\)/);
+        expect(defaults).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card \{[^}]*--sarak-card-shadow-full:\s*var\(--sarak-card-shadow\)/);
+        expect(materials).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:hover \{[^}]*box-shadow: var\(--sarak-card-shadow-full\)/);
     });
 
     it('glow-only acende a camada de brilho e acrescenta o halo, sem mover o cartão', () => {
         const hover = bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {');
         expect(hover).toContain('transform: none;');
-        expect(hover).toMatch(/box-shadow:[^;]*--sarak-card-shadow-full[^;]*color-mix/);
+        const halo = bodyOf(materials, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {');
+        expect(halo).toMatch(/box-shadow:[^;]*--sarak-card-shadow-full[^;]*color-mix/);
         expect(bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before')).toContain('opacity: 1;');
     });
 
-    it('o tema não declara box-shadow morto em .bg-theme-card', () => {
-        expect(withoutComments(read('_theme.css'))).not.toMatch(/\.bg-theme-card\s*\{[^}]*box-shadow/);
+    it('a sombra sob o ponteiro vem depois do material e da moldura no mesmo arquivo (empatam em especificidade)', () => {
+        const hover = materials.indexOf('.sarak-card:hover {');
+        expect(hover).toBeGreaterThan(materials.indexOf('[data-sx-border-type="none"] .sarak-card'));
+        expect(hover).toBeGreaterThan(materials.indexOf('[data-sx-surface-material="organic"] .sarak-card'));
     });
 });
 
 describe('o que saiu da camada final', () => {
-    it('_cards.css não escreve mais raio, largura de borda, desfoque nem transição do cartão', () => {
-        const block = bodyOf(cards, '.sarak-card, .bg-theme-card');
-        for (const property of ['border-radius', 'border-top', 'backdrop-filter', 'transition']) {
-            expect(block, property).not.toContain(`${property}:`);
+    it('_cards.css não escreve mais raio, largura de borda, desfoque nem sombra do cartão', () => {
+        const cardRules = cards.match(/(^|\n)\.sarak-card(?:\[[^\]]*\])*(?::[\w-]+)?\s*\{[^}]*\}/g) ?? [];
+        for (const property of ['border-radius', 'border-top', 'backdrop-filter', 'box-shadow']) {
+            expect(cardRules.join('\n'), property).not.toContain(`${property}:`);
         }
-        expect(block).toContain('padding:');
-        expect(block).toContain('box-shadow:');
     });
 
     it('_atmosphere.css não carrega mais o raio do cartão, a transição `all` nem o reset de main/section', () => {
@@ -160,10 +177,10 @@ describe('durações do motor leem os tokens de movimento', () => {
 });
 
 describe('modo eco: o cartão inteiro perde o desfoque do material', () => {
-    it('uma regra de eco mira .sarak-card, .bg-theme-card e .card e vem depois de _surfaces.css', () => {
+    it('uma regra de eco mira .sarak-card e .card e vem na camada final, depois do material', () => {
         const performance = withoutComments(read('_performance.css'));
-        expect(performance).toMatch(/:is\(\.sarak-eco-mode, \[data-performance="eco"\], \[data-perf-mode="eco"\]\) :is\(\.sarak-card, \.bg-theme-card, \.card\) \{\s*backdrop-filter: none !important;/);
+        expect(performance).toMatch(/:is\(\.sarak-eco-mode, \[data-performance="eco"\], \[data-perf-mode="eco"\]\) :is\(\.sarak-card, \.card\) \{\s*backdrop-filter: none !important;/);
         const base = read('sarak-base.css');
-        expect(base.indexOf('_performance.css')).toBeGreaterThan(base.indexOf('_surfaces.css'));
+        expect(base.indexOf('_performance.css')).toBeGreaterThan(base.indexOf('_card-materials.css'));
     });
 });

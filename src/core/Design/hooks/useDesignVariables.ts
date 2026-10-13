@@ -4,7 +4,7 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
-import { emitColorChannels, emitOnColors, isUndeclaredException } from './designVariableHelpers';
+import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException } from './designVariableHelpers';
 
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
@@ -76,6 +76,9 @@ export const useDesignVariables = (
         const bpTablet = typeof design.breakpointTablet === 'number' ? design.breakpointTablet : BREAKPOINT_TABLET;
         const bpDesktop = typeof design.breakpointDesktop === 'number' ? design.breakpointDesktop : BREAKPOINT_DESKTOP;
 
+        // Variáveis de exceção declarada (canto de raio): só a exceção as escreve — um canal por variável.
+        const exceptionVars = collectDeclaredExceptionVars(tokens, design, (id) => `--sarak-${toKebabCase(id)}`);
+
         // 1. PROCESSAMENTO ATÔMICO (Do Token para a Variável)
         tokens.forEach(token => {
             const value = design[token.id] ?? token.defaultValue;
@@ -84,7 +87,8 @@ export const useDesignVariables = (
             if (token.exceptionOf && isUndeclaredException(design[token.id], token.defaultValue)) return;
             const kebabId = toKebabCase(token.id);
             const autoVar = `--sarak-${kebabId}`;
-            
+            const writesVar = (name: string): boolean => token.exceptionOf !== undefined || !exceptionVars.has(name);
+
             const isResponsiveValue = value && typeof value === 'object' && 'mob' in value;
 
             let finalValue = '';
@@ -106,17 +110,14 @@ export const useDesignVariables = (
                 responsiveCssDesk += `  ${autoVar}: ${deskVal};\n`;
 
                 if (token.cssVars && token.cssVars.length > 0) {
-                    token.cssVars.forEach(v => {
-                        responsiveCssRoot += `  ${v}: ${mobVal};\n`;
+                    token.cssVars.filter(writesVar).forEach(v => {
+                        responsiveCssRoot +=`  ${v}: ${mobVal};\n`;
                         responsiveCssTab += `  ${v}: ${tabVal};\n`;
                         responsiveCssDesk += `  ${v}: ${deskVal};\n`;
                     });
                 }
-                // CRÍTICO: Não injetamos o valor 'deskVal' no objeto JS `variables`.
-                // Se injetarmos, o DesignScope aplicará como estilo inline, o que tem
-                // especificidade maior que as nossas media queries e classes (.sarak-device-*),
-                // quebrando totalmente a responsividade e travando no modo desktop.
-                // A responsabilidade de prover as variáveis fica 100% com o responsiveCSS injetado na tag <style>.
+                // CRÍTICO: o valor responsivo NÃO entra em `variables` (inline vence as media queries e as
+                // classes .sarak-device-*, e travaria o modo desktop): o `<style>` do responsiveCSS é o canal dele.
 
             } else {
                 // COMPORTAMENTO ORIGINAL (Valores Primitivos / Cores)
@@ -132,7 +133,7 @@ export const useDesignVariables = (
 
                 // Injeção de Variáveis Extras definidas no Schema
                 if (token.cssVars && token.cssVars.length > 0) {
-                    token.cssVars.forEach(v => {
+                    token.cssVars.filter(writesVar).forEach(v => {
                         variables[v] = finalValue;
 
                         // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
@@ -175,7 +176,6 @@ export const useDesignVariables = (
                 attributes[`data-sx-${kebabId}`] = isResponsiveValue ? String(value.desk) : String(value);
             }
         });
-
         // 2. CÁLCULOS DERIVADOS (Geometria Dinâmica)
         const aliasPairs: Array<[string, string | undefined]> = [
             ['--text-main', variables['--sarak-text-main'] || variables['--theme-text-primary']],

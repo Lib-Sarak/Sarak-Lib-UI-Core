@@ -209,7 +209,8 @@ hover, estado ativo e foco de `<button>`; raio de campo; família, cor, tamanho 
 texto; os padrões do **`body`** (cor, família, tamanho, peso, entrelinha, margens, transição e `overflow-x`, num
 lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color` fica em `_base.css`, com
 `!important`, na camada final. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
-`bg-theme-card`, `border-theme`, `[data-surface]` e as texturas. Vale igual nos dois artefatos, `dist/sarak.css` e
+`border-theme`, `[data-surface]` e as texturas; o cartão (`.sarak-card`, `.card`) tem o padrão na subcamada que cede
+(`_card-defaults.css`, `_card-materials.css`). Vale igual nos dois artefatos, `dist/sarak.css` e
 `dist/sarak-scoped.css`: o escopado herda a ordem do mesmo `sarak-base.css`.
 
 **Quatro regras que a ordem impõe:**
@@ -220,8 +221,7 @@ lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color
 - **Regra que mira elemento nunca vai para `sarak-lib`.** Ali ela venceria toda classe de todo elemento, da lib
   e do consumidor.
 - **`!important` fica na camada final.** Para declarações importantes a ordem das camadas se inverte: um
-  `!important` na subcamada venceria até a utilitária `!important`; na camada final, ela ainda o vence. É o
-  caso do `transform` do botão pressionado.
+  `!important` na subcamada venceria até a utilitária `!important`; na camada final, ela ainda o vence.
 - **O token que a classe utilitária também escreve é entregue pela variável que ela lê.** As utilitárias de
   borda (`border`, `border-2`, `border-t`…) escrevem `border-style` por `var(--tw-border-style)`, e por isso a
   ponte do `borderStyle` alimenta essa variável. A ponte é o **único** seletor da lib por substring de classe
@@ -229,14 +229,15 @@ lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color
   borda, e mora na subcamada que cede à classe. O raio do botão chega por `.rounded-btn`, que compõe os quatro
   cantos (`btnRadiusTL/TR/BR/BL`) com o raio mestre como reserva de cada um.
 
-**O que ainda não cede à classe:** o **`transform` do botão pressionado** e o **`background-color` do
-`body`**, os dois `!important` na camada final por desenho.
+**O que ainda não cede à classe:** o **`background-color` do `body`**, `!important` na camada final por desenho. O
+`transform` do botão pressionado é padrão de elemento (`_elements.css`): `active:scale-*`, o `style` e o `whileTap`
+o vencem.
 
 **A lib alcança cartão por âncora explícita, nunca por substring de nome de classe.** A superfície e a textura de
-cartão sob o tema chegam por três âncoras: `.sarak-card` e `.bg-theme-card` (o cartão completo — superfície,
-padding, borda e `clip-path`, no mesmo bloco de `_cards.css`; os componentes da lib que levam `.bg-theme-card`
-contam com esse padding e essa borda) e `.card` (só superfície e textura, sob `[data-sx-texture]` ou
-`.sarak-design-scope`, sem padding nem borda próprios — é a âncora para o contêiner do consumidor).
+cartão sob o tema chegam por duas âncoras: `.sarak-card` (o cartão completo — superfície, padding, borda, sombra,
+recorte, material e moldura, na subcamada que cede) e `.card` (só superfície e textura, sem padding nem borda
+próprios — é a âncora para o contêiner do consumidor). `bg-theme-card` é só a utilitária de **cor** de
+`--color-theme-card`; nenhuma regra do motor a mira.
 Nenhum seletor da lib casa `[class*="card"]`: uma utilitária com `card` no nome — da lib ou do consumidor, como
 `bg-[var(--color-theme-card,…)]` — computa o fundo que a própria classe escreve. Contêiner que é cartão de fato
 recebe a âncora `card`; controle (campo, botão, menu) não recebe.
@@ -277,12 +278,13 @@ contrato além de "a variável chega à propriedade".
 
 ## 10.2 Superfície, moldura e sombra
 
-- **Material** (`surfaceMaterial`: `frosted` (padrão) · `sleek` · `industrial` · `organic`) — `_surfaces.css`,
-  sobre os cartões. O desfoque do `frosted` parte de `cardBackdropBlur` e soma a intensidade do material; o
+- **Material** (`surfaceMaterial`: `frosted` (padrão) · `sleek` · `industrial` · `organic`) — `_card-materials.css`,
+  sobre o `.sarak-card`, na subcamada que cede à classe. O desfoque do `frosted` parte de `cardBackdropBlur` e soma a intensidade do material; o
   desfoque do cartão tem um nome só, `--sarak-card-backdrop-blur`.
 - **Moldura** (`borderType`: `solid` (padrão) · `cyber` · `double` · `glow` · `none`) — `data-sx-border-type`;
   `cyber` e `glow` nascem da cor de textura; `none` apaga o contorno sem mexer na caixa. `borderStyle` vale no
-  cartão.
+  cartão. A moldura do cartão mora em `_card-materials.css` (cede à classe); a do `.border-theme`, classe
+  `!important` por desenho, fica em `_surfaces.css`, só o contorno.
 - **Sombra**: geometria por `cardShadowOffsetX/Y`, `cardShadowBlur`, `cardShadowExpansion` (padrão
   `0 20px 50px -12px`); cor por `shadowColorMode` (`neutral` · `colored` · `ambient`); **direção** por
   `shadowOrientation` (`bottom` (padrão) · `center` · `top` · `bottom-right` · `dynamic`), que só fixa o vetor
@@ -343,8 +345,10 @@ classe. O padrão do cartão e do contêiner mora em `src/styles/_card-defaults.
 `cardBorderOpacity`), raio dos quatro cantos, traço e largura da borda, desfoque, transição, hover de borda, e o
 reset transparente de `main`/`section`/`article`. A classe utilitária e o `style` do componente — da lib ou do
 consumidor — vencem. Os cartões da lib não repetem classe de fundo nem de cor de borda: a superfície vem do tema,
-de um lugar só. Ficam com `!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido
-(`_motion.css`) e a escolha de token por atributo com valor (material e moldura em `_surfaces.css`). A trava é o
+de um lugar só. Material e moldura do cartão também cedem (`_card-materials.css`, depois de `_card-defaults.css`). Ficam com
+`!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido (`_motion.css`) e a moldura da
+classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important` e não repinta o que
+está sob `[data-sarak-own-palette]` (fundo próprio, como o do `SarakLightbox`). A trava é o
 `css-important:check` ([[00-regras-e-invariantes]] R41).
 
 ## 10.9 Uma variável, um dono
@@ -378,3 +382,14 @@ O botão primário desenha `btnPrimaryBg`/`btnPrimaryText`; o secundário, `btnS
 entrada leem os próprios tokens; durações de classe e de `framer-motion` leem `motionDuration*`
 (`useMotionTokens`, que zera sob movimento reduzido). A pré-visualização do painel **não conta como leitor**: um
 token que tem componente na lib é lido pelo componente ([[00-regras-e-invariantes]] R40).
+
+## 10.12 Escrita sem disputa de canal
+
+O motor escreve cada variável **num canal só**: escalar vai inline (`html`/`body`, ou o contêiner da ilha); responsivo
+vai ao `<style>` do escopo. A exceção declarada (canto de raio diferente do padrão) é a dona da variável dela, no
+canal do formato dela, e o mestre não a escreve; os outros cantos seguem o mestre. O mesmo vale nos modos App e
+Embarcado. Ao trocar de tema, `syncInjectedWrites` (`src/core/Provider/utils/injectedWrites.ts`) remove a variável e
+o atributo que o injetor escreveu antes e o tema novo não escreve — o que o host gravou por fora não é tocado. A
+duração e a curva padrão das transições do Tailwind (`--default-transition-duration`,
+`--default-transition-timing-function`) vêm de `motionDurationFast` e `motionEaseMain`. A trava é o
+`channel-dispute:check`.

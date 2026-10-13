@@ -18,7 +18,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
             )}
             <div
-                className={`p-3 @sm:p-4 shadow-xl max-w-[85%] relative transition-all duration-500 sarak-card
+                className={`p-3 @sm:p-4 max-w-[85%] relative transition-all duration-500 sarak-card
                     ${isBot ? 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md border border-[var(--theme-border)]' : 
                          bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : 
@@ -95,7 +95,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="w-80 hidden @xl:flex flex-col gap-6 relative">
                 
                 {/* Variante 1: Widget Flutuante (Suporte) */}
-                <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-[0_20px_40px_-10px_color-mix(in_srgb,var(--color-theme-body)_50%,transparent)] rounded-2xl overflow-hidden relative">
+                <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] rounded-2xl overflow-hidden relative">
                     <div className="h-12 bg-[var(--theme-primary)] text-theme-on-primary flex items-center justify-between px-4 shrink-0 shadow-md relative z-10">
                         <span className="text-xs font-black tracking-wider flex items-center gap-2"><SarakIcon name="MessageSquare" size={14} /> Sarak Support</span>
                         <div className="flex gap-2 opacity-70"><SarakIcon name="Minimize2" size={12} /><SarakIcon name="MoreHorizontal" size={12} /></div>

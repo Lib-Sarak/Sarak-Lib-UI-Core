@@ -28,7 +28,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             
             <div className="flex flex-col @xl:flex-row gap-6">
                 {/* Tabela Interativa (Atual Administrativa) */}
-                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl overflow-hidden flex flex-col">
+                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-[var(--theme-border)] flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <SarakIcon name="Activity" className="text-[var(--theme-primary)]" size={16} />
@@ -86,7 +86,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
 
                 {/* Mini Tabela em Card */}
-                <div className="flex-1 sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl p-5 flex flex-col gap-4">
+                <div className="flex-1 sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-5 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-[var(--theme-title)]">
                             <SarakIcon name="Users" size={16} className="text-[var(--theme-primary)]" />
@@ -115,7 +115,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
 
             {/* Tabela Densa (Excel) */}
-            <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] shadow-xl overflow-hidden flex flex-col">
+            <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] overflow-hidden flex flex-col">
                 <div className="p-3 border-b border-[var(--sarak-table-border)] flex items-center justify-between bg-[var(--sarak-table-header-bg)]">
                     <div className="flex items-center gap-2">
                         <SarakIcon name="FileSpreadsheet" className="text-emerald-500" size={14} />

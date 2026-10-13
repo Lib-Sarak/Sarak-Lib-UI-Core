@@ -123,7 +123,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isGalleryStacked ? 'w-full flex-1 min-h-0' : 'w-1/2 h-full min-h-[var(--sarak-engine-min-h-sm,300px)] shrink-0'}`}>
+                            <div className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden sarak-card transition-colors duration-500 flex flex-col min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isGalleryStacked ? 'w-full flex-1 min-h-0' : 'w-1/2 h-full min-h-[var(--sarak-engine-min-h-sm,300px)] shrink-0'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}

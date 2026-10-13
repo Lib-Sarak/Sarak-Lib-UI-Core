@@ -18,14 +18,14 @@
     display: none !important;
 }
 
-/* Specific Card Eco Mode — o cartão inteiro, e não só o `.bg-theme-card`: o material `frosted`
-   (`_surfaces.css`, `!important`, especificidade 0-2-0) vence o `*` de cima, que é 0-1-0; este
-   seletor empata com ele e vem depois. */
-[data-perf-mode="eco"] .bg-theme-card {
+/* Specific Card Eco Mode — o cartão inteiro, com o desfoque e a transição apagados. O `*` de cima já vence
+   o material (que não é `!important`); este seletor nomeia o cartão para o modo eco valer também sobre o
+   desfoque que o próprio cartão declara. */
+[data-perf-mode="eco"] .sarak-card {
     backdrop-filter: none !important;
     transition-duration: 0.1s !important;
 }
-:is(.sarak-eco-mode, [data-performance="eco"], [data-perf-mode="eco"]) :is(.sarak-card, .bg-theme-card, .card) {
+:is(.sarak-eco-mode, [data-performance="eco"], [data-perf-mode="eco"]) :is(.sarak-card, .card) {
     backdrop-filter: none !important;
 }
 

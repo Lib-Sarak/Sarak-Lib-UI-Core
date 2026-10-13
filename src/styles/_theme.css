@@ -42,6 +42,12 @@
   --duration-fast: var(--sarak-motion-dur-fast, 0.2s);
   --duration-normal: var(--sarak-motion-dur-normal, 0.3s);
   --duration-slow: var(--sarak-motion-dur-slow, 0.6s);
+  /* O padrão das utilitárias `transition-*` do Tailwind (150 ms e a curva própria dele quando a classe
+     não traz `duration-*`/`ease-*`): vem dos tokens de movimento — a duração rápida de UI
+     (`motionDurationFast`) e a curva mestre (`motionEaseMain`) —, para a velocidade do tema chegar a
+     toda transição, e não só às de elemento. Reserva = padrão do token. */
+  --default-transition-duration: var(--sarak-motion-dur-fast, 0.2s);
+  --default-transition-timing-function: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
   
   /* --- 5. STATUS SEMÂNTICOS --- */
   --color-status-success: var(--sarak-status-success-color, #10b981);

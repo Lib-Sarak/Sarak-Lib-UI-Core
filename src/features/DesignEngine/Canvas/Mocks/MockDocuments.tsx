@@ -63,7 +63,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
             <div className="grid grid-cols-1 @md:grid-cols-3 gap-6">
                 
                 {/* PDF Document Card */}
-                <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
+                <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                     <div className="absolute top-4 right-4 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                         <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="Download" size={16} />} />
                         <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="MoreVertical" size={16} />} />
@@ -85,7 +85,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                 </div>
 
                 {/* Image Document Card */}
-                <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
+                <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                     <div className="absolute top-4 right-4 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                         <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="Download" size={16} />} />
                         <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="MoreVertical" size={16} />} />
@@ -108,7 +108,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                 </div>
 
                 {/* Uploading Status Card */}
-                <div className="sarak-card rounded-2xl border border-[var(--theme-primary)]/50 shadow-xl bg-[var(--theme-primary)]/5 backdrop-blur-md p-4 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
+                <div className="sarak-card rounded-2xl border border-[var(--theme-primary)]/50 bg-[var(--theme-primary)]/5 p-4 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-input-border-radius)' }}>
                         <SarakIcon name="File" size={40} className="text-[var(--theme-primary)]/50" />
                         

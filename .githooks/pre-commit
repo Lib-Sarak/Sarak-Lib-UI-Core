@@ -183,6 +183,17 @@ if ! npx tsx gates/scripts/contrato/check-variable-contract.ts; then
 fi
 echo "[Sarak] Anel 1 (contrato das variáveis) OK."
 
+# Injeção sem disputa de canal (a mesma variável não vai ao inline e ao <style> responsivo, e a troca de tema
+# não deixa variável inline órfã). Em TypeScript pelo mesmo motivo: roda o motor de verdade.
+if ! npx tsx gates/scripts/contrato/check-channel-dispute.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: injeção sem disputa de canal"
+  echo "   Regra violada : — (02-design-engine §4 e §10.9)"
+  echo "   Veja o detalhe: npm run channel-dispute:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (injeção sem disputa de canal) OK."
+
 # Contrato do painel (padrão na faixa e na grade, valor de tema dentro do contrato numérico, todo tipo do
 # schema com controle, opção que grava o value). Em TypeScript pelo mesmo motivo: lê o schema e os temas.
 if ! npx tsx gates/scripts/contrato/check-panel-contract.ts; then

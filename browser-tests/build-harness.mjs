@@ -21,6 +21,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
 const DIST_INDEX = path.join(ROOT, 'dist', 'index.js');
 const DIST_CSS = path.join(ROOT, 'dist', 'sarak.css');
+const DIST_SCOPED_CSS = path.join(ROOT, 'dist', 'sarak-scoped.css');
 const ENTRY = path.join(HERE, 'fixtures', 'harness-entry.tsx');
 
 const HTML_TEMPLATE = `<!doctype html>
@@ -67,6 +68,8 @@ export async function buildHarness(entryPath = ENTRY) {
     });
 
     fs.copyFileSync(DIST_CSS, path.join(outDir, 'sarak.css'));
+    // A folha do Modo Embarcado (`?css=escopado` no harness): a medição do escopo precisa dela, não da global.
+    if (fs.existsSync(DIST_SCOPED_CSS)) fs.copyFileSync(DIST_SCOPED_CSS, path.join(outDir, 'sarak-scoped.css'));
     const htmlPath = path.join(outDir, 'index.html');
     fs.writeFileSync(htmlPath, HTML_TEMPLATE, 'utf8');
 

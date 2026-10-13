@@ -10,8 +10,6 @@
 [data-font-scale="gg"] { --sarak-font-size: 20px; --font-size-factor: 1.5; }
 
 /* Tabular Numbers Enforcement */
-[data-tabular-nums="tabular-nums"],
-[data-tabular-nums="true"],
 .tabular-nums {
     font-variant-numeric: tabular-nums !important;
     font-feature-settings: "tnum" 1 !important;

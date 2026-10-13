@@ -47,3 +47,10 @@ cor que busca recurso (mais de 60 sondas).
 | R3.2 | contrapartes | nenhum tema declara `statusWarningColor`, `statusInfoColor`, `accentColor`, `tertiaryColor` na contraparte (herda o nativo; `kinetic-flow` aviso `#ffff00` sobre `#fff5f8`: 1,07) |
 | R3.3 | valor fixo onde há token | `MessageList.tsx:47` e `ChatInput.tsx:56` com raio fixo (há `chatBubbleRadius`); `PremiumCheckbox.tsx:11` e `RecursiveMatrixNode.tsx:87` com `rgba(var(--sarak-primary-color,#00f2ff),0.5)` (inválido: a sombra some); `SarakCatalogGrid.tsx:126` `hover:text-red-400`; `SarakFilterSelect.tsx:21`, `SarakHelpButton.tsx:42` `text-slate-300`; `switchStyles.ts:17` pulso 1,6 s; `LazyEngineWrapper.tsx:25` `duration: 2`; atrasos fixos em `MessageList.tsx:50-51`, `SarakChatEngine.tsx:184-185`; reservas `--sarak-on-error/-success` `#ffffff` em `SarakButton.tsx:68-69`, `SarakIconButton.tsx:73` e `--sarak-on-muted` `#020617` em `SarakBadge.tsx:55` (o motor calcula o oposto no padrão). Suspeitas: raios fixos da matriz (`RecursiveMatrixNode.tsx:104,128,149,169,212`; há `matrixRadius`), ~46 `shadow-sm…2xl` em sobreposições sem token de sombra de sobreposição |
 | R3.4 | `src/features/` | 158 classes de paleta Tailwind fixas, 37 `duration-N` e 8 durações de `framer-motion` fixas; brancos e pretos que o detector não pega (`ChartsMock.tsx:67-68` `fill="white"`, `ChatMock.tsx:36`, `SettingsMock.tsx:21-22`, `MockDocuments.tsx:96` `#000`, `ButtonPresetPreview.tsx:81`/`InputPresetPreview.tsx:47` `rgba(10,10,10,0.5)`, `useDeviceStyles.ts:11,14` `#1a1a1c`) — os mocks deveriam mostrar o tema |
+
+### Herdado do veredito do lote 1 (2026-10-13)
+
+| # | Lote | Onde | O que fazer |
+|---|---|---|---|
+| R2.11 | 2 | `scripts/consumer-kit/__tests__/kitGenerator.test.mjs`, `check-container-query-literal`, `generate-token-types.check` | estouram o tempo sob carga (passam isolados) — mesma regra do lote 5 da `plan-114`: limite declarado por caso pesado, com o motivo |
+| R3.5 | 3 | `SarakChat.tsx:45`, `SarakChatEngine.tsx:62` | `!p-0` redundante desde que o padding cede à classe |

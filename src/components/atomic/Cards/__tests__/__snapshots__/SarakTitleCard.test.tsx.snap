@@ -9,19 +9,16 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
   <style
     id="sarak-sovereign-bridge"
   >
-    
-            /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
-            body.dark .bg-zinc-950,
-            body.dark .bg-black\\/40,
-            body.dark .bg-zinc-950\\/40 {
-                background-color: var(--theme-card) !important;
-            }
-        
+    /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+body.dark .bg-zinc-950:not([data-sarak-own-palette] *),
+body.dark .bg-black\\/40:not([data-sarak-own-palette] *),
+body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
+    background-color: var(--theme-card);
+}
   </style>
   <div
     class="mock-container sarak-card group transition-all relative overflow-hidden "
     data-border-beam="0"
-    data-geometric="0"
     data-spotlight="1"
     data-sx-card-interactive="true"
     data-sx-card-texture-type="none"

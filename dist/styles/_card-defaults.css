@@ -15,19 +15,23 @@
    `border-*` do componente e do consumidor vencem a cor do tema, e o cartão da lib não
    repete a classe de fundo.
 
+   A CAIXA do cartão — preenchimento, sombra (e as variáveis que a compõem), recorte geométrico e
+   posicionamento — mora aqui também: `p-*`, `shadow-*`, `[clip-path:…]`, `absolute`/`isolate` do
+   componente e do consumidor vencem o padrão; sem classe, o token vale.
+
+   O material e a moldura (escolha de token por atributo com valor) e a sombra sob o ponteiro moram em
+   `_card-materials.css`, na mesma camada e depois deste arquivo.
+
    O que fica de fora, de propósito:
-   - o recorte geométrico (`clip-path`, `_atmosphere.css`): não é propriedade que o
-     componente controle por classe;
    - o modo eco e o movimento reduzido (`_performance.css`, `_motion.css`, `!important` na
      camada final — vencem o cartão);
-   - a moldura e o material da superfície (`_surfaces.css`, escolha explícita de token). */
+   - a moldura do `.border-theme` (`_surfaces.css`): a classe é `!important` por desenho. */
 
 /* A superfície do cartão: o fundo é a cor do tema com a opacidade da superfície (só nele, o
    conteúdo do cartão fica opaco), e a borda é a cor do tema com a opacidade da borda. Vale
    para o `.card` do contêiner do consumidor e da lib (que não repete a classe de fundo) e para
    o cartão sem tema montado. */
 .sarak-card,
-.bg-theme-card,
 .card {
     background-color: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6))), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
     border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
@@ -39,14 +43,8 @@
     border-color: rgba(var(--theme-primary-rgb), 0.4);
 }
 
-/* Cartão pressionado: o fundo ativo é padrão, `active:bg-*` do componente o vence. */
-.bg-theme-card:active {
-    background-color: var(--theme-primary-active);
-}
-
 /* Cartão sem tema montado: o piso. Com o Design Engine, a regra de baixo (escopo) assume. */
-.sarak-card,
-.bg-theme-card {
+.sarak-card {
     border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px)))
                    var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px)))
                    var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px)))
@@ -66,12 +64,55 @@
                 background-color var(--duration-normal, 0.3s) ease;
 }
 
+/* A caixa do cartão: posicionamento, preenchimento, sombra e recorte. `.card` (o contêiner do consumidor)
+   não os recebe — a âncora dele é só superfície e geometria. */
+.sarak-card {
+    position: relative;
+    isolation: isolate;
+
+    padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
+
+    /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
+       direção de `shadowOrientation` (`--sarak-shadow-dir-x/y`, `_surfaces.css`; sem o
+       atributo, para baixo), cor de `shadowColorMode` (sem o atributo, preto) e opacidade de
+       `cardShadowSpread`, em % — limitada a 100% porque `color-mix` não aceita mais.
+       Os materiais de `_card-materials.css` reaproveitam `--sarak-card-shadow-full`. */
+    --sarak-card-shadow-base:
+        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
+        calc(var(--sarak-card-shadow-offset-y, 20px) * var(--sarak-shadow-dir-y, 1))
+        var(--sarak-card-shadow-blur, 50px)
+        var(--sarak-card-shadow-expansion, -12px)
+        color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-card-shadow-spread, 20) * 1%)), transparent);
+    --sarak-card-shadow-full:
+        var(--sarak-card-shadow-base),
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
+    box-shadow: var(--sarak-card-shadow-full);
+}
+
+/* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do
+   cartão — em repouso (a de baixo do ponteiro é de `_card-materials.css`) — no lugar da composta pelos
+   tokens `cardShadow*`; `none` (o padrão) deixa a composta valer. O brilho interno (`cardInnerGlow*`)
+   continua somado. */
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card {
+    --sarak-card-shadow-full:
+        var(--sarak-card-shadow),
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
+}
+
+/* O recorte geométrico: `--sarak-card-clip-path` é `none` sem corte (um polígono com corte 0 ainda
+   recortaria a sombra) e o polígono do `cardGeometricCut` com corte. Vale para o cartão e para o
+   contêiner `.card`; `clip-path` do componente vence. */
+.sarak-card,
+.card {
+    clip-path: var(--sarak-card-clip-path, none);
+}
+
 /* Geometria do cartão sob o tema — `.card` é a âncora do contêiner do consumidor (só
    superfície e geometria, sem padding nem sombra próprios). Os quatro cantos, a largura da
    borda, o traço, o desfoque e a transição; a cor do fundo e da borda é a superfície do tema,
    em `_atmosphere.css`. A transição é `all` porque o contêiner do consumidor muda de cor,
    de sombra e de posição ao ponteiro. */
-[data-sx-texture] :is(.card, .sarak-card, .bg-theme-card),
+[data-sx-texture] :is(.card, .sarak-card),
 .sarak-design-scope :is(.card, .sarak-card) {
     backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
 

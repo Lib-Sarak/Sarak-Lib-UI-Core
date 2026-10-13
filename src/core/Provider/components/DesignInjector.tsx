@@ -3,6 +3,7 @@ import { BEZIER_CURVES } from '../constants';
 import { useDesignVariables } from '../../Design/hooks/useDesignVariables';
 import { SARAK_SCOPE_CLASS } from '../scope';
 import { SarakDesignState, SarakUIMode } from '../types';
+import { syncInjectedWrites } from '../utils/injectedWrites';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
@@ -105,19 +106,10 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         const targets: HTMLElement[] = isEmbedded && scopeElement ? [scopeElement] : [document.documentElement, document.body];
         const [primary] = targets;
 
-        // 1. Variáveis do Mapa Mestre (só grava o que mudou — economiza reflow)
-        Object.entries(variables).forEach(([k, v]) => {
-            targets.forEach((el) => {
-                if (el.style.getPropertyValue(k) !== v) el.style.setProperty(k, v);
-            });
-        });
-
-        // 2. Atributos de Estado
-        Object.entries(attributes).forEach(([k, v]) => {
-            targets.forEach((el) => {
-                if (el.getAttribute(k) !== v) el.setAttribute(k, v);
-            });
-        });
+        // 1. Variáveis do Mapa Mestre e 2. Atributos de Estado. Só grava o que mudou (economiza reflow) e tira
+        // o que o tema anterior escreveu e este não escreve: a variável inline que ficasse venceria o
+        // `<style>` responsivo e o valor do tema novo.
+        targets.forEach((el) => syncInjectedWrites(el, variables, attributes));
 
         // 3. Curvas de Animação (Bezier)
         if (!prevDesignRef.current) {

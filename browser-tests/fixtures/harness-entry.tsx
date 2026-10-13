@@ -37,6 +37,7 @@ import {
     SarakCustomizationPanel,
     SarakIconButton,
     SarakInput,
+    SarakLightbox,
     SarakMenuItem,
     SarakRangeSlider,
     SarakSearch,
@@ -102,6 +103,9 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
  *   - `dono-raio-mestre` / `dono-raio-canto`: o raio mestre do cartão (20) e do botão (30) sozinho, e com um canto declarado
  *     (`cardRadiusTL` e `btnRadiusTR` = 0). O padrão do canto é 8/12/12 e 6/8/8: com o mestre em outro valor, só o mestre chega.
+ *   - `dono-mestre-escalar` / `dono-mestre-escalar-canto-responsivo` / `dono-mestre-responsivo-canto-escalar`: o raio mestre do cartão
+ *     (20 ou 10/14/18) e do botão (30 ou 12/16/20) em formato escalar ou responsivo, com o canto (`cardRadiusTL`, `btnRadiusTR`)
+ *     declarado no outro formato (2/4/6 e 1/3/5 responsivos; 3 e 4 escalares) — o canto é de formato diferente do mestre.
  *   - `dono-superficie`: `surfaceColor` e `cardBackgroundColor` diferentes — cada um com a própria variável.
  *   - `dono-raio-sistema`: `borderRadius` (5) e `cardBorderRadius` (20) diferentes — cada um com a própria variável.
  *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
@@ -205,6 +209,18 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'dono-raio-canto': {
         cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, cardRadiusTL: { mob: 0, tab: 0, desk: 0 },
         btnBorderRadius: { mob: 30, tab: 30, desk: 30 }, btnRadiusTR: { mob: 0, tab: 0, desk: 0 },
+    },
+    'recorte-geometrico': { cardGeometricCut: 20 },
+    'movimento-padrao': { motionDurationFast: 0.45, motionEaseMain: 'cubic-bezier(0.1, 0.7, 0.1, 1)' },
+    'moldura-dupla': { borderType: 'double', textureColor: '#1f2937' },
+    'dono-mestre-escalar': { cardBorderRadius: 20, btnBorderRadius: 30 },
+    'dono-mestre-escalar-canto-responsivo': {
+        cardBorderRadius: 20, cardRadiusTL: { mob: 2, tab: 4, desk: 6 },
+        btnBorderRadius: 30, btnRadiusTR: { mob: 1, tab: 3, desk: 5 },
+    },
+    'dono-mestre-responsivo-canto-escalar': {
+        cardBorderRadius: { mob: 10, tab: 14, desk: 18 }, cardRadiusTL: 3,
+        btnBorderRadius: { mob: 12, tab: 16, desk: 20 }, btnRadiusTR: 4,
     },
     'dono-superficie': { surfaceColor: '#123456', cardBackgroundColor: '#654321' },
     'dono-raio-sistema': { borderRadius: { mob: 5, tab: 5, desk: 5 }, cardBorderRadius: { mob: 20, tab: 20, desk: 20 } },
@@ -315,6 +331,15 @@ const App: React.FC = () => {
  *     a tabela e um alternador.
  *   - `legivel`: o que o componente desenha sobre a cor sólida e sobre a superfície do tema — badge sólido (primário, perigo)
  *     e suave (sucesso), botão de perigo, abas em pílula (a bandeja de tinta) e o alternador da barra de prova.
+ * `?css=escopado` troca o `sarak.css` global pelo `sarak-scoped.css` (o artefato do Modo Embarcado, com `:root` virado em
+ * `.sarak-scope`) antes de montar a cena; sem ele a folha é a global.
+ *
+ *   - `cartao-cede`: o cartão da lib (`.sarak-card`) com e sem classe utilitária de fundo, desfoque, moldura, preenchimento e
+ *     sombra, o `.bg-theme-card` só como cor, e um botão com transform inline — a cena em que o material, a moldura, a caixa e o
+ *     aperto do botão cedem à classe e ao `style`.
+ *   - `lightbox`: o `SarakLightbox` aberto e um elemento do HOSPEDEIRO com `text-white` — a cena do sequestro do modo claro.
+ *   - `transicao`: elementos com `transition-colors` (sem duração) e com `duration-300` (duração própria) — a cena em que o padrão
+ *     das transições do Tailwind vem do token de movimento.
  *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
  *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
  *     contêiner `.card` sem classe, o `SarakKanban` (fundo por `style` inline em `<section>`/`<article>`) e
@@ -629,6 +654,43 @@ const ComponentScene: React.FC = () => (
     </div>
 );
 
+const MATERIAL_IMAGES = [{ src: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', alt: 'Pixel' }, { src: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', alt: 'Pixel 2' }];
+
+/** Só usa classes que o `dist/sarak.css` emite: o Tailwind gera o que os fontes da lib citam. */
+const CardYieldsScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
+        <div data-probe="cartao-gradiente"><div className="sarak-card bg-gradient-to-r from-indigo-500 to-blue-400">Gradiente por classe</div></div>
+        <div data-probe="cartao-desfoque"><div className="sarak-card backdrop-blur-sm">Desfoque por classe</div></div>
+        <div data-probe="cartao-moldura"><div className="sarak-card border-dashed">Moldura por classe</div></div>
+        <div data-probe="cartao-preenchimento"><div className="sarak-card p-8">Preenchimento por classe</div></div>
+        <div data-probe="referencia-p8"><div className="p-8">A mesma classe, fora do cartão</div></div>
+        <div data-probe="cartao-sem-preenchimento"><div className="sarak-card p-0">Sem preenchimento</div></div>
+        <div data-probe="cartao-sem-sombra"><div className="sarak-card shadow-none">Sem sombra por classe</div></div>
+        <div data-probe="cartao-posicao" style={{ position: 'relative', height: '40px' }}>
+            <div className="sarak-card absolute" style={{ pointerEvents: 'none' }}>Posição por classe</div>
+        </div>
+        <div data-probe="so-cor"><div className="bg-theme-card">Só a cor do cartão</div></div>
+        <div data-probe="botao-livre"><button type="button">Botão sem estilo</button></div>
+        <div data-probe="botao-inline"><button type="button" style={{ transform: 'scale(0.5)' }}>Botão com transform</button></div>
+    </div>
+);
+
+const LightboxScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <span data-probe="hospedeiro" className="text-white">Texto do hospedeiro</span>
+        <SarakLightbox images={MATERIAL_IMAGES} isOpen onClose={NOOP} />
+    </div>
+);
+
+const TransitionScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="sem-duracao" className="transition-colors">Transição sem duração</div>
+        <div data-probe="com-duracao" className="transition-all duration-300">Transição com duração</div>
+        <button data-probe="botao-sem-duracao" type="button" className="transition-colors">Botão sem duração</button>
+    </div>
+);
+
 const LEGIBLE_TABS = [{ id: 'a', label: 'Primeira' }, { id: 'b', label: 'Segunda' }];
 
 const LegibleScene: React.FC = () => (
@@ -668,6 +730,9 @@ const SCENES: Record<string, React.FC> = {
     cascata: CascadeScene,
     componente: ComponentScene,
     legivel: LegibleScene,
+    'cartao-cede': CardYieldsScene,
+    lightbox: LightboxScene,
+    transicao: TransitionScene,
     'schema-modal': SchemaModalScene,
 };
 
@@ -694,8 +759,56 @@ function renderScene(Scene: React.FC): React.ReactElement {
     return <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={activeThemeId} options={options}><Scene /></SarakUIProvider>;
 }
 
+/**
+ * `?cena=troca-de-tema`: o `activeThemeId` do Provider muda em tempo de execução. O tema A declara o raio mestre e o canto
+ * escalares (os dois vão inline); o B declara os dois responsivos (vão ao `<style>`) — o inline do A é o que não pode ficar.
+ */
+const SWITCH_THEMES = [
+    { id: 'tema-a', name: 'Tema A', design: { mode: 'dark' as const, cardBorderRadius: 20, cardRadiusTL: 3, btnBorderRadius: 30, btnRadiusTR: 4 } },
+    {
+        id: 'tema-b',
+        name: 'Tema B',
+        design: {
+            mode: 'dark' as const,
+            cardBorderRadius: { mob: 10, tab: 14, desk: 18 },
+            cardRadiusTL: { mob: 2, tab: 4, desk: 6 },
+            btnBorderRadius: { mob: 12, tab: 16, desk: 20 },
+            btnRadiusTR: { mob: 1, tab: 3, desk: 5 },
+        },
+    },
+];
+
+const ThemeSwitchScene: React.FC = () => {
+    const [activeThemeId, setActiveThemeId] = React.useState('tema-a');
+    const options = searchParams.get('modo') === 'embarcado' ? { mode: 'embedded' as const } : undefined;
+    return (
+        <SarakUIProvider config={{ mode: 'dark' }} customThemes={SWITCH_THEMES} activeThemeId={activeThemeId} options={options}>
+            <button type="button" data-probe="trocar" onClick={() => setActiveThemeId('tema-b')}>Trocar de tema</button>
+            <CascadeScene />
+        </SarakUIProvider>
+    );
+};
+
 const SceneComponent = SCENES[searchParams.get('cena') ?? ''];
 
 const container = document.getElementById('root');
 if (!container) throw new Error('harness-entry: #root ausente no HTML do harness.');
-createRoot(container).render(SceneComponent ? renderScene(SceneComponent) : <App />);
+/** `?css=escopado`: usa a folha do Modo Embarcado e espera ela carregar, para a cena nascer já com ela. */
+async function swapToScopedStylesheet(): Promise<void> {
+    if (searchParams.get('css') !== 'escopado') return;
+    const link = document.querySelector<HTMLLinkElement>('link[rel="stylesheet"]');
+    if (!link) return;
+    await new Promise<void>((resolve) => {
+        link.addEventListener('load', () => resolve(), { once: true });
+        link.addEventListener('error', () => resolve(), { once: true });
+        link.href = './sarak-scoped.css';
+    });
+}
+
+void swapToScopedStylesheet().then(() => {
+    if (searchParams.get('cena') === 'troca-de-tema') {
+        createRoot(container).render(<ThemeSwitchScene />);
+    } else {
+        createRoot(container).render(SceneComponent ? renderScene(SceneComponent) : <App />);
+    }
+});

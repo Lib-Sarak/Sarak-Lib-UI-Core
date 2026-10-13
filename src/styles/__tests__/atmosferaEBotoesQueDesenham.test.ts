@@ -112,9 +112,9 @@ describe('borderStyle — o valor de cada opção chega ao border-style declarad
     });
 
     it('MUTAÇÃO: o cartão sob a moldura sólida e sob o escopo de design obedece borderStyle, não "solid" fixo', () => {
-        const surfaces = read('_surfaces.css');
-        const solidFrame = surfaces.slice(surfaces.indexOf('[data-sx-border-type="solid"]'));
-        expect(solidFrame.slice(0, solidFrame.indexOf('}'))).toContain('border-style: var(--border-style, solid) !important;');
+        const materials = read('_card-materials.css');
+        const solidFrame = materials.slice(materials.indexOf('[data-sx-border-type="solid"]'));
+        expect(solidFrame.slice(0, solidFrame.indexOf('}'))).toContain('border-style: var(--border-style, solid);');
         expect(read('_card-defaults.css')).toMatch(/border-style: var\(--border-style, solid\);/);
         expect(read('_card-defaults.css')).toMatch(/border-color: color-mix\(in srgb, var\(--sarak-card-border-color/);
     });

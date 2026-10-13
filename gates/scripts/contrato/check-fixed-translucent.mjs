@@ -26,8 +26,8 @@
 //    Uma reserva que abre numa linha e fecha em outra não é reconhecida (falso positivo; o conserto
 //    é reformatar ou declarar a exceção).
 // 3. Só `src/components/**`, `src/features/**` e os parciais `_base.css`, `_utilities.css`,
-//    `_elements.css`, `_card-defaults.css` e `_cards.css`. NÃO vê `_atmosphere.css` e `_surfaces.css`
-//    (texturas e materiais: o branco/preto ali é desenho da textura, medido por
+//    `_elements.css`, `_card-defaults.css` e `_cards.css`. NÃO vê `_atmosphere.css`, `_surfaces.css` e
+//    `_card-materials.css` (texturas e materiais: o branco/preto ali é desenho da textura, medido por
 //    `cromo-css-real:check`), nem o CSS do consumidor. Em `src/features/` a leitura de modo é
 //    do texto: que o painel de fato siga o modo do tema que mostra é do navegador
 //    (`browser-tests/painel-segue-o-modo.spec.ts`), não deste gate.

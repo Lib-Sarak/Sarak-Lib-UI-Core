@@ -16,7 +16,7 @@ export const KitchenSinkPreview: React.FC = () => {
     return (
         <div className="p-8 space-y-12 mx-auto">
             {/* Header Section */}
-            <header className="flex items-center justify-between p-6 bg-theme-card rounded-theme border-theme shadow-theme backdrop-blur-md">
+            <header className="flex items-center justify-between p-6 sarak-card rounded-theme border-theme shadow-theme">
                 <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-theme-on-primary shadow-lg shadow-[var(--theme-primary)]/30">
                         <Layout size={20} />
@@ -48,7 +48,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Inputs & Controles</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme p-6 space-y-4 shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme p-6 space-y-4 shadow-theme">
                         <div className="space-y-2">
                             <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Campo de Texto</label>
                             <SarakInput 
@@ -86,7 +86,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Botões & Ações</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme p-6 grid grid-cols-2 gap-4 shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme p-6 grid grid-cols-2 gap-4 shadow-theme">
                         <SarakButton variant="primary" fullWidth>
                             Ação Primária
                         </SarakButton>
@@ -114,7 +114,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Tabelas & Listas</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme overflow-hidden shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme overflow-hidden shadow-theme">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-theme bg-theme-text/5">
@@ -169,7 +169,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                     
                     <div className="space-y-4">
-                        <div className="p-4 bg-theme-card border-theme rounded-theme shadow-theme flex items-center gap-4 relative overflow-hidden group">
+                        <div className="p-4 sarak-card border-theme rounded-theme shadow-theme flex items-center gap-4 relative overflow-hidden group">
                             <div className="spotlight-effect" />
 
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--theme-primary)]" />
@@ -182,7 +182,7 @@ export const KitchenSinkPreview: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="bg-theme-card rounded-theme border-theme p-6 shadow-theme space-y-6 relative overflow-hidden group">
+                        <div className="sarak-card rounded-theme border-theme p-6 shadow-theme space-y-6 relative overflow-hidden group">
                             <div className="spotlight-effect" />
 
                             <div className="flex items-center justify-between">
@@ -212,7 +212,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="bg-theme-card rounded-theme border-theme p-6 group hover:translate-y-[var(--sarak-card-hover-y,-4px)] transition-all relative overflow-hidden shadow-theme">
+                        <div className="sarak-card rounded-theme border-theme p-6 group hover:translate-y-[var(--sarak-card-hover-y,-4px)] transition-all relative overflow-hidden shadow-theme">
                             <div className="spotlight-effect" />
                             {/* Spotlight effect placeholder */}
 

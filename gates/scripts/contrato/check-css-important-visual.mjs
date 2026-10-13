@@ -17,11 +17,19 @@
 //       (`[data-sx-texture]`) e o escopo sempre ligado (`.sarak-design-scope`, `body`, `html`, `:root`)
 //       não estreitam — são justamente o "vale sempre".
 //
+// Uma segunda frente cobre o `!important` MONTADO EM TYPESCRIPT: `<style>` montado em template
+// (`SovereignThemeInjector` repintava o `text-white` do consumidor com `!important`, fora do alcance da
+// varredura de CSS). Qualquer `!important` dentro de um literal de string ou template em `src/**/*.{ts,tsx}`
+// (sem testes e sem gerados) é acusado, salvo exceção declarada em `TS_EXCEPTIONS`, com motivo.
+//
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
 // -------------------------------------------------------------------------
-// 1. É TEXTUAL, sobre `src/styles/*.css`. Não vê CSS gerado no build (`dist/`), `<style>` montado em
-//    TypeScript (`DesignInjector`, `DesignScope`) nem `style` inline com `!important`.
+// 1. A frente de CSS é TEXTUAL, sobre `src/styles/*.css`. Não vê CSS gerado no build (`dist/`) nem
+//    `style` inline com `!important`. A frente de TypeScript só vê o texto `!important` dentro de literal
+//    de string ou template em `src/**/*.{ts,tsx}`: não vê o valor montado por concatenação
+//    (`'!' + 'important'`), nem o modificador `!` de classe do Tailwind (`!p-0`, `p-0!`), nem `.mjs`/`.js`
+//    fora de `src/`, e não julga se o seletor é amplo — todo `!important` montado em TS é acusado.
 // 2. Só `!important`. Uma regra comum na camada final também vence a classe utilitária (a camada vem depois
 //    de `utilities`), e este gate não a acusa: o que ele cobra é a ordem de camadas — padrão que cede mora em
 //    `components.sarak-elements` (`_card-defaults.css`), onde não há `!important` — e isso é prova de
@@ -44,6 +52,11 @@ const STYLES_DIR = path.join(ROOT, 'src', 'styles');
 const VISUAL_PROPERTY_RE = /^(background|border|outline|box-shadow|text-shadow|backdrop-filter|filter|opacity|transition|animation|clip-path|color|fill|stroke|transform|mix-blend-mode)/;
 
 // Âncoras de componente: classes que os componentes da lib (e o consumidor) aplicam por nome.
+const TS_DIR = path.join(ROOT, 'src');
+
+/** `!important` montado em TypeScript que é aceito: `{ file: 'caminho/relativo/a/src.tsx', reason }`. Esvazia sozinha. */
+export const TS_EXCEPTIONS = [];
+
 const COMPONENT_ANCHORS = new Set([
   'card', 'sarak-card', 'bg-theme-card', 'bg-theme-body',
   'sarak-shell-sidebar', 'sarak-shell-header', 'sarak-module-container', 'module-content', 'module-wrapper',
@@ -247,14 +260,93 @@ export function findImportantVisualViolations({ stylesDir = STYLES_DIR } = {}) {
   return { violations, staleExceptions };
 }
 
+/** As linhas de `text` em que `!important` está DENTRO de um literal de string/template (comentário não conta). */
+export function importantInStringLiterals(text) {
+  const lines = [];
+  let line = 1;
+  let quote = '';
+  let index = 0;
+  while (index < text.length) {
+    const char = text[index];
+    const next = text[index + 1];
+    if (char === '\n') line += 1;
+    if (quote) {
+      if (char === '\\') {
+        index += 2;
+        continue;
+      }
+      if (char === quote) quote = '';
+      else if (text.startsWith('!important', index)) lines.push(line);
+      index += 1;
+      continue;
+    }
+    if (char === '/' && next === '/') {
+      while (index < text.length && text[index] !== '\n') index += 1;
+      continue;
+    }
+    if (char === '/' && next === '*') {
+      const end = text.indexOf('*/', index + 2);
+      const stop = end === -1 ? text.length : end + 2;
+      line += (text.slice(index, stop).match(/\n/g) ?? []).length;
+      index = stop;
+      continue;
+    }
+    if (char === '"' || char === "'" || char === '`') quote = char;
+    index += 1;
+  }
+  return lines;
+}
+
+const TS_SKIPPED_DIRS = new Set(['__tests__', '__snapshots__', 'generated', 'node_modules']);
+
+function listTypeScriptFiles(dir, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      if (!TS_SKIPPED_DIRS.has(entry.name)) listTypeScriptFiles(path.join(dir, entry.name), out);
+    } else if (/\.(ts|tsx)$/.test(entry.name) && !/\.(test|spec|d)\.(ts|tsx)$/.test(entry.name)) {
+      out.push(path.join(dir, entry.name));
+    }
+  }
+  return out;
+}
+
+export function findImportantInTypeScript({ srcDir = TS_DIR, exceptions = TS_EXCEPTIONS } = {}) {
+  const violations = [];
+  const seen = new Set();
+  for (const file of listTypeScriptFiles(srcDir)) {
+    const relative = path.relative(srcDir, file).split(path.sep).join('/');
+    const lines = importantInStringLiterals(fs.readFileSync(file, 'utf8'));
+    if (lines.length === 0) continue;
+    const exception = exceptions.find((item) => item.file === relative);
+    if (exception) {
+      seen.add(exception);
+      continue;
+    }
+    lines.forEach((line) => violations.push({ file: `src/${relative}`, line }));
+  }
+  return { violations, staleExceptions: exceptions.filter((item) => !seen.has(item)) };
+}
+
 function main() {
   console.log('--- check-css-important-visual ---');
   const stylesDirArgument = process.argv.indexOf('--styles-dir');
   const stylesDir = stylesDirArgument > -1 ? path.resolve(process.argv[stylesDirArgument + 1]) : STYLES_DIR;
   const { violations, staleExceptions } = findImportantVisualViolations({ stylesDir });
+  const typeScript = findImportantInTypeScript();
 
-  if (violations.length === 0 && staleExceptions.length === 0) {
-    console.log('[OK] Nenhum `!important` visual em seletor amplo do motor (exceções declaradas: ' + EXCEPTIONS.length + ').');
+  if (typeScript.violations.length > 0) {
+    console.log(`[ERROR] ${typeScript.violations.length} \`!important\` montado(s) em TypeScript — vence a classe e o \`style\` do componente, fora do alcance da varredura de CSS:`);
+    typeScript.violations.forEach((v) => console.log(`  - ${v.file}:${v.line}`));
+    console.log('  Conserto: sem `!important`; a folha injetada vence a utilitária por não estar em camada, e o `style` inline do componente continua valendo.');
+  }
+  if (typeScript.staleExceptions.length > 0) {
+    console.log(`[ERROR] ${typeScript.staleExceptions.length} exceção(ões) de TypeScript que não existe(m) mais — remova de TS_EXCEPTIONS:`);
+    typeScript.staleExceptions.forEach((e) => console.log(`  - ${e.file}`));
+  }
+  const typeScriptFailed = typeScript.violations.length > 0 || typeScript.staleExceptions.length > 0;
+
+  if (violations.length === 0 && staleExceptions.length === 0 && !typeScriptFailed) {
+    console.log('[OK] Nenhum `!important` visual em seletor amplo do motor (exceções declaradas: ' + EXCEPTIONS.length + ') nem montado em TypeScript.');
     process.exit(0);
   }
 

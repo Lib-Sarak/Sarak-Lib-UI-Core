@@ -27,7 +27,8 @@ describe('backdrop-filter — o build só preserva a forma sem prefixo se ela vi
 });
 
 describe('borderType — uma regra por opção, no atributo que o motor emite', () => {
-    const surfaces = withoutComments(read('_surfaces.css'));
+    // A moldura do cartão mora na camada que cede (`_card-materials.css`); a do `.border-theme`, na final.
+    const surfaces = withoutComments(read('_card-materials.css') + read('_surfaces.css'));
 
     it.each(optionsOf('borderType'))('a opção %s tem regra [data-sx-border-type]', (value) => {
         expect(surfaces).toContain(`[data-sx-border-type="${value}"]`);
@@ -43,7 +44,8 @@ describe('borderType — uma regra por opção, no atributo que o motor emite', 
 describe('shadowOrientation e layeredShadows — sombra do cartão e sombra em camadas', () => {
     const surfaces = withoutComments(read('_surfaces.css'));
     const theme = withoutComments(read('_theme.css'));
-    const cards = withoutComments(read('_cards.css'));
+    // A sombra base mora em `_card-defaults.css` e a de baixo do ponteiro em `_card-materials.css`.
+    const cards = withoutComments(read('_card-defaults.css') + read('_card-materials.css'));
 
     it.each(optionsOf('shadowOrientation'))('a opção %s fixa um vetor de direção', (value) => {
         const rule = surfaces.match(new RegExp(`\\[data-sx-shadow-orientation="${value}"\\]\\s*\\{([^}]*)\\}`));

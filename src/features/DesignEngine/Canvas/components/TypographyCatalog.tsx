@@ -29,7 +29,7 @@ const TypographyPresetPreview = ({ preset, index, onApply }: { preset: Component
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
         >
             <div 
                 className="h-48 w-full relative p-8 flex flex-col bg-[var(--color-theme-bg, #0a0a0c)] text-theme-text overflow-hidden" 

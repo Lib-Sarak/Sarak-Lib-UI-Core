@@ -65,7 +65,6 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Ambient Spotlight */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />

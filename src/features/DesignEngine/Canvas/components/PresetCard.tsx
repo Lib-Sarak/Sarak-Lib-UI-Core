@@ -87,7 +87,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
         >
             {/* Top Showcase Area - Mini Dashboard */}
             <div

@@ -80,9 +80,11 @@ button:hover:not(.p-0) {
     transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
 }
 
-/* O `transform` do estado ativo é `!important` e fica em `_utilities.css`. */
+/* O aperto do botão (`transform` do estado ativo) é padrão: `active:scale-*`, o `style` e o `whileTap` do
+   componente o vencem. Vem depois do hover (mesma especificidade) para valer com o ponteiro sobre o botão. */
 button:active:not(.p-0) {
     background-color: var(--theme-primary-active);
+    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98));
     transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0, 0, 0.2, 1));
 }
 

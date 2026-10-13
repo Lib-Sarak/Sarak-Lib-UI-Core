@@ -208,6 +208,10 @@
       "comando": "node scripts/generate-component-catalog.mjs --check"
     },
     {
+      "nome": "npm run channel-dispute:check",
+      "comando": "npx tsx gates/scripts/contrato/check-channel-dispute.ts"
+    },
+    {
       "nome": "npm run chrome-token-parity:check",
       "comando": "node gates/scripts/contrato/check-chrome-token-parity.mjs"
     },

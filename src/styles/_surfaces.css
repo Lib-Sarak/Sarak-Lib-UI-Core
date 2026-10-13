@@ -7,78 +7,26 @@
     --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, #94a3b8)) 30%, transparent);
 }
 
-/* Leitor de `surfaceMaterial` (`data-sx-surface-material`) e de `surfaceIntensity`.
-   O motor emite o atributo no `html`/`body`; o material pinta as SUPERFÍCIES — cartões e
-   painéis —, nunca o fundo da página. Cada material mexe só no que o torna reconhecível
-   (brilho, desfoque, relevo) e deixa cor, raio e borda ao tema.
+/* `surfaceMaterial` (`data-sx-surface-material`), `surfaceIntensity` e a moldura do CARTÃO
+   (`borderType`, `data-sx-border-type`) são lidos em `_card-materials.css`, na camada que cede à
+   classe. Aqui ficam as variáveis e a moldura do `.border-theme`.
 
-   `!important` porque `[data-sx-texture] .sarak-card` (`_atmosphere.css`) e `.sarak-card`
-   (`_cards.css`) já escrevem `background`/`backdrop-filter` com `!important`: entre
-   importantes, vence a de maior especificidade e, empatando, a que vem depois. Esta
-   regra tem a mesma especificidade e vem depois. Escreve `background-image`, não o
-   atalho `background`, para a cor do cartão continuar sendo a do tema.
-
-   Só `backdrop-filter`, sem a forma `-webkit-` ao lado: o build funde as duas num único
-   `-webkit-backdrop-filter` e a propriedade sem prefixo — a que o navegador computa — some. */
-
-/* Vidro fosco: translúcido, com desfoque forte e saturação. O desfoque parte do que o tema
-   pediu em `cardBackdropBlur` (12px por padrão) e a intensidade do material soma até +24px:
-   no padrão (12px, 0,5) dá os mesmos 24px de antes, e o token deixa de ser sobrescrito. */
-[data-sx-surface-material="frosted"] :is(.sarak-card, .bg-theme-card) {
-    backdrop-filter: blur(calc(var(--sarak-card-backdrop-blur, 12px) + var(--surface-intensity, 0.5) * 24px)) saturate(160%) !important;
-    background-image: linear-gradient(135deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.18 + var(--glass-opacity, 0.1) * 0.4)), rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.04))) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.3)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
-}
-
-/* Polido: liso e reflexivo, com um reflexo diagonal e uma quina de luz. */
-[data-sx-surface-material="sleek"] :is(.sarak-card, .bg-theme-card) {
-    background-image: linear-gradient(115deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.24)) 0%, rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.14)) 100%) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.4)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
-}
-
-/* Industrial: chapa metálica — veio fino, bisel claro em cima e escuro embaixo. */
-[data-sx-surface-material="industrial"] :is(.sarak-card, .bg-theme-card) {
-    background-image:
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 0, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 1px, transparent 1px, transparent 3px),
-        linear-gradient(180deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.14)), rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.22))) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.35)), inset 0 -2px 0 rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.7)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
-}
-
-/* Orgânico: fosco e macio — sem desfoque nem brilho, só uma sombra interna suave. */
-[data-sx-surface-material="organic"] :is(.sarak-card, .bg-theme-card) {
-    backdrop-filter: none !important;
-    background-image: radial-gradient(120% 120% at 30% 20%, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.06)), transparent 62%) !important;
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.16)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
-}
-
-/* 3.2 MOLDURA — leitor de `borderType` (`data-sx-border-type`).
-   Age nas superfícies principais (cartões, painéis, barra lateral e cabeçalho do cromo) e
-   desenha só o contorno: cor, raio e geometria continuam do tema. `!important` pelo mesmo
-   motivo dos materiais acima — `[data-sx-texture] .sarak-card` escreve estilo, cor e largura
-   da borda com `!important`; a regra daqui tem a mesma especificidade e vem depois.
-   A sombra do cartão é recomposta (`--sarak-card-shadow-full`) para o contorno não a apagar. */
-[data-sx-border-type="solid"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
-    /* A moldura sólida deixa o estilo do traço para `borderStyle` (tracejado, pontilhado, sem borda). */
-    border-style: var(--border-style, solid) !important;
-}
-/* Tech segmentado: traço interrompido na cor de textura, com um filete interno. */
-[data-sx-border-type="cyber"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+   `.border-theme` é classe da lib que o autor escolhe aplicar e que é `!important` por desenho
+   (`_utilities.css`): a moldura só a alcança com `!important` na mesma camada, e por atributo com
+   valor — o seletor é estreito. Só o contorno (estilo, cor e espessura): a sombra da moldura é do
+   cartão. */
+[data-sx-border-type="cyber"] .border-theme {
     border-style: dashed !important;
     border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 70%, transparent) !important;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 18%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
 }
-/* Dupla linha: `double` só aparece a partir de 3px de espessura. */
-[data-sx-border-type="double"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+[data-sx-border-type="double"] .border-theme {
     border-style: double !important;
-    border-width: max(3px, var(--sarak-card-border-width, 1px)) !important;
+    border-width: max(3px, var(--theme-border-width, 1px)) !important;
 }
-/* Neon: contorno e halo na cor de textura. */
-[data-sx-border-type="glow"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+[data-sx-border-type="glow"] .border-theme {
     border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 50%, transparent) !important;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 20%, transparent), inset 0 0 5px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 10%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
 }
-/* Sem moldura: o contorno some, mas a caixa mantém a espessura (nada se desloca). */
-[data-sx-border-type="none"] :is(.sarak-card, .bg-theme-card, .sarak-shell-sidebar, .sarak-shell-header, .border-theme) {
+[data-sx-border-type="none"] .border-theme {
     border-color: transparent !important;
 }
 

@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "116"
+proximo_numero_plan: "117"
 ---
 
 # 0. O que é este arquivo
@@ -42,16 +42,16 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono | plan-115-fechamento-do-arsenal | 🟠 Em revisão | specs/09-temas-e-presets.md |
+| 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida | plan-116-tema-sob-demanda | 🟠 Em revisão | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + specs/12-kit-do-consumidor.md |
 | 2 | [plan-115-fechamento-do-arsenal](plan/plan-115-fechamento-do-arsenal.md) | Corrigir o residuo que a re-auditoria de fechamento da plan-114 mediu nos pontos cegos das travas, em tres lotes revisados um a um, fechar os furos das proprias travas e repetir a re-auditoria ate zero, antes de os temas serem refeitos | — | 🟡 Em execução | arquitetura/02-design-engine.md + specs/06-painel-de-customizacao-e-preview.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
+| 3 | [plan-116-tema-sob-demanda](plan/plan-116-tema-sob-demanda.md) | Tirar do boot de todo consumidor o peso dos temas que ele nao usa, mantendo a hidratacao sincrona sem trocar de tema na tela, o catalogo listavel para o painel, e corrigir o tema padrao que aponta para um id inexistente | plan-115-fechamento-do-arsenal | 🔴 A executar | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/03-superficie-publica.md + adr/ |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Fila de 2026-10-13 — 115, sozinha na árvore.** A `plan-110` (lote 0 aprovado) espera a 115: o dono decidiu
-> fechar o resíduo da re-auditoria antes de refazer os temas. O `npm run build` e o `cromo-css-real:check` são do revisor;
+> 🚦 **Fila de 2026-10-13 — 115 (em execução), depois 116, depois 110, uma de cada vez.** A `plan-116` (tema sob demanda) espera a 115; a `plan-110` (lote 0 aprovado; reescrita em 2026-10-13: todo token estético projetado, valores padrão dos tokens redefinidos a partir do tema padrão `sarak-sovereign`, um tema por lote) espera a 116. O `npm run build` e o `cromo-css-real:check` são do revisor;
 > o executor escreve os casos de `browser-tests/`.
 
 > ⚪ **A `plan-114` foi SINTETIZADA e REMOVIDA em 2026-10-13** (com o anexo `plan-114-achados-da-verificacao.md`). Destino demonstrado:

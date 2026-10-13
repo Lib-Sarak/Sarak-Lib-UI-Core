@@ -136,7 +136,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
       >
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -380,7 +380,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -644,7 +644,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -908,7 +908,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1152,7 +1152,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1416,7 +1416,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1660,7 +1660,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1924,7 +1924,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2168,7 +2168,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2412,7 +2412,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2656,7 +2656,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2900,7 +2900,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -3144,7 +3144,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -3388,7 +3388,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >

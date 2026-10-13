@@ -1,47 +1,9 @@
 /* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.5) */
-/* Raio, largura da borda, desfoque, transição e a SUPERFÍCIE do cartão (cor do fundo e da borda,
-   com as opacidades do tema) moram em `_card-defaults.css` (subcamada que cede à classe e ao
-   `style` do componente). Aqui fica o que o componente não escolhe por classe: caixa de
-   posicionamento, preenchimento, sombra, brilho e movimento. */
-.sarak-card, .bg-theme-card {
-    position: relative;
-    isolation: isolate;
-    
-    padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
-
-    /* Sombra base: geometria dos tokens `cardShadow*` (padrão `0 20px 50px -12px`) virada pela
-       direção de `shadowOrientation` (`--sarak-shadow-dir-x/y`, `_surfaces.css`; sem o
-       atributo, para baixo), cor de `shadowColorMode` (sem o atributo, preto) e opacidade de
-       `cardShadowSpread`, em % — limitada a 100% porque `color-mix` não aceita mais.
-       Os materiais de `_surfaces.css` reaproveitam `--sarak-card-shadow-full`. */
-    --sarak-card-shadow-base:
-        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
-        calc(var(--sarak-card-shadow-offset-y, 20px) * var(--sarak-shadow-dir-y, 1))
-        var(--sarak-card-shadow-blur, 50px)
-        var(--sarak-card-shadow-expansion, -12px)
-        color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-card-shadow-spread, 20) * 1%)), transparent);
-    --sarak-card-shadow-full:
-        var(--sarak-card-shadow-base),
-        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
-    box-shadow: var(--sarak-card-shadow-full);
-    
-    /* O desfoque (`backdrop-filter`) mora em `_card-defaults.css` — só a forma sem prefixo:
-       com as duas lado a lado o build deixa apenas `-webkit-` e o Chromium não desfoca
-       (ver _surfaces.css, topo). */
-
-    /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
-    clip-path: polygon(
-        var(--sarak-card-geometric-cut, 0px) 0%, 
-        calc(100% - var(--sarak-card-geometric-cut, 0px)) 0%, 
-        100% var(--sarak-card-geometric-cut, 0px), 
-        100% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
-        calc(100% - var(--sarak-card-geometric-cut, 0px)) 100%, 
-        var(--sarak-card-geometric-cut, 0px) 100%, 
-        0% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
-        0% var(--sarak-card-geometric-cut, 0px)
-    );
-}
-
+/* A caixa do cartão (posicionamento, preenchimento, sombra e recorte), o raio, a largura da borda, o
+   desfoque, a transição e a SUPERFÍCIE (cor do fundo e da borda, com as opacidades do tema) moram em
+   `_card-defaults.css` (subcamada que cede à classe e ao `style` do componente), e o material, a moldura
+   e a sombra sob o ponteiro em `_card-materials.css`. Aqui fica o que o componente não escolhe por
+   classe: o brilho (`::before`) e o movimento. */
 
 /* 4.3 GLOW SYSTEM */
 .sarak-card::before {
@@ -60,28 +22,8 @@
 }
 
 /* INTERACTIVE STATES */
-.sarak-card:hover {
-    /* A borda de hover (padrão do cartão) mora em `_card-defaults.css`, onde `hover:border-*` a vence. */
-    /* Hover: a mesma sombra, 10px mais baixa e mais difusa, a 60% de opacidade. */
-    box-shadow:
-        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
-        calc((var(--sarak-card-shadow-offset-y, 20px) + 10px) * var(--sarak-shadow-dir-y, 1))
-        calc(var(--sarak-card-shadow-blur, 50px) + 10px)
-        var(--sarak-card-shadow-expansion, -12px)
-        color-mix(in srgb, var(--sarak-card-shadow-color, #000) 60%, transparent);
-}
-
-/* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do
-   cartão — em repouso e sob o ponteiro — no lugar da composta pelos tokens `cardShadow*`; `none`
-   (o padrão) deixa a composta valer. O brilho interno (`cardInnerGlow*`) continua somado. */
-[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card {
-    --sarak-card-shadow-full:
-        var(--sarak-card-shadow),
-        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
-}
-[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card:hover {
-    box-shadow: var(--sarak-card-shadow-full);
-}
+/* A borda de hover (padrão do cartão) mora em `_card-defaults.css`, onde `hover:border-*` a vence; a sombra
+   sob o ponteiro (e a declarada, `cardShadow`) mora em `_card-materials.css`. */
 
 /* CARTÃO INTERATIVO: o hover (brilho e movimento) vale só para o cartão cuja superfície inteira
    responde ao ponteiro — o que traz `data-sx-card-interactive="true"` (`SarakTitleCard`,
@@ -98,7 +40,7 @@
 /* ESTILO DE HOVER (`cardHoverStyle`): o atributo `data-sx-card-hover-style` vem do motor.
    `lift` sobe `cardHoverTranslate` px (negativo = sobe); `expand` cresce um pouco;
    `glow-only` não move o cartão e acende o brilho: a camada de brilho vai a opacidade plena e o
-   cartão ganha um halo na cor primária (a sombra declarada vale, somada ao halo). */
+   cartão ganha um halo na cor primária (o halo é a sombra, em `_card-materials.css`). */
 [data-sx-card-hover-style="lift"] .sarak-card[data-sx-card-interactive="true"]:hover {
     transform: translateY(var(--sarak-card-hover-y, -4px));
 }
@@ -107,9 +49,6 @@
 }
 [data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
     transform: none;
-    box-shadow:
-        var(--sarak-card-shadow-full),
-        0 0 calc(var(--sarak-card-shadow-blur, 50px) * 0.5) color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent);
 }
 [data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before {
     opacity: 1;

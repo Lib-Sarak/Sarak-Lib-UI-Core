@@ -26,28 +26,9 @@
 .p-theme { padding: var(--theme-pad, 1.5rem); }
 .gap-theme { gap: var(--theme-gap, 20px); }
 
-/* Os padrões de ELEMENTO de botão e campo (raio, transição, hover, ativo, foco) moram em
-   `_elements.css`, numa camada que cede à classe utilitária. Aqui fica só o que é
-   `!important`: entre camadas a ordem se inverte para importantes, e nesta camada, a
-   última, uma utilitária `!important` ainda vence. */
-.bg-theme-card:active {
-    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
-    transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0, 0, 0.2, 1));
-}
-
-button:active:not(.p-0) {
-    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
-}
-
-/* Geometric Modifier */
-body.is-geometric .bg-theme-card,
-body.is-geometric .sarak-shell-sidebar,
-body.is-geometric .sarak-shell-header,
-.preview-container[data-geometric="1"] .bg-theme-card,
-[data-geometric="1"] .bg-theme-card,
-.bg-theme-card[data-geometric="1"] {
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
-}
+/* O estado ativo do botão (`transform`) é padrão de ELEMENTO e mora em `_elements.css`, onde `active:*`
+   e o `whileTap` do componente o vencem. O recorte geométrico do cartão é o do token `cardGeometricCut`
+   (`--sarak-card-clip-path`, em `_card-defaults.css`). */
 
 /* SarakRangeSlider (Spec 11) — dois ranges sobrepostos: o input ignora o ponteiro
    (pointer-events:none na classe via Tailwind), mas o THUMB volta a captá-lo para

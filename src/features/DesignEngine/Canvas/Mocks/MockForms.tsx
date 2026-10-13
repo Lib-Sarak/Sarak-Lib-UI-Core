@@ -30,7 +30,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
             <div className="flex flex-col @xl:flex-row gap-6 w-full">
                 
                 {/* Coluna Principal: Formulário de Aba Inteira (Full Form) */}
-                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-8 flex flex-col gap-6" style={{ borderRadius: 'calc(var(--sarak-card-radius) * 1.5)' }}>
+                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-8 flex flex-col gap-6" style={{ borderRadius: 'calc(var(--sarak-card-radius) * 1.5)' }}>
                     <div className="flex items-center justify-between border-b border-[var(--theme-border)] pb-4">
                         <h3 className="text-lg font-bold text-[var(--theme-title)] flex items-center gap-2">
                             <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />
@@ -110,7 +110,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                 <div className="flex-1 flex flex-col gap-6">
                     
                     {/* Caixa de Pergunta (Survey Style) */}
-                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
+                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] flex items-center justify-center">
                                 <SarakIcon name="MessageSquare" size={20} />
@@ -133,7 +133,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                     </div>
 
                     {/* Formulário Dinâmico Adicionável (Dynamic Fields) */}
-                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
+                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                         <h3 className="text-md font-bold text-[var(--theme-title)] border-b border-[var(--theme-border)] pb-3">Datas e Marcos</h3>
                         
                         <div className="flex flex-col gap-3">

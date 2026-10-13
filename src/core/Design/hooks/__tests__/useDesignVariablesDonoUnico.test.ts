@@ -39,22 +39,70 @@ describe('raio mestre + canto exceção', () => {
         expect(new Set(responsiveValues(responsiveCSS, '--sarak-card-radius-tl'))).toEqual(new Set(['20px']));
     });
 
-    it('o canto declarado escreve depois do mestre, só no canto dele', () => {
+    it('o canto declarado é o único dono da variável dele; os outros cantos seguem o mestre', () => {
         const { responsiveCSS } = build({ cardBorderRadius: MASTER, cardRadiusTL: { mob: 0, tab: 0, desk: 0 } });
-        const tl = responsiveValues(responsiveCSS, '--sarak-card-radius-tl');
-        expect(tl.slice(0, 2)).toEqual(['20px', '0px']);
+        expect(new Set(responsiveValues(responsiveCSS, '--sarak-card-radius-tl'))).toEqual(new Set(['0px']));
         expect(new Set(responsiveValues(responsiveCSS, '--sarak-card-radius-tr'))).toEqual(new Set(['20px']));
     });
 
     it('vale igual para o botão', () => {
         const { responsiveCSS } = build({ btnBorderRadius: { mob: 30, tab: 30, desk: 30 }, btnRadiusBR: { mob: 4, tab: 4, desk: 4 } });
         expect(new Set(responsiveValues(responsiveCSS, '--sarak-btn-radius-tl'))).toEqual(new Set(['30px']));
-        expect(responsiveValues(responsiveCSS, '--sarak-btn-radius-br').slice(0, 2)).toEqual(['30px', '4px']);
+        expect(new Set(responsiveValues(responsiveCSS, '--sarak-btn-radius-br'))).toEqual(new Set(['4px']));
     });
 
     it('MUTAÇÃO: um canto escalar declarado vence o mestre também no inline (tema que declara o canto)', () => {
         const { variables } = build({ cardBorderRadius: MASTER, cardRadiusTR: 7 });
         expect(variables['--sarak-card-radius-tr']).toBe('7px');
+    });
+});
+
+/** Os nomes `--x` que o CSS responsivo escreve (em qualquer ponto). */
+const responsiveNames = (css: string): Set<string> =>
+    new Set([...css.matchAll(/^\s*(--[\w-]+)\s*:/gm)].map((match) => match[1]));
+
+describe('uma variável, um canal: o inline e o <style> responsivo não disputam o mesmo nome', () => {
+    const POINTS = { mob: 2, tab: 4, desk: 6 };
+
+    it('mestre escalar e canto responsivo: o canto vai só ao <style>, e os outros cantos vão inline', () => {
+        const { responsiveCSS, variables } = build({ cardBorderRadius: 20, cardRadiusTL: POINTS });
+        expect(variables['--sarak-card-radius-tl'], 'o inline do mestre venceria o <style> do canto').toBeUndefined();
+        expect(responsiveValues(responsiveCSS, '--sarak-card-radius-tl').slice(0, 3)).toEqual(['2px', '4px', '6px']);
+        expect(variables['--sarak-card-radius-tr']).toBe('20px');
+    });
+
+    it('mestre responsivo e canto escalar: o canto vai só inline, e o <style> do mestre não o escreve', () => {
+        const { responsiveCSS, variables } = build({ cardBorderRadius: { mob: 10, tab: 14, desk: 18 }, cardRadiusTL: 3 });
+        expect(variables['--sarak-card-radius-tl']).toBe('3px');
+        expect(responsiveValues(responsiveCSS, '--sarak-card-radius-tl')).toEqual([]);
+        expect(responsiveValues(responsiveCSS, '--sarak-card-radius-tr').slice(0, 3)).toEqual(['10px', '14px', '18px']);
+    });
+
+    it('os dois escalares: o canto vence o mestre no mesmo canal', () => {
+        const { variables } = build({ cardBorderRadius: 20, cardRadiusTL: 3 });
+        expect(variables['--sarak-card-radius-tl']).toBe('3px');
+        expect(variables['--sarak-card-radius-bl']).toBe('20px');
+    });
+
+    it('CONTRAPROVA: mestre escalar sem canto declarado escreve os quatro cantos inline', () => {
+        const { responsiveCSS, variables } = build({ cardBorderRadius: 20 });
+        for (const corner of ['tl', 'tr', 'bl', 'br']) {
+            expect(variables[`--sarak-card-radius-${corner}`]).toBe('20px');
+            expect(responsiveValues(responsiveCSS, `--sarak-card-radius-${corner}`)).toEqual([]);
+        }
+    });
+
+    it('nenhum nome fica nos dois canais, em nenhum formato de mestre e canto (cartão e botão)', () => {
+        const formats: Array<[string, unknown]> = [['escalar', 7], ['responsivo', POINTS]];
+        for (const [, master] of formats) {
+            for (const [, corner] of formats) {
+                const { responsiveCSS, variables } = build({
+                    cardBorderRadius: master, cardRadiusTL: corner, btnBorderRadius: master, btnRadiusTR: corner,
+                });
+                const both = [...responsiveNames(responsiveCSS)].filter((name) => name in variables);
+                expect(both, `mestre ${JSON.stringify(master)} + canto ${JSON.stringify(corner)}`).toEqual([]);
+            }
+        }
     });
 });
 

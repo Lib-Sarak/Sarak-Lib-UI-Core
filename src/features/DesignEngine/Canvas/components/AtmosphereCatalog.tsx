@@ -77,7 +77,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
         >
             <div
                 className="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"

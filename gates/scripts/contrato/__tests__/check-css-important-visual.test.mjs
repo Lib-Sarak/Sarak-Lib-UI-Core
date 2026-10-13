@@ -7,7 +7,13 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { classifySelector, collectRules, findImportantVisualViolations } from '../check-css-important-visual.mjs';
+import {
+    classifySelector,
+    collectRules,
+    findImportantInTypeScript,
+    findImportantVisualViolations,
+    importantInStringLiterals,
+} from '../check-css-important-visual.mjs';
 
 const scratchDirs = [];
 
@@ -141,9 +147,67 @@ describe('o analisador', () => {
     });
 });
 
+describe('!important montado em TypeScript', () => {
+    const srcFixture = (files) => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-ts-important-'));
+        scratchDirs.push(dir);
+        for (const [name, text] of Object.entries(files)) {
+            const full = path.join(dir, name);
+            fs.mkdirSync(path.dirname(full), { recursive: true });
+            fs.writeFileSync(full, text, 'utf8');
+        }
+        return dir;
+    };
+
+    it('PLANTADO: o !important dentro de um template literal é acusado, com a linha', () => {
+        const text = 'const css = `\n  body.light .text-white {\n    color: red !important;\n  }\n`;\n';
+        expect(importantInStringLiterals(text)).toEqual([3]);
+    });
+
+    it('PLANTADO: string comum e aspas simples também', () => {
+        expect(importantInStringLiterals("const a = 'color: red !important';")).toEqual([1]);
+        expect(importantInStringLiterals('const a = "color: red !important";')).toEqual([1]);
+    });
+
+    it('PASSA: !important em comentário (linha ou bloco) não é CSS montado', () => {
+        const text = '// color: red !important\n/* e este !important */\nconst a = 1;\n';
+        expect(importantInStringLiterals(text)).toEqual([]);
+    });
+
+    it('PASSA: aspas dentro de comentário não abrem string', () => {
+        expect(importantInStringLiterals("// it's fine\nconst a = 'x !important';\n")).toEqual([2]);
+    });
+
+    it('varre src/**/*.{ts,tsx}, ignora teste e gerado, e acusa o arquivo', () => {
+        const dir = srcFixture({
+            'core/Injector.tsx': 'export const css = `a { color: red !important; }`;',
+            'core/__tests__/Injector.test.tsx': 'export const css = `a { color: red !important; }`;',
+            'core/generated/types.ts': "export const css = 'a !important';",
+            'core/clean.ts': 'export const css = `a { color: red; }`;',
+        });
+        const { violations } = findImportantInTypeScript({ srcDir: dir, exceptions: [] });
+        expect(violations).toEqual([{ file: 'src/core/Injector.tsx', line: 1 }]);
+    });
+
+    it('a exceção declarada passa, e a que deixou de existir é acusada', () => {
+        const dir = srcFixture({ 'core/Injector.tsx': 'export const css = `a { color: red !important; }`;' });
+        const withException = findImportantInTypeScript({ srcDir: dir, exceptions: [{ file: 'core/Injector.tsx', reason: 'x' }] });
+        expect(withException.violations).toEqual([]);
+        expect(withException.staleExceptions).toEqual([]);
+        const stale = findImportantInTypeScript({ srcDir: srcFixture({ 'core/clean.ts': 'const a = 1;' }), exceptions: [{ file: 'core/Injector.tsx', reason: 'x' }] });
+        expect(stale.staleExceptions.map((e) => e.file)).toEqual(['core/Injector.tsx']);
+    });
+});
+
 describe('o repositório real', () => {
     it('src/styles não tem !important visual em seletor amplo, e as exceções declaradas existem', () => {
         const { violations, staleExceptions } = findImportantVisualViolations();
+        expect(violations).toEqual([]);
+        expect(staleExceptions).toEqual([]);
+    });
+
+    it('src/**/*.{ts,tsx} não monta !important em string nem em template', () => {
+        const { violations, staleExceptions } = findImportantInTypeScript();
         expect(violations).toEqual([]);
         expect(staleExceptions).toEqual([]);
     });

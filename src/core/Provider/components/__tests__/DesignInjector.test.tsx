@@ -161,6 +161,54 @@ describe('DesignInjector', () => {
         });
     });
 
+    describe('trocar de tema não deixa o que o anterior escreveu', () => {
+        const mockOutput = (variables: Record<string, string>, attributes: Record<string, string>) =>
+            (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({ variables, attributes, responsiveCSS: null });
+
+        it('a variável inline e o atributo que o tema novo não escreve saem de html e body', () => {
+            mockOutput({ '--sarak-card-radius-tl': '3px', '--sarak-card-border-radius': '20px' }, { 'data-sx-border-type': 'glow' });
+            const view = render(<DesignInjector design={{ mode: 'dark', systemName: 'a' }} isDrafting={false} />);
+            expect(document.documentElement.style.getPropertyValue('--sarak-card-radius-tl')).toBe('3px');
+            expect(document.body.getAttribute('data-sx-border-type')).toBe('glow');
+
+            // O tema B declara só o mestre — o canto e o atributo deixam de ser escritos.
+            mockOutput({ '--sarak-card-border-radius': '10px' }, {});
+            view.rerender(<DesignInjector design={{ mode: 'dark', systemName: 'b' }} isDrafting={false} />);
+
+            for (const el of [document.documentElement, document.body]) {
+                expect(el.style.getPropertyValue('--sarak-card-radius-tl'), 'o canto do tema A sai').toBe('');
+                expect(el.style.getPropertyValue('--sarak-card-border-radius'), 'o que o B escreve é gravado').toBe('10px');
+            }
+            expect(document.body.hasAttribute('data-sx-border-type')).toBe(false);
+            expect(document.documentElement.hasAttribute('data-sx-border-type')).toBe(false);
+        });
+
+        it('CONTRAPROVA: variável que o host escreveu por fora não é do injetor e fica', () => {
+            document.documentElement.style.setProperty('--do-host', '1');
+            mockOutput({ '--sarak-a': '1' }, {});
+            const view = render(<DesignInjector design={{ mode: 'dark', systemName: 'a' }} isDrafting={false} />);
+            mockOutput({ '--sarak-b': '2' }, {});
+            view.rerender(<DesignInjector design={{ mode: 'dark', systemName: 'b' }} isDrafting={false} />);
+
+            expect(document.documentElement.style.getPropertyValue('--sarak-a')).toBe('');
+            expect(document.documentElement.style.getPropertyValue('--do-host')).toBe('1');
+        });
+
+        it('no Modo Embarcado a limpeza vale para o container da ilha, e o body do host segue intocado', () => {
+            const island = document.createElement('div');
+            document.body.appendChild(island);
+            mockOutput({ '--sarak-card-radius-tl': '3px' }, {});
+            const view = render(<DesignInjector design={{ mode: 'dark', systemName: 'a' }} isDrafting={false} mode="embedded" scopeElement={island} />);
+            expect(island.style.getPropertyValue('--sarak-card-radius-tl')).toBe('3px');
+
+            mockOutput({}, {});
+            view.rerender(<DesignInjector design={{ mode: 'dark', systemName: 'b' }} isDrafting={false} mode="embedded" scopeElement={island} />);
+
+            expect(island.style.getPropertyValue('--sarak-card-radius-tl')).toBe('');
+            island.remove();
+        });
+    });
+
     it('não injeta nada se design não for fornecido', () => {
         (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
             variables: {},

@@ -1,15 +1,15 @@
 ---
 tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega"
-objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, com direcao de arte de conjunto, cada tema distinto e coerente, legivel nos dois modos e provado por medicao e por vitrine aprovada pelo dono"
+objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
 status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]"]
-depende_de: "plan-115-fechamento-do-arsenal"
+depende_de: "plan-116-tema-sob-demanda"
 retida_por: ""
-destino_sintese: "specs/09-temas-e-presets.md"
+destino_sintese: "specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + specs/12-kit-do-consumidor.md"
 ---
 
 # 1. Objetivo
@@ -70,129 +70,145 @@ Os gates são o **piso**, não a meta: um tema que passa em tudo e é genérico 
   o declara. Em 2026-10-12 o lote 4 trocou a luminosidade de 84 valores dos temas atuais para passar; o lote 1
   desta plan os redesenha.
 
-**Os temas são carregados na abertura do barril** (`SARAK_GLOBAL_THEMES` é exportado): cada KB a mais pesa no boot
-de todo consumidor. Por isso o lote 0 mede o peso atual e propõe um teto.
+**Decisões do dono, 2026-10-13** (revisam o desenho de lotes e o teto D5 do anexo de direção; o resto do lote 0
+continua aprovado):
+
+- **Todo token estético é projetado em todo tema.** Os temas não podem se parecer por herdar o padrão. O schema
+  separa os tokens em **estéticos** (cor, elevação, textura, tipografia, geometria visual, densidade visual,
+  movimento) e **funcionais** (camadas, alvo de toque, larguras e posições do cromo, breakpoints, comportamento);
+  todo tema embarcado declara **todos os estéticos** no modo principal e, na `contraparte`, todos os estéticos que
+  dependem do modo (cor, elevação, textura, sombra, vinheta) — geometria, tipografia e movimento são herdados do
+  modo principal de propósito, e é isso que preserva a identidade entre os modos. Os funcionais **não** são
+  declarados por tema: valem o padrão do sistema, igual em todos.
+- **O tema padrão é o `sarak-sovereign`** (o que carrega quando ninguém escolhe).
+- **Os valores padrão dos tokens são redefinidos:** os funcionais, revisados um a um como decisão de sistema (valem
+  para todos os temas); os estéticos, iguais aos do tema padrão — assim o primeiro quadro, o componente sem
+  Provider e o tema parcial do consumidor já mostram o tema padrão, sem troca visível. As reservas
+  `var(--x, F)` acompanham (R42).
+- **Temas sob demanda** (`plan-116`, da qual esta depende): o boot leva só o tema que vai ao ar; o teto D5 de 28 KB
+  para o conjunto deixa de existir; fica um teto **por tema**, medido no lote 2.
+- **Um tema por lote**, com a aprovação das capturas pelo dono antes do próximo.
+- **A documentação de criar tema é enriquecida durante o processo** — a skill `ui-criar-tema`, a §7 da
+  [[09-temas-e-presets]] e o guia do kit do consumidor (`sarak-ui/`) —, e o último lote a consolida com exemplos
+  tirados dos temas reais.
 
 # 3. Escopo
 
 ## 3.1 Dentro
-- `src/core/Design/presets/themes/` — os 14 temas, os 5 novos, `index.ts` (`SARAK_THEME_PRESET_IDS`, `SARAK_GLOBAL_THEMES`) e testes em `__tests__/`. Um tema pode virar pasta com partes por pilar se o tamanho pedir (o `auditor_cleancode` isenta `/presets/themes/`).
-- `specs/plan/anexos/plan-110-direcao-de-arte.md` — o documento de direção do lote 0 (criado pelo executor; sai junto com a plan na síntese).
-- `browser-tests/` — a cena e o script da vitrine (lote 3) e casos de medição, se precisar; `.gitignore` para a pasta de saída da vitrine; `package.json`, só o script da vitrine.
-- `gates/scripts/audit/` — **só** se um tema novo expuser defeito de medição já existente; nenhum gate novo.
-- `docs/migracoes.md` — subseção dentro da entrada `## 8.0.0`.
-- Artefatos regenerados (`npm run catalog`, `npm run guide`, `npm run dev-kit`, `npm run token-types` se preciso).
+- `src/core/Design/presets/themes/` — os 14 temas, os 5 novos, o registro (na forma que a `plan-116` entregar) e testes em `__tests__/`. Um tema pode virar pasta com partes por pilar se o tamanho pedir (o `auditor_cleancode` isenta `/presets/themes/`).
+- `src/core/Design/schema/` e `catalog/` — **só** a classificação estético × funcional de cada token (metadado) e o `defaultValue` (lotes 1 e 2), com a paridade; nenhum token novo, nenhuma opção nova.
+- As reservas `var(--x, F)` que acompanham o `defaultValue` novo (pela ferramenta do `variable-contract`), em `src/styles/`, `src/components/` e `src/features/`.
+- `gates/` — a trava de completude estética (§5, lote 1); `gates/scripts/audit/` só se um tema expuser defeito de medição já existente.
+- `browser-tests/` — a vitrine (`generate-showcase.mts`) estendida no lote 1 e usada em todo lote de tema.
+- Documentação de criar tema: `.agents/skills/ui-criar-tema/`, o guia do kit do consumidor (fonte de `npm run guide`) — a §7 da `09` é do revisor, na síntese.
+- `specs/plan/anexos/plan-110-direcao-de-arte.md` (o executor acrescenta a ficha completa de cada tema ao fazê-lo) e `specs/plan/anexos/plan-110-tokens-funcionais.md` (lote 1).
+- `docs/migracoes.md` — subseção dentro de `## 8.0.0` a cada lote; artefatos regenerados.
 
 ## 3.2 Fora
-- O schema de tokens e os componentes (`src/core/Design/schema/`, `src/components/`): esta plan **usa** o arsenal, não o muda. Defeito de token ou de componente achado no caminho vai para o resumo, como achado.
-- Os presets parciais da galeria (`src/core/Design/presets/components/`), salvo se a direção pedir um novo — então ele entra declarado no resumo.
+- Componentes e CSS do motor: esta plan **usa** o arsenal. Defeito achado no caminho vai para o resumo, como achado.
+- Token novo, opção nova, mudança de leitor.
 - Mudar o que é exigido de tema embarcado (§7 da `09`), as regras de contraste e de diversidade.
-- Qualquer spec em `specs/` além do anexo (a síntese é do revisor).
+- Qualquer spec em `specs/` além dos anexos (a síntese é do revisor).
 
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/09-temas-e-presets.md` (inteira; em especial §2.1, §4.1.1, §4.4, §4.7, §5, §5.1, §5.2, §6, §7) | o que é tema, contraparte, persistência, catálogo, travas e o procedimento do tema embarcado |
-| Spec fixa | `arquitetura/02-design-engine.md` | como o motor transforma token em CSS; camadas; o que cede à classe |
+| Anexo | `specs/plan/anexos/plan-110-direcao-de-arte.md` | a direção aprovada no lote 0: mapa do conjunto, fichas, direções novas |
+| Spec fixa | `specs/09-temas-e-presets.md` (inteira; em especial §2.1, §4.1.1, §4.4, §4.4.4, §4.7, §5, §5.1, §5.2, §6, §7) | tema, contraparte, persistência, catálogo, travas e o procedimento do tema embarcado |
+| Spec fixa | `arquitetura/02-design-engine.md` (§4, §10) | como o motor transforma token em CSS; o que cada token desenha |
 | Spec fixa | `arquitetura/04-contrato-de-tokens-e-paridade.md` | o dicionário e o contrato de valor de cada token |
-| Spec fixa | `specs/05-cromo-e-slots.md` §2.4 | os tokens de cromo e o hover do item de navegação |
-| Spec fixa | `specs/07-responsividade-e-multidispositivo.md` §5 | navegação na base, alvo de toque e campo no celular |
-| Spec fixa | `specs/10-seguranca-e-acessibilidade.md` §2.1 (c-bis) e §2.4 | predicado de mídia; contraste, movimento reduzido e toque |
-| Spec fixa | `specs/06-painel-de-customizacao-e-preview.md` §2.1 | o campo `visualImpact` do catálogo e por que ele define o que pesa |
+| Spec fixa | `specs/05-cromo-e-slots.md` §2.4 · `specs/07-responsividade-e-multidispositivo.md` §5 | cromo, navegação, toque |
+| Spec fixa | `specs/10-seguranca-e-acessibilidade.md` §2.1 e §2.4 | mídia, contraste, movimento reduzido e toque |
+| Spec fixa | `specs/12-kit-do-consumidor.md` | onde mora o guia de criar tema do consumidor |
+| Spec fixa | `specs/00-regras-e-invariantes.md` (R31, R40-R44) | contraste, leitor, cascata, variável, cor fixa, painel |
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
-| **Skill** | `ui-criar-tema` | o procedimento de tema completo (derivar da referência, contraparte, completude) |
-| **Skill** | `ui-criar-preset` | variantes visuais por componente, quando a direção pedir |
-| **Skill** | `ui-arquitetura-design` | regra arquitetural do CSS do Design Engine |
-| **Skill** | `dataviz` | a paleta categórica de gráfico de cada tema (fórmula e validador de cor) |
-| **Skill** | `padrao-escrita` + `padrao-typescript` | sempre |
-| **Skill** | `test-unitario` | os dois testes novos da §5 |
-| Código | `src/core/Design/presets/themes/index.ts`, `src/core/Design/presets/themes/reference.ts`, `src/core/Design/presets/themes/minimalist-airy.ts`, `src/core/Design/presets/themes/sarak-sovereign.ts` | o formato e as duas referências |
-| Código | `src/core/Design/master-map.ts`, `src/core/Design/schema/`, `src/core/Design/catalog/partitions/` | o arsenal inteiro: tokens, opções e `visualImpact` |
-| Código | `src/styles/_atmosphere.css`, `src/styles/_cards.css`, `src/styles/_touch.css`, `src/styles/_motion.css` | o que cada textura, atmosfera, cartão e regra de toque/movimento desenha |
-| Código | `gates/scripts/audit/verify_contrast.ts`, `gates/scripts/audit/verify_diversity.ts`, `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`, `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` | as travas que todo tema passa |
-| Código | `browser-tests/generate-showcase.mts`, `browser-tests/fixtures/harness-entry.tsx`, `browser-tests/css-que-so-o-navegador-mede.spec.ts` | a vitrine que já existe e o harness de navegador |
+| **Skill** | `ui-criar-tema` · `ui-criar-preset` · `ui-arquitetura-design` · `dataviz` | procedimento de tema, presets, CSS do motor, paleta de gráfico |
+| **Skill** | `padrao-escrita` + `padrao-typescript` · `test-unitario` | sempre |
+| Código | `src/core/Design/presets/themes/`, `src/core/Design/master-map.ts` (`getScaffold`), `src/core/Design/schema/`, `src/core/Design/catalog/partitions/` | os temas, o esqueleto completo e o arsenal |
+| Código | `gates/scripts/audit/verify_contrast.ts`, `gates/scripts/audit/verify_diversity.ts`, `gates/scripts/contrato/check-variable-contract.ts`, `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`, `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` | as travas que todo tema passa |
+| Código | `browser-tests/generate-showcase.mts`, `browser-tests/fixtures/harness-entry.tsx` | a vitrine e o harness |
 
 # 5. Instruções de execução
 
-**Lote 0 — auditoria e direção de arte (não toca código).**
-1. Auditar o conjunto atual como designer: para cada um dos 14, o que ele comunica, onde é genérico, onde colide com
-   outro tema, o que do arsenal ignora. Medir o peso atual dos temas no `dist/` (gzip do que `SARAK_GLOBAL_THEMES`
-   acrescenta ao boot) — o método vai no anexo.
-2. Escrever `specs/plan/anexos/plan-110-direcao-de-arte.md` com: (a) o **mapa do conjunto** — os 19 temas
-   posicionados por personalidade, público, modo nativo, família de matiz, temperatura e densidade, provando que
-   nenhum par é redundante; (b) uma **ficha por tema** — conceito em uma frase, público, paleta nos dois modos,
-   tipografia, família e peso de ícone, textura e atmosfera de fundo, cartão, botão, campo, gráfico, movimento,
-   densidade, navegação (inclusive no celular), e o que ele mostra da lib que os outros não mostram; (c) as
-   **5 direções novas** — ponto de partida sugerido pelo revisor, que o executor pode trocar com justificativa:
-   *editorial* (papel, serifa, leitura longa), *orgânico* (terra, madeira, estuque), *alto contraste* (mirando AAA,
-   7:1), *corporativo sóbrio* (denso, para ERP e finanças), *lúdico* (pastel, arredondado, movimento suave);
-   (d) a **proposta de teto de peso** do conjunto e das artes SVG embutidas; (e) os ids dos 5 novos.
-3. **Parar e entregar.** O dono aprova a direção (e o teto) antes de qualquer código. O resumo do lote 0 aponta o
-   anexo.
+**Lote 0 — auditoria e direção de arte.** ✅ Entregue e aprovado pelo dono (§9 e §10). O que mudou depois está em §2
+(decisões de 2026-10-13).
 
-**Lote 1 — refazer os 14** (depois da aprovação).
-4. Cada tema, do começo ao fim, segue a sua ficha: escolhe explicitamente **todos os tokens com `visualImpact`** e os
-   de componente que o tema torna visíveis (cartão, botão, campo, navegação, gráfico, estado), os tokens deste
-   ciclo, e a `contraparte` desenhada à mão para o modo oposto. Fundo por atmosfera do motor ou SVG próprio
-   embutido, dentro do teto. Paleta categórica de gráfico validada pela skill `dataviz`.
+**Um lote por vez; cada lote termina com resumo num bloco novo da §9 (append-only) e status 🟠; o próximo só começa
+depois do veredito e, nos lotes de tema, da aprovação das capturas pelo dono.**
 
-**Lote 2 — criar os 5 novos**, no mesmo padrão, registrados em `SARAK_THEME_PRESET_IDS` e `SARAK_GLOBAL_THEMES`.
+**Lote 1 — fundação: estético × funcional, padrões funcionais, vitrine e trava.**
+1. Classificar os tokens do schema em estéticos e funcionais (metadado no schema, com paridade no catálogo), com o
+   critério no anexo `plan-110-tokens-funcionais.md`: funcional é o que deve ser igual em todo tema por segurança,
+   acessibilidade ou consistência de comportamento. O painel continua oferecendo os dois.
+2. Revisar o `defaultValue` de cada token **funcional** como decisão de sistema (escada de camadas, alvo de toque,
+   larguras, posições, comportamento), cada mudança com o motivo no anexo; reservas acompanham; nota MAJOR.
+3. Estender a vitrine (`npm run themes:showcase`) para montar as telas representativas (cromo com navegação, painel
+   com cartões, tabela, formulário com erro, gráfico, calendário, selos de status, estado vazio, modal, chat) e
+   capturar um tema nos dois modos, em desktop e celular.
+4. **Trava de completude:** todo tema embarcado declara todos os tokens estéticos no modo principal e, na
+   `contraparte`, todos os estéticos que dependem do modo; nenhum funcional. Gate ou teste (escolha justificada),
+   com limites (R18), caso de mutação, e **lista de exceção por tema que se esvazia** a cada lote (os temas ainda não
+   refeitos estão nela; o último lote de tema a deixa vazia).
 
-**Lote 3 — vitrine e calibragem.**
-5. **Estender** a vitrine que já existe (`npm run themes:showcase` → `browser-tests/generate-showcase.mts`, saída em
-   `browser-tests/showcase-output/`, documentada na skill `ui-criar-tema`) para que ela monte as telas representativas
-   (cromo com navegação, painel com cartões, tabela, formulário com erro, gráfico, calendário, selos de status, estado
-   vazio) e capture cada tema, nos dois modos, em desktop e celular. O revisor roda a vitrine (precisa de build) e o
-   dono aprova as capturas.
-6. Calibrar pelo que a vitrine mostrar; repetir até a aprovação.
+**Lote 2 — o tema padrão e os padrões estéticos.**
+5. Refazer o `sarak-sovereign` do começo ao fim pela ficha, com todo token estético projetado, nos dois modos.
+6. Os `defaultValue` estéticos passam a ser os valores do `sarak-sovereign` no modo principal; reservas
+   acompanham pela ferramenta; o `variable-contract:check` confere.
+7. Medir o peso do tema e propor o **teto por tema** (o conjunto deixa de ter teto de boot, pela `plan-116`).
+8. Capturas da vitrine → aprovação do dono.
 
-**Em todos os lotes que tocam código:**
-7. Dois testes novos em `src/core/Design/presets/themes/__tests__/`: (a) todo tema embarcado define explicitamente
-   cada token marcado com `visualImpact` no catálogo; (b) cobertura do **conjunto** — os 19 usam juntos pelo menos
-   15 texturas de cartão, 10 fontes, as 3 famílias de ícone com pelo menos 4 pesos, os 4 modos de gradiente, e
-   nenhum par de temas repete a mesma combinação de textura + estilo de botão + fonte de título.
-8. Relatar, por tema e modo, o contraste não textual (borda de campo e de cartão contra o fundo, WCAG 1.4.11, 3:1) —
-   medida de apoio, não gate ([[15-divida-conhecida]] achado 59).
-9. Nota de migração **MAJOR** dentro da entrada `## 8.0.0` (o visual de todo tema muda; os 5 novos; tema salvo não
-   recebe o refinamento).
-10. Rodar a verificação da §7.
+**Lotes 3 a 15 — os outros 13 temas atuais**, um por lote, na ordem do anexo de direção; **lotes 16 a 20 — os 5
+novos**, um por lote, registrados no catálogo.
+9. Cada tema parte do esqueleto completo (`getScaffold`), nunca de `{}`, segue a sua ficha e declara todo token
+   estético; a ficha completa (token → valor → motivo dos não óbvios) entra no anexo de direção; a `contraparte`
+   preserva a identidade (só o que carrega modo muda); fundo por atmosfera do motor ou SVG próprio embutido; paleta
+   de gráfico validada pela skill `dataviz`; o tema sai da lista de exceção da trava.
+10. A documentação de criar tema ganha o que o tema ensinou (decisão, armadilha, padrão), na skill e no guia do kit.
+11. Capturas da vitrine → aprovação do dono.
+
+**Lote 21 — documentação consolidada e conjunto.**
+12. Consolidar o guia de criar tema (skill e kit do consumidor) com exemplos tirados dos temas reais: a ficha de um
+    tema como modelo, como derivar a contraparte preservando a identidade, o que é estético e o que é funcional.
+13. Cobertura do **conjunto**: os 19 usam juntos pelo menos 15 texturas de cartão, 10 fontes, as 3 famílias de ícone
+    com pelo menos 4 pesos, os 4 modos de gradiente, e nenhum par repete a mesma combinação de textura + estilo de
+    botão + fonte de título (teste, com mutação); `themes:diversity` verde.
+14. Vitrine dos 19 temas × 2 modos × desktop e celular → aprovação final do dono.
+
+**Em todo lote que toca código:** contraste não textual relatado por tema e modo (WCAG 1.4.11, 3:1 — apoio, não
+gate); nota MAJOR na `## 8.0.0`; gerados regenerados (`guide` por último); simulação do Anel 0; a verificação da §7.
 
 # 6. Critérios de aceite
 
-- [ ] Anexo de direção de arte aprovado pelo dono **antes** do lote 1 (registrado no resumo).
-- [ ] 19 temas em `SARAK_GLOBAL_THEMES`; os 14 ids antigos preservados.
-- [ ] Cada tema segue a sua ficha aprovada; nenhum par redundante no mapa do conjunto.
-- [ ] Teste (a) e teste (b) da §5 passo 7, cada um com um caso que falha contra o `HEAD`.
-- [ ] **Todo tema tem claro e escuro, e o modo oposto preserva a identidade** (decisão do dono, 2026-10-11): a `contraparte` troca só o que carrega modo — conceito, tipografia, ícone, textura, cartão, botão, movimento e densidade continuam os mesmos; uma textura não pode ser trocada por outra só porque some no modo oposto. A vitrine mostra os dois modos lado a lado, e os dois são aprovados.
-- [ ] Todo tema com `contraparte`, seis idiomas, preferências no padrão de fábrica, hover de navegação distinto, fundo offline (atmosfera do motor ou SVG próprio), peso dentro do teto aprovado.
-- [ ] `npm run audit` → contraste e paridade verdes, `auditor_presets` sem órfã; `npm run themes:diversity` verde; `shippedThemesConsoleClean` e `tokenContractParity` verdes.
-- [ ] Contraste não textual relatado por tema e modo.
-- [ ] Vitrine capturada (19 temas × 2 modos × desktop e celular) e **aprovada pelo dono**.
+- [ ] Lote 0 aprovado pelo dono (✅).
+- [ ] Tokens classificados (estético × funcional), com o critério no anexo; padrões funcionais revisados, cada mudança com motivo.
+- [ ] Padrões estéticos = valores do `sarak-sovereign`; reservas acompanhando (`variable-contract:check` verde).
+- [ ] Trava de completude estética com lista de exceção **vazia** no fim; caso de mutação.
+- [ ] 19 temas no catálogo; os 14 ids antigos preservados; cada um com todo token estético projetado e a ficha completa no anexo.
+- [ ] **Todo tema tem claro e escuro, e o modo oposto preserva a identidade** (decisão do dono, 2026-10-11): a `contraparte` troca só o que carrega modo.
+- [ ] Todo tema com `contraparte`, seis idiomas, preferências no padrão de fábrica, hover de navegação distinto, fundo offline, peso dentro do teto por tema aprovado.
+- [ ] Cobertura do conjunto (teste, com mutação); `themes:diversity` verde.
+- [ ] Contraste (R31) e paridade verdes; `auditor_presets`, `shippedThemesConsoleClean`, `tokenContractParity`, `panel-contract` verdes.
+- [ ] Capturas de cada tema aprovadas pelo dono; vitrine final aprovada.
+- [ ] Documentação de criar tema consolidada (skill e kit do consumidor).
 - [ ] Nota MAJOR em `## 8.0.0`.
-- [ ] Suíte completa verde; `tsc` 0; `audit:baseline` sem regressão; gates do Anel 1; `cromo-css-real:check`; catálogo, kit e barril em dia.
+- [ ] Suíte completa verde numa passada; `tsc` 0; `audit:baseline` sem regressão; Anel 1; `cromo-css-real:check`; catálogo, kit e barril em dia; Anel 0 simulado: 0.
 
 # 7. Como verificar (uso do revisor)
 
-**Gate:** nenhum novo — os invariantes (tokens de impacto definidos, cobertura do conjunto) são deste módulo e ficam nos testes da §5 passo 7; contraste, diversidade, paridade e chaves órfãs já têm gate.
-
-- Lote 0: ler o anexo inteiro; conferir o mapa do conjunto contra os temas e o peso medido; levar ao dono.
+- Lote 1: a classificação token a token contra o critério do anexo; cada padrão funcional mudado e o motivo; a trava com mutação.
+- Lotes de tema: o tema contra a ficha; completude (a trava); contraste nos dois modos; peso; a vitrine (o revisor roda, com build) → capturas ao dono.
 - `git diff --stat` → só a §3.1 e os gerados.
-- `npm run audit` (contraste, paridade, presets) · `npm run themes:diversity` · `npx vitest run` · `npx tsc --noEmit` · `npm run audit:baseline`.
-- Anel 1: `container-query:check`, `container-query-boundary:check`, `class-merge:check`, `icon-port:check`, `chrome-token-parity:check`, `zero-brand:check`, `barrel:check`, `catalog:check`, `guide:check`, `dev-kit:check`.
-- `npm run build` + `npm run cromo-css-real:check` + a vitrine (o revisor roda, com rede); peso dos temas no `dist/` contra o teto.
-- Mutação: tirar um token de `visualImpact` de um tema → o teste (a) falha; trocar dois temas para a mesma combinação → o teste (b) falha.
+- `npm run build` + `npm run cromo-css-real:check` + `npm run themes:showcase` · `npm run audit` · `npm run themes:diversity` · `npx vitest run` · `npx tsc --noEmit` · `npm run audit:baseline -- --with-tsc` · Anel 1 · Anel 0.
 
 # 8. Destino da síntese
 
-**Destino:** `specs/09-temas-e-presets.md`
+**Destino:** `specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + specs/12-kit-do-consumidor.md`
 
-O que vai para a §5 (o catálogo embarcado), escrito como verdade consolidada no transporte: o padrão do tema
-embarcado (define todo token de impacto visual e os de componente que torna visíveis; fundo por atmosfera do motor
-ou arte própria embutida dentro do teto de peso; paleta de gráfico validada), o mapa do conjunto em uma tabela curta
-(id → conceito em uma frase → modo nativo), o teto de peso aprovado e os dois testes que travam o padrão. A §7 ganha
-o passo "siga a ficha de direção" para tema embarcado novo. O anexo de direção sai junto com a plan; o que dele é
-regra vai para a §5, o resto fica no Git.
+- **`09`:** o padrão do tema embarcado (todo estético projetado, contraparte do que carrega modo, funcionais do sistema), o mapa do conjunto em tabela curta (id → conceito → modo nativo), o teto por tema, as travas de completude e de conjunto; a §7 ganha o procedimento enriquecido.
+- **`02`:** estético × funcional; o padrão dos tokens estéticos é o tema padrão.
+- **`12`:** onde o consumidor aprende a criar tema.
+- Os anexos saem com a plan; o que é regra vai para as specs, o resto fica no Git.
 
 ---
 
