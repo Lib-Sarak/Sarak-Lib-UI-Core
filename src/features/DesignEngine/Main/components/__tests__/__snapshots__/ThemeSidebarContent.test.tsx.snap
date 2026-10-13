@@ -124,7 +124,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--theme-primary)] text-white"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--theme-primary)] text-theme-on-primary"
                   >
                     <svg
                       class="lucide lucide-globe"

@@ -72,7 +72,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                             const meta = catalogMap.get(token.id);
                                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                             return (
-                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                             );
                                         })}
                                     </div>
@@ -96,7 +96,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                         const meta = catalogMap.get(token.id);
                                         const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                         return (
-                                            <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                            <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                         );
                                     })}
                                 </div>

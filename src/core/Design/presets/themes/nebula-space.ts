@@ -194,8 +194,6 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         shadowAmbientAlpha: 0.4,
         shadowProjectionBlur: 40,
         shadowProjectionAlpha: 0.2,
-        securityShieldGlow: 10,
-        securityPulseSpeed: 2,
         vignetteOpacity: 0.3,
         vignetteSoftness: 50,
         globalSaturation: 1,

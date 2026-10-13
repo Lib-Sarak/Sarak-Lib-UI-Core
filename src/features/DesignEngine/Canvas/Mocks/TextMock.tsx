@@ -57,9 +57,9 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                         <SarakIcon name="FileText" className="text-[var(--theme-primary)]" size={20} />
-                        <h2 className="text-2xl font-black text-white uppercase tracking-widest text-left">Text Workspace & Reports</h2>
+                        <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest text-left">Text Workspace & Reports</h2>
                     </div>
-                    <p className="text-sm text-white/40 uppercase tracking-tighter text-left">Editor de Relatórios Extensos e Caixas de Texto com Controle Tipográfico</p>
+                    <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Editor de Relatórios Extensos e Caixas de Texto com Controle Tipográfico</p>
                 </div>
 
                 <div className="flex gap-3">
@@ -87,20 +87,20 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                 {/* COLUNA ESQUERDA: EDITOR E INPUTS GRANDES */}
                 <div className="@lg:col-span-7 flex flex-col gap-4">
                     <div 
-                        className="flex-1 flex flex-col relative rounded-2xl border border-white/5 overflow-hidden"
+                        className="flex-1 flex flex-col relative rounded-2xl border border-theme-text/5 overflow-hidden"
                         style={{
                             backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.02))',
                             borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
                         }}
                     >
-                        <div className="px-6 py-3 border-b border-white/5 bg-black/40 flex items-center justify-between text-2xs text-white/50 font-mono">
+                        <div className="px-6 py-3 border-b border-theme-text/5 bg-theme-body/40 flex items-center justify-between text-2xs text-theme-text/50 font-mono">
                             <span className="flex items-center gap-2 uppercase tracking-wider"><SarakIcon name="Edit3" size={12} /> Caixa de Texto Grande</span>
                             <span className="uppercase">{reportText.length} Caracteres</span>
                         </div>
                         <textarea
                             value={reportText}
                             onChange={(e) => setReportText(e.target.value)}
-                            className="flex-1 w-full p-6 bg-transparent border-0 resize-none font-mono text-xs text-white leading-relaxed focus:outline-none focus:ring-0 custom-scrollbar"
+                            className="flex-1 w-full p-6 bg-transparent border-0 resize-none font-mono text-xs text-theme-text leading-relaxed focus:outline-none focus:ring-0 custom-scrollbar"
                             style={{
                                 fontFamily: 'var(--font-mono, monospace)'
                             }}
@@ -111,12 +111,12 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     {/* DADOS ADICIONAIS DO DOCUMENTO */}
                     <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
                         <div 
-                            className="p-5 border border-white/5 bg-black/20"
+                            className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
                         >
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
                             <select 
-                                className="w-full px-4 py-2 border border-white/10 rounded-lg text-xs font-mono text-white placeholder-white/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
+                                className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
                                 style={{
                                     backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.03))',
                                     borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
@@ -128,7 +128,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             </select>
                         </div>
                         <div 
-                            className="p-5 border border-white/5 bg-black/20"
+                            className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
                         >
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
@@ -143,11 +143,11 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
 
                 {/* COLUNA DIREITA: PREVIEW PREMIUM DO TEXTO (EXIBIÇÃO TIPO DOCUMENTO) */}
                 <div className="@lg:col-span-5 flex flex-col gap-4">
-                    <div className="flex-1 bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-6 relative overflow-y-auto custom-scrollbar max-h-[480px]">
-                        <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                    <div className="flex-1 bg-theme-body/40 border border-theme-text/5 rounded-2xl p-6 flex flex-col gap-6 relative overflow-y-auto custom-scrollbar max-h-[480px]">
+                        <div className="flex justify-between items-center border-b border-theme-text/5 pb-4">
                             <div className="flex items-center gap-3">
                                 <SarakIcon name="AlignLeft" className="text-[var(--theme-primary)]" size={16} />
-                                <span className="text-[10px] font-black uppercase text-white tracking-widest">Preview de Renderização</span>
+                                <span className="text-[10px] font-black uppercase text-theme-text tracking-widest">Preview de Renderização</span>
                             </div>
                             <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold rounded uppercase tracking-tighter">Pronto</span>
                         </div>
@@ -160,7 +160,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                     return (
                                         <h3 
                                             key={index} 
-                                            className="text-xs font-black text-white uppercase tracking-wider italic border-l-2 border-[var(--theme-primary)] pl-3 my-2 text-left"
+                                            className="text-xs font-black text-theme-text uppercase tracking-wider italic border-l-2 border-[var(--theme-primary)] pl-3 my-2 text-left"
                                             style={{
                                                 fontFamily: 'var(--font-heading)'
                                             }}
@@ -184,7 +184,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         </div>
 
                         {/* ASSINATURA DA AUDITORIA */}
-                        <div className="mt-8 pt-4 border-t border-white/5 flex flex-col gap-2 font-mono text-[9px] text-white/30 uppercase text-left">
+                        <div className="mt-8 pt-4 border-t border-theme-text/5 flex flex-col gap-2 font-mono text-[9px] text-theme-text/30 uppercase text-left">
                             <div className="flex items-center gap-2">
                                 <SarakIcon name="CornerDownRight" size={10} />
                                 <span>Verificado por: Igor Sarak // Lead Architect</span>

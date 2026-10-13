@@ -5600,7 +5600,6 @@
       "--sarak-card-header-padding",
       "--sarak-card-hover-glow",
       "--sarak-card-hover-glow-increase",
-      "--sarak-card-hover-lift",
       "--sarak-card-hover-style",
       "--sarak-card-hover-translate",
       "--sarak-card-hover-y",
@@ -5991,10 +5990,6 @@
       "--sarak-secondary-color-hover",
       "--sarak-secondary-color-light",
       "--sarak-secondary-color-rgb",
-      "--sarak-security-glow",
-      "--sarak-security-pulse",
-      "--sarak-security-pulse-speed",
-      "--sarak-security-shield-glow",
       "--sarak-shadow-ambient-alpha",
       "--sarak-shadow-color-mode",
       "--sarak-shadow-intensity",
@@ -6171,14 +6166,12 @@
       "--sarak-topbar-title-color",
       "--sarak-touch-target-min",
       "--sarak-tracking-snug",
-      "--sarak-tracking-subtle",
       "--sarak-tracking-tight",
       "--sarak-tracking-ultra",
       "--sarak-tracking-wide",
       "--sarak-tracking-wider",
       "--sarak-tracking-widest",
       "--sarak-type-scale-caption",
-      "--sarak-type-scale-display",
       "--sarak-type-scale-micro",
       "--sarak-type-scale-tiny",
       "--sarak-type-scale-xl",
@@ -6322,7 +6315,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 407,
+    "count": 402,
     "responsiveCapable": [
       "borderRadius",
       "btnBorderRadius",
@@ -6700,11 +6693,6 @@
       },
       {
         "id": "cardHoverGlowIncrease",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "cardHoverLift",
         "type": "number",
         "responsive": false
       },
@@ -7909,16 +7897,6 @@
         "responsive": false
       },
       {
-        "id": "securityPulseSpeed",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "securityShieldGlow",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "shadowAmbientAlpha",
         "type": "number",
         "responsive": false
@@ -8294,11 +8272,6 @@
         "responsive": false
       },
       {
-        "id": "trackingSubtle",
-        "type": "number",
-        "responsive": false
-      },
-      {
         "id": "trackingTight",
         "type": "number",
         "responsive": false
@@ -8335,11 +8308,6 @@
       },
       {
         "id": "typeScaleCaption",
-        "type": "number",
-        "responsive": false
-      },
-      {
-        "id": "typeScaleDisplay",
         "type": "number",
         "responsive": false
       },
@@ -8525,6 +8493,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "bfff358931ec"
+    "kitHash": "e44ef496ed40"
   }
 }

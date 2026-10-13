@@ -6,7 +6,9 @@
 // (`bg-theme-tint*`, `border-theme-tint*`, `--sarak-on-*`).
 //
 // Uma ocorrência é acusada quando TODAS valem:
-//   (a) está em `src/components/**` (TS/TSX) ou num parcial de CSS de componente (`PARTIALS`);
+//   (a) está em `src/components/**` ou `src/features/**` (TS/TSX) — o painel de customização e as
+//       pré-visualizações mostram o tema, então seguem o MODO dele — ou num parcial de CSS de
+//       componente (`PARTIALS`);
 //   (b) é classe Tailwind `<utilitária>-white|black/<alfa>` (qualquer variante: `hover:`,
 //       `group-hover/x:`…), a classe sólida `text-white|black` / `bg-white|black`, ou um literal
 //       `rgba(255,255,255,<alfa>)` / `rgba(0,0,0,<alfa>)` com alfa < 1;
@@ -23,10 +25,12 @@
 // 2. A reserva é reconhecida contando parênteses: dentro de um `var(` ainda aberto na mesma linha.
 //    Uma reserva que abre numa linha e fecha em outra não é reconhecida (falso positivo; o conserto
 //    é reformatar ou declarar a exceção).
-// 3. Só `src/components/**` e os parciais `_base.css`, `_utilities.css`, `_elements.css`,
-//    `_card-defaults.css` e `_cards.css`. NÃO vê `_atmosphere.css` e `_surfaces.css` (texturas e
-//    materiais: o branco/preto ali é desenho da textura, medido por `cromo-css-real:check`), nem
-//    `src/features/` (o painel e as pré-visualizações), nem CSS do consumidor.
+// 3. Só `src/components/**`, `src/features/**` e os parciais `_base.css`, `_utilities.css`,
+//    `_elements.css`, `_card-defaults.css` e `_cards.css`. NÃO vê `_atmosphere.css` e `_surfaces.css`
+//    (texturas e materiais: o branco/preto ali é desenho da textura, medido por
+//    `cromo-css-real:check`), nem o CSS do consumidor. Em `src/features/` a leitura de modo é
+//    do texto: que o painel de fato siga o modo do tema que mostra é do navegador
+//    (`browser-tests/painel-segue-o-modo.spec.ts`), não deste gate.
 // 4. Não julga se o valor derivado é legível: `color-mix` sobre a cor de texto do tema é a forma
 //    aceita, e o contraste dos pares que os componentes desenham é do `verify_contrast.ts`.
 // 5. As exceções são `EXCEPTIONS` (arquivo inteiro, com motivo) e o marcador de linha
@@ -100,6 +104,7 @@ const isCommentLine = (line) => {
 export function findFixedTranslucent({ root = ROOT, exceptions = EXCEPTIONS } = {}) {
   const files = [
     ...walk(path.join(root, 'src', 'components')),
+    ...walk(path.join(root, 'src', 'features')),
     ...PARTIALS.map((name) => path.join(root, 'src', 'styles', name)).filter((file) => fs.existsSync(file)),
   ];
   const violations = [];
@@ -123,7 +128,7 @@ export function findFixedTranslucent({ root = ROOT, exceptions = EXCEPTIONS } = 
 }
 
 function main() {
-  console.log('--- check-fixed-translucent (branco/preto fixo em componente) ---');
+  console.log('--- check-fixed-translucent (branco/preto fixo em componente e no painel) ---');
   const { violations, staleExceptions } = findFixedTranslucent();
   if (violations.length === 0 && staleExceptions.length === 0) {
     console.log(`[OK] Nenhum branco/preto fixo em componente (exceções declaradas: ${Object.keys(EXCEPTIONS).length}).`);

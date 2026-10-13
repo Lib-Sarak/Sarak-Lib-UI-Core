@@ -21,14 +21,14 @@ const CompactThemeCard: React.FC<CompactThemeCardProps> = ({ id, theme, isActive
             onClick={() => onApply(id)}
             className={`w-full flex items-center justify-between px-6 py-4 rounded-xl border-2 transition-all group ${
                 isActive
-                ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.1)]'
+                ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-theme-text shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.1)]'
                 : isPreviewed
-                    ? 'border-[var(--theme-primary)]/40 bg-[var(--theme-primary)]/5 text-white/60'
-                    : 'border-white/5 bg-white/[0.02] text-white/30 hover:border-white/10 hover:bg-white/[0.05] hover:text-white'
+                    ? 'border-[var(--theme-primary)]/40 bg-[var(--theme-primary)]/5 text-theme-text/60'
+                    : 'border-theme-text/5 bg-theme-text/[0.02] text-theme-text/30 hover:border-theme-text/10 hover:bg-theme-text/[0.05] hover:text-theme-text'
             }`}
         >
             <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full transition-all ${isActive ? 'bg-[var(--theme-primary)] animate-pulse' : 'bg-white/10'}`} />
+                <div className={`w-2 h-2 rounded-full transition-all ${isActive ? 'bg-[var(--theme-primary)] animate-pulse' : 'bg-theme-text/10'}`} />
                 <span className="text-[var(--sarak-type-scale-xs,11px)] font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                     {theme.name || id}
                 </span>
@@ -74,8 +74,8 @@ export const ThemeList: React.FC<ThemeListProps> = ({
             {advancedThemes.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-3 px-2 mb-4">
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-white/20 italic">High Performance Models</span>
-                        <div className="flex-1 h-[length:var(--sarak-border-width,1px)] bg-white/5" />
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-theme-text/20 italic">High Performance Models</span>
+                        <div className="flex-1 h-[length:var(--sarak-border-width,1px)] bg-theme-text/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                         {advancedThemes.map((theme: ThemeListItem) => (
@@ -96,8 +96,8 @@ export const ThemeList: React.FC<ThemeListProps> = ({
             {baseThemes.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-3 px-2 mb-4">
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-white/20 italic">Sovereign Essentials</span>
-                        <div className="flex-1 h-[length:var(--sarak-border-width,1px)] bg-white/5" />
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-theme-text/20 italic">Sovereign Essentials</span>
+                        <div className="flex-1 h-[length:var(--sarak-border-width,1px)] bg-theme-text/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                         {baseThemes.map((theme: ThemeListItem) => (

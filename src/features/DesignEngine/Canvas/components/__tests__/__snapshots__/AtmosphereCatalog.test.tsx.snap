@@ -9,10 +9,10 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       class="flex items-center justify-between gap-4"
     >
       <div
-        class="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border"
+        class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border"
       >
         <button
-          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-white shadow-lg"
+          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-text shadow-lg"
         >
           <svg
             class="lucide lucide-video"
@@ -41,7 +41,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
           Atmosferas
         </button>
         <button
-          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-white hover:bg-white/5"
+          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
         >
           <svg
             class="lucide lucide-grid3x3"
@@ -79,7 +79,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
         </button>
       </div>
       <div
-        class="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border"
+        class="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border"
       >
         <span
           class="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest"
@@ -116,7 +116,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
             <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+              class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
             >
               <svg
                 class="lucide lucide-layers"
@@ -155,12 +155,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               </span>
             </div>
             <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+              class="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg"
             >
               Nenhuma (Sem Mídia)
             </h3>
             <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+              class="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md"
             >
               Remove vídeos e imagens de fundo.
             </p>
@@ -185,7 +185,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
             <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+              class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
             >
               <svg
                 class="lucide lucide-grid3x3"
@@ -234,12 +234,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               </span>
             </div>
             <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+              class="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg"
             >
               Aurora Cinética
             </h3>
             <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+              class="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md"
             >
               Faixas de cor em fluxo contínuo, geradas 100% em CSS — sem vídeo externo.
             </p>
@@ -264,7 +264,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
             <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+              class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
             >
               <svg
                 class="lucide lucide-grid3x3"
@@ -313,12 +313,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               </span>
             </div>
             <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+              class="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg"
             >
               Nebulosa Estelar
             </h3>
             <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+              class="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md"
             >
               Nebulosa e campo de estrelas renderizados em CSS puro — sem foto de terceiro.
             </p>
@@ -343,7 +343,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
             <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+              class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
             >
               <svg
                 class="lucide lucide-grid3x3"
@@ -392,12 +392,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               </span>
             </div>
             <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+              class="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg"
             >
               Grade Cibernética
             </h3>
             <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+              class="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md"
             >
               Grade técnica com brilho, do mesmo motor de textura das superfícies — sem imagem externa.
             </p>
@@ -422,7 +422,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
           >
             <div
-              class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl"
+              class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
             >
               <svg
                 class="lucide lucide-grid3x3"
@@ -471,12 +471,12 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               </span>
             </div>
             <h3
-              class="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg"
+              class="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg"
             >
               Cinemático Escuro
             </h3>
             <p
-              class="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md"
+              class="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md"
             >
               Grão de filme e vinheta acentuada, para telas de teste de contraste — sem mídia de terceiro.
             </p>

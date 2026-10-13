@@ -138,7 +138,6 @@ interface SarakDesignTokens {
     cardHeaderBorder: string;
     cardHeaderPadding: number | SarakResponsiveValue<number>;
     cardHoverGlowIncrease: number;
-    cardHoverLift: number;
     cardHoverStyle: string;
     cardHoverTranslate: number;
     cardImagePosition: string;
@@ -379,8 +378,6 @@ interface SarakDesignTokens {
     searchPositionSidebar: string;
     searchPositionTopbar: string;
     secondaryColor: string;
-    securityPulseSpeed: number;
-    securityShieldGlow: number;
     shadowAmbientAlpha: number;
     shadowColorMode: string;
     shadowIntensity: number;
@@ -456,7 +453,6 @@ interface SarakDesignTokens {
     topbarTitleColor: string;
     touchTargetMin: number;
     trackingSnug: number;
-    trackingSubtle: number;
     trackingTight: number;
     trackingUltra: number;
     trackingWide: number;
@@ -465,7 +461,6 @@ interface SarakDesignTokens {
     typeScale2xs: number;
     typeScale3xs: number;
     typeScaleCaption: number;
-    typeScaleDisplay: number;
     typeScaleMicro: number;
     typeScaleTiny: number;
     typeScaleXl: number;
@@ -826,8 +821,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "4844dae";
-    readonly builtAt: "2026-10-12T21:47:43.715Z";
+    readonly baseCommitShort: "6116955";
+    readonly builtAt: "2026-10-13T03:35:00.741Z";
 };
 
 interface SarakDesignScopeProps {

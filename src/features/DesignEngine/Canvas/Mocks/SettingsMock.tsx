@@ -7,11 +7,11 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
         <div className="flex flex-col h-full overflow-hidden">
             <h3 className="text-sm font-bold text-[var(--theme-title)] mb-6">Engine Visualization</h3>
             
-            <div className="grid grid-cols-2 gap-6 flex-grow mb-6">
+            <div className="grid grid-cols-1 gap-6 flex-grow mb-6">
                 {/* Flow Engine Mock */}
-                <div className="bg-black/20 rounded-2xl border border-white/5 relative overflow-hidden p-4">
-                    <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded bg-white/5 border border-white/10">
-                        <span className="text-[8px] font-black uppercase text-white/40 tracking-widest">Flow Architecture</span>
+                <div className="bg-theme-body/20 rounded-2xl border border-theme-text/5 relative overflow-hidden p-4">
+                    <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded bg-theme-text/5 border border-theme-text/10">
+                        <span className="text-[8px] font-black uppercase text-theme-text/40 tracking-widest">Flow Architecture</span>
                     </div>
                     {/* Dynamic Grid */}
                     <div 
@@ -30,50 +30,21 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                         >
                             <SarakIcon name="Zap" className="w-4 h-4 text-[var(--theme-primary)]" />
-                            <span className="text-2xs font-black uppercase tracking-widest text-white">Source</span>
+                            <span className="text-2xs font-black uppercase tracking-widest text-theme-text">Source</span>
                         </div>
                         
                         <div className="w-px h-6 bg-gradient-to-b from-[var(--theme-primary)] to-transparent" />
                         
                         <div 
-                            className="p-4 bg-white/5 border border-white/10 flex items-center gap-3"
+                            className="p-4 bg-theme-text/5 border border-theme-text/10 flex items-center gap-3"
                             style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                         >
-                            <SarakIcon name="Box" className="w-4 h-4 text-white/40" />
-                            <span className="text-2xs font-black uppercase tracking-widest text-white/40">Processor</span>
+                            <SarakIcon name="Box" className="w-4 h-4 text-theme-text/40" />
+                            <span className="text-2xs font-black uppercase tracking-widest text-theme-text/40">Processor</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Security/Sovereignty Mock */}
-                <div className="bg-black/20 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col items-center justify-center p-6 group">
-                    <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
-                        <span className="text-[8px] font-black uppercase text-blue-400 tracking-widest">Security Orchestrator</span>
-                    </div>
-
-                    <div 
-                        className="relative flex items-center justify-center bg-black/40 border border-white/10 transition-all duration-700"
-                        style={{ 
-                            width: `${(tokens?.qrSize ?? 200) / 2}px`, 
-                            height: `${(tokens?.qrSize ?? 200) / 2}px`,
-                            borderRadius: `${tokens?.securityBorderRadius ?? 16}px`,
-                            boxShadow: tokens?.securityShieldGlow ? `0 0 ${tokens.securityShieldGlow}px rgba(59, 130, 246, 0.5)` : 'none'
-                        }}
-                    >
-                        <div className="absolute inset-0 opacity-20 pointer-events-none p-4">
-                            {/* Fake QR pattern */}
-                            <div className="w-full h-full border-2 border-white/40 border-dashed rounded-sm" />
-                        </div>
-                        <SarakIcon name="Shield" className={`w-8 h-8 text-blue-400 relative z-10 ${tokens?.securityShieldGlow ? 'animate-pulse' : ''}`} style={{ animationDuration: `${tokens?.securityPulseSpeed ?? 2}s` }} />
-                    </div>
-
-                    <div className="mt-4 text-center">
-                        <div className="text-[10px] font-black uppercase text-white/60 mb-1">Status: Protected</div>
-                        <div className="flex gap-1 justify-center">
-                            {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-blue-500/40" />)}
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div className="space-y-3">
@@ -95,7 +66,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             <span className="text-xs font-medium text-[var(--theme-title)]">{item.label}</span>
                         </div>
                         <div className={`w-8 h-4 rounded-full relative z-10 transition-colors ${item.active ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-muted)]/20'}`}>
-                            <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${item.active ? 'left-[18px]' : 'left-0.5'}`}></div>
+                            <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-theme-text transition-all ${item.active ? 'left-[18px]' : 'left-0.5'}`}></div>
                         </div>
                     </motion.div>
                 ))}

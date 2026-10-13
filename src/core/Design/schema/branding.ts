@@ -68,11 +68,11 @@ export const BrandingSchema: ComponentSchema = {
             id: 'identityTracking',
             label: 'Espaçamento (Tracking)',
             type: 'slider',
-            description: 'Espaçamento entre caracteres (tracking) do nome da marca, em `em`. Valores positivos afastam as letras (clima editorial/premium, comum em wordmarks maiúsculos); valores negativos as aproximam. O padrão (-0.025em) é o aperto de títulos do cromo.',
+            description: 'Espaçamento entre caracteres (tracking) do nome da marca, em pixels. Valores positivos afastam as letras (clima editorial/premium, comum em wordmarks maiúsculos); valores negativos as aproximam. O padrão (-0.5px) é o aperto de títulos do cromo.',
             axis: 'density',
-            unit: 'em',
-            constraints: { min: -0.1, max: 0.5, step: 0.01 },
-            defaultValue: -0.025,
+            unit: 'px',
+            constraints: { min: -2, max: 8, step: 0.5 },
+            defaultValue: -0.5,
             cssVars: ['--sarak-identity-tracking']
         },
 

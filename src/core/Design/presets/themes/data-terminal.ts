@@ -39,8 +39,6 @@ export const dataTerminal: SarakThemePreset = {
         shadowAmbientAlpha: 0.05,
         shadowProjectionBlur: 20,
         shadowProjectionAlpha: 0.08,
-        securityShieldGlow: 0,
-        securityPulseSpeed: 0,
         vignetteOpacity: 0,
         vignetteSoftness: 0,
         globalSaturation: 1,

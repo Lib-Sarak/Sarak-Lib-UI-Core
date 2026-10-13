@@ -90,7 +90,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             return (
                                 <div key={enhancedToken.id} className="space-y-1">
                                     {path && <div data-testid="search-result-path" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">{path}</div>}
-                                    <TokenControl token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                    <TokenControl token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                 </div>
                             );
                         })}

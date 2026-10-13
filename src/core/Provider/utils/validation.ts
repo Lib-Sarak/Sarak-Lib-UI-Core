@@ -4,6 +4,7 @@ import { sarakGetAllDesignTokens } from '../../Design/master-map';
 import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import { isSafeCssString, isSafeMediaString } from './cssSafety';
 import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
+import { clampToTokenBounds, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
 import type { SarakDesignToken } from '../../Design/types';
 
 /**
@@ -35,29 +36,21 @@ const ALLOWED_EXTRA_KEYS = new Set<string>([
     ...Object.keys(SARAK_DESIGN_MANIFEST)
 ]);
 
-/** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)` e as
- * palavras-chave seguras. Rejeita qualquer outra coisa (inclui `url()`, que não
- * tem razão de aparecer num valor de cor e é vetor clássico de SSRF/injeção). */
-const COLOR_PATTERN = /^(#[0-9a-fA-F]{3,8}|rgba?\([0-9.,%\s]+\)|hsla?\([0-9.,%\sa-z]+\)|var\(--[a-zA-Z0-9-]+(\s*,\s*[^;<>{}]*)?\)|transparent|currentColor|inherit|none)$/;
+/** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)`, `color-mix(in <espaço>, …)` e as
+ * palavras-chave seguras — e, em QUALQUER ramo (inclusive a reserva do `var()`), nada que busque recurso:
+ * `RESOURCE_IN_COLOR` recusa função de imagem ou de recurso (`url`, `image`, `image-set`, `cross-fade`,
+ * `element`, `paint`, `src`, com ou sem prefixo de fabricante, em qualquer caixa) e a barra invertida, que
+ * escreveria o nome da função por escape (`u\72l(`). Tema é dado hostil: um valor de cor não faz o
+ * navegador buscar nada. */
+const COLOR_PATTERN = /^(#[0-9a-fA-F]{3,8}|rgba?\([0-9.,%\s]+\)|hsla?\([0-9.,%\sa-z]+\)|var\(--[a-zA-Z0-9-]+(\s*,\s*[^;<>{}]*)?\)|color-mix\(\s*in\s+[a-z0-9-]+(\s+[a-z]+(\s+hue)?)?\s*,[a-zA-Z0-9\s%,.#()-]*\)|transparent|currentColor|inherit|none)$/;
+const RESOURCE_IN_COLOR = /[\\]|(?:^|[^\w-])(?:-[a-z]+-)?(?:url|image|image-set|cross-fade|element|paint|src)\s*\(/i;
 
-const isValidColor = (value: unknown): boolean =>
-    typeof value === 'string' && isSafeCssString(value) && COLOR_PATTERN.test(value.trim());
+/** Mesmo predicado que a validação do tema aplica à cor — o painel o usa para só gravar o que o tema aceitaria. */
+export const isValidColor = (value: unknown): boolean =>
+    typeof value === 'string' && isSafeCssString(value) && !RESOURCE_IN_COLOR.test(value) && COLOR_PATTERN.test(value.trim());
 
 const isFiniteNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);
-
-const getNumberBounds = (token: SarakDesignToken): { min?: number; max?: number } => ({
-    min: token.min ?? token.constraints?.min,
-    max: token.max ?? token.constraints?.max
-});
-
-const clampNumber = (value: number, token: SarakDesignToken): number => {
-    const { min, max } = getNumberBounds(token);
-    let result = value;
-    if (typeof min === 'number') result = Math.max(result, min);
-    if (typeof max === 'number') result = Math.min(result, max);
-    return result;
-};
 
 const getEnumOptions = (token: SarakDesignToken): string[] | null => {
     const options = token.constraints?.options ?? token.options;
@@ -86,7 +79,7 @@ const validateResponsiveValue = (token: SarakDesignToken, value: Record<string, 
     for (const axis of axes) {
         const axisValue = value[axis];
         if (!isFiniteNumber(axisValue)) return null;
-        result[axis] = clampNumber(axisValue, token);
+        result[axis] = clampToTokenBounds(axisValue, token);
     }
     return result;
 };
@@ -103,7 +96,7 @@ const coerceTokenValue = (token: SarakDesignToken, value: unknown): unknown => {
     switch (token.type) {
         case 'number':
         case 'slider':
-            return isFiniteNumber(value) ? clampNumber(value, token) : undefined;
+            return isFiniteNumber(value) ? clampToTokenBounds(value, token) : undefined;
         case 'boolean':
             return typeof value === 'boolean' ? value : undefined;
         case 'select': {
@@ -173,9 +166,11 @@ export const auditTokenContract = (fonte: string, design: Record<string, unknown
         if (value === null || value === undefined || value === '') return;
         const token = tokenIndex.get(key);
         if (!token) return; // fora do MASTER_DESIGN_MAP (branding/legado) — fora do escopo desta auditoria
-        if (coerceTokenValue(token, value) === undefined) {
-            drift.push({ token: key, fonte, valor: value, motivo: describeDriftReason(token, value) });
-        }
+        const motivo = coerceTokenValue(token, value) === undefined
+            ? describeDriftReason(token, value)
+            // `validateDesign` corta em silêncio para a borda: o tema mostraria outro valor que o declarado.
+            : (isOutsideTokenBounds(value, token) ? 'fora de min/max (cortado para a borda na validação)' : null);
+        if (motivo) drift.push({ token: key, fonte, valor: value, motivo });
     });
     return drift;
 };

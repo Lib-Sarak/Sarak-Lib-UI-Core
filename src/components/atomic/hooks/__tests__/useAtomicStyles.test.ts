@@ -35,4 +35,18 @@ describe('useAtomicStyles', () => {
             expect(getRadioStyles(undefined, false).backgroundColor).toBe('transparent');
         });
     });
+
+    describe('sombra do campo (`inputShadow`, token de texto com duas palavras-chave)', () => {
+        const { getInputStyles } = useAtomicStyles();
+
+        it('`neumorphism` aplica o relevo interno da lib; sem foco é interno, com foco leva o anel por cima', () => {
+            expect(String(getInputStyles({ inputShadow: 'neumorphism' } as never, false).boxShadow)).toContain('inset 2px 2px 5px');
+            expect(String(getInputStyles({ inputShadow: 'neumorphism' } as never, true).boxShadow)).toContain('0 0 0 2px');
+        });
+
+        it('`none` não escreve sombra; texto CSS é gravado como box-shadow quando o campo não está focado', () => {
+            expect(getInputStyles({ inputShadow: 'none' } as never, false).boxShadow).toBeUndefined();
+            expect(getInputStyles({ inputShadow: '0 8px 20px rgba(0,0,0,0.25)' } as never, false).boxShadow).toBe('0 8px 20px rgba(0,0,0,0.25)');
+        });
+    });
 });

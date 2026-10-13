@@ -67,12 +67,12 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex flex-wrap items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
+                    <div className="flex flex-wrap items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
                         {TABS.map(tab => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                                className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                             >
                                 {tab.label}
                             </button>

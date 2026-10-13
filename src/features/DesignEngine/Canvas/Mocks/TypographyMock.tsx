@@ -64,7 +64,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
                             <SarakIcon name="AlignLeft" size={12} />
                             Corpo de Texto (Body Paragraph)
                         </div>
-                        <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4">
+                        <div className="p-8 rounded-3xl bg-theme-text/[0.02] border border-theme-text/5 space-y-4">
                             <p style={{ fontSize: 'var(--theme-font-size-base)', fontFamily: 'var(--font-main)', lineHeight: 1.6 }} className="text-[var(--text-main)]">
                                 A tipografia é o alicerce da interface soberana. Cada glifo deve respirar, mantendo a integridade geométrica mesmo em escalas reduzidas. 
                                 Este parágrafo utiliza a configuração de fonte principal do sistema, garantindo que a comunicação técnica seja clara, autoritária e visualmente harmoniosa.
@@ -81,17 +81,17 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
                             Contextos Auxiliares
                         </div>
                         <div className="grid grid-cols-1 gap-4">
-                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                            <div className="p-6 rounded-2xl bg-theme-text/[0.02] border border-theme-text/5 flex items-center justify-between">
                                 <span className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Navegação de Abas</span>
                                 <span style={{ fontFamily: 'var(--font-heading)' }} className="text-sm font-bold text-[var(--theme-title)]">Overview System</span>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                            <div className="p-6 rounded-2xl bg-theme-text/[0.02] border border-theme-text/5 flex items-center justify-between">
                                 <span className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Subtítulos & Labels</span>
                                 <span style={{ fontFamily: 'var(--font-heading)' }} className="text-sm font-bold text-[var(--theme-title)]">Security Matrix v2.0</span>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                            <div className="p-6 rounded-2xl bg-theme-text/[0.02] border border-theme-text/5 flex items-center justify-between">
                                 <span className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Tags & Badges</span>
-                                <span className="px-3 py-1 rounded-full bg-[var(--theme-primary)] text-white text-[10px] font-black uppercase">Active Engine</span>
+                                <span className="px-3 py-1 rounded-full bg-[var(--theme-primary)] text-theme-on-primary text-[10px] font-black uppercase">Active Engine</span>
                             </div>
                         </div>
                     </div>

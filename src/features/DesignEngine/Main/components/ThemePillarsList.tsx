@@ -103,6 +103,8 @@ const PillarSectionControls: React.FC<{
                             value={draftRecord[enhancedToken.id]}
                             onChange={(value) => updateDraft(enhancedToken.id, value)}
                             previewDevice={previewDevice}
+                            draft={draftRecord}
+                            updateDraft={updateDraft}
                         />
                     );
                 })}

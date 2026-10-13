@@ -26,7 +26,7 @@ export const LayersSchema: ComponentSchema = {
             type: 'slider',
             description: 'Índice de empilhamento (z-index) da navegação (sidebar/topbar) — deve ficar acima do conteúdo comum da tela, mas abaixo de modais e tooltips, para que overlays sempre cubram a navegação quando abertos.',
             axis: 'elevation',
-            constraints: { min: 100, max: 1000, step: 50 },
+            constraints: { min: 10, max: 1000, step: 10 },
             defaultValue: 500,
             cssVars: ['--sarak-z-sidebar']
         },

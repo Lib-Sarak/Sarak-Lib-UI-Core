@@ -190,8 +190,6 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         shadowAmbientAlpha: 0.6,
         shadowProjectionBlur: 0,
         shadowProjectionAlpha: 1,
-        securityShieldGlow: 20,
-        securityPulseSpeed: 1,
         vignetteOpacity: 0.5,
         vignetteSoftness: 100,
         globalSaturation: 1.6,

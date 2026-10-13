@@ -570,11 +570,15 @@ describe('checkTokenReader — regra (iv): o painel não é leitor de token que 
     });
 });
 
+// Este caso lê o repositório inteiro (schema, `src/` e o painel) — mede 8–9 s sozinho, acima do limite padrão de
+// 5 s do Vitest, e passava ou caía conforme a carga da máquina. O limite é declarado para o caso pesado.
+const REPOSITORY_SCAN_TIMEOUT_MS = 60_000;
+
 describe('o repositório', () => {
     it('não tem valor emitido sem leitor fora da ALLOWLIST, e a ALLOWLIST não tem entrada obsoleta', () => {
         const { open, stale } = checkTokenReader();
 
         expect(open).toEqual([]);
         expect(stale).toEqual([]);
-    });
+    }, REPOSITORY_SCAN_TIMEOUT_MS);
 });

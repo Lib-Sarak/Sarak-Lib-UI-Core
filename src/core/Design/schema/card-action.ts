@@ -43,7 +43,7 @@ export const CardActionSchema: ComponentSchema = {
             axis: 'geometry',
             isResponsive: true,
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-card-action-btn-radius']
         },

@@ -86,7 +86,7 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             isResponsive: true,
             unit: 'px',
-            constraints: { min: 150, max: 300 },
+            constraints: { min: 150, max: 400 },
             defaultValue: { mob: 150, tab: 180, desk: 200 },
             cssVars: ['--sidebar-min-width']
         },
@@ -98,7 +98,7 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             isResponsive: true,
             unit: 'px',
-            constraints: { min: 300, max: 600 },
+            constraints: { min: 240, max: 600 },
             defaultValue: { mob: 280, tab: 350, desk: 450 },
             cssVars: ['--sidebar-max-width']
         },
@@ -314,7 +314,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'slider',
             description: 'Intensidade do brilho (glow) ao redor do marcador de item ativo — 0 remove o efeito; valores altos dão mais destaque ao indicador de seleção.',
             axis: 'elevation',
-            constraints: { min: 0, max: 20 },
+            constraints: { min: 0, max: 40 },
             defaultValue: 10,
             cssVars: ['--sarak-nav-marker-glow']
         },
@@ -421,7 +421,7 @@ export const NavigationSchema: ComponentSchema = {
             description: 'Distância, em `rem`, entre o campo de busca da topbar e o dropdown de resultados que aparece abaixo dele.',
             axis: 'geometry',
             unit: 'rem',
-            constraints: { min: 0, max: 2 },
+            constraints: { min: 0, max: 2, step: 0.5 },
             defaultValue: 0.5,
             cssVars: ['--sarak-search-dropdown-gap']
         },

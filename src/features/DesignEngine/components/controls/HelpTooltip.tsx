@@ -21,7 +21,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[9999] pointer-events-none"
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-[0_20px_50px_color-mix(in_srgb,var(--color-theme-body)_50%,transparent)] z-[9999] pointer-events-none"
                     >
                         <div className="flex flex-col gap-2 relative z-10">
                             <div className="flex items-center gap-2">

@@ -63,6 +63,8 @@ const ImpactTokenControl: React.FC<{
                 value={draftRecord[token.id]}
                 onChange={(value) => updateDraft(token.id, value)}
                 previewDevice={previewDevice}
+                draft={draftRecord}
+                updateDraft={updateDraft}
             />
         </div>
     );

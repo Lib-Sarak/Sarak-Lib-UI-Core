@@ -32,7 +32,8 @@ describe('MockSettings', () => {
         
         expect(screen.getByText('Engine Visualization')).toBeInTheDocument();
         expect(screen.getByText('Flow Architecture')).toBeInTheDocument();
-        expect(screen.getByText('Security Orchestrator')).toBeInTheDocument();
+        // O bloco do escudo saiu: nenhum token produzia o efeito que ele ilustrava.
+        expect(screen.queryByText('Security Orchestrator')).toBeNull();
         expect(screen.getByText('Two-Factor Authentication')).toBeInTheDocument();
     });
 });

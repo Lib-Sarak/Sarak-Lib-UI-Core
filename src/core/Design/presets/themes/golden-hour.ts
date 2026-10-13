@@ -39,8 +39,6 @@ export const goldenHourTheme: SarakThemePreset = {
         shadowAmbientAlpha: 0.05,
         shadowProjectionBlur: 40,
         shadowProjectionAlpha: 0.08,
-        securityShieldGlow: 0,
-        securityPulseSpeed: 0,
         vignetteOpacity: 0,
         vignetteSoftness: 0,
         globalSaturation: 1,

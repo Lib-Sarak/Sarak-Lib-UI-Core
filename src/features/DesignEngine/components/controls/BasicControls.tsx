@@ -12,14 +12,21 @@ interface SliderControlProps {
     step?: number;
     onChange: (value: number) => void;
     suffix?: string;
+    /** Unidade declarada pelo token. Sem ela o número é mostrado cru: o painel não presume `px`. */
     unit?: string;
 }
 
-export const SliderControl: React.FC<SliderControlProps> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => {
+/** Número que o slider mostra: valor ilegível (objeto responsivo, texto) cai no piso em vez de virar `NaN`. */
+const numberOrFloor = (value: unknown, floor: number): number => {
+    const parsed = Number(value ?? floor);
+    return Number.isFinite(parsed) ? parsed : floor;
+};
+
+export const SliderControl: React.FC<SliderControlProps> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = '' }) => {
     // plan-36: o slider continua controlado localmente (feedback instantâneo, a cada
     // pixel arrastado) — só a propagação para `updateDraft` (que recomputa o dicionário
     // inteiro de tokens no preview) é debounced.
-    const [localValue, commitValue] = useDebouncedDraftCommit<number>(Number(value ?? 0), onChange);
+    const [localValue, commitValue] = useDebouncedDraftCommit<number>(numberOrFloor(value, min), onChange);
 
     return (
         <div className="mb-3">
@@ -38,6 +45,64 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
                 valueLabel={`${localValue}${suffix || unit}`}
                 onChange={(e) => commitValue(parseFloat(e.target.value))}
             />
+        </div>
+    );
+};
+
+export type ResponsiveNumber = { desk: number; tab: number; mob: number };
+
+const RESPONSIVE_AXES: Array<{ key: keyof ResponsiveNumber; label: string }> = [
+    { key: 'desk', label: 'Desktop' },
+    { key: 'tab', label: 'Tablet' },
+    { key: 'mob', label: 'Mobile' }
+];
+
+/** Valor do token como os três pontos: escalar vale para os três; ponto ausente cai no piso. */
+export const toResponsiveNumber = (value: unknown, floor: number): ResponsiveNumber => {
+    if (value !== null && typeof value === 'object') {
+        const source = value as Partial<Record<keyof ResponsiveNumber, unknown>>;
+        return { desk: numberOrFloor(source.desk, floor), tab: numberOrFloor(source.tab, floor), mob: numberOrFloor(source.mob, floor) };
+    }
+    const flat = numberOrFloor(value, floor);
+    return { desk: flat, tab: flat, mob: flat };
+};
+
+interface ResponsiveSliderControlProps extends Omit<SliderControlProps, 'value' | 'onChange'> {
+    value: unknown;
+    onChange: (value: ResponsiveNumber) => void;
+}
+
+/**
+ * Slider de token responsivo: um slider por ponto (`desk`/`tab`/`mob`) e o valor gravado é sempre o objeto
+ * completo — editar um ponto nunca apaga os outros, nem colapsa o token num escalar.
+ */
+export const ResponsiveSliderControl: React.FC<ResponsiveSliderControlProps> = ({ label, description, value, onChange, min = 0, ...rest }) => {
+    const current = toResponsiveNumber(value, min);
+    // Dois pontos editados dentro da janela de debounce: o segundo parte do primeiro, não do valor antigo.
+    const latest = React.useRef(current);
+    latest.current = current;
+
+    const commitAxis = (axis: keyof ResponsiveNumber, next: number) => {
+        latest.current = { ...latest.current, [axis]: next };
+        onChange(latest.current);
+    };
+
+    return (
+        <div className="mb-3" role="group" aria-label={label}>
+            <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
+                {label}
+                <HelpTooltip label={label} description={description} />
+            </span>
+            {RESPONSIVE_AXES.map(({ key, label: axisLabel }) => (
+                <SliderControl
+                    key={key}
+                    {...rest}
+                    min={min}
+                    label={axisLabel}
+                    value={current[key]}
+                    onChange={(next) => commitAxis(key, next)}
+                />
+            ))}
         </div>
     );
 };
@@ -78,6 +143,12 @@ interface SelectControlProps {
     isFont?: boolean;
 }
 
+/** O que a opção grava: o `value` (que a validação confere); só na falta dele, o `id`. */
+export const optionValue = (opt: string | SelectOption): string => {
+    if (typeof opt !== 'object') return opt;
+    return opt.value !== undefined ? opt.value : (opt.id !== undefined ? opt.id : '');
+};
+
 export const SelectControl: React.FC<SelectControlProps> = ({ label, description, options, value, onChange, isFont = false }) => (
     <div className="mb-3">
         <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
@@ -90,10 +161,10 @@ export const SelectControl: React.FC<SelectControlProps> = ({ label, description
             style={isFont ? { fontFamily: value || undefined } : {}}
         >
             {(options || []).map((opt: string | SelectOption) => {
-                const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
-                const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
+                const optValue = optionValue(opt);
+                const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optValue) : opt;
                 return (
-                    <option key={optId} value={optId}>
+                    <option key={optValue} value={optValue}>
                         {optLabel}
                     </option>
                 );

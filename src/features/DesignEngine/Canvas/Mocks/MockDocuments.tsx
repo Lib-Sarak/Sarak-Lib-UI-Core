@@ -47,7 +47,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                 onDrop={(e) => { e.preventDefault(); setIsDragging(false); }}
             >
                 {isDragging && <div className="absolute inset-0 bg-[var(--theme-primary)]/5 pointer-events-none" />}
-                <div className={`p-4 rounded-full transition-colors ${isDragging ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--theme-body)] text-[var(--theme-primary)]'}`}>
+                <div className={`p-4 rounded-full transition-colors ${isDragging ? 'bg-[var(--theme-primary)] text-theme-on-primary' : 'bg-[var(--theme-body)] text-[var(--theme-primary)]'}`}>
                     <SarakIcon name="UploadCloud" size={32} />
                 </div>
                 <div className="text-center">
@@ -113,11 +113,11 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                         <SarakIcon name="File" size={40} className="text-[var(--theme-primary)]/50" />
                         
                         {/* Loading Overlay */}
-                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
+                        <div className="absolute inset-0 bg-theme-body/40 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
                             <div className="w-16 h-1 bg-[var(--theme-border)] rounded-full overflow-hidden">
                                 <div className="h-full bg-[var(--theme-primary)] w-[65%] rounded-full animate-pulse" />
                             </div>
-                            <span className="text-xs font-bold text-white">Fazendo upload (65%)</span>
+                            <span className="text-xs font-bold text-theme-text">Fazendo upload (65%)</span>
                         </div>
                     </div>
                     

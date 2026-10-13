@@ -125,8 +125,29 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 67 pares (36 originais + 31 que os componentes desenham)', () => {
-    expect(PAIRS.length).toBe(67);
+  it('tem exatamente 68 pares (36 originais + 32 que os componentes desenham)', () => {
+    expect(PAIRS.length).toBe(68);
+  });
+
+  describe('ícone do campo (inputIconColor × fundo do campo)', () => {
+    const pair = PAIRS.find((p) => p.fg === 'inputIconColor');
+
+    it('o par existe, com o fundo do campo sobre o corpo', () => {
+      expect(pair?.bgChain).toEqual(['inputBg', 'colorBgBody']);
+    });
+
+    it('PLANTADO: branco a 50% sobre fundo claro (o padrão antigo no tema claro) REPROVA', () => {
+      const result = evaluatePair(pair!, { inputIconColor: 'rgba(255, 255, 255, 0.5)', inputBg: '#ffffff', colorBgBody: '#ffffff' });
+      expect(!result.pulado && result.pass).toBe(false);
+    });
+
+    it('o padrão novo — var(--text-muted), resolvido para textColorMuted — passa no claro e no escuro', () => {
+      const icon = 'var(--text-muted, #94a3b8)';
+      const light = evaluatePair(pair!, { inputIconColor: icon, textColorMuted: '#475569', inputBg: '#ffffff', colorBgBody: '#ffffff' });
+      const dark = evaluatePair(pair!, { inputIconColor: icon, textColorMuted: '#94a3b8', inputBg: '#0f172a', colorBgBody: '#050505' });
+      expect(!light.pulado && light.pass).toBe(true);
+      expect(!dark.pulado && dark.pass).toBe(true);
+    });
   });
 
   it('todo par exige 4,5:1 — nenhum relaxamento para "texto grande"', () => {

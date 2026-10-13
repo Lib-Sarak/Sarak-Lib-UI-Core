@@ -45,7 +45,7 @@ export const CategoryLabel: React.FC<{
                             onClick={(e) => { e.stopPropagation(); onReset?.(); }}
                             title={pillarId === 'global' ? 'Descartar alterações globais' : 'Descartar alterações deste pilar'}
                             aria-label={pillarId === 'global' ? 'Descartar alterações globais' : 'Descartar alterações deste pilar'}
-                            className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all active:scale-90"
+                            className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-theme-text transition-all active:scale-90"
                         >
                             <RotateCcw size={10} />
                         </motion.button>
@@ -78,7 +78,7 @@ export const Section: React.FC<{ id: string, icon: React.ElementType, title: str
     <div className="border-b border-[var(--theme-border)] last:border-0">
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">
-                <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}><Icon size={14} /></div>
+                <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-theme-on-primary' : 'bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}><Icon size={14} /></div>
                 <span className={`text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}>{title}</span>
             </div>
             <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />

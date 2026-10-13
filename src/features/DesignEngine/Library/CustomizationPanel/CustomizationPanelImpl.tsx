@@ -22,7 +22,7 @@ export const CustomizationPanel: React.FC = () => {
 
             {/* Sub-Components Viewport */}
             <div className="flex-grow p-8 pt-0 overflow-hidden">
-                <div className="h-full bg-black/20 rounded-3xl border border-white/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
+                <div className="h-full bg-theme-body/20 rounded-3xl border border-theme-text/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
                     <ThemeCustomizationTab />
                 </div>
             </div>

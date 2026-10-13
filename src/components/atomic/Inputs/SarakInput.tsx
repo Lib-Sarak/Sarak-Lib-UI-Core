@@ -67,8 +67,8 @@ const resolveIconSlots = (
 };
 
 const ICON_SIDE_CLASS = { left: 'absolute left-3', right: 'absolute right-3' } as const;
-const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
-const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
 
 /**
  * Componente Atômico: SarakInput

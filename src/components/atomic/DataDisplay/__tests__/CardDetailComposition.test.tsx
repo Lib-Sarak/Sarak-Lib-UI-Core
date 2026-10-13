@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, within, configure } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { SarakKanban } from '../SarakKanban';
 import type { SarakKanbanCard } from '../SarakKanban';
 import { SarakChecklist } from '../SarakChecklist';
@@ -42,6 +42,12 @@ function BoardWithDetail() {
         </>
     );
 }
+
+// Estes casos abrem o detalhe (diálogo, checklist, comentários) a partir do cartão: com a máquina ocupada passam do
+// `findBy*` padrão (1 s) e do teste padrão (5 s). Os limites são declarados para a montagem, não deixados à sorte.
+const MOUNT_TIMEOUT_MS = 30_000;
+configure({ asyncUtilTimeout: MOUNT_TIMEOUT_MS });
+vi.setConfig({ testTimeout: MOUNT_TIMEOUT_MS + 15_000 });
 
 describe('Detalhe do cartão — composição só com átomos da lib', () => {
     it('clicar no cartão abre o detalhe com título, responsável, checklist, comentários e histórico', async () => {

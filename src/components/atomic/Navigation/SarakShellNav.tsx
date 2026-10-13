@@ -165,7 +165,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                             className="text-[var(--sarak-text-main,#ffffff)] truncate"
                             style={{
                                 fontWeight: 'var(--sarak-identity-weight, 700)',
-                                letterSpacing: 'var(--sarak-identity-tracking, -0.025em)',
+                                letterSpacing: 'var(--sarak-identity-tracking, -0.5px)',
                             }}
                         >
                             {brand.name}

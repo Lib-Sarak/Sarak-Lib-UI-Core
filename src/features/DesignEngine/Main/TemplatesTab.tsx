@@ -34,13 +34,13 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--color-theme-card,#1e293b)] text-white/90 p-5 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full bg-[var(--color-theme-card,#1e293b)] text-theme-text/90 p-5 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="mb-8">
                 <div className="text-xs font-black tracking-widest uppercase mb-1">
                     Templates & <span className="text-[var(--theme-primary)]">Manifest</span>
                 </div>
-                <p className="text-[var(--sarak-type-scale-tiny,8px)] text-white/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
+                <p className="text-[var(--sarak-type-scale-tiny,8px)] text-theme-text/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                     Integração Host
                 </p>
             </div>
@@ -48,22 +48,22 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
                 {themes.map((template) => (
-                    <div key={template.id} className="group bg-white/[0.02] border border-white/5 hover:border-white/10 p-5 rounded-2xl transition-all">
+                    <div key={template.id} className="group bg-theme-text/[0.02] border border-theme-text/5 hover:border-theme-text/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
                                     <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{template.name || template.id}</div>
                                 </div>
-                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/30">{template.description || 'Tema customizado.'}</p>
+                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/30">{template.description || 'Tema customizado.'}</p>
                             </div>
                             <div className="flex gap-2">
                                 <button 
                                     onClick={() => handleSelect(template)}
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all flex-1 ${
                                         selectedId === template.id
-                                        ? 'bg-emerald-500 text-white' 
-                                        : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-black'
+                                        ? 'bg-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-on-success,#020617)]' 
+                                        : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-theme-on-primary'
                                     }`}
                                 >
                                     <Check size={10} />
@@ -74,7 +74,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all ${
                                         copiedId === template.id 
                                         ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' 
-                                        : 'bg-white/5 hover:bg-white/10 text-white/40 hover:text-white border border-white/5'
+                                        : 'bg-theme-text/5 hover:bg-theme-text/10 text-theme-text/40 hover:text-theme-text border border-theme-text/5'
                                     }`}
                                 >
                                     {copiedId === template.id ? <Check size={10} /> : <Copy size={10} />}
@@ -83,7 +83,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                         </div>
 
                         <div className="relative">
-                            <pre className="bg-black/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,8px)] font-mono text-white/20 overflow-x-auto border border-white/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
+                            <pre className="bg-theme-body/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,8px)] font-mono text-theme-text/20 overflow-x-auto border border-theme-text/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
                                 {JSON.stringify(template.design, null, 2)}
                             </pre>
                         </div>
@@ -92,16 +92,16 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
             </div>
 
             {/* External Links */}
-            <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-4">
+            <div className="mt-8 pt-8 border-t border-theme-text/5 flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
+                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
                         <Code size={10} /> Docs
                     </a>
-                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
+                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
                         <ExternalLink size={10} /> GitHub
                     </a>
                 </div>
-                <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-white/10">Sarak v13.0</span>
+                <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-theme-text/10">Sarak v13.0</span>
             </div>
         </div>
     );

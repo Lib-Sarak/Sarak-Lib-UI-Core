@@ -790,21 +790,6 @@
     "relatedTokens": ["trackingWidest"]
   },
   {
-    "tokenId": "trackingSubtle",
-    "name": "Tracking Subtle (0.1em)",
-    "description": "Espaçamento entre letras sutil, para rótulos discretos de preview.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
-    "databaseColumn": "typography",
-    "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-subtle"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingTight"]
-  },
-  {
     "tokenId": "typeScaleXs",
     "name": "Escala XS (11px)",
     "description": "Tamanho de fonte para rótulos ligeiramente maiores que o 2XS.",
@@ -832,21 +817,6 @@
     "digitalTwins": ["DesignInjector"],
     "cssVariables": ["--sarak-type-scale-xl"],
     "allowedValues": { "min": 14, "max": 28, "step": 1 },
-    "relatedTokens": []
-  },
-  {
-    "tokenId": "typeScaleDisplay",
-    "name": "Escala Display (10rem)",
-    "description": "Tamanho de fonte para watermarks/títulos gigantes de showcase.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "display", "watermark"],
-    "databaseColumn": "typography",
-    "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-display"],
-    "allowedValues": { "min": 4, "max": 16, "step": 0.5 },
     "relatedTokens": []
   }
 ]

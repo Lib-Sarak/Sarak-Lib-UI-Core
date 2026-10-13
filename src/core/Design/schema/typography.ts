@@ -407,17 +407,6 @@ export const TypographySchema: ComponentSchema = {
 
         // --- EXTENSÃO DA MICRO TYPE-SCALE (Spec 28: features/DesignEngine) ---
         {
-            id: 'trackingSubtle',
-            label: 'Tracking Subtle (0.1em)',
-            type: 'slider',
-            description: 'Espaçamento entre caracteres (tracking) mais discreto da escala, em `em` — abertura sutil, quase imperceptível, para textos que precisam de só um leve refinamento.',
-            axis: 'density',
-            unit: 'em',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.1,
-            cssVars: ['--sarak-tracking-subtle']
-        },
-        {
             id: 'typeScaleXs',
             label: 'Escala XS (11px)',
             type: 'slider',
@@ -438,17 +427,6 @@ export const TypographySchema: ComponentSchema = {
             constraints: { min: 14, max: 28 },
             defaultValue: 20,
             cssVars: ['--sarak-type-scale-xl']
-        },
-        {
-            id: 'typeScaleDisplay',
-            label: 'Escala Display (10rem)',
-            type: 'slider',
-            description: 'Tamanho de fonte "display", em `rem` — o maior da escala tipográfica, reservado para números/palavras de impacto extremo (ex. um contador gigante, hero numérico).',
-            axis: 'density',
-            unit: 'rem',
-            constraints: { min: 4, max: 16, step: 0.5 },
-            defaultValue: 10,
-            cssVars: ['--sarak-type-scale-display']
         }
     ]
 };

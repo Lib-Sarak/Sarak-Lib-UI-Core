@@ -71,8 +71,6 @@
     "shadowAmbientAlpha",
     "shadowProjectionBlur",
     "shadowProjectionAlpha",
-    "securityShieldGlow",
-    "securityPulseSpeed",
     "vignetteOpacity",
     "vignetteSoftness",
     "globalSaturation",
@@ -120,10 +118,8 @@
     "trackingWider",
     "trackingWidest",
     "trackingUltra",
-    "trackingSubtle",
     "typeScaleXs",
-    "typeScaleXl",
-    "typeScaleDisplay"
+    "typeScaleXl"
   ],
   "layout_and_navigation": [
     "isNavHidden",
@@ -340,7 +336,6 @@
     "presetGridTextureSize",
     "controlHeightToggle",
     "progressBarMaxWidth",
-    "cardHoverLift",
     "devicePhoneHeight",
     "deviceTabletHeight",
     "devicePhoneNotchRadius",

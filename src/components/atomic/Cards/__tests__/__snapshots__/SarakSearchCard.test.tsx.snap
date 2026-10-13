@@ -68,7 +68,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
             class="relative w-full flex items-center"
           >
             <div
-              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
             >
               <svg
                 class="w-3.5 h-3.5"

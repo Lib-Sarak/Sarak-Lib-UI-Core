@@ -180,8 +180,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 200 },
     sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 450 },
 
-    // Novas Integrações v11.0 (Security & Atmosphere)
-    securityShieldGlow: { vars: ['--sarak-security-glow'], unit: 'px' },
-    securityPulseSpeed: { vars: ['--sarak-security-pulse'], unit: 's' },
+    // Novas Integrações v11.0 (Atmosphere)
     bgNoiseDensity: { vars: ['--sarak-noise-density'] }
 };

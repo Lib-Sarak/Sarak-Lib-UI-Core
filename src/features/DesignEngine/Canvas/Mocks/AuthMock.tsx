@@ -18,13 +18,13 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
       {/* Lado Esquerdo - Branding */}
       <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--theme-body)]">
         {/* Camada de Ruído / Grid */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--color-theme-text) 15%, transparent) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
         
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-16 h-16 bg-[var(--theme-primary)] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.3)]">
-            <SarakIcon name="Cpu" size={32} className="text-black" />
+            <SarakIcon name="Cpu" size={32} className="text-theme-on-primary" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight mb-8">Sarak MyService</h1>
+          <h1 className="text-3xl font-black text-theme-text tracking-tight mb-8">Sarak MyService</h1>
           
           <div className="flex items-center gap-4">
             <SarakButton variant="secondary" size="sm" leftIcon={<SarakIcon name="Shield" size={14} className="text-[var(--theme-primary)] opacity-70" />}>
@@ -38,11 +38,11 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
       </div>
 
       {/* Lado Direito - Formulário de Login */}
-      <div className="flex-1 bg-black/90 flex flex-col items-center justify-center p-8 relative">
+      <div className="flex-1 bg-theme-body/90 flex flex-col items-center justify-center p-8 relative">
         <div className="w-full max-w-sm flex flex-col gap-6 relative z-10">
           
           <div className="flex flex-col gap-1 mb-2">
-            <h2 className="text-xl font-bold text-white">Login do Sistema</h2>
+            <h2 className="text-xl font-bold text-theme-text">Login do Sistema</h2>
             <p className="text-sm text-[var(--text-secondary)]">Insira suas credenciais para continuar.</p>
           </div>
 
@@ -64,7 +64,7 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
               <SarakInput 
                   type="password" 
                   leftIcon={<SarakIcon name="Lock" size={16} />}
-                  rightIcon={<SarakIcon name="Eye" size={16} className="cursor-pointer hover:text-white" />}
+                  rightIcon={<SarakIcon name="Eye" size={16} className="cursor-pointer hover:text-theme-text" />}
                   placeholder="••••••••" 
                   fullWidth
               />
@@ -83,9 +83,9 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
 
             {/* Divisor */}
             <div className="flex items-center gap-3 my-2 opacity-70">
-              <div className="flex-1 h-px bg-white/10"></div>
-              <span className="text-[9px] text-white/40 uppercase font-bold tracking-widest">Ou continue com</span>
-              <div className="flex-1 h-px bg-white/10"></div>
+              <div className="flex-1 h-px bg-theme-text/10"></div>
+              <span className="text-[9px] text-theme-text/40 uppercase font-bold tracking-widest">Ou continue com</span>
+              <div className="flex-1 h-px bg-theme-text/10"></div>
             </div>
 
             {/* Social Logins */}
@@ -103,7 +103,7 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
 
             {/* Rodapé */}
-            <div className="text-center text-xs text-white/40 mt-4">
+            <div className="text-center text-xs text-theme-text/40 mt-4">
               Não tem uma conta? <span className="text-[var(--theme-primary)] font-bold cursor-pointer hover:underline">Primeiro Acesso</span>
             </div>
           </div>

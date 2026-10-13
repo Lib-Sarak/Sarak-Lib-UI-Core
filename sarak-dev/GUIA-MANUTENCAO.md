@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 407 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **407** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 402 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **402** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 407 |
-| `SarakDesignTokens` (tipo público) | ids | 407 |
+| `catalog/partitions/` | tokens | 402 |
+| `SarakDesignTokens` (tipo público) | ids | 402 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (34)
+### B.3 Gates registrados (35)
 
 | Comando | O que roda |
 | --- | --- |
@@ -342,6 +342,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run migration-anchor:check` | `node gates/scripts/contrato/check-migration-anchor.mjs` |
 | `npm run minor-no-removal:check` | `node gates/scripts/contrato/check-minor-no-removal.mjs` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
+| `npm run panel-contract:check` | `npx tsx gates/scripts/contrato/check-panel-contract.ts` |
 | `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |
 | `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
 | `npm run prefix:check` | `node gates/scripts/contrato/check-public-prefix.mjs` |

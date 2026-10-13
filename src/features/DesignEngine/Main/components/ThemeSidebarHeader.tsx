@@ -30,7 +30,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
         <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--theme-primary)]">
-                    <Zap className="h-3.5 w-3.5 text-white" />
+                    <Zap className="h-3.5 w-3.5 text-theme-text" />
                 </div>
                 <span className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
                     Design

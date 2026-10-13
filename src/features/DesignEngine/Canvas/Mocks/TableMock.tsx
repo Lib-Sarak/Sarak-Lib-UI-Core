@@ -56,7 +56,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             </thead>
                             <tbody className="divide-y divide-[var(--sarak-table-border)]">
                                 {interactiveRows.map((row, i) => (
-                                    <tr key={i} className="hover:bg-white/5 transition-colors group">
+                                    <tr key={i} className="hover:bg-theme-text/5 transition-colors group">
                                         <td className="px-4 py-3 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.id}</td>
                                         <td className="px-4 py-3 font-medium text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.name}</td>
                                         <td className="px-4 py-3 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.version}</td>

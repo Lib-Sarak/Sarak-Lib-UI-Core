@@ -16,7 +16,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
     it('MEDIÇÃO: arrastar 10 pixels seguidos chama onChange (updateDraft) 1 vez, não 10 — o valor exibido acompanha CADA pixel', () => {
         const onChange = vi.fn();
-        const { container } = renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />);
+        const { container } = renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />);
 
         const slider = screen.getByRole('slider');
         for (let pixel = 1; pixel <= 10; pixel += 1) {
@@ -39,7 +39,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
     it('uma pausa no meio do arrasto committa o valor daquele instante, e o arrasto seguinte conta de novo', () => {
         const onChange = vi.fn();
-        renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />);
+        renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />);
         const slider = screen.getByRole('slider');
 
         fireEvent.change(slider, { target: { value: '5' } });
@@ -57,7 +57,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
         const onChange = vi.fn();
         const { container, rerender } = render(
             <SarakUIProvider>
-                <SliderControl label="Raio" value={5} min={0} max={100} onChange={onChange} />
+                <SliderControl label="Raio" value={5} min={0} max={100} unit="px" onChange={onChange} />
             </SarakUIProvider>,
         );
         // `getByText` sem escopo colide com o `valueLabel` que o próprio SarakSlider
@@ -66,7 +66,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
         rerender(
             <SarakUIProvider>
-                <SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />
+                <SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />
             </SarakUIProvider>,
         );
         expect(container.textContent).toContain('0px');

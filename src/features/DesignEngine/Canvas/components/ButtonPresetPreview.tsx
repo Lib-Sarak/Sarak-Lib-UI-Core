@@ -27,7 +27,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
         fontSize: 'var(--color-theme-text, #ffffff)',
         fontWeight: '900',
         textTransform: 'uppercase',
-        letterSpacing: 'var(--sarak-tracking-subtle, 0.1em)',
+        letterSpacing: 'var(--sarak-tracking-tight, 0.2em)',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         display: 'flex',
@@ -49,8 +49,8 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             dynamicStyle.backgroundColor = primaryBg;
             dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-            dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-            dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) var(--sarak-preset-glow-shadow-blur-lg, 32px) 0 rgba(0, 0, 0, 0.3)';
+            dynamicStyle.border = 'var(--sarak-border-width, 1px) solid color-mix(in srgb, var(--color-theme-text) 10%, transparent)';
+            dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) var(--sarak-preset-glow-shadow-blur-lg, 32px) 0 color-mix(in srgb, var(--color-theme-body) 30%, transparent)';
         },
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
@@ -59,7 +59,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
         },
         'matte': () => {
             dynamicStyle.backgroundColor = primaryBg;
-            dynamicStyle.boxShadow = `0 var(--sarak-preset-card-hover-shadow-offset-y, 10px) var(--sarak-preset-matte-shadow-blur1, 15px) calc(var(--sarak-preset-matte-shadow-spread1, 3px) * -1) rgba(0,0,0,0.2), 0 var(--sarak-preset-matte-shadow-offset-y2, 4px) var(--sarak-preset-matte-shadow-blur2, 6px) calc(var(--sarak-preset-matte-shadow-spread2, 4px) * -1) rgba(0,0,0,0.2)`;
+            dynamicStyle.boxShadow = `0 var(--sarak-preset-card-hover-shadow-offset-y, 10px) var(--sarak-preset-matte-shadow-blur1, 15px) calc(var(--sarak-preset-matte-shadow-spread1, 3px) * -1) color-mix(in srgb, var(--color-theme-body) 20%, transparent), 0 var(--sarak-preset-matte-shadow-offset-y2, 4px) var(--sarak-preset-matte-shadow-blur2, 6px) calc(var(--sarak-preset-matte-shadow-spread2, 4px) * -1) color-mix(in srgb, var(--color-theme-body) 20%, transparent)`;
             dynamicStyle.border = 'none';
         }
     };
@@ -81,7 +81,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary transition-all duration-300"
             style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
-            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)] opacity-50"></div>
             
             <div className="relative z-10 flex items-center justify-center w-full h-full mb-6">
                 <div 
@@ -93,9 +93,9 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
                 </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 bg-black/40 backdrop-blur-md border-t border-white/5 z-20 text-left">
-                <h3 className="text-xs font-black text-white uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+            <div className="absolute bottom-0 left-0 w-full p-4 bg-theme-body/40 backdrop-blur-md border-t border-theme-text/5 z-20 text-left">
+                <h3 className="text-xs font-black text-theme-text uppercase tracking-wider">{preset.name}</h3>
+                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
             </div>
         </motion.button>
     );

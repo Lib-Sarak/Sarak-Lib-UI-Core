@@ -47,7 +47,6 @@ const EXPLICIT_PRIMARY_TOKENS = new Set([
     'cardActionBtnHoverBg',
     'cardGlowColor',
     'btnNeonGlowColor',
-    'securityShieldGlow',
     'aiGlowColor'
 ]);
 

@@ -37,12 +37,12 @@ export const CardTitleSchema: ComponentSchema = {
             axis: 'density',
             constraints: {
                 options: [
-                    { id: 'light', value: '300', label: 'Light' },
-                    { id: 'normal', value: '400', label: 'Normal' },
-                    { id: 'medium', value: '500', label: 'Medium' },
-                    { id: 'semibold', value: '600', label: 'Semibold' },
-                    { id: 'bold', value: '700', label: 'Bold' },
-                    { id: 'black', value: '900', label: 'Black' }
+                    { id: '300', value: '300', label: 'Light' },
+                    { id: '400', value: '400', label: 'Normal' },
+                    { id: '500', value: '500', label: 'Medium' },
+                    { id: '600', value: '600', label: 'Semibold' },
+                    { id: '700', value: '700', label: 'Bold' },
+                    { id: '900', value: '900', label: 'Black' }
                 ]
             },
             defaultValue: '900',

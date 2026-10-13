@@ -48,7 +48,7 @@ export const ChromeBrand: React.FC<{
                             // Tipografia do nome da marca: `identityFontFamily`/`identityFontWeight`/`identityTracking`.
                             fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
                             fontWeight: 'var(--sarak-identity-weight, 700)',
-                            letterSpacing: 'var(--sarak-identity-tracking, -0.025em)',
+                            letterSpacing: 'var(--sarak-identity-tracking, -0.5px)',
                             color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))',
                             // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
                             // por orientação, mesmo par de tokens que o Shell já consome.

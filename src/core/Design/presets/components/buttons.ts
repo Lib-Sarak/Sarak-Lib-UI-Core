@@ -80,7 +80,7 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         description: 'Glow lento e suave, formato pílula — clima diferente do Neon Pulse.',
         design: {
             btnStyleType: 'neon',
-            btnBorderRadius: 999,
+            btnBorderRadius: 120,
             btnNeonGlowColor: 'rgba(255,0,180,0.4)',
             btnNeonPulseSpeed: 3.0
         }
@@ -91,7 +91,7 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         description: 'Pílula total com blur extremo — mais radical que o Frosted Glass.',
         design: {
             btnStyleType: 'frosted',
-            btnBorderRadius: 999,
+            btnBorderRadius: 120,
             btnBackdropBlur: 30
         }
     },

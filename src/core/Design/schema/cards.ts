@@ -831,17 +831,6 @@ export const CardSchema: ComponentSchema = {
             defaultValue: 100,
             cssVars: ['--sarak-progress-bar-max-width']
         },
-        {
-            id: 'cardHoverLift',
-            label: 'Kitchen Sink: Elevação no Hover',
-            type: 'slider',
-            description: 'Elevação, em pixels, aplicada aos cards de exemplo na tela de preview "kitchen sink" ao passar o mouse — equivalente de demonstração de `cardHoverTranslate`.',
-            axis: 'motion',
-            unit: 'px',
-            constraints: { min: 0, max: 12 },
-            defaultValue: 4,
-            cssVars: ['--sarak-card-hover-lift']
-        },
 
         // --- DESIGN ENGINE CANVAS: PREVIEW CANVAS (MOCKUP DE DISPOSITIVO) (Spec 28) ---
         {

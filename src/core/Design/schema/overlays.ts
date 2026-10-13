@@ -224,7 +224,7 @@ export const OverlaysSchema: ComponentSchema = {
             description: 'Largura máxima, em `rem`, de uma notificação toast — acima desse limite o texto quebra em múltiplas linhas em vez de alargar o toast indefinidamente.',
             axis: 'geometry',
             unit: 'rem',
-            constraints: { min: TOAST_WIDTH_MIN_REM, max: TOAST_MAX_WIDTH_MAX_REM },
+            constraints: { min: TOAST_WIDTH_MIN_REM, max: TOAST_MAX_WIDTH_MAX_REM, step: 0.5 },
             defaultValue: TOAST_MAX_WIDTH_DEFAULT_REM,
             cssVars: ['--sarak-toast-max-width']
         },

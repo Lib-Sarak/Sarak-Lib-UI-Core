@@ -6,10 +6,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
     class="flex flex-col gap-6"
   >
     <div
-      class="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border w-fit"
+      class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit"
     >
       <button
-        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-white shadow-lg"
+        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-text shadow-lg"
       >
         <svg
           class="lucide lucide-sparkles"
@@ -42,7 +42,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         Curados
       </button>
       <button
-        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-white hover:bg-white/5"
+        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
       >
         <svg
           class="lucide lucide-grid3x3"
@@ -92,7 +92,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r0 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -102,10 +102,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -137,10 +137,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -148,20 +148,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -192,7 +192,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r1 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -202,10 +202,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -237,10 +237,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -248,20 +248,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -292,7 +292,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r2 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -302,10 +302,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -337,10 +337,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -348,20 +348,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -392,7 +392,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r3 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -402,10 +402,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -437,10 +437,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -448,20 +448,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -492,7 +492,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r4 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -502,10 +502,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -537,10 +537,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -548,20 +548,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -592,7 +592,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r5 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -602,10 +602,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -637,10 +637,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -648,20 +648,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -692,7 +692,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r6 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -702,10 +702,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -737,10 +737,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -748,20 +748,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -792,7 +792,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r7 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -802,10 +802,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -837,10 +837,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -848,20 +848,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -892,7 +892,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r8 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -902,10 +902,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -937,10 +937,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -948,20 +948,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -992,7 +992,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-r9 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -1002,10 +1002,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -1037,10 +1037,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -1048,20 +1048,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -1092,7 +1092,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-ra dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -1102,10 +1102,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -1137,10 +1137,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -1148,20 +1148,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -1192,7 +1192,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
             class="sarak-design-scope sarak-scope-rb dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
@@ -1202,10 +1202,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="flex items-center gap-3 relative z-10"
             >
               <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
               >
                 <svg
-                  class="text-white/50"
+                  class="text-theme-text/50"
                   fill="none"
                   height="16"
                   stroke="currentColor"
@@ -1237,10 +1237,10 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
                 class="flex flex-col gap-1.5 flex-1"
               >
                 <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>
@@ -1248,20 +1248,20 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
               class="mt-auto relative z-10 flex flex-col gap-2"
             >
               <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
               >
                 <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
+                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
                 />
               </div>
               <div
                 class="flex justify-between items-center"
               >
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
                 <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
                 />
               </div>
             </div>

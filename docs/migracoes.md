@@ -327,6 +327,55 @@ O `verify_contrast.ts` passa de 36 a **67 pares**, os que os componentes desenha
 suave, erro de campo, hover de navegação e de tabela, item de matriz, botão secundário), e o `fixed-translucent:check`
 passa a barrar, em `src/components/`, branco/preto translúcido e `text-white`/`text-black` fixos.
 
+### O painel grava o que mostra e o tema declarado é o tema mostrado: slider responsivo, `select`, cor com alfa, controle por tipo, faixa numérica acusada, cinco tokens saem do schema
+
+**Classificação: MAJOR (sai na 8.0.0).** Saem cinco chaves do tipo `SarakDesignTokens` (e do schema, do catálogo e
+dos temas): `securityShieldGlow`, `securityPulseSpeed`, `trackingSubtle`, `typeScaleDisplay` e `cardHoverLift`.
+`identityTracking` muda de unidade (`em` → `px`). A faixa de seis tokens se alarga, o `id` das opções de
+`cardTitleFontWeight` passa a ser o próprio valor, e valores de tema que a validação cortava em silêncio mudam
+para o que o tema declarou ou para o que a tela já mostrava.
+
+| Antes | Depois |
+|---|---|
+| 37 tokens responsivos (`cardBorderRadius`, `btnBorderRadius`, `sidebarWidth`, `h1Size`…) mostravam `NaN` no Command Center, e o primeiro arraste gravava um escalar e perdia `mob`/`tab`/`desk`. | Um slider por ponto (Desktop, Tablet, Mobile); o valor gravado é sempre o objeto completo. Escalar salvo vale para os três e é promovido ao primeiro toque. |
+| O sufixo era `px` quando o token não declarava unidade: "0.6px" de opacidade, "9000px" de camada, "600px" de peso (48 tokens). | O sufixo é a unidade declarada pelo token; sem unidade, o número vem cru. |
+| `cardTitleFontWeight` oferecia `id 'black'` com `value '900'`: o controle gravava `'black'` e a validação descartava. | O controle grava o `value` da opção; `id` e `value` do peso são o mesmo número. Opção só com `id` segue valendo. |
+| `text` (`cardShadow`, `inputShadow`, `sidebarShadow`, `motionEaseMain/Out/In`) e `image` (`globalBackgroundImageUrl`) caíam em "Tipo não suportado" no Command Center. | Todo tipo de `SarakTokenValueType` tem controle nos dois despachantes (Command Center e aba de tema). |
+| O controle de cor convertia `rgba()` em hex sem alfa e `var()` em `#ffffff` na primeira edição. | O seletor preserva o alfa; o campo de texto aceita `var()` e `color-mix()` e só grava o que a validação aceita; há um controle de opacidade. `color-mix(in <espaço>, …)` passa a ser cor válida no tema. |
+| Com o canto de raio declarado num tema salvo, mover o raio mestre não mudava o canto, sem aviso. | O controle mostra "N de 4 cantos têm valor próprio" e devolve o canto (ou todos) ao mestre. |
+| O painel e as pré-visualizações escreviam branco/preto translúcido fixo (447 lugares): sob um tema claro sumiam. | Seguem o modo do tema que mostram (`bg-theme-text/5`, `text-theme-text`, `text-theme-on-primary`); o `fixed-translucent:check` cobre `src/features/`. |
+| A validação de cor de tema aceitava função de recurso: `var(--a, url(x))`, `image-set()`, a barra invertida que escreve `url` por escape, e `color-mix(…, url(x))` — o navegador buscaria o recurso. | Nenhum valor de cor carrega `url`, `image`, `image-set`, `cross-fade`, `element`, `paint` ou `src` (qualquer caixa, com ou sem prefixo de fabricante) nem barra invertida, no `var()` e no `color-mix`; o valor é descartado com aviso. |
+| `inputIconColor` valia `rgba(255, 255, 255, 0.5)`: o ícone do campo sumia sobre o fundo de um tema claro que não o declarava. | O padrão é `var(--text-muted)` (a cor de texto suave do tema, que muda com o modo); o par ícone × fundo do campo entra no verificador de contraste (68 pares). **Muda o padrão visual:** o ícone passa de branco a 50% para a cor de texto suave. |
+| 41 valores de tema fora de `min`/`max` eram cortados sem aviso; padrões fora da própria faixa (`sidebarMaxWidth` mob 280 < 300, `zIndexToast` 9000 numa faixa implícita 0..100, `identityTracking` −0,025 fora do passo). | `auditTokenContract` e o `panel-contract:check` os **acusam**; o schema oferece as intenções dos temas e os temas embarcados cabem no contrato. |
+
+**Intenções que o schema passa a oferecer:** duração de movimento `0` ("desligado": `motionDurationFast`,
+`motionDurationNormal` e `motionDurationSlow` a partir de 0; antes 0,1 / 0,2 / 0,5); `colorDepth` a partir de 0;
+`identityTracking` em **pixels**, de −2 a 8, padrão −0,5 px (o antigo −0,025 em, no corpo do nome da marca);
+`sidebarMinWidth` até 400 e `sidebarMaxWidth` a partir de 240; `navActiveMarkerGlow` até 40;
+`cardActionBtnBorderRadius` até 120; `zIndexSidebar` a partir de 10; `zIndexToast` ganha faixa (1000 a 9999).
+
+**Temas embarcados — o que muda na tela:** a "pílula" (raio 9999) era cortada para o máximo do token e o tema agora
+declara o máximo (nenhuma diferença visual); `zIndexTooltip` 100 (abaixo de qualquer modal) sai dos dois temas que o
+declaravam e vale o padrão 9000; `colorVariation` 0 de `industrial-terminal` vira 1 (era cortado a 1). **Mudam de
+fato:** `motionDurationSlow` de `synthwave-retro` (0,4), `kinetic-flow` (0,4), `data-terminal` (0,4), `golden-hour`
+(0,4), `aurora-veil` (0,45) e `blueprint-protocol` (0,35) deixam de ser cortados em 0,5 s; `industrial-terminal`
+passa a ter `motionDuration*` 0 (sem transição) e `colorDepth` 0 (hover e ativo sem variação de tom);
+`identityTracking` de `synthwave-retro` (4), `kinetic-flow` (2), `golden-hour` e `blueprint-protocol` (1) é agora
+esse número de pixels (era cortado em 0,5 em, que é grande demais para um nome de marca);
+`sidebarMinWidth` 320 de `industrial-terminal`, `navActiveMarkerGlow` 30 de `kinetic-flow`, `sidebarMaxWidth` 260 de
+`synthwave-retro` e `zIndexSidebar` 50 de `minimalist-airy` e `neumorphic-mobile` deixam de ser cortados;
+`cardActionBtnBorderRadius` de `aurora-veil` passa do corte em 40 px para a pílula (120 px) — só difere num botão de
+ação com mais de 80 px de altura. Os presets de botão e campo "pílula" (999) gravam 120.
+
+**O que fazer:** quem lia `securityShieldGlow`, `securityPulseSpeed`, `trackingSubtle`, `typeScaleDisplay` ou
+`cardHoverLift` de `useSarakUI().design` os perde (nenhum componente da lib os lia; só a pré-visualização do
+painel): `cardHoverLift` é `cardHoverTranslate`. O valor salvo dessas chaves é descartado com aviso único. Quem
+guardou `identityTracking` em `em` (ex.: `0.1`) o relê como pixels — reajuste. Tema próprio com `motionDuration*`
+abaixo do mínimo antigo passa a ser respeitado.
+
+O gate `panel-contract:check` trava: padrão do schema na faixa e na grade que o painel desenha, valor de tema
+embarcado dentro do contrato numérico, todo tipo do schema com controle e opção com `id` igual ao `value`.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

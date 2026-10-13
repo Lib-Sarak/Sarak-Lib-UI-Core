@@ -83,9 +83,8 @@ export const ColorsSchema: ComponentSchema = {
             type: 'number',
             description: 'Fator que controla o quão escuras/claras ficam as variantes derivadas automaticamente das cores base (`generateVariants`) — valores maiores produzem variantes de contraste mais extremo entre si.',
             axis: 'color',
+            constraints: { min: 0, max: 5, step: 1 },
             defaultValue: 1,
-            min: 1,
-            max: 5,
             cssVars: ['--sarak-color-depth']
         },
         {
@@ -94,9 +93,8 @@ export const ColorsSchema: ComponentSchema = {
             type: 'number',
             description: 'Fator que controla o quanto as variantes derivadas automaticamente das cores base variam entre si em matiz/saturação — valores maiores produzem uma família de cores mais diversa a partir da mesma cor base.',
             axis: 'color',
+            constraints: { min: 1, max: 5, step: 1 },
             defaultValue: 1,
-            min: 1,
-            max: 5,
             cssVars: ['--sarak-color-variation']
         },
         // --- CORES DE SUPERFÍCIE ---

@@ -112,14 +112,7 @@ export const ALLOWLIST = [];
  * daqui no mesmo commit em que o componente passa a lê-lo.
  */
 const PREVIEW_GEOMETRY = 'geometria da pré-visualização do painel (cartão de preset, moldura de dispositivo, painel lateral): é o desenho do próprio painel, não de componente da lib';
-const NO_LIB_COMPONENT = 'o schema declara que não há componente da lib que o consuma (pendência de cobertura); só a pré-visualização do painel o lê';
-const NO_TYPE_VARIANT = 'escala tipográfica sem variante de componente da lib que a use; só a pré-visualização do painel a lê';
 export const PANEL_OWN_TOKENS = {
-    securityShieldGlow: NO_LIB_COMPONENT,
-    securityPulseSpeed: NO_LIB_COMPONENT,
-    trackingSubtle: NO_TYPE_VARIANT,
-    typeScaleDisplay: NO_TYPE_VARIANT,
-    cardHoverLift: 'elevação dos cartões de exemplo do "kitchen sink" do painel (o hover dos cartões da lib é `cardHoverTranslate`)',
     controlHeightToggle: 'altura do toggle exibido no "kitchen sink" do painel',
     progressBarMaxWidth: 'largura da barra de progresso exibida no "kitchen sink" do painel',
     layoutPreviewMaxH: PREVIEW_GEOMETRY,

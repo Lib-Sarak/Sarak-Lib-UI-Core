@@ -31,8 +31,8 @@
 //    fundo o autor pretendeu o contraste) e o código real dos componentes
 //    (ex. `SarakDataTableImpl.tsx`) — não um snapshot de render do
 //    `PreviewCanvas`, que não existe hoje para contraste. Pares fora desta
-//    lista (ícone, indicador de estado, borda, elemento decorativo — não são
-//    texto) estão fora do ESCOPO da R31 por definição ("pares texto/fundo"),
+//    lista (indicador de estado, borda, elemento decorativo — não são
+//    texto; o ícone do campo, `inputIconColor`, é a exceção e entra) estão fora do ESCOPO da R31 por definição ("pares texto/fundo"),
 //    não "não determinados"; ver o veredito do revisor em §11 de
 //    `specs/plan/plan-24-aplicacao-de-temas.md` para a lista completa dos
 //    excluídos e o motivo de cada um.
@@ -175,6 +175,8 @@ export const PAIRS: ContrastPair[] = [
     { fg: 'cardSearchTextFocusColor', bgChain: ['cardSearchBgFocus', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'btnPrimaryText', bgChain: ['btnPrimaryBg', 'colorBgBody'], min: 4.5 },
     { fg: 'inputTextColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
+    // O ícone do campo (lupa, olho de senha): o padrão do token é `var(--text-muted)`, resolvido para `textColorMuted`.
+    { fg: 'inputIconColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
     { fg: 'topbarTitleColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'tooltipTextColor', bgChain: ['tooltipBg', 'colorBgBody'], min: 4.5 },
     { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
@@ -275,6 +277,7 @@ const THEME_VAR_TOKENS: Record<string, string> = {
     '--color-theme-title': 'titleColor',
     '--theme-border': 'cardBorderColor',
     '--sarak-primary-color': 'primaryColor',
+    '--text-muted': 'textColorMuted',
 };
 
 const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]*))?\)$/;

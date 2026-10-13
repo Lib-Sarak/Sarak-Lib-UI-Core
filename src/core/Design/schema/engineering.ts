@@ -45,6 +45,7 @@ export const EngineeringSchema: ComponentSchema = {
             type: 'number',
             description: 'Índice de empilhamento (z-index) usado por notificações toast — normalmente o valor mais alto do sistema, para garantir que a notificação sempre apareça acima de qualquer modal/overlay já aberto.',
             axis: 'elevation',
+            constraints: { min: 1000, max: 9999, step: 100 },
             defaultValue: 9000,
             cssVars: ['--sarak-z-toast']
         }

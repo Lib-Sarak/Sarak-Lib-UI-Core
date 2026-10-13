@@ -13,7 +13,7 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                 transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
                 className="sarak-card shadow-[var(--dynamic-shadow)] overflow-hidden relative p-0"
             >
-                <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-theme-text/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-2xs relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
                         <tr style={{ fontFamily: 'var(--font-heading)' }}>

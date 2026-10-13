@@ -55,7 +55,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={!isSaving ? onClose : undefined}
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    className="absolute inset-0 bg-theme-body/60 backdrop-blur-sm"
                 />
 
                 <motion.div
@@ -64,7 +64,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     className="relative w-full max-w-md bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                 >
-                    <div className={`px-6 py-4 border-b border-[var(--theme-border)] bg-black/20 ${modalLayout.headerClass}`}>
+                    <div className={`px-6 py-4 border-b border-[var(--theme-border)] bg-theme-body/20 ${modalLayout.headerClass}`}>
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-[var(--theme-primary)]/10 rounded-lg">
                                 <FileJson size={18} className="text-[var(--theme-primary)]" />
@@ -73,7 +73,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         </div>
                         <button
                             onClick={!isSaving ? onClose : undefined}
-                            className={`p-1 text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/5 ${modalLayout.closeButtonClass}`}
+                            className={`p-1 text-[var(--theme-muted)] hover:text-theme-text transition-colors rounded-md hover:bg-theme-text/5 ${modalLayout.closeButtonClass}`}
                             disabled={isSaving}
                         >
                             <X size={16} />
@@ -104,11 +104,11 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         </div>
                     </div>
 
-                    <div className={`px-6 py-4 border-t border-[var(--theme-border)] bg-black/20 ${modalLayout.footerClass}`}>
+                    <div className={`px-6 py-4 border-t border-[var(--theme-border)] bg-theme-body/20 ${modalLayout.footerClass}`}>
                         <button
                             onClick={onClose}
                             disabled={isSaving}
-                            className="px-4 py-2 text-xs font-bold text-[var(--theme-muted)] hover:text-white transition-colors"
+                            className="px-4 py-2 text-xs font-bold text-[var(--theme-muted)] hover:text-theme-text transition-colors"
                         >
                             Cancelar
                         </button>
@@ -125,7 +125,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         <button
                             onClick={() => onExport(name)}
                             disabled={isSaving || !name.trim()}
-                            className="flex items-center gap-2 px-6 py-2 bg-[var(--theme-primary)] text-white rounded-lg font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-2 bg-[var(--theme-primary)] text-theme-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                         >
                             <FileJson size={16} />
                             {isSaving ? 'Exportando...' : 'Exportar JSON'}

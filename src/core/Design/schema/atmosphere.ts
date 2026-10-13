@@ -374,30 +374,6 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-shadow-projection-alpha']
         },
 
-        // --- ESCUDOS DE SEGURANÇA ---
-        {
-            id: 'securityShieldGlow',
-            label: 'Brilho do Escudo de Segurança',
-            type: 'slider',
-            description: 'Intensidade do brilho ao redor de um indicador visual de "escudo de segurança" (ex. selo de conexão segura/verificada). Nota: token catalogado sem componente consumidor implementado no momento — ver backlog de cobertura, spec 01.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 200 },
-            defaultValue: 10,
-            cssVars: ['--sarak-security-glow']
-        },
-        {
-            id: 'securityPulseSpeed',
-            label: 'Velocidade do Pulso (Escudo)',
-            type: 'slider',
-            description: 'Velocidade de pulsação do indicador de "escudo de segurança", em segundos por ciclo. Mesma pendência de `securityShieldGlow`: sem componente consumidor implementado no momento.',
-            axis: 'motion',
-            unit: 's',
-            constraints: { min: 0.5, max: 5.0, step: 0.1 },
-            defaultValue: 2.0,
-            cssVars: ['--sarak-security-pulse']
-        },
-
         // --- EFEITOS CINEMATOGRÁFICOS ---
         {
             id: 'vignetteOpacity',

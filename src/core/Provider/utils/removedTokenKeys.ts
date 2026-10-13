@@ -46,6 +46,12 @@ export const REMOVED_TOKEN_KEYS = new Set<string>([
     'visualTranslateZMd',
     'visualDotGridSize',
     'visualOrbBlur',
+    // Sem componente da lib que os leia (só a pré-visualização do painel): saem do schema; o valor salvo cai fora.
+    'securityShieldGlow',
+    'securityPulseSpeed',
+    'trackingSubtle',
+    'typeScaleDisplay',
+    'cardHoverLift', // fundido em `cardHoverTranslate`, que é o hover real dos cartões
 ]);
 
 // Aviso ÚNICO por sessão (precedente: persistenceStrategy.ts, hasWarnedRemoteWithoutPort).

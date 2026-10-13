@@ -2304,21 +2304,6 @@
     "relatedTokens": []
   },
   {
-    "tokenId": "cardHoverLift",
-    "name": "Kitchen Sink: Elevação no Hover",
-    "description": "Deslocamento vertical (negativo) do card no hover, no showcase KitchenSinkPreview.",
-    "type": "number",
-    "importance": 20,
-    "categories": ["cards", "efeitos", "cards-engine"],
-    "tags": ["kitchen-sink", "hover", "transform"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": ["KitchenSinkPreview"],
-    "cssVariables": ["--sarak-card-hover-lift"],
-    "allowedValues": { "min": 0, "max": 12, "step": 1 },
-    "relatedTokens": []
-  },
-  {
     "tokenId": "devicePhoneHeight",
     "name": "Preview Canvas: Altura do Telefone",
     "description": "Altura do frame de mockup de telefone no PreviewCanvas do Design Engine.",

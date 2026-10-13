@@ -19,7 +19,7 @@ export const ConfigSection: React.FC<ConfigSectionProps> = ({ id, icon: Icon, ti
                 className={`flex items-center justify-between p-4 transition-all group ${isOpen ? 'bg-[var(--theme-primary)]/5' : 'hover:bg-[var(--theme-primary)]/5'}`}
             >
                 <div className="flex items-center gap-3">
-                    <div className={`p-1.5 rounded-lg transition-colors ${isOpen ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--theme-card)] text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] border border-[var(--theme-border)]'}`}>
+                    <div className={`p-1.5 rounded-lg transition-colors ${isOpen ? 'bg-[var(--theme-primary)] text-theme-on-primary' : 'bg-[var(--theme-card)] text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] border border-[var(--theme-border)]'}`}>
                         <Icon className="w-4 h-4" />
                     </div>
                     <span className={`text-2xs font-black uppercase tracking-widest ${isOpen ? 'text-[var(--theme-title)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--theme-title)]'}`}>

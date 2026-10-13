@@ -84,9 +84,9 @@ export const InputsSchema: ComponentSchema = {
         },
         {
             id: 'inputShadow',
-            label: 'Sombra / Neumorphism',
+            label: 'Sombra do Campo (CSS ou "neumorphism")',
             type: 'text',
-            description: 'Definição CSS completa de `box-shadow` do campo de entrada — usada para efeitos avançados como neumorphism (relevo suave). "none" desativa qualquer sombra.',
+            description: 'Definição CSS completa de `box-shadow` do campo de entrada. Duas palavras-chave valem no lugar do CSS: `neumorphism` aplica o relevo interno pronto da lib (com o anel de foco por cima) e `none` não aplica sombra. Qualquer outro texto é gravado como `box-shadow` e fica sob o anel de foco quando o campo está focado.',
             axis: 'elevation',
             defaultValue: 'none',
             cssVars: ['--sarak-input-shadow']
@@ -122,9 +122,9 @@ export const InputsSchema: ComponentSchema = {
             id: 'inputIconColor',
             label: 'Cor dos Ícones',
             type: 'color',
-            description: 'Cor dos ícones exibidos dentro/ao lado do campo de entrada (ex. lupa de busca, olho de senha) — normalmente com opacidade reduzida em relação ao texto principal, para não competir visualmente.',
+            description: 'Cor dos ícones exibidos dentro/ao lado do campo de entrada (ex. lupa de busca, olho de senha). O padrão é a cor de texto suave do tema (`textColorMuted`), que muda com o modo — um branco fixo sumia sobre o campo de um tema claro. O par com o fundo do campo é medido pelo verificador de contraste.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.5)',
+            defaultValue: 'var(--text-muted, #94a3b8)',
             cssVars: ['--sarak-input-icon-color']
         },
         {

@@ -18,24 +18,24 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
+                <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
                     <button
                         onClick={() => setActiveTab('media')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Video size={12} />
                         Atmosferas
                     </button>
                     <button
                         onClick={() => setActiveTab('textures')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Grid size={12} />
                         Texturas
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border">
+                <div className="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border">
                     <span className="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                     <input
                         key={activeTab}
@@ -101,7 +101,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                 {/* Removido o gradiente preto global para evitar escurecimento não intencional da mídia brilhante */}
 
                 <div className="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700">
-                    <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl">
+                    <div className="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl">
                         {isVideo ? <Play size={32} /> : isImage ? <ImageIcon size={32} /> : hasGeneratedAtmosphere ? <Grid size={32} /> : <Layers size={32} />}
                     </div>
                 </div>
@@ -113,8 +113,8 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                         {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
                         {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
                     </div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
-                    <p className="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>
+                    <h3 className="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
+                    <p className="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>
                 </div>
             </div>
         </motion.button>

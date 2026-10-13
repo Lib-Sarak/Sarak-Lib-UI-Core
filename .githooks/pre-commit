@@ -182,6 +182,17 @@ if ! npx tsx gates/scripts/contrato/check-variable-contract.ts; then
   exit 1
 fi
 echo "[Sarak] Anel 1 (contrato das variáveis) OK."
+
+# Contrato do painel (padrão na faixa e na grade, valor de tema dentro do contrato numérico, todo tipo do
+# schema com controle, opção que grava o value). Em TypeScript pelo mesmo motivo: lê o schema e os temas.
+if ! npx tsx gates/scripts/contrato/check-panel-contract.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: contrato do painel"
+  echo "   Regra violada : — (06-painel-de-customizacao-e-preview · 09-temas-e-presets §4.4)"
+  echo "   Veja o detalhe: npm run panel-contract:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (contrato do painel) OK."
 fi
 
 # =============================================================================

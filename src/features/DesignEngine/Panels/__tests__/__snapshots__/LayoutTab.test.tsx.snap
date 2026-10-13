@@ -52,7 +52,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             </svg>
           </div>
           <h3
-            class="text-sm font-black uppercase tracking-widest italic text-white/90"
+            class="text-sm font-black uppercase tracking-widest italic text-theme-text/90"
           >
             Densidade da Interface
           </h3>
@@ -61,10 +61,10 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="flex flex-col gap-3"
         >
           <button
-            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
+            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
           >
             <div
-              class="p-3 rounded-xl transition-all bg-white/5 text-white/40"
+              class="p-3 rounded-xl transition-all bg-theme-text/5 text-theme-text/40"
             >
               <svg
                 class="w-5 h-5"
@@ -105,7 +105,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Compacto
               </div>
               <div
-                class="text-2xs text-white/40 font-medium"
+                class="text-2xs text-theme-text/40 font-medium"
               >
                 Ideal para dashboards densos
               </div>
@@ -115,7 +115,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-blue-600/20 border-blue-500/50 shadow-lg shadow-blue-900/20"
           >
             <div
-              class="p-3 rounded-xl transition-all bg-blue-500 text-white"
+              class="p-3 rounded-xl transition-all bg-[var(--theme-primary)] text-theme-on-primary"
             >
               <svg
                 class="w-5 h-5"
@@ -156,17 +156,17 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Padrão
               </div>
               <div
-                class="text-2xs text-white/40 font-medium"
+                class="text-2xs text-theme-text/40 font-medium"
               >
                 Equilíbrio entre foco e espaço
               </div>
             </div>
           </button>
           <button
-            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
+            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
           >
             <div
-              class="p-3 rounded-xl transition-all bg-white/5 text-white/40"
+              class="p-3 rounded-xl transition-all bg-theme-text/5 text-theme-text/40"
             >
               <svg
                 class="w-5 h-5"
@@ -207,7 +207,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Confortável
               </div>
               <div
-                class="text-2xs text-white/40 font-medium"
+                class="text-2xs text-theme-text/40 font-medium"
               >
                 Espaçamento generoso e relaxante
               </div>
@@ -254,13 +254,13 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             </svg>
           </div>
           <h3
-            class="text-sm font-black uppercase tracking-widest italic text-white/90"
+            class="text-sm font-black uppercase tracking-widest italic text-theme-text/90"
           >
             Escala Visual (Fator S)
           </h3>
         </div>
         <div
-          class="bg-white/5 border border-white/5 p-6 rounded-3xl space-y-8"
+          class="bg-theme-text/5 border border-theme-text/5 p-6 rounded-3xl space-y-8"
         >
           <div
             class="flex justify-between items-end h-16 px-4"
@@ -272,7 +272,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
               />
               <span
-                class="text-2xs font-black transition-all text-white/20"
+                class="text-2xs font-black transition-all text-theme-text/20"
               >
                 XS
               </span>
@@ -284,7 +284,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
               />
               <span
-                class="text-2xs font-black transition-all text-white"
+                class="text-2xs font-black transition-all text-theme-text"
               >
                 S
               </span>
@@ -296,7 +296,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
               />
               <span
-                class="text-2xs font-black transition-all text-white/20"
+                class="text-2xs font-black transition-all text-theme-text/20"
               >
                 M
               </span>
@@ -308,7 +308,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
               />
               <span
-                class="text-2xs font-black transition-all text-white/20"
+                class="text-2xs font-black transition-all text-theme-text/20"
               >
                 L
               </span>
@@ -320,29 +320,29 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
               />
               <span
-                class="text-2xs font-black transition-all text-white/20"
+                class="text-2xs font-black transition-all text-theme-text/20"
               >
                 XL
               </span>
             </button>
           </div>
           <p
-            class="text-2xs text-center text-white/30 uppercase font-black tracking-widest italic"
+            class="text-2xs text-center text-theme-text/30 uppercase font-black tracking-widest italic"
           >
             Ajuste o multiplicador de escala do OS
           </p>
         </div>
         <div
-          class="space-y-4 pt-4 border-t border-white/5"
+          class="space-y-4 pt-4 border-t border-theme-text/5"
         >
           <div
-            class="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2"
+            class="flex justify-between items-center text-2xs font-black uppercase text-theme-text/30 mb-2"
           >
             <div
               class="flex items-center gap-2"
             >
               <svg
-                class="w-4 h-4 text-white/40"
+                class="w-4 h-4 text-theme-text/40"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -369,7 +369,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 />
               </svg>
               <span
-                class="text-2xs font-black uppercase tracking-widest text-white/60"
+                class="text-2xs font-black uppercase tracking-widest text-theme-text/60"
               >
                 Largura Lateral
               </span>
@@ -401,7 +401,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           </div>
         </div>
         <div
-          class="space-y-6 pt-8 border-t border-white/5"
+          class="space-y-6 pt-8 border-t border-theme-text/5"
         >
           <div
             class="flex items-center gap-3"
@@ -438,7 +438,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               </svg>
             </div>
             <h3
-              class="text-sm font-black uppercase tracking-widest italic text-white/90"
+              class="text-sm font-black uppercase tracking-widest italic text-theme-text/90"
             >
               Tipografia Independente
             </h3>
@@ -450,7 +450,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="space-y-2"
             >
               <label
-                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 ml-2"
+                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-theme-text/30 ml-2"
               >
                 Heading Font
               </label>
@@ -478,7 +478,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
                   style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
@@ -501,7 +501,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="space-y-2"
             >
               <label
-                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 ml-2"
+                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-theme-text/30 ml-2"
               >
                 Body Font
               </label>
@@ -529,7 +529,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
                   style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
@@ -552,7 +552,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
         </div>
       </div>
       <div
-        class="space-y-6 md:col-span-2 pt-8 border-t border-white/5"
+        class="space-y-6 md:col-span-2 pt-8 border-t border-theme-text/5"
       >
         <div
           class="flex items-center gap-3"
@@ -587,7 +587,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             </svg>
           </div>
           <h3
-            class="text-sm font-black uppercase tracking-widest italic text-white/90"
+            class="text-sm font-black uppercase tracking-widest italic text-theme-text/90"
           >
             Arquitetura de Navegação
           </h3>
@@ -637,7 +637,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   Painel Lateral
                 </div>
                 <div
-                  class="text-2xs text-white/40 uppercase"
+                  class="text-2xs text-theme-text/40 uppercase"
                 >
                   Padrão Sarak OS (Fixo/Expandível)
                 </div>
@@ -648,16 +648,16 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             />
           </button>
           <button
-            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 bg-white/5 border-white/5 hover:bg-white/10"
+            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10"
           >
             <div
               class="flex items-center gap-4"
             >
               <div
-                class="w-8 h-8 flex items-center justify-center border-t-2 border-white/20"
+                class="w-8 h-8 flex items-center justify-center border-t-2 border-theme-text/20"
               >
                 <svg
-                  class="w-5 h-5 text-white/20"
+                  class="w-5 h-5 text-theme-text/20"
                   fill="none"
                   height="24"
                   stroke="currentColor"
@@ -697,7 +697,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   Barra Superior
                 </div>
                 <div
-                  class="text-2xs text-white/40 uppercase"
+                  class="text-2xs text-theme-text/40 uppercase"
                 >
                   Foco no Conteúdo (Minimalista)
                 </div>

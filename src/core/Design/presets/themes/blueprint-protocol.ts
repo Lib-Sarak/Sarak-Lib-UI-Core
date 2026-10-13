@@ -39,8 +39,6 @@ export const blueprintProtocolTheme: SarakThemePreset = {
         shadowAmbientAlpha: 0.3,
         shadowProjectionBlur: 30,
         shadowProjectionAlpha: 0.3,
-        securityShieldGlow: 8,
-        securityPulseSpeed: 1.5,
         vignetteOpacity: 0.15,
         vignetteSoftness: 60,
         globalSaturation: 1,

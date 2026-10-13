@@ -79,10 +79,20 @@ describe('findFixedTranslucent — o repositório de fixture', () => {
         const root = fixture({
             'src/components/atomic/A.tsx': "const c = 'var(--border, rgba(255,255,255,0.1))';\n// bg-white/5 era assim\n",
             'src/components/atomic/__tests__/A.test.tsx': "it('x', () => { '<i className=\"bg-white/5\" />'; });\n",
-            'src/features/Painel.tsx': "export const P = () => <div className=\"bg-white/5\" />;\n",
+            'src/features/__tests__/P.test.tsx': "it('x', () => { '<i className=\"bg-white/5\" />'; });\n",
         });
 
         expect(findFixedTranslucent({ root, exceptions: {} }).violations).toEqual([]);
+    });
+
+    it('PLANTADO: o painel (src/features) também é acusado, e a forma do tema não', () => {
+        const root = fixture({
+            'src/features/Painel.tsx': "export const P = () => <div className=\"bg-white/5 text-white\" />;\n",
+            'src/features/Ok.tsx': "export const O = () => <div className=\"bg-theme-text/5 text-theme-text\" />;\n",
+        });
+
+        const { violations } = findFixedTranslucent({ root, exceptions: {} });
+        expect(violations.map((v) => v.file)).toEqual(['src/features/Painel.tsx', 'src/features/Painel.tsx']);
     });
 
     it('o marcador `sarak-allow-fixed-color:` na linha ou na anterior aceita a ocorrência', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, waitFor } from '@testing-library/react';
+import { configure, renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
 
@@ -10,6 +10,12 @@ vi.mock('pdfjs-dist', () => ({
 
 import { getDocument } from 'pdfjs-dist';
 import { usePdfDocument } from '../usePdfDocument';
+
+// O caso do fallback monta o `SarakUIProvider` inteiro (módulo grande, carregado a frio): leva segundos com a máquina
+// ocupada, acima do `waitFor` padrão (1 s) e do teste padrão (5 s). Os limites são declarados para esse carregamento.
+const COLD_LOAD_TIMEOUT_MS = 30_000;
+configure({ asyncUtilTimeout: COLD_LOAD_TIMEOUT_MS });
+vi.setConfig({ testTimeout: COLD_LOAD_TIMEOUT_MS + 15_000 });
 
 describe('Spec 15 (Onda 10) — usePdfDocument', () => {
     it('começa em loading e expõe o documento carregado (worker fora da main thread)', async () => {

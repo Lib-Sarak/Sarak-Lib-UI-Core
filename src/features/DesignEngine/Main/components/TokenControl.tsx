@@ -7,6 +7,8 @@ import {
     InputControl,
     MediaUploaderControl
 } from '../../components/DesignControls';
+import { ExceptionRelation } from '../../components/ExceptionRelation';
+import { getTokenBounds } from '../../../../core/Design/utils/tokenBounds';
 import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
 interface WidgetProps {
@@ -21,9 +23,9 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
         <SliderControl 
             label={props.token.label} 
             value={props.value as number} 
-            min={props.token.constraints?.min} 
-            max={props.token.constraints?.max} 
-            step={props.token.constraints?.step} 
+            min={getTokenBounds(props.token).min} 
+            max={getTokenBounds(props.token).max} 
+            step={getTokenBounds(props.token).step} 
             unit={props.token.unit}
             onChange={(val) => props.onChange(val)} 
         />
@@ -33,9 +35,11 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
     switch: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
     boolean: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
     input: (props) => <InputControl label={props.token.label} placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
+    string: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(String(val))} />,
     number: (props) => <InputControl label={props.token.label} type="number" placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    image: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
+    image: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />,
+    file: (props) => <MediaUploaderControl label={props.token.label} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
 };
 
 const DEVICE_BADGES = {
@@ -57,7 +61,17 @@ const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ devi
     </span>
 );
 
-export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: SarakDesignToken, value: SarakTokenValue, onChange: (val: SarakTokenValue) => void, previewDevice?: string }) => {
+interface TokenControlProps {
+    token: SarakDesignToken;
+    value: SarakTokenValue;
+    onChange: (val: SarakTokenValue) => void;
+    previewDevice?: string;
+    /** Rascunho inteiro e o gravador: só com eles o controle mostra a relação mestre × canto (raios). */
+    draft?: Record<string, SarakTokenValue | undefined>;
+    updateDraft?: (id: string, value: SarakTokenValue) => void;
+}
+
+export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop', draft, updateDraft }: TokenControlProps) => {
     const Widget = ControlRegistry[token.type];
     if (!Widget) return null;
 
@@ -79,12 +93,14 @@ export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop'
     };
 
     const widget = <Widget token={token} value={displayValue as SarakTokenValue} onChange={handleChange} />;
-    if (!token.isResponsive) return widget;
+    const relation = draft && updateDraft ? <ExceptionRelation token={token} draft={draft} updateDraft={updateDraft} /> : null;
+    if (!token.isResponsive) return relation ? <div>{widget}{relation}</div> : widget;
 
     return (
         <div>
             <DeviceBadge deviceKey={deviceKey} />
             {widget}
+            {relation}
         </div>
     );
 };

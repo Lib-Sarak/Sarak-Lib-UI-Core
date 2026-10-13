@@ -25,7 +25,7 @@ export const DashboardSidePanel = ({ variables, textureType }: any) => {
                                 <span className="text-[10px] font-bold uppercase text-slate-400 tracking-tighter">{item.type}</span>
                                 <span className="text-[9px] font-mono text-slate-600 italic">{item.time}</span>
                             </div>
-                            <p className="text-xs text-white/80 leading-snug tracking-tight">{item.msg}</p>
+                            <p className="text-xs text-theme-text/80 leading-snug tracking-tight">{item.msg}</p>
                         </div>
                     </div>
                 ))}

@@ -117,7 +117,7 @@ describe('ChromeBrand — tokens de identidade', () => {
 
         expect(style).toContain('var(--sarak-identity-font, var(--font-heading');
         expect(style).toContain('var(--sarak-identity-weight, 700)');
-        expect(style).toContain('var(--sarak-identity-tracking, -0.025em)');
+        expect(style).toContain('var(--sarak-identity-tracking, -0.5px)');
     });
 
     it('o bloco leva o respiro de identityPadding em um invólucro, sem mexer na anatomia interna', () => {

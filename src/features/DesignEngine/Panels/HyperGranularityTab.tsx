@@ -69,18 +69,18 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
         <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
             
             {/* HEADER: SEARCH & PILLARS */}
-            <div className="pt-6 px-6 pb-2 border-b border-white/5 bg-black/40 backdrop-blur-md z-10 space-y-4">
+            <div className="pt-6 px-6 pb-2 border-b border-theme-text/5 bg-theme-body/40 backdrop-blur-md z-10 space-y-4">
                 <div className="relative group">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
                     <input 
                         type="text"
                         placeholder="Busca universal em 200+ tokens..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-white placeholder:text-white/20"
+                        className="w-full bg-theme-text/5 border border-theme-text/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-theme-text placeholder:text-theme-text/20"
                     />
                     {searchQuery && (
-                        <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white">
+                        <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-theme-text/20 hover:text-theme-text">
                             <X size={12} />
                         </button>
                     )}
@@ -112,7 +112,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                         }, {} as Record<string, SarakDesignToken[]>);
 
                         return (
-                            <div key={component.id} className="border-b border-white/5 last:border-0">
+                            <div key={component.id} className="border-b border-theme-text/5 last:border-0">
                                 <CategoryLabel 
                                     icon={Icon} 
                                     title={component.label} 
@@ -128,14 +128,14 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                             animate={{ height: 'auto', opacity: 1 }} 
                                             exit={{ height: 0, opacity: 0 }} 
                                             transition={{ duration: 0.3, ease: "circOut" }} 
-                                            className="overflow-hidden bg-white/[0.02]"
+                                            className="overflow-hidden bg-theme-text/[0.02]"
                                         >
                                             <div className="p-6 pt-2 space-y-8">
                                                 {Object.entries(groupedTokens).map(([cat, tokens]) => (
                                                     <div key={cat} className="space-y-4">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <div className="w-1 h-3 bg-[var(--theme-primary)]/40 rounded-full" />
-                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/30">{cat}</span>
+                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/30">{cat}</span>
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
@@ -151,7 +151,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                                                         {isTokenDirty && (
                                                                             <button 
                                                                                 onClick={() => resetToken(token.id)}
-                                                                                className="absolute -top-1 -right-1 p-1 bg-orange-500/20 text-orange-500 rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-orange-500 hover:text-black shadow-lg z-10"
+                                                                                className="absolute -top-1 -right-1 p-1 bg-orange-500/20 text-orange-500 rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-orange-500 hover:text-[var(--sarak-on-warning,#020617)] shadow-lg z-10"
                                                                                 title="Reverter Token"
                                                                             >
                                                                                 <RotateCcw size={10} strokeWidth={3} />
@@ -172,11 +172,11 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                     })
                 ) : (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                            <Search size={24} className="text-white/10" />
+                        <div className="w-16 h-16 rounded-full bg-theme-text/5 flex items-center justify-center mb-4">
+                            <Search size={24} className="text-theme-text/10" />
                         </div>
-                        <h3 className="text-xs font-black uppercase text-white/40 tracking-widest">Nenhum token encontrado</h3>
-                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-white/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
+                        <h3 className="text-xs font-black uppercase text-theme-text/40 tracking-widest">Nenhum token encontrado</h3>
+                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-theme-text/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
                     </div>
                 )}
             </div>
