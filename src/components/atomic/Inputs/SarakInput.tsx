@@ -67,8 +67,8 @@ const resolveIconSlots = (
 };
 
 const ICON_SIDE_CLASS = { left: 'absolute left-3', right: 'absolute right-3' } as const;
-const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
-const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
 
 /**
  * Componente Atômico: SarakInput
@@ -101,7 +101,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const inputId = props.id ?? reactId;
     const errorId = `${inputId}-error`;
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))]';
     const shapeClasses = 'rounded-input py-[var(--sarak-input-padding,16px)]';
     
     const widthClass = fullWidth ? 'w-full' : '';

@@ -58,19 +58,9 @@
 //    dono (`plan-24` §2.5 resposta 2): não relaxar `textColorMuted` para
 //    3:1, porque ele renderiza em 9–14px, abaixo do piso de "texto grande"
 //    que a WCAG exige para o limiar mais frouxo.
-// 5. `statusErrorColor`/`statusSuccessColor` SÃO cor de texto de verdade
-//    (`color:` explícito em `SarakForm.tsx:107`, `SarakTable.tsx:72`,
-//    `ManagementGroupCard.tsx:120`, `SarakPDFViewerImpl.tsx:142` — medido:
-//    reprovam em 7/18 e 5/18 temas) e ainda assim NÃO entraram em `PAIRS`.
-//    O fundo real desses usos é `--sarak-status-error-color-bg` /
-//    `--sarak-status-success-color-bg`; `generateVariants` só existe hoje em
-//    `primaryColor`, `secondaryColor`, `tertiaryColor` e `cardBackgroundColor`
-//    (`useDesignVariables.ts:118`) — essa variável de fundo NUNCA é emitida, o
-//    fallback (`rgba(239,68,68,0.1)`/equivalente verde) sempre vence. Incluir
-//    o par travaria no baseline um fundo que TEMA NENHUM consegue mudar: o
-//    gate acusaria o tema por um defeito do componente, não do tema. Fica
-//    fora, declarado com o número — não é "não determinado", é "o par mede
-//    algo que o autor do tema não controla".
+// 5. `statusErrorColor`/`statusSuccessColor` SÃO cor de texto de verdade (`color:` explícito em `SarakForm.tsx`,
+//    `SarakTable.tsx`, `ManagementGroupCard.tsx`, `SarakPDFViewerImpl.tsx`) e entram em `PAIRS` sobre o cartão e
+//    o corpo (grupo C e D). A tinta do status (`-bg`) é a variante que o motor emite com `generateVariants`.
 // 6. [RESOLVIDO na plan-24-1, Decisão D] Até a `plan-24-1`, `useDesignVariables`
 //    chamava `syncThemeWithMode` SEM CONDIÇÃO, e o token escrito podia
 //    divergir do emitido (medido então: 178/648 veredictos divergentes). A
@@ -102,6 +92,14 @@
 // 9. [plan-26] `auditContraparteRequired` só vê `GLOBAL_THEMES` — tema do
 //    CONSUMIDOR (fora do catálogo shippado) nunca é cobrado a ter
 //    `contraparte`; é dado de terceiro, mesma fronteira da R31 (§ acima).
+// 10. [grupo D] Entram o hover do botão fantasma e do contorno (a primária MISTURADA ao texto de maior
+//    contraste, `mix:`, como o badge suave — o texto cru na primária reprovava em 12 a 20 de 28 casos),
+//    o botão de sair do usuário (a tinta do erro a 15% sobre a barra lateral e o topo), o botão
+//    `cyberpunk` (a cor do status sobre o corpo, o fundo é transparente) e o cabeçalho da tabela. NÃO
+//    entram, por serem não-texto (ícone, borda, ponto de estado): o ícone e a borda do aviso
+//    (`SarakAlert`) e o ponto do aviso do `AuthForm`; `accentColor` e `tertiaryColor` não desenham texto
+//    em componente algum. O verificador não prova que o botão `cyberpunk` lê a cor do status — isso é do
+//    teste de `useAtomicStyles` e de `browser-tests/contraste-do-que-faltava.spec.ts`.
 // -------------------------------------------------------------------------
 import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
 import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
@@ -224,6 +222,20 @@ export const PAIRS: ContrastPair[] = [
     { fg: 'textColorMaster', bgChain: ['tableRowHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     // Item da matriz expansível (`SarakExpandableMatrix`): o título sobre `matrixItemBg`.
     { fg: 'titleColor', bgChain: ['matrixItemBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
+
+    // Grupo D — os pares desenhados que o levantamento do grupo C não alcançou.
+    // Botão de sair do usuário (barra lateral e topo): a tinta do erro a 15% (a variante `-bg` do motor), com o texto misturado como o do badge suave.
+    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.15', 'sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.15', 'topbarColor', 'colorBgBody'], min: 4.5 },
+    // Hover do botão fantasma (btnGhostHoverBg) e do contorno (a primária a 10%): a primária misturada ao texto, sobre o cartão e o corpo.
+    { fg: 'mix:primaryColor', bgChain: ['btnGhostHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'mix:primaryColor', bgChain: ['btnGhostHoverBg', 'colorBgBody'], min: 4.5 },
+    // Estilo cyberpunk do botão (fundo transparente): a cor da própria variante como texto sobre o corpo.
+    { fg: 'statusErrorColor', bgChain: ['colorBgBody'], min: 4.5 },
+    { fg: 'statusSuccessColor', bgChain: ['colorBgBody'], min: 4.5 },
+    // Cabeçalho da tabela: o texto mudo e o secundário sobre tableHeaderBg.
+    { fg: 'textColorMuted', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'textColorSecondary', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
 ];
 
 /** A parte da cor do token no `color-mix` do badge suave (o resto é o texto de maior contraste sobre o corpo). */
@@ -280,7 +292,7 @@ const THEME_VAR_TOKENS: Record<string, string> = {
     '--text-muted': 'textColorMuted',
 };
 
-const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]*))?\)$/;
+const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,\s*(.*))?\)$/;
 
 /** O valor do token, seguindo `var(--tema)` até o token que ele espelha (uma volta só; sem laço). */
 function designValue(design: Record<string, unknown>, tokenId: string): unknown {

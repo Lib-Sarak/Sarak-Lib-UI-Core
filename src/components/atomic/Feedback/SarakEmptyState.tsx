@@ -47,7 +47,7 @@ const CustomEmptyState = ({ title, description, action, icon }: SarakEmptyStateP
     >
         {icon !== undefined && <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }}>{icon}</motion.div>}
         {title !== undefined && <motion.h2 variants={EMPTY_STATE_ITEM_VARIANTS} className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">{title}</motion.h2>}
-        {description !== undefined && <motion.p variants={EMPTY_STATE_ITEM_VARIANTS} className="text-sm text-[var(--text-muted,#94a3b8)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{description}</motion.p>}
+        {description !== undefined && <motion.p variants={EMPTY_STATE_ITEM_VARIANTS} className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{description}</motion.p>}
         {action !== undefined && <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>{action}</motion.div>}
     </motion.div>
 );
@@ -105,7 +105,7 @@ const AbstractArtwork: React.FC = (): React.ReactElement => (
 
 const AbstractCaption = ({ systemLabel, firstLine, secondLine }: { systemLabel: string; firstLine: string; secondLine: string }): React.ReactElement => (
     <motion.div variants={EMPTY_STATE_ITEM_VARIANTS} className="text-center z-10">
-        <h2 className="text-sm font-black uppercase text-[var(--text-muted,#94a3b8)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>{systemLabel}</h2>
+        <h2 className="text-sm font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>{systemLabel}</h2>
         <div className="h-px w-12 bg-[var(--sarak-primary-color,#00f2ff)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
         <p className="text-2xs text-theme-tint-strong uppercase tracking-widest max-w-[var(--sarak-empty-state-caption-max-width,280px)] leading-loose">{firstLine} <br />{secondLine}</p>
     </motion.div>

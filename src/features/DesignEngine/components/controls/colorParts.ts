@@ -7,6 +7,7 @@ export interface ColorParts {
 }
 
 // sarak-allow-hardcode: o `<input type="color">` nativo só aceita hex — é o piso do seletor, não cor de tema.
+// sarak-allow-fixed-color: o piso do seletor nativo (`<input type="color">` só aceita hex), não cor de tema.
 const PICKER_FALLBACK_HEX = '#ffffff';
 const HEX_LITERAL = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_LITERAL = /^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[0-9.]+\s*)?\)$/i;

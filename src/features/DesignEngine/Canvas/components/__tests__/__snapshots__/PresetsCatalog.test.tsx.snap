@@ -99,7 +99,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </div>
         <button
           aria-label="Fechar galeria"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
           title="Fechar galeria"
           type="button"
         >
@@ -136,7 +136,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
       >
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -245,35 +245,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(0, 242, 255); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(0, 242, 255); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(0, 242, 255); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(0, 242, 255); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(0, 242, 255); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(0, 242, 255); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(0, 242, 255); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(0, 242, 255); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -353,7 +353,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -380,7 +380,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -431,7 +431,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -446,7 +446,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -479,7 +479,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -496,7 +496,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -505,35 +505,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(0, 255, 65); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(0, 255, 65); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(0, 255, 65); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(0, 255, 65); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(0, 255, 65); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(0, 255, 65); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(0, 255, 65); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(0, 255, 65); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -544,7 +544,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -617,7 +617,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -644,7 +644,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -695,7 +695,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -710,7 +710,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -743,7 +743,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -760,7 +760,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -769,35 +769,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 153, 0); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 153, 0); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 153, 0); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 153, 0); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 153, 0); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 153, 0); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 153, 0); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 153, 0); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -808,7 +808,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -881,7 +881,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -908,7 +908,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1017,35 +1017,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 0, 0); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 0, 0); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 0, 0); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 0, 0); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 0, 0); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 0, 0); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 0, 0); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 0, 0); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -1125,7 +1125,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1152,7 +1152,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1203,7 +1203,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -1218,7 +1218,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -1251,7 +1251,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -1268,7 +1268,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -1277,35 +1277,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 144, 104); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 144, 104); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 144, 104); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 144, 104); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 144, 104); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 144, 104); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 144, 104); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 144, 104); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -1316,7 +1316,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -1389,7 +1389,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1416,7 +1416,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1525,35 +1525,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 0, 127); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 0, 127); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 0, 127); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 0, 127); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 0, 127); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 0, 127); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 0, 127); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 0, 127); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -1633,7 +1633,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1660,7 +1660,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -1785,35 +1785,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 0, 85); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 0, 85); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 0, 85); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 0, 85); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 0, 85); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 0, 85); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 0, 85); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 0, 85); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -1897,7 +1897,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1924,7 +1924,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2033,35 +2033,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(255, 0, 255); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(255, 0, 255); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(255, 0, 255); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(255, 0, 255); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(255, 0, 255); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(255, 0, 255); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(255, 0, 255); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(255, 0, 255); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -2141,7 +2141,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2168,7 +2168,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2277,35 +2277,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(99, 127, 187); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(99, 127, 187); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(99, 127, 187); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(99, 127, 187); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(99, 127, 187); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(99, 127, 187); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(99, 127, 187); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(99, 127, 187); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -2385,7 +2385,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2412,7 +2412,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2521,35 +2521,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(0, 145, 56); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(0, 145, 56); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(0, 145, 56); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(0, 145, 56); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(0, 145, 56); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(0, 145, 56); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(0, 145, 56); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(0, 145, 56); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -2629,7 +2629,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2656,7 +2656,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -2765,35 +2765,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(140, 156, 163); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(140, 156, 163); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(140, 156, 163); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(140, 156, 163); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(140, 156, 163); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(140, 156, 163); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(140, 156, 163); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(140, 156, 163); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -2873,7 +2873,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2900,7 +2900,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -3009,35 +3009,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(176, 126, 35); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(176, 126, 35); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(176, 126, 35); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(176, 126, 35); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(176, 126, 35); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(176, 126, 35); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(176, 126, 35); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(176, 126, 35); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -3117,7 +3117,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3144,7 +3144,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -3253,35 +3253,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(150, 120, 193); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(150, 120, 193); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(150, 120, 193); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(150, 120, 193); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(150, 120, 193); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(150, 120, 193); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(150, 120, 193); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(150, 120, 193); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -3361,7 +3361,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 topbar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3388,7 +3388,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
         </button>
         <button
           animate="[object Object]"
-          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+          class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
           initial="[object Object]"
           transition="[object Object]"
         >
@@ -3439,7 +3439,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -3454,7 +3454,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -3487,7 +3487,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -3504,7 +3504,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -3513,35 +3513,35 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                       class="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2"
                     >
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 40%; background-color: rgb(150, 181, 212); opacity: 0.7;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 70%; background-color: rgb(150, 181, 212); opacity: 0.73;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 30%; background-color: rgb(150, 181, 212); opacity: 0.76;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 90%; background-color: rgb(150, 181, 212); opacity: 0.7899999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 50%; background-color: rgb(150, 181, 212); opacity: 0.82;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 80%; background-color: rgb(150, 181, 212); opacity: 0.85;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 60%; background-color: rgb(150, 181, 212); opacity: 0.8799999999999999;"
                       />
                       <div
-                        class="w-full rounded-t-[var(--border-color,#334155)]"
+                        class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]"
                         style="height: 45%; background-color: rgb(150, 181, 212); opacity: 0.9099999999999999;"
                       />
                     </div>
@@ -3552,7 +3552,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -3625,7 +3625,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"

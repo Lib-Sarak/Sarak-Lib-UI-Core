@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Shield, SlidersHorizontal } from 'lucide-react';
+import { useMotionTokens } from '../../../../components/atomic/hooks/useMotionTokens';
 import { CategoryLabel, Section, InputControl, MediaUploaderControl } from '../../components/DesignControls';
 import { TokenControl } from './TokenControl';
 import { PreferencesSchema } from '../../../../core/Design/schema/preferences';
@@ -36,6 +37,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
     previewDevice,
     sarak
 }) => {
+    const { durations } = useMotionTokens();
     return (
         <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
             <CategoryLabel
@@ -54,7 +56,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        transition={{ duration: durations.normal, ease: 'easeInOut' }}
                         className="overflow-hidden bg-[var(--theme-surface)]"
                     >
                         <div className="px-2 py-2 flex flex-col gap-1">

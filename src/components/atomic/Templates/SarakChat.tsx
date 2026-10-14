@@ -42,10 +42,11 @@ export const SarakChat: React.FC<SarakChatProps> = ({
 
   return (
     <div
-      className={`sarak-card ${stack.className} h-full min-h-0 group/chat transition-all !p-0`}
+      className={`sarak-card ${stack.className} h-full min-h-0 group/chat transition-all`}
       data-sx-card-texture-type={cardTextureType}
       style={{
         ...stack.style,
+        padding: 0,
         transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)'
       }}
     >

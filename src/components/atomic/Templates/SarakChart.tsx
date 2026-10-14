@@ -61,7 +61,7 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                         className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,#1e293b)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,rgba(15,23,42,0.6))] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
                             {value.toLocaleString()}
                         </div>
                     </motion.div>

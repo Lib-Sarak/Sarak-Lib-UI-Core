@@ -18,7 +18,7 @@ const SarakFilterSelect: React.FC<SarakFilterSelectProps> = ({ col, placeholder,
     <SarakSelect
         value={filters[col] || ''}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(col, e.target.value)}
-        className="w-full text-2xs text-slate-300 transition-all"
+        className="w-full text-2xs text-[var(--color-theme-title,#ffffff)] transition-all"
         style={{ 
             padding: 'var(--sarak-layout-gap-sm,8px)', 
             borderRadius: 'var(--sarak-card-radius,12px)' 

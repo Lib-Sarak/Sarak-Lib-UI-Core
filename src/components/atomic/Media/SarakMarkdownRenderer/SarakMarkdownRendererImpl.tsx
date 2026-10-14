@@ -45,20 +45,20 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
         h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold text-[var(--sarak-text-main,#ffffff)]" style={mb3} {...p} />,
         h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold text-[var(--sarak-text-main,#ffffff)]" style={mb2} {...p} />,
         h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold text-[var(--sarak-text-main,#ffffff)]" style={mb2} {...p} />,
-        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="leading-relaxed text-[var(--text-muted,#94a3b8)]" style={mb3} {...p} />,
+        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="leading-relaxed text-[var(--text-muted,rgba(255,255,255,0.4))]" style={mb3} {...p} />,
         a: ({ node: _n, ...p }: MdProps<'a'>) => <a className="text-[var(--sarak-primary-color,#00f2ff)] underline" {...p} />,
-        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
-        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
+        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
+        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
         blockquote: ({ node: _n, ...p }: MdProps<'blockquote'>) => (
-            <blockquote className="border-l-2 border-[var(--sarak-primary-color,#00f2ff)] italic text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-md, 16px)' }} {...p} />
+            <blockquote className="border-l-2 border-[var(--sarak-primary-color,#00f2ff)] italic text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-md, 16px)' }} {...p} />
         ),
         table: ({ node: _n, ...p }: MdProps<'table'>) => (
             <div className="overflow-x-auto" style={mb3}>
-                <table className="w-full border-collapse text-sm text-[var(--text-muted,#94a3b8)]" {...p} />
+                <table className="w-full border-collapse text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" {...p} />
             </div>
         ),
-        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--border-color,#334155)] text-left font-semibold" style={cellPad} {...p} />,
-        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--border-color,#334155)]" style={cellPad} {...p} />,
+        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--border-color,rgba(255,255,255,0.1))] text-left font-semibold" style={cellPad} {...p} />,
+        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--border-color,rgba(255,255,255,0.1))]" style={cellPad} {...p} />,
         // Imagem larga nunca deforma o layout (Critério E2E: max-width 100%).
         img: ({ node: _n, alt, ...p }: MdProps<'img'>) => <img className="max-w-full h-auto rounded-md" alt={alt ?? ''} {...p} />,
         // `<pre>` vira fragmento para o highlighter (PreTag="div") não aninhar em `<pre>`.
@@ -75,7 +75,7 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
             }
             return (
                 <code
-                    className="rounded bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#00f2ff)] text-sm"
+                    className="rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--sarak-primary-color,#00f2ff)] text-sm"
                     style={{ paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)' }}
                 >
                     {children}

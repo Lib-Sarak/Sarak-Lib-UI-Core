@@ -11,10 +11,10 @@ export interface SwitchStyles {
 
 const ACTIVE_BG = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff))';
 const THUMB_BG = 'var(--sarak-switch-thumb, #ffffff)';
-const IDLE_TRACK_BG = 'var(--color-theme-card, rgba(255,255,255,0.1))';
+const IDLE_TRACK_BG = 'var(--color-theme-card, rgba(15,23,42,0.6))';
 const GLASS_BORDER = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';
 const DEFAULT_GLASS_BLUR = 4;
-const PULSE_ANIMATION = 'sarak-switch-pulse 1.6s ease-out infinite';
+const PULSE_ANIMATION = 'sarak-switch-pulse calc(var(--sarak-motion-dur-slow, 0.6s) * 2.67) var(--sarak-motion-ease-out, cubic-bezier(0, 0, 0.2, 1)) infinite';
 
 function resolveStyleType(design: SarakThemePayload | undefined): SwitchStyleType {
     const requested = design?.switchStyleType;

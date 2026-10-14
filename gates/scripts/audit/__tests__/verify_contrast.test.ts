@@ -125,8 +125,8 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 68 pares (36 originais + 32 que os componentes desenham)', () => {
-    expect(PAIRS.length).toBe(68);
+  it('tem exatamente 76 pares (36 originais + 32 que os componentes desenham + 8 do grupo D)', () => {
+    expect(PAIRS.length).toBe(76);
   });
 
   describe('ícone do campo (inputIconColor × fundo do campo)', () => {
@@ -213,6 +213,41 @@ describe('pares que os componentes desenham', () => {
 
     expect(result.pulado).toBe(false);
     if (!result.pulado) expect(result.pass).toBe(true);
+  });
+
+  describe('grupo D — os pares que o levantamento anterior não alcançou', () => {
+    it('PLANTADO: a primária CLARA no hover fantasma/contorno reprova crua, e a mistura do hover passa', () => {
+      const design = { ...base, primaryColor: '#22d3ee', btnGhostHoverBg: 'rgba(15, 23, 42, 0.05)' };
+      const raw = resolveChain(['btnGhostHoverBg', 'cardBackgroundColor', 'colorBgBody'], design);
+      const mixed = evaluatePair(pairOf('mix:primaryColor', 'btnGhostHoverBg'), design);
+
+      expect(raw.ok).toBe(true);
+      if (raw.ok) expect(contrastRatio([34, 211, 238], raw.rgb)).toBeLessThan(4.5);
+      expect(mixed.pulado).toBe(false);
+      if (!mixed.pulado) expect(mixed.pass).toBe(true);
+    });
+
+    it('MUTAÇÃO: o texto do botão cyberpunk (a cor do status) sobre o corpo reprova quando o status é claro demais', () => {
+      const weak = evaluatePair(PAIRS.find((p) => p.fg === 'statusErrorColor' && p.bgChain.length === 1)!, { ...base, statusErrorColor: '#fca5a5' });
+      const strong = evaluatePair(PAIRS.find((p) => p.fg === 'statusErrorColor' && p.bgChain.length === 1)!, { ...base, statusErrorColor: '#b91c1c' });
+
+      expect(weak.pulado || weak.pass).toBe(false);
+      expect(!strong.pulado && strong.pass).toBe(true);
+    });
+
+    it('MUTAÇÃO: o texto mudo sobre o cabeçalho da tabela reprova com o cabeçalho escuro demais para ele', () => {
+      const pair = pairOf('textColorMuted', 'tableHeaderBg');
+      const weak = evaluatePair(pair, { ...base, textColorMuted: '#9ca3af', tableHeaderBg: '#e5e7eb' });
+
+      expect(weak.pulado || weak.pass).toBe(false);
+    });
+
+    it('o botão de sair mede a tinta do erro a 15% sobre a barra lateral e sobre o topo', () => {
+      const side = pairOf('mix:statusErrorColor', 'statusErrorColor@0.15');
+
+      expect(PAIRS.filter((p) => p.fg === side.fg && p.bgChain[0] === 'statusErrorColor@0.15')).toHaveLength(2);
+      expect(evaluatePair(side, base).pulado).toBe(false);
+    });
   });
 
   it('MUTAÇÃO: a mensagem de erro de campo (`inputErrorColor`) fraca sobre o corpo reprova', () => {

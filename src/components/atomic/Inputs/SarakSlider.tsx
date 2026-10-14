@@ -38,7 +38,7 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
     return (
         <SarakFormGroup className={`${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
             {(label || valueLabel) && (
-                <div className="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
+                <div className="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">
                     {label && <span>{label}</span>}
                     {valueLabel !== undefined && <span style={{ color: activeColor }}>{valueLabel}</span>}
                 </div>

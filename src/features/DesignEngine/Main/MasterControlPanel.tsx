@@ -64,7 +64,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
     }, []);
 
     return (
-        <div className="flex flex-col h-full bg-[var(--color-theme-card,#1e293b)] text-theme-text/90">
+        <div className="flex flex-col h-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-theme-text/90">
             {/* Header de Gestão - Compacto para Sidebar */}
             <div className="p-4 border-b border-theme-text/5 bg-theme-body/40">
                 <div className="flex items-center justify-between mb-4">
@@ -171,7 +171,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                                                         const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                                                         return (
-                                                            <option key={optId} value={optId} className="bg-[var(--color-theme-card, #1e293b)]">{optLabel}</option>
+                                                            <option key={optId} value={optId} className="bg-[var(--color-theme-card, rgba(15,23,42,0.6))]">{optLabel}</option>
                                                         );
                                                     })}
                                                 </select>

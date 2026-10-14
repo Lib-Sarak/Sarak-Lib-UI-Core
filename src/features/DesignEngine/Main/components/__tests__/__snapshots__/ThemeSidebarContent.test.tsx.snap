@@ -26,7 +26,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
         </div>
         <button
           aria-expanded="false"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98]"
           type="button"
         >
           <span>
@@ -38,10 +38,10 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
         class="border-b border-[var(--theme-border)] last:border-0"
       >
         <div
-          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,#1e293b)]"
+          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
         >
           <div
-            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#1e293b)]"
+            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
             role="button"
             tabindex="0"
           >
@@ -89,7 +89,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
               class="flex items-center gap-3"
             >
               <svg
-                class="transition-transform duration-300 rotate-180 text-[var(--theme-primary)]"
+                class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] rotate-180 text-[var(--theme-primary)]"
                 fill="none"
                 height="14"
                 stroke="currentColor"
@@ -161,7 +161,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   </span>
                 </div>
                 <svg
-                  class="transition-transform duration-300 rotate-180 text-[var(--theme-primary)]"
+                  class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] rotate-180 text-[var(--theme-primary)]"
                   fill="none"
                   height="14"
                   stroke="currentColor"
@@ -178,7 +178,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                 </svg>
               </button>
               <div
-                class="bg-[var(--color-theme-card,#1e293b)] overflow-visible"
+                class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] overflow-visible"
                 style="height: 0px; opacity: 0;"
               >
                 <div
@@ -200,7 +200,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
                   >
                     <svg
                       class="lucide lucide-sliders-horizontal"
@@ -277,7 +277,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   </span>
                 </div>
                 <svg
-                  class="transition-transform duration-300 text-[var(--theme-muted)]"
+                  class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] text-[var(--theme-muted)]"
                   fill="none"
                   height="14"
                   stroke="currentColor"
@@ -304,7 +304,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
                   >
                     <svg
                       class="lucide lucide-shield"
@@ -330,7 +330,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   </span>
                 </div>
                 <svg
-                  class="transition-transform duration-300 text-[var(--theme-muted)]"
+                  class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] text-[var(--theme-muted)]"
                   fill="none"
                   height="14"
                   stroke="currentColor"

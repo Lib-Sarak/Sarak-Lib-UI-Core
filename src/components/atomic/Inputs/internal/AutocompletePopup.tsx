@@ -44,7 +44,7 @@ const AutocompleteOptionRow = <TOption extends AutocompleteOption,>(
             onMouseMove={onActivate}
             onMouseDown={(event) => event.preventDefault()}
             onClick={onSelect}
-            className="cursor-pointer text-sm text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
+            className="cursor-pointer text-sm text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]"
             style={{
                 padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md, 16px)',
                 backgroundColor: isActive ? 'var(--sarak-primary-color, #00f2ff)' : 'transparent',

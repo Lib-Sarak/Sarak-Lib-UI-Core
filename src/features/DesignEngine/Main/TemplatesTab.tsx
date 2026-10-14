@@ -34,7 +34,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--color-theme-card,#1e293b)] text-theme-text/90 p-5 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-theme-text/90 p-5 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="mb-8">
                 <div className="text-xs font-black tracking-widest uppercase mb-1">
@@ -73,7 +73,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                                     onClick={() => handleCopy(template.id, template.design)}
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all ${
                                         copiedId === template.id 
-                                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' 
+                                        ? 'bg-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/50' 
                                         : 'bg-theme-text/5 hover:bg-theme-text/10 text-theme-text/40 hover:text-theme-text border border-theme-text/5'
                                     }`}
                                 >

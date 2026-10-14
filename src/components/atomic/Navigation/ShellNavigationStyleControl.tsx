@@ -38,7 +38,7 @@ export const ShellNavigationStyleControl: React.FC = () => {
                     className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] text-xs font-black transition-colors ${
                         current === opt.value
                             ? 'bg-[var(--sarak-nav-active-color,#00f2ff)] text-[var(--color-theme-on-primary,#fff)]'
-                            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#fff)]'
+                            : 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#fff)]'
                     }`}
                 >
                     {opt.label}

@@ -48,7 +48,7 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
     // O id só existe quando algo (rótulo ou mensagem de erro) precisa apontar para o campo.
     const selectId = props.id ?? (label || error ? reactId : undefined);
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))]';
     const shapeClasses = 'rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none';
     
     // Sem `fullWidth` o invólucro encolhe ao campo: a seta é absoluta no invólucro e, num
@@ -78,7 +78,7 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
             </select>
 
             {/* Custom Caret */}
-            <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]" style={{ paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
+            <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]" style={{ paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>

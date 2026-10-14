@@ -230,7 +230,7 @@ export function fallbackMatches(fallback: string, token: TokenLike): boolean {
 
 export interface NameIndex {
     byName: Map<string, { token: TokenLike; item: EmittedName; derived?: boolean }>;
-    /** Nomes derivados (alias de fachada, canal `-rgb`): a reserva em CSS da lib é julgada; em componente, não (limite 6). */
+    /** Nomes derivados (alias de fachada, canal `-rgb`) entram com o dono do nome de origem: a reserva é julgada em CSS e em componente. */
 }
 
 /** Nome → token dono, só para nomes com UM dono (os conflitos são outro achado). */
@@ -328,8 +328,6 @@ export function scanFallbacks(
         if (read.fallback === null) continue;
         const owner = index.byName.get(read.name);
         if (!owner) continue;
-        // Nome derivado: a reserva do CSS da lib (o piso sem Provider) é julgada; a de componente, não.
-        if (owner.derived && !read.file.endsWith('.css')) continue;
         if (owner.item.kind === 'variant') {
             const expected = expectedVariantFallback(owner, computeVariant);
             if (expected === null || /^var\(/i.test(read.fallback) || read.fallback === '') continue;

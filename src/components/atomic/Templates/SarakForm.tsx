@@ -120,7 +120,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
             )}
 
             {onSubmit && (
-                <div className="flex justify-end border-t border-[var(--border-color,#334155)]" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
+                <div className="flex justify-end border-t border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                     <SarakButton onClick={() => void handleSave()} disabled={saving} className="shadow-xl">
                         {saving ? <SarakSpinner size="sm" /> : <SarakIcon name="Save" size={16} />}
                         {saving ? text('formSaving') : text('formSave')}

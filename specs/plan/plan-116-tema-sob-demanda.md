@@ -96,7 +96,7 @@ todo token estético explícito nos dois papéis) depende disto.
 - [ ] Desenho aprovado pelo dono antes do lote 1.
 - [ ] Boot do consumidor no teto aprovado; trava que falha se um tema voltar ao boot.
 - [ ] Tema padrão explícito (`sarak-sovereign`); nenhum id inexistente.
-- [ ] Trocar de tema nunca herda token do tema anterior (teste: A declara um token que B não declara; depois de B, o token é o padrão).
+- [ ] Trocar de tema nunca herda token do tema anterior — no Provider (`useDesignSync.ts`) e na prévia do painel, que o "Aplicar" grava (`useDesignDraft.ts`) (teste: A declara um token que B não declara; depois de B, o token é o padrão).
 - [ ] Tema pedido por id, tema salvo e tema padrão pintam no primeiro quadro, sem troca visível.
 - [ ] Painel lista o catálogo e aplica tema carregado sob demanda.
 - [ ] Gates de tema (contraste, diversidade, presets, painel) e testes iteram o catálogo inteiro.

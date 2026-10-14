@@ -37,7 +37,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
 
             {/* Upload Area (Drag and Drop) */}
             <div 
-                className={`sarak-card flex flex-col items-center justify-center gap-4 p-10 border-2 border-dashed transition-all duration-300 relative overflow-hidden bg-[var(--theme-card)]`}
+                className={`sarak-card flex flex-col items-center justify-center gap-4 p-10 border-2 border-dashed transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] relative overflow-hidden bg-[var(--theme-card)]`}
                 style={{ 
                     borderRadius: 'var(--sarak-card-radius)',
                     borderColor: isDragging ? 'var(--theme-primary)' : 'var(--theme-border)'
@@ -71,8 +71,8 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-input-border-radius)' }}>
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--theme-card)]/50 pointer-events-none" />
-                        <SarakIcon name="FileText" size={40} className="text-rose-500/80" />
-                        <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-rose-500/20 text-rose-500 text-[10px] font-bold rounded">PDF</div>
+                        <SarakIcon name="FileText" size={40} className="text-[var(--sarak-status-error-color,#ef4444)]/80" />
+                        <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-[var(--sarak-status-error-color,#ef4444)]/20 text-[var(--sarak-status-error-color,#ef4444)] text-[10px] font-bold rounded">PDF</div>
                     </div>
                     
                     <div>
@@ -93,9 +93,9 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-input-border-radius)' }}>
                         {/* Fake image preview with grid pattern */}
-                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%)', backgroundSize: '10px 10px' }} />
-                        <SarakIcon name="Image" size={40} className="text-emerald-500/80 relative z-10" />
-                        <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-emerald-500/20 text-emerald-500 text-[10px] font-bold rounded z-10">PNG</div>
+                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg, var(--color-theme-title,#ffffff) 25%, transparent 25%), linear-gradient(-45deg, var(--color-theme-title,#ffffff) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--color-theme-title,#ffffff) 75%), linear-gradient(-45deg, transparent 75%, var(--color-theme-title,#ffffff) 75%)', backgroundSize: '10px 10px' }} />
+                        <SarakIcon name="Image" size={40} className="text-[var(--sarak-status-success-color,#10b981)]/80 relative z-10" />
+                        <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)] text-[10px] font-bold rounded z-10">PNG</div>
                     </div>
                     
                     <div>

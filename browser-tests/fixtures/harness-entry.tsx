@@ -29,12 +29,16 @@ import {
     SarakTable,
     SarakTooltip,
     SarakAppChrome,
+    SarakAuthScreen,
     SarakButton,
     SarakCalendar,
     SarakCatalogGrid,
     SarakGantt,
     SarakKanban,
     SarakCustomizationPanel,
+    SarakExpandableMatrix,
+    SarakFilterSelect,
+    SarakHelpButton,
     SarakIconButton,
     SarakInput,
     SarakLightbox,
@@ -42,6 +46,7 @@ import {
     SarakRangeSlider,
     SarakSearch,
     SarakSelect,
+    SarakShellUserWidget,
     SarakSwitch,
     SarakTabs,
     SarakTextarea,
@@ -238,6 +243,14 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
         btnBorderRadius: { mob: 12, tab: 16, desk: 20 }, btnRadiusTR: 4,
     },
     'dono-superficie': { surfaceColor: '#123456', cardBackgroundColor: '#654321' },
+    'contraste-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', titleColor: '#0f172a', textColorMuted: '#475569', primaryColor: '#22d3ee', statusErrorColor: '#fca5a5', statusSuccessColor: '#86efac', statusWarningColor: '#fde047', btnGhostHoverBg: 'rgba(15, 23, 42, 0.05)', reducedMotion: true },
+    'contraste-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#1e3a8a', statusErrorColor: '#7f1d1d', statusSuccessColor: '#14532d', statusWarningColor: '#78350f', btnGhostHoverBg: 'rgba(255, 255, 255, 0.05)', reducedMotion: true },
+    'contraste-cyberpunk-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', primaryColor: '#0e7490', statusErrorColor: '#b91c1c', statusSuccessColor: '#047857', btnStyleType: 'cyberpunk', reducedMotion: true },
+    'contraste-cyberpunk-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#22d3ee', statusErrorColor: '#f87171', statusSuccessColor: '#34d399', btnStyleType: 'cyberpunk', reducedMotion: true },
+    'fixos-movimento': { switchStyleType: 'pulsing', motionDurationSlow: 0.9, matrixRadius: 3 },
+    'fixos-pulso-padrao': { switchStyleType: 'pulsing' },
+    'modo-claro': { mode: 'light' },
+    'modo-escuro': { mode: 'dark' },
     'dono-raio-sistema': { borderRadius: { mob: 5, tab: 5, desk: 5 }, cardBorderRadius: { mob: 20, tab: 20, desk: 20 } },
     'schema-ruido': { texture: 'noise', bgNoiseAnimation: 2 },
     'schema-sem-suavizacao': { textSmoothing: false },
@@ -355,11 +368,17 @@ const App: React.FC = () => {
  *   - `vinheta-<suave|seca|padrao>`: `vignetteSoftness` 60, 0 e o padrão (sobre a textura `noise`, que liga a vinheta); `sidebar-camada`: `zIndexSidebar` 300; `selo-quadrado`: `badgeRadius` 4.
  *   - `peso-leve`: `h2Weight` 300, `bodyWeight` 300 e `headingTransform` uppercase; `botao-neumorphism`: `btnStyleType`.
  *
+ *   - `contraste-<claro|escuro>`: primária e status que, usados CRUS como texto, reprovam sobre a tinta de 10% (claros no claro, escuros
+ *     no escuro); `contraste-cyberpunk-<claro|escuro>`: o mesmo com `btnStyleType` cyberpunk; `modo-claro` / `modo-escuro`: só o `mode`.
+ *   - `contraste-botoes`: botões fantasma, contorno, primário, perigo e sucesso e o botão de sair do usuário; `contraste-auth`: a tela de
+ *     autenticação com erro (`?v=aviso` troca para o aviso) — as cenas em que se mede o texto sobre a tinta e sobre o fundo transparente.
+ *   - `valores-fixos`: o alternador pulsante (`?tema=fixos-movimento`: `motionDurationSlow` 0,9 e `matrixRadius` 3), o filtro, o botão
+ *     de ajuda e a matriz expansível — a cena em que se mede o que deixou de ser valor fixo.
  *   - `cartao-cede`: o cartão da lib (`.sarak-card`) com e sem classe utilitária de fundo, desfoque, moldura, preenchimento e
  *     sombra, o `.bg-theme-card` só como cor, e um botão com transform inline — a cena em que o material, a moldura, a caixa e o
  *     aperto do botão cedem à classe e ao `style`.
  *   - `lightbox`: o `SarakLightbox` aberto e um elemento do HOSPEDEIRO com `text-white` — a cena do sequestro do modo claro.
- *   - `transicao`: elementos com `transition-colors` (sem duração) e com `duration-300` (duração própria) — a cena em que o padrão
+ *   - `transicao`: elementos com `transition-colors` (sem duração) e com `duration-[var(--sarak-motion-dur-normal,0.3s)]` (duração própria) — a cena em que o padrão
  *     das transições do Tailwind vem do token de movimento.
  *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
  *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
@@ -665,10 +684,10 @@ const ComponentScene: React.FC = () => (
         <div data-probe="botao-primario"><SarakButton>Primário</SarakButton></div>
         <div data-probe="botao-secundario"><SarakButton variant="secondary">Secundário</SarakButton></div>
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
-        <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,#1e293b)]">Cartão com fundo por classe</div></div>
+        <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">Cartão com fundo por classe</div></div>
         <div data-probe="cartao-classe-hover"><div className="sarak-card hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]">Cartão com fundo no hover</div></div>
         <div data-probe="cartao-borda-hover"><div className="sarak-card hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)]">Cartão com borda no hover</div></div>
-        <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,#1e293b)]">Contêiner com fundo por classe</div></div>
+        <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">Contêiner com fundo por classe</div></div>
         <div data-probe="cartao-interativo"><SarakCard interactive>Cartão interativo</SarakCard></div>
         <div data-probe="tabela"><SarakTable data={SCHEMA_ROWS} columns={[{ key: 'nome', label: 'Nome' }]} responsive={false} /></div>
         <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
@@ -681,7 +700,7 @@ const MATERIAL_IMAGES = [{ src: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKA
 const CardYieldsScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
-        <div data-probe="cartao-gradiente"><div className="sarak-card bg-gradient-to-r from-indigo-500 to-blue-400">Gradiente por classe</div></div>
+        <div data-probe="cartao-gradiente"><div className="sarak-card bg-gradient-to-r from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)]">Gradiente por classe</div></div>
         <div data-probe="cartao-desfoque"><div className="sarak-card backdrop-blur-sm">Desfoque por classe</div></div>
         <div data-probe="cartao-moldura"><div className="sarak-card border-dashed">Moldura por classe</div></div>
         <div data-probe="cartao-preenchimento"><div className="sarak-card p-8">Preenchimento por classe</div></div>
@@ -708,7 +727,7 @@ const LightboxScene: React.FC = () => (
 const TransitionScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
         <div data-probe="sem-duracao" className="transition-colors">Transição sem duração</div>
-        <div data-probe="com-duracao" className="transition-all duration-300">Transição com duração</div>
+        <div data-probe="com-duracao" className="transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]">Transição com duração</div>
         <button data-probe="botao-sem-duracao" type="button" className="transition-colors">Botão sem duração</button>
     </div>
 );
@@ -722,6 +741,40 @@ const LegibleScene: React.FC = () => (
         <div data-probe="badge-suave-sucesso"><SarakBadge variant="success">Sucesso</SarakBadge></div>
         <div data-probe="botao-perigo"><SarakButton variant="danger">Excluir</SarakButton></div>
         <div data-probe="abas"><SarakTabs variant="pills" tabs={LEGIBLE_TABS} activeTab="a" onChange={NOOP} /></div>
+    </div>
+);
+
+/** Os botões e o botão de sair do usuário, nos estados em que o texto senta sobre uma tinta ou sobre o fundo transparente. */
+const ContrastButtonsScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="fantasma"><SarakButton variant="ghost">Fantasma</SarakButton></div>
+        <div data-probe="contorno"><SarakButton variant="outline">Contorno</SarakButton></div>
+        <div data-probe="primario"><SarakButton variant="primary">Primário</SarakButton></div>
+        <div data-probe="perigo"><SarakButton variant="danger">Perigo</SarakButton></div>
+        <div data-probe="sucesso"><SarakButton variant="success">Sucesso</SarakButton></div>
+        <div data-probe="sair"><SarakShellUserWidget variant="horizontal" user={{ name: 'Ana' }} logout={NOOP} /></div>
+    </div>
+);
+
+/** O aviso (`?v=aviso`) ou o erro de autenticação, sobre a própria tinta a 10%. */
+const ContrastAuthScene: React.FC = () => (
+    <div data-probe="auth">
+        <SarakAuthScreen error="Mensagem de prova" errorVariant={searchParams.get('v') === 'aviso' ? 'warning' : 'error'} />
+    </div>
+);
+
+/** O que tinha valor fixo e agora lê o token: pulso do alternador, raio e sombra da matriz, texto do filtro e da ajuda. */
+const MATRIX_ROLES = [{ id: 'papel', name: 'Papel de prova' }];
+const MATRIX_PERMISSIONS = [{ id: 'permissao', name: 'Permissão de prova' }];
+
+const FixedValuesScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="pulso"><SarakSwitch checked onChange={NOOP} aria-label="Alternador pulsante" /></div>
+        <div data-probe="filtro"><SarakFilterSelect col="a" filters={{}} onChange={NOOP} options={['A', 'B']} /></div>
+        <div data-probe="ajuda"><SarakHelpButton text="Texto de ajuda de prova" /></div>
+        <div data-probe="matriz">
+            <SarakExpandableMatrix data={MATRIX_ROLES} subItems={MATRIX_PERMISSIONS} activeMapping={() => true} onToggle={NOOP} />
+        </div>
     </div>
 );
 
@@ -752,6 +805,9 @@ const SCENES: Record<string, React.FC> = {
     cascata: CascadeScene,
     componente: ComponentScene,
     legivel: LegibleScene,
+    'contraste-botoes': ContrastButtonsScene,
+    'valores-fixos': FixedValuesScene,
+    'contraste-auth': ContrastAuthScene,
     'cartao-cede': CardYieldsScene,
     lightbox: LightboxScene,
     transicao: TransitionScene,

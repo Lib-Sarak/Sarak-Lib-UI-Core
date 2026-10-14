@@ -101,7 +101,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
     >
       <button
         animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -113,7 +113,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="absolute inset-0 z-0"
           />
           <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
           >
             <div
               class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
@@ -149,7 +149,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--text-muted,rgba(255,255,255,0.4))]/20 border border-[var(--border-color,rgba(255,255,255,0.1))]/50 text-[var(--text-muted,rgba(255,255,255,0.4))] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 Solid Void
               </span>
@@ -169,7 +169,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       </button>
       <button
         animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -182,7 +182,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="absolute inset-0 z-0"
           />
           <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
           >
             <div
               class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
@@ -228,7 +228,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -248,7 +248,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       </button>
       <button
         animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -261,7 +261,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="absolute inset-0 z-0"
           />
           <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
           >
             <div
               class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
@@ -307,7 +307,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -327,7 +327,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       </button>
       <button
         animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -340,7 +340,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="absolute inset-0 z-0"
           />
           <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
           >
             <div
               class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
@@ -386,7 +386,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -406,7 +406,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
       </button>
       <button
         animate="[object Object]"
-        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+        class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -419,7 +419,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
             class="absolute inset-0 z-0"
           />
           <div
-            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700"
+            class="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
           >
             <div
               class="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl"
@@ -465,7 +465,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>

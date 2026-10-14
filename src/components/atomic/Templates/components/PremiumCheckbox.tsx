@@ -8,8 +8,8 @@ export const PremiumCheckbox: React.FC<{ checked: boolean; onChange: () => void;
             isSmall ? 'w-4 h-4' : 'w-5 h-5'
         } ${
             checked 
-            ? 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_rgba(var(--sarak-primary-color,#00f2ff),0.5)]' 
-            : 'bg-[var(--text-muted,#94a3b8)]/10 text-[var(--text-muted,#94a3b8)]/50 hover:bg-[var(--text-muted,#94a3b8)]/20 hover:text-[var(--text-muted,#94a3b8)]'
+            ? 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_50%,transparent)]' 
+            : 'bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 text-[var(--text-muted,rgba(255,255,255,0.4))]/50 hover:bg-[var(--text-muted,rgba(255,255,255,0.4))]/20 hover:text-[var(--text-muted,rgba(255,255,255,0.4))]'
         }`}
     >
         {checked ? <SarakIcon name="Check" size={isSmall ? 10 : 12} strokeWidth={3} /> : <SarakIcon name="X" size={isSmall ? 8 : 10} />}

@@ -84,7 +84,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
     >
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -95,7 +95,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r0 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r0 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -184,7 +184,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -195,7 +195,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r1 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r1 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -284,7 +284,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -295,7 +295,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r2 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r2 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -384,7 +384,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -395,7 +395,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r3 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r3 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -484,7 +484,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -495,7 +495,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r4 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r4 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -584,7 +584,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -595,7 +595,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r5 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r5 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -684,7 +684,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -695,7 +695,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r6 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r6 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -784,7 +784,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -795,7 +795,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r7 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r7 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -884,7 +884,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -895,7 +895,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r8 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r8 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -984,7 +984,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -995,7 +995,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-r9 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-r9 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -1084,7 +1084,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1095,7 +1095,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-ra dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-ra dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
@@ -1184,7 +1184,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
       <button
         animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1195,7 +1195,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
           />
           <div
-            class="sarak-design-scope sarak-scope-rb dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-500 z-10"
+            class="sarak-design-scope sarak-scope-rb dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
             style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div

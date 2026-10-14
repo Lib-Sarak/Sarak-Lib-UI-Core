@@ -87,7 +87,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(0,242,255,0.05))]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(0,242,255,0.05))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -129,7 +129,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Tactile toggles / Switch selector grid */}
                 <div className={layout.footerClass}>
                     <div
-                        className="flex border-t border-[var(--border-color,#334155)]/20 w-full"
+                        className="flex border-t border-[var(--border-color,rgba(255,255,255,0.1))]/20 w-full"
                         style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <span className="font-black text-theme-tint-strong uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
@@ -142,7 +142,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Visão Computacional</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Visão Computacional</span>
                         </div>
                         <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
                     </div>
@@ -155,7 +155,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Navegação Web</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Navegação Web</span>
                         </div>
                         <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />
                     </div>
@@ -168,7 +168,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Modo Conversacional</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Modo Conversacional</span>
                         </div>
                             <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
                         </div>

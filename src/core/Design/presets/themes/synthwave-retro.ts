@@ -198,8 +198,8 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         chatUserBg: '#ff6b35',
         chatBubbleStyle: 'solid',
         chatAnimationSpeed: 0.1,
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#f37373',
+        statusSuccessColor: '#10c38b',
+        statusErrorColor: '#f38f8f',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 0,
@@ -292,8 +292,8 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         navItemActiveColor: '#a83f16',
         navActiveMarkerColor: '#a83f16',
         primaryColor: '#ce3700',
-        statusSuccessColor: '#0c855d',
-        statusErrorColor: '#e71414',
+        statusSuccessColor: '#0c8159',
+        statusErrorColor: '#e11414',
         inputErrorColor: '#e10004',
     }
 };

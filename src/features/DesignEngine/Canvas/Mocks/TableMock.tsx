@@ -62,11 +62,11 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                         <td className="px-4 py-3 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.version}</td>
                                         <td className="px-4 py-3 border-r border-[var(--sarak-table-border)]">
                                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border flex w-max items-center gap-1.5 ${
-                                                row.status === 'Online' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
-                                                row.status === 'Warning' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
-                                                'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                                row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/20' :
+                                                row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 text-[var(--sarak-status-warning-color,#f59e0b)] border-[var(--sarak-status-warning-color,#f59e0b)]/20' :
+                                                'bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 text-[var(--text-muted,rgba(255,255,255,0.4))] border-[var(--border-color,rgba(255,255,255,0.1))]/20'
                                             }`}>
-                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-emerald-500 animate-pulse' : row.status === 'Warning' ? 'bg-amber-500' : 'bg-slate-500'}`} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)] animate-pulse' : row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]' : 'bg-[var(--text-muted,rgba(255,255,255,0.4))]'}`} />
                                                 {row.status}
                                             </span>
                                         </td>
@@ -118,7 +118,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] overflow-hidden flex flex-col">
                 <div className="p-3 border-b border-[var(--sarak-table-border)] flex items-center justify-between bg-[var(--sarak-table-header-bg)]">
                     <div className="flex items-center gap-2">
-                        <SarakIcon name="FileSpreadsheet" className="text-emerald-500" size={14} />
+                        <SarakIcon name="FileSpreadsheet" className="text-[var(--sarak-status-success-color,#10b981)]" size={14} />
                         <h3 className="font-bold text-xs text-[var(--theme-title)] font-mono uppercase">Financial_Ledger_Q2.xlsx</h3>
                     </div>
                     <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                     <td className="px-3 py-1 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] opacity-80">{row.id}</td>
                                     <td className="px-3 py-1 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.date}</td>
                                     <td className="px-3 py-1 text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] truncate max-w-[200px]">{row.desc}</td>
-                                    <td className={`px-3 py-1 border-r border-[var(--sarak-table-border)] font-bold text-right ${row.amount.includes('+') ? 'text-emerald-500' : 'text-[var(--theme-title)]'}`}>
+                                    <td className={`px-3 py-1 border-r border-[var(--sarak-table-border)] font-bold text-right ${row.amount.includes('+') ? 'text-[var(--sarak-status-success-color,#10b981)]' : 'text-[var(--theme-title)]'}`}>
                                         {row.amount}
                                     </td>
                                     <td className="px-3 py-1 border-r border-[var(--sarak-table-border)] last:border-r-0 text-[var(--text-secondary)] italic">

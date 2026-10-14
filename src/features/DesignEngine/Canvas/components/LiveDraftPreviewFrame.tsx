@@ -39,20 +39,20 @@ export const LiveDraftPreviewFrame: React.FC<LiveDraftPreviewFrameProps> = ({
 
     return (
         <div
-            className={`relative overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group max-w-full ${layoutClasses} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+            className={`relative overflow-hidden bg-[var(--theme-surface)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] flex flex-col group max-w-full ${layoutClasses} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
             style={frameStyle}
         >
             {/* Hardware Mockup Extras (Notch, Camera) */}
             {previewDevice === 'smartphone' && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,#1e293b)] rounded-b-[var(--sarak-device-phone-notch-radius,1rem)] z-[1000] flex items-center justify-center gap-2">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,rgba(15,23,42,0.6))] rounded-b-[var(--sarak-device-phone-notch-radius,1rem)] z-[1000] flex items-center justify-center gap-2">
                     <div className="w-12 h-1.5 rounded-full bg-theme-body/50"></div>
-                    <div className="w-2 h-2 rounded-full bg-[var(--color-theme-card, #000000)] shadow-inner border border-theme-text/5"></div>
+                    <div className="w-2 h-2 rounded-full bg-[var(--color-theme-card, rgba(15,23,42,0.6))] shadow-inner border border-theme-text/5"></div>
                 </div>
             )}
             {previewDevice === 'tablet' && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-32 flex items-center justify-center z-[1000]">
                     {/* Camera na borda esquerda simulando modo paisagem/retrato dependendo do frame */}
-                    <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[var(--color-theme-card, #000000)] shadow-inner border border-theme-text/5"></div>
+                    <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[var(--color-theme-card, rgba(15,23,42,0.6))] shadow-inner border border-theme-text/5"></div>
                 </div>
             )}
 

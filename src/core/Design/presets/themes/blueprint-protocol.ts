@@ -194,8 +194,8 @@ export const blueprintProtocolTheme: SarakThemePreset = {
         aiGlowColor: '#7ad4ff',
         flowNodeRadius: 0,
         flowGridStyle: 'lines',
-        statusSuccessColor: '#10b981',
-        statusErrorColor: '#f16060',
+        statusSuccessColor: '#10c78f',
+        statusErrorColor: '#f19898',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 0,
@@ -298,8 +298,8 @@ export const blueprintProtocolTheme: SarakThemePreset = {
         navItemActiveColor: '#2f5f8f',
         navActiveMarkerColor: '#2f5f8f',
         primaryColor: '#41709f',
-        statusSuccessColor: '#0c855d',
-        statusErrorColor: '#e61414',
+        statusSuccessColor: '#0c7f57',
+        statusErrorColor: '#dc1414',
         inputErrorColor: '#db0004',
     }
 };

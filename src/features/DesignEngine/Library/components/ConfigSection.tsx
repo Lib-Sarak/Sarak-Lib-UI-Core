@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp, ChevronDown, LucideIcon } from 'lucide-react';
+import { useMotionTokens } from '../../../../components/atomic/hooks/useMotionTokens';
 
 interface ConfigSectionProps {
     id: string;
@@ -12,6 +13,7 @@ interface ConfigSectionProps {
 }
 
 export const ConfigSection: React.FC<ConfigSectionProps> = ({ id, icon: Icon, title, isOpen, onToggle, children }) => {
+    const { durations } = useMotionTokens();
     return (
         <div className="border-b border-[var(--theme-border)]/50 flex flex-col last:border-0">
             <button
@@ -34,7 +36,7 @@ export const ConfigSection: React.FC<ConfigSectionProps> = ({ id, icon: Icon, ti
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                        transition={{ duration: durations.fast, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
                         <div className="p-6 pt-2 space-y-6">

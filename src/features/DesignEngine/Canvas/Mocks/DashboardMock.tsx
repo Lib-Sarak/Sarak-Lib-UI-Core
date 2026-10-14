@@ -41,7 +41,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
   };
 
   const mainContentNode = (
-    <div className="w-full min-h-full bg-transparent font-sans text-slate-200">
+    <div className="w-full min-h-full bg-transparent font-sans text-[var(--color-theme-title,#ffffff)]">
       <DashboardHeader />
       <DashboardMetricsGrid 
         tokens={tokens} 

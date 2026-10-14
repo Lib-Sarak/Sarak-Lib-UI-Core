@@ -1,0 +1,1 @@
+import{N as t}from"./chunk-HTOTCKUV.js";import{jsx as e}from"react/jsx-runtime";var m=({message:a})=>{let r=t();return e("div",{role:"status","data-sarak-data-empty":"true",className:"flex items-center justify-center w-full text-sm",style:{color:"var(--text-muted,rgba(255,255,255,0.4))",paddingBlock:"var(--sarak-layout-gap-lg, 24px)"},children:a??r("dataEmpty")})};export{m as a};

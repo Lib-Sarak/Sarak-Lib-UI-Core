@@ -1,6 +1,7 @@
 import React, { Suspense, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useSarakUI } from '../../core/Provider/SarakUIProvider';
+import { useMotionTokens } from '../atomic/hooks/useMotionTokens';
 
 interface LazyEngineWrapperProps {
     children: ReactNode;
@@ -13,6 +14,7 @@ interface LazyEngineWrapperProps {
  */
 export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, fallback }) => {
     const { design } = useSarakUI();
+    const { durations } = useMotionTokens();
     const { primaryColor } = design || {};
 
     const DefaultFallback = (
@@ -22,7 +24,7 @@ export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, 
                     opacity: [0.3, 0.6, 0.3],
                     scale: [0.98, 1, 0.98]
                 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: durations.slow * 3.33, repeat: Infinity, ease: "easeInOut" }}
                 className="flex flex-col items-center"
             >
                 <div className="w-12 h-12 rounded-full border-2 border-t-[var(--theme-primary)] border-[var(--theme-border)] animate-spin mb-4" />

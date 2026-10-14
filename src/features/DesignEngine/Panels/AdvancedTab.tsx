@@ -36,18 +36,18 @@ export const AdvancedTab: React.FC = () => {
 
     const stats = [
         { label: 'ID do Sistema', value: systemId, icon: Shield },
-        { label: 'Status da Engine', value: isHydrated ? 'HIDRATADA' : 'INICIALIZANDO', icon: Activity, color: isHydrated ? 'text-emerald-400' : 'text-amber-400' },
+        { label: 'Status da Engine', value: isHydrated ? 'HIDRATADA' : 'INICIALIZANDO', icon: Activity, color: isHydrated ? 'text-[var(--sarak-status-success-color,#10b981)]' : 'text-[var(--sarak-status-warning-color,#f59e0b)]' },
         { label: 'SDT Version', value: 'v1.0 (Elite)', icon: Zap },
     ];
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in duration-500 overflow-y-auto custom-scrollbar p-8">
+        <div className="flex flex-col h-full animate-in fade-in duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-y-auto custom-scrollbar p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
                 {/* ENGINE STATUS */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                        <div className="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]">
                             <Settings className="w-4 h-4" />
                         </div>
                         <h3 className="text-sm font-black uppercase tracking-widest italic text-theme-text/90">Sovereign Engine Status</h3>
@@ -65,8 +65,8 @@ export const AdvancedTab: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 flex items-start gap-4">
-                        <HelpCircle className="w-5 h-5 text-indigo-400 shrink-0 mt-1" />
+                    <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/5 border border-[var(--sarak-secondary-color,#7000ff)]/10 flex items-start gap-4">
+                        <HelpCircle className="w-5 h-5 text-[var(--sarak-secondary-color,#7000ff)] shrink-0 mt-1" />
                         <div className="space-y-2">
                             <h4 className="text-2xs font-bold text-theme-text/80 uppercase">Sobre a Sarak Matrix v5.0</h4>
                             <p className="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium">
@@ -80,15 +80,15 @@ export const AdvancedTab: React.FC = () => {
                 {/* MANUTENÇÃO & SEGURANÇA */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+                        <div className="p-2 bg-[var(--sarak-status-error-color,#ef4444)]/10 rounded-lg text-[var(--sarak-status-error-color,#ef4444)]">
                             <Shield className="w-4 h-4" />
                         </div>
                         <h3 className="text-sm font-black uppercase tracking-widest italic text-theme-text/90">Gestão de Persistência</h3>
                     </div>
 
-                    <div className="p-6 rounded-3xl bg-rose-500/5 border border-rose-500/10 space-y-6">
+                    <div className="p-6 rounded-3xl bg-[var(--sarak-status-error-color,#ef4444)]/5 border border-[var(--sarak-status-error-color,#ef4444)]/10 space-y-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-[var(--sarak-status-error-color,#ef4444)] rounded-2xl text-[var(--sarak-on-error,#020617)] shadow-lg shadow-rose-900/20">
+                            <div className="p-3 bg-[var(--sarak-status-error-color,#ef4444)] rounded-2xl text-[var(--sarak-on-error,#020617)] shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20">
                                 <HardDrive className="w-6 h-6" />
                             </div>
                             <div>
@@ -100,12 +100,12 @@ export const AdvancedTab: React.FC = () => {
                         <button
                             onClick={handleHardReset}
                             disabled={isResetting}
-                            className="w-full py-4 rounded-2xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-[var(--sarak-on-error,#020617)] border border-rose-500/20 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50"
+                            className="w-full py-4 rounded-2xl bg-[var(--sarak-status-error-color,#ef4444)]/10 hover:bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-status-error-color,#ef4444)] hover:text-[var(--sarak-on-error,#020617)] border border-[var(--sarak-status-error-color,#ef4444)]/20 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] flex items-center justify-center gap-3 group disabled:opacity-50"
                         >
                             {isResetting ? (
                                 <RefreshCw className="w-4 h-4 animate-spin" />
                             ) : (
-                                <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                                <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]" />
                             )}
                             <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">Restaurar Padrões</span>
                         </button>
@@ -119,10 +119,10 @@ export const AdvancedTab: React.FC = () => {
                     <div className="space-y-4 pt-4">
                         <div className="flex items-center justify-between text-2xs font-black uppercase tracking-widest text-theme-text/40">
                             <span>Sincronização Cloud</span>
-                            <span className="text-emerald-400">Ativa (v2)</span>
+                            <span className="text-[var(--sarak-status-success-color,#10b981)]">Ativa (v2)</span>
                         </div>
                         <div className="h-1 bg-theme-text/5 rounded-full overflow-hidden">
-                            <div className="h-full w-full bg-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+                            <div className="h-full w-full bg-[var(--sarak-status-success-color,#10b981)]/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
                         </div>
                     </div>
                 </div>

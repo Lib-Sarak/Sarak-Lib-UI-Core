@@ -3,7 +3,7 @@
 exports[`AdvancedTab > matches baseline snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="flex flex-col h-full animate-in fade-in duration-500 overflow-y-auto custom-scrollbar p-8"
+    class="flex flex-col h-full animate-in fade-in duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-y-auto custom-scrollbar p-8"
   >
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -15,7 +15,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"
+            class="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]"
           >
             <svg
               class="w-4 h-4"
@@ -111,7 +111,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
               </span>
             </div>
             <span
-              class="text-xs font-mono font-bold tracking-tight text-emerald-400"
+              class="text-xs font-mono font-bold tracking-tight text-[var(--sarak-status-success-color,#10b981)]"
             >
               HIDRATADA
             </span>
@@ -152,10 +152,10 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           </div>
         </div>
         <div
-          class="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 flex items-start gap-4"
+          class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/5 border border-[var(--sarak-secondary-color,#7000ff)]/10 flex items-start gap-4"
         >
           <svg
-            class="w-5 h-5 text-indigo-400 shrink-0 mt-1"
+            class="w-5 h-5 text-[var(--sarak-secondary-color,#7000ff)] shrink-0 mt-1"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -201,7 +201,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-rose-500/10 rounded-lg text-rose-400"
+            class="p-2 bg-[var(--sarak-status-error-color,#ef4444)]/10 rounded-lg text-[var(--sarak-status-error-color,#ef4444)]"
           >
             <svg
               class="w-4 h-4"
@@ -227,13 +227,13 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           </h3>
         </div>
         <div
-          class="p-6 rounded-3xl bg-rose-500/5 border border-rose-500/10 space-y-6"
+          class="p-6 rounded-3xl bg-[var(--sarak-status-error-color,#ef4444)]/5 border border-[var(--sarak-status-error-color,#ef4444)]/10 space-y-6"
         >
           <div
             class="flex items-center gap-4"
           >
             <div
-              class="p-3 bg-[var(--sarak-status-error-color,#ef4444)] rounded-2xl text-[var(--sarak-on-error,#020617)] shadow-lg shadow-rose-900/20"
+              class="p-3 bg-[var(--sarak-status-error-color,#ef4444)] rounded-2xl text-[var(--sarak-on-error,#020617)] shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20"
             >
               <svg
                 class="w-6 h-6"
@@ -284,10 +284,10 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
             </div>
           </div>
           <button
-            class="w-full py-4 rounded-2xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-[var(--sarak-on-error,#020617)] border border-rose-500/20 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50"
+            class="w-full py-4 rounded-2xl bg-[var(--sarak-status-error-color,#ef4444)]/10 hover:bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-status-error-color,#ef4444)] hover:text-[var(--sarak-on-error,#020617)] border border-[var(--sarak-status-error-color,#ef4444)]/20 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] flex items-center justify-center gap-3 group disabled:opacity-50"
           >
             <svg
-              class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"
+              class="w-4 h-4 group-hover:rotate-180 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]"
               fill="none"
               height="24"
               stroke="currentColor"
@@ -337,7 +337,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
               Sincronização Cloud
             </span>
             <span
-              class="text-emerald-400"
+              class="text-[var(--sarak-status-success-color,#10b981)]"
             >
               Ativa (v2)
             </span>
@@ -346,7 +346,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
             class="h-1 bg-theme-text/5 rounded-full overflow-hidden"
           >
             <div
-              class="h-full w-full bg-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+              class="h-full w-full bg-[var(--sarak-status-success-color,#10b981)]/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
             />
           </div>
         </div>

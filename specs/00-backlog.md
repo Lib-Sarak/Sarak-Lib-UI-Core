@@ -93,6 +93,7 @@ via normal.
 | 22 | O `chrome-token-parity:check` (`gates/scripts/contrato/check-chrome-token-parity.mjs`) varre só `schema/navigation.ts` e parte de `system.ts`: um token de cromo em `schema/global.ts` — como o `mobileNavigationStyle` — passa sem que o gate prove o consumidor. Estender o escopo, ou declarar o limite no cabeçalho do gate e na [[05-cromo-e-slots]] §2.4.1 | revisão da `plan-109` | 2026-10-11 | médio |
 | 31 | `src/components/atomic/Navigation/SarakShellNav.tsx:46` (e o catálogo gerado, que copia o JSDoc) ainda cita `dock` como valor de orientação, opção que saiu do `navigationStyle` | revisão da `plan-109` | 2026-10-11 | baixo |
 | 1 | `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx:61` mocka `core/Design/master-map` sem `sarakGetDefaultDesignState`, que `Main/utils/exportTheme.ts:18` importa; o stderr da CI acusa `No "sarakGetDefaultDesignState" export is defined` e o teste "exporta o tema como JSON" passa mesmo assim — talvez sem provar o que promete (resíduo do rename `965bc44`) | ritual (log da CI do `80785e5`) | 2026-10-03 | médio |
+| 32 | Vocabulário de forma sem token: 33 raios (`rounded-xl/lg/md/3xl`), 43 sombras (`shadow-sm…2xl`) e as molas do `framer-motion` em `src/components/` (mais no painel) não têm token que os nomeie — não é desobediência, é falta de vocabulário (ex.: raio de aba, de item de navegação, de popup; mola de movimento). Decidir se ganham token ou ficam como desenho fixo | re-auditoria de fechamento da `plan-115` | 2026-10-13 | médio |
 
 ---
 

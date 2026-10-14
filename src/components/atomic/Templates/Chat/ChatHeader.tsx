@@ -11,14 +11,14 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
-  <header className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-[var(--text-muted,#94a3b8)]/5" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 1.5) var(--sarak-layout-gap-md,16px)' }}>
+  <header className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--text-muted,rgba(255,255,255,0.4))]/5" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 1.5) var(--sarak-layout-gap-md,16px)' }}>
     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
       <div className="bg-gradient-to-br from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-lg shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
         <SarakIcon name="Bot" size={20} className="text-[var(--sarak-primary-color,#00f2ff)]" />
       </div>
       <div>
         <h2 className="text-sm font-bold tracking-tight text-[var(--color-theme-title,#ffffff)] uppercase" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>{label}</h2>
-        <p className="text-2xs text-[var(--text-muted,#94a3b8)] font-medium tracking-widest">Agnostic Interface • Chat Engine</p>
+        <p className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] font-medium tracking-widest">Agnostic Interface • Chat Engine</p>
       </div>
     </div>
 

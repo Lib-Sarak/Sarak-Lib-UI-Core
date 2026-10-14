@@ -90,7 +90,7 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
                 style={{ ...contentStack.style, padding: 'var(--sarak-layout-gap-lg, 24px)' }}
             >
                 {title && <h3 className="text-xl font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h3>}
-                {subtitle && <p className="text-sm text-[var(--text-muted,#94a3b8)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{subtitle}</p>}
+                {subtitle && <p className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{subtitle}</p>}
 
                 {children && <div style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>{children}</div>}
             </div>

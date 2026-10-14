@@ -12,6 +12,14 @@ export interface SarakShellUser {
     email?: string;
 }
 
+/** O botão de sair: a tinta do erro (a variante `-bg` que o motor emite, 15%), o texto misturado ao de maior contraste (o par é `mix:` em `verify_contrast.ts`) e sólido no hover. */
+const LOGOUT_TINT = 'bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]';
+const LOGOUT_TEXT = 'text-[color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff))]';
+const LOGOUT_BORDER = 'border-[var(--theme-error-border,rgba(239,68,68,0.25))]';
+const LOGOUT_HOVER_TINT = 'hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]';
+const LOGOUT_HOVER_TEXT = 'hover:text-[color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff))]';
+const LOGOUT_HOVER_SOLID = 'hover:bg-[var(--sarak-status-error-color,#ef4444)] hover:text-[var(--sarak-on-error,#020617)]';
+
 export interface SarakShellUserWidgetProps {
     /** Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico. */
     user?: SarakShellUser;
@@ -97,7 +105,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                             onClick={logout}
                             variant="ghost"
                             size="xs"
-                            className="bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg border border-[var(--theme-error-border)]"
+                            className={`${LOGOUT_TINT} ${LOGOUT_HOVER_SOLID} ${LOGOUT_TEXT} rounded-lg border ${LOGOUT_BORDER}`}
                             title={t('userLogoutTitle')}
                             icon={<SarakIcon name="LogOut" size={12} />}
                         />
@@ -146,7 +154,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                         onClick={logout}
                         variant="ghost"
                         size="xs"
-                        className={`text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
+                        className={`text-[var(--theme-muted)] ${LOGOUT_HOVER_TEXT} ${LOGOUT_HOVER_TINT} ${isMini ? `${LOGOUT_TINT} ${LOGOUT_TEXT}` : ''}`}
                         title={t('userLogoutTitle')}
                         icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
                     />

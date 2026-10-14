@@ -93,7 +93,7 @@ interface SarakTableGridHeaderProps<TData extends Record<string, unknown>> {
 const SarakTableGridHeader = <TData extends Record<string, unknown>>({ columns, interactions, selectable, cellDensityClass }: SarakTableGridHeaderProps<TData>): ReactElement => {
     const text = useLibraryText();
     return (
-        <thead><tr className="bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] border-b border-[var(--border-color,#334155)]">
+        <thead><tr className="bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] border-b border-[var(--border-color,rgba(255,255,255,0.1))]">
             {selectable && <th className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectAllVisibleRows')} checked={interactions.allVisibleSelected} indeterminate={interactions.partiallySelected} onChange={interactions.toggleAll} /></th>}
             {columns.map((column) => <th key={column.key} className={'text-2xs font-black text-theme-muted uppercase ' + cellDensityClass} style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)', textAlign: column.align ?? 'left' }}><SarakTableSortButton columnId={column.key} label={column.label} sort={interactions.sort} onSort={interactions.changeSort} /></th>)}
         </tr></thead>

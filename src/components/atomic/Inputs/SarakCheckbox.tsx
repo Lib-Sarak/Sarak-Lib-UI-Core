@@ -123,14 +123,14 @@ export const SarakCheckbox: React.FC<SarakCheckboxProps> = ({
                 {(label || description) && (
                     <div className={textContainerClass}>
                         {label && (
-                            <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">
+                            <span className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">
                                 {label}
                             </span>
                         )}
                         {description && (
                             <span
                                 id={descId}
-                                className="text-xs text-[var(--text-muted,#94a3b8)]"
+                                className="text-xs text-[var(--text-muted,rgba(255,255,255,0.4))]"
                             >
                                 {description}
                             </span>

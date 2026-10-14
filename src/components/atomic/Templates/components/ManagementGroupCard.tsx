@@ -72,7 +72,7 @@ const ManagementGroupCardContent = <TItem extends Record<string, unknown>>({
         className={`${containerLayout.className ?? ''} card h-full overflow-hidden rounded-[var(--sarak-card-radius,12px)] border`}
         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
     >
-        <div className="flex items-center justify-between border-b border-[var(--border-color,#334155)] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+        <div className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
             <h3 className="text-theme-title font-bold">{groupName}</h3>
             <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
                 {groupActions.map((action) => (
@@ -97,7 +97,7 @@ const ManagementGroupCardContent = <TItem extends Record<string, unknown>>({
                         const description = mapping.description ? String(getVal(item, mapping.description) ?? '') : '';
                         const error = mapping.error ? String(getVal(item, mapping.error) ?? '') : '';
                         return (
-                            <div key={itemId} className="rounded-[var(--sarak-card-radius,12px)] border border-[var(--border-color,#334155)]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                            <div key={itemId} className="rounded-[var(--sarak-card-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                                 <div className="flex items-start justify-between" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
                                     <div className={`min-w-0 ${itemTitleLayout.className}`} style={itemTitleLayout.style}>
                                         <span className="truncate text-theme-title font-bold">{String(getVal(item, mapping.title) ?? '')}</span>

@@ -38,11 +38,9 @@
 // 6. Os nomes escritos pelo `useDesignVariables` fora do laço são lidos do texto dele e do de
 //    `designVariableHelpers` (literais entre aspas): um nome citado lá em código real ou em mensagem conta
 //    como escrito. Os aliases de fachada (`aliasPairs`) e os canais `-rgb` emitidos fora do laço entram no
-//    índice com a reserva julgada — só a do CSS da lib (o piso sem Provider). A de COMPONENTE não é
-//    julgada: em 2026-10-13 eram 359 leituras de alias em TS, 323 com reserva diferente do padrão
-//    (`var(--text-muted, #94a3b8)` contra `rgba(255, 255, 255, 0.4)`), e a decisão de uniformá-las é da
-//    plan que as tocar. Um alias que o gate não consegue ler no `aliasPairs` (outra forma de escrever o
-//    par) segue sem reserva conferida.
+//    índice com a reserva julgada — em CSS da lib e em componente (`.tsx`), contra o padrão do token dono
+//    (`var(--text-muted, #94a3b8)` contra `rgba(255, 255, 255, 0.4)` é achado). Um alias que o gate não
+//    consegue ler no `aliasPairs` (outra forma de escrever o par) segue sem reserva conferida.
 // 7. A declaração sob seletor que nunca casa NÃO conta como dono quando o seletor exige `[data-…]` de um
 //    atributo que nenhum token select/boolean/font/text emite nem literal de TypeScript escreve. Seletor
 //    morto por outro motivo (classe que ninguém aplica, elemento que não existe) continua contando como dono.

@@ -3,7 +3,7 @@ import { useSarakUI } from '../../../../../core/Provider/SarakUIProvider';
 
 export const SmartCard = ({ children, className = "", style = {}, label, variables, textureType }: any) => {
     const globalUI = useSarakUI();
-    const cardBaseClass = "sarak-card flex flex-col gap-4 overflow-hidden relative transition-all duration-500";
+    const cardBaseClass = "sarak-card flex flex-col gap-4 overflow-hidden relative transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]";
     
     return (
         <div 

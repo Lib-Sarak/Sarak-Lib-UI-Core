@@ -63,7 +63,7 @@ const SarakDataTableHeaderCell = <T,>({ column, props, selectionWidth }: SarakDa
 export function SarakDataTableHeader<T>(props: SarakDataTableHeaderProps<T>): ReactElement {
     const selectionWidth = props.selectable ? SELECTION_COLUMN_WIDTH : 0;
     return (
-        <div role="row" style={{ position: 'sticky', top: 0, zIndex: HEADER_STICKY_LAYER, display: 'flex', height: props.headerHeight, background: props.background, borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,#334155))' }}>
+        <div role="row" style={{ position: 'sticky', top: 0, zIndex: HEADER_STICKY_LAYER, display: 'flex', height: props.headerHeight, background: props.background, borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.1)))' }}>
             {props.selectable && <div role="columnheader" aria-label="Seleção" style={{ width: selectionWidth, flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><SarakCheckbox aria-label="Selecionar todas as linhas visíveis" checked={props.allVisibleSelected} indeterminate={props.partiallySelected} onChange={(event) => props.onToggleAll(event.currentTarget.checked)} /></div>}
             {props.columns.map((column) => <SarakDataTableHeaderCell key={column.id} column={column} props={props} selectionWidth={selectionWidth} />)}
         </div>

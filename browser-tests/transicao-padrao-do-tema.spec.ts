@@ -15,7 +15,7 @@
  * -------------------------------------------------------------------------
  * 1. Só valores COMPUTADOS de `transition-duration` e `transition-timing-function` em três nós da cena;
  *    nenhuma transição em curso e nenhum componente da lib.
- * 2. Só a classe `transition-colors` (e `transition-all duration-300`): as demais utilitárias de transição
+ * 2. Só a classe `transition-colors` (e `transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]`): as demais utilitárias de transição
  *    do Tailwind leem a mesma variável, mas não são medidas uma a uma.
  * 3. Só Chromium; o movimento reduzido (que zera a duração em JS) não é medido aqui. No Embarcado a página
  *    carrega só a folha escopada: o que cai fora de `.sarak-scope` fica sem estilo da lib, e não é medido.
@@ -78,7 +78,7 @@ for (const mode of MODES) {
             });
         });
 
-        test('a classe com duração própria decide: duration-300 vence o token', async () => {
+        test('a classe com duração própria decide: duration-[…normal…] vence o token', async () => {
             await withScene('movimento-padrao', mode, async (page) => {
                 expect(await computed(probe(page, 'com-duracao'), 'transition-duration')).toBe('0.3s');
             });

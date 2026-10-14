@@ -65,7 +65,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     style={{
                         flexDirection: 'column',
                         gap: 'var(--sarak-layout-gap-sm, 8px)',
-                        background: 'var(--color-theme-card,#1e293b)',
+                        background: 'var(--color-theme-card,rgba(15,23,42,0.6))',
                         borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                     }}
                 >

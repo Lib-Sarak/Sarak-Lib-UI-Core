@@ -105,7 +105,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
 
     return (
         <SarakFormGroup className={className} style={style}>
-            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
+            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">{label}</span>}
 
             <div className="relative w-full">
                 <SarakButton
@@ -121,7 +121,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     variant="secondary"
                     fullWidth
                     rightIcon={
-                        <svg className="w-4 h-4 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-[var(--text-muted,rgba(255,255,255,0.4))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     }
@@ -133,15 +133,15 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     // ícone fixo na borda direita, com o texto à esquerda.
                     style={{
                         justifyContent: 'space-between',
-                        backgroundColor: 'var(--sarak-input-bg,var(--color-theme-card,#1e293b))',
-                        borderColor: 'var(--sarak-input-border-color, var(--border-color,#334155))',
+                        backgroundColor: 'var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))',
+                        borderColor: 'var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)))',
                         padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-md,16px)',
                         textTransform: 'none',
                         letterSpacing: 'normal',
                         fontWeight: 400,
                     }}
                 >
-                    <span className={start ? 'text-[var(--text-muted,#94a3b8)]' : 'text-[var(--text-muted,#94a3b8)]/50'}>
+                    <span className={start ? 'text-[var(--text-muted,rgba(255,255,255,0.4))]' : 'text-[var(--text-muted,rgba(255,255,255,0.4))]/50'}>
                         {display}
                     </span>
                 </SarakButton>
@@ -152,7 +152,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                         role="dialog"
                         aria-label={label ?? t('datePickerCalendarAriaLabel')}
                         onKeyDown={handleTrap}
-                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-xl"
+                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-xl"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                     >
                         <CalendarPanel

@@ -256,7 +256,7 @@ export const sarakSovereignTheme: SarakThemePreset = {
         tableBorderColor: '#dadee7',
         textColorMaster: '#192134',
         textColorSecondary: '#3d4966',
-        textColorMuted: '#616f8c',
+        textColorMuted: '#5f6d88',
         btnPrimaryText: '#000000',
         btnSecondaryBg: '#f6f7f8',
         btnGhostHoverBg: '#eaecf0',

@@ -15,6 +15,7 @@ import { CategoryLabel } from '../components/DesignControls';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSovereignSearch } from './hooks/useSovereignSearch';
 import { PillarSelector } from './components/PillarSelector';
+import { useMotionTokens } from '../../../components/atomic/hooks/useMotionTokens';
 
 /**
  * MAPEAR ÍCONES AOS COMPONENTES DO SCHEMA
@@ -57,6 +58,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
     draft, updateDraft, resetComponent, resetToken, toast
 }) => {
     const sarak = useSarakUI();
+    const { durations } = useMotionTokens();
     const draftRecord = draft as Record<string, SarakTokenValue>;
     
     const [activePillar, setActivePillar] = useState<string>('core');
@@ -66,7 +68,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
     const { pillarsWithDrafts, filteredComponents } = useSovereignSearch(draft, searchQuery, activePillar);
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">
             
             {/* HEADER: SEARCH & PILLARS */}
             <div className="pt-6 px-6 pb-2 border-b border-theme-text/5 bg-theme-body/40 backdrop-blur-md z-10 space-y-4">
@@ -127,7 +129,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                             initial={{ height: 0, opacity: 0 }} 
                                             animate={{ height: 'auto', opacity: 1 }} 
                                             exit={{ height: 0, opacity: 0 }} 
-                                            transition={{ duration: 0.3, ease: "circOut" }} 
+                                            transition={{ duration: durations.normal, ease: "circOut" }} 
                                             className="overflow-hidden bg-theme-text/[0.02]"
                                         >
                                             <div className="p-6 pt-2 space-y-8">
@@ -151,7 +153,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                                                         {isTokenDirty && (
                                                                             <button 
                                                                                 onClick={() => resetToken(token.id)}
-                                                                                className="absolute -top-1 -right-1 p-1 bg-orange-500/20 text-orange-500 rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-orange-500 hover:text-[var(--sarak-on-warning,#020617)] shadow-lg z-10"
+                                                                                className="absolute -top-1 -right-1 p-1 bg-[var(--sarak-status-warning-color,#f59e0b)]/20 text-[var(--sarak-status-warning-color,#f59e0b)] rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-[var(--sarak-status-warning-color,#f59e0b)] hover:text-[var(--sarak-on-warning,#020617)] shadow-lg z-10"
                                                                                 title="Reverter Token"
                                                                             >
                                                                                 <RotateCcw size={10} strokeWidth={3} />
@@ -192,10 +194,10 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                     >
                         <div className={`p-4 rounded-xl border backdrop-blur-xl flex items-center gap-3 shadow-2xl ${
                             toast.type === 'success' 
-                                ? 'bg-green-500/10 border-green-500/20 text-green-400' 
-                                : 'bg-orange-500/10 border-orange-500/20 text-orange-400'
+                                ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 border-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)]' 
+                                : 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 border-[var(--sarak-status-warning-color,#f59e0b)]/20 text-[var(--sarak-status-warning-color,#f59e0b)]'
                         }`}>
-                            <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
+                            <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-[var(--sarak-status-success-color,#10b981)]/20' : 'bg-[var(--sarak-status-warning-color,#f59e0b)]/20'}`}>
                                 {toast.type === 'success' ? <Check size={14} /> : <Filter size={14} />}
                             </div>
                             <span className="text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider">{toast.message}</span>

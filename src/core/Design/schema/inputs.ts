@@ -124,7 +124,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor dos ícones exibidos dentro/ao lado do campo de entrada (ex. lupa de busca, olho de senha). O padrão é a cor de texto suave do tema (`textColorMuted`), que muda com o modo — um branco fixo sumia sobre o campo de um tema claro. O par com o fundo do campo é medido pelo verificador de contraste.',
             axis: 'color',
-            defaultValue: 'var(--text-muted, #94a3b8)',
+            defaultValue: 'var(--text-muted, rgba(255,255,255,0.4))',
             cssVars: ['--sarak-input-icon-color']
         },
         {

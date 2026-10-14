@@ -3,7 +3,7 @@
 exports[`LayoutTab > matches baseline snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="flex flex-col h-full animate-in fade-in duration-500 overflow-y-auto custom-scrollbar p-8"
+    class="flex flex-col h-full animate-in fade-in duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-y-auto custom-scrollbar p-8"
   >
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -15,7 +15,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-blue-500/10 rounded-lg text-blue-400"
+            class="p-2 bg-[var(--sarak-status-info-color,#3b82f6)]/10 rounded-lg text-[var(--sarak-status-info-color,#3b82f6)]"
           >
             <svg
               class="w-4 h-4"
@@ -61,7 +61,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="flex flex-col gap-3"
         >
           <button
-            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
+            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
           >
             <div
               class="p-3 rounded-xl transition-all bg-theme-text/5 text-theme-text/40"
@@ -112,7 +112,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             </div>
           </button>
           <button
-            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-blue-600/20 border-blue-500/50 shadow-lg shadow-blue-900/20"
+            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] text-left group bg-[var(--sarak-status-info-color,#3b82f6)]/20 border-[var(--sarak-status-info-color,#3b82f6)]/50 shadow-lg shadow-[var(--sarak-status-info-color,#3b82f6)]/20"
           >
             <div
               class="p-3 rounded-xl transition-all bg-[var(--theme-primary)] text-theme-on-primary"
@@ -163,7 +163,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             </div>
           </button>
           <button
-            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
+            class="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] text-left group bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10 hover:border-theme-text/10"
           >
             <div
               class="p-3 rounded-xl transition-all bg-theme-text/5 text-theme-text/40"
@@ -222,7 +222,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"
+            class="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]"
           >
             <svg
               class="w-4 h-4"
@@ -269,7 +269,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="flex flex-col items-center gap-2 group"
             >
               <div
-                class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
+                class="w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full h-4 opacity-20"
               />
               <span
                 class="text-2xs font-black transition-all text-theme-text/20"
@@ -281,7 +281,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="flex flex-col items-center gap-2 group"
             >
               <div
-                class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                class="w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
               />
               <span
                 class="text-2xs font-black transition-all text-theme-text"
@@ -293,7 +293,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="flex flex-col items-center gap-2 group"
             >
               <div
-                class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
+                class="w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full h-4 opacity-20"
               />
               <span
                 class="text-2xs font-black transition-all text-theme-text/20"
@@ -305,7 +305,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="flex flex-col items-center gap-2 group"
             >
               <div
-                class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
+                class="w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full h-4 opacity-20"
               />
               <span
                 class="text-2xs font-black transition-all text-theme-text/20"
@@ -317,7 +317,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="flex flex-col items-center gap-2 group"
             >
               <div
-                class="w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full h-4 opacity-20"
+                class="w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full h-4 opacity-20"
               />
               <span
                 class="text-2xs font-black transition-all text-theme-text/20"
@@ -380,7 +380,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             <div
-              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]"
             >
               <span
                 style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
@@ -407,7 +407,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
             class="flex items-center gap-3"
           >
             <div
-              class="p-2 bg-amber-500/10 rounded-lg text-amber-400"
+              class="p-2 bg-[var(--sarak-status-warning-color,#f59e0b)]/10 rounded-lg text-[var(--sarak-status-warning-color,#f59e0b)]"
             >
               <svg
                 class="w-4 h-4"
@@ -458,8 +458,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="relative group w-fit"
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
+                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)));"
                 >
                   <option
                     value=""
@@ -478,7 +478,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
                   style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
@@ -509,8 +509,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="relative group w-fit"
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
+                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)));"
                 >
                   <option
                     value=""
@@ -529,7 +529,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
                   style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
@@ -558,7 +558,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"
+            class="p-2 bg-[var(--sarak-status-success-color,#10b981)]/10 rounded-lg text-[var(--sarak-status-success-color,#10b981)]"
           >
             <svg
               class="w-4 h-4"
@@ -596,13 +596,13 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           class="grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
           <button
-            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 bg-emerald-600/20 border-emerald-500/50 shadow-lg"
+            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] bg-[var(--sarak-status-success-color,#10b981)]/20 border-[var(--sarak-status-success-color,#10b981)]/50 shadow-lg"
           >
             <div
               class="flex items-center gap-4"
             >
               <svg
-                class="w-8 h-8 text-emerald-400"
+                class="w-8 h-8 text-[var(--sarak-status-success-color,#10b981)]"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -644,11 +644,11 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               </div>
             </div>
             <div
-              class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_var(--theme-success, #10b981)]"
+              class="w-2 h-2 rounded-full bg-[var(--sarak-status-success-color,#10b981)] shadow-[0_0_10px_var(--theme-success, #10b981)]"
             />
           </button>
           <button
-            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10"
+            class="flex items-center justify-between p-6 rounded-3xl border transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] bg-theme-text/5 border-theme-text/5 hover:bg-theme-text/10"
           >
             <div
               class="flex items-center gap-4"

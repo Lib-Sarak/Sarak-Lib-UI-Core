@@ -30,7 +30,7 @@ const renderChips = (values: string[], label?: string) => {
                 <span className="text-3xs font-black text-theme-tint-strong uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{label}</span>
             )}
             {values.map((value: string) => (
-                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
+                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,rgba(255,255,255,0.1))] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
                     <SarakIcon name="Zap" size={10} /> {value}
                 </div>
             ))}
@@ -118,8 +118,8 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                             {String(getVal(item, mapping?.title) || '')}
                         </h4>
                     </div>
-                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
-                        <SarakIcon name={mapping?.icon || 'Box'} size={20} className="text-[var(--text-muted,#94a3b8)]" />
+                    <div className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
+                        <SarakIcon name={mapping?.icon || 'Box'} size={20} className="text-[var(--text-muted,rgba(255,255,255,0.4))]" />
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                 </div>
 
                 {details.length > 0 && (
-                    <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} border-t border-[var(--border-color,#334155)]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-md,16px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
+                    <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} border-t border-[var(--border-color,rgba(255,255,255,0.1))]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-md,16px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                         {details.map((detail, index) => {
                             const isLastOdd = details.length % 2 === 1 && index === details.length - 1;
                             return (
@@ -138,8 +138,8 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                                     className={getFlexStyles('column', 'flex-start', 'stretch', '0').className}
                                     style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: isLastOdd ? 'span 2 / span 2' : undefined }}
                                 >
-                                    <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{detail.label}</span>
-                                    <span className="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold">
+                                    <span className="text-3xs font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{detail.label}</span>
+                                    <span className="text-sm font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] font-bold">
                                         {String(detail.value)}
                                     </span>
                                 </div>
@@ -178,11 +178,11 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         >
                             <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                                 {!!description && (
-                                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
+                                    <div className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                                         {!!descriptionLabel && (
                                             <span className="text-3xs font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{descriptionLabel}</span>
                                         )}
-                                        <p className="text-xs text-[var(--text-muted,#94a3b8)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
+                                        <p className="text-xs text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>
                                 )}
                             </div>

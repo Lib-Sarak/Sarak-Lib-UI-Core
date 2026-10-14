@@ -118,7 +118,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                                             onClick={() => setIsExpanded(false)}
                                             variant="secondary"
                                             size="lg"
-                                            className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg shrink-0"
+                                            className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,rgba(255,255,255,0.1))]-border rounded-sarak shadow-lg shrink-0"
                                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
                                             icon={<SarakIcon name="X" className="w-5 h-5 sm:w-6 sm:h-6" />}

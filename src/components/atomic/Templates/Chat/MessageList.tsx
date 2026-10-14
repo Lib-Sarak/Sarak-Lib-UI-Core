@@ -27,12 +27,12 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
     >
       {messages.length === 0 && (
         <div className={`${emptyStateStack.className} h-full text-center animate-in fade-in zoom-in duration-[var(--duration-slow,0.6s)]`} style={emptyStateStack.style}>
-          <div className="w-20 h-20 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative group/terminal" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>
+          <div className="w-20 h-20 bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] flex items-center justify-center relative group/terminal" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>
              <div className="absolute inset-0 bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] rounded-3xl blur-2xl opacity-0 group-hover/terminal:opacity-100 transition-opacity"></div>
             <SarakIcon name="Terminal" size={36} className="text-[var(--sarak-primary-color,#00f2ff)] relative z-10" />
           </div>
           <h3 className="text-lg font-medium text-[var(--color-theme-title,#ffffff)]">Interface de Sistema Inicializada</h3>
-          <p className="text-sm text-[var(--text-muted,#94a3b8)] max-w-sm">
+          <p className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))] max-w-sm">
             Inicie um teste agora. Envie textos ou imagens para processamento via contrato universal.
           </p>
         </div>
@@ -44,13 +44,13 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
 
       {isLoading && (
         <div className="flex justify-start">
-          <div className="bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-2xl rounded-tl-none shadow-sm" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+          <div className="bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 border border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--sarak-chat-radius,12px)] rounded-tl-none shadow-sm" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
             <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
               <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
-              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: 0.2 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
-              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: 0.4 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
+              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: durations.fast }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
+              <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: durations.slow, delay: durations.fast * 2 }} className="w-1.5 h-1.5 bg-[var(--sarak-ai-glow,var(--sarak-primary-color,#00f2ff))] rounded-full" />
             </div>
-            {isProcessingFiles && <p className="text-3xs font-mono text-[var(--text-muted,#94a3b8)] uppercase tracking-widest animate-pulse" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>Codificando Imagens...</p>}
+            {isProcessingFiles && <p className="text-3xs font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest animate-pulse" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}>Codificando Imagens...</p>}
           </div>
         </div>
       )}

@@ -78,7 +78,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
-            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary transition-all duration-300"
+            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[color-mix(in_srgb,var(--color-theme-body,#050505)_50%,transparent)] hover:border-theme-primary transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
             style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)] opacity-50"></div>

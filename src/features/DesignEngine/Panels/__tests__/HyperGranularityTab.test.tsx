@@ -3,8 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { HyperGranularityTab } from '../HyperGranularityTab';
 
+// `useSarakUIOptional` é o que `useMotionTokens` lê (a duração do painel vem de `motionDuration*`).
 vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: () => ({})
+    useSarakUI: () => ({}),
+    useSarakUIOptional: () => undefined,
 }));
 
 describe('HyperGranularityTab', () => {

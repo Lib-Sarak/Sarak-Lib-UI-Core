@@ -23,8 +23,8 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                     </thead>
                     <tbody className="divide-y divide-[var(--theme-border)]/30">
                         {[
-                            { name: "Scraper_V2", status: "Completed", color: "text-emerald-500" },
-                            { name: "Parser_Engine", status: "Failed", color: "text-rose-500" }
+                            { name: "Scraper_V2", status: "Completed", color: "text-[var(--sarak-status-success-color,#10b981)]" },
+                            { name: "Parser_Engine", status: "Failed", color: "text-[var(--sarak-status-error-color,#ef4444)]" }
                         ].map((row, i) => (
                             <tr key={i} className="hover:bg-[var(--theme-primary)]/5 transition-colors">
                                 <td className="p-3 font-medium text-[var(--theme-title)]">{row.name}</td>

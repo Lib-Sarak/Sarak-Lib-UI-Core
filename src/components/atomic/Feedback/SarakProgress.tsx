@@ -98,7 +98,7 @@ export const SarakProgress = ({
 
     return (
         <div className={mergeSarakClasses('w-full', className)}>
-            {label && <div className="text-sm text-[var(--text-muted,#94a3b8)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{label}</div>}
+            {label && <div className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{label}</div>}
             <ProgressTrack accessibleLabel={accessibleLabel} max={safeMax} value={safeValue} indeterminate={indeterminate} color={color} />
         </div>
     );

@@ -52,7 +52,7 @@ const VARIANT_CLASSES: Record<SarakBadgeVariant, { soft: string; solid: string }
     info: { soft: 'border', solid: 'border border-transparent' },
     muted: {
         soft: 'bg-[var(--theme-surface)] text-[var(--theme-muted)] border border-transparent',
-        solid: 'bg-[var(--theme-muted)] text-[var(--sarak-on-muted,#020617)] border border-transparent',
+        solid: 'bg-[var(--theme-muted)] text-[var(--sarak-on-muted,#ffffff)] border border-transparent',
     },
 };
 

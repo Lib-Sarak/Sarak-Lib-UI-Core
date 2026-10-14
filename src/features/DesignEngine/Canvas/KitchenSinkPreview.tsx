@@ -8,10 +8,11 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput, SarakSelect, SarakSlider, SarakSwitch } from '../../../components/atomic/Inputs';
 import { SarakButton, SarakIconButton } from '../../../components/atomic/Buttons';
+import { useMotionTokens } from '../../../components/atomic/hooks/useMotionTokens';
 
 export const KitchenSinkPreview: React.FC = () => {
-    const sarak = useSarakUI();
-    const { design } = sarak;
+    const { design } = useSarakUI();
+    const { staggerDelay } = useMotionTokens();
 
     return (
         <div className="p-8 space-y-12 mx-auto">
@@ -36,7 +37,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     <button className="p-2 bg-theme-text/5 rounded-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors border-theme">
                         <Bell size={18} />
                     </button>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-indigo-500 border-2 border-theme shadow-theme" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-[var(--sarak-secondary-color,#7000ff)] border-2 border-theme shadow-theme" />
                 </div>
             </header>
 
@@ -80,7 +81,7 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Buttons & Actions */}
-                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: staggerDelay * 2 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Plus size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Botões & Ações</h2>
@@ -108,7 +109,7 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Data Displays */}
-                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-6 col-span-1 md:col-span-2">
+                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: staggerDelay * 4 }} className="space-y-6 col-span-1 md:col-span-2">
                     <div className="flex items-center gap-2 mb-4">
                         <BarChart2 size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Tabelas & Listas</h2>
@@ -162,7 +163,7 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Modals & Toasts Mockup */}
-                <motion.section initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: staggerDelay * 6 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <MessageSquare size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Modais & Feedback</h2>
@@ -205,7 +206,7 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Cards & Lists */}
-                <motion.section initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: staggerDelay * 6 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Layout size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Superfícies de Dados</h2>

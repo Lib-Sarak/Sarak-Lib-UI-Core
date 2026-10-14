@@ -87,7 +87,7 @@ test.describe('botão', () => {
         await withScene('componente', undefined, async (page) => {
             const button = probe(page, 'botao-primario').getByRole('button');
             const tokenText = await resolveExpression(button, 'color', 'var(--sarak-btn-primary-text, #000000)');
-            const mutedText = await resolveExpression(button, 'color', 'var(--text-muted, #94a3b8)');
+            const mutedText = await resolveExpression(button, 'color', 'var(--text-muted, rgba(255,255,255,0.4))');
             expect(tokenText, 'o texto do token precisa diferir do texto mudo, ou o caso não distingue nada').not.toBe(mutedText);
 
             await expect(button).toHaveCSS('color', tokenText);
@@ -130,7 +130,7 @@ test.describe('cartão', () => {
         await withScene('componente', undefined, async (page) => {
             const withClass = probe(page, 'cartao-classe-fundo').locator('.sarak-card');
             const container = probe(page, 'conteiner-classe-fundo').locator('.card');
-            const fromClass = await resolveExpression(withClass, 'background-color', 'var(--color-theme-card, #1e293b)');
+            const fromClass = await resolveExpression(withClass, 'background-color', 'var(--color-theme-card, rgba(15,23,42,0.6))');
             const surface = await resolveExpression(withClass, 'background-color', CARD_SURFACE);
             expect(fromClass, 'o fundo da classe precisa diferir da superfície do tema, ou o caso não distingue nada').not.toBe(surface);
 

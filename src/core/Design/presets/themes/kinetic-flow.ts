@@ -300,7 +300,7 @@ export const kineticFlowTheme: SarakThemePreset = {
         navItemActiveColor: '#007568',
         primaryColor: '#db0049',
         statusSuccessColor: '#008066',
-        statusErrorColor: '#e6004c',
+        statusErrorColor: '#e3004b',
         inputErrorColor: '#e10003',
     }
 };

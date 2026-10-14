@@ -48,7 +48,7 @@ function createAlertStyle(color: string): React.CSSProperties {
         padding: 'var(--sarak-layout-gap-md, 16px)',
         borderLeft: `var(--sarak-border-width, 1px) solid ${color}`,
         borderRadius: 'var(--sarak-card-radius, 12px)',
-        backgroundColor: 'var(--color-theme-card, #1e293b)',
+        backgroundColor: 'var(--color-theme-card, rgba(15,23,42,0.6))',
         color: 'var(--sarak-text-main, #ffffff)',
         fontSize: 'var(--sarak-body-size, 14px)',
     };

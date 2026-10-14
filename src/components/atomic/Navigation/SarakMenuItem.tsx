@@ -90,11 +90,11 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
             ? 'font-bold bg-[var(--sarak-sidebar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
             : 'font-bold bg-[var(--sarak-topbar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
         : isVertical
-            ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
-            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
+            ? 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
+            : 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
 
     const disabledClass = disabled
-        ? 'text-[var(--text-muted,#94a3b8)] cursor-not-allowed pointer-events-none'
+        ? 'text-[var(--text-muted,rgba(255,255,255,0.4))] cursor-not-allowed pointer-events-none'
         : 'cursor-pointer';
     const hasHref = href !== undefined;
     const isSafeHref = typeof href === 'string' && sarakIsSafeLinkHref(href);
@@ -110,7 +110,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
             {collapsed ? null : <span className={isVertical ? 'flex-1 min-w-0 truncate text-left' : 'truncate'}>{label}</span>}
             {badge !== undefined && (
                 <span
-                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,#94a3b8)]"
+                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,rgba(255,255,255,0.4))]"
                     style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)' }}
                 >
                     {badge}

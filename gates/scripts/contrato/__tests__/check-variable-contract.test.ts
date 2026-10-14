@@ -155,11 +155,26 @@ describe('(iii) os furos que a reserva tinha — variante de canal, nome derivad
         expect(find(files('5, 5, 5'), [body])).toEqual([]);
     });
 
-    it('a reserva do alias em COMPONENTE não é julgada (limite 6): só o CSS da lib', () => {
+    it('PLANTADO: a reserva do alias em COMPONENTE (TSX) é julgada contra o token de origem, como a do CSS da lib', () => {
         const hook = "const aliasPairs = [['--accent-color', variables['--sarak-accent-color']]];";
         const accent: TokenLike = { id: 'accentColor', type: 'color', defaultValue: '#ff00d4', cssVars: ['--sarak-accent-color'] };
-        const files = { 'core/Design/hooks/useDesignVariables.ts': hook, 'c.tsx': "export const c = 'text-[var(--accent-color,#06b6d4)]';" };
-        expect(find(files, [accent])).toEqual([]);
+        const files = (reserve: string): Record<string, string> => ({
+            'core/Design/hooks/useDesignVariables.ts': hook,
+            'c.tsx': `export const c = 'text-[var(--accent-color,${reserve})]';`,
+        });
+        expect(find(files('#06b6d4'), [accent])).toHaveLength(1);
+        expect(find(files('#ff00d4'), [accent])).toEqual([]);
+    });
+
+    it('PLANTADO: o alias de texto mudo com o hex antigo (`#94a3b8`) é acusado no componente; o padrão do token passa', () => {
+        const muted: TokenLike = { id: 'textColorMuted', type: 'color', defaultValue: 'rgba(255, 255, 255, 0.4)', cssVars: ['--sarak-text-muted'] };
+        const hook = "const aliasPairs = [['--text-muted', variables['--sarak-text-muted']]];";
+        const files = (reserve: string): Record<string, string> => ({
+            'core/Design/hooks/useDesignVariables.ts': hook,
+            'c.tsx': `export const c = { color: 'var(--text-muted, ${reserve})' };`,
+        });
+        expect(find(files('#94a3b8'), [muted])).toHaveLength(1);
+        expect(find(files('rgba(255,255,255,0.4)'), [muted])).toEqual([]);
     });
 
     it('PLANTADO: a declaração sob seletor que exige atributo que ninguém escreve NÃO é dono', () => {

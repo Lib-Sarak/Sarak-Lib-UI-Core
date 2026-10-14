@@ -39,7 +39,7 @@ export interface SarakUploaderProps {
 const borderFor = (dragActive: boolean, dragReject: boolean, hasError: boolean): string => {
     if (dragReject || hasError) return 'var(--sarak-status-error-color,#ef4444)';
     if (dragActive) return 'var(--sarak-primary-color,#00f2ff)';
-    return 'var(--sarak-input-border-color, var(--border-color,#334155))';
+    return 'var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)))';
 };
 
 /**
@@ -85,12 +85,12 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
     return (
         <SarakFormGroup className={className} style={style}>
             {label && (
-                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
+                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">{label}</span>
             )}
 
             <div
                 {...getRootProps({ role: 'button' })}
-                className={`flex items-center justify-center w-full rounded-input text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] ${disabledClass}`}
+                className={`flex items-center justify-center w-full rounded-input text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] ${disabledClass}`}
                 style={{
                     flexDirection: 'column',
                     gap: 'var(--sarak-layout-gap-sm, 8px)',
@@ -116,13 +116,13 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                     (o input não é uma peça visível). Achado de gate, não de código — fica
                     fora do escopo desta plan (§3.2: "você NÃO altera gate nenhum"). */}
                 <input {...getInputProps()} />
-                <svg className="w-8 h-8 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[var(--text-muted,rgba(255,255,255,0.4))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 12l3-3m0 0l3 3m-3-3v9" />
                 </svg>
-                <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">
+                <span className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">
                     {isDragActive ? t('uploaderDragActive') : t('uploaderDropInstruction')}
                 </span>
-                {hint && <span className="text-2xs text-[var(--text-muted,#94a3b8)]/70">{hint}</span>}
+                {hint && <span className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))]/70">{hint}</span>}
             </div>
 
             <SarakFieldError message={error} fieldId={reactId} />

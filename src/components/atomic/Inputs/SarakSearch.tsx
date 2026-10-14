@@ -76,7 +76,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0, transition: { ease: easeIn, duration: SEARCH_EXIT_SECONDS } }}
                     onClick={onClose}
-                    className={`absolute inset-0 bg-[var(--color-theme-card,#1e293b)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
+                    className={`absolute inset-0 bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
                 />
 
                 {/* Palette Container — o "dropdown de busca" a que `searchDropdownGap`/
@@ -88,7 +88,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     initial={{ opacity: 0, scale: 0.95, y: -20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -20, transition: { ease: easeIn, duration: SEARCH_EXIT_SECONDS } }}
-                    className="relative w-full bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
+                    className="relative w-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
                     style={{
                         maxWidth: 'var(--sarak-search-dropdown-width, 400px)',
                         marginTop: `calc(${searchStyle === 'minimal' ? '5vh' : '10vh'} + var(--sarak-search-dropdown-gap, 0.5rem))`,
@@ -96,10 +96,10 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                 >
                     {/* Input Area */}
                     <div
-                        className="flex items-center border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-title,#ffffff)]/[0.02]"
+                        className="flex items-center border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-title,#ffffff)]/[0.02]"
                         style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
                     >
-                        <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
+                        <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,rgba(255,255,255,0.4))]" />
                         <SarakInput
                             type="search"
                             enterKeyHint="search"
@@ -129,7 +129,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {filteredItems.length > 0 ? (
                             <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
+                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
                                 {filteredItems.map(item => {
                                     // Acionável só quando há `onSelect` — sem callback, o resultado
                                     // fica exatamente como sempre foi (nenhum manipulador).
@@ -143,15 +143,15 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                                             style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
                                         >
                                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#00f2ff)] group-hover:bg-[var(--sarak-primary-color,#00f2ff)]/10 transition-all border border-[var(--border-color,#334155)]">
+                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] flex items-center justify-center text-[var(--text-muted,rgba(255,255,255,0.4))] group-hover:text-[var(--sarak-primary-color,#00f2ff)] group-hover:bg-[var(--sarak-primary-color,#00f2ff)]/10 transition-all border border-[var(--border-color,rgba(255,255,255,0.1))]">
                                                     <SarakIcon name="Command" size={16} />
                                                 </div>
                                                 <div className="flex" style={{ flexDirection: 'column' }}>
                                                     <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#00f2ff)]">{item.label}</span>
-                                                    <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
+                                                    <span className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
                                                 </div>
                                             </div>
-                                            <SarakIcon name="ArrowRight" className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                            <SarakIcon name="ArrowRight" className="w-4 h-4 text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                         </Row>
                                     );
                                 })}
@@ -166,20 +166,20 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
 
                     {/* Footer Area */}
                     <div
-                        className="bg-[var(--color-theme-card,#1e293b)]/40 border-t border-[var(--border-color,#334155)] flex items-center justify-between"
+                        className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/40 border-t border-[var(--border-color,rgba(255,255,255,0.1))] flex items-center justify-between"
                         style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-lg, 24px)' }}
                     >
                         <div className="flex" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
                                 <span>{t('searchCloseHint')}</span>
                             </div>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
                                 <span>{t('searchNavigateHint')}</span>
                             </div>
                         </div>
-                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)] italic">{systemName ? t('searchEngineBrandedLabel', { systemName }) : t('searchEngineLabel')}</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))] italic">{systemName ? t('searchEngineBrandedLabel', { systemName }) : t('searchEngineLabel')}</span>
                     </div>
                 </motion.div>
             </div>

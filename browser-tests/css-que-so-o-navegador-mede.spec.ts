@@ -301,7 +301,7 @@ test('item 4: SarakAccordion computa a cor de borda do tema', async () => {
     await withScene('atomos', undefined, async (page) => {
         const root = page.locator('[data-probe="acordeao"] > div');
 
-        await expectBorderColorFromExpression(root, 'var(--border-color,#334155)', 'SarakAccordion.tsx — borderColor');
+        await expectBorderColorFromExpression(root, 'var(--border-color,rgba(255,255,255,0.1))', 'SarakAccordion.tsx — borderColor');
     });
 });
 

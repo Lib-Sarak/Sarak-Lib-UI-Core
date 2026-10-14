@@ -57,6 +57,91 @@ describe('findInLine — o que é branco/preto fixo', () => {
     });
 });
 
+describe('findInLine — paleta do Tailwind e cor quase preta/branca', () => {
+    it.each([
+        ['<i className="text-slate-400" />', 'text-slate-400'],
+        ['<i className="bg-emerald-500/10" />', 'bg-emerald-500/10'],
+        ['<i className="hover:text-red-400" />', 'hover:text-red-400'],
+        ['<i className="from-indigo-500 to-blue-400" />', 'from-indigo-500'],
+        ['<i className="shadow-rose-900/20" />', 'shadow-rose-900/20'],
+    ])('PLANTADO (qualquer escopo): %s é acusado', (line, text) => {
+        expect(findInLine(line).map((hit) => hit.text)).toContain(text);
+    });
+
+    it.each([
+        ['<i className="bg-[var(--sarak-status-success-color,#10b981)]/10" />'],
+        ['<i className="text-theme-muted" />'],
+        ['<i className="text-slate" />'],
+        ["const reserva = 'var(--x, #000000)'"],
+    ])('PASSANTE: %s não é acusado', (line) => {
+        expect(findInLine(line, { strict: true })).toEqual([]);
+    });
+
+    it.each([
+        ['border-[#1a1a1c]', '#1a1a1c'],
+        ['stroke: "#000"', '#000'],
+        ["fill=\"white\"", 'fill="white"'],
+        ["background: 'rgba(10,10,10,0.5)'", 'rgba(10,10,10,0.5)'],
+        ["backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)'", 'white 1px'],
+        ["color: 'rgb(255, 255, 255)'", 'rgb(255, 255, 255)'],
+    ])('PLANTADO (só src/features): %s é acusado no modo estrito', (line, text) => {
+        expect(findInLine(line, { strict: true }).map((hit) => hit.text)).toContain(text);
+        expect(findInLine(line).map((hit) => hit.text)).not.toContain(text);
+    });
+
+    it('CONTRAPROVA: hex que não é quase preto/branco passa, mesmo no painel', () => {
+        expect(findInLine("const a = '#3b82f6'; const b = '#808080';", { strict: true })).toEqual([]);
+    });
+
+    it('MUTAÇÃO: hex quase preto num mock do painel é achado, e o mesmo em componente não é', () => {
+        const root = fixture({
+            'src/features/Mock.tsx': "export const M = () => <div style={{ color: '#0a0a0a' }} />;\n",
+            'src/components/atomic/A.tsx': "export const A = () => <div style={{ color: '#0a0a0a' }} />;\n",
+        });
+
+        const { violations } = findFixedTranslucent({ root, exceptions: {} });
+
+        expect(violations).toEqual([{ file: 'src/features/Mock.tsx', line: 1, kind: 'hex', text: '#0a0a0a' }]);
+    });
+});
+
+describe('findInLine — duração, atraso e sombra com `var()` de cor', () => {
+    it.each([
+        ['<i className="transition-all duration-300" />', 'duration-300'],
+        ['<i className="hover:duration-500" />', 'hover:duration-500'],
+        ['transition={{ duration: 0.3, ease: "circOut" }}', 'duration: 0.3'],
+        ['transition={{ delay: 0.2, duration: durations.slow }}', 'delay: 0.2'],
+        ['<i className="animate-bounce [animation-delay:0.2s]" />', 'animation-delay:0.2s'],
+        ['<i className="shadow-[0_0_10px_rgba(var(--sarak-primary-color,#00f2ff),0.5)]" />', 'rgba(var(--sarak-primary-color,#00f2ff'],
+    ])('PLANTADO: %s é acusado', (line, text) => {
+        expect(findInLine(line).map((hit) => hit.text)).toContain(text);
+    });
+
+    it.each([
+        ['<i className="duration-[var(--sarak-motion-dur-normal,0.3s)]" />'],
+        ['transition={{ duration: durations.normal, delay: staggerDelay * 2 }}'],
+        ['transition={{ duration: 0, delay: 0 }}'],
+        ['<i className="[animation-delay:var(--sarak-motion-dur-fast,0.2s)]" />'],
+        ['<i className="shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.5)]" />'],
+        ['<i className="shadow-[0_0_10px_color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_50%,transparent)]" />'],
+    ])('PASSANTE: %s não é acusado', (line) => {
+        const kinds = findInLine(line).map((hit) => hit.kind);
+
+        expect(kinds.filter((kind) => kind === 'duração' || kind === 'sombra-inválida')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: um `duration-300` num componente é achado, e o mesmo em teste não', () => {
+        const root = fixture({
+            'src/components/atomic/A.tsx': 'export const A = () => <div className="transition-all duration-300" />;\n',
+            'src/components/atomic/__tests__/A.test.tsx': 'it("x", () => { "duration-300"; });\n',
+        });
+
+        const { violations } = findFixedTranslucent({ root, exceptions: {} });
+
+        expect(violations).toEqual([{ file: 'src/components/atomic/A.tsx', line: 1, kind: 'duração', text: 'duration-300' }]);
+    });
+});
+
 describe('findFixedTranslucent — o repositório de fixture', () => {
     it('MUTAÇÃO: um bg-white/5 num componente é achado, com arquivo e linha', () => {
         const root = fixture({ 'src/components/atomic/A.tsx': 'export const A = () => <div className="p-2 bg-white/5" />;\n' });
@@ -121,12 +206,14 @@ describe('findFixedTranslucent — o repositório de fixture', () => {
 });
 
 describe('o repositório', () => {
-    it('não tem branco/preto fixo em componente, e a lista de exceções não tem entrada obsoleta', () => {
+    // Varre a árvore inteira de `src/components` e `src/features` (mais de 400 arquivos, 14 regexes por linha): sob a
+    // suíte completa em paralelo passa dos 5 s do padrão do vitest, e o limite certo é o da varredura, não o da média.
+    it('não tem cor fixa em componente nem no painel, e a lista de exceções não tem entrada obsoleta', () => {
         const { violations, staleExceptions } = findFixedTranslucent();
 
         expect(violations).toEqual([]);
         expect(staleExceptions).toEqual([]);
-    });
+    }, 60_000);
 
     it('toda exceção traz motivo', () => {
         for (const [file, motive] of Object.entries(EXCEPTIONS)) {

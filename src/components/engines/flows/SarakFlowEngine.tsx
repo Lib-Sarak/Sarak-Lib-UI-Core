@@ -57,7 +57,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     maskColor={TEXT_TINT_5}
                 />
                 <Panel position="top-right" className="bg-[var(--theme-card)] p-2 rounded-lg border border-theme-tint backdrop-blur-md">
-                    <span className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">Flow Optimizer Active</span>
+                    <span className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">Flow Optimizer Active</span>
                 </Panel>
             </ReactFlow>
 

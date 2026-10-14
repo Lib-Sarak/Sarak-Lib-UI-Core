@@ -56,14 +56,14 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
                         className={`inline-flex items-center ${
                             isLast
                                 ? 'text-[var(--sarak-text-main,#ffffff)] font-medium'
-                                : 'text-[var(--text-muted,#94a3b8)]'
+                                : 'text-[var(--text-muted,rgba(255,255,255,0.4))]'
                         } ${interactive ? 'cursor-pointer hover:text-[var(--sarak-primary-color,#00f2ff)]' : ''}`}
                     >
                         {item.icon}
                         {item.label}
                     </span>
                     {!isLast && (
-                        <span className="text-[var(--text-muted,#94a3b8)] select-none" aria-hidden="true">
+                        <span className="text-[var(--text-muted,rgba(255,255,255,0.4))] select-none" aria-hidden="true">
                             {separator}
                         </span>
                     )}

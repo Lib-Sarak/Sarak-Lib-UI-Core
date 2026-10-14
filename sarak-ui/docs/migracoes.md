@@ -440,6 +440,39 @@ O `variable-contract:check` passa a julgar a reserva do canal `-rgb` (antes qual
 fachada e a do canal emitido fora do laço, e a não contar como dono a declaração sob seletor de atributo que ninguém
 escreve; o `token-reader:check` lê o `id` da opção sem `value`; o `panel-contract:check` confere a grade do `step`.
 
+### O texto que o componente desenha passa de 4,5:1 nos pares que faltavam, e o valor fixo que tinha token lê o token
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam o texto de
+quatro componentes (e o de dois estados de botão), a reserva de cor de 323 leituras em componente, dezoito valores de
+tema e o desenho de alguns valores fixos que passam a ler o tema.
+
+| Antes | Depois |
+|---|---|
+| O aviso e o erro do `AuthForm` (e o botão de sair do usuário) escreviam o texto CRU na cor do status sobre a própria tinta a 10–15%: de 1,0 a 4,4:1 em 16 e 18 dos 28 casos (14 temas × 2 modos). | O texto é a cor do status misturada ao texto de maior contraste sobre o corpo (40/60), como o badge suave. |
+| O hover do botão fantasma e do contorno deixava o texto na cor primária sobre `btnGhostHoverBg` / a primária a 10% (de 3,6 a 4,4:1 em 12 e 20 de 28). | No hover o texto é a primária misturada ao texto de maior contraste (40/60); em repouso nada muda. |
+| No estilo `cyberpunk` o fundo é transparente, mas o texto de primário, perigo e sucesso seguia `--sarak-on-*` (a cor "sobre a cor" caía sobre o cartão: 1,1:1 no `blueprint-protocol`). | O texto é a cor da própria variante (primária, erro, sucesso). |
+| O botão de sair do usuário lia `--theme-error-bg` e `--theme-error-border` sem reserva (a tinta sumia sem Provider) e, no hover, `--theme-on-primary` sobre o vermelho. | A reserva é a do motor (`rgba(239,68,68,0.15)` e `0.25`) e o texto no hover é `--sarak-on-error`. |
+| `--sarak-on-error` e `--sarak-on-success` tinham a reserva `#ffffff`; `--sarak-on-muted`, `#020617` — o motor calcula o oposto no padrão. | `#020617`, `#020617` e `#ffffff`: a reserva é o que o motor calcula sobre o padrão do token. |
+| 323 leituras de alias de fachada em componente (`--text-muted`, `--border-color`, `--color-theme-card`) tinham reserva de outra cor (`#94a3b8`, `#334155`, `#1e293b`). | A reserva é o padrão do token dono (`rgba(255,255,255,0.4)`, `rgba(255,255,255,0.1)`, `rgba(15,23,42,0.6)`). Sem Provider, o cartão passa a ser translúcido. |
+| A sombra do `PremiumCheckbox` e do nó da matriz era `rgba(var(--sarak-primary-color,#00f2ff),0.5)` — inválida, a sombra sumia. | `color-mix(in srgb, var(--sarak-primary-color,…) 50%, transparent)`: a sombra aparece. |
+| A bolha de carregamento do chat e o anexo usavam `rounded-2xl`/`rounded-xl`; os nós da matriz, `rounded-lg`/`rounded-xl`. | Leem `chatBubbleRadius` e `matrixRadius`. |
+| `hover:text-red-400`, `text-slate-300` em `SarakCatalogGrid`, `SarakFilterSelect` e `SarakHelpButton`; 161 classes de paleta, 37 `duration-N` e 8 durações/atrasos de `framer-motion` em `src/features/`; atrasos de 0,2 s/0,4 s no chat; pulso de 1,6 s do alternador; 2 s do carregamento do motor. | Leem o tema: cor de status e neutra por variável, duração e atraso por `motionDuration*`/`motionStaggerDelay` (o pulso do alternador é 1,6 s no padrão). |
+| Os mocks do painel pintavam `white`, `#000`, `#1a1a1c` e `rgba(10,10,10,0.5)` fixos. | Seguem o tema (título, corpo, texto). |
+| `!p-0` em `SarakChat` e `SarakChatEngine`. | `p-0` — o padding do cartão agora cede à classe. |
+
+**Valores de tema trocados (só a cor que reprovava, sem redesenho):** `statusErrorColor` e `statusSuccessColor` em
+`synthwave-retro`, `minimalist-airy`, `data-terminal`, `golden-hour`, `aurora-veil` (só o erro) e `blueprint-protocol` (modo
+nativo; `data-terminal` só o sucesso) e, na contraparte, em `synthwave-retro`, `cyber-retro-wave`, `blueprint-protocol`, `kinetic-flow` (só o
+erro); `textColorMuted` na contraparte do `sarak-sovereign`.
+
+**Diferença no tema padrão:** o texto do aviso e do erro do `AuthForm` fica um pouco menos saturado, e o do
+hover fantasma/contorno também.
+
+O `verify_contrast.ts` passa a medir 76 pares (8 novos); o `fixed-translucent:check` passa a acusar tom de paleta
+do Tailwind em componente e painel e, em `src/features/`, hex, `rgb()` e a palavra `white`/`black` quase preta ou
+branca; o `variable-contract:check` passa a julgar a reserva de alias de fachada também em componente (fecha o
+limite 6).
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

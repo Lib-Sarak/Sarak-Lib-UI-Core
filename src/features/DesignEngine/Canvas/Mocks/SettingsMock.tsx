@@ -18,8 +18,8 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                         className="absolute inset-0 opacity-10 pointer-events-none"
                         style={{
                             backgroundImage: tokens?.flowGridStyle === 'dots' 
-                                ? 'radial-gradient(circle, white 1px, transparent 1px)' 
-                                : 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+                                ? 'radial-gradient(circle, var(--color-theme-title,#ffffff) 1px, transparent 1px)' 
+                                : 'linear-gradient(to right, var(--color-theme-title,#ffffff) 1px, transparent 1px), linear-gradient(to bottom, var(--color-theme-title,#ffffff) 1px, transparent 1px)',
                             backgroundSize: '20px 20px'
                         }}
                     />

@@ -25,6 +25,9 @@ import { test, expect, chromium, type Browser, type Locator, type Page } from '@
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 
+/** Folga para a transição do aperto assentar: bem acima da duração rápida padrão (0,2 s). */
+const PRESS_SETTLE_MS = 500;
+
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
     throw new Error('O globalSetup não preparou o harness de CSS para esta execução do Playwright.');
@@ -127,6 +130,9 @@ for (const mode of MODES) {
                     const target = probe(page, name);
                     await target.hover();
                     await page.mouse.down();
+                    // O botão sem estilo anima o aperto na duração rápida do tema: lê o valor assentado, não o do meio da transição
+                    // (uma leitura imediata dava 0.991 em vez de 0.98, conforme a carga da máquina).
+                    await page.waitForTimeout(PRESS_SETTLE_MS);
                     try {
                         return await computed(target, 'transform');
                     } finally {

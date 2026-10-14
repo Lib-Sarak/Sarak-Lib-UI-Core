@@ -23,7 +23,7 @@ export const SarakDataEmpty: React.FC<SarakDataEmptyProps> = ({
             role="status"
             data-sarak-data-empty="true"
             className="flex items-center justify-center w-full text-sm"
-            style={{ color: 'var(--text-muted,#94a3b8)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}
+            style={{ color: 'var(--text-muted,rgba(255,255,255,0.4))', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}
         >
             {message ?? text('dataEmpty')}
         </div>

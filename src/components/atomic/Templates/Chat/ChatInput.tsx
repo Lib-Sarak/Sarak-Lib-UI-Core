@@ -41,7 +41,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const tokenSliderStack = getFlexStyles('column', undefined, 'center', '0px');
 
   return (
-  <footer className="bg-gradient-to-t from-[var(--color-theme-card,#1e293b)] via-transparent to-transparent" style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
+  <footer className="bg-gradient-to-t from-[var(--color-theme-card,rgba(15,23,42,0.6))] via-transparent to-transparent" style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
     <AnimatePresence>
       {attachments.length > 0 && (
         <motion.div
@@ -53,7 +53,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <div className="flex" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {attachments.map((att, i) => (
-              <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] border border-[var(--border-color,#334155)] rounded-xl relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
+              <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] border border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--sarak-chat-radius,12px)] relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                 <SarakIcon name="File" size={14} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                 <span className="text-xs font-medium text-[var(--color-theme-title,#ffffff)] max-w-[var(--sarak-chat-attachment-name-max-width,150px)] truncate">{att.name}</span>
                 <SarakIconButton
@@ -82,10 +82,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             >
                <SarakIcon name="Cpu" size={18} className="text-[var(--sarak-primary-color,#00f2ff)]" />
                <div className="flex" style={modelLabelStack.style}>
-                  <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase font-bold tracking-tight leading-none" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Modelo Manual Ativo</span>
+                  <span className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase font-bold tracking-tight leading-none" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Modelo Manual Ativo</span>
                   <span className="text-xs font-semibold text-[var(--color-theme-title,#ffffff)]">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
-               <SarakIcon name="ChevronDown" size={14} className={`text-[var(--text-muted,#94a3b8)] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
+               <SarakIcon name="ChevronDown" size={14} className={`text-[var(--text-muted,rgba(255,255,255,0.4))] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
             </SarakButton>
 
             {showModelPicker && (
@@ -100,7 +100,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             )}
           </div>
 
-          <div className={`flex-1 min-w-[var(--sarak-chat-token-slider-min-width,120px)] bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] ${tokenSliderStack.className}`} style={{ ...tokenSliderStack.style, padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md,16px)' }}>
+          <div className={`flex-1 min-w-[var(--sarak-chat-token-slider-min-width,120px)] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] ${tokenSliderStack.className}`} style={{ ...tokenSliderStack.style, padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md,16px)' }}>
              <SarakSlider 
                min={128} max={16384} step={128} value={maxTokens} 
                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
@@ -114,7 +114,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
       <div className="relative group/input">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#00f2ff)] to-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
-        <div className="relative flex items-center bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden shadow-sm rounded-[var(--sarak-card-radius,12px)]" style={{ paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
+        <div className="relative flex items-center bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] overflow-hidden shadow-sm rounded-[var(--sarak-card-radius,12px)]" style={{ paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
 
           <SarakIconButton
@@ -147,7 +147,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </div>
     </div>
     
-    <p className="text-center text-2xs text-[var(--text-muted,#94a3b8)] uppercase font-medium" style={{ marginTop: 'var(--sarak-layout-gap-md,16px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>
+    <p className="text-center text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase font-medium" style={{ marginTop: 'var(--sarak-layout-gap-md,16px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>
     </p>
   </footer>
   );

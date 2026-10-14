@@ -200,7 +200,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     >
                         {category && !horizontal && !collapsed ? (
                             <div
-                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)] opacity-70 select-none"
+                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-70 select-none"
                                 style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                             >
                                 {category}

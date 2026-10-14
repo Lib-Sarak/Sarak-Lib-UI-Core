@@ -60,3 +60,60 @@ cor que busca recurso (mais de 60 sondas).
 | # | Lote | Onde | O que fazer |
 |---|---|---|---|
 | R3.6 | 3 | reservas de alias de fachada em componentes (`var(--text-muted, #94a3b8)`, `--border-color`, `--color-theme-card`): 359 leituras em TypeScript, 323 divergentes do padrão do token | a reserva é o padrão do token dono (R42); o `variable-contract:check` passa a julgar também a reserva de alias em componente (fecha o limite 6) |
+
+### Herdado do veredito do lote 3 (2026-10-13)
+
+| # | Onde | O que fazer |
+|---|---|---|
+| F.1 | `.agents/skills/ui-criar-tema/scripts/__tests__/generate_theme_template.test.ts:17-33` | o teste grava um tema temporário **dentro de `src/core/Design/presets/themes/`** e o apaga no fim; o gerador do kit (`scripts/consumer-kit/kitFiles.mjs:86`) varre `src/` na mesma suíte e lê o arquivo já apagado (`ENOENT`) — falha intermitente de `kitGenerator.test.mjs` que não é de tempo. O teste escreve fora do repositório (pasta temporária) |
+| F.2 | sobreposições (modal, menu, tooltip, toast, popup: ~44 `shadow-sm…2xl`) | sem token de sombra de sobreposição; recomendação do revisor: ler a sombra do tema (`--dynamic-shadow`), que já segue cor, direção e camadas — sem token novo |
+| F.3 | `DashboardMetricsGrid.tsx:93` | `!p-0` redundante (mesma classe de R3.5) |
+
+---
+
+## Lote 4 — o resíduo da re-auditoria de fechamento (2026-10-13)
+
+Medido sobre o worktree do lote 3 (três re-auditorias somente-leitura, instruídas a procurar também o que os gates
+não veem). O revisor conferiu os pontos ✔. **Em zero, confirmados:** conflito de dono entre tokens; nome lido sem
+emissor nem declaração viva; variável inline órfã na troca de tema; token sem leitor e opção sem regra; contrato dos
+14 temas (chave, opção, faixa, grade, cor); controle sem ramo, sem descrição, `NaN`, `id` ≠ `value`; duplicata no
+catálogo; validação de cor (30 sondas recusadas, 1777 cores dos temas aceitas).
+
+### Cascata e classes
+
+| # | Onde | O defeito | O que fazer |
+|---|---|---|---|
+| L4.1 ✔ | 11 classes arbitrárias com espaço dentro do colchete, que o Tailwind parte em duas e não gera: `SarakTooltip.tsx:191` `z-[var(--z-index-tooltip, 9000)]` (o tooltip `fixed` fica sem z-index — conferido: a classe não está no `dist/sarak.css`), `SarakAnalyticalPage.tsx:52,65` (hover sem fundo), e no painel `CardsCatalog.tsx:58`, `TypographyCatalog.tsx:35`, `PreviewCanvas.tsx:100`, `LiveDraftPreviewFrame.tsx:49,55`, `MasterControlPanel.tsx:174`, `LayoutTab.tsx:168,186` | o valor do tema nunca chega | corrigir (sem espaço, ou `_`) e **travar**: classe arbitrária com espaço é acusada |
+| L4.2 | `_utilities.css:22` `.transition-sarak { transition … !important }` (isenta pelo limite 4 do `css-important`) | atropela `transition`/`duration-*` da classe do consumidor e a transição do cartão (`SarakExpandableCard.tsx:56`, `SarakSocialButton.tsx:40,73`) | sem `!important`, na camada que cede |
+| L4.3 | `_atmosphere.css:636-639` `body[data-sarak-has-media="true"] .bg-theme-body { background-color: transparent !important }` | com fundo de mídia, apaga o fundo de componente que usa `bg-theme-body` (overlay do `SarakExpandableCard.tsx:96`, rótulo do `AuthSocialLogin.tsx:39`, `AuthForm.tsx:73`, `SarakAuthScreen.tsx:163`, `SarakActionCard.tsx:163`) | o fundo de mídia alcança só o contêiner de página, não o componente |
+| L4.4 | `_theme.css:96` `.rounded-sarak`, `:106` `.rounded-input` na camada final; `mergeSarakClasses` só registra `rounded-btn` no grupo `rounded` | vencem o `rounded-*` da classe do consumidor | o merge conhece as três; a regra cede |
+| L4.5 | 13 sombras de sobreposição fixas (`SarakModal.tsx:147`, `SarakToast.tsx:136`, `SarakTooltip.tsx:193`, `SarakContextMenu.tsx:87`, `AutocompletePopup.tsx:108`, `SarakDatePicker.tsx:155`, `SarakMultiSelect.tsx:143`, `SarakShellLanguageSelector.tsx:83`, `SarakSpotlight.tsx:131`, `ShellPreferencesMenu.tsx:62`, `ModelPicker.tsx:31`, `SarakHelpButton.tsx:25`, `SarakManagementGrid.tsx:115`) — antigo F.2 | a sombra não segue o tema | ler a sombra do tema (`--dynamic-shadow`), sem token novo (recomendação do revisor) |
+| L4.6 | z-index fixo em sobreposição (`SarakSpotlight.tsx:122` 9999, `SarakHelpButton.tsx:20` e `SarakExpandableCard.tsx:96` 99999, `SarakShellLanguageSelector.tsx:83` e `ShellPreferencesMenu.tsx:62` 1000, `SarakSearch.tsx:72` e `SarakShellSearchWidget.tsx:110` 600, `SarakManagementGrid.tsx:110,122` 50); `SarakLightbox.tsx:102` 1100 abaixo do modal (2000); `zIndexToast` e `zIndexTooltip` com o mesmo padrão (9000) e `max` 9999 fora da grade de `step` 100 | a escada de camadas não é a do tema; lightbox aberto de dentro de modal fica por baixo | cada sobreposição lê o token da camada dela; escada sem empate; `max` na grade |
+
+### Variável e injeção
+
+| # | Onde | O defeito | O que fazer |
+|---|---|---|---|
+| L4.7 ✔ | `--color-theme-title`: o motor (`useDesignVariables.ts:206`) escreve `--text-main`; `_theme.css:15` declara `--sarak-topbar-title-color` | o inline vence: `topbarTitleColor` nunca chega aos usos de `theme-title`; dois donos com valores diferentes em 10 de 14 temas | um dono |
+| L4.8 | `_base.css:16` `--theme-card: var(--theme-surface, …)` | sem Provider, o cartão vira a cor da superfície | a reserva é a do token dono |
+| L4.9 | `_theme.css` usa `@theme {` (não `inline`): 43 de 45 nomes (`--radius-btn`, `--color-theme-primary`, `--duration-*`, `--z-index-*`…) resolvem no `:root` e o motor não os reemite no `DesignScope` | a prévia do painel mostra o tema aplicado, não o rascunho, em `rounded-btn`, `bg-theme-primary`… | o escopo do rascunho alcança esses nomes (`@theme inline` ou reemissão) — com prova no navegador dentro do `DesignScope` |
+| L4.10 | 30 reservas em nomes derivados declarados em CSS da lib (`--radius-btn, 12px`; `--sarak-shadow-glow, rgba(59,130,246,.5)` ×9; `--color-theme-primary, #3b82f6`; `--color-theme-on-primary, #fff`; `--duration-slow, 0.5s`; `--duration-normal, 0.4s`…) | divergem do valor que o nome carrega | reserva = valor declarado; o `variable-contract` passa a julgar nome derivado declarado em CSS |
+| L4.11 | `TextMock.tsx:93,115,122,132` `calc(var(--sarak-input-border-radius, 8) * 1px)` | o motor emite `8px`: `calc(px * px)` inválido → raio 0 | ler a variável direto; o gate acusa reserva sem unidade em variável com unidade |
+| L4.12 | `SarakShellNav.tsx:184` `width: var(--sarak-border-width, thin)`; tolerância de alfa do gate (0,011) deixa `TextMock.tsx:92` passar com 0,02 × 0,03 | palavra-chave inválida para a propriedade; tolerância larga | reserva válida para a propriedade; tolerância apertada |
+| L4.13 | `DesignInjector.tsx` não limpa ao desmontar (~946 variáveis, `#sarak-responsive-vars`, classe de modo) | o host fica com o tema depois de o Provider sair | limpar o que o injetor escreveu ao desmontar |
+
+### Painel, catálogo e descrições
+
+| # | Onde | O defeito | O que fazer |
+|---|---|---|---|
+| L4.14 | `ColorControl.tsx:73,83` + `composeColor` (`colorParts.ts:114-119`) | mexer só no alfa de um valor `var()`/`color-mix()` grava `rgba()` literal e perde o vínculo | gravar `color-mix(in srgb, var(--x) N%, transparent)` |
+| L4.15 | `PresetCard.tsx:65` usa `cardShadowSpread` como desfoque em px; o schema o define como opacidade em % | um token, dois sentidos | um sentido |
+| L4.16 | **catálogo dessincronizado do schema** em 14 entradas: `shadowOrientation` (opção `top-left` inexistente; faltam `top`, `dynamic`), `cardTitleFontWeight` (`100`, `800` a mais), `btnStyleType` (faltam `cyberpunk`, `neumorphism`), `h1Weight`/`h2Weight` (faltam `800`, `900`), `chartType` (falta `area`), `texture` (faltam 36), `maxContentWidth` (falta `1000px`); tipos trocados: `bgNoiseAnimation` e `layeredShadows` como `boolean`, `glassBlur` como `string`, `cardTitleIconGlow` como `number`, `cardSearchBorderBeamActive` como `color`, `globalBackgroundImageUrl` como `string` | a paridade 1:1:1 confere presença, não valor nem tipo | catálogo igual ao schema em opções e tipo; **a paridade passa a conferir opção e tipo** |
+| L4.17 | descrições falsas: `animEnabled` ("toda a aplicação"; o único leitor é `SarakPageTransition.tsx:49`), `isNavHidden` ("remove a navegação"; recolhe a 74 px), `cardGeometricCut` ("um canto"; corta os quatro), `motionDurationFast` (cita `--duration-fast`, que não vale no `DesignScope` até L4.9) | a ajuda do painel mente | o código faz o que a descrição diz, ou a descrição diz o que o código faz |
+| L4.18 | herdado: `generate_theme_template.test.ts` grava dentro de `src/` (antigo F.1) · `DashboardMetricsGrid.tsx:93` `!p-0` redundante (F.3) | colisão de testes; resíduo | o teste escreve fora do repositório |
+
+### Roteado para outras plans (não é deste lote)
+
+- **Trocar de tema herda token do tema anterior** (`useDesignSync.ts:54,68`; e a prévia do painel, `useDesignDraft.ts:208-212`, que o "Aplicar" grava): 127 de 182 pares de temas herdam, 66 deles os cantos de raio — já é critério da `plan-116` (aplicar tema); a prévia do painel entra lá também.
+- **Contrapartes que não declaram** `secondaryColor`, `tertiaryColor`, `accentColor`, `statusWarningColor`, `statusInfoColor`, `btnPrimary*` (pares de aviso, info e secundária do painel e dos mocks, e o chip do `SarakCalendar` no `neo-brutalism`): a `plan-110` declara todo token estético dependente de modo na contraparte de cada tema — fecha lá, tema a tema.
+- **Raios, sombras e durações literais sem token específico** (33 raios, 43 sombras e molas do `framer-motion` em componentes; mais no painel): sem token que os nomeie, é vocabulário de design, não desobediência; registrado no backlog.

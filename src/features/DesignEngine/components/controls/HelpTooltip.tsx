@@ -11,7 +11,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
             >
                 <HelpCircle size={10} />
             </button>

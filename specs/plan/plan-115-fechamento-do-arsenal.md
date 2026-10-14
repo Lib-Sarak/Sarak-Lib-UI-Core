@@ -291,6 +291,82 @@ fora com motivo medido.
 - Mudança de aparência no padrão: marca do cromo esmaece a 70% no hover; selos de `rounded-md` a pílula; `z-index` 500 na sidebar; barra do gráfico 0,6 s. Rever com o dono se a pílula como padrão do selo é o desejado.
 - Lote 3 não iniciado, por instrução.
 
+## Resumo da execução (lote 3 — contraste e valores fixos) — 2026-10-13
+
+**Resultado:** Concluído (sem pendência de critério; as pendências são verificações do revisor: `npm run build` e `cromo-css-real:check` oficiais, e a repetição da re-auditoria das três frentes).
+
+**Estado do worktree ao iniciar**
+(limpo) — `HEAD` `e9dd00a5` (lotes 1 e 2 commitados).
+
+**O que foi feito**
+- R3.1 — pares novos em `verify_contrast.ts` (68 → 76), grupo D: `mix:statusErrorColor` sobre a tinta a 15% da barra lateral e do topo (botão de sair), `mix:primaryColor` sobre `btnGhostHoverBg` (hover do fantasma e do contorno), `statusErrorColor` e `statusSuccessColor` sobre `colorBgBody` (estilo `cyberpunk`), `textColorMuted` e `textColorSecondary` sobre `tableHeaderBg`. O que reprovava foi consertado **no componente**: texto cru → mistura de 40% da cor com o texto de maior contraste sobre o corpo (a do badge suave) em `AuthForm.tsx:112-113` (aviso e erro), `SarakShellUserWidget.tsx` (sair: a tinta lê `--theme-error-bg/-border` com a reserva do motor; no hover o texto é `--sarak-on-error`), `SarakButton.tsx`/`SarakIconButton.tsx` (hover do fantasma e do contorno) e `useAtomicStyles.ts` (no `cyberpunk`, primário/perigo/sucesso leem a cor da própria variante; o fundo é transparente).
+- R3.2 — os 14 temas × 2 modos passam nos 76 pares (`verify_contrast.ts`: 0 reprovados, 0 pulados). Valores de tema trocados só onde reprovavam (busca de luminosidade HSL mínima, mesmo matiz e saturação): `statusErrorColor`/`statusSuccessColor` no modo nativo de `synthwave-retro`, `minimalist-airy`, `golden-hour`, `blueprint-protocol` (os dois), `data-terminal` (sucesso) e `aurora-veil` (erro); na contraparte de `synthwave-retro`, `cyber-retro-wave`, `blueprint-protocol` (os dois) e `kinetic-flow` (erro); `textColorMuted` na contraparte do `sarak-sovereign`. Aviso e info não foram declarados nas contrapartes: depois do conserto nenhum componente os desenha como texto cru (ver decisões).
+- R3.3 — raio do chat (`MessageList.tsx:47`, `ChatInput.tsx:56` → `--sarak-chat-radius`); sombra `rgba(var(--x,#hex),a)` inválida (`PremiumCheckbox.tsx:11`, `RecursiveMatrixNode.tsx:87` → `color-mix`); `SarakCatalogGrid.tsx:126`, `SarakFilterSelect.tsx:21`, `SarakHelpButton.tsx:42` (paleta → tema); pulso do alternador (`switchStyles.ts:17` → `motionDurationSlow`, 1,6 s no padrão), `LazyEngineWrapper.tsx:25`, atrasos do chat e das orbes (`MessageList.tsx:50-51`, `SarakChatEngine.tsx:184-185`, `AuthHero.tsx:24,50`, `AuthForm.tsx:76`); raios da matriz (`RecursiveMatrixNode.tsx:104,128,149,169,212` → `--sarak-matrix-radius`); reservas `--sarak-on-error/-success` `#ffffff` → `#020617`, `--sarak-on-muted` `#020617` → `#ffffff` e `--sarak-on-chat-user` (`MessageBubble.tsx:27`, `SarakChatEngine.tsx:100`) → `#ffffff` (o que o motor calcula sobre o padrão do token).
+- R3.4 — `src/features/`: 161 classes de paleta → variável de status, texto ou borda do tema; 37 `duration-N` → `duration-[var(--sarak-motion-dur-*)]`; 4 durações e 4 atrasos de `framer-motion` → `useMotionTokens`; `ChartsMock.tsx:67-68`, `ChatMock.tsx:36`, `SettingsMock.tsx:21-22`, `MockDocuments.tsx:96`, `ButtonPresetPreview.tsx:81`, `InputPresetPreview.tsx:47`, `useDeviceStyles.ts:11,14` → cor do tema; `colorParts.ts:10` (o piso do `<input type="color">`, só hex) ganha o marcador `sarak-allow-fixed-color`.
+- R3.5 — `!p-0` fora de `SarakChat.tsx:45` (o `padding: 0` passa ao `style`, porque o auditor de hardcode acusa o `p-0` estrutural em átomo) e `p-0` em `SarakChatEngine.tsx:62`. Reservas `--sarak-on-*`: ver R3.3.
+- R3.6 — `variable-contract:check` julga a reserva de alias de fachada também em `.tsx` (`variable-contract-core.ts`: saiu o `continue` do nome derivado em componente); 323 leituras corrigidas por codemod em 92 arquivos (`--text-muted` 141, `--border-color` 95, `--color-theme-card` 87) para `rgba(255,255,255,0.4)`, `rgba(255,255,255,0.1)` e `rgba(15,23,42,0.6)`; 3 `defaultValue` de schema (`card-action`, `card-search`, `inputs`) levam a mesma reserva. Limite 6 reescrito no cabeçalho do gate.
+- Travas: `verify_contrast.ts` (8 pares, 4 casos de mutação em `verify_contrast.test.ts`); `check-fixed-translucent.mjs` passa a acusar paleta do Tailwind, duração/atraso fixos e `rgba(var(--x,#hex),a)` em `src/components/` e `src/features/`, e hex, `rgb()` e `white`/`black` quase preto/branco em `src/features/` (limites 1 e 6 no cabeçalho; casos plantados, passantes e mutação no teste; o caso da varredura do repositório ganhou limite de 60 s); `check-variable-contract.ts` (alias em componente, caso plantado `#94a3b8` e o antigo "não julgada" trocado); `useAtomicStyles.test.ts` (cyberpunk).
+- Navegador: `contraste-do-que-faltava.spec.ts` (18 casos: tela de autenticação — erro e aviso —, sair, fantasma, contorno, perigo, cyberpunk × primário/perigo/sucesso, em claro e escuro) e `valores-fixos-leem-o-token.spec.ts` (7 casos: pulso, raio e sombra da matriz, texto da ajuda); cenas `contraste-botoes`, `contraste-auth`, `valores-fixos` e recortes `contraste-*`, `fixos-*`, `modo-*` no harness.
+- Nota MAJOR em `docs/migracoes.md` (`## 8.0.0`), antes de "Exports removidos do barril público".
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/verify_contrast.ts` + `__tests__/verify_contrast.test.ts` | alterado | 8 pares; `VAR_RE` aceita reserva com parênteses; limites 5 e 10 |
+| `gates/scripts/contrato/check-fixed-translucent.mjs` + teste | alterado | paleta, duração, sombra inválida, hex/rgb/palavra no painel; limites 1 e 6 |
+| `gates/scripts/contrato/{check-variable-contract.ts,helpers/variable-contract-core.ts}` + teste | alterado | reserva de alias em componente julgada |
+| `src/core/Design/presets/themes/*.ts` (9) | alterado | 18 valores de cor (status e texto mudo) |
+| `src/core/Design/schema/{card-action,card-search,inputs}.ts` | alterado | reserva do alias dentro do `defaultValue` |
+| `src/components/**` (84 arquivos) | alterado | reservas, texto misturado, raios, duração, paleta |
+| `src/features/DesignEngine/**` (53) | alterado | paleta, duração, mocks, reservas |
+| `src/components/atomic/hooks/useAtomicStyles.ts` + teste | alterado | texto do cyberpunk |
+| `src/features/DesignEngine/Panels/__tests__/HyperGranularityTab.test.tsx` | alterado | o mock do Provider ganha `useSarakUIOptional` (o painel lê `useMotionTokens`) |
+| `browser-tests/{contraste-do-que-faltava,valores-fixos-leem-o-token}.spec.ts` | criado | 25 casos |
+| `browser-tests/fixtures/harness-entry.tsx` e 4 specs | alterado | cenas e recortes; classes de cena que a lib deixou de emitir; espera do aperto |
+| 14 `__snapshots__/*.snap` | alterado | só reserva, paleta e duração |
+| `docs/migracoes.md` · `sarak-ui/docs/migracoes.md` | alterado | nota MAJOR; kit regenerado (`guide` por último) |
+
+**Verificações executadas**
+- Navegador, **HEAD** (cópia fora do repo, build refeito, gates e specs novos sobre `src/` do `HEAD`): `contraste-do-que-faltava.spec.ts` → dos 16 primeiros casos, **13 falham** e 3 passam (as contraprovas: perigo sólido nos dois recortes e o primário `cyberpunk` no claro); a rodada foi interrompida no 16º; `verify_contrast.ts` com os 76 pares → **6 temas reprovam no nativo e 5 no oposto**; `check-fixed-translucent.mjs` → **175 ocorrências**; `variable-contract` → **323 reservas**.
+- Navegador, **worktree** (cópia fora do repo, tsup + tailwind + escopado): bateria inteira `playwright test browser-tests` → **305 passed**, 0 falhas, repetida **depois do último ajuste de `src/`** (`SarakChat.tsx`, `KitchenSinkPreview.tsx`). A 1ª bateria deu 5 falhas, todas de teste: 3 classes de cena que a lib deixou de emitir (`from-indigo-500`, `duration-300`) e o aperto lido no meio da transição (corrigido com espera de 500 ms).
+- `npx vitest run` completo, **última passada depois do último ajuste**: **480 arquivos, 3342/3342 testes**. A 1ª passada deu 18 falhas: 15 snapshots (só reserva, paleta e duração; `-u` e conferência do diff), 2 do `HyperGranularityTab` (mock do Provider sem `useSarakUIOptional`) e 1 timeout do gabarito de tema sob carga, que passa isolado; a 2ª, 1 snapshot que o `-u` não alcançou.
+- `npx tsc --noEmit` → 0 erros. `audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12" (passou por 2 regressões minhas, corrigidas: `KitchenSinkPreview.tsx` com 251 linhas e `p-0` estrutural em `SarakChat.tsx`).
+- Anel 1 (cada `*:check` do `pre-commit`, repetido depois do último ajuste): barrel, catalog, zero-brand, deep-import, gate-limits, container-query(-boundary), persistence-doc, class-merge, icon-port, chrome-token-parity, token-reader, css-important, fixed-translucent, trail-citation, token-types, variable-contract (3800 leituras com dono, 2630 reservas conferidas), channel-dispute, panel-contract, dev-kit, guide → todos OK; `guide` por último.
+- Anel 0 simulado (padrões de `gates/scripts/segredo/config.json` sobre as linhas adicionadas e os 2 não rastreados, sem `specs/`): 1755 linhas, **0 achados**.
+- Mutação: `verify_contrast.test.ts` (cor do status clara no `cyberpunk`, texto mudo sobre cabeçalho escuro → reprova; mistura do hover passa), `check-fixed-translucent.test.mjs` (`duration-300` e hex `#0a0a0a` num mock → achado; o mesmo em teste ou em componente-hex → não), `check-variable-contract.test.ts` (`var(--text-muted, #94a3b8)` em `.tsx` → achado).
+
+**Critérios de aceite (lote 3)**
+- [x] os pares do anexo medidos e verdes — `verify_contrast.ts` (76 pares × 14 temas × 2 modos: 0 reprovados), `contraste-do-que-faltava.spec.ts`.
+- [x] contrapartes completas onde reprovavam — 18 valores (ver R3.2); `auditContraparteRequired`: 0 faltando.
+- [x] valores fixos lidos do token — `fixed-translucent:check` e `variable-contract:check` OK; `valores-fixos-leem-o-token.spec.ts`.
+- [x] mocks seguindo o tema — `fixed-translucent:check` com hex, `rgb()` e palavra em `src/features/`: 0.
+- [x] uma trava por classe nova, falhando no `HEAD` anterior e passando depois (números acima).
+- [x] nota MAJOR em `## 8.0.0`.
+- [x] suíte completa verde (repetida), `tsc` 0, `audit:baseline` sem regressão, Anel 1 inteiro, bateria do navegador, Anel 0 simulado: 0.
+
+**Decisões e suposições**
+- Os pares de aviso/erro do `AuthForm` e o hover fantasma/contorno foram consertados no **componente** (a mistura do badge suave), não nos 14 temas: trocar `primaryColor` e a cor de aviso em 12 a 20 de 28 casos mudaria a marca de cada tema, e um tema de consumidor ficaria sem proteção. O custo é um texto menos saturado nesses estados, declarado na nota MAJOR.
+- `--theme-error-bg` e `--theme-error-border` **existem** (o motor as emite por `generateVariants` do `statusErrorColor`, a 15% e 25%): o anexo as dá como não definidas, e a reserva é que faltava. O par mede a tinta a 15%.
+- Aviso e info (`statusWarningColor`, `statusInfoColor`) não entraram como texto cru em `PAIRS`: `SarakAlert` os usa em ícone e borda (não-texto, fora da R31, limite 10), e o `AuthForm` passou à mistura. `accentColor` e `tertiaryColor` não desenham texto em componente algum. Declarado em `verify_contrast.ts`.
+- **Token de sombra de sobreposição NÃO foi criado** (declarado antes de criar, como a instrução manda): ~44 `shadow-sm…2xl` em modal, menu, tooltip, toast e popup não têm token, e criar um é decisão de schema (3 fontes, leitor, painel). Fica para o revisor.
+- Mapa da paleta (codemod): neutros claros (200–300) → `--color-theme-title`, neutros 400+ → `--text-muted`, fundo escuro → `--color-theme-card`, borda → `--border-color`; esmeralda/verde/lima/teal → sucesso; rosa/vermelho → erro; âmbar/laranja/amarelo → aviso; azul/céu → info; ciano → primária; índigo/violeta/roxo/fúcsia → secundária. A matiz muda onde o tema muda a cor de status.
+- O pulso do alternador usa o fator 2,67 sobre `motionDurationSlow` (1,6 s no padrão) e o carregamento do motor, 3,33 (2 s): o aspecto no tema padrão não muda.
+- O gate de duração acusa qualquer número literal em `duration:`/`delay:`; um `delay: 300` de debounce em milissegundos precisa do marcador `sarak-allow-fixed-color` (limite 6).
+- Os recortes `contraste-*` do harness definem `titleColor`/`textColorMuted`; sem eles o recorte claro deixava o título branco sobre branco (artefato do recorte, não da lib).
+- O teste da varredura do repositório do `check-fixed-translucent` ganhou limite de 60 s com o motivo (a mesma regra do R2.11).
+- Os dois diretórios temporários (`C:\tmp\sarak-work`, `C:\tmp\sarak-head`) foram removidos com a junção antes; `node_modules` do repo conferido.
+
+**Achados fora do escopo (não corrigidos)**
+- `DashboardMetricsGrid.tsx:93` (`!p-0` num mock do painel) segue redundante — o R3.5 só nomeava os dois do chat.
+- `SarakFilterSelect.tsx:21`: a classe de texto nunca foi a cor efetiva (o `SarakSelect` pinta por `--sarak-input-text-color`); a troca de `text-slate-300` é só higiene.
+- A descrição "Gera variantes automáticas de fundo/borda" dos tokens de status é verdadeira (o limite 5 antigo do `verify_contrast.ts` dizia que não): o limite foi reescrito; vale conferir a spec 02 §10 se citar a mesma frase.
+- Sob carga, `generate_theme_template.test.ts` ("o gabarito compila") estourou o tempo na 1ª passada completa e passa isolado (3,4 s): o mesmo padrão do R2.11, fora da lista do anexo.
+
+**Pendências / riscos**
+- `dist/` e `sarak-ui/` (além de `docs/migracoes.md`) não foram reconstruídos aqui; o build oficial e o `cromo-css-real:check` são do revisor.
+- Mudança de aparência no padrão: o texto de aviso/erro do `AuthForm` e o do hover fantasma/contorno ficam menos saturados; sem Provider, o cartão passa a ser translúcido (`rgba(15,23,42,0.6)`), o texto mudo `rgba(255,255,255,0.4)` e a borda `rgba(255,255,255,0.1)`; `p-*` dos mocks seguem valendo (lote 1).
+- O token de sombra de sobreposição (ver decisões) é a única classe de valor fixo do anexo (R3.3, "suspeitas") deixada sem trava e sem conserto.
+
 ---
 
 # 10. Veredito
@@ -322,3 +398,28 @@ fora com motivo medido.
 **Roteado:** as 323 reservas de alias de fachada em componentes (limite 6 do `variable-contract`) entram no lote 3 (R3.6).
 
 **Próximo:** lote 3, depois do commit deste lote.
+
+## Veredito — 2026-10-13 — lote 3 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK; `playwright test` sobre esse `dist/`: **305/305**, com os 25 casos novos (`contraste-do-que-faltava`, `valores-fixos-leem-o-token`); suíte completa: 479/480 arquivos, 3328 testes verdes — a única falha é `kitGenerator.test.mjs` por `ENOENT` de um arquivo que outro teste, de 2025, grava e apaga dentro de `src/` (anexo F.1; isolado, 14/14), **não deste lote**; `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK; varredura do padrão "Segredo atribuido" nas linhas adicionadas e nos não rastreados: 0. Conferido no diff que as trocas de cor dos temas são de luminosidade (mesma matiz) e que o marcador `sarak-allow-fixed-color` tem um uso só (o piso do `<input type="color">`).
+
+**Decisões do executor — aceitas:** texto de aviso/erro e do hover fantasma/contorno pela mistura do badge suave, no componente, sem mexer na marca dos temas; `--theme-error-bg/-border` existem como variantes (correção do anexo); aviso e info fora dos pares de texto cru (só ícone e borda); mapa da paleta do codemod; fatores do pulso e do carregamento sobre `motionDurationSlow`.
+
+**Decisão aberta (anexo F.2):** o token de sombra de sobreposição não foi criado. Recomendação do revisor: as sobreposições leem a sombra do tema (`--dynamic-shadow`), sem token novo.
+
+**Próximo:** fechamento — o revisor repete a re-auditoria das três frentes; o resultado, com F.1 a F.3, decide a última correção ou o fechamento da plan.
+
+## Fechamento — 2026-10-13 — re-auditoria das três frentes: resíduo → lote 4
+
+As três re-auditorias (variável e injeção; cascata e componentes; painel, temas e contraste) confirmam **zero** nas
+categorias que as plans 114 e 115 travaram, e medem um resíduo menor, a maior parte em pontos cegos das travas:
+classes arbitrárias com espaço que o Tailwind não gera (o tooltip sem z-index — conferido no `dist/`), dois
+`!important` isentos, sombras e camadas fixas das sobreposições, um nome do `@theme` com dois donos
+(`--color-theme-title` — conferido), o `@theme` que o `DesignScope` não alcança, o catálogo dessincronizado do
+schema em opção e tipo, e descrições. A lista, com arquivo e linha, está no anexo, seção **"Lote 4"**. A herança na
+troca de tema vai para a `plan-116`, e as contrapartes incompletas, para a `plan-110`.
+
+**Lote 4** (mesma disciplina dos anteriores): cada item do anexo corrigido ou fora com motivo medido; trava para as
+classes novas (classe arbitrária com espaço; opção e tipo na paridade do catálogo; reserva de nome derivado
+declarado em CSS); casos de navegador para o que é CSS, inclusive dentro do `DesignScope`. O fechamento depois do
+lote 4 é uma re-auditoria **dirigida** ao que o lote 4 tocou e às regressões, não uma nova varredura aberta.

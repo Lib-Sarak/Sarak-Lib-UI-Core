@@ -27,7 +27,7 @@ export interface ShellPreferenceRowContext {
  */
 const PreferenceMenuRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
     <div className="flex items-center justify-between gap-[var(--sarak-layout-gap-sm,12px)] px-[var(--sarak-layout-gap-sm,12px)] py-[var(--sarak-layout-gap-sm,8px)]">
-        <span className="text-sm text-[var(--text-muted,#94a3b8)]">{label}</span>
+        <span className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]">{label}</span>
         {children}
     </div>
 );

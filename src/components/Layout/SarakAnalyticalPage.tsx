@@ -41,7 +41,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
             <div className="flex flex-col w-full h-full relative">
                 {/* Mobile Header (Auto-generated Se houver navBar ou sidePanel para controlar) */}
                 {(navBar || sidePanel) && (
-                    <div className="flex items-center justify-between p-4 border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] z-20 shrink-0">
+                    <div className="flex items-center justify-between p-4 border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] z-20 shrink-0">
                         {navBar ? (
                             // Composição atômica (R10 — lote 10): `borderRadius` por `style`
                             // (vence a classe do átomo) preserva o `rounded-lg` original.
@@ -49,7 +49,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 onClick={() => setIsMobileNavOpen(true)}
                                 variant="ghost"
                                 aria-label={t('mobileMenuOpenAriaLabel')}
-                                className="bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
+                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -62,7 +62,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 onClick={() => setIsSidePanelOpen(true)}
                                 variant="ghost"
                                 aria-label={t('sidePanelOpenAriaLabel')}
-                                className="bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
+                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -77,7 +77,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                     {mainContent}
                     {/* Se não for modo drawer, empilha o side panel no final */}
                     {!sidePanelAsDrawerOnMobile && sidePanel && (
-                        <div className="mt-8 border-t border-[var(--border-color,#334155)] pt-4">
+                        <div className="mt-8 border-t border-[var(--border-color,rgba(255,255,255,0.1))] pt-4">
                             {sidePanel}
                         </div>
                     )}
@@ -87,7 +87,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {navBar && isMobileNavOpen && (
                     <div className="absolute inset-0 z-50 flex">
                         <div className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" onClick={() => setIsMobileNavOpen(false)} />
-                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-r border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left">
+                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-r border-[var(--border-color,rgba(255,255,255,0.1))] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left">
                             <div className="flex justify-end mb-4">
                                 <SarakIconButton
                                     onClick={() => setIsMobileNavOpen(false)}
@@ -106,7 +106,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {sidePanel && sidePanelAsDrawerOnMobile && isSidePanelOpen && (
                     <div className="absolute inset-0 z-50 flex justify-end">
                         <div className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" onClick={() => setIsSidePanelOpen(false)} />
-                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-l border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right">
+                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-l border-[var(--border-color,rgba(255,255,255,0.1))] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right">
                             <div className="flex justify-start mb-4">
                                 <SarakIconButton
                                     onClick={() => setIsSidePanelOpen(false)}

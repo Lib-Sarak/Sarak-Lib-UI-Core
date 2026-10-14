@@ -59,7 +59,7 @@ export function SarakDataTableRow<T>({ row, props }: SarakDataTableRowProps<T>):
     const style: CSSProperties = {
         position: 'absolute', top: props.headerHeight + start, left: 0, display: 'flex', width: props.containerWidth,
         height: props.automaticHeight ? undefined : size,
-        borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,#334155))',
+        borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.1)))',
         ...(props.zebra && virtualIndex % 2 === 1 ? { backgroundColor: ZEBRA_BACKGROUND } : null),
     };
     return (

@@ -25,7 +25,7 @@ export interface SarakSkeletonProps {
 }
 
 const PULSE_BG =
-    'var(--border-color, rgba(127,127,127,0.18))';
+    'var(--border-color, rgba(255,255,255,0.1))';
 
 export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
     shape = 'text',

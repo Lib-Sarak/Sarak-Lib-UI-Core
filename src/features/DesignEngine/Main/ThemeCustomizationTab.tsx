@@ -78,7 +78,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     return (
         <div className="flex h-full min-h-0 flex-1 overflow-hidden bg-[var(--theme-bg)]">
             <div
-                className={'relative z-10 flex h-full max-h-full min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] shrink-0 flex-col overflow-hidden border-r border-[var(--theme-border)] bg-[var(--theme-card)] ' + (isResizing ? 'transition-none' : 'transition-all duration-300')}
+                className={'relative z-10 flex h-full max-h-full min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] shrink-0 flex-col overflow-hidden border-r border-[var(--theme-border)] bg-[var(--theme-card)] ' + (isResizing ? 'transition-none' : 'transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]')}
                 style={{ width: sidebarWidth }}
             >
                 <div onMouseDown={startSidebarResize} className="absolute right-0 top-0 z-50 h-full w-1.5 cursor-col-resize transition-colors hover:bg-[var(--theme-primary)]/50 active:bg-[var(--theme-primary)]" />

@@ -300,8 +300,8 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
         navItemActiveColor: '#8a008a',
         navActiveMarkerColor: '#a800a8',
         primaryColor: '#c700c7',
-        statusSuccessColor: '#0c855d',
-        statusErrorColor: '#e71414',
+        statusSuccessColor: '#0c8159',
+        statusErrorColor: '#e31414',
         inputErrorColor: '#e10003',
     }
 };

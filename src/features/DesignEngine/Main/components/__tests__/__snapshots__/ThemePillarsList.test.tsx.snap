@@ -6,10 +6,10 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
     class="border-b border-[var(--theme-border)] last:border-0"
   >
     <div
-      class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,#1e293b)]"
+      class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
     >
       <div
-        class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#1e293b)]"
+        class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
         role="button"
         tabindex="0"
       >
@@ -31,7 +31,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <svg
-            class="transition-transform duration-300 rotate-180 text-[var(--theme-primary)]"
+            class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] rotate-180 text-[var(--theme-primary)]"
             fill="none"
             height="14"
             stroke="currentColor"
@@ -50,7 +50,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="overflow-hidden bg-[var(--color-theme-card,#1e293b)]"
+      class="overflow-hidden bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
       style="height: 0px; opacity: 0;"
     >
       <div
@@ -66,7 +66,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
               class="flex items-center gap-3"
             >
               <div
-                class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
               >
                 <svg
                   class="lucide lucide-command"
@@ -92,7 +92,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
               </span>
             </div>
             <svg
-              class="transition-transform duration-300 text-[var(--theme-muted)]"
+              class="transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] text-[var(--theme-muted)]"
               fill="none"
               height="14"
               stroke="currentColor"

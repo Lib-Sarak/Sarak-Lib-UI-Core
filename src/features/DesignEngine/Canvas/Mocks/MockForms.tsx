@@ -61,13 +61,13 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         </div>
                         {/* Input 3 (Success) */}
                         <div className="flex flex-col gap-2">
-                            <label className="text-xs font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1.5">
+                            <label className="text-xs font-bold text-[var(--sarak-status-success-color,#10b981)] uppercase tracking-widest flex items-center gap-1.5">
                                 <SarakIcon name="Mail" size={14} /> Email Oficial <SarakIcon name="CheckCircle2" size={12} />
                             </label>
                             <SarakInput 
                                 type="email" 
                                 defaultValue="contato@sarak.io"
-                                className="!bg-emerald-500/5 !border-emerald-500/50 !text-emerald-500 focus:!border-emerald-500"
+                                className="!bg-[var(--sarak-status-success-color,#10b981)]/5 !border-[var(--sarak-status-success-color,#10b981)]/50 !text-[var(--sarak-status-success-color,#10b981)] focus:!border-[var(--sarak-status-success-color,#10b981)]"
                             />
                         </div>
                         {/* Input 4 (Select) */}
@@ -123,8 +123,8 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                             {['Baixo (Rotineiro)', 'Médio (Atrasos)', 'Alto (Crítico)'].map((opt, i) => (
                                 <label key={i} className="flex items-center gap-3 p-3 rounded-lg border border-[var(--theme-border)] hover:border-[var(--theme-primary)] bg-[var(--theme-body)] cursor-pointer transition-all group">
                                     <input type="radio" name="risk" className="hidden" />
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${i === 2 ? 'border-rose-500' : 'border-[var(--text-secondary)] group-hover:border-[var(--theme-primary)]'}`}>
-                                        {i === 2 && <div className="w-2 h-2 bg-rose-500 rounded-full" />}
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${i === 2 ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-[var(--text-secondary)] group-hover:border-[var(--theme-primary)]'}`}>
+                                        {i === 2 && <div className="w-2 h-2 bg-[var(--sarak-status-error-color,#ef4444)] rounded-full" />}
                                     </div>
                                     <span className={`text-sm font-medium ${i === 2 ? 'text-[var(--theme-title)]' : 'text-[var(--text-secondary)]'}`}>{opt}</span>
                                 </label>

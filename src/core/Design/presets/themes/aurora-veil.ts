@@ -192,7 +192,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         flowNodeRadius: 20,
         flowGridStyle: 'dots',
         statusSuccessColor: '#0b815a',
-        statusErrorColor: '#e21313',
+        statusErrorColor: '#e01313',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',
         badgeRadius: 100,

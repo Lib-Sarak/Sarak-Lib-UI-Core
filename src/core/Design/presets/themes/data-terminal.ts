@@ -191,7 +191,7 @@ export const dataTerminal: SarakThemePreset = {
         aiGlowColor: '#00963a',
         flowNodeRadius: 0,
         flowGridStyle: 'lines',
-        statusSuccessColor: '#0c855d',
+        statusSuccessColor: '#0c835b',
         statusErrorColor: '#e71414',
         statusWarningColor: '#f59e0b',
         statusInfoColor: '#3b82f6',

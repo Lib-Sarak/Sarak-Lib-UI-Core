@@ -44,7 +44,7 @@ export const EngineCustomizationTab: React.FC = () => {
     );
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-y-auto custom-scrollbar-sidebar">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-y-auto custom-scrollbar-sidebar">
             
             {/* CHAT ENGINE CONFIG */}
             <Section title="Chat Engine" icon={MessageSquare}>
@@ -158,8 +158,8 @@ export const EngineCustomizationTab: React.FC = () => {
             </Section>
 
             <div className="p-8 mt-auto">
-                <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-                    <span className="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-indigo-400/60">Sovereign Engine v7.0</span>
+                <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/10 border border-[var(--sarak-secondary-color,#7000ff)]/20 text-center">
+                    <span className="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7000ff)]/60">Sovereign Engine v7.0</span>
                 </div>
             </div>
         </div>

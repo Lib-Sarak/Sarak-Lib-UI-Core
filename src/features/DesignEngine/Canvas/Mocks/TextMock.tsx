@@ -66,7 +66,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     <SarakButton 
                         variant="secondary"
                         onClick={handleCopy}
-                        leftIcon={copied ? <SarakIcon name="Check" size={12} className="text-emerald-400" /> : <SarakIcon name="Copy" size={12} />}
+                        leftIcon={copied ? <SarakIcon name="Check" size={12} className="text-[var(--sarak-status-success-color,#10b981)]" /> : <SarakIcon name="Copy" size={12} />}
                     >
                         {copied ? 'Copiado!' : 'Copiar Texto'}
                     </SarakButton>
@@ -114,7 +114,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
                         >
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
+                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
                             <select 
                                 className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
                                 style={{
@@ -122,16 +122,16 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                     borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
                                 }}
                             >
-                                <option className="bg-slate-900">MÁXIMO SIGILO // LOCAL ONLY</option>
-                                <option className="bg-slate-900">USO INTERNO // RESTRITO</option>
-                                <option className="bg-slate-900">PÚBLICO // DOCUMENTAÇÃO</option>
+                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">MÁXIMO SIGILO // LOCAL ONLY</option>
+                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">USO INTERNO // RESTRITO</option>
+                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">PÚBLICO // DOCUMENTAÇÃO</option>
                             </select>
                         </div>
                         <div 
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
                         >
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
+                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
                             <SarakInput 
                                 type="text"
                                 defaultValue="#relatorio-perf-v13"
@@ -149,7 +149,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                 <SarakIcon name="AlignLeft" className="text-[var(--theme-primary)]" size={16} />
                                 <span className="text-[10px] font-black uppercase text-theme-text tracking-widest">Preview de Renderização</span>
                             </div>
-                            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold rounded uppercase tracking-tighter">Pronto</span>
+                            <span className="px-2 py-0.5 bg-[var(--sarak-status-success-color,#10b981)]/10 text-[var(--sarak-status-success-color,#10b981)] border border-[var(--sarak-status-success-color,#10b981)]/20 text-[9px] font-bold rounded uppercase tracking-tighter">Pronto</span>
                         </div>
 
                         {/* PREVIEW DO TEXTO RENDERIZADO */}
@@ -172,7 +172,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                 return (
                                     <p 
                                         key={index} 
-                                        className="text-xs text-slate-300 leading-relaxed text-justify"
+                                        className="text-xs text-[var(--color-theme-title,#ffffff)] leading-relaxed text-justify"
                                         style={{
                                             fontFamily: 'var(--font-main, inherit)'
                                         }}

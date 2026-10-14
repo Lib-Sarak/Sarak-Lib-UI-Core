@@ -95,7 +95,7 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                 <div
                     role="menu"
                     aria-label={ADVANCED_MENU_LABELS.menu}
-                    className="absolute right-0 z-50 mt-1 min-w-48 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,#1e293b)] p-1 shadow-lg"
+                    className="absolute right-0 z-50 mt-1 min-w-48 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] p-1 shadow-lg"
                 >
                     {ADVANCED_ENTRIES.map((entry, index) => (
                         <button

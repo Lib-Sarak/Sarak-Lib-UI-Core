@@ -68,9 +68,9 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
                 const base = 'bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.95]';
                 return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20` : base;
             },
-            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.95]',
-            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] active:scale-[0.98]',
-            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#ffffff)] hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
+            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.95]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]',
+            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#020617)] hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
         return strats[v] ? strats[v]() : '';
     };

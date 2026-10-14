@@ -89,7 +89,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
             aria-labelledby={label ? labelId : undefined}
         >
             {label && (
-                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
+                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">
                     {label}
                 </span>
             )}

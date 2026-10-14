@@ -112,11 +112,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     display: 'flex',
                     gap: 2,
                     padding: 4,
-                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
+                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,rgba(255,255,255,0.1))',
                     borderBottom: 'none',
                     borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderTopRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))',
+                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,rgba(15,23,42,0.6)))',
                 }}
             >
                 {TOOLS.map((tool) => (
@@ -159,11 +159,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 style={{
                     minHeight: 120,
                     padding: 'var(--sarak-layout-gap-md,16px)',
-                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
+                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,rgba(255,255,255,0.1))'}`,
                     borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-input-bg, var(--color-theme-card,#1e293b))',
-                    color: 'var(--sarak-input-text-color, var(--text-muted,#94a3b8))',
+                    background: 'var(--sarak-input-bg, var(--color-theme-card,rgba(15,23,42,0.6)))',
+                    color: 'var(--sarak-input-text-color, var(--text-muted,rgba(255,255,255,0.4)))',
                     outline: 'none',
                     opacity: disabled ? 0.5 : 1,
                     cursor: disabled ? 'not-allowed' : 'text',

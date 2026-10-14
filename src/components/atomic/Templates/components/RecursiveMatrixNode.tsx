@@ -11,7 +11,7 @@ import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 export type { SarakMatrixTreeNode, RecursiveMatrixNodeProps } from './matrixTree';
 
 /** Spinner padrão (sem dependência nova) quando o consumidor não fornece um ícone. */
-const DefaultLazyIcon: React.FC = () => <span role="status" aria-live="polite" className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] animate-pulse">Carregando…</span>;
+const DefaultLazyIcon: React.FC = () => <span role="status" aria-live="polite" className="text-2xs uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))] animate-pulse">Carregando…</span>;
 
 /**
  * Nó genérico de árvore recursiva (RBAC/IAM e TreeView genérico). Tipado (Zero Any —
@@ -84,8 +84,8 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 style={{ ...badgeFlex.style, padding: 'calc(var(--sarak-layout-gap-md,16px)*0.25) var(--sarak-layout-gap-sm,8px)' }}
                 className={`${badgeFlex.className} rounded-full border text-2xs font-bold uppercase transition-all cursor-pointer select-none ${
                     isActive
-                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border-[var(--border-color,#334155)] shadow-[0_0_8px_rgba(var(--sarak-primary-color,#00f2ff),0.15)]'
-                    : 'bg-[var(--text-muted,#94a3b8)]/5 text-[var(--text-muted,#94a3b8)] border-[var(--border-color,#334155)] hover:bg-[var(--text-muted,#94a3b8)]/10 hover:text-[var(--color-theme-title,#ffffff)]'
+                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[0_0_8px_color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_15%,transparent)]'
+                    : 'bg-[var(--text-muted,rgba(255,255,255,0.4))]/5 text-[var(--text-muted,rgba(255,255,255,0.4))] border-[var(--border-color,rgba(255,255,255,0.1))] hover:bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 hover:text-[var(--color-theme-title,#ffffff)]'
                 }`}
             >
                 {IconComponent && <IconComponent size={10} />}
@@ -101,15 +101,15 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
             <div
                 onClick={() => onToggle(parentId, item.id)}
                 style={{ ...switchFlex.style, padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)' }}
-                className={`${switchFlex.className} rounded-lg border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/40 hover:bg-[var(--text-muted,#94a3b8)]/5 transition-all cursor-pointer select-none min-w-[var(--sarak-matrix-node-min-width,140px)] flex-grow ${
-                    isActive ? 'border-[var(--border-color,#334155)] bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5' : ''
+                className={`${switchFlex.className} rounded-[var(--sarak-matrix-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/40 hover:bg-[var(--text-muted,rgba(255,255,255,0.4))]/5 transition-all cursor-pointer select-none min-w-[var(--sarak-matrix-node-min-width,140px)] flex-grow ${
+                    isActive ? 'border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5' : ''
                 }`}
             >
                 <div className={switchInnerFlex.className} style={{ ...switchInnerFlex.style, paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
                     <span className={`text-2xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#00f2ff)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
                         {item.name || item.id}
                     </span>
-                    {item.description && <span className="text-3xs text-[var(--text-muted,#94a3b8)] line-clamp-1">{item.description}</span>}
+                    {item.description && <span className="text-3xs text-[var(--text-muted,rgba(255,255,255,0.4))] line-clamp-1">{item.description}</span>}
                 </div>
                 <PremiumSwitch checked={isActive} onChange={() => onToggle(parentId, item.id)} />
             </div>
@@ -125,10 +125,10 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
         return (
             <div
                 style={{ ...cardFlex.style, padding: 'var(--sarak-layout-gap-md,16px)' }}
-                className={`${cardFlex.className} rounded-xl border transition-all ${
+                className={`${cardFlex.className} rounded-[var(--sarak-matrix-radius,12px)] border transition-all ${
                     isActive
-                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5 border-[var(--border-color,#334155)] shadow-[0_4px_20px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_20%,transparent)]'
-                    : 'bg-[var(--color-theme-card,#1e293b)]/40 border-[var(--border-color,#334155)] hover:border-[var(--text-muted,#94a3b8)]/30'
+                    ? 'bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))]/5 border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[0_4px_20px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_20%,transparent)]'
+                    : 'bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/40 border-[var(--border-color,rgba(255,255,255,0.1))] hover:border-[var(--text-muted,rgba(255,255,255,0.4))]/30'
                 }`}
             >
                 <div className={cardHeaderFlex.className} style={cardHeaderFlex.style}>
@@ -140,13 +140,13 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                         {config.hasExpand && (
                             <motion.div
                                 animate={{ rotate: showChildren ? 180 : 0 }}
-                                className="text-[var(--text-muted,#94a3b8)]"
+                                className="text-[var(--text-muted,rgba(255,255,255,0.4))]"
                             >
                                 <SarakIcon name="ChevronDown" size={14} />
                             </motion.div>
                         )}
                         {IconComponent && (
-                            <div className="w-7 h-7 rounded-lg bg-[var(--text-muted,#94a3b8)]/10 flex items-center justify-center text-[var(--text-muted,#94a3b8)]">
+                            <div className="w-7 h-7 rounded-[calc(var(--sarak-matrix-radius,12px)*0.66)] bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 flex items-center justify-center text-[var(--text-muted,rgba(255,255,255,0.4))]">
                                 <IconComponent size={14} />
                             </div>
                         )}
@@ -155,7 +155,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                                 {item.name || item.id}
                             </span>
                             {item.description && (
-                                <span className="text-2xs text-[var(--text-muted,#94a3b8)]">{item.description}</span>
+                                <span className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))]">{item.description}</span>
                             )}
                         </div>
                     </div>
@@ -166,7 +166,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
 
                 {canExpandContent && (
                     <div 
-                        className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,#1e293b)]/50 rounded-lg border border-[var(--border-color,#334155)]" : `${getContainerStyles().className} border-l border-[var(--border-color,#334155)]`}
+                        className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/50 rounded-[var(--sarak-matrix-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.1))]" : `${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.1))]`}
                         style={areChildrenCompact ? { gap: 'var(--sarak-layout-gap-sm,8px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-md,16px)' } : { gap: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-md,16px)' }}
                     >
                         {expandedContent}
@@ -182,7 +182,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
         const rowTitleFlex = getFlexStyles('row', 'flex-start', 'center', 'var(--sarak-layout-gap-sm,8px)');
         
         return (
-            <div className={`${rowFlex.className} border-b border-[var(--border-color,#334155)] last:border-0`} style={{ ...rowFlex.style, padding: 'var(--sarak-layout-gap-sm,8px) 0' }}>
+            <div className={`${rowFlex.className} border-b border-[var(--border-color,rgba(255,255,255,0.1))] last:border-0`} style={{ ...rowFlex.style, padding: 'var(--sarak-layout-gap-sm,8px) 0' }}>
                 <div className={rowHeaderFlex.className} style={{ ...rowHeaderFlex.style, padding: '0 var(--sarak-layout-gap-sm,8px)' }}>
                     <div
                         onClick={() => config.hasExpand && toggleExpand()}
@@ -192,7 +192,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                         {config.hasExpand && (
                             <motion.div
                                 animate={{ rotate: showChildren ? 180 : 0 }}
-                                className="text-[var(--text-muted,#94a3b8)]"
+                                className="text-[var(--text-muted,rgba(255,255,255,0.4))]"
                             >
                                 <SarakIcon name="ChevronDown" size={12} />
                             </motion.div>
@@ -200,7 +200,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                         <span className={`text-xs font-bold uppercase tracking-tight ${isActive ? 'text-[var(--sarak-primary-color,#00f2ff)]' : 'text-[var(--color-theme-title,#ffffff)]'}`}>
                             {item.name || item.id}
                         </span>
-                        {item.description && <span className="text-2xs text-[var(--text-muted,#94a3b8)] hidden sm:inline">- {item.description}</span>}
+                        {item.description && <span className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] hidden sm:inline">- {item.description}</span>}
                     </div>
                     {config.hasToggle && (
                         <PremiumCheckbox checked={isActive} onChange={() => onToggle(parentId, item.id)} isSmall />
@@ -209,7 +209,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
 
                 {canExpandContent && (
                     <div 
-                        className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,#1e293b)]/50 rounded-lg border border-[var(--border-color,#334155)]" : `${getContainerStyles().className} border-l border-[var(--border-color,#334155)]`}
+                        className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/50 rounded-[var(--sarak-matrix-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.1))]" : `${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.1))]`}
                         style={areChildrenCompact ? { gap: 'var(--sarak-layout-gap-sm,8px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)' } : { gap: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-sm,8px)' }}
                     >
                         {expandedContent}
@@ -231,7 +231,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 )}
             </div>
             {canExpandContent && (
-                <div className={`${getContainerStyles().className} border-l border-[var(--border-color,#334155)]`} style={{ marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)' }}>
+                <div className={`${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.1))]`} style={{ marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)' }}>
                     {expandedContent}
                 </div>
             )}

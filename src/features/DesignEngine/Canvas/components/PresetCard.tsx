@@ -72,7 +72,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
                 backgroundImage: design.cardTextureType === 'grid'
-                    ? 'linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,#334155), transparent var(--border-color,#334155))'
+                    ? 'linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1)))'
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
@@ -87,7 +87,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
         >
             {/* Top Showcase Area - Mini Dashboard */}
             <div
@@ -159,7 +159,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
                                 <div className="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10" />
                                 <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
                                     {[40, 70, 30, 90, 50, 80, 60, 45].map((h, i) => (
-                                        <div key={i} className="w-full rounded-t-[var(--border-color,#334155)]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
+                                        <div key={i} className="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
                                     ))}
                                 </div>
                             </div>
@@ -188,7 +188,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
                     <div className="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
                         <Layout size={8} /> {String(design.navigationStyle || 'sidebar')}
                     </div>
-                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]">
                         <ArrowRight size={12} />
                     </div>
                 </div>

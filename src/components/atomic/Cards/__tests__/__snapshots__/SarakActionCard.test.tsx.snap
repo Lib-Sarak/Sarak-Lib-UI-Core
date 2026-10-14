@@ -52,11 +52,11 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           </h4>
         </div>
         <div
-          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] shrink-0 rounded-lg"
+          class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] shrink-0 rounded-lg"
           style="padding: var(--sarak-layout-gap-sm, 8px);"
         >
           <svg
-            class="text-[var(--text-muted,#94a3b8)]"
+            class="text-[var(--text-muted,rgba(255,255,255,0.4))]"
             fill="currentColor"
             height="16"
             viewBox="0 0 256 256"
@@ -70,7 +70,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         </div>
       </div>
       <p
-        class="text-2xs text-[var(--text-muted,#94a3b8)] opacity-60 leading-relaxed line-clamp-2"
+        class="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-60 leading-relaxed line-clamp-2"
         style="margin-bottom: var(--sarak-layout-gap-md, 16px);"
       >
         Contrato em fase de revisão jurídica.
@@ -98,7 +98,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           </svg>
         </button>
         <button
-          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-primary-color,#00f2ff)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
+          class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-primary-color,#00f2ff)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
           style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); transition-duration: var(--duration-normal, 0.3s); border-radius: 8px;"
           tabindex="0"
         >

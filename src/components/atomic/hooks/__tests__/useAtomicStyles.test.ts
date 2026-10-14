@@ -55,6 +55,31 @@ describe('useAtomicStyles', () => {
         });
     });
 
+    describe('estilo do botão `cyberpunk` (fundo transparente)', () => {
+        const { getButtonStyles } = useAtomicStyles();
+        const design = { btnStyleType: 'cyberpunk' } as never;
+
+        it.each([
+            ['primary', 'var(--sarak-primary-color'],
+            ['danger', 'var(--sarak-status-error-color'],
+            ['success', 'var(--sarak-status-success-color'],
+        ])('a variante %s lê a própria cor como texto — o `--sarak-on-*` não senta sobre o cartão', (variant, expected) => {
+            const style = getButtonStyles(design, variant, false);
+
+            expect(style.backgroundColor).toBe('transparent');
+            expect(String(style.color)).toContain(expected);
+        });
+
+        it('CONTRAPROVA: o secundário e o fantasma não ganham cor inline (o texto vem da classe)', () => {
+            expect(getButtonStyles(design, 'secondary', false).color).toBeUndefined();
+            expect(getButtonStyles(design, 'ghost', false).color).toBeUndefined();
+        });
+
+        it('CONTRAPROVA: fora do cyberpunk nenhuma variante ganha cor inline', () => {
+            expect(getButtonStyles({ btnStyleType: 'matte' } as never, 'danger', false).color).toBeUndefined();
+        });
+    });
+
     describe('sombra do campo (`inputShadow`, token de texto com duas palavras-chave)', () => {
         const { getInputStyles } = useAtomicStyles();
 

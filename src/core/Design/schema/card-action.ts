@@ -32,7 +32,7 @@ export const CardActionSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto/ícone dentro do botão de ação do card — deve manter contraste alto contra `cardActionBtnPrimaryBg`.',
             axis: 'color',
-            defaultValue: 'var(--text-muted, #94a3b8)',
+            defaultValue: 'var(--text-muted, rgba(255,255,255,0.4))',
             cssVars: ['--sarak-card-action-btn-text']
         },
         {

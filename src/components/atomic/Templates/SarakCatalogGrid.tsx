@@ -51,7 +51,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
         return (
             <div className={`${loadingStack.className} min-h-[40vh]`} style={loadingStack.style}>
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-[var(--border-color,#334155)]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-[var(--border-color,rgba(255,255,255,0.1))]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
                     <SarakIcon name="Database" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
                 </div>
                 <p className="text-theme-muted font-black uppercase animate-pulse" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>
@@ -115,7 +115,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between border-t border-[var(--border-color,#334155)]-border" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
+                        <div className="flex items-center justify-between border-t border-[var(--border-color,rgba(255,255,255,0.1))]-border" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                             <div className="text-theme-muted font-bold uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
                                 {filteredItems.length} Itens encontrados
                             </div>
@@ -123,7 +123,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                 <SarakButton 
                                     onClick={() => { setSearch(''); setSelectedCategory('all'); }}
                                     variant="ghost"
-                                    className="text-theme-muted hover:text-red-400"
+                                    className="text-theme-muted hover:text-[var(--sarak-status-error-color,#ef4444)]"
                                 >
                                     <SarakIcon name="XCircle" size={14} /> Limpar Filtros
                                 </SarakButton>
@@ -157,7 +157,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     </AnimatePresence>
                 </div>
             ) : (
-                <div className="text-center border border-dashed border-[var(--border-color,#334155)]-border rounded-[var(--sarak-catalog-section-radius,3rem)]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                <div className="text-center border border-dashed border-[var(--border-color,rgba(255,255,255,0.1))]-border rounded-[var(--sarak-catalog-section-radius,3rem)]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
                     <p className="text-theme-muted font-black uppercase tracking-widest">{emptyMessage}</p>
                 </div>
             )}

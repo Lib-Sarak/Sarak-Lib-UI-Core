@@ -18,7 +18,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
             )}
             <div
-                className={`p-3 @sm:p-4 max-w-[85%] relative transition-all duration-500 sarak-card
+                className={`p-3 @sm:p-4 max-w-[85%] relative transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] sarak-card
                     ${isBot ? 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md border border-[var(--theme-border)]' : 
                          bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : 
@@ -33,7 +33,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 `}
                 style={{ 
                     borderRadius: bubbleStyle === 'minimal' ? (isBot ? '0' : '4px') : (isBot ? `${radius}px ${radius}px ${radius}px 0px` : `${radius}px ${radius}px 0px ${radius}px`),
-                    color: (!isBot && bubbleStyle === 'solid') ? 'white' : 'var(--theme-title)'
+                    color: (!isBot && bubbleStyle === 'solid') ? 'var(--theme-on-primary,#020617)' : 'var(--theme-title)'
                 }}
             >
                 <div className="text-[10px] @sm:text-xs font-medium leading-relaxed">
@@ -61,7 +61,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-[var(--theme-title)]">Workspace Chat</span>
-                            <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> 3 Online</span>
+                            <span className="text-[10px] text-[var(--sarak-status-success-color,#10b981)] font-bold flex items-center gap-1"><div className="w-1.5 h-1.5 bg-[var(--sarak-status-success-color,#10b981)] rounded-full animate-pulse" /> 3 Online</span>
                         </div>
                     </div>
                 </div>
@@ -126,10 +126,10 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                             </div>
                         </div>
                         <div className="flex gap-3 ml-6">
-                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-emerald-500" /></div>
+                            <div className="w-6 h-6 rounded-full bg-[var(--sarak-status-success-color,#10b981)]/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-[var(--sarak-status-success-color,#10b981)]" /></div>
                             <div className="flex-1">
-                                <div className="text-[10px] font-bold text-emerald-500 mb-1">CI/CD Bot <span className="text-theme-text/20 font-normal ml-2">Há 5 min</span></div>
-                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed border border-emerald-500/20 bg-emerald-500/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
+                                <div className="text-[10px] font-bold text-[var(--sarak-status-success-color,#10b981)] mb-1">CI/CD Bot <span className="text-theme-text/20 font-normal ml-2">Há 5 min</span></div>
+                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed border border-[var(--sarak-status-success-color,#10b981)]/20 bg-[var(--sarak-status-success-color,#10b981)]/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
                             </div>
                         </div>
                     </div>
