@@ -86,9 +86,11 @@ Quatro observações que importam mais que o formato:
    cópia estática de fonte viva já nasce desatualizada (é literalmente o defeito que
    `generate_themes.ts` foi reescrito para eliminar, §6.3).
 
-3. **`ThemePresetId` é uma união fechada** (`index.ts:19-40`), espelho de `SARAK_GLOBAL_THEMES`. Adicionar um
-   tema shippado = acrescentar o id ali **e** importá-lo na lista. Um tema do *consumidor* não precisa
-   disso: ele entra por `customThemes` como dado, sem tocar no tipo da lib.
+3. **`SarakThemePresetId` é uma união fechada** (`SARAK_THEME_PRESET_IDS`, `themes/index.ts`), espelho do
+   catálogo embarcado. Adicionar um tema shippado = o id ali, o arquivo `<id>.ts`, a linha em `all.ts` (a lista
+   estática, só de ferramenta) e o `import()` em `loaders.ts` (como ele chega), depois `npm run themes:catalog`.
+   **Nunca importe o tema em `index.ts` nem no barril** — ele voltaria ao boot de todo consumidor (§4.3.2). Um
+   tema do *consumidor* não precisa disso: ele entra por `customThemes` como dado, sem tocar no tipo da lib.
 
 4. **O mesmo formato serve para os dois lados.** O que o painel exporta
    (`buildThemeExportPayload`, `src/features/DesignEngine/Main/utils/exportTheme.ts:40-46`) é
@@ -210,11 +212,11 @@ motivo legítimo para um tema parcial.
 
 > **Um id de tema que não existe mais não quebra nada — e não passa em silêncio.** Venha ele de
 > `activeThemeId`, de `initialTheme` ou da persistência do próprio consumidor, a lib **nunca fica sem tema e
-> nunca lança**: cai no tema de referência do **modo pedido** — o de `config.mode` quando há um explícito,
+> nunca lança**: cai no **tema padrão** (`SARAK_DEFAULT_THEME_ID`, `sarak-sovereign`) no **modo pedido**, pela contraparte autorada — o de `config.mode` quando há um explícito,
 > senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
-> o id que não encontrou. `getThemePreset` (`presets/themes/reference.ts:18`) devolve `undefined` para id
-> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `SARAK_THEME_PRESET_IDS`
-> e `SARAK_GLOBAL_THEMES`.
+> o id que não encontrou. Quais ids existem hoje é fonte viva: `SARAK_THEME_PRESET_IDS` e o catálogo
+> `SARAK_THEME_CATALOG`; `sarakLoadThemePreset(id)` **rejeita** com id desconhecido, nunca devolve `undefined`
+> mudo. O fallback é decisão do Provider.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
@@ -287,6 +289,48 @@ trocava o rótulo.
 > **A preferência de modo do usuário vence, e o valor é escolhido, não derivado.** Trocar de modo
 > **recarrega** o tema (decisão do dono): os 55 tokens de modo são sobrescritos, inclusive customizações
 > manuais — e o painel avisa **no momento da troca**.
+
+### 4.3.2 Tema sob demanda — o boot leva só o tema padrão, e a UX não muda
+
+O boot do consumidor leva **só o `sarak-sovereign`** (`SARAK_DEFAULT_THEME_ID`, `themes/boot.ts`). Os outros
+embarcados são um `import()` cada (`themes/loaders.ts`), carregados por `sarakLoadThemePreset(id)`,
+`sarakPreloadThemes(ids)` ou `sarakLoadAllThemePresets()` para um cache síncrono (`themes/registry.ts`). **Listar**
+não carrega: `SARAK_THEME_CATALOG` traz `id`, `name`, `description`, `mode`, `hasContraparte` e a amostra de cor
+`swatch`/`swatchOpposite` (`primaryColor`, `colorBgBody`, `textColorMaster` de cada modo), **gerado** dos temas
+por `npm run themes:catalog` (`themes:catalog:check` no build). `useSarakUI().allThemes` traz só os temas com
+`design` em memória; `themeCatalog` lista tudo que é escolhível (embarcado, custom, salvo) e `loadTheme(id)` carrega.
+A razão do desenho e as alternativas: [[022-tema-sob-demanda]].
+
+| Situação | O que o Provider faz |
+| --- | --- |
+| Sem pedido, ou o tema padrão | Pinta no primeiro quadro, sem espera |
+| `design` salvo (e o tema não é controlado) | Pinta direto do salvo; o id do tema carrega depois, sem tocar o `design` |
+| Consumidor escolhe outro tema (painel, `activeThemeId` em execução) | **O tema atual continua na tela até o novo chegar** — nunca tela vazia, nunca fallback |
+| Tema embarcado forçado por código (`initialTheme`/`activeThemeId`/`options.theme.defaultTheme`) que não está em memória e sem `design` salvo | A **porta de espera**: segura a aplicação e mostra `loadingFallback` (nada, por padrão) por um `import()`; depois, a aplicação já no tema certo. `await sarakPreloadThemes([...])` antes do render elimina a espera |
+| Id inexistente | Decidido sem rede: aviso nomeando o id e o tema padrão no modo pedido. `options.theme.defaultTheme` inexistente também avisa |
+| Falha do `import()` | Libera a porta e registra o erro nomeando o tema |
+
+A porta fecha **uma vez**: depois do primeiro quadro, uma troca por código nunca desmonta a aplicação. No servidor o
+`import()` não é esperado — pré-carregue antes de `renderToString`, senão a página renderiza o `loadingFallback`.
+
+`sarakDeriveThemeFromReference` aceita `'sarak-sovereign'` (síncrono) ou um preset já carregado; `SARAK_REFERENCE_THEMES`
+é só a referência escura, e o par claro vem de `sarakLoadReferenceThemes()`.
+
+**Travas** (R18 no cabeçalho de cada uma): `theme-boot:check` — nenhum tema além do padrão, nem `themes/all.ts`, no
+fecho estático do entry em `src/` e no `dist/` (no `build`); `boot:measure` (`scripts/measure-consumer-boot.mjs`) — o
+boot no bundler do consumidor cabe em *o boot só com o tema padrão e sem catálogo, medido na mesma execução, + o
+catálogo + 3 KB* gzip, e cada tema embarcado pesa **até 3 KB gzip** (no `gates:full`). O teto relativo tem folga: um
+tema isolado que volte ao boot acende a trava estrutural, não a medida.
+
+### 4.3.3 A troca de tema compõe, nunca herda
+
+`composeThemeDesign` (`themes/compose.ts`) é a função **única** que compõe o `design` ao aplicar um tema, chamada
+pelo Provider (`useDesignSync`) e pela prévia do painel (`useDesignDraft.handleThemePreview`), nesta ordem:
+**padrão de todo token do schema → identidade e modo do usuário** (`THEME_PRESERVED_KEYS`: `systemName`, `logoUrl`,
+`logoDarkUrl`, idiomas, `mode`) **→ `config` do host → o tema resolvido para o modo**. O tema vence o que declara; o
+`config` do `SarakUIProvider` vale no resto; o token que o tema novo não declara e o host não fixou volta ao padrão —
+o valor do tema anterior nunca fica. O `config` chega ao efeito por ref (`configRef`) e à prévia por
+`getHostConfig()`: nunca é dependência do efeito (§3.1 de [[02-design-engine]]).
 
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
@@ -486,10 +530,11 @@ aplicação: `useSarakPreferences()`.
 
 A contagem de temas, presets e chaves do gabarito **não é fixada aqui** — é a lição do achado **32**
 ([[15-divida-conhecida]] §6): total em prosa envelhece a cada tema novo. A fonte viva é `npm run audit`
-(roda `auditor_presets`, que imprime temas globais (`SARAK_GLOBAL_THEMES`), presets de componente, o total de
+(roda `auditor_presets`, que imprime os temas globais (`SARAK_ALL_THEMES`), presets de componente, o total de
 itens auditados e o gabarito vivo de `getScaffold()`).
 
-Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts` + `color-engine.ts`)
+Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `loaders.ts` + `registry.ts` + `all.ts`
++ `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
@@ -522,12 +567,12 @@ coisas.
 **O que a medição existe para impedir.** O catálogo já morou inteiro num canto só — escuro, primária neon,
 família ciano/magenta — e isso aconteceu **sem** nunca ter havido gerador de paleta. Homogeneização não
 precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se distribuem, não se escreve
-aqui:** é `SARAK_THEME_PRESET_IDS`/`SARAK_GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
+aqui:** é `SARAK_THEME_PRESET_IDS`/`SARAK_ALL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
 cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
 `navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
-todo `SARAK_GLOBAL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
+todo `SARAK_ALL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
 de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
@@ -537,7 +582,7 @@ de script.**
 > agora são **derivados dos temas existentes**, e um teste exige que cinco temas idênticos **reprovem**.
 
 > **A lista de temas e a lista de presets NÃO são transcritas aqui de propósito** (Regra 4 da campanha).
-> Elas se leem no código (`SARAK_GLOBAL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
+> Elas se leem no código (`SARAK_ALL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
 > documento continuaria dizendo "18" — que é exatamente como uma spec vira mentira.
 
 Nem todos os presets são escritos à mão: parte é **derivada** de listas de opções — `TEXTURE_PRESETS` e
@@ -561,7 +606,7 @@ o número que importa é o de órfãs, não o total auditado. Roda dentro de `ru
 ## 6.2 `tokenContractParity.test.ts` — valor fora do próprio contrato
 
 `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` audita **todo valor shippado pela lib**
-(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `SARAK_GLOBAL_THEMES`) com `auditTokenContract`
+(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `SARAK_ALL_THEMES`) com `auditTokenContract`
 (`validation.ts:170-182`) — a função **pura** que reusa `coerceTokenValue`, o mesmo predicado do runtime.
 Por isso a auditoria **nunca diverge do comportamento real**.
 
@@ -578,7 +623,7 @@ Por isso a auditoria **nunca diverge do comportamento real**.
 ## 6.3 `shippedThemesConsoleClean.test.ts` — a propagação de fato
 
 `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` carrega cada tema shippado
-(`it.each(SARAK_GLOBAL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
+(`it.each(SARAK_ALL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
 "fora do contrato". É a prova de que a correção chegou ao caminho que o consumidor executa — não só ao
 predicado testado em isolamento.
 
@@ -651,7 +696,8 @@ O critério de aceite desta spec, como procedimento:
 5. **Confira a completude:** `findMissingThemeAxes(seuTema)` tem de devolver `[]`. Se devolver `chrome`,
    trocar de tema não vai mudar a topbar — e alguém vai reportar isso como bug da lib.
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
-   `SARAK_THEME_PRESET_IDS` e importe em `SARAK_GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
+   `SARAK_THEME_PRESET_IDS`, crie `<id>.ts`, liste-o em `themes/all.ts` e em `themes/loaders.ts`, e rode
+   `npm run themes:catalog` (§4.3.2); então rode `auditor_presets` (0 órfãs) e a suíte
    (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
    shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
    navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não

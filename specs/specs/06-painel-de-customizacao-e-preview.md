@@ -131,7 +131,12 @@ O painel conta um caminho de três passos, e a tela segue essa ordem:
 1. **Escolher um tema.** O primeiro bloco da área de controles é **"Começar de um tema"**, com o botão
    **"Abrir galeria"** / **"Fechar galeria"**. A **Galeria de estilos** (`PresetsCatalog`) abre **sob demanda**
    — o padrão é fechada, e então o preview do rascunho ocupa a área inteira. As abas da galeria são **Temas ·
-   Cards · Tipografia · Atmosfera · Botões · Campos**, e ela tem botão de fechar no próprio cabeçalho.
+   Cards · Tipografia · Atmosfera · Botões · Campos**, e ela tem botão de fechar no próprio cabeçalho. A aba
+   **Temas** lista o **catálogo leve** (`themeCatalog`) na hora e carrega o `design` dos embarcados ao abrir
+   (`useCatalogThemes`); o cartão de um tema que ainda não chegou (`PresetCardPending`) escolhido carrega o tema e
+   só então aplica — o tema atual permanece até lá. Escolher um tema na prévia compõe por `composeThemeDesign`
+   ([[09-temas-e-presets]] §4.3.3): o que o tema não declara volta ao padrão (ou ao `config` do host), e o "Aplicar"
+   grava esse estado.
 2. **Ajustar o que pesa**, nos três modos da §2.1.
 3. **Aplicar**, na **barra de ações** (`Main/components/ThemeActionBar.tsx`):
 

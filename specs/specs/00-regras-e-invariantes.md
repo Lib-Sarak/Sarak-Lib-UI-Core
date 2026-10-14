@@ -842,11 +842,11 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `SARAK_GLOBAL_THEMES`, e o teste itera sobre ele — não sobre uma lista fixada aqui.
+**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `SARAK_ALL_THEMES` (`themes/all.ts`, o catálogo inteiro — só de ferramenta), e o teste itera sobre ele — não sobre uma lista fixada aqui.
 
 **Por quê.** É o teste de coerência entre R5 e R6: se um tema **da lib** dispara o descarte de R6, a lib está entregando ao consumidor um ponto de partida que o próprio motor rejeita — e o consumidor vê o aviso, não sabe que é nosso, e vai caçar o defeito no código dele. Aviso que aparece sempre também vira aviso que ninguém lê, e aí o dia em que o warn for **dele** já não terá efeito.
 
-**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(SARAK_GLOBAL_THEMES)`.
+**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(SARAK_ALL_THEMES)`.
 
 ---
 
@@ -984,9 +984,9 @@ dois modos** — baseline `0` no nativo e `0` no oposto, valor corrente em `npm 
 > spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a conformidade,
 > hoje, está verde.
 
-**Enunciado.** **Todo tema shippado** (o conjunto `SARAK_GLOBAL_THEMES`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
+**Enunciado.** **Todo tema shippado** (o conjunto `SARAK_ALL_THEMES`, em `themes/all.ts`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
 
-> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `SARAK_GLOBAL_THEMES` inteiro, e cresce. *"Os legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Os dois tamanhos estão na saída do comando, nunca nesta prosa.
+> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `SARAK_ALL_THEMES` (`themes/all.ts`, o catálogo inteiro — só de ferramenta) inteiro, e cresce. *"Os legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Os dois tamanhos estão na saída do comando, nunca nesta prosa.
 
 **Por quê.** É o caminho do meio, e as duas metades importam. A metade que **não** se promete já estava registrada em [[10-seguranca-e-acessibilidade]] §2.4d: *"o tema é dado do consumidor; prometer AA exigiria a lib recusar valores dele, o que contradiz o contrato de tema"* (R6 descarta o que está **fora do contrato**, não o que está feio). Isso está certo — e **não cobre os temas que são da lib**, entregues como ponto de partida. Aquela spec chegou a admitir que a lib não sabia dizer se os próprios temas passavam AA. R31 fecha essa metade, e só ela.
 

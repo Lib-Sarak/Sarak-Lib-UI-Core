@@ -121,7 +121,7 @@ A convenção é **por espécie do nome**, e cada espécie tem uma forma só:
 | Componente, tipo, interface (PascalCase) | começa com `Sarak` | `SarakExpandableCard`, `SarakFlexDirection` |
 | Constante (SCREAMING_SNAKE) | começa com `SARAK_` | `SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS` |
 | Hook | começa com `use` | `useSarakDevice` — já conforme por construção |
-| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `sarakResolveResponsiveValue` |
+| Demais funções (camelCase) | **contém** `Sarak` | `sarakLoadThemePreset`, `sarakResolveResponsiveValue` |
 
 O tipo de props acompanha o componente (`SarakFooProps`), que é o par que o `barrel:check` já cobra.
 
@@ -545,6 +545,14 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 Medido no `dist/`: nenhum chunk importado estaticamente por `dist/index.js` contém `@tanstack/react-virtual`; a
 implementação das duas grades mora nos chunks `SarakDataTableImpl-*.js`/`SarakDataGridImpl-*.js`. O teste
 `DataDisplay/__tests__/SarakDataLazyBoundary.test.ts` trava as duas condições na fonte.
+
+**Os temas embarcados** são a fronteira lazy de dados: `themes/loaders.ts` tem um `import()` por tema, e o fecho
+estático do entry só contém o tema padrão (`themes/boot.ts`). `themes/all.ts` (a lista inteira) fica **fora do
+barril**, só para gates e testes. Travadas por `theme-boot:check` (fonte e `dist/`) e `boot:measure`
+([[09-temas-e-presets]] §4.3.2). A API pública: `SARAK_DEFAULT_THEME_ID`, `SARAK_THEME_CATALOG` (+ tipos
+`SarakThemeCatalogEntry`/`SarakThemeSwatch`), `sarakLoadThemePreset`, `sarakPreloadThemes`,
+`sarakLoadAllThemePresets`, `sarakLoadReferenceThemes`, a prop `loadingFallback` e, no contexto, `themeCatalog` e
+`loadTheme`. `SARAK_GLOBAL_THEMES` e `sarakGetThemePreset` saíram do barril.
 
 `SarakKanban` arrasta com `@dnd-kit` (peer **opcional**, como `echarts`): o `dist/index.js` não referencia a
 biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é interno e direto, sem o

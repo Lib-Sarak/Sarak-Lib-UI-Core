@@ -51,7 +51,7 @@ A ordem real em `src/core/Provider/SarakUIProvider.tsx` — e a ordem importa, p
 | `:11` | **`injectSarakStyles(SARAK_CSS)`** — no topo do módulo, **fora** do componente (§9) |
 | `:99` | `resolveSarakUIMode(options)` → `mode` |
 | `:100` | Estado do `scopeElement` (o container da ilha, no modo embarcado) |
-| `:106` | `useThemeCollection` → `allThemes` (`SARAK_GLOBAL_THEMES` + `customThemes`), `saveTheme`, `deleteTheme` |
+| `:106` | `useThemeCollection` → `allThemes` (os temas com `design` em memória: o padrão do boot, os embarcados já carregados, `customThemes` e os salvos), `themeCatalog`, `loadTheme`, `saveTheme`, `deleteTheme` |
 | `:109` | **`useDesignManager`** → `design`, `setDesign`, `applyConfig`, `applyFullConfig`, `persistDesign`, o id resolvido |
 | `:120` | `useBrandingManager` → identidade (opt-in, ver [[006-zero-marca-soberania-host]]) |
 | `:128` | `useSarakDrafting(design, applyConfig, applyFullConfig)` → o rascunho (§5) |
@@ -94,6 +94,24 @@ A correção de raiz é um **guard por ref** em `useDesignSync`: `lastAppliedThe
 `useDesignManager:71-83` lê o `localStorage` **dentro do inicializador do `useState`**, não num efeito. Sem janela (SSR) devolve a semente; com janela, faz o parse e passa por `validateDesign` antes de virar estado.
 
 Isso importa porque hidratar por efeito produziria **flash**: um render com o tema default antes de o tema real chegar. Aqui o primeiro paint já sai com o tema certo.
+
+## 3.3 O tema sob demanda — a semente e a porta de espera
+
+A hidratação continua síncrona com os temas fora do boot, porque o cache (`themes/registry.ts`) é lido no
+inicializador do estado e só o tema padrão nasce nele. Três peças:
+
+- **`SarakUIProvider`** é uma casca: `useThemeReadiness` decide se o núcleo pode montar. Só espera quando um tema
+  **embarcado** é forçado por código (`activeThemeId`/`initialTheme`/`options.theme.defaultTheme`) e não está em
+  memória nem há `design` salvo que pinte sozinho (o tema controlado espera mesmo com salvo — é a verdade). A porta
+  fecha uma vez; falha de `import()` a libera com erro no console. Renderiza `loadingFallback` enquanto espera.
+- **`useThemeSeed`** (extraído de `useDesignManager`) resolve o id da semente e os tokens: `activeThemeId` →
+  `initialTheme` → `options.theme.defaultTheme` → `SARAK_DEFAULT_THEME_ID`. Id inexistente avisa e semeia o tema
+  padrão **no modo pedido** (contraparte autorada). Id embarcado fora de memória é conhecido: semeia o id sem design.
+- **`useDesignSync`** aplica o tema por `composeThemeDesign` ([[09-temas-e-presets]] §4.3.3). Um embarcado ainda não
+  carregado **espera sem trocar a tela**; o efeito reroda quando `allThemes` ganha o tema (a referência de
+  `allThemes` é estável por versão do cache — §3.1).
+
+Motivo e alternativas: [[022-tema-sob-demanda]].
 
 # 4. A geração das CSS Variables
 

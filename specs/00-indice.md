@@ -43,16 +43,20 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida | plan-116-tema-sob-demanda | 🟠 Em revisão | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + specs/12-kit-do-consumidor.md |
-| 2 | [plan-116-tema-sob-demanda](plan/plan-116-tema-sob-demanda.md) | Tirar do boot de todo consumidor o peso dos temas que ele nao usa, mantendo a hidratacao sincrona sem trocar de tema na tela, o catalogo listavel para o painel, e corrigir o tema padrao que aponta para um id inexistente | — | 🟢 Aprovada | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/03-superficie-publica.md + adr/ |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
-> 🚦 **Fila de 2026-10-14 — 116 (lote 1), sozinha na árvore, depois 110.** A `plan-116` (tema sob demanda) tem o
-> desenho aprovado pelo dono (§10 dela); a `plan-110` espera a 116. **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+> 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
 
+> ⚪ **A `plan-116` foi SINTETIZADA e REMOVIDA em 2026-10-14** (com o anexo `plan-116-desenho.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **116** | [[09-temas-e-presets]] §2 obs. 3 (registrar um tema embarcado: id + arquivo + `all.ts` + `loaders.ts` + `themes:catalog`), §4.3 (id inexistente cai no tema padrão no modo pedido), **§4.3.2 (novo)** — o boot só leva o tema padrão, o catálogo leve, a porta de espera, as travas `theme-boot:check`/`boot:measure` e o teto de 3 KB por tema — e **§4.3.3 (novo)** — `composeThemeDesign`: padrões → identidade → `config` do host → tema; §5/§7 e o `00-regras` (o conjunto de tema shippado é `SARAK_ALL_THEMES`); [[02-design-engine]] §3 (a tabela do Provider) e **§3.3 (novo)** — `useThemeReadiness`, `useThemeSeed`, `useDesignSync`; [[03-superficie-publica]] §7.1 (a fronteira lazy dos temas e a API do catálogo; `SARAK_GLOBAL_THEMES`/`sarakGetThemePreset` saíram); [[06-painel-de-customizacao-e-preview]] §2 (a galeria lista o catálogo leve e a prévia compõe sem herdar); o porquê e as alternativas: [[022-tema-sob-demanda]] (nasceu na execução). **Ficou de fora:** o desenho do lote 0 (medição e alternativas A/C — estão no ADR) e a versão MAJOR, aplicada no merge para a `main`. |
+>
 > ⚪ **A `plan-115` foi SINTETIZADA e REMOVIDA em 2026-10-14** (com o anexo `plan-115-residuo-da-reauditoria.md`). Destino demonstrado:
 >
 > | Plan | Onde a verdade dela está agora |
