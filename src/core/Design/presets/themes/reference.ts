@@ -9,24 +9,32 @@
  *
  * O par difere em MODO (claro/escuro), NAVEGAÇÃO (topbar/sidebar) e FONTE de propósito,
  * para que alternar entre eles mude visivelmente cor E fonte E cromo E raio — a prova
- * ampla do R5.
+ * ampla do R5. Só o escuro (`sarak-sovereign`, o tema padrão) está no boot; o claro
+ * (`minimalist-airy`) chega por `sarakLoadReferenceThemes()`.
  */
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset, type SarakThemePresetId } from './index';
+import { SARAK_BOOT_THEMES } from './boot';
+import { sarakLoadThemePreset } from './registry';
 import type { SarakDesignState } from '../../../Provider/types';
+import type { SarakThemePreset, SarakThemePresetId } from './index';
 
-/** Busca um preset completo do catálogo pelo id. */
-export const sarakGetThemePreset = (id: SarakThemePresetId): SarakThemePreset | undefined =>
-    SARAK_GLOBAL_THEMES.find((theme) => theme.id === id);
+/** Os ids que `sarakDeriveThemeFromReference` aceita SEM carregar nada: os do boot. */
+export type SarakReferenceThemeId = 'sarak-sovereign';
+
+/** O id do par CLARO de referência — fora do boot; carregue-o antes de derivar dele. */
+const LIGHT_REFERENCE_ID: SarakThemePresetId = 'minimalist-airy';
 
 /**
- * Par de referência recomendado: um CLARO (`minimalist-airy`, topbar, Inter) e um
- * ESCURO (`sarak-sovereign`, sidebar, Outfit). Ambos completos — ponto de partida para
- * o consumidor. Use direto em `customThemes` do `SarakUIProvider`, ou clone e ajuste.
+ * Referência ESCURA e COMPLETA, síncrona (`sarak-sovereign`, topbar/sidebar, Outfit) —
+ * ponto de partida para o consumidor. Use direto em `customThemes` do
+ * `SarakUIProvider`, ou clone e ajuste. O par claro vem de `sarakLoadReferenceThemes()`.
  */
-export const SARAK_REFERENCE_THEMES: SarakThemePreset[] = [
-    sarakGetThemePreset('minimalist-airy'),
-    sarakGetThemePreset('sarak-sovereign'),
-].filter((theme): theme is SarakThemePreset => Boolean(theme));
+export const SARAK_REFERENCE_THEMES: SarakThemePreset[] = [...SARAK_BOOT_THEMES];
+
+/** O par COMPLETO de referência — claro e escuro —, carregando o que ainda não está em memória. */
+export const sarakLoadReferenceThemes = async (): Promise<SarakThemePreset[]> => {
+    const light = await sarakLoadThemePreset(LIGHT_REFERENCE_ID);
+    return [light, ...SARAK_REFERENCE_THEMES];
+};
 
 /** O que `deriveThemeFromReference` recebe: identidade do tema derivado + as
  *  sobreposições de `design`. `id` não é `ThemePresetId` — um tema
@@ -51,7 +59,7 @@ export interface SarakDerivedThemePreset {
 
 /**
  * Deriva um tema COMPLETO — `design` e `contraparte` — de um tema de
- * referência. Substitui o padrão que a spec 09 §4.1 registrou como
+ * referência: o id do tema do boot (síncrono) ou um preset já carregado. Substitui o padrão que a spec 09 §4.1 registrou como
  * erro recorrente: `{ ...REF.design, primaryColor: X }` copia só metade do
  * tema e descarta a contraparte — a troca de modo volta a degradar, em
  * silêncio, para quem clonou.
@@ -65,12 +73,17 @@ export interface SarakDerivedThemePreset {
  * os dois modos porque nunca esteve na contraparte para começo de conversa.
  */
 export function sarakDeriveThemeFromReference(
-    referenceId: SarakThemePresetId,
+    referenceOrId: SarakReferenceThemeId | SarakThemePreset,
     overrides: SarakThemeReferenceOverrides,
 ): SarakDerivedThemePreset {
-    const reference = sarakGetThemePreset(referenceId);
+    const reference = typeof referenceOrId === 'string'
+        ? SARAK_REFERENCE_THEMES.find((theme) => theme.id === referenceOrId)
+        : referenceOrId;
     if (!reference) {
-        throw new Error(`Tema de referência "${referenceId}" não encontrado em GLOBAL_THEMES.`);
+        throw new Error(
+            `Tema de referência "${String(referenceOrId)}" não está no boot. Carregue-o antes ` +
+            '(`await sarakLoadThemePreset(id)`) e passe o preset como 1º argumento.',
+        );
     }
 
     const design = { ...reference.design, ...overrides.design };

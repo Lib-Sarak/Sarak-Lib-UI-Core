@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { solveThemeContrast } from '../solve_theme_contrast.ts';
 import { sarakGetDefaultDesignState } from '../../../../../src/core/Design/master-map.ts';
 import { rgbToHsl, parseToRgba } from '../../../../../src/core/Provider/utils/color-engine.ts';
-import { SARAK_GLOBAL_THEMES } from '../../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../../../src/core/Design/presets/themes/all.ts';
 import { evaluatePair, PAIRS } from '../../../../../gates/scripts/audit/verify_contrast.ts';
 
 /**
@@ -28,7 +28,7 @@ const hslOf = (color: string): [number, number, number] => {
 };
 
 const mergedOf = (id: string) => {
-    const theme = SARAK_GLOBAL_THEMES.find((t) => t.id === id);
+    const theme = SARAK_ALL_THEMES.find((t) => t.id === id);
     if (!theme) throw new Error(`tema "${id}" não encontrado`);
     return { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
 };

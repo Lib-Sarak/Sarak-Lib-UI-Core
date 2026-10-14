@@ -1,4 +1,4 @@
-import { SarakThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
 export const neumorphicMobile: SarakThemePreset = {
     id: 'neumorphic-mobile',

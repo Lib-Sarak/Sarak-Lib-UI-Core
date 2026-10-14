@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SARAK_GLOBAL_THEMES, SarakThemePreset } from '../../../../core/Design/presets/themes';
+import type { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
@@ -11,6 +11,8 @@ import { TypographyCatalog } from './TypographyCatalog';
 import { ButtonsCatalog } from './ButtonsCatalog';
 import { InputsCatalog } from './InputsCatalog';
 import { PresetCard } from './PresetCard';
+import { PresetCardPending } from './PresetCardPending';
+import { useCatalogThemes } from './useCatalogThemes';
 import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
@@ -21,7 +23,7 @@ interface PresetsCatalogProps {
      * e só é anunciado ao sistema (`resolvedThemeId`) quando o rascunho é aplicado. */
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     currentMode: string;
-    /** Contexto do Provider — usado para ler `allThemes` (GLOBAL_THEMES + custom_themes do banco). */
+    /** Contexto do Provider — lê `themeCatalog` (lista leve) e `allThemes` (temas com `design` em memória). */
     sarak?: SarakUIContextType;
     onClose: () => void;
 }
@@ -46,9 +48,28 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
 }) => {
     const [activeTab, setActiveTab] = useState<PresetTab>('globals');
 
-    // `sarak.allThemes` já é GLOBAL_THEMES + custom_themes do banco (SarakUIProvider.tsx).
-    // Sem `sarak`, cai para o import estático (uso isolado/testes).
-    const globalThemes = (sarak?.allThemes as SarakThemePreset[] | undefined) ?? SARAK_GLOBAL_THEMES;
+    // A lista é o catálogo LEVE (nome, modo, cor), completa na hora; o `design` de
+    // cada embarcado chega sob demanda e o cartão vira a miniatura (`useCatalogThemes`).
+    const { rows, loadTheme } = useCatalogThemes(sarak);
+
+    // O modo do USUÁRIO tem que vencer — nunca o modo nativo do tema sozinho.
+    // `resolveThemeForMode` decide entre o design nativo, a contraparte autorada ou o
+    // fallback sintetizado. Só PRÉ-VISUALIZA — o id viaja com o payload para o rascunho,
+    // e só é anunciado como `resolvedThemeId` quando o usuário aplicar
+    // (`handleApplyToSystem`; 06-painel-de-customizacao-e-preview.md §4).
+    const applyTheme = (theme: SarakThemePreset | undefined) => {
+        if (!theme) return;
+        const resolved = resolveThemeForMode(
+            { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+            currentMode as 'light' | 'dark',
+        );
+        const payload = upgradeThemePayload(resolved);
+        if (onApplyFullTheme) {
+            onApplyFullTheme(payload, theme.id);
+        } else {
+            onApplyPreset(payload);
+        }
+    };
 
     return (
         <div id="presets-catalog" className="w-full h-full flex flex-col relative bg-theme-bg">
@@ -100,35 +121,24 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
             <div className="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 {activeTab === 'globals' && (
                     <div className={`grid ${CATALOG_GRID_2COL} gap-4`}>
-                        {globalThemes.map((theme, i) => (
+                        {rows.map(({ entry, theme }, i) => (theme ? (
                             <PresetCard
-                                key={theme.id}
+                                key={entry.id}
                                 theme={theme}
                                 currentMode={currentMode}
-                                onApply={() => {
-                                    // plan-26: o modo do USUÁRIO tem que vencer — nunca o modo
-                                    // nativo do tema sozinho. `resolveThemeForMode` decide entre
-                                    // o design nativo, a contraparte autorada ou o fallback
-                                    // sintetizado (`syncThemeWithMode`, só para os 18 legados).
-                                    const resolved = resolveThemeForMode(
-                                        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-                                        currentMode as 'light' | 'dark',
-                                    );
-                                    const payload = upgradeThemePayload(resolved);
-                                    // Só PRÉ-VISUALIZA — o id viaja com o payload para o
-                                    // rascunho, e só é anunciado como `resolvedThemeId` quando o
-                                    // usuário aplicar (`handleApplyToSystem`). Antes, o clique aqui
-                                    // já anunciava o id ao Provider, mesmo sem nada ter sido
-                                    // aplicado (06-painel-de-customizacao-e-preview.md §4).
-                                    if (onApplyFullTheme) {
-                                        onApplyFullTheme(payload, theme.id);
-                                    } else {
-                                        onApplyPreset(payload);
-                                    }
-                                }}
+                                onApply={() => applyTheme(theme)}
                                 index={i}
                             />
-                        ))}
+                        ) : (
+                            // Escolhido antes de chegar: carrega e só então aplica — o tema
+                            // atual permanece na tela até o novo estar pronto.
+                            <PresetCardPending
+                                key={entry.id}
+                                entry={entry}
+                                currentMode={currentMode}
+                                onChoose={() => { void loadTheme(entry.id).then((loaded) => applyTheme(loaded as SarakThemePreset | undefined)); }}
+                            />
+                        )))}
                     </div>
                 )}
 

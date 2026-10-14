@@ -21,7 +21,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
 
-const TEMAS = SARAK_REFERENCE_THEMES;   // par COMPLETO — parta daqui, nunca de um tema do zero
+const TEMAS = SARAK_REFERENCE_THEMES;   // tema COMPLETO (sarak-sovereign) — parta daqui, nunca de um tema do zero;
+                                        // o par claro vem de `await sarakLoadReferenceThemes()`
 
 function App() {
     const [rota, setRota] = React.useState(window.location.pathname);

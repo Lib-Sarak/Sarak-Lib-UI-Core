@@ -1,6 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
 import { validateDesign } from '../utils/validation';
-import { SARAK_GLOBAL_THEMES } from '../../Design/presets/themes/index';
+import { getLoadedThemePresets, getThemeCacheVersion, sarakLoadThemePreset, subscribeThemeCache } from '../../Design/presets/themes/registry';
+import { SARAK_THEME_CATALOG } from '../../Design/presets/themes/catalog.generated';
+import { toThemeCatalogEntry } from '../../Design/presets/themes/catalog';
+import type { SarakThemeCatalogEntry } from '../../Design/presets/themes';
 import { SarakUIOptions, SarakThemeEntry } from '../types';
 
 /**
@@ -14,12 +17,34 @@ export const useThemeCollection = (customThemes: SarakThemeEntry[], options: Sar
     const [savedThemes, setSavedThemes] = useState<SarakThemeEntry[]>([]);
     const [deletedThemeIds, setDeletedThemeIds] = useState<string[]>([]);
 
-    // savedThemes funde DEPOIS de customThemes para que um tema salvo agora
-    // apareça sem reload.
+    // A versão do cache de temas carregados: a lista só é recomposta quando um
+    // tema CHEGA — referência estável por versão (nunca por render), senão o
+    // `useDesignSync` reaplica o tema em loop (spec 02 §3.1).
+    const themeCacheVersion = useSyncExternalStore(subscribeThemeCache, getThemeCacheVersion, getThemeCacheVersion);
+
+    // `allThemes` = os temas com `design` EM MEMÓRIA: o padrão do boot, os
+    // embarcados já carregados, `customThemes` e os salvos. savedThemes funde
+    // DEPOIS de customThemes para que um tema salvo agora apareça sem reload.
+    // A lista de tudo que é escolhível (inclusive o não carregado) é `themeCatalog`.
     const allThemes = useMemo<SarakThemeEntry[]>(() => {
-        return [...SARAK_GLOBAL_THEMES, ...customThemes, ...savedThemes]
+        return [...getLoadedThemePresets(), ...customThemes, ...savedThemes]
             .filter((theme) => !deletedThemeIds.includes(theme.id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- `themeCacheVersion` é o sinal de que o cache mudou
+    }, [customThemes, deletedThemeIds, savedThemes, themeCacheVersion]);
+
+    const themeCatalog = useMemo<SarakThemeCatalogEntry[]>(() => {
+        const own = [...customThemes, ...savedThemes].map((theme) => toThemeCatalogEntry(theme));
+        return [...SARAK_THEME_CATALOG, ...own].filter((entry) => !deletedThemeIds.includes(entry.id));
     }, [customThemes, deletedThemeIds, savedThemes]);
+
+    // Carrega um tema embarcado sob demanda e o devolve (ou o que já está em
+    // memória: custom/salvo). `undefined` quando o id não existe em lugar nenhum.
+    const loadTheme = useCallback(async (id: string): Promise<SarakThemeEntry | undefined> => {
+        const inMemory = [...customThemes, ...savedThemes].find((theme) => theme.id === id);
+        if (inMemory) return inMemory;
+        if (!SARAK_THEME_CATALOG.some((entry) => entry.id === id)) return undefined;
+        return sarakLoadThemePreset(id);
+    }, [customThemes, savedThemes]);
 
     // `saveTheme` é a ÚNICA porta de escrita (ADR-011): valida o `design` na
     // fronteira (mesma regra de qualquer tema de origem externa —
@@ -47,5 +72,5 @@ export const useThemeCollection = (customThemes: SarakThemeEntry[], options: Sar
         await options?.theme?.onDelete?.(id);
     }, [allThemes, options?.theme?.onDelete]);
 
-    return { allThemes, saveTheme, deleteTheme };
+    return { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme };
 };

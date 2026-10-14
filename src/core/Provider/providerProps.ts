@@ -29,5 +29,11 @@ export interface SarakUIProviderProps {
      * backend DELE, se quiser. A lib nunca faz essa chamada por conta própria.
      */
     onThemeChange?: (design: SarakThemePayload) => void;
+    /**
+     * O que mostrar enquanto o tema EMBARCADO pedido por código (`activeThemeId`/
+     * `initialTheme`) ainda não chegou à memória. Só aparece sem
+     * `await sarakPreloadThemes([...])` antes do render; o padrão é nada.
+     */
+    loadingFallback?: ReactNode;
     onMediaUpload?: (file: File) => Promise<string>; // Adapter opcional para envio de mídias para Storage externo
 }

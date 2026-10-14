@@ -1,5 +1,6 @@
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
+import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -217,7 +218,10 @@ export interface SarakUIContextType {
     applyFullConfigRaw: (config: SarakThemePayload) => void; // Canal direto para o sistema (ignora rascunho)
     isHydrated: boolean;
     options: SarakUIOptions;
-    allThemes: SarakThemeEntry[]; // Array unificado de temas globais, customizados e salvos
+    allThemes: SarakThemeEntry[]; // Temas com `design` EM MEMÓRIA (padrão, embarcados já carregados, custom, salvos)
+    themeCatalog: SarakThemeCatalogEntry[]; // Catálogo leve: todo tema escolhível (nome, modo, amostra de cor)
+    loadTheme: (id: string) => Promise<SarakThemeEntry | undefined>; // Carrega o `design` de um tema pelo id
+    getHostConfig?: () => SarakThemePayload; // O `config` do host (prop do Provider) — a prévia do painel compõe com ele
     /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
      *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
      *  se configurado — sem a porta, não sobrevive a um reload. */

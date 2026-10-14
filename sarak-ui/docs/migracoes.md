@@ -16,6 +16,56 @@ procuravam `role="button"`/`button` em um item de navegação devem procurar `ro
 `onNavigate` nem `onChange`, `SarakShellNav` também deixa o navegador seguir a rota do item, em vez de
 ignorar o clique.
 
+### Os temas embarcados são carregados sob demanda: `SARAK_GLOBAL_THEMES` e `sarakGetThemePreset` saem do barril
+
+O boot do consumidor leva só o tema padrão (`sarak-sovereign`); os demais chegam quando são escolhidos. A
+interface não muda: o primeiro acesso abre no tema padrão, ao escolher outro **o atual continua na tela até o
+novo chegar**, e o tema aplicado fica salvo e pinta direto do `design` guardado no acesso seguinte, sem carregar
+nada. A porta de espera só existe quando o código força, por `initialTheme`/`activeThemeId`/`options.theme.defaultTheme`,
+um tema embarcado que não está em memória e não há `design` salvo — ali o Provider mostra o `loadingFallback`
+(nada, por padrão) por um `import()` curto e então a aplicação já no tema certo, nunca um tema trocado. Quem não quer
+nem isso pré-carrega antes do render.
+
+**Antes**
+```tsx
+import { SARAK_GLOBAL_THEMES, sarakGetThemePreset } from '@sarak/lib-ui-core';
+
+const tema = sarakGetThemePreset('cyberpunk-neon');           // síncrono
+<SarakUIProvider initialTheme="cyberpunk-neon" />
+```
+
+**Depois**
+```tsx
+import { sarakPreloadThemes, sarakLoadThemePreset, SARAK_THEME_CATALOG } from '@sarak/lib-ui-core';
+
+await sarakPreloadThemes(['cyberpunk-neon']);                  // antes do createRoot().render — zero espera
+const tema = await sarakLoadThemePreset('cyberpunk-neon');
+<SarakUIProvider initialTheme="cyberpunk-neon" loadingFallback={<Splash />} />
+```
+
+| Saiu / mudou | Use |
+|---|---|
+| `SARAK_GLOBAL_THEMES` | `SARAK_THEME_CATALOG` para listar (nome, modo, amostra de cor `swatch`/`swatchOpposite`, sem carregar) · `sarakLoadAllThemePresets()` para os temas com `design` |
+| `sarakGetThemePreset(id)` | `sarakLoadThemePreset(id)` — assíncrono; rejeita com id desconhecido, nunca devolve `undefined` mudo |
+| `SARAK_REFERENCE_THEMES` (par claro + escuro) | só o escuro (`sarak-sovereign`) está no boot; o par completo vem de `sarakLoadReferenceThemes()` |
+| `sarakDeriveThemeFromReference('minimalist-airy', …)` | passe o preset carregado como 1º argumento: `sarakDeriveThemeFromReference(await sarakLoadThemePreset('minimalist-airy'), …)`; `'sarak-sovereign'` segue síncrono |
+| `useSarakUI().allThemes` listando todos os embarcados | `allThemes` traz só os temas com `design` em memória; para listar tudo, `useSarakUI().themeCatalog` (e `loadTheme(id)` para carregar um) |
+
+Também mudam, e o consumidor percebe:
+
+- **Trocar de tema não herda mais nenhum token do tema anterior.** O que o tema novo não declara volta ao padrão
+  do schema (antes, herdava o valor do tema anterior e a tela dependia da ordem das escolhas). A ordem é: padrões
+  do schema → identidade e modo do usuário (`systemName`, `logoUrl`, `logoDarkUrl`, idiomas, `mode`) → o `config`
+  do `SarakUIProvider` → o tema. O tema vence o que declara; o `config` do host vale no resto, na montagem e em
+  toda troca.
+- **O tema padrão é explícito:** `SARAK_DEFAULT_THEME_ID` (`'sarak-sovereign'`). O `'classic'` implícito saiu —
+  ele nunca existiu e caía no primeiro tema em silêncio. Um `options.theme.defaultTheme` que não existe agora **avisa**.
+- **Pedir um tema que não existe, em modo claro,** cai na contraparte clara do `sarak-sovereign` (antes, no
+  `minimalist-airy`, que deixou de ser síncrono).
+- **Tema estático em SSR:** o servidor não espera o `import()`. Pré-carregue (`await sarakPreloadThemes([...])`)
+  antes de `renderToString`, senão a página renderiza o `loadingFallback`.
+- Peso: cada tema embarcado fica em até 3 KB gzip, e o consumidor deixa de pagar por todos no boot.
+
 ### No celular, a navegação passa para uma barra na base (até 5 destinos), e a opção `dock` sai do schema
 
 **Classificação: MAJOR (sai na 8.0.0).** Muda o que o cromo faz por padrão no celular e tira um valor do schema

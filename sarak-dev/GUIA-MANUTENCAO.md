@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (36)
+### B.3 Gates registrados (38)
 
 | Comando | O que roda |
 | --- | --- |
@@ -336,7 +336,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
 | `npm run fixed-translucent:check` | `node gates/scripts/contrato/check-fixed-translucent.mjs` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
-| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity` |
+| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
 | `npm run icon-port:check` | `node gates/scripts/contrato/check-icon-port.mjs` |
 | `npm run kit-names:check` | `node gates/scripts/contrato/check-kit-names.mjs` |
@@ -350,6 +350,8 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run public-types:check` | `node gates/scripts/contrato/check-public-types-parity.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
+| `npm run theme-boot:check` | `node gates/scripts/contrato/check-theme-boot-closure.mjs` |
+| `npm run themes:catalog:check` | `npx tsx scripts/generate-theme-catalog.ts --check` |
 | `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
@@ -388,7 +390,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (21)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md`
+**ADR (22)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { isValidColor, validateDesign } from '../validation';
 import { sarakGetAllDesignTokens } from '../../../Design/master-map';
-import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 
 /**
  * Cor de tema: `color-mix(in <espaço>, …)` é válida (o painel a aceita e o motor já a escreve), e NENHUM valor de
@@ -35,7 +35,7 @@ describe('cor de tema: o que passa', () => {
     it('toda cor de todos os temas embarcados continua aceita', () => {
         const colorIds = new Set(sarakGetAllDesignTokens().filter((token) => token.type === 'color').map((token) => token.id));
         const refused: string[] = [];
-        for (const theme of SARAK_GLOBAL_THEMES) {
+        for (const theme of SARAK_ALL_THEMES) {
             for (const [key, value] of Object.entries(theme.design as Record<string, unknown>)) {
                 if (colorIds.has(key) && typeof value === 'string' && value !== '' && !isValidColor(value)) refused.push(`${theme.id}.${key}=${value}`);
             }

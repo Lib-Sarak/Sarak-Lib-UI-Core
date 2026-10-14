@@ -27,6 +27,8 @@ componente para isso** — preenche-se o tema (Configuração, não Expansão).
 ```tsx
 import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
+// 'sarak-sovereign' (o tema padrão) é síncrono; outro tema embarcado entra como preset já carregado
+// (`await sarakLoadThemePreset('<id>')`).
 const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
   id: 'meu-tema', name: 'Meu Tema',
   design: {

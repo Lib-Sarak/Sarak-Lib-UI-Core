@@ -23,9 +23,10 @@ const MARCA = {
 } as const;
 
 /**
- * O par de referência já é completo em todos os eixos e difere de propósito em modo
- * (claro/escuro), cromo (topbar/sidebar) e fonte — trocar entre os dois prova que a
- * central alcança a aplicação inteira.
+ * A referência é completa em todos os eixos. Ela chega síncrona (é o tema padrão, o
+ * único que vive no boot); o par claro é `await sarakLoadReferenceThemes()` — difere
+ * de propósito em modo (claro/escuro), cromo (topbar/sidebar) e fonte, e trocar entre
+ * os dois prova que a central alcança a aplicação inteira.
  */
 export const TEMAS: SarakThemePreset[] = SARAK_REFERENCE_THEMES.map((tema) => ({
     ...tema,
@@ -34,7 +35,7 @@ export const TEMAS: SarakThemePreset[] = SARAK_REFERENCE_THEMES.map((tema) => ({
 
 /**
  * Quer partir de outro ponto? `catalog.json` → `themes.presetIds` lista os temas
- * embutidos; `sarakGetThemePreset(id)` devolve o preset completo de qualquer um deles.
+ * embutidos; `await sarakLoadThemePreset(id)` devolve o preset completo de qualquer um deles.
  *
  * Quer ajustar visualmente? Abra o `SarakCustomizationPanel`, mexa nos controles e use
  * "Exportar JSON": o arquivo baixado nasce COMPLETO, pronto para colar aqui. Não

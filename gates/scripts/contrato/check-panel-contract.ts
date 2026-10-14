@@ -23,7 +23,7 @@
 // -------------------------------------------------------------------------
 // 1. (i) e (ii) só olham token `slider`/`number`. Texto, cor e enumeração têm contrato próprio e são
 //    cobertos por `tokenContractParity`; aqui só entra o que a validação CORTA em vez de descartar.
-// 2. (i) julga o padrão do schema e (ii) os temas e presets que a lib embarca (`SARAK_GLOBAL_THEMES`,
+// 2. (i) julga o padrão do schema e (ii) os temas e presets que a lib embarca (`SARAK_ALL_THEMES`,
 //    `presets/components/*`). Tema do consumidor, tema salvo e JSON importado são julgados por
 //    `validateDesign` em runtime — que corta —, não por este gate.
 // 3. (ii) confere a grade do `step` de tema e preset contando a partir do `min` (ou de 0), com o passo
@@ -41,7 +41,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { sarakGetAllDesignTokens, sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
-import { SARAK_GLOBAL_THEMES } from '../../../src/core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
 import { CARD_PRESETS, CARD_TEXTURE_PRESETS } from '../../../src/core/Design/presets/components/cards';
 import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../src/core/Design/presets/components/buttons';
 import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs';
@@ -166,7 +166,7 @@ export function shippedSources(): ThemeSource[] {
         list.map((p) => ({ fonte: `${label}:${p.id}`, design: p.design as Record<string, unknown> }));
     return [
         { fonte: 'defaults', design: sarakGetDefaultDesignState() as Record<string, unknown> },
-        ...SARAK_GLOBAL_THEMES.map((theme) => ({ fonte: `tema:${theme.id}`, design: theme.design as Record<string, unknown> })),
+        ...SARAK_ALL_THEMES.map((theme) => ({ fonte: `tema:${theme.id}`, design: theme.design as Record<string, unknown> })),
         ...partial('preset-card', CARD_PRESETS), ...partial('preset-card-textura', CARD_TEXTURE_PRESETS),
         ...partial('preset-botao', BUTTON_PRESETS), ...partial('preset-botao-estilo', BUTTON_STYLE_PRESETS),
         ...partial('preset-input', INPUT_PRESETS), ...partial('preset-tipografia', TYPOGRAPHY_PRESETS),

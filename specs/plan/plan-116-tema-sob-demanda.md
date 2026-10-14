@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Tema sob demanda: o boot carrega so o tema que vai ao ar, e o resto do catalogo chega quando e escolhido"
 objetivo: "Tirar do boot de todo consumidor o peso dos temas que ele nao usa, mantendo a hidratacao sincrona sem trocar de tema na tela, o catalogo listavel para o painel, e corrigir o tema padrao que aponta para um id inexistente"
 dominio: "Design Engine / Temas embarcados / Bundle / Superficie publica"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "temas", "bundle", "lazy", "provider", "superficie-publica"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[03-superficie-publica]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]"]
@@ -169,6 +169,120 @@ todo token estético explícito nos dois papéis) depende disto.
 
 ---
 
+## Resumo da execução (lote 1 — implementação) — 2026-10-14
+
+**Resultado:** Concluído com pendências (o que exige `npm run build`/`dist/` ficou para o revisor, como o prompt mandou).
+
+**Estado do worktree ao iniciar**
+```
+M  specs/00-indice.md
+M  specs/arquitetura/02-design-engine.md
+D  specs/plan/anexos/plan-115-residuo-da-reauditoria.md
+D  specs/plan/plan-115-fechamento-do-arsenal.md
+M  specs/plan/plan-116-tema-sob-demanda.md
+M  specs/specs/00-regras-e-invariantes.md
+M  specs/specs/01-gates-e-baseline.md
+M  specs/specs/06-painel-de-customizacao-e-preview.md
+M  specs/specs/09-temas-e-presets.md
+```
+
+**O que foi feito**
+- `themes/index.ts`: sem import de tema; `SARAK_DEFAULT_THEME_ID = 'sarak-sovereign'`, tipos `SarakThemeCatalogEntry`/`SarakThemeSwatch`. Os 14 arquivos de tema passam a `import type` do `./index`.
+- Novos em `themes/`: `boot.ts` (só o padrão), `loaders.ts` (um `import()` por tema), `registry.ts` (cache síncrono + `sarakLoadThemePreset`/`sarakPreloadThemes`/`sarakLoadAllThemePresets`, assinatura por versão), `all.ts` (catálogo inteiro, fora do barril), `catalog.ts` (`toThemeCatalogEntry`), `catalog.generated.ts` (gerado por `scripts/generate-theme-catalog.ts`; `themes:catalog` e `themes:catalog:check` no `build`), `compose.ts` (`composeThemeDesign`).
+- `reference.ts`: `sarakGetThemePreset` sai; `SARAK_REFERENCE_THEMES` = só o padrão; `sarakLoadReferenceThemes()`; `sarakDeriveThemeFromReference` aceita `'sarak-sovereign'` ou preset carregado (outro id lança com mensagem de migração).
+- Provider: `useThemeCollection` (cache por `useSyncExternalStore`, `themeCatalog`, `loadTheme`), `useThemeSeed.ts` (semente extraída de `useDesignManager`; padrão explícito; `defaultTheme` inexistente avisa; id inexistente em modo claro cai na contraparte do padrão), `useThemeReadiness.ts` (porta de espera: só tema embarcado forçado por código fora de memória e sem `design` salvo; fecha uma vez; falha de `import()` libera), `useDesignSync.ts` (compõe por `composeThemeDesign`; embarcado não carregado espera sem trocar a tela), `SarakUIProvider.tsx` (porta + prop `loadingFallback`), `types.ts`/`providerProps.ts`.
+- Painel: `useDesignDraft.handleThemePreview` compõe por `composeThemeDesign` quando há `themeId`; `PresetsCatalog` lista o catálogo leve (`useCatalogThemes`), `PresetCardPending` para o não carregado (escolher carrega e só então aplica).
+- Barril `src/index.ts`: sai `SARAK_GLOBAL_THEMES`/`sarakGetThemePreset`; entram `SARAK_DEFAULT_THEME_ID`, `SARAK_THEME_CATALOG`, loaders, `sarakLoadReferenceThemes`, tipos.
+- Travas: `gates/scripts/contrato/check-theme-boot-closure.mjs` (estrutural, `src` e `dist`; `theme-boot:check` no `build`), `scripts/measure-consumer-boot.mjs` (relativo + estrutural no bundler do consumidor + 3 KB gzip por tema; `boot:measure` no `gates:full`). Ambas com limites no cabeçalho (R18).
+- Gates/testes/skill que iteram o catálogo migrados para `themes/all`; `collectKitSources.mjs` lê os ids de referência da fonte.
+- Docs: nota na subseção nova de `## 8.0.0` de `docs/migracoes.md`; `docs/` e `.agents/skills/ui-integra-consumidor|ui-criar-tema`; `sarak-ui/` por `npm run guide`; `sarak-dev/` por `npm run dev-kit`; ADR `specs/adr/022-tema-sob-demanda.md` + linha no `adr/README.md`.
+- Browser: cena `?cena=tema-sob-demanda` em `harness-entry.tsx` e `browser-tests/tema-sob-demanda.spec.ts` (3 blocos, 4 casos).
+
+**Arquivos alterados** — ver `git status`; os novos principais: os módulos de `themes/` acima, `useThemeSeed.ts`, `useThemeReadiness.ts`, `PresetCardPending.tsx`, `useCatalogThemes.ts`, `check-theme-boot-closure.mjs`, `measure-consumer-boot.mjs`, `generate-theme-catalog.ts`, o ADR 022 e os testes novos (registry, compose, catalog, themeCatalogParity, TemaSobDemanda, useThemeSeed, useThemeReadiness, PresetCardPending, useCatalogThemes, check-theme-boot-closure).
+
+**Verificações executadas**
+- `npx vitest run` completo (2ª passada): 3445 testes, 2 falhas — `useThemeCollection` (erro do meu teste, `[]` novo a cada render; corrigido, 11/11) e `check-kit-names` (cita `sarakLoadThemePreset` etc. contra o `dist/index.d.ts` antigo; some com o `npm run build`). Depois dos últimos consertos só foi repetido o recorte `src/features/DesignEngine src/core/Provider src/core/Design`: 163 arquivos / 1051 testes verdes. **A suíte completa não foi repetida depois disso.**
+- `npx tsc --noEmit` → 0 erros.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → igual ao baseline, sem regressão (antes do ajuste, `auditor_cleancode` 0→2 por Provider com 259 e `useDesignDraft` com 257 linhas; comprimi comentários).
+- Anel 1 rodado na mão: `barrel`, `catalog`, `zero-brand`, `deep-import`, `gate-limits` (50 scripts declaram limite), `token-types`, `container-query*`, `persistence-doc`, `class-merge`, `icon-port`, `chrome-token-parity`, `token-reader`, `css-important`, `fixed-translucent`, `section-pointers`, `migration-anchor`, `plan-index`, `guide:check`, `dev-kit:check` verdes; `kit-names:check` falha contra o `dist/` antigo (idem acima); `guide` e `dev-kit` regenerados por último.
+- Anel 0 simulado (padrões de `config.json` sobre `git diff HEAD` + não rastreados): 0 achados. R36 simulado nas linhas adicionadas: 2 citações `plan-NN` (comentário que movi) — removidas.
+- `node scripts/measure-consumer-boot.mjs`: boot src 323,8 KB gzip; referência (só o padrão, sem catálogo) 321,7; catálogo 1,8; teto 326,5; maior tema `blueprint-protocol` 2,6 KB (teto 3,0).
+- Mutação: `export { cyberpunkneonTheme }` no barril → `check-theme-boot-closure --src` e `measure-consumer-boot` falham citando o tema; `export { SARAK_ALL_THEMES }` → falham com os 13. Barril restaurado.
+- Controle em cópia do `HEAD` fora do repositório (junção removida, `node_modules` intacto): o gate novo falha ali (o `index.ts` do HEAD não tem `SARAK_DEFAULT_THEME_ID`; "gate cego"). O worktree não foi tocado.
+
+**Critérios de aceite**
+- [x] Desenho aprovado — decisões do dono na §10.
+- [x] Trava estrutural + medida, com mutação; boot no teto — saídas acima. `dist/`: **não verificado** (sem build).
+- [x] Tema padrão explícito, sem id inexistente — `index.ts`, `useThemeSeed.ts`, `TemaSobDemanda.test.tsx`.
+- [x] Troca sem herança no Provider e na prévia — `compose.test.ts` (A declara X, B não → padrão), `TemaSobDemanda.test.tsx`, `useDesignDraft.ts`. Falta teste dedicado do `handleThemePreview` (só `composeThemeDesign` + a suíte existente do rascunho).
+- [x] Pinta no primeiro quadro sem troca visível — jsdom (`TemaSobDemanda.test.tsx`); casos de navegador escritos, não executados.
+- [x] Painel lista o catálogo e aplica tema carregado sob demanda — `PresetsCatalog`, `useCatalogThemes.test.ts`.
+- [x] Gates e testes iteram o catálogo inteiro por `themes/all`.
+- [x] ADR 022, nota MAJOR, barril/catálogo/kit em dia.
+- [ ] Bateria do navegador e `npm run build` **não rodados** — motivo: `dist/` e `buildInfo` são versionados e o prompt reserva o build ao revisor. Iniciei o build por engano e o interrompi antes do `build:js`; `git status` de `dist/`/`buildInfo` ficou limpo.
+
+**Decisões e suposições**
+- Identidade preservada na troca: `systemName`, `logoUrl`, `logoDarkUrl`, `language`, `availableLanguages`, `enabledLanguages`, `mode` (`THEME_PRESERVED_KEYS`); o resto vem do padrão do schema ou do tema. Customização solta fora disso volta ao padrão na troca (inclui o 1º apply de `activeThemeId` no mount: valores de `config` que o tema não declara voltam ao padrão).
+- `SARAK_REFERENCE_THEMES` ficou só com o escuro (nome mantido); o par claro vem de `sarakLoadReferenceThemes()`.
+- A porta também espera por `options.theme.defaultTheme` embarcado fora de memória.
+- `solve_theme_contrast.ts` importava `GLOBAL_THEMES` (nome que já não existia); migrado junto.
+- Teto relativo medido sobre `src/` (não `dist/`); no `dist` vale a trava estrutural por marcador `id:"…",name:"…",description:…,design:{`.
+- O caso de SSR só prova o fallback (o servidor não renderiza o app com portais — pré-existente).
+
+**Achados fora do escopo (não corrigidos)**
+- `check-trail-citation.test.mjs` falhou na 1ª passada por `EPERM` ao remover pasta temporária e por timeouts sob carga; passou na 2ª.
+
+**Pendências / riscos**
+- Revisor: `npm run build` (inclui `theme-boot:check` no `dist`, `kit-names:check`, `public-types:check`), `npm run cromo-css-real:check` / bateria do navegador, `gates:full`, suíte completa depois do build.
+- O teto relativo tem folga de 3 KB (decisão do dono): um tema isolado que volte ao boot não acende a medida — acende a estrutural.
+- O ADR 022 e a linha no `adr/README.md` foram criados por estarem declarados na §3.1 da plan.
+
+---
+
+## Resumo da execução (correção 1) — 2026-10-14
+
+**Resultado:** Concluído com pendência (bateria do navegador não reexecutada — ver abaixo).
+
+**Estado do worktree ao iniciar**
+Worktree com a entrega do lote 1 mais o que o revisor gerou no veredito (`dist/`, `buildInfo` etc.): 159 entradas em `git status --short` (saída guardada; as do lote 1 não foram revertidas nem reformatadas).
+
+**Achado 1 — a troca de tema descartava o `config` do host**
+- `src/core/Design/presets/themes/compose.ts`: `composeThemeDesign(resolvedTheme, previous, hostConfig?)` agora compõe **padrões → identidade preservada → `config` do host → tema resolvido**. O tema vence o que declara; o `config` vale no resto; o tema anterior nunca herda.
+- `src/core/Provider/hooks/useDesignSync.ts`: recebe `configRef` (7º parâmetro) e o passa nas duas composições (tema encontrado e fallback do id inexistente). O `config` chega por **ref** — `useDesignManager.ts` já tinha `configRef`; ele nunca entra nas dependências do efeito, então não recria o gatilho a cada render (spec 02 §3.1).
+- `src/core/Provider/SarakUIProvider.tsx` + `types.ts`: contexto ganha `getHostConfig?()` (estável por `useCallback` sobre uma ref da prop `config`) para a prévia do painel compor com o mesmo `config`.
+- `src/features/DesignEngine/hooks/useDesignDraft.ts`: `handleThemePreview` passa `sarak.getHostConfig?.()` à mesma função.
+- `docs/migracoes.md`: a nota descreve a ordem completa (ajustada).
+- Testes: `ThemeSwitchComposition.test.tsx` — (a) `config` com token que o tema não declara sobrevive à montagem com `activeThemeId` e à troca A→B; o declarado pelo tema vence o `config`; (b) A/B: o que só o A declarava volta ao padrão, ou ao valor do `config` se o host o fixou; `config` inline por render não reaplica nem entra em loop; `compose.test.ts` ganhou o caso da ordem.
+
+**Achado 2 — prévia sem teste dedicado**
+- `ThemeSwitchComposition.test.tsx`, bloco "Prévia do painel", pelo Provider real e `useDesignDraft`: A declara o raio e B não → depois de prever B o raio do rascunho é o padrão, o `config` (`layoutMaxWidth`) fica, e o "Aplicar" grava no `systemDesign` o raio padrão.
+
+**Verificações executadas**
+- `npx tsc --noEmit` → 0 erros.
+- `check-audit-baseline.mjs --with-tsc` → igual ao baseline (Provider 248 linhas, `useDesignDraft` 248 — dentro do teto).
+- Anel 1 (na mão): barrel, catalog, zero-brand, deep-import, gate-limits, token-types, themes:catalog, class-merge, icon-port, section-pointers, migration-anchor, theme-boot, persistence-doc, kit-names verdes; `guide` e `dev-kit` regenerados por último e conferidos (sem diff de hash).
+- Anel 0 simulado sobre as linhas adicionadas (+ arquivos novos): 0 segredos; R36 em `src/`: 0 citações.
+- Recortes: `src/core/Provider` + `compose.test.ts` + `ThemeSwitchComposition.test.tsx` → 57 arquivos, 456 testes verdes (após ajustar a ordem de chaves de valor responsivo no meu teste).
+- `npx vitest run` completo, depois do último conserto: 493 arquivos, 3451 testes, 0 falhas, numa passada.
+
+**Critérios de aceite**
+- [x] `config` sobrevive à montagem e à troca; tema vence o que declara — `ThemeSwitchComposition.test.tsx`.
+- [x] A/B do critério verde — mesmo arquivo e `compose.test.ts`.
+- [x] Prévia não herda de A ao mostrar B e o Aplicar grava — mesmo arquivo.
+- [ ] Bateria do navegador **não reexecutada**: ela mede o `dist/`, e o `dist/` atual é anterior a esta correção; reconstruí-lo reescreveria artefatos versionados, que o prompt reserva ao revisor.
+
+**Decisões e suposições**
+- O `config` em `handleThemePreview` vem de `getHostConfig` no contexto (campo opcional, sem payload público novo); sem Provider (uso isolado) a prévia compõe sem `config`.
+- O `config` entra DEPOIS da identidade preservada, como o prompt mandou: um `systemName` no `config` vence o do estado anterior.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo.
+
+**Pendências / riscos**
+- Revisor: `npm run build` + `cromo-css-real:check` para a bateria do navegador sobre o `dist/` novo.
+
+---
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -193,3 +307,22 @@ todo token estético explícito nos dois papéis) depende disto.
 6. **MAJOR.** A mudança é registrada agora na subseção da `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada **ao final de todas as modificações, no merge para a `main`** (decisão do dono, 2026-10-14) — nenhuma plan desta fila mexe na versão nem cria tag.
 
 O lote 1 implementa isto e é despachado **depois do fechamento da `plan-115`**.
+
+## Veredito — 2026-10-14 — lote 1 — 🔴 Reprovado
+
+**Conferido no worktree:** `npm run build` OK (inclui `themes:catalog:check`, `theme-boot:check` sobre o `dist/` e `kit-names:check`); `playwright test` sobre esse `dist/`: **324/324** (os casos de `tema-sob-demanda.spec.ts` inclusive); suíte completa **492/492 arquivos, 3445/3445 testes, numa passada limpa** depois do build; `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK (com `theme-boot` e `kit-names`); `node scripts/measure-consumer-boot.mjs`: boot 323,8 KB gzip ≤ teto 326,5 (referência só com o padrão 321,7 + catálogo 1,8 + 3), maior tema 2,6 KB ≤ 3,0; varredura do padrão "Segredo atribuido": 0. As decisões do dono estão implementadas (só o padrão no boot; amostra de cor gerada; `sarakGetThemePreset` fora; nenhuma mudança de versão).
+
+**Achados:**
+
+1. **A troca de tema descarta o `config` do host** — `src/core/Design/presets/themes/compose.ts` (`composeThemeDesign` = `{ padrões, ...identidade, ...tema }`), chamada por `useDesignSync.ts:55,79`. Antes, aplicar `activeThemeId` mantinha o valor do `config` do consumidor que o tema não declara; agora ele volta ao padrão — inclusive na **montagem** (o resumo declara: "valores de `config` que o tema não declara voltam ao padrão"). Um sistema que passa por `config` um token que o tema não declara (os funcionais, no caminho da `plan-110`: largura da barra lateral, estilo de navegação, camadas…) junto com `activeThemeId` o perde. A semente já compõe `{ padrões, ...tema, ...config }`. O critério da plan era "nunca herda do **tema anterior**", não "descarta o host". Correção: compor `padrões → identidade → config do host → tema` (o tema vence o que declara; o `config` vale no resto; o tema anterior nunca herda), na mesma função para Provider e prévia; teste: `config` com um token que o tema não declara sobrevive à aplicação de `activeThemeId` na montagem e a uma troca; e o caso A/B do critério continua verde. Critério violado: R33 (comportamento público do Provider) e "a UX não muda".
+2. **A prévia do painel sem teste dedicado** (o próprio resumo registra): `useDesignDraft.handleThemePreview` passa a compor por `composeThemeDesign`, mas só a função tem teste. Caso: na prévia, A declara um token que B não declara; depois de B, o token é o padrão — e o "Aplicar" grava esse estado.
+
+O resto da entrega está aprovado como está.
+
+## Veredito — 2026-10-14 — correção 1 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK (`theme-boot:check` sobre o `dist/`, `kit-names:check`); `playwright test` sobre esse `dist/`: **324/324**; suíte completa **493/493 arquivos, 3451/3451 testes, numa passada limpa** depois do build; `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK; `measure-consumer-boot`: dentro do teto (326,6 KB gzip), maior tema 2,6 KB ≤ 3,0; varredura do padrão "Segredo atribuido": 0. Conferido no código: `composeThemeDesign` compõe padrões → identidade → `config` do host → tema, nas duas portas (Provider por `configRef`, sem entrar em dependência de efeito; prévia por `getHostConfig`); o modo do usuário continua vencendo o `mode` do `config`, porque `resolveThemeForMode` devolve o tema já no modo pedido e entra por último.
+
+**Achados 1 e 2 fechados** (`ThemeSwitchComposition.test.tsx`: `config` sobrevive à montagem e à troca; A/B volta ao padrão ou ao `config`; prévia não herda e o "Aplicar" grava).
+
+**Status: 🟢 Aprovada.** Próximo: o dono commita; o revisor sintetiza (destino da §8: `09`, `02`, `03`, ADR — o ADR 022 já nasceu na execução) e despacha a `plan-110`.

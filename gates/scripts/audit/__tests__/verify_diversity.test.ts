@@ -9,7 +9,8 @@ import {
     evaluateDistanceCriteria,
     type ThemeDiversityRow,
 } from '../verify_diversity.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 describe('hueFamily', () => {
     it('classifica ciano', () => expect(hueFamily(183, 100)).toBe('ciano'));
@@ -142,7 +143,7 @@ describe('aggregate', () => {
     });
 
     it('classifica neumorphic-mobile (real, GLOBAL_THEMES) como "neutro" — H cromático com S abaixo do limiar', () => {
-        const tema = SARAK_GLOBAL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
+        const tema = SARAK_ALL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
         const row = measureTheme(tema);
         expect(row.familia).toBe('neutro');
     });
@@ -259,7 +260,7 @@ describe('evaluateDistanceCriteria', () => {
     // shippado de verdade, nunca dos `novos`) — a mesma dispersão é
     // corretamente detectada.
     it('recalibragem: raio que cobre uma faixa bem maior que a do catálogo escapava de "baixo" com os limites antigos e agora é detectado', () => {
-        const existentesReais = SARAK_GLOBAL_THEMES.map(measureTheme);
+        const existentesReais = SARAK_ALL_THEMES.map(measureTheme);
         const novos = [0, 8, 16, 24, 32].map((radius, i) =>
             linha({ id: `novo-${i}`, cardBorderRadius: radius, cardBorderWidth: 1, cardBackdropBlur: 0, layoutDensity: 'comfortable' }),
         );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { PresetsCatalog } from '../PresetsCatalog';
@@ -20,10 +20,12 @@ describe('PresetsCatalog', () => {
         onClose,
     });
 
-    it('renderiza a aba Temas por padrão, independente de qualquer Pilar, e faz snapshot', () => {
+    it('renderiza a aba Temas por padrão, independente de qualquer Pilar, e faz snapshot', async () => {
         const { container } = render(<PresetsCatalog {...createProps()} />);
         expect(screen.getByRole('heading', { name: 'Galeria de estilos' })).toBeInTheDocument();
         expect(screen.getByText('Categoria: Temas')).toBeInTheDocument();
+        // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
+        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull());
         expect(container).toMatchSnapshot();
     });
 

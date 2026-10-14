@@ -10,6 +10,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
 import { useSarakUI } from '../SarakUIProvider';
+import { sarakPreloadThemes } from '../../Design/presets/themes/registry';
 
 const Probe = () => {
     const sarak = useSarakUI();
@@ -23,7 +24,9 @@ const Probe = () => {
 };
 
 describe('O painel enxerga só o tema — a preferência não vaza para `systemDesign`', () => {
-    it('trocar a preferência de modo muda o EFETIVO e preserva o SISTEMA (tema)', () => {
+    it('trocar a preferência de modo muda o EFETIVO e preserva o SISTEMA (tema)', async () => {
+        // O tema forçado por `initialTheme` não está no boot: pré-carregado, o primeiro quadro já é a aplicação.
+        await sarakPreloadThemes(['minimalist-airy']);
         render(
             <SarakUIProvider initialTheme="minimalist-airy">
                 <Probe />

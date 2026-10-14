@@ -261,7 +261,7 @@
     },
     {
       "nome": "npm run gates:full",
-      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity"
+      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure"
     },
     {
       "nome": "npm run guide:check",
@@ -314,6 +314,14 @@
     {
       "nome": "npm run section-pointers:check",
       "comando": "node gates/scripts/contrato/check-section-pointers.mjs"
+    },
+    {
+      "nome": "npm run theme-boot:check",
+      "comando": "node gates/scripts/contrato/check-theme-boot-closure.mjs"
+    },
+    {
+      "nome": "npm run themes:catalog:check",
+      "comando": "npx tsx scripts/generate-theme-catalog.ts --check"
     },
     {
       "nome": "npm run token-reader:check",
@@ -423,7 +431,8 @@
       "018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md",
       "019-arrastar-e-soltar-do-kanban.md",
       "020-gantt-casca-propria.md",
-      "021-navegacao-na-base-do-celular.md"
+      "021-navegacao-na-base-do-celular.md",
+      "022-tema-sob-demanda.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

@@ -282,7 +282,7 @@ describe('useDesignManager — id de tema removido/inexistente semeia com a refe
         expect(warnSpy.mock.calls.some((call: unknown[]) => String(call[0]).includes('tema-removido-do-catalogo'))).toBe(true);
     });
 
-    it('initialTheme desconhecido, com config.mode "light": semeia com a referência CLARA (minimalist-airy)', () => {
+    it('initialTheme desconhecido, com config.mode "light": semeia com a CONTRAPARTE clara do tema padrão (sarak-sovereign)', () => {
         const { result } = renderHook(() =>
             useDesignManager({
                 ...baseProps(),
@@ -292,7 +292,7 @@ describe('useDesignManager — id de tema removido/inexistente semeia com a refe
         );
 
         expect(result.current.design.mode).toBe('light');
-        expect(result.current.design.colorBgBody).toBe('#F9FAFB');
+        expect(result.current.design.colorBgBody).toBe('#f9fafa');
     });
 
     it('activeThemeId (a "porta persistida" que o consumidor restaura) com o mesmo id removido tem o mesmo comportamento de fallback', () => {

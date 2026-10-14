@@ -5,6 +5,7 @@ import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
 import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
+import { composeThemeDesign } from '../../../core/Design/presets/themes/compose';
 
 /**
  * Deep Comparison Utility (v12.0)
@@ -59,10 +60,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         setTimeout(() => setToast(null), 3000);
     }, []);
     const { canUndoLastApply, captureBeforeApply, undoLastApply: undoLastApplyRaw } = useLastAppliedSnapshot(sarak, showToast);
-    // `setDraftState` local, nunca `sarak.setDraftDesign` direto — mesmo caminho
-    // de `resetToken`/`resetComponent`, sem eco na ponte bidirecional (a chamada
-    // direta a `sarak.setDraftDesign` compete com o sync de `useDesignDraftSync`
-    // e o rascunho antigo volta a vencer).
+    // `setDraftState` local, nunca `sarak.setDraftDesign` direto: sem eco na ponte
+    // bidirecional (`useDesignDraftSync`), senão o rascunho antigo volta a vencer.
     const undoLastApply = useCallback(() => { undoLastApplyRaw(); setDraftState(null); }, [undoLastApplyRaw]);
 
     // 3. Mapeamento Dinâmico de Tokens por Componente (Schema ID)
@@ -125,15 +124,10 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
      * Atualiza o rascunho
      */
     const updateDraft = useCallback((key: string, value: SarakTokenValue) => {
-        // plan-27 PASSO 3: este `if` já existia, mas só trocava o RÓTULO do
-        // modo — idêntico ao caminho genérico. Antes da Decisão D
-        // (plan-24-1 §2.8), quem convertia de fato era `useDesignVariables` a
-        // cada render; esse "lá embaixo" acabou. Agora passa pelo MESMO
-        // resolvedor que `ShellThemeToggle` usa: achado o tema por
-        // `resolvedThemeId`, RECARREGA-o inteiro no modo pedido (contraparte
-        // autorada, ou o fallback sintetizado para os 18 legados) — as duas
-        // portas produzem design idêntico (§3.3). Sem tema rastreável, cai no
-        // fallback sobre o design corrente, como sempre.
+        // Passa pelo MESMO resolvedor que `ShellThemeToggle` usa: achado o tema por
+        // `resolvedThemeId`, RECARREGA-o inteiro no modo pedido (contraparte autorada, ou o
+        // fallback sintetizado) — as duas portas produzem design idêntico. Sem tema
+        // rastreável, cai no fallback sobre o design corrente.
         if (key === 'mode') {
             const targetMode = value as 'light' | 'dark';
             const activeTheme = sarak.allThemes.find((theme) => theme.id === sarak.resolvedThemeId);
@@ -205,11 +199,16 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
      */
     const handleThemePreview = (presetDesign: Partial<SarakDesignState>, presetKeyId?: string, themeId?: string) => {
         if (presetDesign && typeof presetDesign === 'object') {
-            setDraftState((prev: SarakDesignState | null) => ({
-                ...(prev || draft),
-                ...presetDesign,
-                ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
-            } as SarakDesignState));
+            // TEMA completo (`themeId`): `composeThemeDesign`, a mesma função do Provider — não herda
+            // token do tema anterior. Preset parcial (cards, botões…): só sobrepõe o que declara.
+            setDraftState((prev: SarakDesignState | null) => {
+                const base = prev || draft;
+                const next = themeId ? composeThemeDesign(presetDesign, base, sarak.getHostConfig?.()) : { ...base, ...presetDesign };
+                return {
+                    ...next,
+                    ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
+                } as SarakDesignState;
+            });
         }
         if (themeId) setPendingThemeId(themeId);
     };

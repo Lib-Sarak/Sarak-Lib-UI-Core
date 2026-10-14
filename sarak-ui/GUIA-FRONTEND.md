@@ -109,7 +109,7 @@ Todo consumo, em qualquer topologia, tem a mesma raiz: **um `SarakUIProvider` en
 ```tsx
 import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
 
-const TEMAS = SARAK_REFERENCE_THEMES;   // ponto de partida completo — veja §3.9
+const TEMAS = SARAK_REFERENCE_THEMES;   // ponto de partida completo (escuro, síncrono) — veja §3.9
 
 export function App() {
   return (
@@ -442,11 +442,13 @@ o pacote também traz `docs/component-catalog.md`.
 `tokenId → valor`.
 
 ```tsx
-import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
+import { SarakUIProvider, sarakDeriveThemeFromReference, sarakLoadThemePreset } from '@sarak/lib-ui-core';
 
 // Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
+// Só o `sarak-sovereign` está no boot; outro tema embarcado é carregado antes (sob demanda).
+const claro = await sarakLoadThemePreset('minimalist-airy');
 const TEMAS = [
-  sarakDeriveThemeFromReference('minimalist-airy', {
+  sarakDeriveThemeFromReference(claro, {
     id: 'marca-claro', name: 'Marca (claro)',
     design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
   }),
@@ -459,7 +461,8 @@ const TEMAS = [
 
 - **Nunca monte um tema do zero** com um punhado de chaves de cor: eixos omitidos (fonte, cromo,
   raio, espaçamento) simplesmente não mudam, e o sintoma vira "troquei o tema e a fonte continuou
-  igual". Derive de um id de `SARAK_REFERENCE_THEMES` (o par completo) ou de `themes.presetIds`.
+  igual". Derive de `SARAK_REFERENCE_THEMES` / `sarakLoadReferenceThemes()` (o par completo) ou de um tema de `themes.presetIds`
+  carregado por `sarakLoadThemePreset(id)`.
 - **Derivar é uma chamada, não uma cópia de campo.** `sarakDeriveThemeFromReference` devolve o tema completo —
   `design` **e** `contraparte` — e aplica a customização nos dois modos. Espalhar `{ ...ref.design, … }`
   perde a contraparte, e a troca de claro/escuro passa a degradar em silêncio.
@@ -606,7 +609,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **367** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **374** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (105)
 
@@ -630,7 +633,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
 | Core | **SarakDesignScope** | `design` · `children` · `className` · `style` |
 | Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
-| Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `onMediaUpload` |
+| Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `loadingFallback` · `onMediaUpload` |
 | DataDisplay | **SarakActivityFeed** | `entries` · `label` · `className` |
 | DataDisplay | **SarakCalendar** | `events` · `month` · `onMonthChange` · `defaultMonth` · `weekStartsOn` · `onEventClick` · `onDayClick` · `renderEvent` · `maxEventsPerDay` · `label` · `className` |
 | DataDisplay | **SarakChecklist** | `items` · `onToggle` · `onAdd` · `onRemove` · `showProgress` · `label` · `className` |

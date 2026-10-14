@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SARAK_GLOBAL_THEMES } from '../../../../../core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../../../core/Design/presets/themes/all';
 import { resolveThemeForMode } from '../../../../../core/Design/presets/themes/color-engine';
 import type { ModeResolvableTheme } from '../../../../../core/Design/presets/themes/color-engine';
 import { parseToRgba } from '../../../../../core/Provider/utils/color-engine';
@@ -102,7 +102,7 @@ describe('deriveCategoricalPalette', () => {
 describe('temas embarcados', () => {
     const modes: PaletteMode[] = ['dark', 'light'];
 
-    for (const theme of SARAK_GLOBAL_THEMES) {
+    for (const theme of SARAK_ALL_THEMES) {
         for (const mode of modes) {
             it(`${theme.id} (${mode}): a paleta derivada passa nos critérios do validador`, () => {
                 const design = resolveThemeForMode(theme as unknown as ModeResolvableTheme, mode);

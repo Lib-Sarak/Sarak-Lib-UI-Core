@@ -27,7 +27,8 @@
 //    "mesmo espaço" que a regra protege).
 // -------------------------------------------------------------------------
 import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { parseColor } from './verify_contrast.ts';
 import { rgbToHsl } from '../../../src/core/Provider/utils/color-engine.ts';
 
@@ -299,7 +300,7 @@ function parseArgs(argv: string[]): { newIds: string[] | null } {
 function main(): void {
     console.log('--- Medidor de Diversidade de Temas (plan-25) ---');
     const { newIds } = parseArgs(process.argv.slice(2));
-    const rows = SARAK_GLOBAL_THEMES.map(measureTheme);
+    const rows = SARAK_ALL_THEMES.map(measureTheme);
     printTable(rows);
     printAggregate(aggregate(rows), 'TODOS OS TEMAS');
 

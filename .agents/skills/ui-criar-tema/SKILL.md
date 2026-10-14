@@ -43,8 +43,10 @@ Preencha o `design` **só com ids que existem no dicionário**. Chave inventada 
 
 ### 4. Registro
 O gerador **não** registra o tema — ele só escreve o arquivo. Exporte e registre o tema em
-`src/core/Design/presets/themes/index.ts` (`THEME_PRESET_IDS` e `GLOBAL_THEMES`), senão ele não é
-alcançável por ninguém.
+`src/core/Design/presets/themes/` — o id em `index.ts` (`SARAK_THEME_PRESET_IDS`), a linha em `all.ts`
+(a lista inteira, só para ferramenta) e o `import()` em `loaders.ts` (como o tema chega sob demanda), depois
+`npm run themes:catalog` (o catálogo leve é gerado). **Nunca importe o tema no `index.ts`/barril:** ele
+voltaria ao boot de todo consumidor — a trava `theme-boot:check` falha.
 
 ### 5. Verificação — completude E contraste
 
@@ -133,7 +135,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] O tema foi gerado a partir do gabarito vivo (não escrito do zero)?
 - [ ] Todas as chaves do `design` existem no dicionário (zero chave inventada)?
 - [ ] Os tipos batem com o `token.type` (number × string, enum válido)?
-- [ ] O tema foi registrado em `presets/themes/index.ts`?
+- [ ] O tema foi registrado em `presets/themes/` (`index.ts` ids, `all.ts`, `loaders.ts`) e o catálogo regenerado (`npm run themes:catalog`)?
 - [ ] `auditor_presets` sem chave órfã e suíte inteira verde?
 - [ ] A completude foi medida com `findMissingThemeAxes`, e as lacunas são deliberadas?
 - [ ] O solucionador rodou e o relatório foi colado? Todo par "não resolvido" tem decisão registrada?

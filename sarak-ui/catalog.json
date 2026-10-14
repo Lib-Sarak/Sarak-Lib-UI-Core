@@ -14,8 +14,8 @@
     "SARAK_BUILD_INFO",
     "SARAK_DEFAULT_COLUMN_WIDTH",
     "SARAK_DEFAULT_DEVICE_BREAKPOINTS",
+    "SARAK_DEFAULT_THEME_ID",
     "SARAK_DESIGN_MANIFEST",
-    "SARAK_GLOBAL_THEMES",
     "SARAK_ICONE_DESCONHECIDO",
     "SARAK_ICON_NAMES",
     "SARAK_MIN_COLUMN_WIDTH",
@@ -23,6 +23,7 @@
     "SARAK_REFERENCE_THEMES",
     "SARAK_SCOPE_CLASS",
     "SARAK_THEME_AXES",
+    "SARAK_THEME_CATALOG",
     "SARAK_THEME_PRESET_IDS",
     "SarakAccept",
     "SarakAccordion",
@@ -249,6 +250,7 @@
     "SarakRangeSlider",
     "SarakRangeSliderProps",
     "SarakRangeValue",
+    "SarakReferenceThemeId",
     "SarakRegisteredIconProps",
     "SarakResponsiveDevice",
     "SarakResponsiveValue",
@@ -312,11 +314,13 @@
     "SarakTabsProps",
     "SarakTextarea",
     "SarakTextareaProps",
+    "SarakThemeCatalogEntry",
     "SarakThemeEntry",
     "SarakThemePayload",
     "SarakThemePreset",
     "SarakThemePresetId",
     "SarakThemeReferenceOverrides",
+    "SarakThemeSwatch",
     "SarakTimePicker",
     "SarakTimePickerProps",
     "SarakTimestamp",
@@ -361,10 +365,13 @@
     "sarakFormatPercent",
     "sarakGetAllDesignTokens",
     "sarakGetDefaultDesignState",
-    "sarakGetThemePreset",
     "sarakIsResponsiveValue",
     "sarakIsSafeLinkHref",
+    "sarakLoadAllThemePresets",
+    "sarakLoadReferenceThemes",
+    "sarakLoadThemePreset",
     "sarakMoveCard",
+    "sarakPreloadThemes",
     "sarakRegisterIcons",
     "sarakReorder",
     "sarakResolveResponsiveValue",
@@ -4835,6 +4842,12 @@
           "doc": "Callback \"traga sua persistência\" (Spec 44 §2.5): chamado a cada commit do design persistido (após localStorage), para o consumidor sincronizar no backend DELE, se quiser. A lib nunca faz essa chamada por conta própria."
         },
         {
+          "name": "loadingFallback",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "O que mostrar enquanto o tema EMBARCADO pedido por código (`activeThemeId`/ `initialTheme`) ainda não chegou à memória. Só aparece sem `await sarakPreloadThemes([...])` antes do render; o padrão é nada."
+        },
+        {
           "name": "onMediaUpload",
           "type": "(file: File) => Promise<string>",
           "optional": true,
@@ -8492,6 +8505,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "f39a0e9ea96d"
+    "kitHash": "6c8acc409df6"
   }
 }

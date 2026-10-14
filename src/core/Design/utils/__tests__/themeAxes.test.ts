@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest';
 import { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from '../themeAxes';
-import { SARAK_REFERENCE_THEMES } from '../../presets/themes/reference';
+import { SARAK_REFERENCE_THEMES, sarakLoadReferenceThemes } from '../../presets/themes/reference';
 import type { SarakDesignState } from '../../../Provider/types';
 
 describe('Cobertura de eixos de tema (Spec 40.1 — L6)', () => {
@@ -22,15 +22,18 @@ describe('Cobertura de eixos de tema (Spec 40.1 — L6)', () => {
         warn.mockRestore();
     });
 
-    it('os temas de referência da lib são COMPLETOS (nenhum eixo omitido)', () => {
-        expect(SARAK_REFERENCE_THEMES.length).toBe(2);
-        for (const theme of SARAK_REFERENCE_THEMES) {
+    it('os temas de referência da lib são COMPLETOS (nenhum eixo omitido)', async () => {
+        // A referência síncrona é só o tema padrão; o par completo vem do carregador.
+        expect(SARAK_REFERENCE_THEMES.map((theme) => theme.id)).toEqual(['sarak-sovereign']);
+        const pair = await sarakLoadReferenceThemes();
+        expect(pair.length).toBe(2);
+        for (const theme of pair) {
             expect(sarakFindMissingThemeAxes(theme.design), `${theme.id} deveria ser completo`).toEqual([]);
         }
     });
 
-    it('o par de referência difere em modo, cromo e fonte (prova ampla do R5)', () => {
-        const [light, dark] = SARAK_REFERENCE_THEMES.map((t) => t.design as Record<string, unknown>);
+    it('o par de referência difere em modo, cromo e fonte (prova ampla do R5)', async () => {
+        const [light, dark] = (await sarakLoadReferenceThemes()).map((t) => t.design as Record<string, unknown>);
         expect(light.mode).not.toBe(dark.mode);
         expect(light.navigationStyle).not.toBe(dark.navigationStyle);
         expect(light.headingFont).not.toBe(dark.headingFont);

@@ -2,9 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveStorageKey } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
-import { SARAK_GLOBAL_THEMES } from '../../Design/presets/themes';
-import { SARAK_REFERENCE_THEMES } from '../../Design/presets/themes/reference';
-import { sarakGetDefaultDesignState } from '../../Design/master-map';
+import { useThemeSeed } from './useThemeSeed';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
@@ -51,44 +49,10 @@ export const useDesignManager = (props: {
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
-    /**
-     * plan-27: o id do tema que a SEMENTE efetivamente resolveu — `activeThemeId`
-     * (controlado) manda; senão `initialTheme`; sem nenhum dos dois (ou sem
-     * `allThemes` para achar o id pedido), cai no tema padrão do sistema. É a
-     * MESMA lógica que `getSeedConfig` usa para os tokens — extraída para que
-     * `resolvedThemeId` (abaixo) nasça consistente com o design semeado.
-     *
-     * Um id EXPLICITAMENTE pedido (`activeThemeId`/`initialTheme`) que não bate
-     * com nenhum tema conhecido — removido do catálogo, ou nunca existiu — nunca
-     * deixa a semente sem tema: cai na referência do modo pedido (`config.mode`
-     * explícito, se houver; senão escuro, o default do schema), com um aviso.
-     */
-    const resolveSeedThemeId = useCallback((): string | undefined => {
-        const seedThemeId = activeThemeId || initialTheme;
-        if (seedThemeId) {
-            if (allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
-            const requestedMode: 'light' | 'dark' = (configRef.current?.mode as 'light' | 'dark') || 'dark';
-            const reference = SARAK_REFERENCE_THEMES.find((t) => (t.design.mode ?? 'dark') === requestedMode) ?? SARAK_REFERENCE_THEMES[0];
-            console.warn(`[SarakUIProvider] tema "${seedThemeId}" não existe (removido do catálogo ou nunca existiu) — semeando com a referência "${reference.id}" (modo "${requestedMode}").`);
-            return reference.id;
-        }
-        const defaultThemeId = optionsRef.current?.theme?.defaultTheme || 'classic';
-        const themeEntry = SARAK_GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? SARAK_GLOBAL_THEMES[0];
-        return themeEntry?.id;
-    }, [activeThemeId, initialTheme, allThemes]);
-
-    // Initial seed logic (Sovereign Map v11.0)
-    const getSeedConfig = useCallback(() => {
-        const masterDefaults = sarakGetDefaultDesignState();
-        const seedId = resolveSeedThemeId();
-        const themeEntry = allThemes?.find(t => t.id === seedId) ?? SARAK_GLOBAL_THEMES.find(t => t.id === seedId);
-        const themeDesignTokens = themeEntry?.design ?? {};
-
-        // Mescla de defaults conhecidos + payload dinâmico do banco no estado
-        // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
-        // não se atribui sozinho a `SarakDesignState`).
-        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
-    }, [resolveSeedThemeId, allThemes]);
+    // O id do tema que a SEMENTE resolveu e os tokens semeados — `useThemeSeed.ts`.
+    const { resolveSeedThemeId, getSeedConfig } = useThemeSeed({
+        allThemes, activeThemeId, initialTheme, optionsRef, configRef,
+    });
 
     // plan-27 — o tema EFETIVAMENTE no ar (não a prop `activeThemeId` crua); ver
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
@@ -182,7 +146,7 @@ export const useDesignManager = (props: {
         return () => clearTimeout(timer);
     }, [design, getSeedConfig, isBackendLoaded, isHydrated, persistDesign, resolvedThemeId, storageKey]);
 
-    useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
+    useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign, configRef);
     useDesignRemoteLoader({
         isHydrated,
         optionsRef,

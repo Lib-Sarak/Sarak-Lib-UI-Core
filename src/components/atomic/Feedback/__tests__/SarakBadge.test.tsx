@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
-import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
 import * as ComponentModule from '../SarakBadge';
 import { SarakBadge } from '../SarakBadge';
 import { ON_COLOR_DARK, pickOnColor } from '../../../../core/Provider/utils/on-color';
@@ -118,7 +118,7 @@ describe('SarakBadge solid status contrast', () => {
     });
 
     it('o texto que o motor escolhe passa de 4,5:1 sobre as cores de status dos temas, nos dois modos', () => {
-        for (const theme of SARAK_GLOBAL_THEMES) {
+        for (const theme of SARAK_ALL_THEMES) {
             const palettes: Array<{ label: string; colors: object }> = [
                 { label: `${theme.id} (base)`, colors: theme.design },
             ];

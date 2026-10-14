@@ -1,16 +1,54 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useThemeCollection } from '../useThemeCollection';
-import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes/index';
+import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
+import { SARAK_THEME_CATALOG } from '../../../Design/presets/themes/catalog.generated';
+import { getLoadedThemePresets, sarakLoadThemePreset } from '../../../Design/presets/themes/registry';
 import type { SarakUIOptions } from '../../types';
 
 describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumidor)', () => {
-    it('allThemes começa como GLOBAL_THEMES + customThemes, sem nenhum tema salvo', () => {
+    it('allThemes começa como os temas EM MEMÓRIA (só o padrão no boot) + customThemes, sem nenhum tema salvo', () => {
         const customTheme = { id: 'meu-custom', name: 'Meu Custom', design: {} };
         const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
 
-        expect(result.current.allThemes).toHaveLength(SARAK_GLOBAL_THEMES.length + 1);
+        expect(result.current.allThemes).toHaveLength(getLoadedThemePresets().length + 1);
+        expect(result.current.allThemes[0].id).toBe('sarak-sovereign');
         expect(result.current.allThemes[result.current.allThemes.length - 1]).toEqual(customTheme);
+    });
+
+    it('themeCatalog lista TODOS os embarcados (carregados ou não) + os custom, sem carregar o design', () => {
+        const customTheme = { id: 'meu-custom', name: 'Meu Custom', design: { mode: 'light' } };
+        const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
+
+        expect(result.current.themeCatalog.map((entry) => entry.id)).toEqual([...SARAK_THEME_CATALOG.map((entry) => entry.id), 'meu-custom']);
+        expect(result.current.themeCatalog[SARAK_THEME_CATALOG.length].mode).toBe('light');
+    });
+
+    it('loadTheme carrega o embarcado sob demanda, e allThemes ganha o tema com referência estável por versão', async () => {
+        const noCustomThemes: never[] = [];
+        const options = {} as SarakUIOptions;
+        const { result, rerender } = renderHook(() => useThemeCollection(noCustomThemes, options));
+        const before = result.current.allThemes;
+        rerender();
+        expect(result.current.allThemes).toBe(before);
+
+        let loaded: Awaited<ReturnType<typeof result.current.loadTheme>>;
+        await act(async () => { loaded = await result.current.loadTheme('cyberpunk-neon'); });
+
+        expect(loaded!).toBe(SARAK_ALL_THEMES.find((theme) => theme.id === 'cyberpunk-neon'));
+        expect(result.current.allThemes.some((theme) => theme.id === 'cyberpunk-neon')).toBe(true);
+        const after = result.current.allThemes;
+        rerender();
+        expect(result.current.allThemes).toBe(after);
+    });
+
+    it('loadTheme de id que não existe devolve undefined; de tema custom devolve o que já está em memória', async () => {
+        const customTheme = { id: 'meu-custom', name: 'Meu Custom', design: {} };
+        const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
+
+        expect(await result.current.loadTheme('nao-existe')).toBeUndefined();
+        expect(await result.current.loadTheme('meu-custom')).toBe(customTheme);
+        await sarakLoadThemePreset('sarak-sovereign');
     });
 
     it('saveTheme funde o tema validado em allThemes, DEPOIS de customThemes', async () => {
@@ -22,7 +60,7 @@ describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumido
         });
 
         const ids = result.current.allThemes.map((t) => t.id);
-        expect(ids).toEqual([...SARAK_GLOBAL_THEMES.map((t) => t.id), 'meu-custom', 'meu-tema']);
+        expect(ids).toEqual([...getLoadedThemePresets().map((t) => t.id), 'meu-custom', 'meu-tema']);
     });
 
     it('salvar o mesmo id duas vezes SUBSTITUI, nunca duplica', async () => {

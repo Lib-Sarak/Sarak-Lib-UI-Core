@@ -14,7 +14,8 @@ import {
   CONTRAPARTE_EXEMPTION_LIST,
 } from '../verify_contrast.ts';
 import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 // Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
 // número de temas reprovados, que é baseline e muda a cada tema consertado
@@ -259,7 +260,7 @@ describe('pares que os componentes desenham', () => {
   });
 
   it('MUTAÇÃO: o primário translúcido de um tema embarcado reintroduzido abaixo de 4,5:1 faz o tema reprovar', () => {
-    const theme = { ...SARAK_GLOBAL_THEMES[0], design: { ...(SARAK_GLOBAL_THEMES[0].design as Record<string, unknown>), inputErrorColor: '#ffb3b3', colorBgBody: '#ffffff', mode: 'light' } } as SarakThemePreset;
+    const theme = { ...SARAK_ALL_THEMES[0], design: { ...(SARAK_ALL_THEMES[0].design as Record<string, unknown>), inputErrorColor: '#ffb3b3', colorBgBody: '#ffffff', mode: 'light' } } as SarakThemePreset;
 
     const report = auditTheme(theme);
 
@@ -272,7 +273,7 @@ describe('pares que os componentes desenham', () => {
 // função RODA e devolve o mesmo formato de relatório que `auditTheme`.
 describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', () => {
   it('roda para todos os temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
-    for (const theme of SARAK_GLOBAL_THEMES) {
+    for (const theme of SARAK_ALL_THEMES) {
       const nativo = auditTheme(theme);
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.id).toBe(nativo.id);
@@ -282,7 +283,7 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
   });
 
   it('todos os temas de referência passam AA nos dois modos (Decisão C · plan-24-1 · contraparte autorada · plan-26)', () => {
-    for (const theme of SARAK_GLOBAL_THEMES) {
+    for (const theme of SARAK_ALL_THEMES) {
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.falhas, `tema "${theme.id}" reprova no modo oposto: ${JSON.stringify(oposto.falhas.map((f) => f.pair))}`).toEqual([]);
     }
@@ -313,15 +314,15 @@ describe('auditContraparteRequired', () => {
   });
 
   it('sobre GLOBAL_THEMES hoje: um isento por tema legado sem contraparte, e nenhum faltando', () => {
-    const audit = auditContraparteRequired(SARAK_GLOBAL_THEMES);
-    const comContraparte = SARAK_GLOBAL_THEMES.filter((t) => Boolean(t.contraparte)).length;
-    expect(audit.isentos.length).toBe(SARAK_GLOBAL_THEMES.length - comContraparte);
+    const audit = auditContraparteRequired(SARAK_ALL_THEMES);
+    const comContraparte = SARAK_ALL_THEMES.filter((t) => Boolean(t.contraparte)).length;
+    expect(audit.isentos.length).toBe(SARAK_ALL_THEMES.length - comContraparte);
     expect(audit.faltando).toEqual([]);
   });
 
   it('acusa um tema fora da isenção sem contraparte', () => {
     const semContraparte = { id: 'tema-novo-sem-contraparte', name: 'x', description: 'x', design: { mode: 'dark' } } as unknown as SarakThemePreset;
-    const audit = auditContraparteRequired([...SARAK_GLOBAL_THEMES, semContraparte]);
+    const audit = auditContraparteRequired([...SARAK_ALL_THEMES, semContraparte]);
     expect(audit.faltando).toEqual(['tema-novo-sem-contraparte']);
   });
 });
@@ -350,14 +351,14 @@ describe('PAIRS — nenhuma cadeia termina em fundo que pode ser translúcido', 
   });
 
   it('nenhum par é pulado em nenhum tema do catálogo, nos dois modos', () => {
-    const pulados = SARAK_GLOBAL_THEMES.flatMap((theme) =>
+    const pulados = SARAK_ALL_THEMES.flatMap((theme) =>
       [auditTheme(theme), auditThemeOppositeMode(theme)].flatMap((r) => r.pulados.map((p) => `${r.id}: ${p.pair.fg} / ${p.pair.bgChain[0]}`)),
     );
     expect(pulados).toEqual([]);
   });
 
   it('kinetic-flow, no modo oposto, passa os dois pares do item de navegação ativo', () => {
-    const theme = SARAK_GLOBAL_THEMES.find((t) => t.id === 'kinetic-flow') as SarakThemePreset;
+    const theme = SARAK_ALL_THEMES.find((t) => t.id === 'kinetic-flow') as SarakThemePreset;
     const nav = auditThemeOppositeMode(theme).resultados.filter((r) => r.pair.fg === 'navItemActiveColor');
     expect(nav).toHaveLength(2);
     nav.forEach((r) => expect(!r.pulado && r.pass).toBe(true));

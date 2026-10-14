@@ -48,24 +48,31 @@ export const collectDesignTokens = () => {
 export const collectThemePresetIds = () =>
     collectStringArrayConst('core/Design/presets/themes/index.ts', 'SARAK_THEME_PRESET_IDS');
 
-/** O par recomendado (`SARAK_REFERENCE_THEMES`) — lido das chamadas `sarakGetThemePreset('id')`. */
-export const collectReferenceThemeIds = () => {
-    const source = parse('core/Design/presets/themes/reference.ts');
-    const ids = [];
+/** O valor string de `const <name> = '<id>'` (com anotação de tipo e/ou `as const`) em `file`. */
+const collectStringConst = (file, name) => {
+    const source = parse(file);
+    let value = null;
     const visit = (node) => {
-        if (
-            ts.isCallExpression(node) &&
-            node.expression.getText(source) === 'sarakGetThemePreset' &&
-            node.arguments.length === 1 &&
-            ts.isStringLiteral(node.arguments[0])
-        ) {
-            ids.push(node.arguments[0].text);
+        if (ts.isVariableDeclaration(node) && node.name.getText(source) === name && node.initializer) {
+            let init = node.initializer;
+            while (ts.isAsExpression(init) || ts.isSatisfiesExpression(init)) init = init.expression;
+            if (ts.isStringLiteral(init)) value = init.text;
         }
         ts.forEachChild(node, visit);
     };
     visit(source);
-    return ids;
+    return value;
 };
+
+/**
+ * O par recomendado (claro + escuro): o claro é `LIGHT_REFERENCE_ID` (fora do boot,
+ * carregado por `sarakLoadReferenceThemes`) e o escuro é o tema padrão
+ * (`SARAK_DEFAULT_THEME_ID`, que `SARAK_REFERENCE_THEMES` expõe síncrono).
+ */
+export const collectReferenceThemeIds = () => [
+    collectStringConst('core/Design/presets/themes/reference.ts', 'LIGHT_REFERENCE_ID'),
+    collectStringConst('core/Design/presets/themes/index.ts', 'SARAK_DEFAULT_THEME_ID'),
+].filter(Boolean);
 
 /** Limiares canônicos de dispositivo — fonte única `core/Design/breakpoints.ts`. */
 export const collectBreakpoints = () => {

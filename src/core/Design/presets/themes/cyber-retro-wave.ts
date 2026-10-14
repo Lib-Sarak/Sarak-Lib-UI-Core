@@ -1,4 +1,4 @@
-import { SarakThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
 /**
  * Tema Gerado Automaticamente pela Skill Sarak-UI-criar-tema

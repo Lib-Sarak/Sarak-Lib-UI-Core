@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { auditTokenContract, TokenContractDrift } from '../validation';
 import { sarakGetDefaultDesignState } from '../../../Design/master-map';
-import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { CARD_PRESETS, CARD_TEXTURE_PRESETS } from '../../../Design/presets/components/cards';
 import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../Design/presets/components/buttons';
 import { INPUT_PRESETS } from '../../../Design/presets/components/inputs';
@@ -33,7 +33,7 @@ import { MEDIA_PRESETS, TEXTURE_PRESETS } from '../../../Design/presets/componen
 describe('Contrato de tokens — defaults/temas/presets shippados (Spec 40.4)', () => {
     const sources: Array<{ fonte: string; design: Record<string, unknown> }> = [
         { fonte: 'defaults (MASTER_DESIGN_MAP)', design: sarakGetDefaultDesignState() as Record<string, unknown> },
-        ...SARAK_GLOBAL_THEMES.map((theme) => ({ fonte: `tema:${theme.id}`, design: theme.design })),
+        ...SARAK_ALL_THEMES.map((theme) => ({ fonte: `tema:${theme.id}`, design: theme.design })),
         ...CARD_PRESETS.map((p) => ({ fonte: `preset-card:${p.id}`, design: p.design as Record<string, unknown> })),
         ...CARD_TEXTURE_PRESETS.map((p) => ({ fonte: `preset-card-textura:${p.id}`, design: p.design as Record<string, unknown> })),
         ...BUTTON_PRESETS.map((p) => ({ fonte: `preset-botao:${p.id}`, design: p.design as Record<string, unknown> })),

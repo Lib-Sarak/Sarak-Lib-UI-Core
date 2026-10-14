@@ -945,6 +945,48 @@ const ThemeSwitchScene: React.FC = () => {
     );
 };
 
+/**
+ * `?cena=tema-sob-demanda`: o tema embarcado chega sob demanda e a tela nunca mostra um tema errado.
+ *   - `?pedido=<id>`: `initialTheme` forçado por código (um tema embarcado que NÃO está no boot).
+ *   - `?controlado=1`: o pedido vira `activeThemeId` (controlado) em vez de `initialTheme`.
+ *   - `?alvo=<id>`: o botão `data-probe="escolher"` troca o `activeThemeId` para ele em tempo de execução.
+ * Um gravador de quadros (`window.__frames`) anota, a CADA animation frame desde antes do primeiro render, se a
+ * aplicação já está na página (`appPresent`), a cor da primária que ela mostra (`color`) e se o fallback está na tela.
+ */
+interface ThemeFrame { appPresent: boolean; color: string; fallback: boolean }
+declare global { interface Window { __frames?: ThemeFrame[] } }
+
+function startFrameRecorder(): void {
+    window.__frames = [];
+    const tick = (): void => {
+        const probe = document.querySelector('[data-probe="cor-do-tema"]');
+        window.__frames?.push({
+            appPresent: probe !== null,
+            color: probe ? getComputedStyle(probe).backgroundColor : '',
+            fallback: document.querySelector('[data-probe="fallback"]') !== null,
+        });
+        requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+}
+
+const OnDemandThemeScene: React.FC = () => {
+    const requested = searchParams.get('pedido') ?? undefined;
+    const target = searchParams.get('alvo') ?? undefined;
+    const controlled = searchParams.get('controlado') === '1';
+    const [activeThemeId, setActiveThemeId] = React.useState<string | undefined>(controlled ? requested : undefined);
+    return (
+        <SarakUIProvider
+            initialTheme={controlled ? undefined : requested}
+            activeThemeId={activeThemeId}
+            loadingFallback={<div data-probe="fallback">carregando tema</div>}
+        >
+            <div data-probe="cor-do-tema" style={{ width: 40, height: 40, backgroundColor: 'var(--color-theme-primary, #00f2ff)' }} />
+            {target ? <button type="button" data-probe="escolher" onClick={() => setActiveThemeId(target)}>Escolher</button> : null}
+        </SarakUIProvider>
+    );
+};
+
 const SceneComponent = SCENES[searchParams.get('cena') ?? ''];
 
 const container = document.getElementById('root');
@@ -962,7 +1004,10 @@ async function swapToScopedStylesheet(): Promise<void> {
 }
 
 void swapToScopedStylesheet().then(() => {
-    if (searchParams.get('cena') === 'troca-de-tema') {
+    if (searchParams.get('cena') === 'tema-sob-demanda') {
+        startFrameRecorder();
+        createRoot(container).render(<OnDemandThemeScene />);
+    } else if (searchParams.get('cena') === 'troca-de-tema') {
         createRoot(container).render(<ThemeSwitchScene />);
     } else {
         createRoot(container).render(SceneComponent ? renderScene(SceneComponent) : <App />);

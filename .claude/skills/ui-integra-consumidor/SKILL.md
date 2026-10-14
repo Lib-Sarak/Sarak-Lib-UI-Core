@@ -89,7 +89,9 @@ igual" (eixos omitidos não mudam). A derivação é **uma chamada**, não uma c
 ```tsx
 import { sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
-const MEU_TEMA = sarakDeriveThemeFromReference('minimalist-airy', {
+// 'sarak-sovereign' (o tema padrão) é síncrono. Outro embarcado entra como preset já carregado:
+// `sarakDeriveThemeFromReference(await sarakLoadThemePreset('minimalist-airy'), {...})`.
+const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
   id: 'minha-marca', name: 'Minha Marca',
   design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
 });

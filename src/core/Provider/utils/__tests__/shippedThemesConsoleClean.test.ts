@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateDesign } from '../validation';
 import { sarakGetDefaultDesignState } from '../../../Design/master-map';
-import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { minimalistAiry } from '../../../Design/presets/themes/minimalist-airy';
 
 /**
@@ -22,7 +22,7 @@ describe('Console limpo ao carregar os temas shippados (Spec 40.4 L4)', () => {
         warnSpy.mockRestore();
     });
 
-    it.each(SARAK_GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
+    it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))(
         'tema "%s": validateDesign(defaults + tema) não emite aviso "fora do contrato"',
         (_id, theme) => {
             const merged = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };

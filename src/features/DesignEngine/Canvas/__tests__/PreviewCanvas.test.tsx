@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { PreviewCanvas } from '../PreviewCanvas';
 
@@ -28,7 +28,7 @@ import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakUIContextType } from '../../../../core/Provider/types';
 
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
-    it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', () => {
+    it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', async () => {
         const { container } = render(
             <SarakUIProvider>
                 <PreviewCanvas
@@ -59,6 +59,8 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
             expect(style).not.toContain('--device-width');
         }
 
+        // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
+        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull());
         expect(container).toMatchSnapshot();
     }, 30000); // 15000 não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, plan-12/R8.1)
 

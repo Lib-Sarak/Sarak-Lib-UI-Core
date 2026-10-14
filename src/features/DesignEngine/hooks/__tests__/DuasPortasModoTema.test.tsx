@@ -15,12 +15,12 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { SarakShellThemeToggle } from '../../../../components/atomic/Navigation/SarakShellThemeToggle';
-import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
 import { useDesignDraft } from '../useDesignDraft';
 
 describe('O invariante das duas portas (§3.3) — toggle do cromo × seletor "Tema do Sistema" do painel', () => {
     it('produzem design IDÊNTICO, chave a chave, para o mesmo tema e o mesmo modo alvo', () => {
-        const tema = SARAK_GLOBAL_THEMES.find((t) => t.id === 'sarak-sovereign')!;
+        const tema = SARAK_ALL_THEMES.find((t) => t.id === 'sarak-sovereign')!;
         const chavesDaContraparte = Object.keys(tema.contraparte ?? {});
         expect(chavesDaContraparte.length).toBeGreaterThan(0); // salvaguarda: o teste não vale nada sobre um tema sem contraparte
 

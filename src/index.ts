@@ -72,10 +72,14 @@ export { SARAK_DESIGN_MANIFEST } from './core/Provider/manifest';
 // Temas COMPLETOS de referência (Spec 40.1 — L6): o consumidor parte destes e customiza
 // poucos valores, mantendo TODOS os eixos (cor+fonte+cromo+raio+espaçamento). Inclui os
 // helpers de completude (defaults totais + aviso de eixo omitido) e o tipo `ThemePreset`.
-export { SARAK_GLOBAL_THEMES, SARAK_THEME_PRESET_IDS } from './core/Design/presets/themes';
-export type { SarakThemePreset, SarakThemePresetId } from './core/Design/presets/themes';
-export { SARAK_REFERENCE_THEMES, sarakGetThemePreset, sarakDeriveThemeFromReference } from './core/Design/presets/themes/reference';
-export type { SarakThemeReferenceOverrides, SarakDerivedThemePreset } from './core/Design/presets/themes/reference';
+export { SARAK_THEME_PRESET_IDS, SARAK_DEFAULT_THEME_ID } from './core/Design/presets/themes';
+export type { SarakThemePreset, SarakThemePresetId, SarakThemeCatalogEntry, SarakThemeSwatch } from './core/Design/presets/themes';
+// Temas embarcados SOB DEMANDA: o boot leva só o tema padrão; a lista (nome, modo, cor) é o
+// catálogo leve e o `design` de cada tema chega por `sarakLoadThemePreset`/`sarakPreloadThemes`.
+export { SARAK_THEME_CATALOG } from './core/Design/presets/themes/catalog.generated';
+export { sarakLoadThemePreset, sarakPreloadThemes, sarakLoadAllThemePresets } from './core/Design/presets/themes/registry';
+export { SARAK_REFERENCE_THEMES, sarakLoadReferenceThemes, sarakDeriveThemeFromReference } from './core/Design/presets/themes/reference';
+export type { SarakThemeReferenceOverrides, SarakDerivedThemePreset, SarakReferenceThemeId } from './core/Design/presets/themes/reference';
 export { sarakGetDefaultDesignState, sarakGetAllDesignTokens } from './core/Design/master-map';
 export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o

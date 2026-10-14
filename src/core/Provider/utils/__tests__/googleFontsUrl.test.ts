@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { THEME_FONTS } from '../../../Design/schema/typography';
-import { SARAK_GLOBAL_THEMES } from '../../../Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { buildGoogleFontsUrl, listLoadableFamilies } from '../googleFontsUrl';
 
 const FONT_TOKENS = ['headingFont', 'bodyFont', 'monoFont', 'identityFontFamily'] as const;
@@ -38,7 +38,7 @@ describe('carregador de fontes', () => {
         const offered = new Set(THEME_FONTS.map((font) => font.value));
         const fora: string[] = [];
 
-        for (const theme of SARAK_GLOBAL_THEMES) {
+        for (const theme of SARAK_ALL_THEMES) {
             for (const token of FONT_TOKENS) {
                 const value = (theme.design as Record<string, unknown>)[token];
                 if (typeof value === 'string' && !offered.has(value)) fora.push(`${theme.id}.${token}=${value}`);
@@ -52,7 +52,7 @@ describe('carregador de fontes', () => {
         const url = buildGoogleFontsUrl();
         const used = new Set<string>();
 
-        for (const theme of SARAK_GLOBAL_THEMES) {
+        for (const theme of SARAK_ALL_THEMES) {
             for (const token of FONT_TOKENS) {
                 const value = (theme.design as Record<string, unknown>)[token];
                 if (typeof value === 'string') used.add(value.split(',')[0].replace(/['"]/g, '').trim());

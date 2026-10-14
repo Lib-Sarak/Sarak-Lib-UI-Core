@@ -22,7 +22,7 @@
 import { getDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
 import { PAIRS, evaluatePair, resolveChain, contrastRatio, compositeOverOpaque } from '../../../../gates/scripts/audit/verify_contrast.ts';
 import { rgbToHsl, hslToRgb, rgbToHex, parseToRgba } from '../../../../src/core/Provider/utils/color-engine.ts';
-import { GLOBAL_THEMES } from '../../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
 
 const MIN_RATIO = 4.5;
 const L_PRECISION = 0.25;
@@ -261,9 +261,9 @@ function main(): void {
         console.error('Uso: npx tsx solve_theme_contrast.ts <theme-id>');
         process.exit(1);
     }
-    const theme = GLOBAL_THEMES.find((t) => t.id === themeId);
+    const theme = SARAK_ALL_THEMES.find((t) => t.id === themeId);
     if (!theme) {
-        console.error(`Tema "${themeId}" não encontrado em GLOBAL_THEMES.`);
+        console.error(`Tema "${themeId}" não encontrado em SARAK_ALL_THEMES (themes/all.ts).`);
         process.exit(1);
     }
     const merged = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };

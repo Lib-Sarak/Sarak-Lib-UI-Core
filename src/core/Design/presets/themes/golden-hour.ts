@@ -1,4 +1,4 @@
-import { SarakThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
 export const goldenHourTheme: SarakThemePreset = {
     id: 'golden-hour',

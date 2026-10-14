@@ -3,7 +3,7 @@ import { render, screen, renderHook, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
-import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
@@ -333,7 +333,7 @@ function evaluateActiveDistinction(
  * no console — nunca medido contra o preto que `parseToRgba` devolveria.
  */
 describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredura, não amostra)', () => {
-    it.each(SARAK_GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
+    it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))(
         `tema "%s": o item ativo se distingue do inativo nas DUAS orientações (ΔE > ${JND_DELTA_E})`,
         (_id, theme) => {
             const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
@@ -409,7 +409,7 @@ const TEMAS_AINDA_NAO_REAUTORADOS: readonly string[] = [];
  * nativo deixaria a metade da experiência real sem régua nenhuma.
  */
 describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado, nos dois modos', () => {
-    const temasReautorados = SARAK_GLOBAL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
+    const temasReautorados = SARAK_ALL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
 
     it('a lista de temas reautorados não está vazia (a varredura abaixo não pode virar no-op silencioso)', () => {
         expect(temasReautorados.length).toBeGreaterThan(0);

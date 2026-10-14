@@ -61,6 +61,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [019](./019-arrastar-e-soltar-do-kanban.md) | O arrastar e soltar do quadro kanban é o @dnd-kit, atrás de um adaptador único | 🟢 Aceito |
 | [020](./020-gantt-casca-propria.md) | O Gantt da lib é casca própria, não componente de terceiro | 🟢 Aceito |
 | [021](./021-navegacao-na-base-do-celular.md) | No celular, a navegação vai para uma barra na base quando cabe — auto por padrão, configurável pelo tema | 🟢 Aceito |
+| [022](./022-tema-sob-demanda.md) | Os temas embarcados são carregados sob demanda — o boot leva só o tema padrão, e a UX não muda | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

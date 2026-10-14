@@ -68,7 +68,7 @@ describe('minimalist-airy e sarak-sovereign têm contraparte autorada', () => {
  */
 describe('deriveThemeFromReference', () => {
     it('devolve um tema com design E contraparte completos, não um subconjunto', () => {
-        const derivado = sarakDeriveThemeFromReference('minimalist-airy', {
+        const derivado = sarakDeriveThemeFromReference(minimalistAiry, {
             id: 'consumidor-azul',
             name: 'Consumidor Azul',
             design: { primaryColor: '#0044ff', accentColor: '#0044ff', btnPrimaryBg: '#0044ff' },
@@ -79,7 +79,7 @@ describe('deriveThemeFromReference', () => {
     });
 
     it('a sobreposição de cor de marca aparece nos DOIS modos — nativo e oposto', () => {
-        const derivado = sarakDeriveThemeFromReference('minimalist-airy', {
+        const derivado = sarakDeriveThemeFromReference(minimalistAiry, {
             id: 'consumidor-azul',
             name: 'Consumidor Azul',
             design: { primaryColor: '#0044ff' },

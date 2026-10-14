@@ -102,7 +102,8 @@
 //    teste de `useAtomicStyles` e de `browser-tests/contraste-do-que-faltava.spec.ts`.
 // -------------------------------------------------------------------------
 import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
 import { pickOnColor } from '../../../src/core/Provider/utils/on-color.ts';
 
@@ -505,11 +506,11 @@ function main() {
     console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
     console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
 
-    const nativo = printPass(SARAK_GLOBAL_THEMES.map(auditTheme), 'MODO NATIVO');
-    const oposto = printPass(SARAK_GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada — contraparte autorada quando existe)');
+    const nativo = printPass(SARAK_ALL_THEMES.map(auditTheme), 'MODO NATIVO');
+    const oposto = printPass(SARAK_ALL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada — contraparte autorada quando existe)');
     console.log(`\n${oposto.totalFalhas} par(es)-tema reprovado(s) no MODO OPOSTO.`);
 
-    const contraparteOk = printContraparteAudit(auditContraparteRequired(SARAK_GLOBAL_THEMES), SARAK_GLOBAL_THEMES.length);
+    const contraparteOk = printContraparteAudit(auditContraparteRequired(SARAK_ALL_THEMES), SARAK_ALL_THEMES.length);
 
     if (nativo.temasComFalha === 0 && oposto.temasComFalha === 0 && contraparteOk) {
         console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos, nos dois modos, e todo tema não isento tem contraparte.');

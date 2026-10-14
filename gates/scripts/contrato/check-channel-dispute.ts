@@ -36,7 +36,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sarakGetAllDesignTokens, sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
 import { useDesignVariables } from '../../../src/core/Design/hooks/useDesignVariables';
-import { SARAK_GLOBAL_THEMES } from '../../../src/core/Design/presets/themes/index';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
 import { syncInjectedWrites, type InjectionHost } from '../../../src/core/Provider/utils/injectedWrites';
 
 type Design = Record<string, unknown>;
@@ -288,7 +288,7 @@ function main(): void {
         disputes.slice(0, 20).forEach((dispute) => console.log(`  - ${dispute.where} :: ${dispute.variable} (${dispute.kind}) ${dispute.detail}`));
     }
 
-    const themes = SARAK_GLOBAL_THEMES.map((theme) => ({ id: theme.id, design: theme.design as Design }));
+    const themes = SARAK_ALL_THEMES.map((theme) => ({ id: theme.id, design: theme.design as Design }));
     const orphans = findOrphanWrites(buildScenarios(defaults, themes));
     if (orphans.length > 0) {
         failed = true;

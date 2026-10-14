@@ -1,4 +1,4 @@
-import { SarakThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
 export const synthwaveRetroTheme: SarakThemePreset = {
     id: 'synthwave-retro',

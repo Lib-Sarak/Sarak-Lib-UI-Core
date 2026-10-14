@@ -14,7 +14,7 @@ import {
     type InjectionWriter,
     type SchemaToken,
 } from '../check-channel-dispute';
-import { SARAK_GLOBAL_THEMES } from '../../../../src/core/Design/presets/themes/index';
+import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all';
 
 const tokens = sarakGetAllDesignTokens() as unknown as SchemaToken[];
 const defaults = sarakGetDefaultDesignState() as unknown as Record<string, unknown>;
@@ -25,7 +25,7 @@ describe('o motor real, no repositório', () => {
     });
 
     it('nenhuma troca de tema (sintética ou entre os temas entregues) deixa variável órfã', () => {
-        const themes = SARAK_GLOBAL_THEMES.map((theme) => ({ id: theme.id, design: theme.design as Record<string, unknown> }));
+        const themes = SARAK_ALL_THEMES.map((theme) => ({ id: theme.id, design: theme.design as Record<string, unknown> }));
         expect(findOrphanWrites(buildScenarios(defaults, themes))).toEqual([]);
     });
 });
