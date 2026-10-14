@@ -89,8 +89,8 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     <div 
                         className="flex-1 flex flex-col relative rounded-2xl border border-theme-text/5 overflow-hidden"
                         style={{
-                            backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.02))',
-                            borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
+                            backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.03))',
+                            borderRadius: 'var(--sarak-input-border-radius, 8px)'
                         }}
                     >
                         <div className="px-6 py-3 border-b border-theme-text/5 bg-theme-body/40 flex items-center justify-between text-2xs text-theme-text/50 font-mono">
@@ -112,14 +112,14 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
                         <div 
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
-                            style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
+                            style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
                             <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
                             <select 
                                 className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
                                 style={{
-                                    backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.03))',
-                                    borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
+                                    backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.03))',
+                                    borderRadius: 'var(--sarak-input-border-radius, 8px)'
                                 }}
                             >
                                 <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">MÁXIMO SIGILO // LOCAL ONLY</option>
@@ -129,7 +129,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         </div>
                         <div 
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
-                            style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
+                            style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
                             <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
                             <SarakInput 

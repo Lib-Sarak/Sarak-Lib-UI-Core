@@ -93,7 +93,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                             // dentro do `createPortal` (renderiza em `document.body`, fora
                             // da subárvore da raiz do card). Sem ancestral com
                             // `container-type` DENTRO do portal, a classe nunca casava.
-                            className="@container fixed inset-0 z-[99999] bg-theme-body flex"
+                            className="@container fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_-_100)] bg-theme-body flex"
                             style={{ flexDirection: 'column' }}
                         >
                             <motion.div

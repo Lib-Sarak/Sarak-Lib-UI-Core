@@ -142,6 +142,35 @@ describe('findInLine — duração, atraso e sombra com `var()` de cor', () => {
     });
 });
 
+describe('findInLine — classe arbitrária com espaço no colchete', () => {
+    it.each([
+        ['<i className="fixed z-[var(--z-index-tooltip, 9000)] text-xs" />', 'z-[var(--z-index-tooltip, 9000)]'],
+        ['<i className="hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))]" />', 'hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))]'],
+        ['<i className="shadow-[0_0_10px_var(--theme-success, #10b981)]" />', 'shadow-[0_0_10px_var(--theme-success, #10b981)]'],
+    ])('PLANTADO: %s é acusado', (line, text) => {
+        const hits = findInLine(line).filter((hit) => hit.kind === 'classe-com-espaço');
+
+        expect(hits.map((hit) => hit.text)).toContain(text);
+    });
+
+    it.each([
+        ['<i className="z-[var(--z-index-tooltip,9000)]" />'],
+        ['<i className="z-[calc(var(--sarak-z-modal,2000)_+_100)]" />'],
+        ["style={{ zIndex: 'var(--sarak-z-toast, 9100)' }}"],
+        ["const y = items[index, 2];"],
+    ])('PASSANTE: %s não é acusado', (line) => {
+        expect(findInLine(line).filter((hit) => hit.kind === 'classe-com-espaço')).toEqual([]);
+    });
+
+    it('MUTAÇÃO: a classe com espaço num componente é achado, com arquivo e linha', () => {
+        const root = fixture({ 'src/components/atomic/A.tsx': 'export const A = () => <div className="z-[var(--z, 9000)]" />;\n' });
+
+        const { violations } = findFixedTranslucent({ root, exceptions: {} });
+
+        expect(violations).toEqual([{ file: 'src/components/atomic/A.tsx', line: 1, kind: 'classe-com-espaço', text: 'z-[var(--z, 9000)]' }]);
+    });
+});
+
 describe('findFixedTranslucent — o repositório de fixture', () => {
     it('MUTAÇÃO: um bg-white/5 num componente é achado, com arquivo e linha', () => {
         const root = fixture({ 'src/components/atomic/A.tsx': 'export const A = () => <div className="p-2 bg-white/5" />;\n' });

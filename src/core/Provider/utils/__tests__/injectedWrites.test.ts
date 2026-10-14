@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { syncInjectedWrites } from '../injectedWrites';
+import { releaseInjectedWrites, syncInjectedWrites } from '../injectedWrites';
 
 const makeHost = (): HTMLElement => document.createElement('div');
 
@@ -38,5 +38,26 @@ describe('syncInjectedWrites', () => {
         syncInjectedWrites(first, {}, {});
         expect(first.style.getPropertyValue('--a')).toBe('');
         expect(second.style.getPropertyValue('--a')).toBe('1px');
+    });
+
+    it('releaseInjectedWrites tira tudo o que o injetor escreveu, e só isso, e esquece o registro', () => {
+        const host = makeHost();
+        host.style.setProperty('--do-host', 'x');
+        syncInjectedWrites(host, { '--a': '1px', '--b': '2px' }, { 'data-sx-x': 'y' });
+        releaseInjectedWrites(host);
+        expect(host.style.getPropertyValue('--a')).toBe('');
+        expect(host.style.getPropertyValue('--b')).toBe('');
+        expect(host.hasAttribute('data-sx-x')).toBe(false);
+        expect(host.style.getPropertyValue('--do-host')).toBe('x');
+        // O registro sumiu: uma nova escrita parte do zero (não "lembra" de --a).
+        syncInjectedWrites(host, { '--c': '3px' }, {});
+        expect(host.style.getPropertyValue('--c')).toBe('3px');
+    });
+
+    it('releaseInjectedWrites num elemento nunca escrito não faz nada', () => {
+        const host = makeHost();
+        host.style.setProperty('--do-host', 'x');
+        releaseInjectedWrites(host);
+        expect(host.style.getPropertyValue('--do-host')).toBe('x');
     });
 });

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechamento do arsenal: injecao sem disputa de canal, cascata e movimento que cedem ao tema, painel e descricoes que dizem a verdade, travas sem furo e contraste dos pares que faltavam"
 objetivo: "Corrigir o residuo que a re-auditoria de fechamento da plan-114 mediu nos pontos cegos das travas, em tres lotes revisados um a um, fechar os furos das proprias travas e repetir a re-auditoria ate zero, antes de os temas serem refeitos"
 dominio: "Design Engine / Injecao / CSS do motor / Painel / Contraste / Gates"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "injecao", "cascata", "movimento", "painel", "contraste", "gate", "temas"]
 relacionados: ["[[02-design-engine]]", "[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]"]
@@ -367,6 +367,137 @@ fora com motivo medido.
 - Mudança de aparência no padrão: o texto de aviso/erro do `AuthForm` e o do hover fantasma/contorno ficam menos saturados; sem Provider, o cartão passa a ser translúcido (`rgba(15,23,42,0.6)`), o texto mudo `rgba(255,255,255,0.4)` e a borda `rgba(255,255,255,0.1)`; `p-*` dos mocks seguem valendo (lote 1).
 - O token de sombra de sobreposição (ver decisões) é a única classe de valor fixo do anexo (R3.3, "suspeitas") deixada sem trava e sem conserto.
 
+## Resumo da execução (lote 4 — o resíduo da re-auditoria de fechamento) — 2026-10-14
+
+**Resultado:** Concluído com uma decisão a registrar (L4.4, parcial — ver *Decisões*); as pendências são verificações do revisor: `npm run build` e `cromo-css-real:check` oficiais, e a repetição da re-auditoria.
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-116-tema-sob-demanda.md
+```
+(`HEAD` `04e32d71`; os dois arquivos são do revisor. Durante a execução apareceu `specs/plan/anexos/plan-116-desenho.md`, também do revisor.)
+
+**O que foi feito**
+- L4.1 — 11 classes arbitrárias com espaço (`SarakTooltip.tsx:191`, `SarakAnalyticalPage.tsx:52,65`, `CardsCatalog.tsx:58`, `TypographyCatalog.tsx:35`, `PreviewCanvas.tsx:100`, `LiveDraftPreviewFrame.tsx:49,55`, `MasterControlPanel.tsx:174`, `LayoutTab.tsx:168,186`) sem espaço; `SarakTooltip` lê `--sarak-z-tooltip`. **Trava:** `fixed-translucent:check` acusa classe com espaço no colchete (`classe-com-espaço`), em componente e painel.
+- L4.2 — `.transition-sarak` saiu de `_utilities.css` (`!important`) para `_elements.css` (`components.sarak-elements`), sem `!important`; o limite 4 do `css-important` deixou de citá-la.
+- L4.3 — `body[data-sarak-has-media] .bg-theme-body` → `.sarak-page-surface` (`_atmosphere.css:636-639`); o `SarakAuthScreen` aplica a classe na raiz.
+- L4.4 — `rounded-sarak`, `rounded-btn` e `rounded-input` entram no grupo `rounded` do `mergeSarakClasses`. A regra de CSS **ficou** na camada final (ver *Decisões*).
+- L4.5 — 13 sombras de sobreposição (`shadow-lg/xl/2xl`) → `shadow-[var(--dynamic-shadow)]`, sem token novo.
+- L4.6 — escada de camadas sem empate, por token: menus e busca = `--sarak-z-sidebar` + 100/200, cartão expandido = `--sarak-z-modal` − 100, ajuda +100, lightbox +200, spotlight +300; `SarakManagementGrid` lê o modal e o botão de fechar `z-[1]`; `zIndexToast` 9000 → 9100 (um passo acima do tooltip), `max` de toast e tooltip 9999 → 9900 (grade de 100); os 14 temas que declaravam `zIndexToast: 2000` (empate com o modal) declaram 9100.
+- L4.7 — um dono para `--color-theme-title`: o `titleColor` (`useDesignVariables.ts` + `resolveTitleColor` em `designVariableHelpers.ts`; `_theme.css:15`). No modo claro, com o `titleColor` ainda no padrão `#ffffff`, o título segue o texto principal (sem isso a prova do modo claro, `ponte-do-modo-claro.spec.ts`, deu título branco sobre branco).
+- L4.8 — `_base.css:16` `--theme-card: var(--sarak-card-bg, rgba(15, 23, 42, 0.6))`.
+- L4.9 — `_theme.css`: `@theme inline { … }` (as utilitárias resolvem no elemento) **e** `:root, .sarak-design-scope { … }` com o mesmo corpo (os nomes como variável). Teste `themeNamesScope.test.ts` confere que os dois corpos são idênticos.
+- L4.10 — `variable-contract:check` julga a reserva de nome derivado declarado em CSS (`declaredDefaults`/`sameLiteral` em `variable-contract-core.ts`); 30 reservas corrigidas (`--sarak-shadow-glow` ×9, `--color-theme-primary`, `--color-theme-on-primary`, `--color-theme-bg`, `--color-theme-text`, `--duration-slow`, `--duration-normal`, `--theme-sidebar`, `--theme-pad`, `--theme-card-padding`).
+- L4.11 — `TextMock.tsx:93,115,122,132` leem `var(--sarak-input-border-radius, 8px)`; o gate acusa reserva sem unidade em variável com unidade.
+- L4.12 — `SarakShellNav.tsx:184` `1px`; palavra-chave que não é comprimento (`thin`) acusada em variável com unidade; tolerância de alfa 0,011 → 0,001 (`TextMock.tsx:92` passou a `rgba(255,255,255,0.03)`, o padrão de `inputBg`).
+- L4.13 — `releaseInjectedWrites` (`injectedWrites.ts`) + efeito de desmontagem no `DesignInjector` (variáveis, atributos, curvas, rastro do ponteiro, fonte ancorada, classe de modo, `data-sarak-has-media`, `#sarak-responsive-vars`); o `rAF` do ponteiro é cancelado ao sair.
+- L4.14 — `applyAlpha` (`colorParts.ts`): o alfa de `var()`/`color-mix()` grava `color-mix(in srgb, <valor> N%, transparent)`; `ColorControl` o usa.
+- L4.15 — `PresetCard.tsx:62-66` lê `cardShadowSpread` como opacidade em %.
+- L4.16 — catálogo sincronizado com o schema (290 entradas: tipo, opções e faixa; `texture` +36 opções etc.); `catalog-drift.ts` + passo 8 de `verify_parity.ts` (que o `auditor_paridade` e o `audit:baseline` rodam) conferem **tipo e valores permitidos**.
+- L4.17 — descrições de `animEnabled`, `isNavHidden` e `cardGeometricCut` (schema e catálogo) dizem o que o código faz; `motionDurationFast` passa a ser verdade com o L4.9.
+- L4.18 — `generate_theme_template.test.ts` grava em pasta temporária (`SARAK_THEME_OUT_DIR` em `generate_theme_template.ts`); `DashboardMetricsGrid.tsx:93` `p-0`.
+- Nota MAJOR em `docs/migracoes.md` (`## 8.0.0`), antes de "Exports removidos do barril público".
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/{_theme,_base,_elements,_utilities,_atmosphere}.css` + 8 parciais | alterado | `@theme inline` + escopo; `transition-sarak`; página × componente; reservas |
+| `src/core/Design/hooks/{useDesignVariables,designVariableHelpers}.ts` | alterado | dono do título |
+| `src/core/Provider/{components/DesignInjector.tsx,utils/injectedWrites.ts}` | alterado | limpeza ao desmontar |
+| `src/core/Design/schema/{engineering,layers,animations,cards,navigation}.ts` + 10 temas | alterado | camadas, descrições |
+| `src/core/Design/catalog/partitions/*.json` (10) | alterado | tipo, opções e faixa do schema; 3 descrições |
+| `src/components/**` (~40) e `src/features/**` | alterado | classes com espaço, camadas, sombra, reservas |
+| `src/features/DesignEngine/components/controls/{colorParts.ts,ColorControl.tsx}` | alterado | alfa vinculado |
+| `gates/scripts/audit/{catalog-drift.ts,verify_parity.ts}` + `__tests__/catalog-drift.test.ts` | criado/alterado | paridade de valor |
+| `gates/scripts/contrato/{check-fixed-translucent.mjs,check-variable-contract.ts,helpers/variable-contract-core.ts,check-css-important-visual.mjs}` + 2 testes | alterado | as três travas |
+| testes: `injectedWrites`, `DesignInjector`, `mergeSarakClasses`, `colorParts`, `PresetCard`, `SarakToast.layerToken`, `HyperGranularity`…, `themeNamesScope`, `painelGravaOQueMostra` (limite de 30 s) | criado/alterado | casos novos |
+| `browser-tests/residuo-da-reauditoria.spec.ts` + `fixtures/harness-entry.tsx` | criado/alterado | 13 casos; cenas `residuo`, `escopo-rascunho`, `desmontar` |
+| `.agents/skills/ui-criar-tema/scripts/{generate_theme_template.ts,__tests__/…}` | alterado | saída fora do repositório |
+| `docs/migracoes.md` · `sarak-ui/**` · `sarak-dev/**` · `docs/component-catalog.*` | alterado | nota MAJOR; gerados (`guide` por último) |
+| 7 `__snapshots__/*.snap` | alterado | só reserva e espaço |
+
+**Verificações executadas**
+- **HEAD** (cópia fora do repo, gates novos sobre o `src/` do `HEAD`): `verify_parity.ts` → **424 divergências** de tipo/valor; `variable-contract` → **33 reservas** (as 30 + 3); `check-fixed-translucent.mjs` → **11** classes com espaço.
+- Navegador, **worktree** (cópia fora do repo, tsup + tailwind + escopado): bateria inteira → **318 passed**, 0 falhas, depois do último ajuste de `src/` (a 1ª rodada deu 3 falhas, todas minhas: o `rounded-btn` gerado pelo Tailwind a partir do `@theme` vence a regra movida de camada — decisão L4.4; título branco sobre branco no claro — L4.7; `htmlVars: 2` na desmontagem, o `rAF` do ponteiro — L4.13).
+- `npx vitest run` completo: **482 arquivos, 3374/3374 testes**, numa passada limpa depois do último ajuste. As passadas anteriores deram: 9 falhas (7 snapshots de reserva/espaço, 2 timeouts sob carga), depois 2 timeouts sob carga (`SarakTable`, `check-class-merge`), que passam isolados e ganharam limite declarado com o motivo (30 s e 60 s).
+- `npx tsc --noEmit` → 0 (dentro de `audit:baseline -- --with-tsc`). `audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12" (passou por 1 violação minha de `auditor_cleancode`: `useDesignVariables.ts` com 251 linhas).
+- Anel 1 (cada `*:check` do `pre-commit`, `guide` por último) → todos OK (`variable-contract`: 3898 leituras, 2892 reservas).
+- Anel 0 simulado: padrões de `gates/scripts/segredo/config.json` sobre as linhas adicionadas e os 4 não rastreados, sem `specs/`: 3809 linhas, **0 achados**.
+- Mutação: `catalog-drift.test.ts` (opção a mais/a menos, tipo trocado, faixa), `check-variable-contract.test.ts` (`--radius-btn, 8px`, `--color-theme-primary, #3b82f6`, `8` sem unidade, `thin`, alfa 0,02 × 0,03), `check-fixed-translucent.test.mjs` (`z-[var(--z, 9000)]` num componente → achado).
+
+**Critérios de aceite (lote 4)**
+- [x] L4.1–L4.18 corrigidos, exceto o trecho da regra de CSS do L4.4 (decisão abaixo).
+- [x] Trava nova por classe (classe com espaço; opção e tipo na paridade; reserva de nome derivado e de variável com unidade), com limites no cabeçalho (R18), mutação, falhando no `HEAD` (números acima), no Anel 1 (`fixed-translucent:check`, `variable-contract:check`) e na CI (`audit:baseline` roda a paridade).
+- [x] Casos de `browser-tests/` com contraprova do padrão para cada item de CSS (L4.1–L4.9, L4.13).
+- [x] Suíte completa, `tsc`, `audit:baseline`, Anel 1, Anel 0 e bateria do navegador depois do último ajuste.
+
+**Decisões e suposições**
+- **L4.4 parcial.** O Tailwind gera `rounded-btn` e `rounded-input` a partir do `--radius-*` do `@theme` (sem os quatro cantos). Mover as regras da lib para `components.sarak-elements` deixou a utilitária gerada vencer e o botão assimétrico perdeu os cantos (medido: `0px` em vez dos cantos do tema); `@utility` produz a mesma declaração duplicada. As três regras ficam na camada final, com a razão no comentário de `_theme.css`; o conflito no mesmo elemento é do `mergeSarakClasses` (que agora conhece as três). Quem escreve `rounded-btn rounded-xl` direto no HTML, fora de um átomo, continua vendo o `rounded-btn`.
+- **L4.3** — o contêiner de página passa a ser marcado (`sarak-page-surface`) em vez de adivinhado: o consumidor que usava `bg-theme-body` na própria página e queria a mídia atrás aplica a classe (nota MAJOR).
+- **L4.6** — `zIndexToast` 9100 (a descrição do toast já o chamava "o topo"; a do tooltip deixou de dizê-lo). O vinheta e o ruído (`z-[9999]`, `pointer-events: none`) não são sobreposição interativa e ficaram.
+- **L4.9** — `@theme` duplicado (`@theme inline` + `:root, .sarak-design-scope`) em vez de reemitir 45 nomes por TypeScript; a igualdade dos dois corpos é teste.
+- **L4.10** — o gate julga só cadeias que resolvem a um literal; `calc()`, `color-mix()` e lista ficam sem valor (limite 9).
+- **L4.16** — o catálogo passa a carregar o tipo do schema tal como está (`slider`, `select`, `text`…): o catálogo antigo usava `number`/`string` genéricos para 236 tokens.
+- **L4.17** — `isNavHidden` descrito como "recolhe a 74 px", como o anexo mediu; não reconferi a geometria da topbar no navegador.
+- `--sarak-shadow-glow` sem Provider passa de 50% a 5% de opacidade (é o padrão do token); declarado na nota MAJOR.
+
+**Achados fora do escopo (não corrigidos)**
+- `PresetCard.tsx` (grade de textura): `var(--border-color,…)` virou posição de parada de gradiente (um valor de cor onde cabe comprimento) — veio do lote 3 (codemod de reserva sobre um `#334155` que já estava ali); o gradiente da textura `grid` fica sem a linha.
+- `NoiseOverlay.tsx:12` e `.sarak-vignette-layer` seguem em `z-index: 9999`, acima do toast e do tooltip (decorativos, `pointer-events: none`).
+- Sob carga, `SarakTable.test.tsx` e `painelGravaOQueMostra.test.tsx` estouram os 5 s do padrão; o segundo ganhou limite de 30 s com o motivo, o primeiro passa isolado.
+
+**Pendências / riscos**
+- `dist/` e o kit do consumidor não foram reconstruídos aqui (o build oficial é do revisor).
+- Mudança de aparência no padrão: sombra das sobreposições segue o tema (direção/camadas); notificação 100 acima do tooltip; brilho sem Provider 5%; `cardShadowSpread` do preview em %.
+
+## Resumo da execução (lote 4 — correção 1) — 2026-10-14
+
+**Resultado:** Concluído (4 achados; o 4 era improcedente — registrado com a medida, sem mudança).
+
+**Estado do worktree ao iniciar**
+Worktree com o lote 4 inteiro (não commitado) e os arquivos do revisor (`specs/00-indice.md`, `specs/plan/plan-116-…`, `specs/plan/anexos/plan-116-desenho.md`); `dist/` aparecia modificado pelo build do revisor, não por mim.
+
+**O que foi feito (um item por achado)**
+1. **Catálogo sem opção (achado 1).** `catalog-drift.ts` lê as opções como a validação (`constraints.options ?? options`; `SchemaTokenLike` ganhou `options`); as 16 entradas voltaram a ter as opções do schema (as 40 texturas inclusive). **Contagem — `select` sem opção no catálogo: 16 → 0** (de 64 `select`). Antes de sincronizar conferi o resto do catálogo contra `60c137f3`: descrição vazia 26 → 26 e, em todas as chaves, só `allowedValues` tinha perdido valor (22 entradas, as 16 + 6 de outros tipos, todas restauradas; a sincronização refeita trocou 16 entradas e nenhuma outra). Testes: `catalog-drift.test.ts` — mutação com `options` no nível de cima (lida; catálogo vazio é achado), precedência `constraints.options` > `options`, e o teste do repositório que falha se houver `select` sem opção (contagem tem de ser zero).
+2. **Textura `grid` (achado 2).** `PresetCard.tsx:76`: `linear-gradient(… var(--border-color,…) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px))` nos dois eixos — a cor deixa de ocupar a posição de parada, e a largura lê o token (o `auditor_hardcoded` acusou o `1px` literal na 1ª tentativa). Teste em `PresetCard.test.tsx`: o CSSOM aceita o gradiente e nenhuma cor precede uma parada.
+3. **Atmosfera abaixo da escada (achado 3).** `NoiseOverlay.tsx:12` `z-[calc(var(--sarak-z-sidebar,500)_+_50)]` e `.sarak-vignette-layer` (`_theme.css`) `z-index: calc(var(--sarak-z-sidebar, 500) + 50)`: acima do conteúdo e da barra (o efeito segue cobrindo o cromo), abaixo de menus e busca (+100/+200), modal, tooltip e notificação. Testes: `NoiseOverlay.test.tsx`, `themeNamesScope.test.ts` (regra sem `9999`); navegador: cena `atmosfera` (vinheta + notificação aberta) → camada da vinheta > `--sarak-z-sidebar` e < modal, tooltip e a pilha do toast, medidos no computado. Nota MAJOR em `docs/migracoes.md` ajustada.
+4. **`calc` do marcador (achado 4) — improcedente.** `navActiveMarkerGlow` não declara `unit` (`navigation.ts:312-320`) e o hook só anexa unidade quando `token.unit` existe; o motor emite `10`, e `calc(10 * 1px)` é válido. Medido no navegador: caso novo em `residuo-da-reauditoria.spec.ts` lê `--sarak-nav-marker-glow` (só dígitos) e confere que `box-shadow: 0 0 calc(<valor> * 1px) red` é aceito. Nada mudou em `SarakShellNav.tsx`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/catalog-drift.ts` + `__tests__/catalog-drift.test.ts` | alterado | origem das opções = a da validação; 3 casos |
+| `src/core/Design/catalog/partitions/*.json` | alterado | 16 `select` com as opções do schema |
+| `src/features/DesignEngine/Canvas/components/PresetCard.tsx` + teste | alterado | grade da textura |
+| `src/effects/NoiseOverlay.tsx` + teste · `src/styles/_theme.css` · `src/styles/__tests__/themeNamesScope.test.ts` | alterado | camada da atmosfera |
+| `browser-tests/residuo-da-reauditoria.spec.ts` · `fixtures/harness-entry.tsx` | alterado | cena `atmosfera`, caso do brilho; o seletor do lightbox deixou de casar o ruído |
+| 2 `__snapshots__/*.snap` (PreviewCanvas, PresetsCatalog) | alterado | camada do ruído e opções |
+| `docs/migracoes.md` · `sarak-ui/**` · `sarak-dev/**` · `docs/component-catalog.*` | alterado | nota; gerados (`guide` por último) |
+
+**Verificações executadas**
+- Antes → depois: `select` do catálogo sem opção **16 → 0**; `verify_parity.ts` verde.
+- `npx vitest run` completo: **482 arquivos, 3379/3379 testes**, numa passada limpa depois do último ajuste (a passada anterior deu 2 snapshots — camada do ruído e opções do catálogo —, atualizados e repetidos).
+- `audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12" (passou por 1 acusação minha do `auditor_hardcoded`: `1px` no gradiente, corrigida).
+- Anel 1 (21 `*:check`, `guide` por último): todos OK (21).
+- Anel 0 simulado: padrões de `gates/scripts/segredo/config.json` sobre as linhas adicionadas e os 20 não rastreados (inclui os chunks do build do revisor), sem `specs/`: 4373 linhas, **0 achados**.
+- Bateria do navegador (cópia fora do repo, tsup + tailwind + escopado), depois do último ajuste de `src/`: **320 casos, 320 passam**: a corrida inteira deu 319/320 — a falha era o seletor `.fixed.inset-0` do caso do lightbox, que passou a casar o ruído (camada 550), corrigida no teste e o spec inteiro (15 casos) repetido: 15/15.
+
+**Critérios de aceite**
+- [x] 4 achados tratados; a contagem de `select` sem opção é zero e há teste que falha acima de zero.
+- [x] Caso de mutação com opção no nível de cima.
+- [x] Caso de navegador com toast aberto sobre a vinheta.
+
+**Decisões e suposições**
+- A atmosfera ficou em `--sarak-z-sidebar` + 50 (e não abaixo da barra): ruído e vinheta continuam cobrindo o cromo, como antes, e saem de cima de toda sobreposição.
+- O `vitest -u` pendurou duas vezes aqui (processos concorrentes; a mesma execução sem `-u` passa em 4 s); os snapshots foram atualizados por execução isolada.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo.
+
+**Pendências / riscos**
+- `npm run build` e `cromo-css-real:check` oficiais (do revisor).
+
 ---
 
 # 10. Veredito
@@ -423,3 +554,32 @@ troca de tema vai para a `plan-116`, e as contrapartes incompletas, para a `plan
 classes novas (classe arbitrária com espaço; opção e tipo na paridade do catálogo; reserva de nome derivado
 declarado em CSS); casos de navegador para o que é CSS, inclusive dentro do `DesignScope`. O fechamento depois do
 lote 4 é uma re-auditoria **dirigida** ao que o lote 4 tocou e às regressões, não uma nova varredura aberta.
+
+## Veredito — 2026-10-14 — lote 4 — 🟢 Aprovado
+
+**Conferido no worktree:** `npm run build` OK; `playwright test` sobre esse `dist/`: **318/318**, com os 13 casos de `residuo-da-reauditoria.spec.ts` (inclusive a prévia dentro do `DesignScope` e a desmontagem); suíte completa **482/482 arquivos, 3374/3374 testes, numa passada limpa** (a 1ª tentativa do revisor foi cortada pelo limite do comando, sem falha de teste; repetida sozinha); `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK; varredura do padrão "Segredo atribuido" nas linhas adicionadas e nos não rastreados: 0.
+
+**Decisões do executor — aceitas:** L4.4 parcial (as três classes de raio ficam na camada final, porque o Tailwind gera utilitária homônima a partir do `@theme` e venceria sem os quatro cantos; o conflito no mesmo elemento passa pelo `mergeSarakClasses`, que agora as conhece); `sarak-page-surface` marca o contêiner de página (L4.3); escada de camadas por token com `zIndexToast` 9100 (L4.6); `@theme inline` mais o corpo duplicado em `:root, .sarak-design-scope`, com teste de igualdade (L4.9); catálogo com o tipo do schema (L4.16).
+
+**Achado do executor, regressão do lote 3:** `PresetCard.tsx` (grade de textura) — o codemod de reserva pôs uma cor onde o gradiente espera posição de parada; a textura `grid` do preview perde a linha. Entra na verificação dirigida de fechamento.
+
+**Próximo:** verificação **dirigida** (o que o lote 4 tocou, as regressões dos lotes 1-4 e o achado acima), não varredura aberta.
+
+## Veredito — 2026-10-14 — lote 4 — 🔴 Aprovação reaberta (verificação dirigida)
+
+**Por que reabre:** a verificação dirigida de fechamento (somente leitura sobre `git diff 60c137f3 -- src/` e o worktree) achou uma regressão do próprio lote 4, conferida pelo revisor: **16 entradas `select` do catálogo ficaram sem opções** (em `60c137f3` era 1): `layoutDensity`, `maxContentWidth`, `borderStyle`, `iconFamily`, `iconWeight`, `bgGradientMode`, `surfaceMaterial`, `borderType`, `systemTone`, `texture`, `shadowOrientation`, `shadowColorMode`, `inputBorderType`, `chartType`, `flowGridStyle`, `chatBubbleStyle`. Causa: `gates/scripts/audit/catalog-drift.ts:45` (`schemaAllowedValues`) só lê `constraints.options`, e 57 tokens do schema declaram `options` no nível de cima (`atmosphere.ts:185` `options: TEXTURE_OPTIONS`, `:321` `shadowOrientation`…); o gate esperou `null` e a sincronização **apagou** as opções. A nota de `docs/migracoes.md` ("igual ao schema; a paridade confere tipo e valores permitidos") fica falsa para essas 16. O revisor aprovou sem contar as opções do catálogo antes e depois.
+
+**Achados (correção 1):**
+
+1. `catalog-drift.ts` lê as opções do schema como a validação lê (`constraints.options ?? options`, o mesmo de `getEnumOptions` em `validation.ts`); as 16 entradas voltam a ter as opções do schema (as 40 texturas inclusive); caso de mutação com opção declarada no nível de cima; teste que falha se o número de `select` sem opção no catálogo for maior que zero.
+2. `PresetCard.tsx:76` (textura `grid` da prévia) — cor no lugar de posição de parada do gradiente: a declaração é inválida e a textura não desenha (defeito anterior à plan, mantido pelo codemod do lote 3). O gradiente desenha a grade com a cor de borda do tema.
+3. `NoiseOverlay.tsx:12` (`z-[9999]`) e `.sarak-vignette-layer` (`_theme.css:212`, `z-index: 9999`) ficam acima do toast (9100) e do tooltip (9000): ruído e vinheta escurecem e granulam as sobreposições. A atmosfera decorativa fica abaixo de toda sobreposição da escada de camadas (sem perder o efeito sobre o conteúdo), por token.
+4. Medir `SarakShellNav.tsx:101` (`calc(var(--sarak-nav-marker-glow, 10) * 1px)`): se o motor emitir `navActiveMarkerGlow` com unidade, o `calc` é inválido — corrigir se for o caso.
+
+## Veredito — 2026-10-14 — lote 4 (correção 1) — 🟢 Aprovado — a plan está fechada
+
+**Conferido no worktree:** recontagem do revisor no catálogo: 402 entradas, 64 `select`, **0 sem opção** (eram 16), `texture` com 41 opções (eram 5 em `60c137f3`), descrições vazias 26 → 26 (nada mais esvaziou); `npm run build` OK; `playwright test` sobre esse `dist/`: **320/320** (vinheta sob o toast aberto; brilho do marcador válido); suíte completa **482/482 arquivos, 3379/3379 testes, numa passada limpa**; `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; Anel 1 inteiro OK; varredura do padrão "Segredo atribuido": 0.
+
+**Achados fechados:** 1 (opções lidas como a validação; teste que falha acima de zero; mutação com opção no nível de cima), 2 (grade da textura do `PresetCard`), 3 (atmosfera em `--sarak-z-sidebar` + 50: cobre conteúdo e cromo, fica abaixo de toda sobreposição); 4 improcedente, medido (o motor emite o número sem unidade; o `calc` é válido).
+
+**Fechamento da `plan-115`:** os quatro lotes aprovados; a verificação dirigida de fechamento achou só o que esta correção fechou. **Status: 🟢 Aprovada.** Próximo: o dono commita; o revisor sintetiza (destino da §8) e despacha o lote 1 da `plan-116`.

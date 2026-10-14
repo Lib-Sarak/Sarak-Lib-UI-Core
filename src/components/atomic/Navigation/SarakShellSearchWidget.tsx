@@ -107,7 +107,7 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
 
             {/* Dropdown de Resultados */}
             {isOpen && query.length > 0 && (
-                <div className="absolute top-[calc(100%+var(--sarak-search-dropdown-gap,0.5rem))] left-0 w-[var(--sarak-search-dropdown-width,400px)] bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden z-[600]">
+                <div className="absolute top-[calc(100%+var(--sarak-search-dropdown-gap,0.5rem))] left-0 w-[var(--sarak-search-dropdown-width,400px)] bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden z-[calc(var(--sarak-z-sidebar,500)_+_100)]">
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {filteredModules.length > 0 ? (
                             <div style={{ paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}>

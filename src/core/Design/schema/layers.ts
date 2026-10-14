@@ -44,9 +44,9 @@ export const LayersSchema: ComponentSchema = {
             id: 'zIndexTooltip',
             label: 'Tooltip Z-Index',
             type: 'slider',
-            description: 'Índice de empilhamento (z-index) de tooltips — o topo da hierarquia de camadas, garantindo que uma dica contextual sempre apareça por cima de qualquer modal/overlay já aberto.',
+            description: 'Índice de empilhamento (z-index) de tooltips — logo abaixo das notificações (`zIndexToast`), garantindo que uma dica contextual apareça por cima de qualquer modal ou sobreposição já aberta.',
             axis: 'elevation',
-            constraints: { min: 5000, max: 9999, step: 100 },
+            constraints: { min: 5000, max: 9900, step: 100 },
             defaultValue: 9000,
             cssVars: ['--sarak-z-tooltip']
         },

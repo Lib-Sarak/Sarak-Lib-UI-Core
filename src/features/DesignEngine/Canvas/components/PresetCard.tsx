@@ -42,7 +42,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #00f2ff)');
     const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7000ff)');
-    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #0a0a0c)');
+    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #050505)');
     const isLight = design.mode === 'light';
 
     const borderWidth = toCssLength(design.cardBorderWidth, 'var(--sarak-border-width, 1px)');
@@ -62,7 +62,8 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
             : design.cardShadowSpread
-                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${design.cardShadowSpread}px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) ${design.cardGlowColor || 'color-mix(in srgb, var(--color-theme-body) 50%, transparent)'}`
+                // `cardShadowSpread` é a OPACIDADE da sombra em % (o schema e o `.sarak-card` leem assim), não um desfoque em px.
+                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, ${design.cardGlowColor || 'var(--color-theme-body)'} ${Math.min(100, Number(design.cardShadowSpread))}%, transparent)`
                 : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent)',
         clipPath: variables['--sarak-card-clip-path']
     };
@@ -72,7 +73,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
                 backgroundImage: design.cardTextureType === 'grid'
-                    ? 'linear-gradient(to right, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1))), linear-gradient(to bottom, color-mix(in srgb, var(--color-theme-text) 5%, transparent) var(--border-color,rgba(255,255,255,0.1)), transparent var(--border-color,rgba(255,255,255,0.1)))'
+                    ? 'linear-gradient(to right, var(--border-color,rgba(255,255,255,0.1)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.1)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px))'
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',

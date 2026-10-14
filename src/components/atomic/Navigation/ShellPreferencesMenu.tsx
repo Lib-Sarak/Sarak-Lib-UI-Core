@@ -59,7 +59,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     role="menu"
                     aria-label={t('preferencesLabel')}
                     onKeyDown={handleTrap}
-                    className={`absolute z-[1000] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,10rem)] rounded-[var(--sarak-card-radius,12px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-2xl ${
+                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,10rem)] rounded-[var(--sarak-card-radius,12px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-[var(--dynamic-shadow)] ${
                         align === 'end' ? 'right-0' : 'left-0'
                     }`}
                     style={{

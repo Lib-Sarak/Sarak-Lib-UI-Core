@@ -90,7 +90,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
 
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-5 !p-0" label="Card de Tabela (Access)">
+            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-5 p-0" label="Card de Tabela (Access)">
                 <div className="p-5 pb-3 @md:p-8 @md:pb-4 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />

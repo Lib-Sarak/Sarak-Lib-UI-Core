@@ -152,7 +152,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                         role="dialog"
                         aria-label={label ?? t('datePickerCalendarAriaLabel')}
                         onKeyDown={handleTrap}
-                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-xl"
+                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[var(--dynamic-shadow)]"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                     >
                         <CalendarPanel

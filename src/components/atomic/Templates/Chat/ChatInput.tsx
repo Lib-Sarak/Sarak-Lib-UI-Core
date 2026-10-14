@@ -113,7 +113,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       )}
 
       <div className="relative group/input">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#00f2ff)] to-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#00f2ff)] to-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
         <div className="relative flex items-center bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] overflow-hidden shadow-sm rounded-[var(--sarak-card-radius,12px)]" style={{ paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
 
@@ -140,7 +140,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 disabled={(!input.trim() && attachments.length === 0) || isLoading}
                 icon={<SarakIcon name="Send" size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />}
                 variant="primary"
-                className="shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] group/btn"
+                className="shadow-lg shadow-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] group/btn"
               />
           </div>
         </div>

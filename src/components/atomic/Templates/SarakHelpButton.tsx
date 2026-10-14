@@ -17,12 +17,12 @@ const SarakHelpButton = ({ text }: { text: string }) => {
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-[99999] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-sm"
+                    className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_100)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
                     style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}
                 >
                     <div
-                        className="card border rounded-[var(--sarak-card-radius,12px)] shadow-lg w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
+                        className="card border rounded-[var(--sarak-card-radius,12px)] shadow-[var(--dynamic-shadow)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
                         onClick={(e) => e.stopPropagation()}
                         style={{ animationDuration: 'var(--duration-normal, 0.3s)' }}
                     >

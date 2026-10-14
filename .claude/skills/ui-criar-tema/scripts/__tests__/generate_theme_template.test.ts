@@ -2,6 +2,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import ts from 'typescript';
 
@@ -14,7 +15,9 @@ import ts from 'typescript';
  */
 
 const SCRIPT = path.join('.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts');
-const THEMES_DIR = path.join(process.cwd(), 'src/core/Design/presets/themes');
+// A saída vai para uma pasta temporária FORA do repositório: dentro de `src/` o gerador do kit do consumidor
+// (`kitFiles.mjs`, que varre `src/` na mesma suíte) lia o arquivo já apagado (`ENOENT`) e falhava de forma intermitente.
+const OUT_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-theme-template-'));
 
 // Sufixo aleatório, só de letras: `.claude/skills` é symlink para `.agents/skills` (memória de
 // sessão "espelho-claude-e-symlink") e o mesmo arquivo de teste é rastreado E RODA duas vezes na
@@ -26,11 +29,11 @@ const RANDOM_SUFFIX = Array.from({ length: 6 }, () =>
     'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)],
 ).join('');
 const TEMP_THEME_ID = `teste-gabarito-compila-gerador-${RANDOM_SUFFIX}`;
-const tempFile = path.join(THEMES_DIR, `${TEMP_THEME_ID}.ts`);
+const tempFile = path.join(OUT_DIR, `${TEMP_THEME_ID}.ts`);
 
 describe('generate_theme_template — o gabarito gerado compila (achado 39)', () => {
     afterEach(() => {
-        if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+        fs.rmSync(OUT_DIR, { recursive: true, force: true });
     });
 
     // Timeout alargado (padrão do vitest é 5000ms): o teste sobe um processo `npx tsx` de verdade,
@@ -38,7 +41,7 @@ describe('generate_theme_template — o gabarito gerado compila (achado 39)', ()
     // (contenção de CPU/IO com todos os outros arquivos rodando), isso passa dos 5s por acaso,
     // não por lentidão do gerador em si (medido isolado: ~2s).
     it('achata tokens responsivos para o eixo desk e produz um arquivo que compila sem erro de sintaxe', () => {
-        execSync(`npx tsx "${SCRIPT}" ${TEMP_THEME_ID}`, { cwd: process.cwd(), stdio: 'pipe' });
+        execSync(`npx tsx "${SCRIPT}" ${TEMP_THEME_ID}`, { cwd: process.cwd(), stdio: 'pipe', env: { ...process.env, SARAK_THEME_OUT_DIR: OUT_DIR } });
         expect(fs.existsSync(tempFile)).toBe(true);
 
         const content = fs.readFileSync(tempFile, 'utf-8');

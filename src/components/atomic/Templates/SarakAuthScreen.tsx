@@ -160,7 +160,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
     // usa `getGridStyles`, cuja classe `@min-[…]` (container query) precisa de um
     // ancestral com `container-type` para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className="@container min-h-screen w-full flex bg-theme-body text-theme-text selection:bg-theme-primary/30 font-sans overflow-hidden">
+        <div className="@container sarak-page-surface min-h-screen w-full flex bg-theme-body text-theme-text selection:bg-theme-primary/30 font-sans overflow-hidden">
             <AuthHero branding={props.branding} />
             <AuthForm
                 branding={props.branding}

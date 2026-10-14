@@ -129,7 +129,7 @@ export const dataTerminal: SarakThemePreset = {
         focusRingWidth: 2,
         reducedMotion: false,
         zIndexModal: 1000,
-        zIndexToast: 2000,
+        zIndexToast: 9100,
         mode: 'light',
         navigationStyle: 'sidebar',
         bodySize: '14px',

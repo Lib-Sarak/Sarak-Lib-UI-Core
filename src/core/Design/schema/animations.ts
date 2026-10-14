@@ -14,7 +14,7 @@ export const AnimationSchema: ComponentSchema = {
             id: 'animEnabled',
             label: 'Ativar Movimentos',
             type: 'boolean',
-            description: 'Chave-mestra que liga/desliga animações e transições em toda a aplicação. Desligar é diferente de `reducedMotion` (acessibilidade): aqui é uma preferência estética/performance, não necessariamente ligada a `prefers-reduced-motion`.',
+            description: 'Liga/desliga a transição entre páginas (`SarakPageTransition`): desligada, a página troca sem animar. Não desliga as transições dos componentes — para isso há `reducedMotion` (acessibilidade) e `motionDuration*`.',
             axis: 'motion',
             defaultValue: true,
         },

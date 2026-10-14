@@ -107,19 +107,19 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             {error && <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />}
             <AnimatePresence>
                 {activeModal && onCreate && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                    <div className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_0)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="card w-full max-w-lg shadow-2xl relative rounded-[var(--sarak-card-radius,12px)]"
+                            className="card w-full max-w-lg shadow-[var(--dynamic-shadow)] relative rounded-[var(--sarak-card-radius,12px)]"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}
                         >
                             <SarakIconButton
                                 onClick={() => setActiveModal(null)}
                                 icon={<SarakIcon name="X" size={24} />}
                                 variant="ghost"
-                                className="absolute z-50"
+                                className="absolute z-[1]"
                                 style={{ top: 'var(--sarak-layout-gap-md,16px)', right: 'var(--sarak-layout-gap-md,16px)' }}
                             />
                             {label && <h3 className="text-xl font-bold text-theme-title" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }}>{label}</h3>}

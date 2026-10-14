@@ -92,3 +92,14 @@ export function emitOnColors(variables: Record<string, string>, anchorColor: str
         if (isLiteralColor(source)) variables[name] = pickOnColor(source, underColor);
     });
 }
+
+/**
+ * A cor de título (`--color-theme-title`) é do token `titleColor` — `textColorMaster` é o texto corrido. O padrão do token é
+ * o do tema ESCURO (`#ffffff`): no modo claro, enquanto o tema não o declarou, o título segue o texto principal.
+ */
+export const resolveTitleColor = (variables: Record<string, string>, isDark: boolean, tokenDefault: unknown): string => {
+    const declared = variables['--sarak-title-color'];
+    const isDefault = declared === String(tokenDefault);
+    if (declared && (isDark || !isDefault)) return declared;
+    return variables['--text-main'] || declared || (isDark ? '#ffffff' : '#0f172a');
+};

@@ -206,7 +206,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         focusRingWidth: 4,
         reducedMotion: true,
         zIndexModal: 2000,
-        zIndexToast: 2000,
+        zIndexToast: 9100,
         aiGlowColor: '#ff6b35',
         flowNodeRadius: 0,
         flowGridStyle: 'lines',

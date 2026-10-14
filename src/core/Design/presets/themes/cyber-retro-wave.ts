@@ -137,7 +137,7 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
         focusRingWidth: 2,
         reducedMotion: false,
         zIndexModal: 2000,
-        zIndexToast: 2000,
+        zIndexToast: 9100,
         mode: 'dark',
         navigationStyle: 'sidebar',
         bodySize: '14px',

@@ -8,6 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map.ts';
+import { findCatalogDrift } from './catalog-drift.ts';
 
 import { fileURLToPath } from 'url';
 
@@ -36,10 +37,11 @@ function runParityCheck() {
 
     const partitionFiles = fs.readdirSync(partitionsDir).filter(f => f.endsWith('.json'));
     const catalogTokens = new Set<string>();
+    const catalogEntries: Array<{ tokenId: string; type?: string; allowedValues?: unknown }> = [];
 
     partitionFiles.forEach(file => {
         const content = JSON.parse(fs.readFileSync(path.join(partitionsDir, file), 'utf-8'));
-        content.forEach((token: any) => catalogTokens.add(token.tokenId));
+        content.forEach((token: any) => { catalogTokens.add(token.tokenId); catalogEntries.push(token); });
     });
 
     // 3. Extrair todos os tokens do DB mapping para uma lista plana
@@ -94,6 +96,13 @@ function runParityCheck() {
             console.error(`❌ PARIDADE INVERSA Catálogo→Schema: Token '${catToken}' está no Catálogo JSON, mas não existe no MASTER_DESIGN_MAP!`);
             hasError = true;
         }
+    });
+
+    // 8. Valor, não só presença: o catálogo diz o mesmo tipo e as mesmas opções/faixa que o schema (`catalog-drift.ts`).
+    const schemaTokens = MASTER_DESIGN_MAP.components.flatMap((schema) => schema.tokens) as unknown as Parameters<typeof findCatalogDrift>[0];
+    findCatalogDrift(schemaTokens, catalogEntries).forEach((drift) => {
+        console.error(`❌ PARIDADE DE VALOR Catálogo→Schema: '${drift.tokenId}' ${drift.field}: catálogo ${drift.catalog} ≠ schema ${drift.schema}.`);
+        hasError = true;
     });
 
     if (hasError) {

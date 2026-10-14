@@ -84,7 +84,7 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
             ref={menuRef}
             role="menu"
             data-sarak-context-menu="true"
-            className={`fixed flex shadow-xl ${className}`}
+            className={`fixed flex shadow-[var(--dynamic-shadow)] ${className}`}
             style={{
                 flexDirection: 'column',
                 paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',

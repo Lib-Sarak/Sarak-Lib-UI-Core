@@ -3,7 +3,7 @@
     "tokenId": "chatBubbleRadius",
     "name": "Arredondamento das Bolhas (Chat)",
     "description": "Border-radius aplicado em balões de mensagens em componentes de Chat.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "bordas",
@@ -26,8 +26,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 24,
-      "step": 1
+      "max": 24
     },
     "relatedTokens": [
       "chatBubbleStyle"
@@ -87,20 +86,20 @@
     "cssVariables": [
       "--sarak-chat-bubble"
     ],
+    "relatedTokens": [
+      "chatUserBg"
+    ],
     "allowedValues": [
       "glass",
       "solid",
       "minimal"
-    ],
-    "relatedTokens": [
-      "chatUserBg"
     ]
   },
   {
     "tokenId": "chatAnimationSpeed",
     "name": "Velocidade de Digitação (Chat)",
     "description": "Controla o tempo da animação de feedback 'escrevendo' ou revelação de mensagens de IA.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "motion-and-animation",
@@ -134,7 +133,7 @@
     "tokenId": "focusRingWidth",
     "name": "Largura do Anel de Foco",
     "description": "Acessibilidade: espessura do outline visual quando um elemento focável é navegado via teclado.",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "acessibilidade",
@@ -157,8 +156,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 6,
-      "step": 1
+      "max": 6
     },
     "relatedTokens": [
       "reducedMotion"
@@ -188,10 +186,6 @@
     "cssVariables": [
       "--sarak-reduced-motion"
     ],
-    "allowedValues": [
-      true,
-      false
-    ],
     "relatedTokens": [
       "focusRingWidth"
     ]
@@ -200,7 +194,7 @@
     "tokenId": "touchTargetMin",
     "name": "Alvo Mínimo de Toque",
     "description": "Acessibilidade: área tocável mínima (altura e largura) dos acionáveis da lib quando o ponteiro é o dedo (pointer: coarse).",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "acessibilidade",
@@ -224,8 +218,7 @@
     ],
     "allowedValues": {
       "min": 24,
-      "max": 64,
-      "step": 1
+      "max": 64
     },
     "relatedTokens": [
       "focusRingWidth"
@@ -256,7 +249,11 @@
     "cssVariables": [
       "--sarak-z-toast"
     ],
-    "allowedValues": null,
+    "allowedValues": {
+      "min": 1000,
+      "max": 9900,
+      "step": 100
+    },
     "relatedTokens": [
       "zIndexModal"
     ]
@@ -265,7 +262,7 @@
     "tokenId": "matrixGap",
     "name": "Espaçamento da Matriz",
     "description": "Distância (gap) entre os itens do componente visual SarakExpandableMatrix.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "layout",
@@ -288,8 +285,7 @@
     ],
     "allowedValues": {
       "min": 4,
-      "max": 32,
-      "step": 1
+      "max": 32
     },
     "relatedTokens": [
       "matrixRadius"
@@ -299,7 +295,7 @@
     "tokenId": "matrixRadius",
     "name": "Arredondamento dos Itens (Matriz)",
     "description": "Raio da borda (border-radius) para os itens renderizados na Matriz Sarak.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "bordas",
@@ -322,8 +318,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 24,
-      "step": 1
+      "max": 24
     },
     "relatedTokens": [
       "matrixGap"
@@ -393,7 +388,7 @@
     "tokenId": "matrixBlur",
     "name": "Desfoque de Vidro (Matriz)",
     "description": "Grau de backdrop-filter para gerar glassmorphism sobrepondo itens na Matriz Expandida.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -416,8 +411,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 40,
-      "step": 1
+      "max": 40
     },
     "relatedTokens": [
       "matrixItemBg"
@@ -427,30 +421,64 @@
     "tokenId": "chatAttachmentNameMaxWidth",
     "name": "Chat Input: Largura Máxima do Nome do Anexo",
     "description": "Largura máxima antes do truncamento do nome de arquivo anexado no ChatInput.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "chat", "specialized-engines"],
-    "tags": ["chat-input", "attachment", "max-width"],
+    "categories": [
+      "layout",
+      "chat",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat-input",
+      "attachment",
+      "max-width"
+    ],
     "databaseColumn": "specialized_engines",
     "schemaOrigin": "chat.ts",
-    "digitalTwins": ["ChatInput"],
-    "cssVariables": ["--sarak-chat-attachment-name-max-width"],
-    "allowedValues": { "min": 60, "max": 300, "step": 10 },
-    "relatedTokens": ["chatTokenSliderMinWidth"]
+    "digitalTwins": [
+      "ChatInput"
+    ],
+    "cssVariables": [
+      "--sarak-chat-attachment-name-max-width"
+    ],
+    "allowedValues": {
+      "min": 60,
+      "max": 300
+    },
+    "relatedTokens": [
+      "chatTokenSliderMinWidth"
+    ]
   },
   {
     "tokenId": "chatTokenSliderMinWidth",
     "name": "Chat Input: Largura Mínima do Slider de Tokens",
     "description": "Largura mínima do container do slider de limite de tokens no modo manual do ChatInput.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "chat", "specialized-engines"],
-    "tags": ["chat-input", "slider", "min-width"],
+    "categories": [
+      "layout",
+      "chat",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat-input",
+      "slider",
+      "min-width"
+    ],
     "databaseColumn": "specialized_engines",
     "schemaOrigin": "chat.ts",
-    "digitalTwins": ["ChatInput"],
-    "cssVariables": ["--sarak-chat-token-slider-min-width"],
-    "allowedValues": { "min": 60, "max": 300, "step": 10 },
-    "relatedTokens": ["chatAttachmentNameMaxWidth"]
+    "digitalTwins": [
+      "ChatInput"
+    ],
+    "cssVariables": [
+      "--sarak-chat-token-slider-min-width"
+    ],
+    "allowedValues": {
+      "min": 60,
+      "max": 300
+    },
+    "relatedTokens": [
+      "chatAttachmentNameMaxWidth"
+    ]
   }
 ]

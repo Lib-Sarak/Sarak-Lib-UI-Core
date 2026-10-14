@@ -10,14 +10,14 @@ import { extendTailwindMerge } from 'tailwind-merge';
  * base (não emitidas pelo Tailwind puro) precisam da extensão abaixo, ou o merge não
  * as vê e elas passam a COEXISTIR com o conflito, em vez de resolvê-lo:
  * - `text-2xs` / `text-3xs` — tokens de `src/styles/_theme.css`, grupo `font-size`.
- * - `rounded-btn` — classe avulsa de `src/styles/_theme.css`, grupo `rounded`.
+ * - `rounded-btn`, `rounded-sarak` e `rounded-input` — classes avulsas de `src/styles/_theme.css`, grupo `rounded`.
  * - `font-tab` — classe avulsa de `src/styles/_typography.css`, grupo `font-family`.
  */
 const twMergeSarak = extendTailwindMerge({
     extend: {
         classGroups: {
             'font-size': [{ text: ['2xs', '3xs'] }],
-            rounded: ['rounded-btn'],
+            rounded: ['rounded-btn', 'rounded-sarak', 'rounded-input'],
             'font-family': ['font-tab'],
         },
     },

@@ -3,7 +3,8 @@ import path from 'path';
 
 // Define the schema dir using process.cwd() since we run from project root
 const schemaDir = path.join(process.cwd(), 'src/core/Design/schema');
-const targetDir = path.join(process.cwd(), 'src/core/Design/presets/themes');
+// `SARAK_THEME_OUT_DIR` troca a pasta de saída (o teste grava fora do repositório, numa pasta temporária).
+const targetDir = process.env.SARAK_THEME_OUT_DIR || path.join(process.cwd(), 'src/core/Design/presets/themes');
 
 /**
  * Achado 39: tokens responsivos (`defaultValue: { mob, tab, desk }`) não são um valor

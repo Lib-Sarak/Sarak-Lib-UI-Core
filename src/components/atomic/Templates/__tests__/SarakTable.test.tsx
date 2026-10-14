@@ -119,6 +119,8 @@ describe('SarakTable — célula e clique de linha', () => {
 });
 
 describe('SarakTable — estados de leitura', () => {
+    // Três montagens do `SarakUIProvider` (o motor inteiro) num caso só: sob a suíte completa em paralelo passa dos 5 s
+    // do padrão do vitest (isolado, ~1,5 s) — o limite certo é o do caso, não o da média.
     it('mostra os estados carregando, vazio e erro com nova tentativa', () => {
         const loading = render(<SarakUIProvider><SarakTable loading /></SarakUIProvider>);
         expect(screen.getByRole('status')).toHaveTextContent('Carregando');
@@ -137,5 +139,5 @@ describe('SarakTable — estados de leitura', () => {
         render(<SarakUIProvider><SarakTable error="Indisponível" onRetry={onRetry} /></SarakUIProvider>);
         fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
         expect(onRetry).toHaveBeenCalledTimes(1);
-    });
+    }, 30_000);
 });

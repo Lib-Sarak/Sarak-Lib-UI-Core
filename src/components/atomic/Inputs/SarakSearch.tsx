@@ -69,7 +69,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[600] flex items-start justify-center pt-[10vh]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
+            <div className="fixed inset-0 z-[calc(var(--sarak-z-sidebar,500)_+_200)] flex items-start justify-center pt-[10vh]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
                 {/* Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}

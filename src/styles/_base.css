@@ -13,7 +13,7 @@ body {
   /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v9.1 */
   --theme-body: var(--bg-body);
   --theme-sidebar: var(--bg-sidebar);
-  --theme-card: var(--theme-surface, var(--card-bg));
+  --theme-card: var(--sarak-card-bg, rgba(15, 23, 42, 0.6));
   --theme-border: var(--sarak-card-border-color, var(--border-color));
   --theme-muted: var(--text-muted);
   

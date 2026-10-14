@@ -177,6 +177,43 @@ describe('(iii) os furos que a reserva tinha — variante de canal, nome derivad
         expect(find(files('rgba(255,255,255,0.4)'), [muted])).toEqual([]);
     });
 
+    it('PLANTADO: a reserva de um nome DERIVADO declarado em CSS da lib é julgada contra o valor que a cadeia carrega', () => {
+        const radius: TokenLike = { id: 'borderRadius', type: 'slider', unit: 'px', defaultValue: 12, cssVars: ['--radius-theme'] };
+        const files = (reserve: string): Record<string, string> => ({
+            'theme.css': '@theme { --radius-sarak: var(--sarak-card-border-radius, var(--radius-theme, 12px)); --radius-btn: var(--sarak-btn-border-radius, var(--radius-sarak)); }',
+            'a.tsx': `export const a = 'rounded-[var(--radius-btn,${reserve})]';`,
+        });
+        expect(find(files('8px'), [radius])).toHaveLength(1);
+        expect(find(files('12px'), [radius])).toEqual([]);
+    });
+
+    it('PLANTADO: nome derivado com cor — `--color-theme-primary, #3b82f6` contra o `#00f2ff` que o nome carrega', () => {
+        const primary2: TokenLike = { id: 'primaryColor', type: 'color', defaultValue: '#00f2ff', cssVars: ['--sarak-primary-color'] };
+        const css = '@theme { --color-theme-primary: var(--sarak-primary-color, #00f2ff); }';
+        const read = (reserve: string): Record<string, string> => ({ 'a.css': css, 'b.tsx': `export const b = 'var(--color-theme-primary, ${reserve})';` });
+        expect(find(read('#3b82f6'), [primary2])).toHaveLength(1);
+        expect(find(read('#00f2ff'), [primary2])).toEqual([]);
+    });
+
+    it('PLANTADO: reserva sem unidade em variável que carrega unidade (`calc(var(--x, 8) * 1px)`) é acusada', () => {
+        const radius: TokenLike = { id: 'inputBorderRadius', type: 'slider', unit: 'px', defaultValue: 8, cssVars: ['--sarak-input-border-radius'] };
+        expect(find({ 'a.tsx': "export const a = 'calc(var(--sarak-input-border-radius, 8) * 1px)';" }, [radius])).toHaveLength(1);
+        expect(find({ 'a.tsx': "export const a = 'var(--sarak-input-border-radius, 8px)';" }, [radius])).toEqual([]);
+    });
+
+    it('PLANTADO: palavra-chave que não é comprimento (`thin`) como reserva de variável com unidade é acusada', () => {
+        const width: TokenLike = { id: 'borderWidth', type: 'slider', unit: 'px', defaultValue: 1, cssVars: ['--sarak-border-width'] };
+        expect(find({ 'a.tsx': "export const a = { width: 'var(--sarak-border-width, thin)' };" }, [width])).toHaveLength(1);
+        expect(find({ 'a.tsx': "export const a = { width: 'var(--sarak-border-width, auto)' };" }, [width])).toEqual([]);
+    });
+
+    it('a tolerância de alfa é só de escrita: 0,02 e 0,03 são cores diferentes; `.05` e `0.05` são a mesma', () => {
+        const bg: TokenLike = { id: 'inputBg', type: 'color', defaultValue: 'rgba(255, 255, 255, 0.03)', cssVars: ['--sarak-input-bg'] };
+        const read = (reserve: string): Record<string, string> => ({ 'a.tsx': `export const a = 'var(--sarak-input-bg, ${reserve})';` });
+        expect(find(read('rgba(255, 255, 255, 0.02)'), [bg])).toHaveLength(1);
+        expect(find(read('rgba(255,255,255,.03)'), [bg])).toEqual([]);
+    });
+
     it('PLANTADO: a declaração sob seletor que exige atributo que ninguém escreve NÃO é dono', () => {
         const css = '[data-font-scale="g"] { --font-size-factor: 1.25; } .a { height: calc(1px * var(--font-size-factor, 1)); }';
         expect(buildReport({ srcDir: srcFixture({ 'a.css': css }), tokens: [primary] }).ownerless.map((o) => o.name)).toEqual(['--font-size-factor']);

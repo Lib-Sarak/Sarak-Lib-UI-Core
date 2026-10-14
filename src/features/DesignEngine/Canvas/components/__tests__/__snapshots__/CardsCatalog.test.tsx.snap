@@ -89,7 +89,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -189,7 +189,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -289,7 +289,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -389,7 +389,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -489,7 +489,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -589,7 +589,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -689,7 +689,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -789,7 +789,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -889,7 +889,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -989,7 +989,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -1089,7 +1089,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
@@ -1189,7 +1189,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         transition="[object Object]"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden"
         >
           <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"

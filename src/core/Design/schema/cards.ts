@@ -78,7 +78,7 @@ export const CardSchema: ComponentSchema = {
             id: 'cardGeometricCut',
             label: 'Corte Geométrico (Chanfro)',
             type: 'slider',
-            description: 'Tamanho, em pixels, de um chanfro (corte diagonal) aplicado a um canto do card — efeito geométrico alternativo ao arredondamento tradicional, dá um clima mais técnico/industrial. 0 desativa o corte.',
+            description: 'Tamanho, em pixels, do chanfro (corte diagonal) aplicado aos QUATRO cantos do card — efeito geométrico alternativo ao arredondamento tradicional, dá um clima mais técnico/industrial. 0 desativa o corte.',
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 0, max: 100 },

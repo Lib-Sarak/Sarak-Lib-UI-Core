@@ -133,7 +133,7 @@ const SarakToast = ({ entry, onDismiss }: { entry: ToastEntry; onDismiss: (id: s
         onDismiss(entry.id);
     };
     return (
-        <div role="alert" data-sarak-toast="true" data-variant={entry.variant} className="flex items-center text-sm shadow-lg pointer-events-auto" style={{
+        <div role="alert" data-sarak-toast="true" data-variant={entry.variant} className="flex items-center text-sm shadow-[var(--dynamic-shadow)] pointer-events-auto" style={{
             minWidth: 'var(--sarak-toast-min-width, 15rem)', maxWidth: 'var(--sarak-toast-max-width, 22.5rem)',
             gap: 'var(--sarak-layout-gap-sm, 8px)', paddingInline: 'var(--sarak-layout-gap-md, 16px)',
             paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)',
@@ -153,7 +153,7 @@ const ToastStack = ({ toasts, onDismiss }: { toasts: ToastEntry[]; onDismiss: (i
         <SarakPortalScope>
             <div data-sarak-toast-stack="true" aria-live="polite" className="fixed flex pointer-events-none" style={{
                 flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', bottom: 'var(--sarak-layout-gap-lg,24px)',
-                right: 'var(--sarak-layout-gap-lg,24px)', zIndex: 'var(--sarak-z-toast, var(--z-index-tooltip, 9000))' as React.CSSProperties['zIndex'],
+                right: 'var(--sarak-layout-gap-lg,24px)', zIndex: 'var(--sarak-z-toast, 9100)' as React.CSSProperties['zIndex'],
             }}>
                 {toasts.map((entry) => <SarakToast key={entry.id} entry={entry} onDismiss={onDismiss} />)}
             </div>

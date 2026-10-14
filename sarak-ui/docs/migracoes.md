@@ -473,6 +473,34 @@ do Tailwind em componente e painel e, em `src/features/`, hex, `rgb()` e a palav
 branca; o `variable-contract:check` passa a julgar a reserva de alias de fachada também em componente (fecha o
 limite 6).
 
+### O resíduo da re-auditoria: o tema chega ao escopo do rascunho e à sobreposição, a escada de camadas não tem empate, o catálogo é o schema, e o Provider devolve o host ao sair
+
+**Classificação: MAJOR (sai na 8.0.0).** Nenhum nome saiu do barril público nem mudou de tipo. Mudam o `z-index` de dez
+sobreposições, o padrão de duas camadas do schema, a sombra de treze sobreposições, o contêiner que a mídia de fundo
+apaga, a reserva de 30 nomes e o que o Provider deixa no `html`/`body` ao desmontar.
+
+| Antes | Depois |
+|---|---|
+| 11 classes arbitrárias com espaço no colchete (`z-[var(--z-index-tooltip, 9000)]`, `bg-[var(--color-theme-bg, #0a0a0c)]`) — o Tailwind as parte em duas e não gera nenhuma: o tooltip `fixed` ficava sem `z-index`, o hover do `SarakAnalyticalPage` sem fundo. | Sem espaço; o `fixed-translucent:check` acusa a classe com espaço. |
+| `.transition-sarak` com `!important` atropelava o `transition`/`duration-*` da classe e a transição do cartão. | Mora em `components.sarak-elements`, sem `!important`: o `duration-*` do chamador decide. |
+| `body[data-sarak-has-media] .bg-theme-body` apagava o fundo de **todo** componente que usa `bg-theme-body` (overlay do cartão expandido, rótulo e painel do login). | Só a raiz e o contêiner de página (`.sarak-page-surface`, que o `SarakAuthScreen` aplica) deixam a mídia aparecer. Quem usava `bg-theme-body` na raiz da própria página e queria a mídia atrás aplica `sarak-page-surface`. |
+| 13 sobreposições (modal, toast, tooltip, menu de contexto, autocomplete, seletor de data, multisseleção, idioma, spotlight, preferências, seletor de modelo, ajuda, formulário de gestão) com `shadow-lg/xl/2xl` fixos. | Leem `--dynamic-shadow`, a sombra do tema (cor, direção e camadas). |
+| `z-index` fixo nas sobreposições (9999, 99999, 1000, 600, 50, 1100); o lightbox ficava abaixo do modal; `zIndexToast` e `zIndexTooltip` empatavam em 9000, e o `max` 9999 fugia da grade de 100. | Cada sobreposição lê a camada do token: menus e busca acima da sidebar, o cartão expandido um passo abaixo do modal, ajuda +100, lightbox +200, spotlight +300; a notificação (padrão 9100) um passo acima do tooltip (9000); `max` 9900. Os 14 temas que declaravam `zIndexToast: 2000` (empate com o modal) declaram 9100. A vinheta e o ruído (antes `9999`, acima de tudo) ficam em `--sarak-z-sidebar` + 50: ainda cobrem o conteúdo e a barra, e não escurecem menu, modal, tooltip nem notificação. |
+| `--color-theme-title`: o motor escrevia o texto principal (`--text-main`) e `_theme.css` declarava a cor do título da barra — dois donos, valores diferentes em 10 de 14 temas; `topbarTitleColor` nunca chegava a `text-theme-title`. | Um dono: o `titleColor`. |
+| `--theme-card` (sem Provider) lia a cor da superfície. | Lê o token do cartão. |
+| `@theme` puro: 43 de 45 nomes (`--radius-btn`, `--color-theme-primary`, `--duration-*`…) resolviam no `:root`; a prévia do painel (`SarakDesignScope`) mostrava o tema aplicado em `rounded-btn`, `bg-theme-primary` e nas durações. | `@theme inline` (as utilitárias resolvem no elemento) e a regra `:root, .sarak-design-scope` com os mesmos nomes: o escopo mostra o rascunho. |
+| 30 reservas em nomes derivados declarados em CSS (`--radius-btn, 12px`; `--sarak-shadow-glow, rgba(59,130,246,.5)`; `--color-theme-primary, #3b82f6`; `--duration-slow, 0.5s`…) divergiam do valor do nome; `calc(var(--sarak-input-border-radius, 8) * 1px)` virava `8px * 1px` (raio 0). | A reserva é o valor declarado; sem unidade e palavra-chave inválida (`thin`) são achado; a tolerância de alfa cai de 0,011 a 0,001. Sem Provider, o brilho (`--sarak-shadow-glow`) passa de 50% a 5% de opacidade — é o padrão do token. |
+| O `DesignInjector` deixava ~946 variáveis, a classe de modo, o atributo de mídia, a fonte ancorada e `#sarak-responsive-vars` no `html`/`body` depois de desmontar. | Desmontar tira o que o injetor escreveu (e cancela o quadro do ponteiro pendente). O que o host gravou por fora não é tocado. |
+| O seletor de cor: mexer só no alfa de `var()`/`color-mix()` gravava um `rgba()` literal e perdia o vínculo com o tema. | Grava `color-mix(in srgb, <valor> N%, transparent)`. |
+| `PresetCard` lia `cardShadowSpread` como desfoque em px; o schema o define como opacidade em %. | Opacidade, como o schema e o `.sarak-card`. |
+| O catálogo divergia do schema em 290 entradas (tipo, opções ou faixa): `texture` sem 36 opções, `btnStyleType` sem `cyberpunk` e `neumorphism`, `shadowOrientation` com opção que não existe… | Igual ao schema; a paridade passa a conferir **tipo e valores permitidos**, não só presença. |
+| Descrições falsas: `animEnabled` ("toda a aplicação"; só a transição de página lê), `isNavHidden` ("remove"; recolhe a 74 px), `cardGeometricCut` ("um canto"; corta os quatro). | Dizem o que o código faz. |
+| `generate_theme_template.test.ts` gravava dentro de `src/` e fazia `kitGenerator.test.mjs` ler um arquivo já apagado. | Grava numa pasta temporária fora do repositório (`SARAK_THEME_OUT_DIR`). |
+
+**O que fazer:** quem aplicava `bg-theme-body` a uma página inteira esperando a mídia de fundo atrás aplica também
+`sarak-page-surface`; quem lia `--z-index-*` por nome continua lendo (a reserva é o padrão do token); um tema que
+declara `zIndexToast`/`zIndexTooltip` em 9999 passa a 9900.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

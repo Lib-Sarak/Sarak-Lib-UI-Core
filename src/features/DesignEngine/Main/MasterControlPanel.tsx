@@ -171,7 +171,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                                                         const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                                                         return (
-                                                            <option key={optId} value={optId} className="bg-[var(--color-theme-card, rgba(15,23,42,0.6))]">{optLabel}</option>
+                                                            <option key={optId} value={optId} className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">{optLabel}</option>
                                                         );
                                                     })}
                                                 </select>

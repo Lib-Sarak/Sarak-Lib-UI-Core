@@ -105,7 +105,7 @@ export const AutocompletePopup = <TOption extends AutocompleteOption,>(
     return (
         <div
             hidden={!state.shouldShowPanel}
-            className="rounded-input border shadow-lg"
+            className="rounded-input border shadow-[var(--dynamic-shadow)]"
             style={{
                 position: 'absolute',
                 zIndex: 'var(--sarak-z-base, 1)',

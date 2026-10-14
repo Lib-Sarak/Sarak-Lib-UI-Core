@@ -47,7 +47,7 @@ export const useAtomicStyles = () => {
         isHovered: boolean
     ): React.CSSProperties => {
         const styleType = design?.btnStyleType || 'matte';
-        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(59,130,246,0.5))';
+        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(0,242,255,0.05))';
         const blurAmount = design?.btnBackdropBlur || 0;
 
         const dynamicStyle: React.CSSProperties = {};
@@ -156,14 +156,14 @@ export const useAtomicStyles = () => {
         executeBorder();
 
         if (isFocused && borderType !== 'underline' && borderType !== 'none') {
-            dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6)`;
+            dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #00f2ff)`;
         }
 
         if (shadowType === 'neumorphism') {
             if (!isFocused) {
                 dynamicStyle.boxShadow = `inset 2px 2px 5px ${NEUMORPH_DARK}, inset -5px -5px 10px ${NEUMORPH_LIGHT}`;
             } else {
-                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px ${NEUMORPH_LIGHT}`;
+                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #00f2ff), inset -2px -2px 5px ${NEUMORPH_LIGHT}`;
             }
         } 
         

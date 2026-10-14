@@ -158,6 +158,8 @@ describe('todo tipo do schema tem controle', () => {
         expect(updateDraft).toHaveBeenCalledWith('globalBackgroundImageUrl', '');
     });
 
+    // Renderiza um controle por tipo do schema nos dois despachantes: sob a suíte inteira em paralelo passa dos 5 s do
+    // padrão do vitest (medido isolado: ~3 s), e o limite certo é o da varredura, não o da média.
     it('a aba de tema (TokenControl) também tem entrada para cada tipo do schema', () => {
         const types = new Set(sarakGetAllDesignTokens().map((token) => token.type));
         for (const type of types) {
@@ -166,7 +168,7 @@ describe('todo tipo do schema tem controle', () => {
             expect(container.innerHTML, `tipo ${type}`).not.toBe('');
             unmount();
         }
-    });
+    }, 30_000);
 });
 
 describe('cor do painel', () => {

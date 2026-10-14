@@ -22,7 +22,8 @@ describe('NoiseOverlay', () => {
 
         expect(classe).toContain('fixed');
         expect(classe).toContain('inset-0');
-        expect(classe).toContain('z-[9999]');
+        expect(classe).toContain('z-[calc(var(--sarak-z-sidebar,500)_+_50)]');
+        expect(classe).not.toContain('9999');
     });
 
     it('a opacidade vem do token, com o padrão do token (0,05) como reserva', () => {

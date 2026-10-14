@@ -41,4 +41,9 @@ describe('mergeSarakClasses', () => {
     it('ignora entradas falsy (undefined, null, false, string vazia)', () => {
         expect(mergeSarakClasses('flex', undefined, '', false, null, 'gap-2')).toBe('flex gap-2');
     });
+
+    it('rounded-sarak e rounded-input (átomo) × rounded-xl (chamador) — o chamador substitui, não coexiste', () => {
+        expect(mergeSarakClasses('rounded-sarak', 'rounded-xl')).toBe('rounded-xl');
+        expect(mergeSarakClasses('rounded-input', 'rounded-full')).toBe('rounded-full');
+    });
 });

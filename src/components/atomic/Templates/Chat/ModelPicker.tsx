@@ -28,7 +28,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 
   return (
     <div
-      className="absolute bottom-full left-0 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl backdrop-blur-2xl overflow-hidden z-50"
+      className="absolute bottom-full left-0 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-[var(--dynamic-shadow)] backdrop-blur-2xl overflow-hidden z-50"
       style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
     >
       <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>

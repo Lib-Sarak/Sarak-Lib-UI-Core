@@ -4,7 +4,7 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
-import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException } from './designVariableHelpers';
+import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
 
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
@@ -203,7 +203,7 @@ export const useDesignVariables = (
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
         emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
-        variables['--color-theme-title'] = variables['--text-main'] || (isDark ? '#ffffff' : '#0f172a');
+        variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
         variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`

@@ -644,7 +644,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               </div>
             </div>
             <div
-              class="w-2 h-2 rounded-full bg-[var(--sarak-status-success-color,#10b981)] shadow-[0_0_10px_var(--theme-success, #10b981)]"
+              class="w-2 h-2 rounded-full bg-[var(--sarak-status-success-color,#10b981)] shadow-[0_0_10px_var(--theme-success,#10b981)]"
             />
           </button>
           <button

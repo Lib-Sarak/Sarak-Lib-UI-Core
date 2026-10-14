@@ -39,7 +39,7 @@ function getButtonClasses(
     return cn(
         'flex items-center transition-sarak group/soc active:scale-[0.97] normal-case tracking-normal font-normal',
         'bg-[var(--color-theme-card,rgba(15,23,42,0.6))]',
-        'text-[var(--color-theme-text,rgba(255,255,255,0.5))]',
+        'text-[var(--color-theme-text,#ffffff)]',
         'border border-theme-tint hover:border-theme-tint-hover',
         hideLabel ? 'w-12 h-12 justify-center' : 'w-full justify-start',
         variant === 'solid' || designVariant === 'solid'

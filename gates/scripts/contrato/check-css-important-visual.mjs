@@ -36,8 +36,7 @@
 //    navegador (`browser-tests/`), não deste texto.
 // 3. "Estreitar" é lexical: qualquer classe que não seja âncora conta, mesmo uma que o motor aplica em
 //    tudo. Falso negativo possível; é o preço de não manter uma lista de classes de modo.
-// 4. Classes utilitárias da lib com nome próprio (`.rounded-theme`, `.border-theme`, `.shadow-theme`,
-//    `.transition-sarak`) não são âncora: são classes que o autor escolhe aplicar, e `!important` é o desenho
+// 4. Classes utilitárias da lib com nome próprio (`.rounded-theme`, `.border-theme`, `.shadow-theme`) não são âncora: são classes que o autor escolhe aplicar, e `!important` é o desenho
 //    delas. Propriedade de layout (`margin`, `top`, `min-width`, `display`) não é visual e não é cobrada.
 // 5. As exceções aceitas estão na constante `EXCEPTIONS`, uma a uma, com motivo — e o gate também acusa a
 //    exceção que deixou de existir, para a lista não apodrecer.

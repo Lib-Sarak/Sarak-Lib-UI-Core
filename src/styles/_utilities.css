@@ -17,13 +17,10 @@
 .border-t-theme { border-top: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 .border-b-theme { border-bottom: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 
-/* 1.1 TRANSITION UTILITIES (v8.5) */
-.transition-sarak {
-    transition: all var(--sarak-motion-dur-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
-}
+/* `.transition-sarak` mora em `_elements.css` (`components.sarak-elements`): cede ao `transition`/`duration-*` da classe. */
 
 /* Layout Utilities */
-.p-theme { padding: var(--theme-pad, 1.5rem); }
+.p-theme { padding: var(--theme-pad, 16px); }
 .gap-theme { gap: var(--theme-gap, 20px); }
 
 /* O estado ativo do botão (`transform`) é padrão de ELEMENTO e mora em `_elements.css`, onde `active:*`

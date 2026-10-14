@@ -119,7 +119,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[9999] flex items-start justify-center pt-[12vh] bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]"
+            className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_300)] flex items-start justify-center pt-[12vh] bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]"
             style={{ paddingLeft: 'var(--sarak-layout-gap-md, 16px)', paddingRight: 'var(--sarak-layout-gap-md, 16px)', paddingBottom: 'var(--sarak-layout-gap-md, 16px)' }}
             role="presentation"
             onClick={() => setOpen(false)}
@@ -128,7 +128,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                 role="dialog"
                 aria-modal="true"
                 aria-label={t('spotlightAriaLabel')}
-                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] shadow-2xl"
+                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] shadow-[var(--dynamic-shadow)]"
                 onClick={(event) => event.stopPropagation()}
             >
                 {/* Composição atômica (R10 — lote 10): SarakInput renderiza <input> nativo por

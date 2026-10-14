@@ -181,7 +181,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         <span
                             aria-hidden="true"
                             className="self-stretch shrink-0"
-                            style={{ width: 'var(--sarak-border-width, thin)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))' }}
+                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))' }}
                         />
                     ) : null}
                     <div

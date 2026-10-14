@@ -107,7 +107,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         onClick={() => setSelectedCategory(key)}
                                         variant={selectedCategory === key ? 'primary' : 'secondary'}
                                         className={selectedCategory === key ? "shadow-xl" : ""}
-                                        style={selectedCategory === key ? { boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' } : {}}
+                                        style={selectedCategory === key ? { boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(0,242,255,0.05))' } : {}}
                                     >
                                         {label}
                                     </SarakButton>

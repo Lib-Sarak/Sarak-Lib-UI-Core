@@ -154,7 +154,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" />
+                            <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Navegação Web</span>
                         </div>
                         <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />

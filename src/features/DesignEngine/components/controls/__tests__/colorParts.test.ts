@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { composeColor, parseLiteralColor, pickerHex, resolveColorParts } from '../colorParts';
+import { composeColor, parseLiteralColor, pickerHex, resolveColorParts, applyAlpha } from '../colorParts';
 
 describe('colorParts', () => {
     it('decompõe hex, rgba e transparent; var() e color-mix não são literais', () => {
@@ -42,5 +42,26 @@ describe('colorParts', () => {
         const resolved = resolveColorParts('color-mix(in srgb, #ff0000 50%, transparent)');
         expect(resolved?.hex).toBe('#ff0000');
         expect(resolved?.alpha).toBeCloseTo(0.5, 1);
+    });
+
+    describe('applyAlpha — o alfa sem perder o vínculo com o tema', () => {
+        it('o literal vira rgba() (e hex com alfa cheio)', () => {
+            expect(applyAlpha('#ff0000', 0.5)).toBe('rgba(255, 0, 0, 0.5)');
+            expect(applyAlpha('rgba(255, 0, 0, 0.2)', 1)).toBe('#ff0000');
+        });
+
+        it('PLANTADO: var() vira color-mix sobre a própria var(), em vez de um rgba() literal', () => {
+            expect(applyAlpha('var(--sarak-primary-color, #00f2ff)', 0.4)).toBe('color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent)');
+        });
+
+        it('um color-mix de alfa próprio só troca o N, e alfa cheio devolve o valor de base', () => {
+            const once = applyAlpha('var(--x, #fff)', 0.4);
+            expect(applyAlpha(once, 0.7)).toBe('color-mix(in srgb, var(--x, #fff) 70%, transparent)');
+            expect(applyAlpha(once, 1)).toBe('var(--x, #fff)');
+        });
+
+        it('um color-mix de outra forma é a base: ganha o envoltório, não perde o que tinha', () => {
+            expect(applyAlpha('color-mix(in srgb, var(--a) 30%, var(--b))', 0.5)).toBe('color-mix(in srgb, color-mix(in srgb, var(--a) 30%, var(--b)) 50%, transparent)');
+        });
     });
 });

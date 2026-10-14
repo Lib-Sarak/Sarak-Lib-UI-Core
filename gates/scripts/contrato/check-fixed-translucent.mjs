@@ -15,7 +15,9 @@
 //   (c) NÃO está dentro de uma reserva `var(--x, <aqui>)` — a reserva é o padrão do token
 //       (reserva = padrão) e está certa em ser, por exemplo, `rgba(255,255,255,0.1)`.
 //
-// Em `src/components/**` e `src/features/**` valem também (f) a DURAÇÃO e o ATRASO fixos — a classe `duration-300`,
+// Em `src/components/**` e `src/features/**` valem também (h) a classe arbitrária com ESPAÇO dentro do colchete
+// (`z-[var(--x, 9000)]`, `bg-[var(--c, #000)]`): o Tailwind a parte em duas e não gera nenhuma — o valor do tema nunca chega;
+// (f) a DURAÇÃO e o ATRASO fixos — a classe `duration-300`,
 // `duration: 0.3` e `delay: 0.2` de um objeto de transição, `[animation-delay:0.2s]` — que vêm de `motionDuration*`
 // e `motionStaggerDelay`; e (g) a sombra `rgba(var(--x, #hex), a)`, inválida (`var()` com cor não é canal) e, por
 // isso, sumida. E (d): classe da PALETA do Tailwind
@@ -46,6 +48,8 @@
 // 5. As exceções são `EXCEPTIONS` (arquivo inteiro, com motivo) e o marcador de linha
 //    `sarak-allow-fixed-color: <motivo>` na linha ou na anterior. O gate acusa exceção de arquivo
 //    que deixou de ter ocorrência.
+// 7. A classe com espaço é lida por regex numa linha: o colchete que abre numa linha e fecha em outra, e a classe montada
+//    por template (`z-[${x}, 1]`), ficam fora; um `, ` legítimo dentro do colchete não existe (use `_` ou nada).
 // 6. A duração é lida pelo NOME (`duration:`/`delay:` com número literal, `duration-<n>`, `animation-delay:<n>s`):
 //    um `delay: 300` de debounce (milissegundos, nada a ver com movimento) também é acusado — o conserto é o
 //    marcador de linha com o motivo. Não vê duração em `transition-duration:` por classe arbitrária de outra
@@ -88,6 +92,8 @@ const DURATION_LITERAL_RE = /(?<![\w$])(?:duration|delay)\s*:\s*(?!0(?:\.0+)?\s*
 const ANIMATION_DELAY_RE = /animation-delay:\s*[0-9.]+m?s/g;
 /** `rgba(var(--x, #00f2ff), 0.5)`: o `var()` devolve uma COR, e `rgba()` pede os três canais. */
 const RGBA_VAR_COLOR_RE = /rgba?\(\s*var\(\s*--[\w-]+\s*,\s*(?:#[0-9a-fA-F]{3,8}|rgba?\()/g;
+/** Classe arbitrária com espaço no colchete (`z-[var(--x, 9000)]`): o Tailwind a parte em duas e não gera nenhuma. */
+const SPACED_ARBITRARY_RE = /(?<![\w-])(?:[\w/[\]-]+:)*[\w-]+-\[[^\]"'`\n]*, [^\]"'`\n]*\]/g;
 const HEX_RE = /#([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})(?![0-9a-fA-F\w-])/g;
 const RGB_ANY_RE = /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*[0-9.]+\s*)?\)/g;
 const KEYWORD_RE = /(?:fill|stroke|color|background(?:Color)?|stopColor)\s*[:=]\s*\{?\s*['"](?:white|black)['"]/g;
@@ -132,6 +138,7 @@ export function findInLine(line, { strict = false } = {}) {
     if (Number(match[1]) < 1) found.push({ kind: 'rgba', text: match[0], index: match.index });
   }
   for (const match of line.matchAll(PALETTE_RE)) found.push({ kind: 'paleta', text: match[0], index: match.index });
+  for (const match of line.matchAll(SPACED_ARBITRARY_RE)) found.push({ kind: 'classe-com-espaço', text: match[0], index: match.index });
   for (const match of line.matchAll(DURATION_CLASS_RE)) found.push({ kind: 'duração', text: match[0], index: match.index });
   for (const match of line.matchAll(DURATION_LITERAL_RE)) found.push({ kind: 'duração', text: match[0].trim(), index: match.index });
   for (const match of line.matchAll(ANIMATION_DELAY_RE)) found.push({ kind: 'duração', text: match[0], index: match.index });

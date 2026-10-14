@@ -76,7 +76,7 @@ function CardGridTabFilter<TData extends Record<string, unknown>>({ mainFilter, 
     const options = mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(records, mainFilter.field) : []);
     return <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
         {['all', ...options.map((option) => typeof option === 'string' ? option : option.value)].map((option) => (
-            <SarakButton key={option} onClick={() => setActiveFilters((current) => ({ ...current, [mainFilter.id]: option }))} variant={(activeFilters[mainFilter.id] || 'all') === option ? 'primary' : 'secondary'} className={(activeFilters[mainFilter.id] || 'all') === option ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}>
+            <SarakButton key={option} onClick={() => setActiveFilters((current) => ({ ...current, [mainFilter.id]: option }))} variant={(activeFilters[mainFilter.id] || 'all') === option ? 'primary' : 'secondary'} className={(activeFilters[mainFilter.id] || 'all') === option ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]' : ''}>
                 {option === 'all' ? text('filterShowAll', { label: mainFilter.label }) : option}
             </SarakButton>
         ))}

@@ -49,7 +49,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 onClick={() => setIsMobileNavOpen(true)}
                                 variant="ghost"
                                 aria-label={t('mobileMenuOpenAriaLabel')}
-                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))] transition-colors"
+                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -62,7 +62,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                                 onClick={() => setIsSidePanelOpen(true)}
                                 variant="ghost"
                                 aria-label={t('sidePanelOpenAriaLabel')}
-                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card, rgba(15,23,42,0.6))] transition-colors"
+                                className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] transition-colors"
                                 style={{ borderRadius: 'var(--sarak-btn-border-radius, 8px)' }}
                                 icon={
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>

@@ -15,7 +15,7 @@
     background-repeat: repeat;
     will-change: opacity;
     opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1));
-    transition: opacity var(--duration-slow, 0.5s) ease;
+    transition: opacity var(--duration-slow, 0.6s) ease;
     filter: saturate(var(--sarak-saturation, 1)) contrast(var(--sarak-contrast, 1));
     /* Subpixel Precision Fix */
     backface-visibility: hidden;
@@ -44,7 +44,7 @@
     overflow: hidden;
     will-change: opacity;
     opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.1));
-    transition: opacity var(--duration-slow, 0.5s) ease;
+    transition: opacity var(--duration-slow, 0.6s) ease;
     filter: saturate(var(--sarak-saturation, 1)) contrast(var(--sarak-contrast, 1));
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -632,9 +632,10 @@
 /* O RECORTE GEOMÉTRICO do cartão (`--sarak-card-clip-path`) mora em `_card-defaults.css`, na camada que
    cede à classe, junto da caixa do cartão. */
 
-/* Sarak Media Background Support */
+/* Sarak Media Background Support — o fundo de mídia alcança a raiz e o contêiner de PÁGINA (`.sarak-page-surface`),
+   nunca o componente que usa `bg-theme-body` (overlay do cartão expandido, rótulo do login, painel do formulário). */
 body[data-sarak-has-media="true"] #root,
-body[data-sarak-has-media="true"] .bg-theme-body {
+body[data-sarak-has-media="true"] .sarak-page-surface {
     background-color: transparent !important;
     background-image: none !important;
 }

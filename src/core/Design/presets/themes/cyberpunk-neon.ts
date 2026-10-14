@@ -208,7 +208,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         focusRingWidth: 2,
         reducedMotion: false,
         zIndexModal: 2000,
-        zIndexToast: 2000,
+        zIndexToast: 9100,
         aiGlowColor: "#00f2ff",
         flowNodeRadius: 12,
         flowGridStyle: "dots",

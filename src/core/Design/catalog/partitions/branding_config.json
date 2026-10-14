@@ -36,7 +36,7 @@
     "tokenId": "identityPadding",
     "name": "Padding da Identidade",
     "description": "O espaço de respiro ao redor do logotipo. Evita que o logo toque nas bordas do menu.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "identidade",
@@ -68,7 +68,7 @@
     "tokenId": "identityFontFamily",
     "name": "Fonte do Logo (Texto)",
     "description": "Se o logo for em texto, define qual família de fonte será usada independentemente da tipografia global.",
-    "type": "string",
+    "type": "font",
     "importance": 60,
     "categories": [
       "identidade",
@@ -88,7 +88,29 @@
     "cssVariables": [
       "--sarak-identity-font"
     ],
-    "allowedValues": null,
+    "allowedValues": [
+      "var(--font-heading, var(--font-main, inherit))",
+      "'Inter', sans-serif",
+      "'Outfit', sans-serif",
+      "'Roboto', sans-serif",
+      "'Montserrat', sans-serif",
+      "'Space Grotesk', sans-serif",
+      "'Plus Jakarta Sans', sans-serif",
+      "'Lexend', sans-serif",
+      "'Sora', sans-serif",
+      "'Syne', sans-serif",
+      "'Archivo', sans-serif",
+      "system-ui, -apple-system, sans-serif",
+      "'Unbounded', display",
+      "'Bebas Neue', display",
+      "'Playfair Display', serif",
+      "'Fraunces', serif",
+      "'Dancing Script', cursive",
+      "'Pacifico', cursive",
+      "'Satisfy', cursive",
+      "'Caveat', cursive",
+      "'JetBrains Mono', monospace"
+    ],
     "relatedTokens": [
       "identityFontWeight"
     ]
@@ -97,7 +119,7 @@
     "tokenId": "identityFontWeight",
     "name": "Peso da Fonte do Logo",
     "description": "O peso tipográfico da marca, variando de super fino (100) a super negrito (900).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "identidade",
@@ -119,7 +141,8 @@
     ],
     "allowedValues": {
       "min": 100,
-      "max": 900
+      "max": 900,
+      "step": 100
     },
     "relatedTokens": [
       "identityFontFamily"
@@ -129,7 +152,7 @@
     "tokenId": "identityTracking",
     "name": "Espaçamento de Letras (Tracking) do Logo",
     "description": "Controla a distância horizontal entre as letras da marca. Para estética moderna/premium, usar tracking ligeiramente negativo (-0.05).",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "identidade",
@@ -150,8 +173,9 @@
       "--sarak-identity-tracking"
     ],
     "allowedValues": {
-      "min": -0.1,
-      "max": 0.5
+      "min": -2,
+      "max": 8,
+      "step": 0.5
     },
     "relatedTokens": [
       "identityFontFamily"
@@ -210,14 +234,14 @@
       "DesignInjector"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "layoutPadding",
+      "layoutGap"
+    ],
     "allowedValues": [
       "compact",
       "comfortable",
       "spacious"
-    ],
-    "relatedTokens": [
-      "layoutPadding",
-      "layoutGap"
     ]
   },
   {
@@ -241,19 +265,20 @@
       "DesignInjector"
     ],
     "cssVariables": [],
+    "relatedTokens": [],
     "allowedValues": [
+      "1000px",
       "1200px",
       "1440px",
       "1600px",
       "100%"
-    ],
-    "relatedTokens": []
+    ]
   },
   {
     "tokenId": "layoutPadding",
     "name": "Respiro do Conteúdo (Padding)",
     "description": "O afastamento padrão do conteúdo em relação às margens da tela principal.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "layout",
@@ -338,7 +363,7 @@
     "tokenId": "borderRadius",
     "name": "Arredondamento Padrão Global",
     "description": "Define o quão circulares são as bordas dos elementos base. Um valor de 0 traz estética agressiva/brutalista.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "bordas",
@@ -369,7 +394,7 @@
     "tokenId": "borderWidth",
     "name": "Espessura da Borda Global",
     "description": "Controla a espessura padrão (em pixels) das bordas em botões, cartões e divisórias em todo o sistema.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "bordas",
@@ -421,21 +446,21 @@
       "--border-style",
       "--sarak-border-style"
     ],
+    "relatedTokens": [
+      "borderWidth"
+    ],
     "allowedValues": [
       "solid",
       "dashed",
       "dotted",
       "none"
-    ],
-    "relatedTokens": [
-      "borderWidth"
     ]
   },
   {
     "tokenId": "layoutGap",
     "name": "Espaçamento Padrão Global (Gap)",
     "description": "O espaço padrão que divide os componentes horizontal e verticalmente.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "layout",
@@ -467,7 +492,7 @@
     "tokenId": "layoutGapSm",
     "name": "Espaçamento Pequeno",
     "description": "Distância curta entre ícones e textos ou pequenos botões contíguos.",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "layout",
@@ -497,7 +522,7 @@
     "tokenId": "layoutGapMd",
     "name": "Espaçamento Médio",
     "description": "Distância média padrão usada na maioria das listas.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "layout",
@@ -527,7 +552,7 @@
     "tokenId": "layoutGapLg",
     "name": "Espaçamento Grande",
     "description": "Afastamento largo para separação de grandes seções do sistema.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "layout",
@@ -575,14 +600,14 @@
       "IconRenderer"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "iconWeight",
+      "iconStrokeWidth"
+    ],
     "allowedValues": [
       "lucide",
       "phosphor",
       "tabler"
-    ],
-    "relatedTokens": [
-      "iconWeight",
-      "iconStrokeWidth"
     ]
   },
   {
@@ -606,6 +631,9 @@
       "IconRenderer"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "iconFamily"
+    ],
     "allowedValues": [
       "thin",
       "light",
@@ -613,16 +641,13 @@
       "bold",
       "fill",
       "duotone"
-    ],
-    "relatedTokens": [
-      "iconFamily"
     ]
   },
   {
     "tokenId": "iconStrokeWidth",
     "name": "Espessura do Traçado do Ícone",
     "description": "A grossura das linhas que compõem o ícone vetorial. Traços finos parecem sofisticados; grossos, amigáveis.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "icones",
@@ -643,9 +668,9 @@
       "--sarak-icon-stroke"
     ],
     "allowedValues": {
-      "min": 0.5,
-      "max": 3,
-      "step": 0.5
+      "min": 1,
+      "max": 4,
+      "step": 0.25
     },
     "relatedTokens": [
       "iconFamily"

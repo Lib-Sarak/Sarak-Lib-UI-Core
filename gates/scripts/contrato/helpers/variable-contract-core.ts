@@ -190,12 +190,18 @@ function withUnit(value: unknown, unit: string | undefined): string {
     return String(value);
 }
 
+/** Só o arredondamento de escrita (`.05` × `0.05`); 0,02 e 0,03 são duas cores. */
+const ALPHA_TOLERANCE = 0.001;
+
+/** Palavra-chave que vale para qualquer propriedade: o resto (`thin`, `medium`) não é comprimento. */
+const WIDE_KEYWORDS = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'currentcolor', 'transparent'];
+
 function sameColor(a: string, b: string): boolean {
     try {
         const left = parseToRgba(a);
         const right = parseToRgba(b);
         if (![left.r, left.g, left.b, right.r, right.g, right.b].every(Number.isFinite)) return false;
-        return left.r === right.r && left.g === right.g && left.b === right.b && Math.abs((left.a ?? 1) - (right.a ?? 1)) < 0.011;
+        return left.r === right.r && left.g === right.g && left.b === right.b && Math.abs((left.a ?? 1) - (right.a ?? 1)) < ALPHA_TOLERANCE;
     } catch {
         return false;
     }
@@ -216,13 +222,14 @@ export function acceptedDefaults(token: TokenLike): string[] {
 /** `true` quando a reserva é o padrão do token, uma palavra-chave ou outra leitura. */
 export function fallbackMatches(fallback: string, token: TokenLike): boolean {
     const text = fallback.trim();
-    if (text === '' || /^var\(/i.test(text) || KEYWORD.test(text) || text.includes('${')) return true;
+    if (text === '' || /^var\(/i.test(text) || text.includes('${')) return true;
+    // Variável com unidade carrega um comprimento: a palavra-chave que não vale para a propriedade (`thin`) é achado.
+    if (KEYWORD.test(text)) return !token.unit || WIDE_KEYWORDS.includes(text.toLowerCase());
     const accepted = acceptedDefaults(token);
     if (accepted.length === 0) return true;
     const normalized = normalizeText(text);
     return accepted.some((candidate) => {
         if (normalizeText(candidate) === normalized) return true;
-        if (token.unit && normalized === normalizeText(candidate).replace(token.unit, '')) return true;
         if (token.type === 'color' && looksLikeColor(candidate) && looksLikeColor(text)) return sameColor(candidate, text);
         return false;
     });
@@ -312,6 +319,45 @@ export function variantFallbackMatches(fallback: string, expected: string, suffi
     return looksLikeColor(fallback) && looksLikeColor(expected) && sameColor(fallback, expected);
 }
 
+/**
+ * O VALOR que cada nome DERIVADO declarado em CSS da lib carrega (`--radius-btn: var(--sarak-btn-border-radius, var(--radius-sarak))`
+ * → o literal em que a cadeia termina: `12px`). Um nome que é variável de token ou alias já indexado fica de fora (o
+ * dono é o token). Só entra o que a cadeia resolve a UM literal; `calc()`, lista e `color-mix()` ficam sem valor.
+ */
+export function declaredDefaults(cssTexts: string[], index: NameIndex): Map<string, string> {
+    const raw = new Map<string, string>();
+    for (const text of cssTexts) {
+        for (const match of text.matchAll(/(?:^|[\s;{])(--[A-Za-z][\w-]*)\s*:\s*([^;{}]+?)\s*(?=;|})/g)) {
+            if (!raw.has(match[1])) raw.set(match[1], match[2].trim());
+        }
+    }
+    const resolve = (value: string, depth: number): string | null => {
+        if (depth > 8) return null;
+        const text = value.trim();
+        const head = /^var\(\s*(--[\w-]+)\s*(?:,\s*([\s\S]*))?\)$/.exec(text);
+        if (!head) return /(^|[^a-z0-9_-])(var|calc|color-mix)[(]/i.test(text) ? null : text;
+        const [, name, fallback] = head;
+        if (fallback !== undefined && fallback.trim() !== '') return resolve(fallback, depth + 1);
+        const owner = index.byName.get(name);
+        if (owner) return acceptedDefaults(owner.token)[0] ?? null;
+        const declared = raw.get(name);
+        return declared === undefined ? null : resolve(declared, depth + 1);
+    };
+    const out = new Map<string, string>();
+    for (const [name, value] of raw) {
+        if (index.byName.has(name)) continue;
+        const resolved = resolve(value, 0);
+        if (resolved !== null && resolved !== '') out.set(name, resolved);
+    }
+    return out;
+}
+
+/** Duas reservas escritas de formas diferentes dizem o mesmo valor: texto normalizado, ou a mesma cor com alfa estreito. */
+export function sameLiteral(a: string, b: string): boolean {
+    if (normalizeText(a) === normalizeText(b)) return true;
+    return looksLikeColor(a) && looksLikeColor(b) && sameColor(a, b);
+}
+
 export interface FallbackScan {
     findings: FallbackFinding[];
     checked: number;
@@ -321,13 +367,21 @@ export function scanFallbacks(
     reads: VarRead[],
     index: NameIndex,
     computeVariant: (color: string, suffix: string) => string | null,
+    declared: ReadonlyMap<string, string> = new Map(),
 ): FallbackScan {
     const findings: FallbackFinding[] = [];
     let checked = 0;
     for (const read of reads) {
         if (read.fallback === null) continue;
         const owner = index.byName.get(read.name);
-        if (!owner) continue;
+        if (!owner) {
+            const carried = declared.get(read.name);
+            const text = read.fallback.trim();
+            if (carried === undefined || text === '' || /^var\(/i.test(text) || KEYWORD.test(text) || text.includes('${')) continue;
+            checked += 1;
+            if (!sameLiteral(text, carried)) findings.push({ file: read.file, line: read.line, name: read.name, fallback: read.fallback, expected: carried });
+            continue;
+        }
         if (owner.item.kind === 'variant') {
             const expected = expectedVariantFallback(owner, computeVariant);
             if (expected === null || /^var\(/i.test(read.fallback) || read.fallback === '') continue;

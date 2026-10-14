@@ -37,7 +37,7 @@ export const ShellNavigationStyleControl: React.FC = () => {
                     onClick={() => sarak?.updatePreferences({ navigationStyle: opt.value })}
                     className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] text-xs font-black transition-colors ${
                         current === opt.value
-                            ? 'bg-[var(--sarak-nav-active-color,#00f2ff)] text-[var(--color-theme-on-primary,#fff)]'
+                            ? 'bg-[var(--sarak-nav-active-color,#00f2ff)] text-[var(--color-theme-on-primary,#020617)]'
                             : 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#fff)]'
                     }`}
                 >

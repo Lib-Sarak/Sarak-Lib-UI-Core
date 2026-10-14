@@ -20,6 +20,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
     SarakUIProvider,
+    useToast,
+    sarakGetDefaultDesignState,
     SarakAccordion,
     SarakActionCard,
     SarakBadge,
@@ -36,6 +38,7 @@ import {
     SarakGantt,
     SarakKanban,
     SarakCustomizationPanel,
+    SarakDesignScope,
     SarakExpandableMatrix,
     SarakFilterSelect,
     SarakHelpButton,
@@ -249,6 +252,8 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'contraste-cyberpunk-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#22d3ee', statusErrorColor: '#f87171', statusSuccessColor: '#34d399', btnStyleType: 'cyberpunk', reducedMotion: true },
     'fixos-movimento': { switchStyleType: 'pulsing', motionDurationSlow: 0.9, matrixRadius: 3 },
     'fixos-pulso-padrao': { switchStyleType: 'pulsing' },
+    'titulo-proprio': { titleColor: 'rgb(255, 0, 0)', topbarTitleColor: 'rgb(0, 255, 0)', textColorMaster: 'rgb(0, 0, 255)' },
+    'sobreposicao-direcao': { shadowOrientation: 'top' },
     'modo-claro': { mode: 'light' },
     'modo-escuro': { mode: 'dark' },
     'dono-raio-sistema': { borderRadius: { mob: 5, tab: 5, desk: 5 }, cardBorderRadius: { mob: 20, tab: 20, desk: 20 } },
@@ -400,6 +405,7 @@ const TextureScene: React.FC = () => (
 const NoProviderScene: React.FC = () => (
     <div>
         <button type="button">Prova hover sem Provider</button>
+        <div data-probe="cartao-sem-provider" style={{ background: 'var(--theme-card)' }}>Cartão sem Provider</div>
     </div>
 );
 
@@ -778,6 +784,74 @@ const FixedValuesScene: React.FC = () => (
     </div>
 );
 
+/**
+ * O resíduo da re-auditoria: o que o CSS da lib faz com a classe do host e com o escopo do rascunho.
+ *   - `residuo`: transição por classe, `rounded-btn` × `rounded-xl`, `bg-theme-body` de componente × contêiner de página,
+ *     título do tema, tooltip, popup de ajuda e a tela com Provider; `?bg=1` liga a mídia de fundo.
+ *   - `escopo-rascunho`: o mesmo par de utilitárias DENTRO e FORA de um `SarakDesignScope` com outro rascunho.
+ *   - `desmontar`: o Provider monta e desmonta por botão; o que o injetor escreveu no `html`/`body` tem de sair com ele.
+ */
+const ResidueScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="transicao-padrao" className="transition-sarak">Transição por classe do sistema</div>
+        <div data-probe="transicao-classe" className="transition-sarak duration-[var(--sarak-motion-dur-slow,0.6s)]">Com duração própria</div>
+        <div data-probe="raio-sistema"><SarakButton>Raio do botão</SarakButton></div>
+        <div data-probe="raio-classe"><SarakButton className="rounded-xl">Raio da classe</SarakButton></div>
+        <div data-probe="raio-referencia" className="rounded-xl">O mesmo rounded-xl, fora do botão</div>
+        <div data-probe="fundo-componente" className="bg-theme-body">Fundo de componente</div>
+        <div data-probe="fundo-pagina" className="sarak-page-surface bg-theme-body">Fundo de página</div>
+        <h2 data-probe="titulo" className="text-theme-title">Título do tema</h2>
+        <div data-probe="dica"><SarakTooltip content="Dica de prova"><button type="button">Alvo da dica</button></SarakTooltip></div>
+        <div data-probe="ajuda"><SarakHelpButton text="Texto de ajuda de prova" /></div>
+        <div data-probe="sombra-tema" style={{ boxShadow: 'var(--dynamic-shadow)' }}>Sombra do tema</div>
+    </div>
+);
+
+const SCOPE_DRAFT = { ...sarakGetDefaultDesignState(), mode: 'dark', primaryColor: 'rgb(255, 0, 0)', btnBorderRadius: 30, motionDurationFast: 0.9 };
+
+const DraftScopeScene: React.FC = () => (
+    <div style={{ padding: '16px' }}>
+        <div data-probe="fora">
+            <button data-probe="fora-raio" type="button" className="rounded-btn">Fora</button>
+            <div data-probe="fora-cor" className="bg-theme-primary">Cor fora</div>
+            <div data-probe="fora-duracao" style={{ transitionDuration: 'var(--duration-fast)' }}>Duração fora</div>
+        </div>
+        <div data-probe="dentro">
+            <SarakDesignScope design={SCOPE_DRAFT as never}>
+                <button data-probe="dentro-raio" type="button" className="rounded-btn">Dentro</button>
+                <div data-probe="dentro-cor" className="bg-theme-primary">Cor dentro</div>
+                <div data-probe="dentro-duracao" style={{ transitionDuration: 'var(--duration-fast)' }}>Duração dentro</div>
+            </SarakDesignScope>
+        </div>
+    </div>
+);
+
+/** A vinheta (atmosfera decorativa) e uma notificação aberta: a notificação tem de ficar por cima. */
+const AtmosphereScene: React.FC = () => {
+    const toast = useToast();
+    React.useEffect(() => { toast.notify({ message: 'Notificação de prova' }); }, []);
+    return (
+        <div style={{ padding: '16px' }}>
+            <div data-probe="vinheta" className="sarak-vignette-layer" />
+            <span data-probe="conteudo">Conteúdo sob a vinheta</span>
+        </div>
+    );
+};
+
+const UnmountScene: React.FC = () => {
+    const [mounted, setMounted] = React.useState(true);
+    return (
+        <div>
+            <button type="button" data-probe="desmontar" onClick={() => setMounted(false)}>Desmontar o Provider</button>
+            {mounted && (
+                <SarakUIProvider config={{ mode: 'light', globalBackgroundImageUrl: 'https://harness.local/bg.png' }}>
+                    <span data-probe="dentro-provider">Dentro do Provider</span>
+                </SarakUIProvider>
+            )}
+        </div>
+    );
+};
+
 const MobileNavigationFewScene: React.FC = () => <MobileNavigationScene itemCount={4} />;
 const MobileNavigationManyScene: React.FC = () => <MobileNavigationScene itemCount={7} />;
 
@@ -789,6 +863,8 @@ const SCENES: Record<string, React.FC> = {
     movimento: MotionScene,
     textura: TextureScene,
     'sem-provider': NoProviderScene,
+    desmontar: UnmountScene,
+    atmosfera: AtmosphereScene,
     atomos: AtomsScene,
     'select-grade': SelectGridScene,
     painel: PanelScene,
@@ -807,6 +883,8 @@ const SCENES: Record<string, React.FC> = {
     legivel: LegibleScene,
     'contraste-botoes': ContrastButtonsScene,
     'valores-fixos': FixedValuesScene,
+    residuo: ResidueScene,
+    'escopo-rascunho': DraftScopeScene,
     'contraste-auth': ContrastAuthScene,
     'cartao-cede': CardYieldsScene,
     lightbox: LightboxScene,
@@ -825,7 +903,7 @@ function ownerThemeFromParams(): { id: string; name: string; design: Record<stri
 }
 
 function renderScene(Scene: React.FC): React.ReactElement {
-    if (searchParams.get('cena') === 'sem-provider') return <Scene />;
+    if (searchParams.get('cena') === 'sem-provider' || searchParams.get('cena') === 'desmontar') return <Scene />;
     // `?tema-ativo=<id>` liga um tema de referência inteiro (ex.: `minimalist-airy`, claro); ausente, nada muda.
     const activeThemeId = searchParams.get('tema-ativo') ?? undefined;
     // `?modo=embarcado` liga o Modo Embarcado: as variáveis vão para a ilha, e o CSS responsivo para `.sarak-scope`.

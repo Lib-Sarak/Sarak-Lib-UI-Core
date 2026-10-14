@@ -202,7 +202,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         focusRingWidth: 2,
         reducedMotion: true,
         zIndexModal: 2000,
-        zIndexToast: 2000,
+        zIndexToast: 9100,
         aiGlowColor: 'transparent',
         flowNodeRadius: 0,
         flowGridStyle: 'lines',

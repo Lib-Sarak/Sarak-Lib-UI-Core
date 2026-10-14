@@ -220,4 +220,29 @@ describe('DesignInjector', () => {
         
         expect(document.body.className).toBe(''); // nada foi injetado
     });
+
+    it('ao desmontar devolve ao host o que injetou: variáveis, atributos, classe de modo, mídia e a tag responsiva', () => {
+        (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+            variables: { '--test-var': '10px' },
+            attributes: { 'data-test': 'active' },
+            responsiveCSS: '@media (max-width: 768px) { :root { --test-var: 5px; } }'
+        });
+        document.body.style.setProperty('--do-host', 'x');
+
+        const { unmount } = render(<DesignInjector design={{ mode: 'dark', globalBackgroundImageUrl: 'url(test.jpg)' }} isDrafting={false} />);
+        expect(document.documentElement.style.getPropertyValue('--test-var')).toBe('10px');
+        expect(document.getElementById('sarak-responsive-vars')).not.toBeNull();
+
+        unmount();
+
+        expect(document.documentElement.style.getPropertyValue('--test-var')).toBe('');
+        expect(document.body.style.getPropertyValue('--test-var')).toBe('');
+        expect(document.body.hasAttribute('data-test')).toBe(false);
+        expect(document.body.classList.contains('dark')).toBe(false);
+        expect(document.body.hasAttribute('data-sarak-has-media')).toBe(false);
+        expect(document.getElementById('sarak-responsive-vars')).toBeNull();
+        expect(document.body.style.fontFamily).toBe('');
+        // CONTRAPROVA: o que o host gravou por fora não é tocado.
+        expect(document.body.style.getPropertyValue('--do-host')).toBe('x');
+    });
 });

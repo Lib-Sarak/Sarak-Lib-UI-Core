@@ -80,7 +80,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                     initial={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
-                    className={`absolute z-[1000] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-2xl backdrop-blur-xl ${
+                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-[var(--dynamic-shadow)] backdrop-blur-xl ${
                         isHorizontal ? 'top-full right-0' : 'bottom-full left-0'
                     }`}
                     style={{

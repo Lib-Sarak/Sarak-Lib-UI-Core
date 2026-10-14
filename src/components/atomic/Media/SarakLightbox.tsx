@@ -99,7 +99,7 @@ export const SarakLightbox: React.FC<SarakLightboxProps> = ({
             aria-label="Galeria de imagens"
             tabIndex={-1}
             onKeyDown={onKeyDown}
-            className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/90"
+            className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_200)] flex items-center justify-center bg-black/90"
             {...OWN_PALETTE}
         >
             {/* Composição atômica (R10 — lote 10): SarakIconButton renderiza <button> nativo

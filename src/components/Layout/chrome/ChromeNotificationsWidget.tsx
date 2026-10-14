@@ -59,7 +59,7 @@ interface ChromeNotificationMenuProps {
 const ChromeNotificationMenu: React.FC<ChromeNotificationMenuProps> = (
     { notifications, onSelect, onClose, label }: ChromeNotificationMenuProps,
 ): React.ReactElement => (
-    <div role="menu" aria-label={label} className="absolute right-0 top-full z-[1000] min-w-56 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-2 shadow-xl">
+    <div role="menu" aria-label={label} className="absolute right-0 top-full z-[calc(var(--sarak-z-sidebar,500)_+_100)] min-w-56 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-2 shadow-xl">
         {notifications.map((notification) => (
             <SarakMenuItem
                 key={notification.id}

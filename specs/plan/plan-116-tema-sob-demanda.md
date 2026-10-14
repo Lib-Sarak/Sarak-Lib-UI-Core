@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Tema sob demanda: o boot carrega so o tema que vai ao ar, e o resto do catalogo chega quando e escolhido"
 objetivo: "Tirar do boot de todo consumidor o peso dos temas que ele nao usa, mantendo a hidratacao sincrona sem trocar de tema na tela, o catalogo listavel para o painel, e corrigir o tema padrao que aponta para um id inexistente"
 dominio: "Design Engine / Temas embarcados / Bundle / Superficie publica"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "temas", "bundle", "lazy", "provider", "superficie-publica"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[03-superficie-publica]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]"]
@@ -124,8 +124,72 @@ todo token estético explícito nos dois papéis) depende disto.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido nem reescrito. -->
 
+## Resumo da execução (lote 0 — desenho) — 2026-10-13
+
+**Resultado:** Concluído (lote 0). Nenhum código tocado; o lote 1 aguarda a aprovação do dono.
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-116-tema-sob-demanda.md
+```
+(Durante a sessão apareceram dezenas de `M` em `src/`, `gates/` e `src/styles/` — são da `plan-115` lote 4, não minhas; não toquei neles.)
+
+**O que foi feito**
+- Criado `specs/plan/anexos/plan-116-desenho.md` com os itens (a)–(e) do §5 passo 1, os dois critérios acrescentados (tema padrão explícito §4.5; troca sem herança §4.6), as alternativas A/B/C com custo e a nota de migração em rascunho (§9 do anexo).
+- Medido o boot **no consumidor** (app mínimo + esbuild 0.27.7, fora do repositório, `node_modules` por junção removida antes de encerrar; `Test-Path node_modules` do repositório = True).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/plan/anexos/plan-116-desenho.md` | criado | o desenho do lote 0 |
+| `specs/plan/plan-116-tema-sob-demanda.md` | alterado | este resumo (§9) e `status: 🟠 Em revisão` |
+
+**Verificações executadas**
+- Boot do consumidor (fecho de `import` estático, gzip): `src` com 14 temas = 319,3 KB; 1 tema = 307,2 KB; 2 temas (par de referência) = 308,6 KB; `dist/` = 348,9 KB (build anterior, sem variante). 13 temas = 12,1 KB gzip / 92,0 KB raw (≈ 0,93 KB gzip por tema).
+- Fonte dos 14 temas gzipada: 37,7 KB (origem do "~35 KB" da plan — não é o custo no consumidor).
+
+**Critérios de aceite**
+- [ ] Desenho aprovado pelo dono antes do lote 1 — pendente (é o objetivo desta entrega).
+- Os demais critérios pertencem ao lote 1.
+
+**Decisões e suposições**
+- O número da plan (~35 KB) superestima o peso real no consumidor (~12 KB gzip hoje); o ganho grande depende da plan-110 (projeção 27–40 KB gzip, marcada como projeção no anexo).
+- Recomendo a alternativa B (carregador assíncrono + cache síncrono + porta de espera no Provider); A colide com o §7.1 da spec 03 e quebra em silêncio `initialTheme="<id>"`.
+- A miniatura do painel (`PresetCard`) lê o `design` inteiro; por isso a lista é metadado e a miniatura exige o tema carregado.
+- Teto proposto como relativo + estrutural, não número congelado (a plan-115 move o `src/`).
+
+**Achados fora do escopo (não corrigidos)**
+- `useDesignManager.ts:75` usa `'classic'` inexistente — já é critério da própria plan (lote 1).
+- Medição de `src` feita sobre worktree em movimento (plan-115): o delta entre variantes é válido; o absoluto de 319,3 KB não é baseline estável.
+
+**Pendências / riscos**
+- Delta de temas no `dist/`, alternativa A e SSR do B: não medidos (§10 do anexo).
+- O dono decide os 6 pontos do §8 do anexo antes do lote 1.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Conferência do lote 0 — 2026-10-14 — desenho entregue, à espera da decisão do dono
+
+**Conferido:** o anexo `plan-116-desenho.md` cobre os itens (a) a (e) do §5 passo 1 e os dois critérios acrescentados (tema padrão explícito; troca de tema sem herança, no Provider e na prévia do painel, por uma função só). Nenhum arquivo de `src/`, `gates/` ou `scripts/` foi tocado pelo lote 0 (o diff dessas pastas é todo da `plan-115`, lote 4). Conferido no código o achado que muda o desenho: o `SarakUIProvider` arrasta o catálogo inteiro por `useThemeCollection.ts` e `useDesignManager.ts`, independente do barril — tirar só do barril não muda o boot. A medição (esbuild sobre `src/`, fora do repositório) não foi reproduzida pelo revisor nesta conferência; o lote 1 a transforma em script e o revisor a reproduz no veredito dele.
+
+**Número que o dono precisa ter na mesa:** hoje os 14 temas custam ~12 KB gzip do boot de um consumidor (~3,8%), não ~35 KB; a projeção para os 19 temas da `plan-110`, com todo token estético, é ~27–40 KB gzip (8–12% do boot). O ganho é moderado hoje e relevante depois da 110.
+
+**Decisões pedidas (§8 do anexo), com a recomendação do revisor:** (1) alternativa **B** — carregador assíncrono com cache síncrono e porta de espera no Provider; (2) no boot, **`sarak-sovereign` + `minimalist-airy`**; (3) amostra de cor gerada no catálogo: **sim** (duas chaves geradas, sem drift); (4) teto **relativo + estrutural**; (5) `sarakGetThemePreset` **sai**; (6) MAJOR em `## 8.0.0`.
+
+**Próximo:** com a decisão do dono, o lote 1 é despachado **depois do fechamento da `plan-115`**.
+
+## Decisões do dono sobre o desenho — 2026-10-14 (todas confirmadas)
+
+1. **Alternativa B** (carregador assíncrono com cache síncrono; porta de espera só quando o consumidor força por código um tema que não está em memória), **sem mudar a UX**: no primeiro acesso o sistema abre no tema padrão, que está no boot; quando o usuário escolhe outro tema, **o tema atual continua na tela até o novo chegar** (nunca tela vazia, nunca fallback); o tema aplicado fica salvo e, nos acessos seguintes, pinta direto do `design` salvo, sem carregar nada e sem passar pelo padrão. O padrão vale só até a primeira escolha.
+2. **No boot, só o `sarak-sovereign`.** Todo tema tem contraparte autorada: o tema inexistente pedido em modo claro cai na contraparte clara do `sarak-sovereign`; a referência clara (`minimalist-airy`) deixa de ser síncrona — derivar dela exige carregá-la antes (nota de migração); derivar do `sarak-sovereign` segue síncrono.
+3. **Amostra de cor no catálogo leve: sim, gerada** — `swatch` e `swatchOpposite` (`primaryColor`, `colorBgBody`, `textColorMaster` de cada modo), pelo `npm run themes:catalog`, com `themes:catalog:check` no build.
+4. **Teto:** trava estrutural (nenhum tema além do padrão no fecho estático do entry, em `src/` e no `dist/`), medida relativa no consumidor (boot com só o tema padrão, medido na mesma execução, + catálogo + 3 KB de folga) e **≤ 3 KB gzip por tema** (para a `plan-110`).
+5. `sarakGetThemePreset` síncrono **sai**; entra `sarakLoadThemePreset`.
+6. **MAJOR.** A mudança é registrada agora na subseção da `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada **ao final de todas as modificações, no merge para a `main`** (decisão do dono, 2026-10-14) — nenhuma plan desta fila mexe na versão nem cria tag.
+
+O lote 1 implementa isto e é despachado **depois do fechamento da `plan-115`**.

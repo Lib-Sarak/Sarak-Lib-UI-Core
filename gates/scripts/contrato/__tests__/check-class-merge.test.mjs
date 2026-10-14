@@ -118,11 +118,12 @@ describe('check-class-merge — repositório real', () => {
         expect(violations).not.toContain('src/components/atomic/Buttons/SarakIconButton.tsx');
     });
 
+    // Varre todos os átomos de `src/components`: sob a suíte completa em paralelo passa dos 5 s do padrão do vitest.
     it('todo violador restante está declarado na allowlist, com motivo — nenhuma exclusão obsoleta', () => {
         const { naoDeclarados, obsoletas } = runClassMergeCheck();
         expect(naoDeclarados).toEqual([]);
         expect(obsoletas).toEqual([]);
-    });
+    }, 60_000);
 });
 
 describe('findDirectTailwindMergeImports — porta única do merge (R35)', () => {

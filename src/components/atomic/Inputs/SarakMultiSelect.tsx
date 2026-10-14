@@ -140,7 +140,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                     <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-lg"
+                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[var(--dynamic-shadow)]"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
                     >
                         {filtered.map((opt) => (

@@ -47,6 +47,14 @@
 // 8. A reserva do canal `-rgb` é conferida como texto (a lista `r, g, b` do padrão), e a das outras
 //    variantes como cor: um canal "banana" é acusado. O canal só é julgado se o nome do token dono é
 //    conhecido; um canal de nome montado em template fica fora (limite 2).
+// 9. NOME DERIVADO DECLARADO EM CSS (`--radius-btn`, `--color-theme-primary`, `--duration-slow`…, que nenhum token
+//    emite): a reserva é julgada contra o literal em que a cadeia da declaração termina (`var(--a, var(--b, 12px))`
+//    → `12px`; um token na ponta vale o padrão dele). Cadeia com `calc()`, `color-mix()` ou lista fica sem valor e sem
+//    julgamento; a primeira declaração do nome é a que vale (o `@theme` e a regra `:root, .sarak-design-scope` têm o
+//    mesmo corpo, conferido por teste).
+// 10. Variável com UNIDADE (`px`, `s`…) carrega um comprimento: reserva sem unidade (`8`) e palavra-chave que não vale
+//    para a propriedade (`thin`) são achado; só as palavras de largura geral (`auto`, `inherit`, `none`…) passam. A
+//    tolerância de alfa é só de escrita (0,001): 0,02 e 0,03 são cores diferentes.
 // -------------------------------------------------------------------------
 import fs from 'node:fs';
 import path from 'node:path';
@@ -54,6 +62,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { computeColorVariants } from '../../../src/core/Provider/utils/color-engine';
 import {
     addDerivedNames,
+    declaredDefaults,
     declaredIn,
     emittedNames,
     indexByName,
@@ -144,7 +153,8 @@ export function buildReport({ srcDir = path.join(ROOT, 'src'), tokens = loadToke
 
     const index = indexByName(tokens);
     addDerivedNames(index, runtimeTexts);
-    const { findings, checked } = scanFallbacks(reads, index, computeVariant);
+    const cssTexts = files.filter((entry) => entry.file.endsWith('.css')).map((entry) => entry.text);
+    const { findings, checked } = scanFallbacks(reads, index, computeVariant, declaredDefaults(cssTexts, index));
 
     return {
         conflicts: ownerConflicts(tokens),

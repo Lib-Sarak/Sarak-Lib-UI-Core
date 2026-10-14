@@ -111,6 +111,23 @@ export function pickerHex(value: unknown): string {
     return resolveColorParts(value)?.hex ?? PICKER_FALLBACK_HEX;
 }
 
+const OWN_ALPHA_MIX = /^color-mix\(in srgb, (.+) ([0-9.]+)%, transparent\)$/;
+
+/**
+ * Aplica um alfa ao VALOR, sem perder o vínculo: o literal vira `rgba()` (ou hex, com alfa cheio); `var(--x)` e
+ * `color-mix()` viram `color-mix(in srgb, <valor> N%, transparent)` — a cor segue o tema e só a opacidade é do usuário.
+ * Um valor que já tem essa forma só troca o N.
+ */
+export function applyAlpha(value: string, alpha: number): string {
+    const text = value.trim();
+    const literal = parseLiteralColor(text);
+    if (literal) return composeColor(literal.hex, alpha);
+    const base = OWN_ALPHA_MIX.exec(text)?.[1] ?? text;
+    if (alpha >= 1) return base;
+    const percent = Math.round(Math.max(0, alpha) * PERCENT);
+    return `color-mix(in srgb, ${base} ${percent}%, transparent)`;
+}
+
 /** Junta o hex opaco ao alfa: alfa cheio fica hex; abaixo disso, `rgba()` (que a validação aceita). */
 export function composeColor(hex: string, alpha: number): string {
     if (alpha >= 1) return hex;

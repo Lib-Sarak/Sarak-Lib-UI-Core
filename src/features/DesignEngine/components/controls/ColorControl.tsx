@@ -1,6 +1,6 @@
 import React from 'react';
 import { HelpTooltip } from './HelpTooltip';
-import { composeColor, pickerHex, resolveColorParts } from './colorParts';
+import { applyAlpha, composeColor, pickerHex, resolveColorParts } from './colorParts';
 import { isValidColor } from '../../../../core/Provider/utils/validation';
 
 interface ColorControlProps {
@@ -70,7 +70,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                         max={ALPHA_STEPS}
                         value={Math.round(alpha * ALPHA_STEPS)}
                         aria-label={`Opacidade de ${label}`}
-                        onChange={(e) => commit(composeColor(parts.hex, Number(e.target.value) / ALPHA_STEPS))}
+                        onChange={(e) => commit(applyAlpha(value || DISPLAY_DEFAULT, Number(e.target.value) / ALPHA_STEPS))}
                         className="w-full"
                     />
                 )}

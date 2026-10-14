@@ -13,7 +13,7 @@ interface ChatHeaderProps {
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
   <header className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--text-muted,rgba(255,255,255,0.4))]/5" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 1.5) var(--sarak-layout-gap-md,16px)' }}>
     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-      <div className="bg-gradient-to-br from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#00f2ff)] rounded-lg shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
+      <div className="bg-gradient-to-br from-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] to-[var(--sarak-primary-color,#00f2ff)] rounded-lg shadow-lg shadow-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
         <SarakIcon name="Bot" size={20} className="text-[var(--sarak-primary-color,#00f2ff)]" />
       </div>
       <div>
