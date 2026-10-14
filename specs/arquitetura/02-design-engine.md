@@ -396,5 +396,26 @@ canal do formato dela, e o mestre não a escreve; os outros cantos seguem o mest
 Embarcado. Ao trocar de tema, `syncInjectedWrites` (`src/core/Provider/utils/injectedWrites.ts`) remove a variável e
 o atributo que o injetor escreveu antes e o tema novo não escreve — o que o host gravou por fora não é tocado. A
 duração e a curva padrão das transições do Tailwind (`--default-transition-duration`,
-`--default-transition-timing-function`) vêm de `motionDurationFast` e `motionEaseMain`. A trava é o
-`channel-dispute:check`.
+`--default-transition-timing-function`) vêm de `motionDurationFast` e `motionEaseMain`. Ao desmontar, o injetor
+limpa tudo o que escreveu (`releaseInjectedWrites`: variáveis, atributos, curvas, rastro do ponteiro, fonte ancorada,
+classe de modo, folha responsiva). A trava é o `channel-dispute:check`.
+
+## 10.13 Os nomes do `@theme` valem no escopo do rascunho
+
+`_theme.css` declara os nomes do tema do Tailwind com `@theme inline` (as utilitárias resolvem no elemento) e repete o
+mesmo corpo em `:root, .sarak-design-scope` (os nomes como variável): dentro de um `DesignScope`, `rounded-btn`,
+`bg-theme-primary`, `--duration-*`, `--z-index-*` mostram o rascunho, não o tema aplicado. A igualdade dos dois corpos
+é teste (`themeNamesScope.test.ts`). `--color-theme-title` tem um dono só: o `titleColor` (no modo claro, com o
+`titleColor` ainda no padrão, segue o texto principal). As classes de raio da lib (`rounded-btn`, `rounded-input`,
+`rounded-sarak`) ficam na camada final, porque o Tailwind gera utilitária homônima a partir do `@theme` sem os quatro
+cantos; o conflito no mesmo elemento passa pelo `mergeSarakClasses`, que as reconhece no grupo `rounded`. A
+`.transition-sarak` mora na camada que cede, sem `!important`. O contêiner de página que deixa o fundo de mídia
+aparecer é marcado (`sarak-page-surface`), nunca adivinhado por classe de cor.
+
+## 10.14 A escada de camadas
+
+Cada camada lê o token dela, sem empate: a barra lateral (`zIndexSidebar`); a atmosfera decorativa (ruído e
+vinheta) em `zIndexSidebar` + 50 — cobre conteúdo e cromo, fica abaixo de toda sobreposição; menus e busca em
+`zIndexSidebar` + 100/+200; o modal (`zIndexModal`), com o cartão expandido um degrau abaixo e a ajuda, o lightbox e o
+spotlight acima dele; o tooltip (`zIndexTooltip`); a notificação (`zIndexToast`, um passo acima do tooltip). As
+sobreposições usam a sombra do tema (`--dynamic-shadow`), sem token próprio.

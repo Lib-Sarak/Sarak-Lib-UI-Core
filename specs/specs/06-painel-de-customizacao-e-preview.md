@@ -171,7 +171,8 @@ token:
 Mais `HelpTooltip`, que exibe a `description` do token — a mesma string que documenta o token no catálogo —
 **em todo ramo de controle dos dois despachantes** (o `descricaoEmTodoRamo.test.tsx` cobra). O campo numérico livre
 só grava número finito, dentro de `[min, max]`; o seletor de cor resolve `var()`/`color-mix()` pelo navegador para
-mostrar a amostra e o alfa, sem gravar nada até o usuário mexer.
+mostrar a amostra e o alfa, sem gravar nada até o usuário mexer; mexer só no alfa de um valor `var()`/`color-mix()`
+grava `color-mix(in srgb, <valor> N%, transparent)`, sem perder o vínculo com a variável.
 **A descrição escrita no schema é a ajuda que o autor de tema lê.** Isso é o que torna as descrições dos
 tokens uma obrigação de produto, não um comentário.
 

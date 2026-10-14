@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Tema sob demanda: o boot carrega so o tema que vai ao ar, e o resto do catalogo chega quando e escolhido"
 objetivo: "Tirar do boot de todo consumidor o peso dos temas que ele nao usa, mantendo a hidratacao sincrona sem trocar de tema na tela, o catalogo listavel para o painel, e corrigir o tema padrao que aponta para um id inexistente"
 dominio: "Design Engine / Temas embarcados / Bundle / Superficie publica"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "bundle", "lazy", "provider", "superficie-publica"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[03-superficie-publica]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]"]
-depende_de: "plan-115-fechamento-do-arsenal"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/03-superficie-publica.md + adr/"
 ---

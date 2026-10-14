@@ -612,7 +612,7 @@ de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado cheg
 
 `validateDesign` corta em runtime o número fora da faixa (o consumidor não quebra). Para o que a **lib embarca**, o
 corte silencioso escondia a intenção do autor: `auditTokenContract` acusa o valor fora de `min`/`max` (inclusive em
-cada ponto responsivo), o `tokenContractParity.test.ts` falha, e o `panel-contract:check` confere temas e presets
+cada ponto responsivo) e fora da grade do `step` (`isOffTokenGrid`, `tokenBounds.ts`), o `tokenContractParity.test.ts` falha, e o `panel-contract:check` confere temas e presets
 ([[00-regras-e-invariantes]] R44).
 
 ## 6.7 O contraste mede o que o componente desenha
@@ -622,7 +622,17 @@ primária, as de status e a de erro de campo **como texto** sobre o corpo e o ca
 link, badge suave, mensagem de erro), a tinta de hover sobre a superfície e o par real do botão primário
 (`btnPrimaryText` sobre `btnPrimaryBg`). Consequência para quem desenha tema: **a primária é também cor de texto** e
 passa 4,5:1 sobre o corpo nos dois modos. O texto sobre cor sólida (badge sólido, botão de perigo e sucesso, bolha
-do chat) não é declarado pelo tema: o motor o escolhe por contraste ([[02-design-engine]] §10.10).
+do chat) não é declarado pelo tema: o motor o escolhe por contraste ([[02-design-engine]] §10.10). O texto de
+aviso e de erro sobre a própria tinta, e o do hover dos botões fantasma e contorno, é a mistura da cor com o texto de
+maior contraste (a do badge suave) — legível em qualquer tema, sem mexer na marca. A contraparte declara toda cor
+que reprovaria no modo oposto; a contagem de pares sai na execução.
+
+## 6.8 O catálogo diz o que o schema diz
+
+Cada entrada de `src/core/Design/catalog/partitions/*.json` tem o **tipo** e os **valores permitidos** do token no
+schema (opções lidas como a validação as lê: `constraints.options ?? options`), sem entrada duplicada. A paridade
+confere presença, tipo e valores (`gates/scripts/audit/catalog-drift.ts`, passo de `verify_parity.ts` que o
+`auditor_paridade` e o `audit:baseline` rodam); um `select` sem opção no catálogo é achado.
 
 # 7. Como criar um tema que passa em tudo, sem um único warn
 

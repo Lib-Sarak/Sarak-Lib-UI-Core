@@ -1437,7 +1437,10 @@ fundo do cartão disputavam `--theme-surface`), cerca de 20 nomes eram lidos sem
 padrão (134 só na cor primária): o resultado mudava conforme o modo e o tema.
 
 **Cobrada por:** `check-variable-contract.ts` (`npm run variable-contract:check`), no Anel 1 e na CI; importa o
-schema real e modela a emissão do motor.
+schema real e modela a emissão do motor; julga também a reserva de alias de fachada e de nome derivado declarado em
+CSS, a reserva sem unidade em variável com unidade e a palavra-chave inválida para a propriedade. E
+`check-channel-dispute.ts` (`npm run channel-dispute:check`): cada variável sai num canal só (inline ou `<style>`)
+em todo formato de mestre e exceção, nos dois modos de injeção, e a troca de tema não deixa variável órfã.
 
 **O vão.** Limites no cabeçalho do gate (R18): leitura por `getPropertyValue`, nomes derivados, a disputa entre o
 valor inline e o `<style>` responsivo.
@@ -1590,7 +1593,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R1 | Três camadas | ✅ | `auditor_arquitetura.mjs` | `npm run audit` |
 | R2 | Zero hardcode | ✅ | `auditor_hardcoded.mjs` | idem |
 | R3 | Zero `any` | ✅ | `auditor_typescript.mjs` | idem |
-| R4 | Paridade 3 fontes | ⚠️ | `auditor_paridade.mjs` → `verify_parity.ts` — **não vê o tipo gerado** | idem |
+| R4 | Paridade 3 fontes | ⚠️ | `auditor_paridade.mjs` → `verify_parity.ts` — confere presença, **tipo e valores permitidos** do catálogo (`catalog-drift.ts`); **não vê o tipo gerado** | idem |
 | R5 | Zero chave órfã | ✅ | `auditor_presets.mjs` → `verify_presets.ts` (+ `verify_theme_parity.ts` ⏳) | idem |
 | R6 | Contrato de valor | ✅ | `validateDesign` + `tokenContractParity.test.ts` | `npx vitest run` |
 | R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — vê os 4 `CONSUMER_DIRS`, mas **valida só o NOME, nunca a sintaxe do fallback**, e **aceita nome que o manifesto declara e o runtime nunca emite** | `npm run audit` |
@@ -1623,10 +1626,10 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
 | **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
 | **R40** | **Todo valor que o motor emite tem leitor** | **⚠️** | `check-token-reader.mjs` — schema inteiro, `ALLOWLIST` vazia; textual, marcador `@sarak-token-reader` declarativo, só a direção emitido → lido | `npm run token-reader:check` |
-| **R41** | **O motor dá o padrão; o componente decide** | **⚠️** | `check-css-important-visual.mjs` — só `src/styles/*.css`; não vê `!important` em TypeScript nem regra normal da camada final | `npm run css-important:check` |
-| **R42** | **Uma variável, um dono; reserva é o padrão; nome lido existe** | **⚠️** | `check-variable-contract.ts` — importa o schema; não julga nomes derivados nem a disputa inline × `<style>` | `npm run variable-contract:check` |
-| **R43** | **Componente não fixa branco nem preto onde o tema decide** | **⚠️** | `check-fixed-translucent.mjs` — textual; texturas e materiais fora | `npm run fixed-translucent:check` |
-| **R44** | **O painel grava o que mostra; tema embarcado no contrato numérico** | **⚠️** | `check-panel-contract.ts` + `tokenContractParity.test.ts` — não confere a grade dos valores de tema | `npm run panel-contract:check` |
+| **R41** | **O motor dá o padrão; o componente decide** | **⚠️** | `check-css-important-visual.mjs` — `src/styles/*.css` **e strings/templates de TypeScript**; não vê regra sem `!important` da camada final | `npm run css-important:check` |
+| **R42** | **Uma variável, um dono; reserva é o padrão; nome lido existe** | **⚠️** | `check-variable-contract.ts` (reserva de alias e de nome derivado, unidade e palavra-chave inválida) + `check-channel-dispute.ts` (um canal por variável; nada órfão na troca de tema) — não julgam `calc()`/`color-mix()` como valor | `npm run variable-contract:check` · `npm run channel-dispute:check` |
+| **R43** | **Componente não fixa branco nem preto onde o tema decide** | **⚠️** | `check-fixed-translucent.mjs` — textual; acusa também paleta do Tailwind, duração/atraso fixos, `rgba(var(#hex))` e classe arbitrária com espaço; texturas e materiais fora | `npm run fixed-translucent:check` |
+| **R44** | **O painel grava o que mostra; tema embarcado no contrato numérico** | **⚠️** | `check-panel-contract.ts` + `tokenContractParity.test.ts` (faixa e grade do `step`) + `descricaoEmTodoRamo.test.tsx` | `npm run panel-contract:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
