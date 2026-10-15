@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Embarcar as fontes na biblioteca, carregadas sob demanda, e ampliar o catalogo de tipografia"
 objetivo: "Fazer a biblioteca entregar as proprias fontes, carregadas so quando o tema as usa e sem requisicao a terceiros, com a opcao de o host escolher a origem, e ampliar com seguranca o catalogo de familias que o schema e o painel oferecem"
 dominio: "Design Engine / Tipografia / Build e distribuicao / Privacidade"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "fontes", "tipografia", "build", "privacidade", "lgpd", "bundle"]
 relacionados: ["[[09-temas-e-presets]]", "[[05-build-e-distribuicao]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[02-design-engine]]"]
@@ -96,7 +96,9 @@ os 19 valores existentes de `THEME_FONTS` **continuam com o mesmo `value`** (tem
 # 5. Instruções de execução
 
 **Um lote por vez; cada lote termina com resumo num bloco novo da §9 e status 🟠; o próximo só começa depois do
-veredito.** O executor **não tem rede**: as fontes entram por `npm install` feito pelo dono (lote 0).
+veredito.**
+
+> **Paralelismo (revisor, 2026-10-15):** o lote 1 só escreve o anexo e não toca código; pode correr ao lado do lote 1 da `plan-117`. Os lotes 2 a 4 tocam `package.json`, o build e os gerados, e esperam a `plan-117` 🟢. O executor **não tem rede**: as fontes entram por `npm install` feito pelo dono (lote 0).
 
 **Lote 0 — ação do dono (fora da execução).** Instalar as fontes candidatas como **devDependencies**
 (`@fontsource-variable/<familia>`, ou `@fontsource/<familia>` quando não houver variável) e commitar o lockfile.
