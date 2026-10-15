@@ -8,7 +8,7 @@
  * e tipografia), para o script gerador (`generate-showcase.mts`) capturar uma
  * imagem por tema × modo × orientação e o dono comparar o catálogo inteiro.
  *
- * `?tema=<id>` — qualquer id de `GLOBAL_THEMES`; `?modo=light|dark` — aplicado
+ * `?tema=<id>` — qualquer id de `SARAK_ALL_THEMES`; `?modo=light|dark` — aplicado
  * como PREFERÊNCIA (`updatePreferences({ colorMode })`), o mesmo caminho do
  * `ShellThemeToggle` real (specs/specs/09-temas-e-presets.md §4.3, a "porta que a
  * documentação recomenda ao importador" — nunca `resolveThemeForMode` direto, que

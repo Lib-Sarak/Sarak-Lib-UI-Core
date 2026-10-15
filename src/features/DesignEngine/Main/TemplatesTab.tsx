@@ -3,11 +3,9 @@ import { motion } from 'framer-motion';
 import { Copy, Check, FileJson, ExternalLink, Code } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import type { SarakDesignState, SarakThemeEntry } from '../../../core/Provider/types';
-
-type ThemeWithDesign = SarakThemeEntry & { description?: string; design: Record<string, unknown> };
-
-const hasThemeDesign = (theme: SarakThemeEntry): theme is ThemeWithDesign => Boolean(theme.design);
+import type { SarakDesignState } from '../../../core/Provider/types';
+import type { SarakThemeCatalogEntry } from '../../../core/Design/presets/themes';
+import { useCatalogThemes } from '../Canvas/components/useCatalogThemes';
 
 interface TemplatesTabProps {
     onApplyFullTheme: (design: Partial<SarakDesignState>, themeId?: string) => void;
@@ -15,22 +13,36 @@ interface TemplatesTabProps {
 
 /**
  * TemplatesTab (v13.0)
- * Exibe os temas híbridos (Scripts e Banco de Dados) para aplicação.
+ * Lista o catálogo leve (embarcados + custom/salvos) na hora; o `design` de um
+ * tema ainda não carregado chega sob demanda, e o tema só é aplicado depois.
  */
 export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const sarak = useSarakUI();
-    const themes = sarak.allThemes.filter(hasThemeDesign);
-    const handleSelect = (theme: ThemeWithDesign) => {
-        onApplyFullTheme(theme.design as Partial<SarakDesignState>, theme.id);
-        setSelectedId(theme.id);
+    const { rows, loadTheme } = useCatalogThemes(sarak);
+
+    type Loaded = { design?: Record<string, unknown> } | undefined;
+
+    // Já em memória: segue síncrono. Senão carrega e só então entrega o design.
+    const withDesign = (entry: SarakThemeCatalogEntry, loaded: Loaded, use: (design: Record<string, unknown>) => void) => {
+        if (loaded?.design) { use(loaded.design); return; }
+        void loadTheme(entry.id).then((theme) => { if (theme?.design) use(theme.design); });
     };
 
-    const handleCopy = (id: string, config: Record<string, unknown>) => {
-        navigator.clipboard.writeText(JSON.stringify(config, null, 2));
-        setCopiedId(id);
-        setTimeout(() => setCopiedId(null), 2000);
+    const handleSelect = (entry: SarakThemeCatalogEntry, loaded: Loaded) => {
+        withDesign(entry, loaded, (design) => {
+            onApplyFullTheme(design as Partial<SarakDesignState>, entry.id);
+            setSelectedId(entry.id);
+        });
+    };
+
+    const handleCopy = (entry: SarakThemeCatalogEntry, loaded: Loaded) => {
+        withDesign(entry, loaded, (design) => {
+            navigator.clipboard.writeText(JSON.stringify(design, null, 2));
+            setCopiedId(entry.id);
+            setTimeout(() => setCopiedId(null), 2000);
+        });
     };
 
     return (
@@ -47,44 +59,44 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
-                {themes.map((template) => (
-                    <div key={template.id} className="group bg-theme-text/[0.02] border border-theme-text/5 hover:border-theme-text/10 p-5 rounded-2xl transition-all">
+                {rows.map(({ entry, theme }) => (
+                    <div key={entry.id} className="group bg-theme-text/[0.02] border border-theme-text/5 hover:border-theme-text/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{template.name || template.id}</div>
+                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{entry.name || entry.id}</div>
                                 </div>
-                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/30">{template.description || 'Tema customizado.'}</p>
+                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/30">{entry.description || 'Tema customizado.'}</p>
                             </div>
                             <div className="flex gap-2">
                                 <button 
-                                    onClick={() => handleSelect(template)}
+                                    onClick={() => handleSelect(entry, theme)}
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all flex-1 ${
-                                        selectedId === template.id
+                                        selectedId === entry.id
                                         ? 'bg-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-on-success,#020617)]' 
                                         : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-theme-on-primary'
                                     }`}
                                 >
                                     <Check size={10} />
-                                    {selectedId === template.id ? 'Selecionado' : 'Escolher tema'}
+                                    {selectedId === entry.id ? 'Selecionado' : 'Escolher tema'}
                                 </button>
                                 <button 
-                                    onClick={() => handleCopy(template.id, template.design)}
+                                    onClick={() => handleCopy(entry, theme)}
                                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all ${
-                                        copiedId === template.id 
+                                        copiedId === entry.id 
                                         ? 'bg-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/50' 
                                         : 'bg-theme-text/5 hover:bg-theme-text/10 text-theme-text/40 hover:text-theme-text border border-theme-text/5'
                                     }`}
                                 >
-                                    {copiedId === template.id ? <Check size={10} /> : <Copy size={10} />}
+                                    {copiedId === entry.id ? <Check size={10} /> : <Copy size={10} />}
                                 </button>
                             </div>
                         </div>
 
                         <div className="relative">
                             <pre className="bg-theme-body/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,8px)] font-mono text-theme-text/20 overflow-x-auto border border-theme-text/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
-                                {JSON.stringify(template.design, null, 2)}
+                                {theme ? JSON.stringify(theme.design, null, 2) : 'Carregando…'}
                             </pre>
                         </div>
                     </div>

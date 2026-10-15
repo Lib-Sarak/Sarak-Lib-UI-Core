@@ -14,7 +14,7 @@
  * conteúdo — card, tabela (as duas com a prop `data`, sem rede), botões, campos,
  * tipografia e o `SarakBadge` em todas as variantes (`showcase-entry.tsx`).
  *
- * O ids de tema vêm do CÓDIGO-FONTE (`GLOBAL_THEMES`), nunca transcritos (R17) —
+ * O ids de tema vêm do CÓDIGO-FONTE (`SARAK_ALL_THEMES`), nunca transcritos (R17) —
  * este script só itera o que o dicionário já lista, e o total impresso ao final é
  * o que prova a cobertura, não uma contagem escrita à mão.
  */
@@ -23,7 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
-import { GLOBAL_THEMES } from '../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all.ts';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SHOWCASE_ENTRY = path.join(HERE, 'fixtures', 'showcase-entry.tsx');
@@ -59,8 +59,8 @@ async function captureOne(
         // token ligado nunca revelam "Início" (achado, não bug: o sensor é real).
         await page.mouse.move(2, 2);
         await page.mouse.move(4, 4);
-        await page.getByRole('button', { name: 'Início' }).waitFor({ state: 'visible' });
-        await page.getByRole('button', { name: 'Relatórios' }).hover();
+        await page.getByRole('link', { name: 'Início' }).waitFor({ state: 'visible' });
+        await page.getByRole('link', { name: 'Relatórios' }).hover();
         await page.screenshot({ path: path.join(SCREENS_DIR, fileName), fullPage: true });
         return { temaId, modo, nav, fileName };
     } catch (err) {
@@ -116,7 +116,7 @@ async function main() {
     fs.rmSync(OUT_DIR, { recursive: true, force: true });
     fs.mkdirSync(SCREENS_DIR, { recursive: true });
 
-    console.log(`--- Vitrine de temas: ${GLOBAL_THEMES.length} tema(s) × ${MODES.length} modo(s) × ${ORIENTATIONS.length} orientação(ões) ---`);
+    console.log(`--- Vitrine de temas: ${SARAK_ALL_THEMES.length} tema(s) × ${MODES.length} modo(s) × ${ORIENTATIONS.length} orientação(ões) ---`);
 
     const { outDir: harnessOutDir, htmlPath } = await buildHarness(SHOWCASE_ENTRY);
     const harnessUrl = 'file://' + htmlPath.split('\\').join('/');
@@ -124,7 +124,7 @@ async function main() {
 
     const results: CaptureResult[] = [];
     try {
-        for (const theme of GLOBAL_THEMES) {
+        for (const theme of SARAK_ALL_THEMES) {
             for (const modo of MODES) {
                 for (const nav of ORIENTATIONS) {
                     const result = await captureOne(browser, harnessUrl, theme.id, modo, nav);
