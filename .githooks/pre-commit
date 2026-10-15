@@ -194,6 +194,16 @@ if ! npx tsx gates/scripts/contrato/check-channel-dispute.ts; then
 fi
 echo "[Sarak] Anel 1 (injeção sem disputa de canal) OK."
 
+# Documentação de token (kind, modeDependent e usage em todo token; exceção por token que esvazia a cada lote).
+if ! npx tsx gates/scripts/contrato/check-token-documentation.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: documentação de token"
+  echo "   Regra violada : — (04-contrato-de-tokens-e-paridade)"
+  echo "   Veja o detalhe: npm run token-docs:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (documentação de token) OK."
+
 # Contrato do painel (padrão na faixa e na grade, valor de tema dentro do contrato numérico, todo tipo do
 # schema com controle, opção que grava o value). Em TypeScript pelo mesmo motivo: lê o schema e os temas.
 if ! npx tsx gates/scripts/contrato/check-panel-contract.ts; then

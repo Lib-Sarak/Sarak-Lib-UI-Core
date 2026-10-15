@@ -400,6 +400,26 @@ cada byte cai, e uma regra ampla demais **funde de volta** os chunks lazy que a 
 - **`export * from '@sarak/lib-ui-core'` no seu barril NÃO custa nada.** Medido byte a byte: saída
   idêntica a reexportar só o que se usa. A "porta única" de um monorepo é de graça.
 
+## O que a lib já faz — não recrie
+
+Antes de entregar ao importador uma tela com componente escrito à mão, confira a necessidade neste mapa (a versão
+completa, com a razão de cada linha, é o `GUIA-FRONTEND.md` §6). Reconstruir o que a lib já faz tira a peça do tema,
+do modo claro/escuro e do celular, e some na próxima atualização.
+
+| Necessidade | Já existe | O que ensinar |
+| --- | --- | --- |
+| cartão de conteúdo | `SarakCard` (`.Header` · `.Body` · `.Footer`); contêiner próprio: classe `sarak-card` | raio, borda, sombra, textura e vidro vêm dos tokens `card*`; `div` com estilo próprio fica fora do tema |
+| cartão de título, ação, busca, imagem | `SarakTitleCard` · `SarakActionCard` · `SarakSearchCard` · `SarakImageCard` | cada um lê a própria família de token |
+| grade, catálogo, gestão agrupada | `SarakCardGrid` · `SarakCatalogGrid` · `SarakManagementGrid` | busca, filtros e os três estados de tela já vêm prontos |
+| tabela | `SarakTable` (simples, vira cartões no celular) · `SarakDataTable` (virtualizada) | `tableDensity` só na primeira, `tableCellPadding` só na segunda |
+| diálogo, gaveta, aviso, dica, menu de contexto | `SarakModal` · `SarakDrawer` · `useToast` · `SarakTooltip` · `SarakContextMenu` | foco, Escape, véu e camadas já resolvidos |
+| navegação e cromo · formulário · gráfico · i18n e preferências · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido nos próximos lotes da análise de tokens | procure em `catalog.json` antes de construir |
+
+**Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
+a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção
+e alinhamento não alcançam o `SarakCard` composto. Sete tokens do schema não mudam a tela hoje — não prometa efeito
+visual deles (lista em `GUIA-FRONTEND.md` §6.4).
+
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —
   é o que o `init` existe para eliminar. A única saída manual permitida é a Etapa 4 (ilha embarcada).

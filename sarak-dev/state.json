@@ -324,6 +324,10 @@
       "comando": "npx tsx scripts/generate-theme-catalog.ts --check"
     },
     {
+      "nome": "npm run token-docs:check",
+      "comando": "npx tsx gates/scripts/contrato/check-token-documentation.ts"
+    },
+    {
       "nome": "npm run token-reader:check",
       "comando": "node gates/scripts/contrato/check-token-reader.mjs"
     },

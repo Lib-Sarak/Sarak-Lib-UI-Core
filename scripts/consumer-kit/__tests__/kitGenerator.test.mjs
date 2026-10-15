@@ -96,6 +96,17 @@ describe('buildKitCatalog — as fontes vivas realmente chegam ao kit', () => {
         expect(catalog.themes.referenceThemeIds.length).toBe(2);
     });
 
+    it('leva a documentação do schema (kind, modeDependent, usage, interactsWith) ao catálogo e o pilar de cada token', () => {
+        const byId = new Map(catalog.designTokens.ids.map((token) => [token.id, token]));
+        const texture = byId.get('cardTextureOpacity');
+        expect(texture.group).toBe('cards');
+        expect(texture.kind).toBe('aesthetic');
+        expect(texture.modeDependent).toBe(true);
+        expect(texture.usage.length).toBeGreaterThan(20);
+        expect(texture.interactsWith).toContain('cardTextureType');
+        expect(catalog.designTokens.groups.cards).toBeTruthy();
+    });
+
     it('lista só CSS Variables Sarak que a engine emite, incluindo variantes de cor válidas', () => {
         const emittedVars = collectEmittedSarakCssVars();
 
@@ -140,5 +151,17 @@ describe('renderVersionFile / renderAppendix', () => {
         expect(apendice).toContain('SarakButton');
         expect(apendice).toContain('--sarak-card-bg');
         expect(apendice).toContain(String(catalog.designTokens.count));
+    });
+
+    it('o apêndice traz o mapa dos tokens por pilar, só com o que o schema documentou', () => {
+        const apendice = renderAppendix(catalog);
+        const documented = catalog.designTokens.ids.filter((token) => token.usage);
+
+        expect(apendice).toContain('### A.4b Mapa dos tokens por pilar');
+        expect(apendice).toContain(`**${documented.length}** de ${catalog.designTokens.count} tokens`);
+        expect(apendice).toContain('| `cardTextureOpacity` | estético | sim |');
+        // token sem documentação não aparece como linha do mapa (o gate de documentação mantém a lista do que falta)
+        const undocumented = catalog.designTokens.ids.find((token) => !token.usage);
+        if (undocumented) expect(apendice).not.toContain(`| \`${undocumented.id}\` |`);
     });
 });

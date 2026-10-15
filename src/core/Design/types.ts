@@ -58,6 +58,19 @@ export interface SarakDesignToken {
      * Ausência = token de Valor (Alavanca 1, default): consumido via `var(--sarak-*, fallback)`.
      */
     structuralConsumer?: string[];
+    /**
+     * Natureza do token. `aesthetic`: o tema o projeta (cor, elevação, textura, tipografia, geometria visual,
+     * densidade visual, movimento). `functional`: deve ser igual em todo tema por segurança, acessibilidade ou
+     * consistência de comportamento (camadas, alvo de toque, larguras e posições do cromo, breakpoints,
+     * comportamento) — o tema embarcado não o declara. Critério completo: o anexo da plan de temas.
+     */
+    kind?: 'aesthetic' | 'functional';
+    /** `true` quando o valor muda com o modo claro/escuro, e por isso entra na `contraparte` do tema. */
+    modeDependent?: boolean;
+    /** O que o token muda na tela e onde, em uma ou duas frases, sem repetir o rótulo nem transcrever opções. */
+    usage?: string;
+    /** Ids de tokens sem os quais este não tem efeito visível (ex.: opacidade da textura × tipo de textura). */
+    interactsWith?: string[];
 }
 
 export interface ComponentSchema {

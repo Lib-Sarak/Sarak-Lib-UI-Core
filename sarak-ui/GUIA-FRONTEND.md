@@ -52,6 +52,7 @@ ela dá um **procedimento**, um **fallback** e um **loop**. Comece sempre por aq
 | isolar apps, evitar acoplamento entre módulos | [§3.13](#313-estrutura-e-isolamento) |
 | copiar um esqueleto pronto e adaptar | [§4 Templates](#4--templates-copiáveis) |
 | pedir algo que falta **na biblioteca** | [§5 Quando abrir demanda](#5--quando-abrir-demanda-na-biblioteca) |
+| saber se a lib **já faz** o que eu ia construir (cartão, tabela, diálogo, aviso…) | [§6 O que a lib já faz](#6--o-que-a-lib-já-faz--não-recrie) |
 
 ## 0.2 A regra de fallback universal
 
@@ -603,6 +604,90 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 ---
 
+# §6 — O que a lib já faz — não recrie
+
+Antes de escrever um componente seu, procure a necessidade aqui. Cada linha diz **qual peça da lib atende**, **por que
+reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de verdade, com tipo e prop, está no
+`catalog.json` (A.1 e A.4b abaixo); este mapa só aponta e ensina o que a medição mostrou.
+
+> **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. As demais
+> necessidades estão marcadas **⏳** e entram com as medições dos próximos lotes. Linha ⏳ não significa "a lib não
+> faz": significa "ainda não foi aberta token a token" — procure no catálogo antes de construir.
+
+| Preciso de… | A lib já tem | Por que não reconstruir |
+| --- | --- | --- |
+| um cartão de conteúdo (cabeçalho, corpo, rodapé) | `SarakCard` com `SarakCard.Header`, `.Body` e `.Footer`; para o seu próprio contêiner, a classe `sarak-card` (ou `card`) | raio, borda, sombra, textura, vidro e brilho vêm dos tokens `card*`: um `div` com `border-radius` e `box-shadow` próprios fica fora do tema e não acompanha a troca de modo |
+| cartão de título, de ação (botão), de busca ou de imagem | `SarakTitleCard`, `SarakActionCard`, `SarakSearchCard`, `SarakImageCard` | cada um já lê a própria família de token (`cardTitle*`, `cardAction*`, `cardSearch*`, `imageCard*`) e o estado de foco e de hover |
+| uma grade de cartões com busca e filtros | `SarakCardGrid` (e `SarakCatalogGrid`, `SarakManagementGrid` para catálogo e gestão agrupada) | busca, filtros e os estados de carregamento, erro e vazio já estão feitos |
+| uma tabela de dados | `SarakTable` (simples, com cartões no celular) ou `SarakDataTable` (virtualizada, colunas redimensionáveis) | ordenação, seleção, listra, hover e a troca por cartões no smartphone são do componente; veja a diferença de tokens abaixo |
+| um diálogo | `SarakModal` (tamanhos nomeados, passos, foco preso, Escape); para painel lateral, `SarakDrawer` | foco preso, Escape, véu e animação são resolvidos; um `div` fixo com `z-index` próprio entra na disputa de camadas |
+| aviso passageiro | `useToast().notify(...)` | empilhamento, tipo e largura vêm de `overlays` e do Provider |
+| dica ao passar o ponteiro / menu de contexto | `SarakTooltip` · `SarakContextMenu` | o menu de contexto se desloca para dentro da tela e fecha por clique fora e por Escape; o tooltip já lê fundo, texto, borda e raio do tema |
+| navegação, cromo e slots | ⏳ `SarakAppChrome` (§2 e A.3) | ⏳ lote seguinte |
+| formulário e validação | ⏳ | ⏳ lote seguinte |
+| gráfico, calendário, Gantt, Kanban | ⏳ `SarakChartEngine`, `SarakKanban` | ⏳ lote seguinte |
+| idioma, preferências do usuário, persistência do tema | ⏳ | ⏳ lote seguinte |
+| modo embarcado (ilha sobre um front existente) | ⏳ (§2 e skill) | ⏳ lote seguinte |
+| painel de customização | ⏳ `SarakCustomizationPanel` | ⏳ lote seguinte |
+| tema derivado da marca do cliente | ⏳ (§3.9) | ⏳ lote seguinte |
+
+## 6.1 Cartões — o que o tema controla e o que o surpreende
+
+- **A textura é uma camada `::after` do cartão** (`sarak-card` e `card`), e `cardTextureType` escolhe o desenho. **A
+  cor não é do tipo**: a maioria dos desenhos pinta com `textureColor`; `grid` usa a cor da borda do cartão;
+  `dots` e `cyber-binary`, a primária; `noise`, `grain` e `paper` não têm cor própria. Por isso a textura **muda de cor
+  no modo oposto** (as cores vêm da `contraparte`) enquanto o desenho continua o mesmo.
+- **`cardTextureOpacity` padrão é muito baixo.** Sem subi-lo, o desenho escolhido quase não aparece, e a pergunta
+  "a textura não funciona" é, quase sempre, essa.
+- **Vidro** é `cardBackdropBlur` **com** `cardSurfaceOpacity` abaixo de 1: sem superfície translúcida não há o que
+  desfocar.
+- **`cardBorderWidth` também é a espessura da divisória** do cabeçalho e do rodapé do `SarakCard`; os tokens
+  `cardHeader*` e `cardFooter*` valem só para `SarakCard.Header` e `SarakCard.Footer`.
+- **Sombra:** a força é `cardShadowSpread` (e `shadowColorMode`); a forma é o deslocamento, o desfoque e a expansão. Os
+  quatro juntos, com desfoque zero, dão a sombra dura. `cardShadow` (texto) **substitui** a composta — declare a cor
+  certa para os dois modos.
+- **`cardGeometricCut` corta também a sombra e o brilho externos** (é `clip-path`): combine com filete interno
+  (`cardInnerGlow*`).
+- **Os tokens de direção, alinhamento e posição de imagem** (`cardLayoutDirection`, `cardTextAlign`,
+  `cardImagePosition`) alcançam os cartões de título, ação, busca e expansível — **não** o `SarakCard` composto.
+
+Exemplo real (superfície de vidro com grade, e a cor da textura seguindo o modo):
+
+```ts
+const tema = {
+  design: { cardSurfaceOpacity: 0.55, cardBackdropBlur: 24, cardTextureType: 'grid', cardTextureOpacity: 0.08 },
+  contraparte: { textureColor: '#404040', cardBorderColor: '#dadee7' }, // a grade usa a cor da borda do cartão
+};
+```
+
+## 6.2 Sobreposições
+
+- **Largura do diálogo é nomeada** (`modalWidthSm` … `modalWidthFull`, escolhidos pela prop `size`); sem `size`, vale
+  32 rem. A cor e o desfoque do véu são `modalOverlayColor` e `modalOverlayBlur`, e valem também para a gaveta
+  (`SarakDrawer`).
+- **`toastMinWidth` e `toastMaxWidth` são em `rem`**, relativos ao tamanho da fonte raiz; a faixa colorida do toast é a
+  cor do tipo da mensagem, e só a espessura (`toastAccentWidth`) é do tema.
+- **`modalActionAlignment` e `modalHeaderStyle` mudam a disposição**, não o comportamento: foco e Escape são os mesmos.
+
+## 6.3 Tabelas — dois componentes, dois conjuntos de token
+
+| Token | `SarakTable` | `SarakDataTable` |
+| --- | --- | --- |
+| `tableDensity` (respiro e fonte da célula) | lê | **não lê** |
+| `tableCellPadding` (respiro horizontal) | **não lê** | lê |
+| `tableRowHoverBg` | lê | **não lê** |
+| `tableHeaderBg`, `tableBorderColor`, `tableZebraStriping` | leem | leem |
+
+O `tableHeaderBg` também pinta a barra de ferramentas do editor de texto rico e a do visualizador de PDF.
+
+## 6.4 Tokens que o schema oferece e ainda não mudam a tela
+
+Medidos em navegador e deixados fora do mapa (A.4b) até uma decisão: `cardSpotlightOpacity`, `borderBeamEnabled`,
+`cardSearchBorderBeamActive`, `cardActionClickScale`, `cardContentAlignment`, `imageCardHoverZoom` e
+`tableActionPosition`. Declará-los num tema é inofensivo e inútil; não construa expectativa visual sobre eles.
+
+---
+
 <!-- SARAK-KIT:APENDICE-GERADO:INICIO -->
 
 ## Apêndice A — Superfície viva desta versão (GERADO)
@@ -769,6 +854,153 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 **Temas embutidos** (14): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
+
+### A.4b Mapa dos tokens por pilar (gerado do schema)
+
+**113** de 402 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+
+#### Card Geral (`cards`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `cardBackdropBlur` | estético | não | Desfoca o que passa por trás do cartão, como vidro fosco; só se vê com superfície translúcida, e o material de superfície soma desfoque a este valor. | `cardSurfaceOpacity` |
+| `cardBorderBottom` | estético | não | Sobrepõe a espessura da borda só na base do cartão; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
+| `cardBorderLeft` | estético | não | Sobrepõe a espessura da borda só no lado esquerdo do cartão; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
+| `cardBorderOpacity` | estético | sim | Atenua a cor da borda do cartão sem trocar a cor; zero apaga o contorno mesmo com espessura. | `cardBorderWidth` |
+| `cardBorderRadius` | estético | não | Arredonda os quatro cantos de todo cartão e do contêiner `.card` (cartões, catálogo, grade, tabela); os tokens de canto só o sobrepõem quando declarados. Aceita um valor por dispositivo. | — |
+| `cardBorderRight` | estético | não | Sobrepõe a espessura da borda só no lado direito do cartão; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
+| `cardBorderTop` | estético | não | Sobrepõe a espessura da borda só no lado de cima do cartão, por exemplo para uma faixa de destaque; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
+| `cardBorderWidth` | estético | não | Espessura do contorno dos quatro lados de todo cartão e `.card`. Também define a espessura da linha divisória do cabeçalho e do rodapé de `SarakCard` e o contorno do `SarakImageCard`. | — |
+| `cardFooterBg` | estético | sim | Pinta o fundo do rodapé de `SarakCard.Footer`; transparente funde o rodapé ao corpo do cartão. | — |
+| `cardFooterBorder` | estético | sim | Cor da linha divisória no topo do rodapé de `SarakCard.Footer`; a espessura da linha é a de `cardBorderWidth`. | `cardBorderWidth` |
+| `cardGeometricCut` | estético | não | Recorta os quatro cantos do cartão em diagonal (chanfro), em todo cartão e `.card`. O recorte também corta a sombra e o brilho externos, que ficam visíveis só por dentro dele. | — |
+| `cardGlowColor` | estético | sim | Cor do brilho externo do cartão e do halo do `SarakImageCard`; só aparece com intensidade acima de zero. | `cardGlowIntensity` |
+| `cardGlowIntensity` | estético | sim | Opacidade do brilho externo do cartão, na cor de `cardGlowColor`; zero desliga o efeito. | `cardGlowColor` |
+| `cardHeaderBg` | estético | sim | Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão. | — |
+| `cardHeaderBorder` | estético | sim | Cor da linha divisória na base do cabeçalho de `SarakCard.Header`; a espessura da linha é a de `cardBorderWidth`. | `cardBorderWidth` |
+| `cardHeaderPadding` | estético | não | Respiro vertical interno do cabeçalho de `SarakCard.Header`, em cima e embaixo, por dispositivo. | — |
+| `cardHoverGlowIncrease` | estético | sim | Quanto o brilho externo do cartão ganha ao passar o ponteiro, somado à intensidade de repouso e limitado a 1. | `cardGlowIntensity` · `cardGlowColor` |
+| `cardHoverTranslate` | estético | não | Quanto o cartão sobe (negativo) ao passar o ponteiro, quando o estilo de hover é a elevação; vale para o `SarakCard` interativo, o de título e o de imagem. | `cardHoverStyle` |
+| `cardImagePosition` | estético | não | Com a direção em linha, o valor da direita inverte a ordem dos blocos dos cartões de título, ação, busca e expansível; os demais valores não mudam nada hoje. | `cardLayoutDirection` |
+| `cardInnerGlowColor` | estético | sim | Cor do filete luminoso que o cartão projeta para dentro do próprio contorno, somado à sombra; transparente não desenha nada. | `cardInnerGlowWidth` |
+| `cardInnerGlowWidth` | estético | não | Espessura do filete luminoso interno do cartão; zero o apaga. A cor vem de `cardInnerGlowColor`. | `cardInnerGlowColor` |
+| `cardLayoutDirection` | estético | não | Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token. | `cardImagePosition` |
+| `cardPaddingMd` | estético | não | Respiro interno do corpo do cartão e entre os blocos do cartão composto, por dispositivo; é a escala de padding mais usada pelos cartões. | — |
+| `cardRadiusBL` | estético | não | Sobrepõe o raio só no canto inferior esquerdo dos cartões; sem declarar, vale o raio mestre. | `cardBorderRadius` |
+| `cardRadiusBR` | estético | não | Sobrepõe o raio só no canto inferior direito dos cartões; sem declarar, vale o raio mestre. | `cardBorderRadius` |
+| `cardRadiusTL` | estético | não | Sobrepõe o raio só no canto superior esquerdo dos cartões, para formas assimétricas; sem declarar, vale o raio mestre. | `cardBorderRadius` |
+| `cardRadiusTR` | estético | não | Sobrepõe o raio só no canto superior direito dos cartões; sem declarar, vale o raio mestre. | `cardBorderRadius` |
+| `cardShadow` | estético | sim | Substitui a sombra base do cartão por uma sombra CSS escrita por inteiro, com várias camadas; o brilho interno continua somado. Como carrega cor, a sombra errada num dos modos some ou pesa. | `cardInnerGlowColor` |
+| `cardShadowBlur` | estético | não | Desfoque da sombra base do cartão: zero dá a sombra dura e recortada, valores altos a espalham em névoa. | — |
+| `cardShadowExpansion` | estético | não | Engorda (positivo) ou encolhe (negativo) a sombra base além do contorno do cartão; negativo mantém a elevação contida por baixo dele. | — |
+| `cardShadowOffsetX` | estético | não | Desloca a sombra base do cartão na horizontal; com desfoque zero e deslocamento nos dois eixos vira a sombra dura do brutalismo. | `cardShadowBlur` · `shadowOrientation` |
+| `cardShadowOffsetY` | estético | não | Desloca a sombra base do cartão na vertical, para baixo quando positivo; `shadowOrientation` gira a direção sobre este valor. | `shadowOrientation` |
+| `cardShadowSpread` | estético | sim | Opacidade da sombra base do cartão, em porcentagem; acima de 100 a cor já é cheia. A cor vem de `shadowColorMode` e a forma dos tokens `cardShadow*` de deslocamento, desfoque e expansão. | `shadowColorMode` |
+| `cardSurfaceOpacity` | estético | sim | Multiplica a opacidade do fundo do cartão: zero deixa o cartão sem fundo e valores altos o tornam sólido. Vale só para o fundo, o conteúdo do cartão fica opaco. | — |
+| `cardTextAlign` | estético | não | Alinha o texto e distribui o conteúdo dos cartões de título, de ação e de busca; o `SarakCard` composto não lê este token. | — |
+| `cardTextureOpacity` | estético | sim | Intensidade da textura do cartão, de invisível a cobrindo a superfície; sem um tipo de textura escolhido não há o que mostrar. | `cardTextureType` |
+| `cardTextureType` | estético | não | Desenha uma textura sobre a superfície de todo cartão e `.card`. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. | `cardTextureOpacity` · `textureColor` |
+| `cardVariant` | funcional | não | Escolhe qual cartão a `SarakCardGrid` desenha para cada registro quando a prop `variant` não é passada; é escolha de componente, não de estilo, e o tema não a declara. | `cardTitleFontSize` · `cardActionBtnPrimaryBg` · `cardSearchBgFocus` |
+| `catalogFilterMinWidth` | funcional | não | Largura mínima de cada filtro de seleção da `SarakCardGrid`; mantém o filtro utilizável em contêiner estreito. | — |
+| `catalogItemRadius` | estético | não | Arredonda cada item do `SarakCatalogGrid`, em `rem`; costuma ser menor que o da seção, para manter a hierarquia. | — |
+| `catalogSectionRadius` | estético | não | Arredonda a seção inteira do `SarakCatalogGrid`, em `rem` (relativo ao tamanho da fonte raiz). | — |
+| `controlHeightToggle` | funcional | não | Altura do alternador mostrado na tela de exemplo (kitchen sink) do painel de customização; não muda o `SarakSwitch` do sistema. | — |
+| `deviceDesktopMinWidth` | funcional | não | Largura mínima da moldura de desktop na pré-visualização do painel de customização; não muda componente do sistema. | — |
+| `deviceFrameRadius` | funcional | não | Arredondamento da moldura externa dos dispositivos na pré-visualização do painel de customização, em `rem`; não muda componente do sistema. | — |
+| `devicePhoneHeight` | funcional | não | Altura da moldura de telefone na pré-visualização responsiva do painel de customização; não muda componente do sistema. | — |
+| `devicePhoneNotchRadius` | funcional | não | Arredondamento do recorte de câmera da moldura de telefone na pré-visualização do painel de customização, em `rem`; não muda componente do sistema. | — |
+| `deviceTabletHeight` | funcional | não | Altura da moldura de tablet na pré-visualização responsiva do painel de customização; não muda componente do sistema. | — |
+| `imageCardGlowBlur` | estético | não | Largura do halo interno que acende ao passar o ponteiro sobre o `SarakImageCard`; a cor é a de `cardGlowColor` (a primária no hover de brilho). | `cardGlowColor` |
+| `imageCardOverlayOpacity` | estético | sim | Opacidade do véu na cor do cartão sobre a foto do `SarakImageCard`; sobe para dar leitura ao texto, desce para mostrar a foto. | — |
+| `imageCardShadowBlur` | estético | não | Desfoque da sombra do `SarakImageCard`. | `imageCardShadowOffsetY` |
+| `imageCardShadowOffsetY` | estético | não | Desloca para baixo a sombra do `SarakImageCard`. | `imageCardShadowBlur` |
+| `imageCardShadowSpread` | estético | não | Quanto a sombra do `SarakImageCard` é contraída para dentro do cartão; valores altos a escondem sob ele. | `imageCardShadowBlur` |
+| `managementGroupListMaxHeight` | funcional | não | Altura máxima da lista de cada grupo do `SarakManagementGrid`; acima dela a lista rola por dentro do grupo. | — |
+| `matrixNodeMinWidth` | funcional | não | Largura mínima de cada nó filho da `SarakExpandableMatrix` na variante de alternador; impede que nós de pouco conteúdo fiquem espremidos. | — |
+| `presetCardHoverShadowOffsetY` | funcional | não | Deslocamento vertical da sombra do cartão de pré-visualização de preset ao passar o ponteiro, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetCardShadowBlur` | funcional | não | Desfoque da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetCardShadowOffsetY` | funcional | não | Deslocamento vertical da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetCardShadowSpread` | funcional | não | Contração da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetGlowShadowBlur` | funcional | não | Desfoque do brilho simples dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetGlowShadowBlurLg` | funcional | não | Desfoque do brilho grande dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetGridTextureSize` | funcional | não | Tamanho da célula da grade decorativa no fundo do cartão de preset, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMatteShadowBlur1` | funcional | não | Desfoque da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMatteShadowBlur2` | funcional | não | Desfoque da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMatteShadowOffsetY2` | funcional | não | Deslocamento vertical da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMatteShadowSpread1` | funcional | não | Contração da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMatteShadowSpread2` | funcional | não | Contração da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMiniCardHeight` | funcional | não | Altura do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetMiniCardMaxWidth` | funcional | não | Largura máxima do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema. | — |
+| `presetPreviewMinHeight` | funcional | não | Altura mínima dos cartões de pré-visualização de botão e de campo, no painel de customização; evita salto de layout e não pinta nenhum componente do sistema. | — |
+| `presetPreviewPaddingY` | funcional | não | Respiro vertical dos cartões de pré-visualização de botão e de campo, no painel de customização; não pinta nenhum componente do sistema. | — |
+| `progressBarMaxWidth` | funcional | não | Largura máxima da barra de progresso mostrada na tela de exemplo (kitchen sink) do painel de customização; não muda componente do sistema. | — |
+
+#### Card de Título (`cardTitle`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `cardTitleColor` | estético | sim | Cor do título do `SarakTitleCard`; precisa de contraste com o fundo do cartão nos dois modos. | — |
+| `cardTitleFontSize` | estético | não | Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo. | — |
+| `cardTitleFontWeight` | estético | não | Peso da fonte do título do `SarakTitleCard`; valor fora das opções cai no padrão. | — |
+| `cardTitleIconGlow` | estético | sim | Cor do halo em volta do ícone do título do `SarakTitleCard`. | `cardTitleIconGlowBlur` |
+| `cardTitleIconGlowBlur` | estético | não | Quanto o halo do ícone do título se espalha; zero o apaga. | `cardTitleIconGlow` |
+| `cardTitleLetterSpacing` | estético | não | Espaço entre as letras do título do `SarakTitleCard`, em px; negativo aperta e positivo abre. | — |
+
+#### Card de Ação (`cardAction`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `cardActionBtnBorderRadius` | estético | não | Arredonda o botão de ação do `SarakActionCard`, por dispositivo. | — |
+| `cardActionBtnHoverBg` | estético | sim | Fundo do botão de ação do `SarakActionCard` ao passar o ponteiro ou pressionar; por padrão repete o fundo normal. | `cardActionBtnPrimaryBg` |
+| `cardActionBtnPadding` | estético | não | Respiro vertical interno do botão de ação do `SarakActionCard`, em px; define a altura do botão. | — |
+| `cardActionBtnPrimaryBg` | estético | sim | Fundo do botão de ação do `SarakActionCard`; por padrão segue a cor primária do tema. | — |
+| `cardActionBtnText` | estético | sim | Cor do texto e do ícone do botão de ação do `SarakActionCard`; precisa de contraste com o fundo do botão. | `cardActionBtnPrimaryBg` |
+
+#### Card de Busca (`cardSearch`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `cardSearchBgFocus` | estético | sim | Fundo do campo do `SarakSearchCard` enquanto ele tem o foco. | — |
+| `cardSearchPlaceholderColor` | estético | sim | Cor do texto de exemplo do campo do `SarakSearchCard`, antes de digitar. | — |
+| `cardSearchTextFocusColor` | estético | sim | Cor do texto digitado no campo do `SarakSearchCard` enquanto ele tem o foco; precisa de contraste com o fundo em foco. | `cardSearchBgFocus` |
+
+#### Sobreposições (Overlays) (`overlays`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `contextMenuMinWidth` | funcional | não | Largura mínima do `SarakContextMenu` e do menu de preferências do cromo, em `rem`; mantém o alvo de clique confortável com poucos itens. | — |
+| `modalActionAlignment` | estético | não | Posiciona os botões do rodapé do `SarakModal` à esquerda, ao centro ou à direita; o valor de largura total os faz preencher a linha, e no celular os empilha. | — |
+| `modalBorderRadius` | estético | não | Arredonda o painel do `SarakModal`, por dispositivo. | — |
+| `modalHeaderStyle` | estético | não | Muda a estrutura do cabeçalho do `SarakModal` (a posição do título e do botão de fechar), não as cores. | — |
+| `modalOverlayBlur` | estético | não | Desfoque do que fica atrás do véu do `SarakModal`. | `modalOverlayColor` |
+| `modalOverlayColor` | estético | sim | Cor do véu atrás do `SarakModal` e da gaveta (`SarakDrawer`); combina com o desfoque de `modalOverlayBlur`. | `modalOverlayBlur` |
+| `modalWidthFull` | funcional | não | Largura máxima do `SarakModal` no tamanho `full`, sempre limitada pelas margens da tela. | — |
+| `modalWidthLg` | funcional | não | Largura máxima do `SarakModal` no tamanho `lg`. | — |
+| `modalWidthMd` | funcional | não | Largura máxima do `SarakModal` no tamanho `md`. | — |
+| `modalWidthSm` | funcional | não | Largura máxima do `SarakModal` no tamanho `sm`. | — |
+| `modalWidthXl` | funcional | não | Largura máxima do `SarakModal` no tamanho `xl`. | — |
+| `toastAccentWidth` | estético | não | Espessura da faixa colorida na lateral esquerda do toast, cuja cor é a do tipo da mensagem; zero a remove. | — |
+| `toastMaxWidth` | funcional | não | Largura máxima da notificação (toast), em `rem`; acima dela o texto quebra em linhas em vez de alargar. | — |
+| `toastMinWidth` | funcional | não | Largura mínima da notificação (toast), em `rem`, relativa ao tamanho da fonte raiz; evita toast curto espremido. | — |
+| `tooltipBg` | estético | sim | Fundo da caixa do `SarakTooltip`. | `tooltipTextColor` |
+| `tooltipBorderColor` | estético | sim | Cor do contorno da caixa do `SarakTooltip`. | — |
+| `tooltipRadius` | estético | não | Arredonda a caixa do `SarakTooltip`. | — |
+| `tooltipTextColor` | estético | sim | Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`. | `tooltipBg` |
+
+#### Configuração de Tabelas (`tables`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `kanbanCardRadius` | estético | não | Arredonda os cartões arrastáveis do `SarakKanban`, em px. | — |
+| `kanbanHeaderPaddingY` | estético | não | Respiro vertical do título de cada coluna do `SarakKanban`, em px. | — |
+| `kanbanHeaderTracking` | estético | não | Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`. | — |
+| `tableBorderColor` | estético | sim | Cor das linhas divisórias da `SarakTable` e da `SarakDataTable`. | — |
+| `tableBorderRadius` | estético | não | Arredonda o contêiner da `SarakTable`, por dispositivo; sem declarar, segue o raio do cartão. | — |
+| `tableCellPadding` | estético | não | Respiro horizontal das células da `SarakDataTable` (cabeçalho e linhas), por dispositivo; a `SarakTable` usa `tableDensity`. | — |
+| `tableDensity` | estético | não | Escala o respiro das células da `SarakTable`: o compacto aperta e reduz a fonte, o espaçoso afrouxa; a `SarakDataTable` não lê este token. | — |
+| `tableHeaderBg` | estético | sim | Fundo do cabeçalho da `SarakTable` e da `SarakDataTable`; também pinta a barra de ferramentas do editor de texto rico e a do visualizador de PDF. | — |
+| `tableRowHoverBg` | estético | sim | Fundo da linha sob o ponteiro na `SarakTable`; a `SarakDataTable` não lê este token. | — |
+| `tableZebraStriping` | estético | não | Alterna o fundo das linhas da `SarakTable` e da `SarakDataTable`, para seguir a linha em tabelas largas. | — |
 
 ### A.5 Ícones (117 nomes válidos)
 

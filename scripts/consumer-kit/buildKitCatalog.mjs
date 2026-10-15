@@ -20,6 +20,7 @@ import {
     collectReferenceThemeIds,
     collectResponsiveProps,
     collectThemePresetIds,
+    collectTokenGroups,
 } from './collectKitSources.mjs';
 import { collectEmittedSarakCssVars } from './collectEmittedSarakCssVars.mjs';
 
@@ -79,6 +80,7 @@ export const buildKitCatalog = () => {
                 'Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é ' +
                 'descartado com console.warn pelo Design Engine — nunca vira CSS cru.',
             count: designTokens.length,
+            groups: collectTokenGroups(),
             responsiveCapable: designTokens.filter((token) => token.responsive).map((token) => token.id),
             ids: designTokens,
         },

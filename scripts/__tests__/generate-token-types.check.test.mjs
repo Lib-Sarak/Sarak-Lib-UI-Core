@@ -12,14 +12,18 @@ import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const OUT_FILE = path.resolve('src/core/Provider/generated/design-token-ids.ts');
+const DOCS_FILE = path.resolve('src/core/Provider/generated/design-token-docs.json');
 let original;
+let originalDocs;
 
 beforeAll(() => {
   original = fs.readFileSync(OUT_FILE, 'utf-8');
+  originalDocs = fs.readFileSync(DOCS_FILE, 'utf-8');
 });
 
 afterAll(() => {
   fs.writeFileSync(OUT_FILE, original, 'utf-8');
+  fs.writeFileSync(DOCS_FILE, originalDocs, 'utf-8');
 });
 
 function runCheck() {
@@ -41,7 +45,13 @@ describe('generate-token-types --check', () => {
     expect(runCheck()).toBe(1);
   }, SPAWN_TIMEOUT_MS);
 
+  it('acusa o JSON de documentação divergente do schema', () => {
+    fs.writeFileSync(DOCS_FILE, originalDocs.replace('"group": "cards"', '"group": "plantado"'), 'utf-8');
+    expect(runCheck()).toBe(1);
+  }, SPAWN_TIMEOUT_MS);
+
   it('libera o artefato em dia com a fonte', () => {
+    fs.writeFileSync(DOCS_FILE, originalDocs, 'utf-8');
     fs.writeFileSync(OUT_FILE, original, 'utf-8');
     expect(runCheck()).toBe(0);
   }, SPAWN_TIMEOUT_MS);

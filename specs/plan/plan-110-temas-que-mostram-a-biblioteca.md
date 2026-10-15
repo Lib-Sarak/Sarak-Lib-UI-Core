@@ -416,6 +416,104 @@ iniciado.
   secundário e o mudo têm pouca margem de contraste, e a saída declarada é subir o fundo para L≈70.
 - `high-contrast` mira 7:1, mas o gate mede 4,5. A razão por par será relatada no lote 1, à mão.
 
+
+## Resumo da execução — lote 1 — 2026-10-14
+
+**Resultado:** Concluído com pendências (ver *Pendências / riscos*: os 23 tokens do painel foram abertos pelo leitor, não confirmados em navegador).
+
+**Estado do worktree ao iniciar**
+```
+M  browser-tests/fixtures/showcase-entry.tsx
+M  browser-tests/generate-showcase.mts
+MM specs/00-indice.md
+MM specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+M  src/features/DesignEngine/Main/TemplatesTab.tsx
+M  src/features/DesignEngine/Main/__tests__/TemplatesTab.test.tsx
+```
+(O pré-requisito 0.1 foi commitado pelo dono durante a execução, `67bdb283`; depois disso o worktree só tinha `specs/00-indice.md` e esta plan modificados, e nenhum deles foi tocado por mim além do bloco abaixo e do `status`.)
+
+**O que foi feito**
+
+*Infraestrutura*
+- `src/core/Design/types.ts` — o tipo do token ganha `kind` (`aesthetic` | `functional`), `modeDependent`, `usage` e `interactsWith`, opcionais (R33: obrigatório no tipo quebraria o tema de consumidor; a obrigatoriedade é do gate).
+- `scripts/generate-token-types.ts` — além de `design-token-ids.ts`, gera `src/core/Provider/generated/design-token-docs.json` (id, pilar, rótulo e os quatro campos); o `--check` (que roda no `build`) compara os dois arquivos byte a byte. É a fonte única que o kit lê: o coletor do kit é Node puro e não importa TS.
+- `scripts/consumer-kit/collectKitSources.mjs`, `buildKitCatalog.mjs`, `renderAppendix.mjs` — o `catalog.json` do kit traz os campos em `designTokens.ids[]` e `designTokens.groups`; o apêndice do guia ganha **A.4b — Mapa dos tokens por pilar** (uma tabela por pilar: natureza, modo, o que muda, depende de), só com o que o schema documentou.
+- **Gate de documentação de token** — `gates/scripts/contrato/check-token-documentation.ts` (+ núcleo puro em `helpers/token-documentation-core.ts`), `npm run token-docs:check`, no `build` (depois do `token-types:check`), no Anel 1 (`.githooks/pre-commit`) e na CI (`gates.yml`, que passa de 13 para 14 `*:check`). Confere forma: `kind` válido, `modeDependent` booleano, `usage` de 25 a 420 caracteres e diferente do rótulo, `interactsWith` só com ids do schema e sem citar o próprio token. Exceção por token em `gates/allowlists/tokenDocumentationPending.json` (`{ id: lote }`), que **se esvazia**: entrada de token já documentado ou inexistente também bloqueia. Limites R18 declarados no cabeçalho.
+- Teste do gate com **mutação** (`gates/scripts/contrato/__tests__/check-token-documentation.test.ts`): remover o `usage` e remover o `kind` de um token documentado do schema real derrubam o gate.
+- Mapa **"o que a lib já faz — não recrie"**: `sarak-ui/GUIA-FRONTEND.md` §6 (nova linha na árvore §0.1) e seção equivalente em `.agents/skills/ui-integra-consumidor/SKILL.md`, preenchidos para cartões, sobreposições e tabelas; as demais necessidades ficam marcadas ⏳.
+- `docs/migracoes.md` — subseção em `## 8.0.0` (aditiva, MINOR dentro da MAJOR).
+- `specs/plan/anexos/plan-110-tokens-funcionais.md` — o critério estético × funcional, o que carrega modo, as decisões não óbvias por token e os tokens sem efeito.
+
+*Análise dos tokens (120 dos seis grupos)* — método: leitor no código; efeito em navegador por **diferença de estilo computado** (cena de `src/`, não do `dist/`, com um exemplar de cada componente; valor-padrão × valores extremos/opções, em repouso, sob o ponteiro, com foco e pressionado, com pseudoelementos). 144 variantes de 97 tokens na cena principal e nas sobreposições, 23 no painel; os que não mudaram nada foram reabertos à mão (tooltip, toast, placeholder, zoom da imagem, brilho no hover). Resultado: **113 documentados** (78 estéticos, 35 funcionais, 29 carregam modo) e **7 sem efeito visível** (achados; ficam na lista de exceção com o rótulo `achado-lote-1`).
+
+Lista (id → natureza, modo):
+- `cards` (75): cardBorderRadius → estético, sem modo; cardRadiusTL → estético, sem modo; cardRadiusTR → estético, sem modo; cardRadiusBL → estético, sem modo; cardRadiusBR → estético, sem modo; cardGeometricCut → estético, sem modo; cardBackdropBlur → estético, sem modo; cardSurfaceOpacity → estético, modo; cardBorderWidth → estético, sem modo; cardBorderOpacity → estético, modo; cardBorderTop → estético, sem modo; cardBorderBottom → estético, sem modo; cardBorderLeft → estético, sem modo; cardBorderRight → estético, sem modo; cardInnerGlowColor → estético, modo; cardInnerGlowWidth → estético, sem modo; cardTextureType → estético, sem modo; cardTextureOpacity → estético, modo; cardHeaderBg → estético, modo; cardHeaderBorder → estético, modo; cardHeaderPadding → estético, sem modo; cardFooterBg → estético, modo; cardFooterBorder → estético, modo; cardShadowSpread → estético, modo; cardShadowOffsetX → estético, sem modo; cardShadowOffsetY → estético, sem modo; cardShadowBlur → estético, sem modo; cardShadowExpansion → estético, sem modo; cardGlowColor → estético, modo; cardGlowIntensity → estético, modo; cardHoverTranslate → estético, sem modo; cardHoverGlowIncrease → estético, modo; cardSpotlightOpacity → SEM EFEITO VISÍVEL (achado); cardPaddingMd → estético, sem modo; cardLayoutDirection → estético, sem modo; cardImagePosition → estético, sem modo; cardTextAlign → estético, sem modo; cardContentAlignment → SEM EFEITO VISÍVEL (achado); cardShadow → estético, modo; borderBeamEnabled → SEM EFEITO VISÍVEL (achado); cardVariant → funcional, sem modo; imageCardOverlayOpacity → estético, modo; imageCardHoverZoom → SEM EFEITO VISÍVEL (achado); imageCardShadowOffsetY → estético, sem modo; imageCardShadowBlur → estético, sem modo; imageCardShadowSpread → estético, sem modo; imageCardGlowBlur → estético, sem modo; managementGroupListMaxHeight → funcional, sem modo; matrixNodeMinWidth → funcional, sem modo; catalogFilterMinWidth → funcional, sem modo; catalogSectionRadius → estético, sem modo; catalogItemRadius → estético, sem modo; presetCardHoverShadowOffsetY → funcional, sem modo; presetGlowShadowBlur → funcional, sem modo; presetGlowShadowBlurLg → funcional, sem modo; presetPreviewPaddingY → funcional, sem modo; presetMatteShadowBlur1 → funcional, sem modo; presetMatteShadowSpread1 → funcional, sem modo; presetMatteShadowOffsetY2 → funcional, sem modo; presetMatteShadowBlur2 → funcional, sem modo; presetMatteShadowSpread2 → funcional, sem modo; presetPreviewMinHeight → funcional, sem modo; presetMiniCardMaxWidth → funcional, sem modo; presetMiniCardHeight → funcional, sem modo; presetCardShadowOffsetY → funcional, sem modo; presetCardShadowBlur → funcional, sem modo; presetCardShadowSpread → funcional, sem modo; presetGridTextureSize → funcional, sem modo; controlHeightToggle → funcional, sem modo; progressBarMaxWidth → funcional, sem modo; devicePhoneHeight → funcional, sem modo; deviceTabletHeight → funcional, sem modo; devicePhoneNotchRadius → funcional, sem modo; deviceFrameRadius → funcional, sem modo; deviceDesktopMinWidth → funcional, sem modo
+- `cardTitle` (6): cardTitleFontSize → estético, sem modo; cardTitleColor → estético, modo; cardTitleFontWeight → estético, sem modo; cardTitleLetterSpacing → estético, sem modo; cardTitleIconGlow → estético, modo; cardTitleIconGlowBlur → estético, sem modo
+- `cardAction` (6): cardActionBtnPrimaryBg → estético, modo; cardActionBtnHoverBg → estético, modo; cardActionBtnText → estético, modo; cardActionBtnBorderRadius → estético, sem modo; cardActionBtnPadding → estético, sem modo; cardActionClickScale → SEM EFEITO VISÍVEL (achado)
+- `cardSearch` (4): cardSearchBgFocus → estético, modo; cardSearchBorderBeamActive → SEM EFEITO VISÍVEL (achado); cardSearchPlaceholderColor → estético, modo; cardSearchTextFocusColor → estético, modo
+- `overlays` (18): modalActionAlignment → estético, sem modo; modalHeaderStyle → estético, sem modo; modalOverlayColor → estético, modo; modalOverlayBlur → estético, sem modo; modalBorderRadius → estético, sem modo; modalWidthSm → funcional, sem modo; modalWidthMd → funcional, sem modo; modalWidthLg → funcional, sem modo; modalWidthXl → funcional, sem modo; modalWidthFull → funcional, sem modo; tooltipBg → estético, modo; tooltipRadius → estético, sem modo; tooltipTextColor → estético, modo; tooltipBorderColor → estético, modo; toastMinWidth → funcional, sem modo; toastMaxWidth → funcional, sem modo; toastAccentWidth → estético, sem modo; contextMenuMinWidth → funcional, sem modo
+- `tables` (11): tableDensity → estético, sem modo; tableActionPosition → SEM EFEITO VISÍVEL (achado); tableHeaderBg → estético, modo; tableRowHoverBg → estético, modo; tableZebraStriping → estético, sem modo; tableBorderRadius → estético, sem modo; tableCellPadding → estético, sem modo; tableBorderColor → estético, modo; kanbanHeaderPaddingY → estético, sem modo; kanbanHeaderTracking → estético, sem modo; kanbanCardRadius → estético, sem modo
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/types.ts` | alterado | quatro campos opcionais no tipo do token |
+| `src/core/Design/schema/{cards,card-title,card-action,card-search,overlays,tables}.ts` | alterado | `kind`, `modeDependent`, `usage`, `interactsWith` nos 113 tokens documentados (nenhum `defaultValue`, opção ou leitor mudou) |
+| `scripts/generate-token-types.ts` | alterado | gera e confere `design-token-docs.json` |
+| `src/core/Provider/generated/design-token-docs.json` | criado (gerado) | documentação por token, com o rótulo de cada pilar |
+| `scripts/consumer-kit/{collectKitSources,buildKitCatalog,renderAppendix}.mjs` | alterado | campos no `catalog.json`; apêndice A.4b |
+| `gates/scripts/contrato/check-token-documentation.ts`, `helpers/token-documentation-core.ts` | criado | o gate e o núcleo |
+| `gates/scripts/contrato/__tests__/check-token-documentation.test.ts` | criado | casos plantados + mutação sobre o schema real |
+| `gates/allowlists/tokenDocumentationPending.json` | criado | 289 exceções: 282 dos lotes 2–4 e 7 achados |
+| `package.json`, `.githooks/pre-commit`, `.github/workflows/gates.yml` | alterado | `token-docs:check` no build, no Anel 1 e na CI |
+| `scripts/__tests__/generate-token-types.check.test.mjs`, `scripts/consumer-kit/__tests__/kitGenerator.test.mjs` | alterado | deriva do JSON de documentação; campos no catálogo e A.4b |
+| `sarak-ui/GUIA-FRONTEND.md`, `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | §6 "o que a lib já faz" e a seção equivalente na skill |
+| `docs/migracoes.md` | alterado | subseção do lote em `## 8.0.0` |
+| `specs/plan/anexos/plan-110-tokens-funcionais.md` | criado | critério e decisões |
+| `sarak-ui/*` (`catalog.json`, `GUIA-FRONTEND.md`, `START-HERE.md`, `VERSION`, `skill/SKILL.md`, `docs/migracoes.md`), `sarak-dev/*` (`GUIA-MANUTENCAO.md`, `START-HERE.md`, `state.json`) | regenerados | `npm run guide` e `npm run dev-kit`, por último |
+
+**Verificações executadas**
+- `npx tsc --noEmit` → exit 0, nenhum erro (repetido depois do último conserto).
+- `npx vitest run` (suíte completa, sozinha na árvore, repetida depois do último conserto) → **3464 de 3466 testes, 492 de 494 arquivos**. As 2 falhas são *timeout* de 5 s sob a carga da suíte inteira (1.624 s no total, com ~200 processos `node` de outras sessões na máquina): `gates/scripts/contrato/__tests__/check-theme-boot-closure.test.ts` ("a árvore real passa em src/", falhou também na 1ª passada) e `src/features/DesignEngine/hooks/__tests__/useDesignDraft.undoIntegration.test.tsx`. Isoladas, as duas passam (11 de 11). A 1ª passada tinha 3 falhas: `generate-token-types --check` (JSON gerado defasado por uma edição minha, **corrigida**), o mesmo `check-theme-boot-closure` e `PreviewCanvas.test.tsx` (passa isolada e passou na 3ª passada). Não toquei em nenhuma das rotas dos dois testes que estouram.
+- Suítes novas e alteradas, isoladas: `check-token-documentation.test.ts` (inclui 2 casos de mutação), `kitGenerator.test.mjs`, `generate-token-types.check.test.mjs` → 29 de 29.
+- `npm run audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- Anel 1 (`npm run`): `barrel:check`, `catalog:check`, `zero-brand:check`, `deep-import:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`, `persistence-doc:check`, `class-merge:check`, `icon-port:check`, `chrome-token-parity:check`, `token-reader:check`, `css-important:check`, `fixed-translucent:check`, `variable-contract:check`, `channel-dispute:check`, `panel-contract:check`, `token-types:check`, `token-docs:check` (novo), `themes:catalog:check`, `plan-index:check` → todos OK. **Por último:** `npm run guide` e `npm run dev-kit`, e depois `guide:check`, `dev-kit:check` e `kit-names:check` → OK.
+- R36: `node gates/scripts/contrato/check-trail-citation.mjs` → "nenhuma linha adicionada cita plan, veredito ou achado de veredito".
+- Anel 0 (simulado em Node, porque o Python do hook não existe nesta máquina): os 12 padrões de `gates/scripts/segredo/config.json` sobre as linhas adicionadas de `git diff HEAD` e sobre os arquivos não rastreados → 5.716 linhas, **0 achados**, 0 arquivos sensíveis novos.
+- Gate de documentação, estado real: `npm run token-docs:check` → "113 de 402 tokens documentados; 289 em exceção". Para cada limite que o gate promete: entrada plantada e resultado no teste (`kind` ausente → `kind-missing`; `usage` ausente → `usage-missing`; `usage` de 6 caracteres → `usage-too-short`; 421 caracteres → `usage-too-long`; `usage` igual ao rótulo → `usage-repeats-label`; `interactsWith: ['naoExiste']` → `interacts-unknown`; `interactsWith` citando o próprio token → `interacts-unknown`; `interactsWith` como texto → `interacts-invalid`; exceção de token já documentado → `staleExceptions`; exceção de id inexistente → `staleExceptions`; token completo e token em exceção passam).
+- Medição em navegador (cena montada de `src/`, fora do repositório, Chromium headless): 144 variantes dos 97 tokens fora do painel e 23 do painel; o que não mudou foi reaberto à mão (tooltip: `rgb(255,51,102)`/`12px`/`rgb(0,255,0)`/`rgb(0,0,255)` com os quatro tokens; toast: `min-width` 210 → 420 px, `max-width` 315 → 560 px, faixa 4 → 12 px; placeholder: `rgba(255,255,255,0.4)` → `rgb(255,51,102)`; zoom da imagem: `transform: none` nos três pontos testados com 1,05 e com 1,5).
+- `git status` ao fim: só os arquivos da tabela acima; nada commitado, nada em `dist/`.
+
+**Critérios de aceite** (do lote)
+- [x] Campos no tipo, paridade com o JSON gerado (`token-types:check`) e derivação ao `catalog.json` e ao apêndice por pilar — evidência: `scripts/generate-token-types.ts`, `scripts/consumer-kit/renderAppendix.mjs`, teste `kitGenerator.test.mjs`.
+- [x] Gate de documentação de token com exceção que se esvazia, limites R18 e mutação — `check-token-documentation.ts:1-34`, teste de mutação (2 casos).
+- [x] Os seis grupos: cada token aberto no leitor e no navegador, ou declarado como achado — 113 + 7 = 120 (tabela acima).
+- [x] Esqueleto do mapa no GUIA e na skill, preenchido para cartões, sobreposições e tabelas — `GUIA-FRONTEND.md` §6, `SKILL.md`.
+- [x] O que o lote ensinou entra no kit — GUIA §6.1 a §6.4 e a skill (textura × cor × modo, vidro, divisória, sombra, recorte, alcance dos tokens de layout, dois componentes de tabela).
+- [x] Nenhum token novo, opção nova, mudança de leitor ou de `defaultValue`; nenhum tema tocado — `git diff` dos schemas só acrescenta as quatro chaves.
+- [ ] Os 23 tokens do painel confirmados em navegador — motivo: ver pendências.
+
+**Decisões e suposições**
+- **Paridade 1:1:1.** Li "gravados no schema, com a paridade 1:1:1" como: o schema é a única fonte dos campos, e o artefato derivado (JSON gerado → catálogo → apêndice) é conferido byte a byte. **Não** copiei `usage` para as partições do catálogo (`partitions/*.json`): seria uma segunda cópia da prosa à mão, o que a plan proíbe (R17). A comparação de valor do `verify_parity` (`catalog-drift`) segue em tipo e opções.
+- **Gate, não teste.** O resultado tem de bloquear commit e `build`, e a lista de exceção é dado versionado que esvazia a cada lote — comportamento de gate (mesmo molde de `check-variable-contract`). O teste cobre o gate (mutação), não substitui.
+- **Valores em inglês no tipo** (`aesthetic`/`functional`), rótulos em português só no kit (ADR-023).
+- **Pilar = grupo do schema** (`cards`, `overlays`, …), com o `label` do `ComponentSchema`.
+- **Tokens sem efeito visível ficam na lista de exceção** (não documentados), com o rótulo `achado-lote-1`. Isso mantém o gate verde sem fingir documentação, mas a lista só esvazia quando o revisor decidir (remover o token, ligar o leitor ou aceitar).
+- `cardVariant` é **funcional**: escolhe qual cartão a grade desenha, e o tema o declara `classic`. `modalActionAlignment`/`modalHeaderStyle` são **estéticos** (disposição, não comportamento). Os `preset*`, `device*`, `controlHeightToggle` e `progressBarMaxWidth` são **funcionais** (só o painel os lê). Cada decisão com motivo no anexo.
+- `cardImagePosition` foi documentado como **parcial** (só `direita` com direção em linha muda algo); `left`, `top` e `none` não mudam nada hoje. Não o tratei como "sem efeito" porque um valor muda a tela.
+- `modeDependent`: cor, opacidade de superfície/borda/textura, força e cor da sombra e do brilho; geometria, tipografia, movimento e comportamento ficam no modo principal (regra do anexo §1.1).
+
+**Achados fora do escopo (não corrigidos)**
+- **Sete tokens sem efeito visível** (o motivo de cada um está no anexo §4): `cardSpotlightOpacity` (`SarakTitleCard.tsx:66-70` e irmãos escrevem `data-spotlight` e `.spotlight-effect`; nenhuma regra CSS os lê), `borderBeamEnabled` e `cardSearchBorderBeamActive` (`.border-beam-effect` sem regra; `_animations.css:21-30` declara `beam-rotate`/`--beam-angle` que ninguém usa), `cardActionClickScale` (`SarakActionCard.tsx:59`, variável calculada e não usada), `cardContentAlignment` (`useStructuralStyles.ts:100`, `getCardStyles` nunca chamado), `imageCardHoverZoom` (`SarakImageCard.tsx:66-77`: `whileHover` na camada da imagem, coberta pelo véu e pelo conteúdo; escala medida `none` ao passar o ponteiro em três pontos), `tableActionPosition` (`useTableLayoutStyles.ts:27-35`, classe calculada sem consumidor; a `SarakTable` não tem coluna de ação). O gate `token-reader:check` não os acusa porque o id aparece em componente — é o vão "textual" que o próprio gate declara (limite 2).
+- `schema/cards.ts` — `cardVariant` tem `axis: 'texture'` (selecionar o cartão da grade não é textura).
+- `useStructuralStyles.ts:100-127` — `getCardStyles` exportado e sem chamador, e o `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` em `schema/cards.ts` o cita como leitor.
+
+**Pendências / riscos**
+- **Painel (23 tokens `preset*`, `device*`, `controlHeightToggle`, `progressBarMaxWidth`):** documentados pelo **leitor** (`src/features/DesignEngine/Canvas/...`) e classificados como funcionais. A diferença de estilo no painel inteiro, com cada um no valor extremo, não mostrou efeito mensurável (só ruído de nome de classe): o valor chega à pré-visualização por rascunho do painel, não pelo `config` do Provider, e eu não abri cada aba para dirigir o rascunho. **Não confirmei em navegador.** Se o revisor quiser, é a única parte do lote que pede uma conferência manual no painel.
+- `build` e `cromo-css-real:check` **não rodados** (instrução do lote); `kit-names:check` leu o `dist/index.d.ts` que já existia.
+- A suíte completa teve **3 falhas na primeira passada** (`generate-token-types --check` por JSON gerado defasado por uma edição minha de `usage` depois da geração; `check-theme-boot-closure` por *timeout* de 5 s sob carga; `PreviewCanvas.test.tsx`, que passa isolada e passou na segunda passada). Corrigi a causa da primeira e repeti a suíte inteira depois do último conserto.
+- Os 282 tokens dos lotes 2–4 estão na lista de exceção do gate; ela só esvazia com esses lotes.
+
 ---
 
 # 10. Veredito
@@ -450,3 +548,37 @@ A `plan-116` foi sintetizada; a `plan-110` deixa de depender dela e foi **reescr
 validação só no importador, ao final; documentação deve evitar que o importador recrie funcionalidade da lib.
 
 **Status: 🔴 A executar.** O lote 1 é despachado depois do pré-requisito 0.1.
+
+## Veredito — 2026-10-15 — lote 1 — 🟢 Aprovado
+
+**Conferido no worktree (não pelo resumo):**
+- **Diff dos schemas:** só acrescenta as quatro chaves (`kind`, `modeDependent`, `usage`, `interactsWith`); nenhum
+  `defaultValue`, opção ou leitor mudou; nenhum tema tocado.
+- **Gates e geradores:** `tsc` 0; `token-types:check` (JSON de documentação por byte), `token-docs:check` (113 de
+  402 documentados, 289 em exceção: 282 dos lotes 2–4 e 7 achados), `guide:check`, `dev-kit:check`, `catalog:check`,
+  `barrel:check`, `gate-limits:check` (51 scripts), `kit-names:check` verdes; `audit:baseline --with-tsc` igual ao
+  baseline; R36: nenhuma linha adicionada cita plan. Teste do gate de documentação (inclui a mutação sobre o schema
+  real) 10/10.
+- **Suíte completa, sozinha na árvore:** 494 arquivos, **3466/3466 testes, numa passada limpa** — os 2 *timeouts*
+  que o executor viu sob carga não se repetem.
+- **Amostra de `usage` contra o leitor** (14 tokens): `cardShadowSpread` ("acima de 100 a cor já é cheia" =
+  `min(100%, …)` em `_card-defaults.css:85`), `tableDensity` (só `useTableLayoutStyles`; a `SarakDataTable` não o lê),
+  `tableZebraStriping` (as duas tabelas), `cardImagePosition` (parcial: só `right` com direção em linha,
+  `useCardLayoutStyles.ts:30-32`), `cardGeometricCut`, `cardBackdropBlur`, `modalOverlayBlur`, `cardTextureType`,
+  `cardSurfaceOpacity`, `cardTitleIconGlow`, `cardGlowColor`, `tooltipBg`, `modalWidthMd` — todos confirmados.
+- **Os sete "sem efeito":** reabri `cardSpotlightOpacity` (4 escritas de `data-spotlight`, nenhuma regra),
+  `borderBeam*` (`.border-beam-effect` sem regra), `cardActionClickScale` (calculado em `SarakActionCard.tsx:59`,
+  não usado) e `tableActionPosition` (calculado, não consumido) — confirmados. Eles **não** foram documentados como
+  se funcionassem: ficam fora do mapa e o GUIA §6.4 avisa o importador.
+- **Kit:** o GUIA §6 ("o que a lib já faz") e a skill estão fiéis ao código (tabela do que `SarakTable` e
+  `SarakDataTable` leem; a textura × cor × modo; o `cardGeometricCut` que corta sombra e brilho).
+
+**Decisões do revisor:**
+1. **Aceito** os 23 tokens do painel (`preset*`, `device*`, `controlHeightToggle`, `progressBarMaxWidth`) como
+   *funcionais* documentados pelo leitor: o efeito deles vive na pré-visualização do painel, fora da cena medida.
+2. Os sete tokens sem efeito e os dois achados de código morto foram para o `00-backlog` (itens 33 e 34), com peso
+   *alto* para o primeiro: é decisão do dono (ligar, retirar ou aceitar), e o lote 25 não pode ensinar o importador
+   a usar o que não desenha. Item 4 do backlog (`solve_theme_contrast.ts`) estava resolvido e saiu.
+
+**Status: 🔴 A executar** (lote 2: `typography`, `buttons`, `inputs`, `switches`, `colors`, `data`, `chat`,
+`status`). O método e a infraestrutura estão prontos; o lote 2 só repete.

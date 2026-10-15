@@ -6328,6 +6328,37 @@
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
     "count": 402,
+    "groups": {
+      "global": "0. Configurações Globais",
+      "branding": "Identidade Visual",
+      "system": "Configurações de Layout",
+      "navigation": "Container de Nav",
+      "cards": "Card Geral",
+      "cardTitle": "Card de Título",
+      "cardAction": "Card de Ação",
+      "cardSearch": "Card de Busca",
+      "overlays": "Sobreposições (Overlays)",
+      "tables": "Configuração de Tabelas",
+      "typography": "Tipografia e Escala",
+      "buttons": "Botão de Ação",
+      "inputs": "Campo de Entrada (Input)",
+      "switches": "Alternadores (Toggles)",
+      "colors": "Paletas e Gradientes",
+      "data": "Gráficos & Dados",
+      "animations": "Transições e Animações",
+      "atmosphere": "Fundo e Atmosfera",
+      "chat": "Interface de Chat",
+      "status": "Cores Semânticas",
+      "engineering": "Acessibilidade e Camadas",
+      "specialized": "Ícones e Estética",
+      "motion": "Movimento e Física",
+      "scrollbars": "Barras de Rolagem",
+      "layers": "Camadas e Profundidade",
+      "advanced": "Componentes Avançados",
+      "media": "Mídia e Background",
+      "structural": "Estrutura e Macro-Layout",
+      "preferences": "Preferências do Usuário"
+    },
     "responsiveCapable": [
       "borderRadius",
       "btnBorderRadius",
@@ -6371,2012 +6402,3280 @@
       {
         "id": "accentColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor de Acento (Accent)"
       },
       {
         "id": "actionGlowShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Sombra de Ação: Desfoque"
       },
       {
         "id": "actionGlowShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Sombra de Ação: Offset Y"
       },
       {
         "id": "actionGlowShadowSpread",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Sombra de Ação: Espalhamento"
       },
       {
         "id": "aiGlowColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Cor do Brilho IA"
       },
       {
         "id": "animEnabled",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "animations",
+        "label": "Ativar Movimentos"
       },
       {
         "id": "authHeroOrbBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Auth Hero: Desfoque dos Orbs de Fundo"
       },
       {
         "id": "badgeRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Raio das Badges"
       },
       {
         "id": "bgBaseColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Cor de Fundo Base"
       },
       {
         "id": "bgGradientAngle",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Direção do Gradiente"
       },
       {
         "id": "bgGradientMode",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Modo de Gradiente"
       },
       {
         "id": "bgNoiseAnimation",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Velocidade do Ruído"
       },
       {
         "id": "bgNoiseDensity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Intensidade do Ruído (Grão)"
       },
       {
         "id": "bodyFont",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Fonte de Corpo"
       },
       {
         "id": "bodyLineHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Altura da Linha (Corpo)"
       },
       {
         "id": "bodySize",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "global",
+        "label": "Tamanho Global das Fontes"
       },
       {
         "id": "bodyWeight",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Peso do Corpo"
       },
       {
         "id": "borderBeamEnabled",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Ativar Border Beam"
       },
       {
         "id": "borderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Arredondamento Padrão"
       },
       {
         "id": "borderStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Estilo da Borda"
       },
       {
         "id": "borderType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Estilo da Moldura (Border)"
       },
       {
         "id": "borderWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Espessura da Borda"
       },
       {
         "id": "brandLogoSizeCollapsed",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Altura do Logo da Marca (Recolhida)"
       },
       {
         "id": "breakpointDesktop",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Breakpoint Desktop"
       },
       {
         "id": "breakpointTablet",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Breakpoint Tablet"
       },
       {
         "id": "btnActiveScale",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Escala no Clique"
       },
       {
         "id": "btnBackdropBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Desfoque de Vidro (Backdrop Blur)"
       },
       {
         "id": "btnBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "buttons",
+        "label": "Arredondamento (Master)"
       },
       {
         "id": "btnGhostHoverBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Hover (Ghost)"
       },
       {
         "id": "btnHoverScale",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Escala no Hover"
       },
       {
         "id": "btnNeonGlowColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Cor do Brilho (Neon)"
       },
       {
         "id": "btnNeonPulseSpeed",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Velocidade de Pulso (s)"
       },
       {
         "id": "btnPrimaryBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Fundo Primário"
       },
       {
         "id": "btnPrimaryText",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Texto Primário"
       },
       {
         "id": "btnRadiusBL",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "buttons",
+        "label": "Canto: Inferior Esquerdo"
       },
       {
         "id": "btnRadiusBR",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "buttons",
+        "label": "Canto: Inferior Direito"
       },
       {
         "id": "btnRadiusTL",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "buttons",
+        "label": "Canto: Superior Esquerdo"
       },
       {
         "id": "btnRadiusTR",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "buttons",
+        "label": "Canto: Superior Direito"
       },
       {
         "id": "btnSecondaryBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Fundo Secundário"
       },
       {
         "id": "btnStyleType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Estilo do Botão"
       },
       {
         "id": "buttonIconPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Posição do Ícone"
       },
       {
         "id": "buttonWidthStrategy",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Largura do Botão"
       },
       {
         "id": "cardActionBtnBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cardAction",
+        "label": "Arredondamento do Botão",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda o botão de ação do `SarakActionCard`, por dispositivo."
       },
       {
         "id": "cardActionBtnHoverBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardAction",
+        "label": "Fundo do Botão no Hover",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do botão de ação do `SarakActionCard` ao passar o ponteiro ou pressionar; por padrão repete o fundo normal.",
+        "interactsWith": [
+          "cardActionBtnPrimaryBg"
+        ]
       },
       {
         "id": "cardActionBtnPadding",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cardAction",
+        "label": "Padding Vertical do Botão",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro vertical interno do botão de ação do `SarakActionCard`, em px; define a altura do botão."
       },
       {
         "id": "cardActionBtnPrimaryBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardAction",
+        "label": "Fundo do Botão de Ação",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do botão de ação do `SarakActionCard`; por padrão segue a cor primária do tema."
       },
       {
         "id": "cardActionBtnText",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardAction",
+        "label": "Cor do Texto do Botão",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto e do ícone do botão de ação do `SarakActionCard`; precisa de contraste com o fundo do botão.",
+        "interactsWith": [
+          "cardActionBtnPrimaryBg"
+        ]
       },
       {
         "id": "cardActionClickScale",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cardAction",
+        "label": "Escala do Clique (Ação)"
       },
       {
         "id": "cardBackdropBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Backdrop Blur (Glass)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoca o que passa por trás do cartão, como vidro fosco; só se vê com superfície translúcida, e o material de superfície soma desfoque a este valor.",
+        "interactsWith": [
+          "cardSurfaceOpacity"
+        ]
       },
       {
         "id": "cardBackgroundColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Background dos Cards"
       },
       {
         "id": "cardBorderBottom",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Espessura: Base",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe a espessura da borda só na base do cartão; sem declarar, vale `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Borda dos Cards"
       },
       {
         "id": "cardBorderLeft",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Espessura: Esquerda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe a espessura da borda só no lado esquerdo do cartão; sem declarar, vale `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardBorderOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade da Borda",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Atenua a cor da borda do cartão sem trocar a cor; zero apaga o contorno mesmo com espessura.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Raio da Borda (Master)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda os quatro cantos de todo cartão e do contêiner `.card` (cartões, catálogo, grade, tabela); os tokens de canto só o sobrepõem quando declarados. Aceita um valor por dispositivo."
       },
       {
         "id": "cardBorderRight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Espessura: Direita",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe a espessura da borda só no lado direito do cartão; sem declarar, vale `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardBorderTop",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Espessura: Topo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe a espessura da borda só no lado de cima do cartão, por exemplo para uma faixa de destaque; sem declarar, vale `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardBorderWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Espessura da Borda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espessura do contorno dos quatro lados de todo cartão e `.card`. Também define a espessura da linha divisória do cabeçalho e do rodapé de `SarakCard` e o contorno do `SarakImageCard`."
       },
       {
         "id": "cardContentAlignment",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Alinhamento do Conteúdo"
       },
       {
         "id": "cardFooterBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Fundo do Footer",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo do rodapé de `SarakCard.Footer`; transparente funde o rodapé ao corpo do cartão."
       },
       {
         "id": "cardFooterBorder",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Linha Divisora (Top)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor da linha divisória no topo do rodapé de `SarakCard.Footer`; a espessura da linha é a de `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardGeometricCut",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Corte Geométrico (Chanfro)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Recorta os quatro cantos do cartão em diagonal (chanfro), em todo cartão e `.card`. O recorte também corta a sombra e o brilho externos, que ficam visíveis só por dentro dele."
       },
       {
         "id": "cardGlowColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Cor do Brilho (Neon)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do brilho externo do cartão e do halo do `SarakImageCard`; só aparece com intensidade acima de zero.",
+        "interactsWith": [
+          "cardGlowIntensity"
+        ]
       },
       {
         "id": "cardGlowIntensity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Intensidade do Brilho",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Opacidade do brilho externo do cartão, na cor de `cardGlowColor`; zero desliga o efeito.",
+        "interactsWith": [
+          "cardGlowColor"
+        ]
       },
       {
         "id": "cardHeaderBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Fundo do Header",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão."
       },
       {
         "id": "cardHeaderBorder",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Linha Divisora (Bottom)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor da linha divisória na base do cabeçalho de `SarakCard.Header`; a espessura da linha é a de `cardBorderWidth`.",
+        "interactsWith": [
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "cardHeaderPadding",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Padding Vertical",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro vertical interno do cabeçalho de `SarakCard.Header`, em cima e embaixo, por dispositivo."
       },
       {
         "id": "cardHoverGlowIncrease",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Aumento de Brilho",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Quanto o brilho externo do cartão ganha ao passar o ponteiro, somado à intensidade de repouso e limitado a 1.",
+        "interactsWith": [
+          "cardGlowIntensity",
+          "cardGlowColor"
+        ]
       },
       {
         "id": "cardHoverStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "animations",
+        "label": "Estilo de Hover (Cards)"
       },
       {
         "id": "cardHoverTranslate",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Elevação no Hover (Y)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Quanto o cartão sobe (negativo) ao passar o ponteiro, quando o estilo de hover é a elevação; vale para o `SarakCard` interativo, o de título e o de imagem.",
+        "interactsWith": [
+          "cardHoverStyle"
+        ]
       },
       {
         "id": "cardImagePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Posição da Imagem",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Com a direção em linha, o valor da direita inverte a ordem dos blocos dos cartões de título, ação, busca e expansível; os demais valores não mudam nada hoje.",
+        "interactsWith": [
+          "cardLayoutDirection"
+        ]
       },
       {
         "id": "cardInnerGlowColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Cor do Glow Interno",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do filete luminoso que o cartão projeta para dentro do próprio contorno, somado à sombra; transparente não desenha nada.",
+        "interactsWith": [
+          "cardInnerGlowWidth"
+        ]
       },
       {
         "id": "cardInnerGlowWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Largura do Glow Interno",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espessura do filete luminoso interno do cartão; zero o apaga. A cor vem de `cardInnerGlowColor`.",
+        "interactsWith": [
+          "cardInnerGlowColor"
+        ]
       },
       {
         "id": "cardLayoutDirection",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Direção do Layout",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token.",
+        "interactsWith": [
+          "cardImagePosition"
+        ]
       },
       {
         "id": "cardPaddingMd",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Padding Interno (MD)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro interno do corpo do cartão e entre os blocos do cartão composto, por dispositivo; é a escala de padding mais usada pelos cartões."
       },
       {
         "id": "cardRadiusBL",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Quina Inferior Esquerda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o raio só no canto inferior esquerdo dos cartões; sem declarar, vale o raio mestre.",
+        "interactsWith": [
+          "cardBorderRadius"
+        ]
       },
       {
         "id": "cardRadiusBR",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Quina Inferior Direita",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o raio só no canto inferior direito dos cartões; sem declarar, vale o raio mestre.",
+        "interactsWith": [
+          "cardBorderRadius"
+        ]
       },
       {
         "id": "cardRadiusTL",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Quina Superior Esquerda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o raio só no canto superior esquerdo dos cartões, para formas assimétricas; sem declarar, vale o raio mestre.",
+        "interactsWith": [
+          "cardBorderRadius"
+        ]
       },
       {
         "id": "cardRadiusTR",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cards",
+        "label": "Quina Superior Direita",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o raio só no canto superior direito dos cartões; sem declarar, vale o raio mestre.",
+        "interactsWith": [
+          "cardBorderRadius"
+        ]
       },
       {
         "id": "cardSearchBgFocus",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardSearch",
+        "label": "Fundo do Input Focado",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do campo do `SarakSearchCard` enquanto ele tem o foco."
       },
       {
         "id": "cardSearchBorderBeamActive",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "cardSearch",
+        "label": "Border Beam no Foco"
       },
       {
         "id": "cardSearchPlaceholderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardSearch",
+        "label": "Cor do Placeholder",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto de exemplo do campo do `SarakSearchCard`, antes de digitar."
       },
       {
         "id": "cardSearchTextFocusColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardSearch",
+        "label": "Cor do Texto Focado",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto digitado no campo do `SarakSearchCard` enquanto ele tem o foco; precisa de contraste com o fundo em foco.",
+        "interactsWith": [
+          "cardSearchBgFocus"
+        ]
       },
       {
         "id": "cardShadow",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra do Card (CSS)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Substitui a sombra base do cartão por uma sombra CSS escrita por inteiro, com várias camadas; o brilho interno continua somado. Como carrega cor, a sombra errada num dos modos some ou pesa.",
+        "interactsWith": [
+          "cardInnerGlowColor"
+        ]
       },
       {
         "id": "cardShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra: Desfoque",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoque da sombra base do cartão: zero dá a sombra dura e recortada, valores altos a espalham em névoa."
       },
       {
         "id": "cardShadowExpansion",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra: Expansão",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Engorda (positivo) ou encolhe (negativo) a sombra base além do contorno do cartão; negativo mantém a elevação contida por baixo dele."
       },
       {
         "id": "cardShadowOffsetX",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra: Deslocamento Horizontal",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desloca a sombra base do cartão na horizontal; com desfoque zero e deslocamento nos dois eixos vira a sombra dura do brutalismo.",
+        "interactsWith": [
+          "cardShadowBlur",
+          "shadowOrientation"
+        ]
       },
       {
         "id": "cardShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra: Deslocamento Vertical",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desloca a sombra base do cartão na vertical, para baixo quando positivo; `shadowOrientation` gira a direção sobre este valor.",
+        "interactsWith": [
+          "shadowOrientation"
+        ]
       },
       {
         "id": "cardShadowSpread",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade da Sombra do Card",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Opacidade da sombra base do cartão, em porcentagem; acima de 100 a cor já é cheia. A cor vem de `shadowColorMode` e a forma dos tokens `cardShadow*` de deslocamento, desfoque e expansão.",
+        "interactsWith": [
+          "shadowColorMode"
+        ]
       },
       {
         "id": "cardSpotlightOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade do Spotlight"
       },
       {
         "id": "cardSurfaceOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade da Superfície",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Multiplica a opacidade do fundo do cartão: zero deixa o cartão sem fundo e valores altos o tornam sólido. Vale só para o fundo, o conteúdo do cartão fica opaco."
       },
       {
         "id": "cardTextAlign",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Alinhamento de Texto",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Alinha o texto e distribui o conteúdo dos cartões de título, de ação e de busca; o `SarakCard` composto não lê este token."
       },
       {
         "id": "cardTextureOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade da Textura",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Intensidade da textura do cartão, de invisível a cobrindo a superfície; sem um tipo de textura escolhido não há o que mostrar.",
+        "interactsWith": [
+          "cardTextureType"
+        ]
       },
       {
         "id": "cardTextureType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Textura da Superfície",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desenha uma textura sobre a superfície de todo cartão e `.card`. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria.",
+        "interactsWith": [
+          "cardTextureOpacity",
+          "textureColor"
+        ]
       },
       {
         "id": "cardTitleColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardTitle",
+        "label": "Cor do Texto do Título",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do título do `SarakTitleCard`; precisa de contraste com o fundo do cartão nos dois modos."
       },
       {
         "id": "cardTitleFontSize",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "cardTitle",
+        "label": "Tamanho da Fonte do Título",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo."
       },
       {
         "id": "cardTitleFontWeight",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardTitle",
+        "label": "Peso da Fonte do Título",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Peso da fonte do título do `SarakTitleCard`; valor fora das opções cai no padrão."
       },
       {
         "id": "cardTitleIconGlow",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cardTitle",
+        "label": "Brilho do Ícone do Título",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do halo em volta do ícone do título do `SarakTitleCard`.",
+        "interactsWith": [
+          "cardTitleIconGlowBlur"
+        ]
       },
       {
         "id": "cardTitleIconGlowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cardTitle",
+        "label": "Desfoque do Brilho do Ícone do Título",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Quanto o halo do ícone do título se espalha; zero o apaga.",
+        "interactsWith": [
+          "cardTitleIconGlow"
+        ]
       },
       {
         "id": "cardTitleLetterSpacing",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cardTitle",
+        "label": "Espaçamento de Letras",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaço entre as letras do título do `SarakTitleCard`, em px; negativo aperta e positivo abre."
       },
       {
         "id": "cardVariant",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Variante de Card",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Escolhe qual cartão a `SarakCardGrid` desenha para cada registro quando a prop `variant` não é passada; é escolha de componente, não de estilo, e o tema não a declara.",
+        "interactsWith": [
+          "cardTitleFontSize",
+          "cardActionBtnPrimaryBg",
+          "cardSearchBgFocus"
+        ]
       },
       {
         "id": "catalogFilterMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Catálogo: Largura Mínima do Filtro",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima de cada filtro de seleção da `SarakCardGrid`; mantém o filtro utilizável em contêiner estreito."
       },
       {
         "id": "catalogItemRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Catálogo: Arredondamento do Item",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda cada item do `SarakCatalogGrid`, em `rem`; costuma ser menor que o da seção, para manter a hierarquia."
       },
       {
         "id": "catalogSectionRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Catálogo: Arredondamento da Seção",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda a seção inteira do `SarakCatalogGrid`, em `rem` (relativo ao tamanho da fonte raiz)."
       },
       {
         "id": "chartColorPalette",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Paleta de Cores (Série)"
       },
       {
         "id": "chartEngineMinHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Engine de Gráficos: Altura Mínima"
       },
       {
         "id": "chartGridOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Opacidade da Grade"
       },
       {
         "id": "chartShowGrid",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Mostrar Grid de Fundo"
       },
       {
         "id": "chartSmoothing",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Suavização da Linha"
       },
       {
         "id": "chartThickness",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Espessura da Linha"
       },
       {
         "id": "chartTooltipBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Fundo do Tooltip"
       },
       {
         "id": "chartType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "data",
+        "label": "Tipo de Gráfico"
       },
       {
         "id": "chatAnimationSpeed",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "chat",
+        "label": "Velocidade de Digitação"
       },
       {
         "id": "chatAttachmentNameMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "chat",
+        "label": "Chat Input: Largura Máxima do Nome do Anexo"
       },
       {
         "id": "chatBubbleGlassBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Chat Engine: Desfoque de Vidro da Bolha"
       },
       {
         "id": "chatBubbleRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "chat",
+        "label": "Arredondamento das Bolhas"
       },
       {
         "id": "chatBubbleStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "chat",
+        "label": "Estilo de Bolha"
       },
       {
         "id": "chatTokenSliderMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "chat",
+        "label": "Chat Input: Largura Mínima do Slider de Tokens"
       },
       {
         "id": "chatUserBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "chat",
+        "label": "Fundo (Usuário)"
       },
       {
         "id": "checkboxActiveColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Cor do Check Selecionado"
       },
       {
         "id": "chromeNotificationsPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Composição: Notificações"
       },
       {
         "id": "chromeSearchPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Composição: Busca"
       },
       {
         "id": "chromeUserPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Composição: Usuário"
       },
       {
         "id": "colorBgBody",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Fundo Global (Body)"
       },
       {
         "id": "colorBgLayer1",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Background Layer 1"
       },
       {
         "id": "colorBgLayer2",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Background Layer 2"
       },
       {
         "id": "colorBgModal",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Background Modais"
       },
       {
         "id": "colorDepth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Profundidade da Cor"
       },
       {
         "id": "colorVariation",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Variação da Cor"
       },
       {
         "id": "contentAlignment",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Alinhamento do Conteúdo"
       },
       {
         "id": "contextMenuMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Context Menu: Largura Mínima",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima do `SarakContextMenu` e do menu de preferências do cromo, em `rem`; mantém o alvo de clique confortável com poucos itens."
       },
       {
         "id": "controlHeightToggle",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Kitchen Sink: Altura do Toggle",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura do alternador mostrado na tela de exemplo (kitchen sink) do painel de customização; não muda o `SarakSwitch` do sistema."
       },
       {
         "id": "designEngineSidebarMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Design Engine: Largura Máxima do Painel"
       },
       {
         "id": "designEngineSidebarMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Design Engine: Largura Mínima do Painel"
       },
       {
         "id": "deviceDesktopMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview Canvas: Largura Mínima do Desktop",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima da moldura de desktop na pré-visualização do painel de customização; não muda componente do sistema."
       },
       {
         "id": "deviceFrameRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview Canvas: Arredondamento da Moldura",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Arredondamento da moldura externa dos dispositivos na pré-visualização do painel de customização, em `rem`; não muda componente do sistema."
       },
       {
         "id": "devicePhoneHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview Canvas: Altura do Telefone",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura da moldura de telefone na pré-visualização responsiva do painel de customização; não muda componente do sistema."
       },
       {
         "id": "devicePhoneNotchRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview Canvas: Arredondamento do Notch",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Arredondamento do recorte de câmera da moldura de telefone na pré-visualização do painel de customização, em `rem`; não muda componente do sistema."
       },
       {
         "id": "deviceTabletHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview Canvas: Altura do Tablet",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura da moldura de tablet na pré-visualização responsiva do painel de customização; não muda componente do sistema."
       },
       {
         "id": "dotGridDotOffset",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Grade de Pontos: Offset do Ponto"
       },
       {
         "id": "dotGridDotSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Grade de Pontos: Raio do Ponto"
       },
       {
         "id": "dotGridTileSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Grade de Pontos: Tamanho do Tile"
       },
       {
         "id": "emptyStateCaptionMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Largura Máxima da Legenda"
       },
       {
         "id": "emptyStateOrbBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Desfoque do Orb"
       },
       {
         "id": "emptyStateOrbInner",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Diâmetro do Anel Interno / Orb"
       },
       {
         "id": "emptyStateOrbOuter",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Diâmetro do Anel Externo"
       },
       {
         "id": "emptyStateRingRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Arredondamento do Anel Tracejado"
       },
       {
         "id": "emptyStateVoidLetterOffset",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Empty State: Offset da Letra (VOID)"
       },
       {
         "id": "engineMinHeightLg",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Engines: Altura Mínima (Grande)"
       },
       {
         "id": "engineMinHeightSm",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Engines: Altura Mínima (Pequena)"
       },
       {
         "id": "flowGridStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Estilo do Grid (Fluxo)"
       },
       {
         "id": "flowHandleSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Flow Engine: Tamanho do Handle"
       },
       {
         "id": "flowNodeBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Flow Engine: Desfoque do Nó"
       },
       {
         "id": "flowNodePadding",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Flow Engine: Padding do Nó"
       },
       {
         "id": "flowNodeRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "specialized",
+        "label": "Raio dos Nós (Fluxo)"
       },
       {
         "id": "focusRingWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "engineering",
+        "label": "Largura do Anel de Foco"
       },
       {
         "id": "formFieldDensity",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Densidade dos Campos (Form)"
       },
       {
         "id": "formLabelPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Posição do Rótulo (Form)"
       },
       {
         "id": "glassBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Backdrop Blur (Profundidade)"
       },
       {
         "id": "glassEdgeColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Cor da Borda do Vidro"
       },
       {
         "id": "glassEdgeWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Espessura da Borda do Vidro"
       },
       {
         "id": "glassOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Opacidade do Vidro"
       },
       {
         "id": "glassRoughness",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Roughness (Rugosidade)"
       },
       {
         "id": "glassSaturation",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Saturação do Vidro"
       },
       {
         "id": "glassSpecularity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Specularity (Brilho de Luz)"
       },
       {
         "id": "globalBackgroundBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "media",
+        "label": "Desfoque da Imagem Global"
       },
       {
         "id": "globalBackgroundImageUrl",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "media",
+        "label": "URL da Imagem de Fundo"
       },
       {
         "id": "globalBackgroundOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "media",
+        "label": "Opacidade da Imagem Global"
       },
       {
         "id": "globalContrast",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Contraste Global"
       },
       {
         "id": "globalFlowAlign",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Alinhamento do Fluxo Global"
       },
       {
         "id": "globalFlowDirection",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Direção do Fluxo Global"
       },
       {
         "id": "globalSaturation",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Saturação Global"
       },
       {
         "id": "globalSectionGap",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Espaçamento entre Seções"
       },
       {
         "id": "h1LetterSpacing",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Espaçamento (H1)"
       },
       {
         "id": "h1LineHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Altura da Linha (H1)"
       },
       {
         "id": "h1Size",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "typography",
+        "label": "Tamanho (H1)"
       },
       {
         "id": "h1Weight",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Peso (H1)"
       },
       {
         "id": "h2LineHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Altura da Linha (H2)"
       },
       {
         "id": "h2Size",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "typography",
+        "label": "Tamanho (H2)"
       },
       {
         "id": "h2Weight",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Peso (H2)"
       },
       {
         "id": "h3Size",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tamanho (H3)"
       },
       {
         "id": "headerAlignment",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Alinhamento do Header"
       },
       {
         "id": "headingFont",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Fonte de Títulos"
       },
       {
         "id": "headingTransform",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Transformação de Títulos"
       },
       {
         "id": "iconButtonFrostedShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Sombra Frosted do Icon Button: Desfoque"
       },
       {
         "id": "iconButtonFrostedShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Sombra Frosted do Icon Button: Offset Y"
       },
       {
         "id": "iconButtonGlowBlurLg",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Glow do Icon Button: Desfoque Grande"
       },
       {
         "id": "iconButtonGlowBlurMd",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Glow do Icon Button: Desfoque Médio"
       },
       {
         "id": "iconButtonGlowBlurSm",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "buttons",
+        "label": "Glow do Icon Button: Desfoque Pequeno"
       },
       {
         "id": "iconFamily",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Família de Ícones"
       },
       {
         "id": "iconStrokeWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Espessura do Ícone"
       },
       {
         "id": "iconWeight",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Peso / Estilo do Ícone"
       },
       {
         "id": "identityAlignment",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Alinhamento"
       },
       {
         "id": "identityFontFamily",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Fonte do Logo"
       },
       {
         "id": "identityFontWeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Peso da Fonte"
       },
       {
         "id": "identityHoverEffect",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Efeito ao Hover"
       },
       {
         "id": "identityPadding",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Padding do Container"
       },
       {
         "id": "identityTracking",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "branding",
+        "label": "Espaçamento (Tracking)"
       },
       {
         "id": "imageCardGlowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Image Card: Desfoque do Glow Interno",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Largura do halo interno que acende ao passar o ponteiro sobre o `SarakImageCard`; a cor é a de `cardGlowColor` (a primária no hover de brilho).",
+        "interactsWith": [
+          "cardGlowColor"
+        ]
       },
       {
         "id": "imageCardHoverZoom",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Escala de Zoom no Hover (Imagem)"
       },
       {
         "id": "imageCardOverlayOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Opacidade do Overlay (Imagem)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Opacidade do véu na cor do cartão sobre a foto do `SarakImageCard`; sobe para dar leitura ao texto, desce para mostrar a foto."
       },
       {
         "id": "imageCardShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra do Image Card: Desfoque",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoque da sombra do `SarakImageCard`.",
+        "interactsWith": [
+          "imageCardShadowOffsetY"
+        ]
       },
       {
         "id": "imageCardShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra do Image Card: Offset Y",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desloca para baixo a sombra do `SarakImageCard`.",
+        "interactsWith": [
+          "imageCardShadowBlur"
+        ]
       },
       {
         "id": "imageCardShadowSpread",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Sombra do Image Card: Espalhamento",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Quanto a sombra do `SarakImageCard` é contraída para dentro do cartão; valores altos a escondem sob ele.",
+        "interactsWith": [
+          "imageCardShadowBlur"
+        ]
       },
       {
         "id": "inputBackdropBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Desfoque de Fundo (Blur)"
       },
       {
         "id": "inputBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Fundo do Input"
       },
       {
         "id": "inputBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Cor da Borda"
       },
       {
         "id": "inputBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "inputs",
+        "label": "Arredondamento"
       },
       {
         "id": "inputBorderType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Estilo da Borda"
       },
       {
         "id": "inputErrorColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Cor de Erro"
       },
       {
         "id": "inputFocusBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Cor da Borda (Foco)"
       },
       {
         "id": "inputIconColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Cor dos Ícones"
       },
       {
         "id": "inputIconPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Posição do Ícone"
       },
       {
         "id": "inputPadding",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Espaçamento Interno (Y)"
       },
       {
         "id": "inputShadow",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Sombra do Campo (CSS ou \"neumorphism\")"
       },
       {
         "id": "inputTextColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Cor do Texto"
       },
       {
         "id": "isAutoHideEnabled",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Auto-ocultar Menus"
       },
       {
         "id": "isNavHidden",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Ocultar Navegação"
       },
       {
         "id": "isSplitViewEnabled",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Ativar Vista Dividida (Split)"
       },
       {
         "id": "kanbanCardRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Kanban: Arredondamento do Card",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda os cartões arrastáveis do `SarakKanban`, em px."
       },
       {
         "id": "kanbanHeaderPaddingY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro vertical do título de cada coluna do `SarakKanban`, em px."
       },
       {
         "id": "kanbanHeaderTracking",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Kanban: Tracking do Cabeçalho da Coluna",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`."
       },
       {
         "id": "layeredShadows",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Sombras em Camadas (Layered)"
       },
       {
         "id": "layoutDensity",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Densidade Visual"
       },
       {
         "id": "layoutGap",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Espaçamento Padrão (Gap)"
       },
       {
         "id": "layoutGapLg",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Espaçamento Grande"
       },
       {
         "id": "layoutGapMd",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Espaçamento Médio"
       },
       {
         "id": "layoutGapSm",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Espaçamento Pequeno"
       },
       {
         "id": "layoutGridMinCell",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Largura Mínima da Célula (Auto-fit)"
       },
       {
         "id": "layoutGridTemplate",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Template de Grid Global"
       },
       {
         "id": "layoutPadding",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "system",
+        "label": "Respiro do Conteúdo (Padding)"
       },
       {
         "id": "layoutPreviewMaxH",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Design Engine: Altura Máxima do Preview de Código"
       },
       {
         "id": "managementGroupListMaxHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Management Group: Altura Máxima da Lista",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura máxima da lista de cada grupo do `SarakManagementGrid`; acima dela a lista rola por dentro do grupo."
       },
       {
         "id": "matrixBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "advanced",
+        "label": "Desfoque de Vidro (Blur)"
       },
       {
         "id": "matrixBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "advanced",
+        "label": "Cor da Borda Base"
       },
       {
         "id": "matrixGap",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "advanced",
+        "label": "Espaçamento da Matriz"
       },
       {
         "id": "matrixItemBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "advanced",
+        "label": "Fundo do Item Pai"
       },
       {
         "id": "matrixNodeMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Matrix Node: Largura Mínima",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima de cada nó filho da `SarakExpandableMatrix` na variante de alternador; impede que nós de pouco conteúdo fiquem espremidos."
       },
       {
         "id": "matrixRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "advanced",
+        "label": "Arredondamento dos Itens"
       },
       {
         "id": "maxContentWidth",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "system",
+        "label": "Largura Máxima do Conteúdo"
       },
       {
         "id": "mobileNavigationStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "global",
+        "label": "Navegação no Celular"
       },
       {
         "id": "modalActionAlignment",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Alinhamento das Ações",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Posiciona os botões do rodapé do `SarakModal` à esquerda, ao centro ou à direita; o valor de largura total os faz preencher a linha, e no celular os empilha."
       },
       {
         "id": "modalBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "overlays",
+        "label": "Arredondamento (Modal)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda o painel do `SarakModal`, por dispositivo."
       },
       {
         "id": "modalHeaderStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Estilo do Cabeçalho",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Muda a estrutura do cabeçalho do `SarakModal` (a posição do título e do botão de fechar), não as cores."
       },
       {
         "id": "modalOverlayBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Blur do Overlay",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoque do que fica atrás do véu do `SarakModal`.",
+        "interactsWith": [
+          "modalOverlayColor"
+        ]
       },
       {
         "id": "modalOverlayColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Cor do Overlay",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do véu atrás do `SarakModal` e da gaveta (`SarakDrawer`); combina com o desfoque de `modalOverlayBlur`.",
+        "interactsWith": [
+          "modalOverlayBlur"
+        ]
       },
       {
         "id": "modalWidthFull",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Largura do Modal: Ampla",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do `SarakModal` no tamanho `full`, sempre limitada pelas margens da tela."
       },
       {
         "id": "modalWidthLg",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Largura do Modal: Grande",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do `SarakModal` no tamanho `lg`."
       },
       {
         "id": "modalWidthMd",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Largura do Modal: Média",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do `SarakModal` no tamanho `md`."
       },
       {
         "id": "modalWidthSm",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Largura do Modal: Pequena",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do `SarakModal` no tamanho `sm`."
       },
       {
         "id": "modalWidthXl",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Largura do Modal: Extra Grande",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do `SarakModal` no tamanho `xl`."
       },
       {
         "id": "mode",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "global",
+        "label": "Tema do Sistema"
       },
       {
         "id": "monoFont",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Fonte Mono (Dados)"
       },
       {
         "id": "motionDurationFast",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Duração Rápida (UI)"
       },
       {
         "id": "motionDurationInstant",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Duração Instantânea"
       },
       {
         "id": "motionDurationNormal",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Duração Normal"
       },
       {
         "id": "motionDurationSlow",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Duração Lenta (Cenário)"
       },
       {
         "id": "motionEaseIn",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Curva de Entrada (Acceleration)"
       },
       {
         "id": "motionEaseMain",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Curva Master (Ease)"
       },
       {
         "id": "motionEaseOut",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Curva de Saída (Deceleration)"
       },
       {
         "id": "motionStaggerDelay",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "motion",
+        "label": "Atraso de Cascata (Stagger)"
       },
       {
         "id": "multiSelectInputMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Multi-Select: Largura Mínima do Input Interno"
       },
       {
         "id": "navActiveMarkerColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor do Marcador Ativo"
       },
       {
         "id": "navActiveMarkerGlow",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Brilho do Marcador"
       },
       {
         "id": "navbarLayout",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Comportamento da Topbar"
       },
       {
         "id": "navigationStyle",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "global",
+        "label": "Estrutura de Navegação"
       },
       {
         "id": "navItemActiveColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor do Item Ativo"
       },
       {
         "id": "pageTransitionType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "animations",
+        "label": "Transição de Página"
       },
       {
         "id": "preferenceFontSizePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Tamanho da Fonte"
       },
       {
         "id": "preferenceLanguagePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Idioma"
       },
       {
         "id": "preferenceModePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Modo Claro/Escuro"
       },
       {
         "id": "preferenceNavCollapsePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Navegação Recolhida"
       },
       {
         "id": "preferenceNavigationStylePosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Navegação Topo/Lateral"
       },
       {
         "id": "presetCardHoverShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra de Hover — Offset Y",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Deslocamento vertical da sombra do cartão de pré-visualização de preset ao passar o ponteiro, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetCardShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra do Card — Desfoque",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desfoque da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetCardShadowOffsetY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra do Card — Offset Y",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Deslocamento vertical da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetCardShadowSpread",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra do Card — Espalhamento (negativo)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Contração da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetGlowShadowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Glow Simples — Desfoque",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desfoque do brilho simples dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetGlowShadowBlurLg",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Glow Simples — Desfoque Grande",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desfoque do brilho grande dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetGridTextureSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Tamanho da Textura de Grade",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Tamanho da célula da grade decorativa no fundo do cartão de preset, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMatteShadowBlur1",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra Matte — Desfoque 1",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desfoque da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMatteShadowBlur2",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra Matte — Desfoque 2",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desfoque da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMatteShadowOffsetY2",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra Matte — Offset Y 2",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Deslocamento vertical da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMatteShadowSpread1",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra Matte — Espalhamento 1",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Contração da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMatteShadowSpread2",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Sombra Matte — Espalhamento 2",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Contração da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMiniCardHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Altura do Mini-Card",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetMiniCardMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Largura Máxima do Mini-Card",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "presetPreviewMinHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Altura Mínima",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura mínima dos cartões de pré-visualização de botão e de campo, no painel de customização; evita salto de layout e não pinta nenhum componente do sistema."
       },
       {
         "id": "presetPreviewPaddingY",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Preview de Preset: Padding Vertical",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Respiro vertical dos cartões de pré-visualização de botão e de campo, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "primaryColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor Primária (Base)"
       },
       {
         "id": "progressBarHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Altura da Barra de Progresso"
       },
       {
         "id": "progressBarMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "cards",
+        "label": "Kitchen Sink: Largura Máxima da Barra de Progresso",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima da barra de progresso mostrada na tela de exemplo (kitchen sink) do painel de customização; não muda componente do sistema."
       },
       {
         "id": "progressBarRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Arredondamento da Barra de Progresso"
       },
       {
         "id": "rangeActiveColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Range Slider: Cor Ativa"
       },
       {
         "id": "reducedMotion",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "engineering",
+        "label": "Reduzir Movimento"
       },
       {
         "id": "scrollPadding",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "scrollbars",
+        "label": "Espaçamento (Padding)"
       },
       {
         "id": "scrollRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "scrollbars",
+        "label": "Arredondamento (Thumb)"
       },
       {
         "id": "scrollThumbColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "scrollbars",
+        "label": "Cor do Cursor (Thumb)"
       },
       {
         "id": "scrollThumbHoverOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "scrollbars",
+        "label": "Opacidade ao Hover"
       },
       {
         "id": "scrollThumbOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "scrollbars",
+        "label": "Opacidade (Thumb)"
       },
       {
         "id": "scrollTrackOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "scrollbars",
+        "label": "Opacidade do Trilho"
       },
       {
         "id": "scrollWidth",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "scrollbars",
+        "label": "Largura da Barra"
       },
       {
         "id": "searchBackdropBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "inputs",
+        "label": "Search Palette: Desfoque do Backdrop"
       },
       {
         "id": "searchDropdownGap",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Espaço do Dropdown de Busca"
       },
       {
         "id": "searchDropdownWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Largura do Dropdown de Busca"
       },
       {
         "id": "searchPositionSidebar",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Posição Pesquisa (Sidebar)"
       },
       {
         "id": "searchPositionTopbar",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Posição Pesquisa (Topbar)"
       },
       {
         "id": "secondaryColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor Secundária"
       },
       {
         "id": "shadowAmbientAlpha",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Sombra: Contato (Ambient)"
       },
       {
         "id": "shadowColorMode",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Colorização das Sombras"
       },
       {
         "id": "shadowIntensity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Intensidade da Sombra"
       },
       {
         "id": "shadowOrientation",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Orientação das Sombras"
       },
       {
         "id": "shadowProjectionAlpha",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Sombra: Projeção (Alpha)"
       },
       {
         "id": "shadowProjectionBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Sombra: Projeção (Blur)"
       },
       {
         "id": "shellBrandLogoSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Altura do Logo da Marca"
       },
       {
         "id": "sidebarActiveColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Ativo da Sidebar"
       },
       {
         "id": "sidebarBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Backdrop Blur (Sidebar)"
       },
       {
         "id": "sidebarCollapsedWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Largura da Sidebar (Recolhida)"
       },
       {
         "id": "sidebarColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor da Sidebar (Fundo)"
       },
       {
         "id": "sidebarHoverColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Hover da Sidebar"
       },
       {
         "id": "sidebarLabelMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Largura Máxima do Rótulo (Sidebar)"
       },
       {
         "id": "sidebarMaxWidth",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Largura Máxima da Sidebar"
       },
       {
         "id": "sidebarMinWidth",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Largura Mínima da Sidebar"
       },
       {
         "id": "sidebarNoiseOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Opacidade do Ruído (Sidebar)"
       },
       {
         "id": "sidebarPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Posição da Sidebar"
       },
       {
         "id": "sidebarShadow",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Sombra da Sidebar"
       },
       {
         "id": "sidebarWidth",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Largura da Sidebar"
       },
       {
         "id": "skeletonCircleSize",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Skeleton: Diâmetro Padrão (Circle)"
       },
       {
         "id": "skeletonRowHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Skeleton: Altura Padrão da Linha"
       },
       {
         "id": "skeletonRowRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "specialized",
+        "label": "Skeleton: Arredondamento da Linha/Bloco"
       },
       {
         "id": "splitPaneMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Split Pane: Largura Mínima do Painel Secundário"
       },
       {
         "id": "statusErrorColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Cor: Erro"
       },
       {
         "id": "statusGlowBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Desfoque do Glow de Status"
       },
       {
         "id": "statusInfoColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Cor: Info"
       },
       {
         "id": "statusSuccessColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Cor: Sucesso"
       },
       {
         "id": "statusWarningColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "status",
+        "label": "Cor: Alerta"
       },
       {
         "id": "surfaceColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor de Superfície"
       },
       {
         "id": "surfaceIntensity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Intensidade do Efeito de Superfície"
       },
       {
         "id": "surfaceMaterial",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Material da Superfície"
       },
       {
         "id": "switchBackdropBlur",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Desfoque do Alternador (Vidro)"
       },
       {
         "id": "switchLabelPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "structural",
+        "label": "Posição do Rótulo (Switch)"
       },
       {
         "id": "switchPulseColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Cor do Pulso (Pulsing Dot)"
       },
       {
         "id": "switchStyleType",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Estilo do Alternador (Switch)"
       },
       {
         "id": "switchThumbBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Cor: Switch Botão"
       },
       {
         "id": "switchTrackActiveBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "switches",
+        "label": "Cor: Switch Ativo"
       },
       {
         "id": "systemTone",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Tom do Ambiente"
       },
       {
         "id": "tabGap",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Espaço entre Abas"
       },
       {
         "id": "tableActionPosition",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Posição das Ações"
       },
       {
         "id": "tableBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Cor das Linhas",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor das linhas divisórias da `SarakTable` e da `SarakDataTable`."
       },
       {
         "id": "tableBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "tables",
+        "label": "Arredondamento da Tabela",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda o contêiner da `SarakTable`, por dispositivo; sem declarar, segue o raio do cartão."
       },
       {
         "id": "tableCellPadding",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "tables",
+        "label": "Densidade (Padding)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro horizontal das células da `SarakDataTable` (cabeçalho e linhas), por dispositivo; a `SarakTable` usa `tableDensity`."
       },
       {
         "id": "tableDensity",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Densidade da Tabela",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escala o respiro das células da `SarakTable`: o compacto aperta e reduz a fonte, o espaçoso afrouxa; a `SarakDataTable` não lê este token."
       },
       {
         "id": "tableHeaderBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Fundo do Cabeçalho",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do cabeçalho da `SarakTable` e da `SarakDataTable`; também pinta a barra de ferramentas do editor de texto rico e a do visualizador de PDF."
       },
       {
         "id": "tableRowHoverBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Fundo Hover (Linha)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo da linha sob o ponteiro na `SarakTable`; a `SarakDataTable` não lê este token."
       },
       {
         "id": "tableZebraStriping",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "tables",
+        "label": "Listras Alternadas (Zebra)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Alterna o fundo das linhas da `SarakTable` e da `SarakDataTable`, para seguir a linha em tabelas largas."
       },
       {
         "id": "tabSectionMargin",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Margem da Seção de Abas"
       },
       {
         "id": "tertiaryColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor Terciária"
       },
       {
         "id": "textColorMaster",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Texto Principal"
       },
       {
         "id": "textColorMuted",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Texto Mudo / Hint"
       },
       {
         "id": "textColorSecondary",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Texto Secundário"
       },
       {
         "id": "textGlowIntensity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Intensidade de Glow (H1)"
       },
       {
         "id": "textSmoothing",
         "type": "boolean",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Suavização (Smoothing)"
       },
       {
         "id": "texture",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Textura Industrial (BG)"
       },
       {
         "id": "textureColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor da Textura"
       },
       {
         "id": "textureOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Opacidade da Textura"
       },
       {
         "id": "titleColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor do Título"
       },
       {
         "id": "toastAccentWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Toast: Largura da Borda de Destaque",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espessura da faixa colorida na lateral esquerda do toast, cuja cor é a do tipo da mensagem; zero a remove."
       },
       {
         "id": "toastMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Toast: Largura Máxima",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima da notificação (toast), em `rem`; acima dela o texto quebra em linhas em vez de alargar."
       },
       {
         "id": "toastMinWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Toast: Largura Mínima",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima da notificação (toast), em `rem`, relativa ao tamanho da fonte raiz; evita toast curto espremido."
       },
       {
         "id": "tooltipBg",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Fundo do Tooltip",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo da caixa do `SarakTooltip`.",
+        "interactsWith": [
+          "tooltipTextColor"
+        ]
       },
       {
         "id": "tooltipBorderColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Borda do Tooltip",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do contorno da caixa do `SarakTooltip`."
       },
       {
         "id": "tooltipRadius",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Raio do Tooltip",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda a caixa do `SarakTooltip`."
       },
       {
         "id": "tooltipTextColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "overlays",
+        "label": "Texto do Tooltip",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
+        "interactsWith": [
+          "tooltipBg"
+        ]
       },
       {
         "id": "topbarActiveColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Ativo da Topbar"
       },
       {
         "id": "topbarCollapsedHeight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Altura da Topbar (Recolhida)"
       },
       {
         "id": "topbarColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor da Topbar (Fundo)"
       },
       {
         "id": "topbarHeight",
         "type": "number | SarakResponsiveValue<number>",
-        "responsive": true
+        "responsive": true,
+        "group": "navigation",
+        "label": "Altura da Topbar"
       },
       {
         "id": "topbarHoverColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Hover da Topbar"
       },
       {
         "id": "topbarLabelMaxWidth",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Largura Máxima do Rótulo (Topbar)"
       },
       {
         "id": "topbarNoiseOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Opacidade do Ruído (Topbar)"
       },
       {
         "id": "topbarTitleColor",
         "type": "string",
-        "responsive": false
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor do Título (Topbar)"
       },
       {
         "id": "touchTargetMin",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "engineering",
+        "label": "Alvo Mínimo de Toque"
       },
       {
         "id": "trackingSnug",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Snug"
       },
       {
         "id": "trackingTight",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Tight"
       },
       {
         "id": "trackingUltra",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Ultra"
       },
       {
         "id": "trackingWide",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Wide"
       },
       {
         "id": "trackingWider",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Wider"
       },
       {
         "id": "trackingWidest",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Tracking Widest"
       },
       {
         "id": "typeScale2xs",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala 2XS"
       },
       {
         "id": "typeScale3xs",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala 3XS"
       },
       {
         "id": "typeScaleCaption",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala Caption"
       },
       {
         "id": "typeScaleMicro",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala Micro"
       },
       {
         "id": "typeScaleTiny",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala Tiny"
       },
       {
         "id": "typeScaleXl",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala XL"
       },
       {
         "id": "typeScaleXs",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "typography",
+        "label": "Escala XS"
       },
       {
         "id": "vignetteOpacity",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Intensidade do Vignette"
       },
       {
         "id": "vignetteSoftness",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "atmosphere",
+        "label": "Suavidade das Bordas"
       },
       {
         "id": "zIndexBase",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "layers",
+        "label": "Base Z-Index"
       },
       {
         "id": "zIndexModal",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "layers",
+        "label": "Modal Z-Index"
       },
       {
         "id": "zIndexSidebar",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "layers",
+        "label": "Sidebar Z-Index"
       },
       {
         "id": "zIndexToast",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "engineering",
+        "label": "Camada: Notificações"
       },
       {
         "id": "zIndexTooltip",
         "type": "number",
-        "responsive": false
+        "responsive": false,
+        "group": "layers",
+        "label": "Tooltip Z-Index"
       }
     ]
   },
@@ -8505,6 +9804,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "6c8acc409df6"
+    "kitHash": "28cb4c0cbf77"
   }
 }

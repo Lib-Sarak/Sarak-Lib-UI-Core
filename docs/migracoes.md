@@ -551,6 +551,22 @@ apaga, a reserva de 30 nomes e o que o Provider deixa no `html`/`body` ao desmon
 `sarak-page-surface`; quem lia `--z-index-*` por nome continua lendo (a reserva é o padrão do token); um tema que
 declara `zIndexToast`/`zIndexTooltip` em 9999 passa a 9900.
 
+### O schema passa a documentar cada token: `kind`, `modeDependent`, `usage` e `interactsWith` (cartões, sobreposições e tabelas)
+
+**Classificação: MINOR (campos opcionais aditivos).** Nenhum token novo, nenhuma opção nova e nenhum leitor mudou: o
+dicionário só ganha, token a token, o que ele faz na tela. Cada token passa a declarar se é **estético** (o tema o
+projeta) ou **funcional** (igual em todo tema), se **carrega modo** (entra na `contraparte`), o que muda na tela e
+onde, e de qual outro token depende. O `catalog.json` do kit traz os campos em `designTokens.ids[]`, e o
+`GUIA-FRONTEND.md` traz o mapa por pilar no apêndice A.4b. Os grupos `cards`, `cardTitle`, `cardAction`,
+`cardSearch`, `overlays` e `tables` estão documentados; os demais chegam nos lotes seguintes.
+
+Nada muda para o tema salvo: valor persistido segue valendo. Quem tem token próprio nesses grupos pode usar o mapa
+para saber se o valor também precisa existir na `contraparte`.
+
+Sete tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
+decisão: `cardSpotlightOpacity`, `borderBeamEnabled`, `cardSearchBorderBeamActive`, `cardActionClickScale`,
+`cardContentAlignment`, `imageCardHoverZoom` e `tableActionPosition`. Declará-los num tema não muda a tela.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**
