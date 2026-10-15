@@ -183,6 +183,8 @@ depois do veredito.** Em **todo** lote que toca código:
 - Contraste não textual relatado por tema e modo (WCAG 1.4.11, 3:1 — apoio, não gate).
 - Nota MAJOR na `## 8.0.0`; gerados regenerados (`guide` e `dev-kit` por último); simulação do Anel 0; a verificação da §7.
 
+**Dependência parcial (decisão do dono, 2026-10-15): a `plan-117` (pendências do arsenal) fecha antes do lote 5.** Os lotes 1 a 4 (análise e documentação dos tokens) seguem; a `plan-117` liga cinco tokens e retira dois, e é o registro vivo das pendências que estes lotes acharem. Os lotes 5 em diante só começam com a `plan-117` 🟢. **A `plan-118` (fontes embarcadas, e catálogo de tipografia ampliado) fecha antes do lote 25** e, preferencialmente, antes do lote 7: os temas escolhem fontes por valor da lista, que ela amplia.
+
 **Lote 0.1 — pré-requisito (prompt direto do revisor, fora desta plan):** `generate-showcase.mts` volta a funcionar
 (`SARAK_ALL_THEMES`; o harness passa pela porta de espera do tema sob demanda) e a aba "Temas e JSON" (`TemplatesTab`)
 usa `themeCatalog` com carga sob demanda. O lote 1 só começa depois.
