@@ -84,7 +84,12 @@ Suposição não registrada é reprovação garantida.
    comentário vira ponteiro morto. Citar spec **fixa** é permitido, mas o bom comentário explica ali mesmo.
    Norma completa: `padrao-escrita`, `references/comentarios.md`.
 7. **Mudou comportamento? Tem teste.** Use a skill `test-*` indicada. Bug corrigido pede teste de regressão.
-8. **Gate bloqueou? Corrija a causa.** Nunca contorne, silencie nem desative. Contornar reprova a execução.
+8. **A verificação completa NÃO é sua** *(decisão do dono, 2026-10-16)*. Suíte completa, `tsc`, baseline, Anel 0,
+   Anel 1, R36 e navegador rodam **uma vez**, pelo revisor, no nível que a mudança exige (`npm run verify`,
+   `scripts/verify-changes.mjs`). Repeti-las aqui dobra o custo e não muda o veredito. Durante o desenvolvimento rode
+   **só o teste do que você escreveu ou tocou** (`npx vitest run <caminho>`) e leia a saída; o que importa ao
+   revisor é o diff e o seu resumo honesto, não uma segunda bateria.
+8.1. **Gate bloqueou? Corrija a causa.** Nunca contorne, silencie nem desative. Contornar reprova a execução.
    Plan que declarou `Gate: <regra>` (não `nenhum`) na §7 pede mais que isso: para cada limite e falso
    positivo que a regra promete não ter, mostre no resumo a entrada exata e o resultado — suíte verde
    prova que a regra roda, não que ela está certa ([[00-prompt-revisor]] §5.4).
@@ -112,9 +117,11 @@ Suposição não registrada é reprovação garantida.
 
 # 4. Autoverificação (antes de entregar)
 
-- [ ] Rodei os testes/linters/validadores pedidos e **li** a saída.
-- [ ] Se a instrução declarou `Gate: <regra>` (§3, item 8): mostrei entrada exata e resultado para cada
-  limite/falso positivo que a regra promete não ter — não só suíte verde.
+- [ ] Rodei, no desenvolvimento, **só os testes dos arquivos que escrevi ou toquei** e **li** a saída. A suíte
+  completa, `tsc`, baseline, Anel 0/1 e o navegador **não** são seus: o revisor roda (`npm run verify`). Não
+  escreva "suíte verde" no resumo — escreva o que **você** rodou.
+- [ ] Se a instrução declarou `Gate: <regra>` (§3, item 8.1): mostrei entrada exata e resultado para cada
+  limite/falso positivo que a regra promete não ter — por teste **do próprio gate**, não pela suíte inteira.
 - [ ] Fotografei o worktree (`git status --short`) antes da primeira edição, e a fotografia está no resumo.
 - [ ] `git status` e `git diff` conferem com o escopo — nada a mais, nada a menos. Arquivo modificado que
   não estava na fotografia e eu não toquei: parei e relatei.

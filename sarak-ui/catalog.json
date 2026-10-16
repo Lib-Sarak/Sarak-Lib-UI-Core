@@ -6754,7 +6754,13 @@
         "type": "number",
         "responsive": false,
         "group": "cardAction",
-        "label": "Escala do Clique (Ação)"
+        "label": "Escala do Clique (Ação)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Quanto o botão de ação do `SarakActionCard` encolhe enquanto está pressionado, por clique ou toque; 1 não encolhe.",
+        "interactsWith": [
+          "cardActionBtnPrimaryBg"
+        ]
       },
       {
         "id": "cardBackdropBlur",
@@ -7233,7 +7239,13 @@
         "type": "number",
         "responsive": false,
         "group": "cards",
-        "label": "Opacidade do Spotlight"
+        "label": "Opacidade do Spotlight",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Luz difusa na cor primária que acompanha o cursor sobre o cartão (título, ação, busca e composto) enquanto o ponteiro está nele; sem ponteiro fino, fica no centro do cartão. Zero apaga a luz e dispensa o acompanhamento.",
+        "interactsWith": [
+          "primaryColor"
+        ]
       },
       {
         "id": "cardSurfaceOpacity",
@@ -8090,7 +8102,13 @@
         "type": "number",
         "responsive": false,
         "group": "cards",
-        "label": "Escala de Zoom no Hover (Imagem)"
+        "label": "Escala de Zoom no Hover (Imagem)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Quanto a imagem de capa do `SarakImageCard` cresce, atrás do véu e do texto, quando o ponteiro passa sobre qualquer parte do cartão; 1 deixa a imagem parada.",
+        "interactsWith": [
+          "imageCardOverlayOpacity"
+        ]
       },
       {
         "id": "imageCardOverlayOpacity",
@@ -9804,6 +9822,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "28cb4c0cbf77"
+    "kitHash": "0dba5fe762c7"
   }
 }

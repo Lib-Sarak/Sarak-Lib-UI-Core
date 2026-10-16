@@ -25,7 +25,8 @@ describe('PresetsCatalog', () => {
         expect(screen.getByRole('heading', { name: 'Galeria de estilos' })).toBeInTheDocument();
         expect(screen.getByText('Categoria: Temas')).toBeInTheDocument();
         // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
-        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull());
+        // Prazo folgado: o catálogo carrega os temas sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
+        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
         expect(container).toMatchSnapshot();
     });
 

@@ -124,5 +124,6 @@ describe('Desfazer — integração com o Provider real', () => {
         for (const call of onSave.mock.calls.slice(callsBeforeUndo)) {
             expect(call[1]).toBe('sarak-sovereign');
         }
-    });
+        // Prazo próprio de 30 s: o teste espera 1,6 s de salvamento atrasado e, sob a suíte inteira em paralelo, passa dos 5 s padrão.
+    }, 30000);
 });

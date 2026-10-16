@@ -5,6 +5,7 @@ import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { useSpotlightPointer } from './hooks/useSpotlightPointer';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
@@ -30,6 +31,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
+    const spotlight = useSpotlightPointer(design);
     const { getGridStyles, getFlexStyles } = useStructuralStyles();
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -55,11 +57,9 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
           )
         : [];
 
-    // Get Configurations based on design state
-    const clickScale = design.cardActionClickScale !== undefined ? Number(design.cardActionClickScale) : 0.96;
-
     return (
         <motion.div
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             // O painel de detalhes usa container queries e precisa de um ancestral
@@ -70,7 +70,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
         >
             {/* Ambient Atmosphere */}

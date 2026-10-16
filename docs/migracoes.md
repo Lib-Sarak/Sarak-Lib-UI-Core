@@ -563,9 +563,25 @@ onde, e de qual outro token depende. O `catalog.json` do kit traz os campos em `
 Nada muda para o tema salvo: valor persistido segue valendo. Quem tem token próprio nesses grupos pode usar o mapa
 para saber se o valor também precisa existir na `contraparte`.
 
-Sete tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
-decisão: `cardSpotlightOpacity`, `borderBeamEnabled`, `cardSearchBorderBeamActive`, `cardActionClickScale`,
-`cardContentAlignment`, `imageCardHoverZoom` e `tableActionPosition`. Declará-los num tema não muda a tela.
+Quatro tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
+decisão: `borderBeamEnabled`, `cardSearchBorderBeamActive`, `cardContentAlignment` e `tableActionPosition`.
+Declará-los num tema não muda a tela. (`cardSpotlightOpacity`, `cardActionClickScale` e `imageCardHoverZoom`
+passaram a desenhar — ver a nota seguinte.)
+
+### Spotlight, aperto do botão de ação e zoom da capa passam a desenhar por padrão
+
+**Classificação: MAJOR (visível por padrão, sem mudança de assinatura).** Três tokens que o painel já oferecia e que
+nada desenhava passam a mudar a tela, com o valor padrão que o schema sempre declarou:
+
+| Token | O que desenha | Padrão |
+|---|---|---|
+| `cardSpotlightOpacity` | Luz difusa na cor primária que acompanha o cursor sobre o `SarakTitleCard`, o `SarakActionCard`, o `SarakSearchCard` e o `SarakCoreCard`; sem ponteiro fino, fica no centro. | 0,1 |
+| `imageCardHoverZoom` | A imagem de capa do `SarakImageCard` cresce quando o ponteiro passa sobre **o cartão inteiro** (antes o hover nunca disparava). | 1,05 |
+| `cardActionClickScale` | O botão de ação do `SarakActionCard` encolhe enquanto está pressionado. | 0,96 |
+
+Quem não quer o efeito declara `cardSpotlightOpacity: 0`, `imageCardHoverZoom: 1` e `cardActionClickScale: 1`.
+Movimento reduzido (token `reducedMotion` ou a preferência do sistema) zera os três. O spotlight com `0` ou sob
+movimento reduzido não registra nenhum listener de ponteiro.
 
 ### Exports removidos do barril público
 

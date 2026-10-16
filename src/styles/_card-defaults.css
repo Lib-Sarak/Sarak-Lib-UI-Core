@@ -87,6 +87,11 @@
         var(--sarak-card-shadow-base),
         inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
     box-shadow: var(--sarak-card-shadow-full);
+
+    /* Ponto do spotlight (`_cards.css`): o centro. O cartão sobrescreve as duas no `style` enquanto o ponteiro fino
+       se move sobre ele, e as remove ao sair. */
+    --sarak-spot-x: 50%;
+    --sarak-spot-y: 50%;
 }
 
 /* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do

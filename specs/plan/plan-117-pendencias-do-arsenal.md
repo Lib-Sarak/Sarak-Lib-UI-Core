@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🟡 Em execução"
+status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -97,9 +97,9 @@ nenhum `defaultValue`.
 
 | # | Pendência | Origem | Decisão | Lote | Estado |
 |---|---|---|---|---|---|
-| P1 | `cardActionClickScale` — ligar o escalonamento do botão de ação ao clicar | plan-110 lote 1 | ligar | 1 | aberta |
-| P2 | `imageCardHoverZoom` — o zoom da imagem de capa no hover nunca dispara | plan-110 lote 1 | ligar | 1 | aberta |
-| P3 | `cardSpotlightOpacity` — o spotlight que segue o cursor não tem regra CSS | plan-110 lote 1 | ligar | 1 | aberta |
+| P1 | `cardActionClickScale` — ligar o escalonamento do botão de ação ao clicar | plan-110 lote 1 | ligar | 1 | fechada |
+| P2 | `imageCardHoverZoom` — o zoom da imagem de capa no hover nunca dispara | plan-110 lote 1 | ligar | 1 | fechada |
+| P3 | `cardSpotlightOpacity` — o spotlight que segue o cursor não tem regra CSS | plan-110 lote 1 | ligar | 1 | fechada |
 | P4 | `borderBeamEnabled` — o traço luminoso na borda do cartão não tem regra CSS | plan-110 lote 1 | ligar | 2 | aberta |
 | P5 | `cardSearchBorderBeamActive` — o traço no cartão de busca em foco | plan-110 lote 1 | ligar | 2 | aberta |
 | P6 | `cardContentAlignment` — redundante com `cardTextAlign`; ligá-lo regride o layout | plan-110 lote 1 | retirar | 3 | aberta |
@@ -187,8 +187,211 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido nem reescrito. -->
 
+## Resumo da execução (lote 1: P1, P2, P3) — 2026-10-15
+
+**Resultado:** Concluído com pendências (o caso de navegador não foi executado contra o `dist/` — ver Pendências; foi medido contra um build fora do repositório).
+
+**Estado do worktree ao iniciar**
+```
+ M package-lock.json
+ M package.json
+ M specs/00-indice.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+ M specs/plan/plan-118-fontes-embarcadas.md
+```
+(Arquivos da plan-118 e `package*.json` não foram tocados por mim.)
+
+**O que foi feito**
+- P3 — `src/components/atomic/Cards/hooks/useSpotlightPointer.ts` (novo): hook compartilhado. Registra `pointermove`/`pointerleave` na raiz do cartão só com `cardSpotlightOpacity > 0`, `reducedMotion !== true` e `(hover: hover) and (pointer: fine)`; grava `--sarak-spot-x/y` no `style` da raiz num `requestAnimationFrame` (um quadro agendado por vez, sem `setState`); `pointerleave` remove as variáveis (volta ao centro); `pointerType: 'touch'` é ignorado. Devolve também `data-spotlight`.
+- P3 — ligado em `SarakActionCard`, `SarakSearchCard`, `SarakTitleCard` e `SarakCoreCard` (`ref` + `data-spotlight`).
+- P3 — `src/styles/_cards.css`: `.sarak-card { --sarak-spot-x/y: 50% }` (centro, dono declarado) e `.sarak-card[data-spotlight="1"] > .spotlight-effect` com `radial-gradient` de `color-mix(var(--sarak-primary-color, var(--theme-primary)) calc(var(--spotlight-opacity, 0.1) * 100%), transparent)`; reserva 0,1 = `defaultValue`.
+- P1 — `src/styles/_cards.css`: `.sarak-card-action-btn:active { transform: none; scale: var(--sarak-card-action-click-scale, 0.96) }`; `SarakActionCard.tsx`: removido o `clickScale` morto (antiga linha 59). O botão de ação é um `SarakButton` (não é `motion`), por isso a regra é CSS; `transform: none` tira o aperto de elemento (`btnActiveScale`) e `scale` vence o `active:scale-[0.98]` do átomo, para a escala do token ser a única em jogo.
+- P1 — o `whileTap={{ scale: 0.95 }}` fixo do `SarakActionCard` **não é o mesmo elemento**: é o gatilho do painel expansível (chevron), não o botão de ação. Mantido como estava.
+- P2 — `SarakImageCard.tsx`: `variants={{ hover: resolveCardHoverMotion(design) }}` + `whileHover="hover"` na raiz; a camada da imagem tem só `variants={{ hover: { scale: hoverZoom } }}`. Zoom vale 1 com `reducedMotion` do token ou `useReducedMotion()` (preferência do sistema).
+- Reduzido: `_cards.css` esconde `.spotlight-effect` e zera `scale` do botão sob `:root[data-sx-reduced-motion="true"]` e `@media (prefers-reduced-motion: reduce)`.
+- Documentação: `kind: 'aesthetic'`, `modeDependent` (spotlight `true`; zoom e clique `false`), `usage`, `interactsWith` dos três em `schema/cards.ts` e `schema/card-action.ts`; saída de `achado-lote-1` de `tokenDocumentationPending.json`; `npm run token-types` regenerou `design-token-docs.json`; GUIA §6.4 (três saem da lista; frase dos valores padrão); `docs/migracoes.md` (`## 8.0.0`: nova nota dos três e correção do parágrafo "sete tokens" para quatro); anexo `plan-110-tokens-funcionais.md` §4.1 (desfecho); `npm run guide` e `npm run dev-kit` regenerados.
+- `.agents/skills/ui-integra-consumidor/` não cita os três tokens: nada a mudar.
+- Provas: cena `cartao-movimento` + recortes `cartao-*` em `browser-tests/fixtures/harness-entry.tsx`; `browser-tests/cartao-que-se-move.spec.ts` (13 casos); testes de componente e do hook.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Cards/hooks/useSpotlightPointer.ts` | criado | hook do spotlight que segue o cursor |
+| `src/components/atomic/Cards/hooks/__tests__/useSpotlightPointer.test.tsx` | criado | 8 testes do hook |
+| `src/components/atomic/Cards/SarakActionCard.tsx` | alterado | hook, `ref`, `data-spotlight`; `clickScale` morto removido |
+| `src/components/atomic/Cards/SarakSearchCard.tsx` · `SarakTitleCard.tsx` | alterado | hook, `ref`, `data-spotlight` |
+| `src/components/atomic/Templates/components/SarakCoreCard.tsx` | alterado | idem |
+| `src/components/atomic/Templates/SarakImageCard.tsx` | alterado | hover na raiz por variantes; zoom 1 em movimento reduzido |
+| `src/styles/_cards.css` | alterado | regras do spotlight, do aperto e do movimento reduzido |
+| `src/core/Design/schema/cards.ts` · `card-action.ts` | alterado | documentação dos três tokens |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −3 entradas `achado-lote-1` |
+| `src/core/Provider/generated/design-token-docs.json` | alterado (gerado) | `token-types` |
+| `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` | alterado · criado | cena e caso de navegador |
+| `src/components/atomic/Cards/__tests__/SarakActionCard.test.tsx` · `Templates/__tests__/SarakImageCard.test.tsx` | alterado | testes de P1/P3 e P2 |
+| `docs/migracoes.md` · `sarak-ui/GUIA-FRONTEND.md` | alterado | notas |
+| `sarak-ui/*` (`catalog.json`, `docs/migracoes.md`, `START-HERE.md`, `VERSION`) | alterado (gerado) | `npm run guide` |
+| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | §4.1 desfecho (declarado na §3.1) |
+
+**Verificações executadas**
+- `npx vitest run` (completa, 1 passada, sem timeout) → 3479/3479 testes, 0 falha, 1394 suítes.
+- `npx tsc --noEmit` → 0 erros.
+- `npm run audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão" (uma regressão `ghostvars` 0→2 nas variáveis do spotlight apareceu na 1ª tentativa e foi consertada declarando `--sarak-spot-x/y` em CSS).
+- Anel 1: `barrel`, `catalog`, `zero-brand`, `deep-import`, `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc`, `class-merge`, `icon-port`, `chrome-token-parity`, `token-reader`, `css-important`, `fixed-translucent`, `trail-citation`, `token-types`, `variable-contract`, `channel-dispute`, `token-docs` (116/402 documentados), `panel-contract`, `kit-names` → todos OK; `guide:check` e `dev-kit:check` OK depois de regenerar (por último). `plan-index:check` FALHA por divergência da `plan-118` (índice 🟡 × frontmatter 🟠) — não é minha.
+- Caso de navegador contra um build **fora do repositório** (esbuild com alias para `src/index.ts` + Tailwind CLI para a pasta temporária do scratchpad; `dist/` intocado): `cartao-que-se-move.spec.ts` → 13/13. Medido: spotlight padrão alfa 0,1 e extremo 1; centro do gradiente 40,30 → 200,60 px nos três cartões; token 0 → `background-image: none` e 0 listeners; padrão → 1 listener por cartão e `--sarak-spot-x` some ao sair; aperto pressionado `scale` 0,96 / 0,8 / 1, em repouso `none`; zoom 1,05 / 1,5 / 1 com o ponteiro no centro do cartão; movimento reduzido (token e `emulateMedia`) zera os três.
+- Mutação: sem a regra do spotlight → 3 casos caem; sem a regra do aperto → 2 caem; `whileHover` de volta na camada da imagem → o caso do zoom cai e o teste de componente do zoom cai.
+- `coverage:check` iniciado e **não aguardado** (estourou o prazo da chamada); sem resultado.
+- Anel 0 simulado sobre as linhas adicionadas e os 3 arquivos novos (padrões de chave/segredo): 0. R36 (`plan-NN`, "veredito", "achado N") em linha adicionada de código: 0.
+
+**Critérios de aceite (lote 1)**
+- [x] P1–P3 mudam o estilo computado no navegador (padrão × extremo; repouso, hover, pressionado) — evidência: a medição acima. Falta rodar contra o `dist/` (revisor).
+- [x] Movimento reduzido zera os três; token 0 não registra listener — evidência: casos 4, 6, 7, 10, 13 e testes do hook.
+- [x] `usage` dos três no schema; saem da exceção — `token-docs:check` OK.
+- [x] Nenhum `defaultValue`, tema, token novo ou opção nova alterados.
+- [ ] Executar `cartao-que-se-move.spec.ts` contra o `dist/` — motivo: `npm run build` proibido neste lote; fica para o revisor.
+
+**Custo do hook do spotlight**
+Dois listeners (`pointermove`, `pointerleave`) por cartão, **somente** quando o token é > 0, o movimento não está reduzido e o ponteiro é fino; token 0 não registra nenhum (medido: `window.__cardPointerListeners === 0`). Cada movimento agenda no máximo um `requestAnimationFrame` e faz uma leitura de `getBoundingClientRect` e duas escritas de variável; nenhum `setState`/re-render. Desmontar remove os listeners.
+
+**Decisões e suposições**
+- `kind: 'aesthetic'` para os três; `modeDependent: true` só no spotlight (luz sobre o fundo, como `cardGlowIntensity`).
+- `interactsWith`: spotlight→`primaryColor`; zoom→`imageCardOverlayOpacity`; clique→`cardActionBtnPrimaryBg`.
+- O aperto é por CSS (`scale`) e não por `whileTap`, porque o botão de ação é o `SarakButton` (DOM `<button>` sem framer); o expansor mantém o `whileTap` fixo (outro elemento).
+- Nas outras variantes do `SarakCoreCard` (que delegam para outros cartões) o hook é chamado e não registra nada (sem `ref` ligado).
+- O `SarakImageCard` não tem camada de spotlight (fora do que o token declara nos quatro cartões).
+- O parágrafo "sete tokens" da nota de migração já existente foi corrigido para quatro (divergência de prosa consertada na hora).
+
+**Achados fora do escopo (não corrigidos)**
+- `npm run plan-index:check` falha por `plan-118` (frontmatter 🟠 × índice 🟡): é da outra execução/revisor.
+- `src/components/atomic/Cards/hooks/__tests__/useExpandableCard.test.ts` ainda tem `// TODO` pré-existente.
+
+**Pendências / riscos**
+- O revisor precisa rodar `npm run build` e `npm run cromo-css-real:check`; só então o caso novo roda contra o `dist/`.
+- `coverage:check` concluiu depois do resumo, rodando sob a carga das duas execuções: 1 teste falhou de 3479 (arquivo não identificado: só a cauda da saída foi lida); a suíte completa avulsa, antes, deu 3479/3479. Provável *timeout* de carga; o revisor deve repetir.
+- O impacto de dezenas de cartões com o spotlight ligado não foi medido além da contagem de listeners.
+
+
+## Resumo da execução (correção 1) — 2026-10-15
+
+**Resultado:** Concluído
+
+**Achado 1 — a declaração de `--sarak-spot-x/y` em `_cards.css` casava a expressão do teste de cessão à classe**
+- `src/styles/_card-defaults.css`: `--sarak-spot-x: 50%` e `--sarak-spot-y: 50%` declaradas no bloco `.sarak-card` da caixa do cartão (logo após `box-shadow`), com comentário que aponta para a regra do spotlight.
+- `src/styles/_cards.css`: removido o bloco `.sarak-card { --sarak-spot-x/y }` que eu havia posto; o comentário do spotlight passou a citar `_card-defaults.css`. Mantidas a regra `.sarak-card[data-spotlight="1"] > .spotlight-effect` e as de movimento reduzido.
+- A declaração segue em CSS, então o `ghostvars` continua satisfeito (conferido abaixo).
+
+**Verificações (resultado visto)**
+- `npx vitest run src/styles/__tests__/cartaoQueCedeAClasse.test.ts` → 1 arquivo, 22/22 testes, 0 falha.
+- `npx vitest run` completa, sozinha, depois do último conserto → 495 arquivos, 1394 suítes, 3479/3479 testes, 0 falha, nenhum *timeout*.
+- `npx tsc --noEmit` → 0 erros.
+- `npm run audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- `npm run guide:check` → kit em dia (7 arquivos); `npm run dev-kit:check` → kit em dia (3 arquivos, 0 ponteiros mortos); `variable-contract` → OK (um dono por variável).
+- `npm run build` não foi rodado.
+
+**Arquivos alterados nesta rodada:** `src/styles/_card-defaults.css`, `src/styles/_cards.css` (e este resumo e o `status`). Nada mais foi tocado.
+
+**Pendências:** o caso de navegador novo não foi reexecutado após a mudança de lugar da declaração (nenhum `dist/` meu; o revisor já rodou o build). O efeito esperado é idêntico: a variável continua com 50% por padrão e o cartão a sobrescreve no `style`.
+
+
+## Resumo da execução (correção 2) — 2026-10-15
+
+**Resultado:** Concluído
+
+**Achado 1 — `browser-tests/cartao-que-se-move.spec.ts`: o cartão se movia enquanto `pointAt` o media**
+- Nova `waitUntilStill`: espera a caixa do cartão idêntica por 5 `requestAnimationFrame` seguidos e nenhuma animação do elemento em `running` (prazo de 5 s, falha explícita).
+- `pointAt` agora: entra no cartão → espera parar → relê a caixa assentada → posiciona o ponteiro em (dx, dy) contra ela → espera parar de novo → espera o quadro que grava as variáveis. As asserções do caso (centro dentro de 2 px, alfa, `none` com token 0) ficaram como estavam.
+- Evidência: 5 execuções isoladas seguidas do arquivo (config com o `global-setup.mjs` real, contra o `dist/` reconstruído pelo revisor) → 13 passed nas cinco (1,0 / 1,4 / 1,7 / 1,2 / 1,2 min).
+
+**Achado 2 — três testes de `DesignEngine` estouravam prazo sob carga**
+- `Canvas/__tests__/PreviewCanvas.test.tsx` e `Canvas/components/__tests__/PresetsCatalog.test.tsx`: `waitFor(..., { timeout: 10000 })` no que espera `[aria-busy="true"]` sumir, com comentário do motivo.
+- `hooks/__tests__/useDesignDraft.undoIntegration.test.tsx`: o teste do desfazer ganhou `, 30000` (o que espera 1,6 s de salvamento atrasado), com comentário do motivo.
+- Nenhuma asserção mudou. Evidência: os 3 arquivos isolados → 3 arquivos, 11/11 testes.
+
+**Verificações (resultado visto)**
+- `npx vitest run` completa, sozinha, depois do último conserto → 495 arquivos, 1394 suítes, 3479/3479 testes, 0 falha, nenhum *timeout*.
+- `npx tsc --noEmit` → 0 erros.
+- `npm run audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- `npm run guide:check` → em dia (7 arquivos); `npm run dev-kit:check` → em dia (3 arquivos, 0 ponteiros mortos).
+- `npm run build` não foi rodado.
+
+**Escopo:** nenhum `src/` de produto, nem `_card-defaults.css`, nem `_cards.css` foram tocados nesta rodada; só o spec de navegador e os três testes acima.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-15 — lote 1 — 🔴 Reprovado (1 achado)
+
+**Conferido no worktree:** `npm run build` OK e **`cromo-css-real:check` 337/337**, com os 13 casos de
+`cartao-que-se-move.spec.ts` contra o `dist/` (o que o executor não podia rodar); `tsc` 0; `audit:baseline --with-tsc`
+igual ao baseline; `token-docs` (116 documentados, 286 em exceção), `token-types`, `guide`, `dev-kit`, `catalog`,
+`barrel`, `css-important`, `fixed-translucent`, `token-reader`, `variable-contract`, `kit-names` e R36 verdes. O código
+é o desenho pedido: hook `useSpotlightPointer` (listeners só com token > 0, sem movimento reduzido e ponteiro fino;
+`rAF`, sem `setState`), zoom no pai por variantes, aperto por CSS (`scale`) no botão de ação, movimento reduzido zerando
+os três, nenhum `defaultValue` tocado.
+
+**Achado:**
+
+1. **`src/styles/_cards.css` — a regra `.sarak-card { --sarak-spot-x: 50%; --sarak-spot-y: 50%; }` volta a pôr uma
+   regra-base de `.sarak-card` em `_cards.css`**, e a suíte completa **falha** em
+   `src/styles/__tests__/cartaoQueCedeAClasse.test.ts` — *"`_cards.css` não tem mais a regra-base do cartão"*
+   (`expect(cards).not.toMatch(/^\.sarak-card(?:,\s*\.[\w-]+)*\s*\{/m)`). A base do cartão mora na camada de baixo
+   (`_card-defaults.css`) para a classe do consumidor vencer sem `!important` (`02` §9.1, R41). O resumo afirma
+   3479/3479 verdes; o teste falha deterministicamente (reproduzido isolado). Critério violado: a trava de cascata
+   (R41) e "suíte completa verde numa passada".
+   **Correção:** declarar `--sarak-spot-x`/`--sarak-spot-y` (o centro, `50%`) no bloco `.sarak-card` de
+   `_card-defaults.css`, onde já vivem as variáveis do cartão, e tirar o bloco de `_cards.css`; manter
+   `.sarak-card[data-spotlight="1"] > .spotlight-effect` e as regras de movimento reduzido onde estão (não casam a
+   expressão). O `ghostvars` continua satisfeito (a declaração segue em CSS). Repetir a suíte completa e declarar o
+   resultado como visto.
+
+Segundo ponto de atenção (não reprova): `useDesignDraft.undoIntegration.test.tsx` e `coverage:check` foram vistos com
+*timeout* sob carga; isolado, o primeiro passa (23/23 do par de arquivos). Nada a corrigir.
+
+**Status: 🔵 Em correção.** O resto da entrega está aprovado como está.
+
+## Veredito — 2026-10-15 — correção 1 — 🔴 Reprovado (2 achados, ambos de robustez)
+
+**Conferido no worktree, depois da correção:** o conserto pedido está certo — `--sarak-spot-x/y` em `_card-defaults.css`,
+bloco removido de `_cards.css`, `cartaoQueCedeAClasse.test.ts` verde. Reconstruí (`npm run build` OK) e rodei no
+navegador `cartao-que-se-move`, `tema-sob-demanda`, `cartao-cede-a-classe` e `cascata-que-cede`: **40 passaram e 2
+falharam**; `tsc` 0, baseline igual; suíte completa **495 arquivos, 3477/3479, 2 falhas**.
+
+**Achados:**
+
+1. **`browser-tests/cartao-que-se-move.spec.ts:120-123` — o caso do spotlight é intermitente.** Falhou 2 de 2 casos
+   (`cartao-titulo`, `cartao-busca`) na bateria e 1 de 3 execuções isoladas seguintes, com o centro do gradiente 2,7 e
+   4,8 px fora do esperado em Y (`Expected: < 2`). Causa: `pointAt` lê a caixa do cartão **antes** de o ponteiro
+   pousar, mas o cartão tem `whileHover` (`resolveCardHoverMotion`, o *lift*) e a entrada `initial`/`animate`: ao ser
+   medido, o cartão ainda se move, e `SETTLE_MS` é curto para a animação terminar. É a classe de defeito do item 15 do
+   backlog. **Correção:** esperar o cartão **parar** antes de medir (caixa estável em dois quadros seguidos, ou as
+   animações do elemento terminadas) e medir a posição esperada **contra a caixa lida depois do hover**, não antes;
+   o caso tem de passar 5 execuções seguidas.
+2. **Dois testes da suíte completa estouram tempo sob carga e sujam "verde numa passada"** (passam isolados, 6/6):
+   `PreviewCanvas.test.tsx` — o `waitFor` que espera os temas chegarem (`[aria-busy="true"]` nulo) usa o prazo padrão de
+   1 s e falhou com *"expected … to be null"*; e `useDesignDraft.undoIntegration.test.tsx` estoura os 5 s do vitest.
+   **Correção:** prazo explícito e folgado nos dois (`waitFor(..., { timeout: 10000 })` no primeiro e `it(..., 30000)`
+   no segundo, com o comentário do motivo, como o resto da suíte já faz), sem mexer no que os testes afirmam. O
+   `PresetsCatalog.test.tsx` tem o mesmo `waitFor`: aplicar o mesmo prazo.
+
+**Status: 🔵 Em correção.** O código de produto (P1, P2, P3) está aprovado como está.
+
+## Veredito — 2026-10-16 — correção 2 (lote 1) — 🟢 Aprovado
+
+**Conferido no worktree, pelo revisor:**
+- **Achado 1:** `pointAt` espera o cartão parar (`waitUntilStill`: caixa idêntica por 5 quadros e nenhuma animação em
+  curso), relê a caixa assentada e só então posiciona o ponteiro; as asserções não mudaram. Rodei o arquivo **5
+  vezes isoladas contra o `dist/` reconstruído: 13/13 nas cinco** (a falha anterior era 2 de 13 na bateria e 1 de 3
+  isoladas).
+- **Achado 2:** `waitFor(..., { timeout: 10000 })` nos dois testes que esperam os temas e `, 30000` no teste de
+  desfazer, cada um com o motivo; nenhuma asserção mudou.
+- **Suíte completa, sozinha na árvore:** **495 arquivos, 3479/3479 testes, 0 falha**, numa passada.
+- `tsc` 0; `audit:baseline --with-tsc` igual ao baseline; `guide:check`, `dev-kit:check`, `token-docs` (116 de 402
+  documentados, 286 em exceção) e `kit-names` verdes. Anteriores desta rodada: `cromo-css-real` 337/337, build OK.
+
+**Lote 1 da `plan-117` (P1, P2, P3) fechado.** P1–P3 mudam o estilo computado no navegador (par padrão × extremo),
+movimento reduzido zera os três, token 0 não registra listener, a base do cartão voltou para a camada de baixo, nenhum
+`defaultValue` nem tema tocado.
+
+**Status: 🔴 A executar (lote 2: P4, P5 — o traço luminoso).** Os lotes 2 e 3 seguem a §5.2.

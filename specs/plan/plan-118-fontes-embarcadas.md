@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Embarcar as fontes na biblioteca, carregadas sob demanda, e ampliar o catalogo de tipografia"
 objetivo: "Fazer a biblioteca entregar as proprias fontes, carregadas so quando o tema as usa e sem requisicao a terceiros, com a opcao de o host escolher a origem, e ampliar com seguranca o catalogo de familias que o schema e o painel oferecem"
 dominio: "Design Engine / Tipografia / Build e distribuicao / Privacidade"
-status: "🟡 Em execução"
+status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "fontes", "tipografia", "build", "privacidade", "lgpd", "bundle"]
 relacionados: ["[[09-temas-e-presets]]", "[[05-build-e-distribuicao]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[02-design-engine]]"]
@@ -50,6 +50,16 @@ técnico (carga em runtime por URL relativa ao módulo, opção do host) foi ace
   `new URL(..., import.meta.url)`, o importador usa `baseUrl`.
 - **Modo Embarcado:** a regra atual de `options.embedded.injectGlobalFonts` (opt-in) **continua**; fonte é recurso do
   documento, e a ilha não o impõe.
+
+**Decisões do dono sobre o lote 1 (2026-10-15):**
+- **`latin-ext` não entra** agora; o manifesto guarda o subconjunto como campo para entrar depois sem MAJOR.
+- **Pesos sintéticos das estáticas: aceitos**, com a regra "o tema escolhe pesos que a família tem" na documentação;
+  o carregador nunca declara um peso que o pacote não contém.
+- **Variedade: sim, ampla.** Entram as 26 do anexo **mais** Orbitron, VT323, Fira Code, DM Sans, Manrope, Work Sans,
+  Lora e Oswald (34 famílias), e uma **segunda onda** a medir (lote 1b): Open Sans, Raleway, Source Sans 3,
+  Merriweather, Poppins, Lato e PT Serif. Os pacotes já estão instalados.
+- **O cliente pode adicionar fontes próprias ao importar.** A lib entrega as opções prontas, e o importador registra
+  outras (lote 4): o catálogo da lib é o ponto de partida, nunca o teto.
 
 **Restrições que não mudam:** zero marca (R12); nenhuma rede por conta própria **além** do que `options.fonts:
 'google'` explicitamente pede; boot continua só com o tema padrão (`theme-boot:check`, `boot:measure` não regridem);
@@ -123,6 +133,14 @@ Candidatas (a lista final sai do lote 1; instalar todas custa só `node_modules`
 4. Entregar a proposta no anexo `specs/plan/anexos/plan-118-catalogo-de-fontes.md`. **O revisor decide a lista final
    com o dono** antes do lote 2.
 
+**Lote 1b — a segunda onda (medição; só o anexo).**
+- Medir Open Sans, Raleway, Source Sans 3, Merriweather, Poppins, Lato e PT Serif **como o lote 1** (variável/estática,
+  eixos, `latin` upright, licença, pesos que a lib usa) e **acrescentar ao mesmo anexo**
+  `plan-118-catalogo-de-fontes.md`: a tabela por categoria, o `value` exato e o veredito, com o orçamento atualizado
+  (34 famílias do lote 1 + a segunda onda). Mesmo critério de inclusão, **com a regra nova do dono**: proximidade
+  visual com uma família existente **não exclui** (a marca do cliente chega com a fonte dela); excluem licença,
+  qualidade em corpo/título, ou estourar o orçamento. Nenhum código de produto.
+
 **Lote 2 — pipeline, catálogo e gate.**
 5. O passo de build copia os woff2 da lista final para `dist/fonts/` e **gera o manifesto** (família → arquivos,
    pesos, eixos), derivado de `THEME_FONTS` (fonte única); nenhuma lista à mão.
@@ -146,8 +164,30 @@ Candidatas (a lista final sai do lote 1; instalar todas custa só `node_modules`
 13. **O `CJS`** não resolve o `new URL` do `import.meta.url`: o carregador usa `baseUrl` ou degrada para a fonte
     de reserva **com aviso nomeando a família** — nunca em silêncio.
 
-**Lote 4 — documentação e fechamento.**
-14. O kit e as skills ensinam: as três origens, quando usar `baseUrl` (esbuild puro, CDN própria), a nota de
+**Lote 4 — as fontes do host (o importador adiciona as dele).**
+- **API:** `options.fonts.custom`: lista de `{ family, category?, fallback?, files: [{ url, weight, style? }] }` (ou
+  `src` por peso). O importador aponta para os arquivos que **ele** serve (woff2/woff); a lib **não os embarca nem os
+  copia**. Aparecem no painel junto às da lib, agrupadas por categoria, e valem em `headingFont`, `bodyFont`,
+  `identityFontFamily` e qualquer token de fonte.
+- **Validação (segurança, R6):** o domínio de `headingFont`/`bodyFont` hoje é o enum do schema, e `validateDesign` descarta
+  valor fora dele. O valor de uma família do host só é aceito **se ela estiver registrada em `options.fonts.custom`**;
+  o nome da família é validado por padrão restrito (letras, dígitos, espaço, hífen, sublinhado), e a `url` passa pelo
+  mesmo predicado de mídia segura (`isSafeMediaString`): **nenhum esquema fora de `https:`, caminho relativo/`/`,
+  `data:` de fonte; nenhuma interpolação em CSS sem escapar**. Tema como dado hostil: um tema salvo com uma família
+  não registrada cai no padrão, com aviso nomeando a família — nunca injeta o nome.
+- **Persistência:** o tema guarda só o `value` da família; o host é quem registra os arquivos. Ao exportar um tema
+  que usa fonte do host, o JSON exportado o diz (comentário/aviso do painel), para o outro host saber que precisa
+  registrá-la.
+- **Carregamento:** o mesmo carregador sob demanda do lote 3 (só a família em uso), `font-display: swap`, sem rede
+  extra quando `options.fonts` é `none`.
+- **Painel:** a lista de opções é composta em runtime (catálogo da lib + as do host), sem tocar o schema embarcado;
+  sem fonte registrada, nada muda.
+- **Testes:** registrar, usar, tema salvo com família desconhecida (aviso, padrão), URL com esquema perigoso
+  (recusada), nome com caracteres de CSS (recusado), painel lista a do host, `none` não carrega.
+
+**Lote 5 — documentação e fechamento.**
+14. O kit e as skills ensinam: as três origens, **como registrar fonte própria (`options.fonts.custom`) e quando
+    preferir isso a `baseUrl`**, quando usar `baseUrl` (esbuild puro, CDN própria), a nota de
     **privacidade/LGPD** e de política de segurança de conteúdo (`font-src`), o catálogo por categoria e **o que a lib
     já faz** (não recriar carregador de fonte). A `ui-criar-tema` ganha a regra "fonte por valor exato da lista" e as
     famílias novas por categoria.
@@ -156,7 +196,10 @@ Candidatas (a lista final sai do lote 1; instalar todas custa só `node_modules`
 
 # 6. Critérios de aceite
 
-- [ ] Lote 1 aprovado: catálogo final decidido com o dono, cada família com licença redistribuível e peso medido.
+- [ ] Lotes 1 e 1b aprovados: catálogo final decidido com o dono (34 + a segunda onda que passar), cada família com
+  licença redistribuível e peso medido
+- [ ] **O importador registra fontes próprias** (`options.fonts.custom`): aparecem no painel, valem nos tokens de
+  fonte, passam pela validação (nome e URL seguros), tema salvo com família não registrada cai no padrão com aviso.
 - [ ] `dist/fonts/` e o manifesto gerados da lista única; `THIRD-PARTY-FONTS` presente; `fonts:check` no `build`,
   com mutação e orçamento.
 - [ ] Os 19 `value` atuais de `THEME_FONTS` **inalterados**; as famílias novas entram como opções, com paridade;
@@ -197,8 +240,199 @@ Candidatas (a lista final sai do lote 1; instalar todas custa só `node_modules`
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido nem reescrito. -->
 
+
+## Resumo da execução — 2026-10-15
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```
+M  package-lock.json
+M  package.json
+M  specs/00-indice.md
+M  specs/plan/plan-117-pendencias-do-arsenal.md
+M  specs/plan/plan-118-fontes-embarcadas.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Criei `specs/plan/anexos/plan-118-catalogo-de-fontes.md:1` com medições dos 40 pacotes instalados, licenças/créditos, cobertura dos seis idiomas, comparação visual e catálogo proposto.
+- Acrescentei este bloco append-only na §9 e movi `status` para `🟠 Em revisão`.
+- Mantive o trabalho da `plan-117` sem alterações; não editei `src/`, `scripts/`, `gates/`, `dist/`, `package.json` nem `package-lock.json`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/plan/anexos/plan-118-catalogo-de-fontes.md` | criado | Inventário e proposta com medições dos 40 candidatos. |
+| `specs/plan/plan-118-fontes-embarcadas.md` | alterado | Resumo desta execução e status para revisão. |
+
+**Verificações executadas**
+- Scripts Node em `%TEMP%` sobre os diretórios instalados → 40/40 candidatas medidas; 40/40 licenças redistribuíveis; nenhum pacote Fontsource direto instalado fora da lista. Scripts scratchpad removidos ao terminar.
+- Espécime local no navegador → `document.fonts`: 40 carregadas / 40; amostra comparativa incluiu acentos e operadores monoespaçados.
+- Anel 0 em repositório Git temporário, com o anexo staged → `bloqueado: false`, `achados_segredo: []`, `arquivos_sensiveis: []`. O repositório temporário foi removido.
+- Suítes não executadas: este lote não alterou código, e a instrução dispensa testes.
+
+**Critérios de aceite**
+- [x] Medição por pacote de arquivos/subconjuntos, eixos, pesos, tamanhos e licenças — evidência: anexo, tabelas das cinco categorias.
+- [x] Proposta dentro do orçamento — Latin 1.012.836 B; com Latin-ext recomendado 1.894.996 B, abaixo de 3 MB.
+- [x] Cobertura dos seis idiomas verificada; `de`/`fr` e custo Latin-ext identificados — evidência: anexo § “Latin-ext e os seis idiomas”.
+- [x] Valores atuais e código de produto preservados — nenhuma edição em `src/` nem nos artefatos de produto.
+- [ ] Catálogo aprovado com o dono — pendente de revisão, como prevê o fim do lote 1.
+
+**Decisões e suposições**
+- Interpretei os 19 itens atuais como 19 famílias file-backed: o código contém também `system-ui`, totalizando 20 opções. Todas permanecem sem alteração; `system-ui` continua sem WOFF2 próprio.
+- Recomendo Latin-ext para `ẞ` em alemão e `Ÿ` em francês. `Satisfy` não tem esse subconjunto e dependerá de fallback nesses glifos.
+- Pesos estáticos foram somados usando os pesos nativos que o pacote disponibiliza entre os valores do painel; limites e síntese estão descritos no anexo.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/features/DesignEngine/Panels/LayoutTab.tsx:3` mantém uma lista local Outfit/Inter. As referências encontradas são comentários, o componente é usado apenas pelo próprio teste e não foi tratado como catálogo vivo.
+- Durante a execução, o HEAD avançou para `cca1b365` (`feat(dependencies): add multiple fontsource packages ...`), que incorporou a instalação e o dispatch já presentes na fotografia inicial. Também surgiram alterações da execução paralela da `plan-117`; foram preservadas.
+
+**Pendências / riscos**
+- O dono/revisor precisa decidir o catálogo, Latin-ext e aceitação de pesos sintéticos nas fontes estáticas.
+- `00-indice.md` permanece sob responsabilidade do revisor; após este status 🟠, deve ser espelhado para 🟠 antes de liberar qualquer commit.
+- O status global do worktree inclui alterações em andamento da `plan-117` e `.claude/settings.local.json`; a mudança deste lote limita-se ao anexo e a esta plan.
+
 ---
+
+## Resumo da execução — 2026-10-15 — lote 1b
+
+**Resultado:** Concluído; recomendo as sete candidatas da segunda onda para o catálogo de 41 famílias. A ratificação do catálogo precede o lote 2.
+
+**Estado do worktree ao iniciar**
+```text
+ M browser-tests/fixtures/harness-entry.tsx
+ M docs/migracoes.md
+ M gates/allowlists/tokenDocumentationPending.json
+ M package-lock.json
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/plan/anexos/plan-110-tokens-funcionais.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+ M specs/plan/plan-118-fontes-embarcadas.md
+ M src/components/atomic/Cards/SarakActionCard.tsx
+ M src/components/atomic/Cards/SarakSearchCard.tsx
+ M src/components/atomic/Cards/SarakTitleCard.tsx
+ M src/components/atomic/Cards/__tests__/SarakActionCard.test.tsx
+ M src/components/atomic/Templates/SarakImageCard.tsx
+ M src/components/atomic/Templates/__tests__/SarakImageCard.test.tsx
+ M src/components/atomic/Templates/components/SarakCoreCard.tsx
+ M src/core/Design/schema/card-action.ts
+ M src/core/Design/schema/cards.ts
+ M src/core/Provider/generated/design-token-docs.json
+ M src/styles/_cards.css
+?? .claude/settings.local.json
+?? browser-tests/cartao-que-se-move.spec.ts
+?? specs/plan/anexos/plan-118-catalogo-de-fontes.md
+?? src/components/atomic/Cards/hooks/__tests__/useSpotlightPointer.test.tsx
+?? src/components/atomic/Cards/hooks/useSpotlightPointer.ts
+```
+
+**O que foi feito**
+- Acrescentei uma seção ao fim de `specs/plan/anexos/plan-118-catalogo-de-fontes.md`; preservei intacto o conteúdo do lote 1.
+- Medi os sete pacotes instalados, registrei licenças/créditos, pesos reais e sintetizados, os valores propostos de `THEME_FONTS` e o catálogo Latin consolidado.
+- Acrescentei este resumo à §9 e mudei o status para `🟠 Em revisão`.
+- Não alterei código de produto, pacote, lockfile ou arquivo da plan-117; `00-indice.md` já aparecia modificado na fotografia inicial e permaneceu intocado.
+
+**Arquivos deste lote**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/plan/anexos/plan-118-catalogo-de-fontes.md` | acréscimo | Nova seção lote 1b e catálogo consolidado de 41 famílias. |
+| `specs/plan/plan-118-fontes-embarcadas.md` | alterado | Status e bloco append-only desta execução na seção 9. |
+
+**Verificações executadas**
+- Script Node temporário de leitura dos sete pacotes → 7/7 medidos; 7/7 redistribuíveis sob SIL OFL 1.1. Versões: Source Sans 3 5.3.1; demais 5.3.0. O scratchpad foi removido.
+- Espécime local com WOFF2 → as sete candidatas comparadas em corpo 400 e título 700 com pares aceitos; fontes carregadas e amostra acentuada renderizada.
+- Soma Latin upright → 41 famílias, 1.690.020 B (1,690 MB / 1,612 MiB); folga de 1.309.980 B (1,310 MB) contra 3 MB. Maior carga por família: Merriweather, 97.548 B (95,3 KiB).
+- Anel 0 simulado em repositório Git temporário, com apenas o anexo staged → `bloqueado: false`, `achados_segredo: []`, `arquivos_sensiveis: []`; scratchpad removido.
+- `git status --short -- specs/plan/anexos/plan-118-catalogo-de-fontes.md specs/plan/plan-118-fontes-embarcadas.md` → apenas o anexo (não rastreado) e esta plan (modificada). O status global conserva os caminhos que já estavam modificados na fotografia inicial.
+- Suítes não executadas, conforme instrução: lote sem código e sem testes necessários.
+
+**Critérios de aceite**
+- [x] Sete candidatas medidas dos arquivos instalados: tipo, eixos, subconjuntos, WOFF2, pesos, síntese, licença e crédito.
+- [x] Regra nova de variedade aplicada: aproximação visual foi registrada, não usada para excluir; as sete passam qualidade em corpo/título e limites de peso/orçamento.
+- [x] Catálogo consolidado por categoria e valores exatos de 22 novas famílias documentados para o lote 2.
+- [x] Latin-ext fora do catálogo e campo de subconjuntos preservado para expansão futura.
+- [x] Anel 0 limpo; nenhum código ou arquivo da plan-117 alterado por este lote.
+
+**Decisões e suposições**
+- Usei o subtotal Latin de 26 famílias já aprovado no veredito do lote 1 (1.012.836 B), somei 244.372 B das oito inclusões do dono e 432.812 B da segunda onda. A soma corresponde aos arquivos e pesos registrados no anexo.
+- A opção atual `system-ui, -apple-system, sans-serif` permanece sem WOFF2 próprio e fora das 41 famílias embarcadas.
+- Não há exceção de licença ou orçamento. Os pesos estáticos sintetizados constam do anexo e seguem a decisão do dono.
+
+**Achados fora do escopo**
+- As mudanças paralelas da plan-117 e demais caminhos presentes na fotografia inicial foram preservados.
+
+**Pendências**
+- Revisor/dono confirmar a inclusão das sete candidatas antes do lote 2; nenhuma exceção técnica ou de licença está pendente.
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-15 — lote 1 — 🟢 Aprovado (a execução); a lista final aguarda o dono
+
+**Conferido pelo revisor, nos arquivos instalados (não pelo resumo):**
+- **Escopo:** o lote só criou o anexo `plan-118-catalogo-de-fontes.md` e o resumo; nenhum arquivo de produto, `package.json` ou
+  `dist/` foi tocado (as demais alterações do worktree são do lote 1 da `plan-117`, em paralelo).
+- **Total reproduzido:** recalculei a proposta (16 variáveis atuais + 3 novas variáveis em `latin-wght`, 3 estáticas
+  atuais e 4 estáticas novas nos pesos que o anexo declara) = **1.012.836 bytes**, exatamente o do anexo; o
+  `latin-ext` das variáveis soma 677.360 B (o anexo soma 882.160 B com as estáticas que o publicam).
+- **Licenças:** `Satisfy` e `Roboto Slab` são Apache-2.0 (`LICENSE` lido); as demais OFL-1.1, como declarado. Nenhuma
+  impede redistribuir.
+- **Cobertura:** `latin` cobre ASCII e as letras acentuadas de pt/en/es/fr/de/it; só `ẞ` e `Ÿ` ficam em `latin-ext`.
+
+**Ponto de atenção do revisor (não reprova):** o anexo mede o arquivo `latin-wght` das variáveis — o eixo `opsz` do
+Inter/Source Serif 4/DM Sans e os eixos de Fraunces (`opsz`, `SOFT`, `WONK`) ficam de fora. É a escolha certa para o
+orçamento, e o lote 2 a registra no manifesto como decisão (e não como esquecimento).
+
+**Achado fora do escopo → backlog 35:** `Panels/LayoutTab.tsx` é órfão, com uma lista de fontes própria.
+
+**Decisões que cabem ao dono (com a recomendação do revisor):**
+1. **Latin-ext (+882 KB, 46% do pacote): não entrar agora.** O ganho são dois glifos (`ẞ` maiúsculo alemão, `Ÿ`
+   maiúsculo francês), que caem para a fonte do sistema **por glifo**, sem quebrar a linha. O manifesto do lote 2 deixa o
+   subconjunto como campo, e adicionar depois não é MAJOR.
+2. **Pesos sintéticos das estáticas: aceitar**, com a regra de documentação "a ficha do tema escolhe pesos que a
+   família tem" (a `ui-criar-tema` e o `usage` de `headingFont`/`bodyFont` avisam). Patrick Hand e Space Mono ganham face
+   única/dupla no carregador (nunca declarar um peso que o pacote não contém).
+3. **Variedade — recomendo ir além da proposta do executor**, que cortou 10 das 17 candidatas por proximidade visual.
+   Numa lib cujo diferencial é casar a **identidade de marca do cliente**, "parecida com Inter" não é critério de
+   exclusão: o cliente chega com a fonte dele. Com ~1,4 MB livres no orçamento de 3 MB, recomendo entrar:
+   - as **três que os temas já pediram** (a direção de arte do cyber/terminal as quer): **Orbitron** (11,5 KB),
+     **VT323** (17,5 KB) e **Fira Code** (35,4 KB);
+   - **DM Sans, Manrope e Work Sans** (sans de marca de uso corrente), **Lora** (serif de leitura) e **Oswald**
+     (condensada de títulos) — ~175 KB somados.
+   Catálogo: **34 famílias**, ~1,25 MB em `latin` (< 3 MB, nenhuma > 150 KB).
+4. **Segunda onda de candidatas para medir (opcional):** Poppins, Open Sans, Lato, Raleway, Source Sans 3,
+   Merriweather, PT Serif — as mais usadas por marcas de cliente, que não estavam na lista inicial. Pede um lote 1b
+   (instalar e medir), antes do lote 2.
+
+**Status: 🔴 A executar (lote 2).** Fica retida por duas coisas: a decisão do dono acima e a `plan-117` 🟢.
+
+## Veredito — 2026-10-15 — lote 1b — 🟢 Aprovado
+
+**Conferido nos arquivos instalados:** a segunda onda soma **432.812 B**, as oito inclusões do dono **244.372 B** e a
+base do lote 1 **1.012.836 B**: **1.690.020 B** para 41 famílias, exatamente o do anexo (folga de ~1,31 MB contra 3 MB,
+maior família Merriweather, 97.548 B). As sete são OFL-1.1 (`package.json` lido). O escopo foi só o anexo e o resumo.
+
+**Catálogo final para o lote 2: as 41 famílias do anexo** (a regra do dono — proximidade não exclui — foi aplicada, e
+ele aceitou a segunda onda). `latin` só; o manifesto guarda o campo de subconjuntos.
+
+**Instruções ao lote 2 (acrescentam ao anexo, não o substituem):**
+1. **Valores com genérico válido.** O anexo propõe `"'Orbitron', display"` etc., e `display` **não é** uma família
+   genérica de CSS (o padrão antigo `"'Unbounded', display"` já tinha o defeito). Para as famílias **novas**, o `value`
+   termina num genérico válido (`sans-serif`, `serif`, `monospace`, `cursive`); a **categoria** do painel continua em
+   `category`. Os 19 `value` existentes ficam como estão (tema salvo guarda a string).
+2. **Eixos que ficam de fora, por decisão:** o carregador usa o arquivo `latin-wght` das variáveis; `opsz`/`wdth`/`SOFT`/
+   `WONK` (Inter, Merriweather, Source Serif 4, DM Sans, Fraunces) não entram. Registrar no manifesto e na
+   documentação, não deixar como esquecimento.
+3. **Pesos:** o manifesto declara só os pesos com arquivo; `Poppins` (7 pesos) e `Lato` (4) são as estáticas mais
+   pesadas — o carregador só busca o peso que o design pede.
+
+**Status: 🔴 A executar (lote 2).** Retida pela `plan-117` 🟢 (a dependência declarada).

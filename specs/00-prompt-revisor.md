@@ -257,14 +257,20 @@ conversa**, não em arquivo.
 3. **Leia o diff inteiro**, linha por linha, nos arquivos que importam.
 4. **Cada critério de aceite com evidência nomeada** (`arquivo:linha`, saída de comando). Sem evidência = não
    atendido.
-5. **Rode o que a instrução mandou rodar** — testes, linters, validadores `padrao-*`, `code-auditoria-padrao`.
-   Cole a saída real.
+5. **Rode a verificação, uma vez, no nível da mudança — é só sua** *(decisão do dono, 2026-10-16: o executor não
+   a repete)*. `npm run verify` classifica o diff e roda o mínimo que o cobre: **docs** (índice, ponteiros, kits),
+   **themes** (trava de catálogo, fecho do boot, testes que iteram `themes/all`, diversidade, peso por tema,
+   baseline), **schema-meta** (paridade, documentação de token, gerados) ou **full** (`tsc`, suíte completa,
+   baseline com `tsc`, Anel 1, R36, Anel 0). `--dry` mostra o plano; `--tier=` força o nível. O navegador
+   (`npm run build` + `cromo-css-real:check`) é à parte e só quando a mudança toca CSS, componente ou cena. Cole a
+   saída real.
 6. **Regras do sistema** — `00-contexto` e `padrao-escrita`: limiares, zero hardcoded, segredo fora do `.env`,
    encapsulamento de módulo, `shared/` sem lógica.
 7. **Sinais de atalho** — `TODO`/`FIXME` novos, debug esquecido, teste comentado ou em skip, `any`/cast para
    calar tipo, hook contornado, dependência sem justificativa, arquivo apagado sem instrução, **comentário
    citando uma plan** (proibido — `padrao-escrita`, `references/comentarios.md`).
-8. **Regressão** — rode a suíte, não deduza.
+8. **Regressão** — no nível `full`, a suíte inteira, não deduza; nos níveis menores, a regressão possível é a que
+   o nível cobre (tema não toca o motor). Em dúvida sobre o nível, `--tier=full`.
 
 **Reprova sempre:** escopo excedido sem justificativa · critério atendido "por interpretação" · suíte
 vermelha ou teste desabilitado para ficar verde · segredo ou hardcoded · gate contornado · commit feito pelo

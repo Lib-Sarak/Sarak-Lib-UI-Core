@@ -181,7 +181,8 @@ depois do veredito.** Em **todo** lote que toca código:
 - **Enriquecer o schema e a documentação com o que o lote ensinou** (metadado do token, receita, armadilha, exemplo
   real) — o conhecimento não fica no resumo.
 - Contraste não textual relatado por tema e modo (WCAG 1.4.11, 3:1 — apoio, não gate).
-- Nota MAJOR na `## 8.0.0`; gerados regenerados (`guide` e `dev-kit` por último); simulação do Anel 0; a verificação da §7.
+- Nota MAJOR na `## 8.0.0`; gerados regenerados (`guide` e `dev-kit` por último).
+- **A verificação não é do executor** (decisão do dono, 2026-10-16): suíte, `tsc`, baseline, Anel 0/1, R36 e navegador são rodados **uma vez, pelo revisor**, no nível que o diff pede (`npm run verify`). Lote de **tema** (só os `.ts` de tema e anexos) roda o nível `themes`: trava de completude, catálogo, fecho do boot, contraste, diversidade, peso por tema e testes que iteram `themes/all` — **sem** suíte completa nem `tsc`. Lotes 1–4 (metadado de schema) rodam `schema-meta`. O executor roda só o teste do que escreveu e relata isso.
 
 **Dependência parcial (decisão do dono, 2026-10-15): a `plan-117` (pendências do arsenal) fecha antes do lote 5.** Os lotes 1 a 4 (análise e documentação dos tokens) seguem; a `plan-117` liga cinco tokens e retira dois, e é o registro vivo das pendências que estes lotes acharem. Os lotes 5 em diante só começam com a `plan-117` 🟢. **A `plan-118` (fontes embarcadas, e catálogo de tipografia ampliado) fecha antes do lote 25** e, preferencialmente, antes do lote 7: os temas escolhem fontes por valor da lista, que ela amplia.
 

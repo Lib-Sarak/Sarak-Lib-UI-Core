@@ -93,3 +93,39 @@
     background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, rgba(15, 23, 42, 0.6)))) !important;
     color: var(--sarak-card-search-text-focus, var(--sarak-input-text-color, var(--text-muted, rgba(255, 255, 255, 0.4)))) !important;
 }
+
+/* APERTO do botão de ação (`cardActionClickScale`): no clique ou toque o botão encolhe até a escala do token.
+   `transform: none` tira o aperto de elemento (`btnActiveScale`) e `scale` vence o `active:scale-*` do átomo, para a
+   escala do cartão ser a única em jogo — sem somar as três. */
+.sarak-card-action-btn:active {
+    transform: none;
+    scale: var(--sarak-card-action-click-scale, 0.96);
+}
+
+/* SPOTLIGHT do cartão (`cardSpotlightOpacity`): um gradiente radial da cor primária do tema, na opacidade do token,
+   centrado onde o ponteiro está (`--sarak-spot-x`/`--sarak-spot-y`: o centro em `_card-defaults.css`, e o cartão as
+   sobrescreve no `style` enquanto o ponteiro fino se move).
+   A camada já nasce invisível e acende no hover do cartão. Token 0 = `data-spotlight="0"` = nada desenhado. */
+.sarak-card[data-spotlight="1"] > .spotlight-effect {
+    background-image: radial-gradient(
+        circle at var(--sarak-spot-x) var(--sarak-spot-y),
+        color-mix(in srgb, var(--sarak-primary-color, var(--theme-primary)) calc(var(--spotlight-opacity, 0.1) * 100%), transparent),
+        transparent 70%
+    );
+}
+
+/* Movimento reduzido (token e preferência do sistema): sem aperto e sem spotlight. */
+:root[data-sx-reduced-motion="true"] .sarak-card-action-btn:active {
+    scale: 1;
+}
+:root[data-sx-reduced-motion="true"] .sarak-card > .spotlight-effect {
+    display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    .sarak-card-action-btn:active {
+        scale: 1;
+    }
+    .sarak-card > .spotlight-effect {
+        display: none;
+    }
+}

@@ -682,9 +682,13 @@ O `tableHeaderBg` também pinta a barra de ferramentas do editor de texto rico e
 
 ## 6.4 Tokens que o schema oferece e ainda não mudam a tela
 
-Medidos em navegador e deixados fora do mapa (A.4b) até uma decisão: `cardSpotlightOpacity`, `borderBeamEnabled`,
-`cardSearchBorderBeamActive`, `cardActionClickScale`, `cardContentAlignment`, `imageCardHoverZoom` e
-`tableActionPosition`. Declará-los num tema é inofensivo e inútil; não construa expectativa visual sobre eles.
+Medidos em navegador e deixados fora do mapa (A.4b) até uma decisão: `borderBeamEnabled`,
+`cardSearchBorderBeamActive`, `cardContentAlignment` e `tableActionPosition`. Declará-los num tema é inofensivo e
+inútil; não construa expectativa visual sobre eles.
+
+`cardSpotlightOpacity` (luz que segue o cursor), `imageCardHoverZoom` (zoom da capa sob o ponteiro) e
+`cardActionClickScale` (aperto do botão de ação) **desenham por padrão** — 0,1 · 1,05 · 0,96. Para desligar:
+`0`, `1` e `1`. Movimento reduzido zera os três.
 
 ---
 
@@ -857,7 +861,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**113** de 402 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**116** de 402 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
 
 #### Card Geral (`cards`)
 
@@ -896,6 +900,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `cardShadowOffsetX` | estético | não | Desloca a sombra base do cartão na horizontal; com desfoque zero e deslocamento nos dois eixos vira a sombra dura do brutalismo. | `cardShadowBlur` · `shadowOrientation` |
 | `cardShadowOffsetY` | estético | não | Desloca a sombra base do cartão na vertical, para baixo quando positivo; `shadowOrientation` gira a direção sobre este valor. | `shadowOrientation` |
 | `cardShadowSpread` | estético | sim | Opacidade da sombra base do cartão, em porcentagem; acima de 100 a cor já é cheia. A cor vem de `shadowColorMode` e a forma dos tokens `cardShadow*` de deslocamento, desfoque e expansão. | `shadowColorMode` |
+| `cardSpotlightOpacity` | estético | sim | Luz difusa na cor primária que acompanha o cursor sobre o cartão (título, ação, busca e composto) enquanto o ponteiro está nele; sem ponteiro fino, fica no centro do cartão. Zero apaga a luz e dispensa o acompanhamento. | `primaryColor` |
 | `cardSurfaceOpacity` | estético | sim | Multiplica a opacidade do fundo do cartão: zero deixa o cartão sem fundo e valores altos o tornam sólido. Vale só para o fundo, o conteúdo do cartão fica opaco. | — |
 | `cardTextAlign` | estético | não | Alinha o texto e distribui o conteúdo dos cartões de título, de ação e de busca; o `SarakCard` composto não lê este token. | — |
 | `cardTextureOpacity` | estético | sim | Intensidade da textura do cartão, de invisível a cobrindo a superfície; sem um tipo de textura escolhido não há o que mostrar. | `cardTextureType` |
@@ -911,6 +916,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `devicePhoneNotchRadius` | funcional | não | Arredondamento do recorte de câmera da moldura de telefone na pré-visualização do painel de customização, em `rem`; não muda componente do sistema. | — |
 | `deviceTabletHeight` | funcional | não | Altura da moldura de tablet na pré-visualização responsiva do painel de customização; não muda componente do sistema. | — |
 | `imageCardGlowBlur` | estético | não | Largura do halo interno que acende ao passar o ponteiro sobre o `SarakImageCard`; a cor é a de `cardGlowColor` (a primária no hover de brilho). | `cardGlowColor` |
+| `imageCardHoverZoom` | estético | não | Quanto a imagem de capa do `SarakImageCard` cresce, atrás do véu e do texto, quando o ponteiro passa sobre qualquer parte do cartão; 1 deixa a imagem parada. | `imageCardOverlayOpacity` |
 | `imageCardOverlayOpacity` | estético | sim | Opacidade do véu na cor do cartão sobre a foto do `SarakImageCard`; sobe para dar leitura ao texto, desce para mostrar a foto. | — |
 | `imageCardShadowBlur` | estético | não | Desfoque da sombra do `SarakImageCard`. | `imageCardShadowOffsetY` |
 | `imageCardShadowOffsetY` | estético | não | Desloca para baixo a sombra do `SarakImageCard`. | `imageCardShadowBlur` |
@@ -955,6 +961,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `cardActionBtnPadding` | estético | não | Respiro vertical interno do botão de ação do `SarakActionCard`, em px; define a altura do botão. | — |
 | `cardActionBtnPrimaryBg` | estético | sim | Fundo do botão de ação do `SarakActionCard`; por padrão segue a cor primária do tema. | — |
 | `cardActionBtnText` | estético | sim | Cor do texto e do ícone do botão de ação do `SarakActionCard`; precisa de contraste com o fundo do botão. | `cardActionBtnPrimaryBg` |
+| `cardActionClickScale` | estético | não | Quanto o botão de ação do `SarakActionCard` encolhe enquanto está pressionado, por clique ou toque; 1 não encolhe. | `cardActionBtnPrimaryBg` |
 
 #### Card de Busca (`cardSearch`)
 

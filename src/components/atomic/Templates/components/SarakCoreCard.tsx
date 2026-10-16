@@ -8,6 +8,7 @@ import { SarakActionCard } from '../../Cards/SarakActionCard';
 import { SarakSearchCard } from '../../Cards/SarakSearchCard';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useSpotlightPointer } from '../../Cards/hooks/useSpotlightPointer';
 
 /** Um par rótulo/valor genérico do painel de detalhes (Spec 42 §2.2 — dirigido por `mapping.details`). */
 interface SarakCoreCardDetail {
@@ -41,6 +42,7 @@ const renderChips = (values: string[], label?: string) => {
 export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, mapping, variant }: { item: TItem; mapping?: Record<string, string>; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
     const { design } = useSarakUI();
     const { getFlexStyles, getGridStyles } = useStructuralStyles();
+    const spotlight = useSpotlightPointer(design);
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (variant === 'title') {
@@ -88,6 +90,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
 
     return (
         <motion.div
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             // plan-41: `@container` plantado aqui — o painel de detalhes abaixo usa
@@ -100,7 +103,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                 padding: 'var(--sarak-card-padding-md)'
             }}
             data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}

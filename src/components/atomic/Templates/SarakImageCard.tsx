@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { CardSchema } from '../../../core/Design/schema/cards';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
@@ -38,7 +38,9 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
 
     // Ler configs do design
     const overlayOpacity = design?.imageCardOverlayOpacity ?? 0.5;
-    const hoverZoom = design?.imageCardHoverZoom ?? 1.05;
+    // Movimento reduzido (token ou preferência do sistema) zera o zoom: a imagem fica como está.
+    const prefersReducedMotion = useReducedMotion();
+    const hoverZoom = design?.reducedMotion === true || prefersReducedMotion ? 1 : (design?.imageCardHoverZoom ?? 1.05);
     const hoverStyle = design?.cardHoverStyle || 'lift';
     // `glow-only` não move o cartão: o brilho é o efeito, então acende na cor primária em vez do
     // tom quase transparente do brilho de repouso (`cardGlowColor`).
@@ -50,7 +52,10 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
     return (
         <motion.div
             onClick={onClick}
-            whileHover={resolveCardHoverMotion(design)}
+            // O ponteiro pousa no véu e no conteúdo (irmãos por cima da imagem), nunca na camada da
+            // imagem: o hover vive aqui, na raiz, e desce à camada pelo rótulo `hover`.
+            variants={{ hover: resolveCardHoverMotion(design) }}
+            whileHover="hover"
             data-sx-card-interactive="true"
             className={`relative overflow-hidden group cursor-pointer ${className}`}
             style={{
@@ -66,7 +71,7 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
             <motion.div 
                 className="absolute inset-0 w-full h-full"
                 transition={{ duration: durations.normal, ease: "easeOut" }}
-                whileHover={{ scale: hoverZoom }}
+                variants={{ hover: { scale: hoverZoom } }}
             >
                 <img 
                     src={src} 

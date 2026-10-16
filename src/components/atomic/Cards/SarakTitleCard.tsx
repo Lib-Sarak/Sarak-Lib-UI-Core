@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { useSpotlightPointer } from './hooks/useSpotlightPointer';
 import { resolveCardHoverMotion } from './cardHoverMotion';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
@@ -29,6 +30,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
+    const spotlight = useSpotlightPointer(design);
 
     const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
@@ -53,6 +55,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
     return (
         <motion.div 
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={resolveCardHoverMotion(design)}
@@ -63,7 +66,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             }}
             data-sx-card-interactive="true"
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
         >
             {/* Ambient Spotlight */}

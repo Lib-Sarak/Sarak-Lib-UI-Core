@@ -76,3 +76,17 @@ Medidos nos dois métodos acima (leitor e navegador). Ficam na lista de exceçã
 
 Parcial, e documentado como tal: `cardImagePosition` só muda algo com `cardLayoutDirection` em linha e o valor da
 direita (inverte a ordem dos blocos); `left`, `top` e `none` não mudam nada, e o ramo de `getCardStyles` é morto.
+
+## 4.1 Desfecho (plan-117, lote 1 — 2026-10-15)
+
+Três dos sete deixaram de ser achado: passaram a desenhar, foram medidos em navegador (valor padrão × extremo, em
+repouso, sob o ponteiro e pressionado) e saíram da exceção `achado-lote-1`.
+
+| Token | O que desenha agora | Medido |
+|---|---|---|
+| `cardSpotlightOpacity` | gradiente radial da primária do tema, com a opacidade do token, centrado onde o ponteiro está nos quatro cartões; 0 não desenha nem registra listener | `cartao-que-se-move.spec.ts` |
+| `cardActionClickScale` | o botão de ação encolhe até a escala do token enquanto pressionado (propriedade `scale`; o aperto de elemento e o do átomo deixam de somar) | idem |
+| `imageCardHoverZoom` | o hover vive na raiz do `SarakImageCard` e desce à camada da imagem por variante: o zoom vale com o ponteiro sobre o cartão inteiro | idem |
+
+Ficam abertos, para os lotes 2 e 3 da plan-117: `borderBeamEnabled`, `cardSearchBorderBeamActive`,
+`cardContentAlignment` e `tableActionPosition`.

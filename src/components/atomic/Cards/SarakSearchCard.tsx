@@ -6,6 +6,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { useSpotlightPointer } from './hooks/useSpotlightPointer';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
 
@@ -38,6 +39,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
     const context = useSarakUI();
     const design = propDesign || context.design || {};
     const layout = useCardLayoutStyles(design);
+    const spotlight = useSpotlightPointer(design);
     const [searchText, setSearchText] = useState('');
     const [focused, setFocused] = useState(false);
     
@@ -65,6 +67,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
 
     return (
         <motion.div 
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             className={`${layout.containerClass} sarak-card sarak-search-card relative overflow-hidden group transition-all h-fit ${className}`}
@@ -73,7 +76,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
         >
             {/* Ambient Atmosphere */}

@@ -43,6 +43,7 @@ import {
     SarakFilterSelect,
     SarakHelpButton,
     SarakIconButton,
+    SarakImageCard,
     SarakInput,
     SarakLightbox,
     SarakMenuItem,
@@ -258,6 +259,12 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'modo-escuro': { mode: 'dark' },
     'dono-raio-sistema': { borderRadius: { mob: 5, tab: 5, desk: 5 }, cardBorderRadius: { mob: 20, tab: 20, desk: 20 } },
     'schema-ruido': { texture: 'noise', bgNoiseAnimation: 2 },
+    'cartao-spotlight-zero': { cardSpotlightOpacity: 0 },
+    'cartao-spotlight-forte': { cardSpotlightOpacity: 1 },
+    'cartao-clique-forte': { cardActionClickScale: 0.8 },
+    'cartao-clique-nenhum': { cardActionClickScale: 1 },
+    'cartao-zoom-forte': { imageCardHoverZoom: 1.5 },
+    'cartao-zoom-nenhum': { imageCardHoverZoom: 1 },
     'schema-sem-suavizacao': { textSmoothing: false },
 };
 
@@ -362,6 +369,9 @@ const App: React.FC = () => {
  *   - `componente`: o que o componente lê do token — o botão primário e o secundário, um `.sarak-card` puro, com
  *     classe de fundo e com classe de fundo no hover, um contêiner `.card` com classe de fundo, um cartão interativo,
  *     a tabela e um alternador.
+ *   - `cartao-movimento`: um `SarakActionCard`, um `SarakTitleCard`, um `SarakSearchCard` e um `SarakImageCard` lado a lado, cada um
+ *     em `data-probe` próprio — a cena em que se mede o spotlight que segue o cursor, o aperto do botão de ação e o zoom da imagem
+ *     sob o ponteiro (`?tema=cartao-*`).
  *   - `legivel`: o que o componente desenha sobre a cor sólida e sobre a superfície do tema — badge sólido (primário, perigo)
  *     e suave (sucesso), botão de perigo, abas em pílula (a bandeja de tinta) e o alternador da barra de prova.
  * `?css=escopado` troca o `sarak.css` global pelo `sarak-scoped.css` (o artefato do Modo Embarcado, com `:root` virado em
@@ -637,6 +647,20 @@ const SearchScene: React.FC = () => (
     </div>
 );
 
+const PIXEL_GIF = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+
+/** Os quatro cartões que movem (spotlight, aperto do botão de ação, zoom da imagem), com tamanho fixo para o ponteiro cair onde se quer. */
+const CardMotionScene: React.FC = () => (
+    <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(2, 360px)', gap: '24px' }}>
+        <div data-probe="cartao-acao"><SarakActionCard item={{ nome: 'Ação' }} mapping={{ title: 'nome' }} /></div>
+        <div data-probe="cartao-titulo"><SarakTitleCard item={{ nome: 'Título' }} mapping={SCENE_MAPPING} /></div>
+        <div data-probe="cartao-busca"><SarakSearchCard item={{ nome: 'Busca' }} mapping={SCENE_MAPPING} /></div>
+        <div data-probe="cartao-imagem" style={{ height: '200px', display: 'flex' }}>
+            <SarakImageCard src={PIXEL_GIF} title="Imagem" className="flex-1" />
+        </div>
+    </div>
+);
+
 const SCHEMA_ROWS = [{ nome: 'Ana' }, { nome: 'Bia' }, { nome: 'Caio' }];
 
 /** Uma peça de cada token da `plan-113`; o recorte (`?tema=schema-*`) é o que muda, a cena é a mesma. */
@@ -890,6 +914,7 @@ const SCENES: Record<string, React.FC> = {
     lightbox: LightboxScene,
     transicao: TransitionScene,
     'schema-modal': SchemaModalScene,
+    'cartao-movimento': CardMotionScene,
 };
 
 /**
