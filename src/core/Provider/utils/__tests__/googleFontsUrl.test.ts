@@ -28,6 +28,8 @@ describe('carregador de fontes', () => {
         expect(url).toContain('family=Bebas+Neue&');
         expect(url).toContain('family=Pacifico&');
         expect(url).toContain('family=Satisfy&');
+        expect(url).toContain('family=VT323&');
+        expect(url).toContain('family=Patrick+Hand&');
     });
 
     it('a URL é css2 com display=swap', () => {

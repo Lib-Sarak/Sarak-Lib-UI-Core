@@ -23,7 +23,7 @@ const WEIGHT_AXES: Record<string, string> = {
     'Caveat': '400;500;600;700',
     'Fraunces': '300;400;500;600;700;800;900',
 };
-const SINGLE_FACE = new Set(['Bebas Neue', 'Pacifico', 'Satisfy']);
+const SINGLE_FACE = new Set(['Bebas Neue', 'Pacifico', 'Satisfy', 'VT323', 'Patrick Hand']);
 const DEFAULT_WEIGHTS = '400;700';
 const SYSTEM_FONT_PREFIX = 'system-ui';
 

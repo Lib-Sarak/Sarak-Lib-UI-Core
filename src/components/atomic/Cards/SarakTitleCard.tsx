@@ -4,6 +4,7 @@ import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useSpotlightPointer } from './hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from './hooks/usePauseBeamOffscreen';
 import { resolveCardHoverMotion } from './cardHoverMotion';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
@@ -31,6 +32,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
     const spotlight = useSpotlightPointer(design);
+    usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
 
     const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;

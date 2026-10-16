@@ -11,24 +11,46 @@ export const THEME_FONTS = [
     { value: "'Sora', sans-serif", name: "Sora", category: "Sans-Serif" },
     { value: "'Syne', sans-serif", name: "Syne", category: "Sans-Serif" },
     { value: "'Archivo', sans-serif", name: "Archivo", category: "Sans-Serif" },
+    { value: "'Chakra Petch', sans-serif", name: "Chakra Petch", category: "Sans-Serif" },
+    { value: "'Nunito', sans-serif", name: "Nunito", category: "Sans-Serif" },
+    { value: "'DM Sans', sans-serif", name: "DM Sans", category: "Sans-Serif" },
+    { value: "'Manrope', sans-serif", name: "Manrope", category: "Sans-Serif" },
+    { value: "'Work Sans', sans-serif", name: "Work Sans", category: "Sans-Serif" },
+    { value: "'Open Sans', sans-serif", name: "Open Sans", category: "Sans-Serif" },
+    { value: "'Raleway', sans-serif", name: "Raleway", category: "Sans-Serif" },
+    { value: "'Source Sans 3', sans-serif", name: "Source Sans 3", category: "Sans-Serif" },
+    { value: "'Poppins', sans-serif", name: "Poppins", category: "Sans-Serif" },
+    { value: "'Lato', sans-serif", name: "Lato", category: "Sans-Serif" },
     { value: "system-ui, -apple-system, sans-serif", name: "System Default", category: "Sans-Serif" },
 
     // Display & Impact
     { value: "'Unbounded', display", name: "Unbounded", category: "Display" },
     { value: "'Bebas Neue', display", name: "Bebas Neue", category: "Display" },
+    { value: "'Orbitron', sans-serif", name: "Orbitron", category: "Display" },
+    { value: "'VT323', monospace", name: "VT323", category: "Display" },
+    { value: "'Oswald', sans-serif", name: "Oswald", category: "Display" },
 
     // Serifadas
     { value: "'Playfair Display', serif", name: "Playfair Display", category: "Serif" },
     { value: "'Fraunces', serif", name: "Fraunces", category: "Serif" },
+    { value: "'Source Serif 4', serif", name: "Source Serif 4", category: "Serif" },
+    { value: "'Roboto Slab', serif", name: "Roboto Slab", category: "Serif" },
+    { value: "'Lora', serif", name: "Lora", category: "Serif" },
+    { value: "'Merriweather', serif", name: "Merriweather", category: "Serif" },
+    { value: "'PT Serif', serif", name: "PT Serif", category: "Serif" },
 
     // Script & Handwriting
     { value: "'Dancing Script', cursive", name: "Dancing Script", category: "Handwriting" },
     { value: "'Pacifico', cursive", name: "Pacifico", category: "Handwriting" },
     { value: "'Satisfy', cursive", name: "Satisfy", category: "Handwriting" },
     { value: "'Caveat', cursive", name: "Caveat", category: "Handwriting" },
+    { value: "'Patrick Hand', cursive", name: "Patrick Hand", category: "Handwriting" },
 
     // Monospaced
-    { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" }
+    { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" },
+    { value: "'Fira Code', monospace", name: "Fira Code", category: "Monospace" },
+    { value: "'IBM Plex Mono', monospace", name: "IBM Plex Mono", category: "Monospace" },
+    { value: "'Space Mono', monospace", name: "Space Mono", category: "Monospace" }
 ];
 
 export const FONT_OPTIONS = THEME_FONTS.map(font => ({

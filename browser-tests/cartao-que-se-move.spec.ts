@@ -1,7 +1,8 @@
 /**
- * Medição, em navegador real, dos três tokens de movimento do cartão que o painel oferecia e nada
+ * Medição, em navegador real, dos tokens de movimento do cartão que o painel oferecia e nada
  * desenhava: o spotlight que segue o cursor (`cardSpotlightOpacity`), o aperto do botão de ação
- * (`cardActionClickScale`) e o zoom da imagem de capa sob o ponteiro (`imageCardHoverZoom`). O `jsdom`
+ * (`cardActionClickScale`), o zoom da imagem de capa sob o ponteiro (`imageCardHoverZoom`) e o traço
+ * luminoso da borda (`borderBeamEnabled`, `cardSearchBorderBeamActive`). O `jsdom`
  * não calcula cascata de stylesheet nem `color-mix`, então o efeito se mede aqui — em repouso, sob o
  * ponteiro e pressionado, no valor padrão e num extremo de cada token.
  *
@@ -15,9 +16,12 @@
  *    — só que o gradiente existe, na cor e na opacidade do token, e que o ponto segue o ponteiro.
  * 2. O zoom é lido na matriz de transformação da camada da imagem depois da duração do movimento; o
  *    quadro intermediário não é medido.
- * 3. O toque (sem ponteiro fino) não é emulado aqui: a ausência de listener sob `hover: none` é
+ * 3. O traço é lido nos valores computados (gradiente cônico, máscara `exclude`, raio, animação em curso, ângulo
+ *    avançando); que o miolo do cartão fica vazio e só a borda acende é conferido por inspeção da imagem, não por
+ *    pixel neste arquivo.
+ * 4. O toque (sem ponteiro fino) não é emulado aqui: a ausência de listener sob `hover: none` é
  *    conferida no teste de componente do hook, não neste.
- * 4. Só Chromium headless. Lê o `dist/` — sem `npm run build` recente, mede o build anterior.
+ * 5. Só Chromium headless. Lê o `dist/` — sem `npm run build` recente, mede o build anterior.
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Locator, type Page } from '@playwright/test';
@@ -41,7 +45,7 @@ test.afterAll(async () => {
     await browser.close();
 });
 
-interface SceneOptions { theme?: string; reducedMotion?: 'reduce' }
+interface SceneOptions { theme?: string; reducedMotion?: 'reduce'; scene?: string }
 
 /** Conta os listeners `pointermove` que a lib registra em cartões: o custo do spotlight. */
 const COUNT_LISTENERS = `
@@ -59,7 +63,7 @@ async function withScene<T>(options: SceneOptions, measure: (page: Page) => Prom
     const page = await browser.newPage({ viewport: DESKTOP, reducedMotion: options.reducedMotion });
     try {
         await page.addInitScript(COUNT_LISTENERS);
-        const searchParams = new URLSearchParams({ cena: 'cartao-movimento' });
+        const searchParams = new URLSearchParams({ cena: options.scene ?? 'cartao-movimento' });
         if (options.theme) searchParams.set('tema', options.theme);
         await page.goto(`${harnessUrl}?${searchParams.toString()}`);
         await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
@@ -75,7 +79,7 @@ const readComputed = (target: Locator, property: string): Promise<string> =>
 const listenerCount = (page: Page): Promise<number> => page.evaluate(() => (window as unknown as { __cardPointerListeners: number }).__cardPointerListeners);
 
 /**
- * Espera o cartão parar: a caixa fica idêntica por 5 quadros seguidos e nenhuma animação do elemento corre.
+ * Espera o cartão parar: a caixa fica idêntica por 5 quadros seguidos e nenhuma animação do elemento (fora o giro do traço) corre.
  * A entrada (`y: 15 → 0`) e a subida do hover mexem o cartão enquanto se mede; um prazo fixo mede o meio do movimento.
  */
 async function waitUntilStill(card: Locator): Promise<void> {
@@ -86,7 +90,8 @@ async function waitUntilStill(card: Locator): Promise<void> {
         const tick = (): void => {
             const box = el.getBoundingClientRect();
             const key = `${box.left}|${box.top}|${box.width}|${box.height}`;
-            const running = el.getAnimations({ subtree: true }).some((animation) => animation.playState === 'running');
+            // O traço da borda gira para sempre e não mexe a caixa: não conta como movimento do cartão.
+            const running = el.getAnimations({ subtree: true }).some((animation) => animation.playState === 'running' && (animation as CSSAnimation).animationName !== 'beam-rotate');
             stableFrames = key === last && !running ? stableFrames + 1 : 0;
             last = key;
             if (stableFrames >= 5) return resolve();
@@ -272,5 +277,144 @@ test.describe('zoom da imagem de capa (imageCardHoverZoom)', () => {
         expect(token.hovered).toBe(1);
         const system = await zoomUnderPointer({ reducedMotion: 'reduce' });
         expect(system.hovered).toBe(1);
+    });
+});
+
+/** A camada do traço dentro do cartão (`> .border-beam-effect`) e a quantidade de animações `beam-rotate` em curso na página. */
+const beamLayer = (page: Page, name: string): Locator => probe(page, name).locator('.sarak-card').first().locator('> .border-beam-effect');
+const probeFirstCardPaused = (page: Page): Promise<string | null> =>
+    page.locator('.sarak-card').first().evaluate((el) => el.getAttribute('data-border-beam-paused'));
+const runningBeams = (page: Page): Promise<number> =>
+    page.evaluate(() => document.getAnimations().filter((animation) => (animation as CSSAnimation).animationName === 'beam-rotate' && animation.playState === 'running').length);
+
+test.describe('traço luminoso da borda (borderBeamEnabled)', () => {
+    test('desligado (padrão): nenhuma camada desenhada e nenhuma animação roda', async () => {
+        await withScene({}, async (page) => {
+            for (const name of ['cartao-acao', 'cartao-titulo', 'cartao-busca']) {
+                expect(await readComputed(beamLayer(page, name), 'display')).toBe('none');
+            }
+            expect(await runningBeams(page)).toBe(0);
+        });
+    });
+
+    for (const name of SPOTLIGHT_CARDS) {
+        test(`${name}: ligado, o anel cônico gira, na primária, mascarado para a borda e com o raio do cartão`, async () => {
+            await withScene({ theme: 'cartao-beam' }, async (page) => {
+                const card = probe(page, name).locator('.sarak-card').first();
+                const layer = beamLayer(page, name);
+                await waitUntilStill(card);
+                expect(await readComputed(layer, 'display')).toBe('block');
+                const image = await readComputed(layer, 'background-image');
+                expect(image).toContain('conic-gradient');
+                const primary = await page.evaluate(() => {
+                    const colorProbe = document.createElement('span');
+                    colorProbe.style.color = 'var(--sarak-primary-color)';
+                    document.body.appendChild(colorProbe);
+                    const color = getComputedStyle(colorProbe).color;
+                    colorProbe.remove();
+                    return color;
+                });
+                expect(image).toContain(primary);
+                expect(await readComputed(layer, 'mask-composite')).toBe('exclude, exclude');
+                expect(await readComputed(layer, 'padding-top')).toBe(await readComputed(card, 'border-top-width'));
+                expect(await readComputed(layer, 'border-top-left-radius')).toBe(await readComputed(card, 'border-top-left-radius'));
+                expect(await readComputed(layer, 'animation-name')).toBe('beam-rotate');
+                expect(await readComputed(layer, 'animation-iteration-count')).toBe('infinite');
+                expect(await runningBeams(page)).toBeGreaterThanOrEqual(1);
+                const before = await readComputed(layer, '--beam-angle');
+                await page.waitForTimeout(400);
+                expect(await readComputed(layer, '--beam-angle')).not.toBe(before);
+            });
+        });
+    }
+
+    test('o raio do anel acompanha o raio do cartão quando o tema o troca', async () => {
+        await withScene({ theme: 'cartao-beam-raio' }, async (page) => {
+            const card = probe(page, 'cartao-titulo').locator('.sarak-card').first();
+            const layer = beamLayer(page, 'cartao-titulo');
+            const radius = await readComputed(card, 'border-top-left-radius');
+            expect(radius).toBe('30px');
+            expect(await readComputed(layer, 'border-top-left-radius')).toBe(radius);
+        });
+    });
+
+    test('movimento reduzido (token e preferência do sistema): sem camada e sem animação', async () => {
+        await withScene({ theme: 'cartao-beam-reduzido' }, async (page) => {
+            expect(await readComputed(beamLayer(page, 'cartao-titulo'), 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+        });
+        await withScene({ theme: 'cartao-beam', reducedMotion: 'reduce' }, async (page) => {
+            expect(await readComputed(beamLayer(page, 'cartao-titulo'), 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+        });
+    });
+});
+
+test.describe('custo do traço com muitos cartões', () => {
+    /** Quantas animações `beam-rotate` correm e quantas estão pausadas, entre 48 cartões numa grade mais alta que a janela. */
+    const countBeams = (page: Page): Promise<{ total: number; running: number; paused: number }> =>
+        page.evaluate(() => {
+            const beams = document.getAnimations().filter((animation) => (animation as CSSAnimation).animationName === 'beam-rotate');
+            return { total: beams.length, running: beams.filter((a) => a.playState === 'running').length, paused: beams.filter((a) => a.playState === 'paused').length };
+        });
+
+    test('48 cartões com o traço aceso: só os que aparecem na janela giram; rolar troca quais', async () => {
+        await withScene({ theme: 'cartao-beam', scene: 'cartao-beam-grade' }, async (page) => {
+            await page.waitForTimeout(400);
+            const top = await countBeams(page);
+            expect(top.total).toBe(48);
+            expect(top.paused).toBeGreaterThan(0);
+            expect(top.running).toBeGreaterThan(0);
+            expect(top.running + top.paused).toBe(48);
+            await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+            await page.waitForTimeout(400);
+            const bottom = await countBeams(page);
+            expect(bottom.paused).toBeGreaterThan(0);
+            expect(bottom.running + bottom.paused).toBe(48);
+            const firstPaused = await probeFirstCardPaused(page);
+            expect(firstPaused).toBe('1');
+        });
+    });
+});
+
+test.describe('traço do campo de busca (cardSearchBorderBeamActive)', () => {
+    const field = (page: Page): Locator => probe(page, 'cartao-busca').locator('input[placeholder]');
+
+    test('padrão (true): só acende com o campo em foco; fora do foco nada anima', async () => {
+        await withScene({}, async (page) => {
+            const layer = beamLayer(page, 'cartao-busca');
+            expect(await readComputed(layer, 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+            await field(page).focus();
+            expect(await readComputed(layer, 'display')).toBe('block');
+            expect(await readComputed(layer, 'background-image')).toContain('conic-gradient');
+            await page.waitForTimeout(150);
+            expect(await runningBeams(page)).toBe(1);
+            await field(page).blur();
+            expect(await readComputed(layer, 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+        });
+    });
+
+    test('false: nem com o campo em foco o traço aparece', async () => {
+        await withScene({ theme: 'cartao-beam-busca-desligado' }, async (page) => {
+            await field(page).focus();
+            expect(await readComputed(beamLayer(page, 'cartao-busca'), 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+        });
+    });
+
+    test('borderBeamEnabled liga o traço do cartão de busca mesmo sem foco', async () => {
+        await withScene({ theme: 'cartao-beam' }, async (page) => {
+            expect(await readComputed(beamLayer(page, 'cartao-busca'), 'display')).toBe('block');
+        });
+    });
+
+    test('movimento reduzido: o foco não acende o traço', async () => {
+        await withScene({ reducedMotion: 'reduce' }, async (page) => {
+            await field(page).focus();
+            expect(await readComputed(beamLayer(page, 'cartao-busca'), 'display')).toBe('none');
+            expect(await runningBeams(page)).toBe(0);
+        });
     });
 });

@@ -28,7 +28,6 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
     />
     <div
       class="border-beam-effect"
-      style="opacity: 0.4;"
     />
     <div
       class="mock-content"

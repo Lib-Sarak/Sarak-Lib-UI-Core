@@ -372,6 +372,90 @@ M  specs/plan/plan-118-fontes-embarcadas.md
 **Pendências**
 - Revisor/dono confirmar a inclusão das sete candidatas antes do lote 2; nenhuma exceção técnica ou de licença está pendente.
 
+## Resumo da execução (lote 2) — 2026-10-16
+
+**Resultado:** Concluído com pendências (o `build` real e o `dist/fonts/` versionado são do revisor)
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+ M specs/plan/plan-118-fontes-embarcadas.md
+```
+Durante a execução apareceram, vindos da execução paralela da `plan-117` e não tocados por mim: `browser-tests/cartao-que-se-move.spec.ts`, `browser-tests/fixtures/harness-entry.tsx`, `src/components/atomic/Cards/SarakSearchCard.tsx`, `src/styles/_cards.css`.
+
+**O que foi feito**
+- Passo 5 — `scripts/fonts/fontPackages.ts` resolve família → pacote → arquivos pela convenção do `metadata.json` (id = nome em minúsculas com hífen; `metadata.family` tem de repetir o nome; variável antes de estática). Variáveis: só `latin-wght-normal`, eixo `wght` no manifesto. Estáticas: pesos do pacote ∩ `PANEL_WEIGHTS` (300–900). Nenhuma tabela escrita à mão foi necessária: as 41 famílias resolvem pela convenção. A decisão de eixos/pesos/subconjunto está no comentário do cabeçalho e no manifesto (`axes`, `weights`, `subsets: ['latin']`).
+- Passo 5 — `scripts/embed-fonts.ts` (derivado de `listLoadableFamilies()` = `THEME_FONTS`) limpa e recria `<out>/fonts/`, copia os woff2 e grava `manifest.json` e `THIRD-PARTY-FONTS`. Aceita `--out` e `--modules`.
+- Passo 6 — `src/core/Design/schema/typography.ts`: 22 famílias novas, por categoria, com genérico válido no `value` (Orbitron e Oswald `sans-serif`, VT323 `monospace`; a `category` segue `Display`). Os 19 `value` antigos intocados (único byte diferente numa linha antiga: a vírgula depois de `JetBrains Mono`).
+- Passo 7 — `scripts/fonts/thirdPartyFonts.ts`: `THIRD-PARTY-FONTS` com índice e uma seção por família (pacote@versão, licença SPDX do `package.json`, crédito do `metadata.json` cortado antes da repetição por arquivo, `LICENSE` do pacote na íntegra). Nenhum texto de licença à mão.
+- Passo 8 — `gates/scripts/contrato/check-fonts.ts` (limites R18 no cabeçalho) e `gates/scripts/contrato/__tests__/check-fonts.test.ts`. `package.json`: scripts `fonts:embed` e `fonts:check`, ambos encadeados no `build` logo depois do `build:js`. Anel 1 em `.githooks/pre-commit` (depois de `token-docs`) e `fonts:check` em `.github/workflows/gates.yml`.
+- `src/core/Provider/utils/googleFontsUrl.ts`: `VT323` e `Patrick Hand` entram em `SINGLE_FACE` (+ asserção em `googleFontsUrl.test.ts`) — ver Decisões.
+- `docs/migracoes.md`: subseção nova em `## 8.0.0`, inserida por substituição exata antes do separador do `## 7.0.0`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `scripts/fonts/fontPackages.ts` | criado | Resolução família → pacote → arquivos, eixos, pesos, licença. |
+| `scripts/fonts/thirdPartyFonts.ts` | criado | Geração e leitura do `THIRD-PARTY-FONTS`. |
+| `scripts/embed-fonts.ts` | criado | Passo de build: copia woff2, gera manifesto e licenças. |
+| `gates/scripts/contrato/check-fonts.ts` | criado | Gate `fonts:check`. |
+| `gates/scripts/contrato/__tests__/check-fonts.test.ts` | criado | Teste do gate e do passo (mutações). |
+| `src/core/Design/schema/typography.ts` | alterado | +22 opções em `THEME_FONTS`. |
+| `src/core/Provider/utils/googleFontsUrl.ts` | alterado | `SINGLE_FACE` +2 famílias. |
+| `src/core/Provider/utils/__tests__/googleFontsUrl.test.ts` | alterado | +2 asserções. |
+| `package.json` | alterado | Scripts `fonts:embed`/`fonts:check`; ambos no `build`. |
+| `.githooks/pre-commit` | alterado | Bloco do Anel 1 de `fonts:check`. |
+| `.github/workflows/gates.yml` | alterado | `fonts:check` na lista de checks (14 → 15) e comentário. |
+| `docs/migracoes.md` | alterado | Subseção MAJOR em `## 8.0.0`. |
+| `specs/plan/plan-118-fontes-embarcadas.md` | alterado | Este bloco e o status. |
+
+**Verificações executadas**
+- `npx vitest run gates/scripts/contrato/__tests__/check-fonts.test.ts src/core/Provider/utils/__tests__/googleFontsUrl.test.ts src/features/DesignEngine/components/__tests__/identityFontControl.test.tsx` → 3 arquivos, 19 testes, todos passam.
+- Prova do passo de cópia e do gate **fora do repositório**: o teste usa `fs.mkdtempSync(os.tmpdir())` e o CLI foi rodado com `--out` no scratchpad. `npx tsx scripts/embed-fonts.ts --out <tmp>` → `41 famílias, 60 arquivos, 1690020 bytes`, exatamente o total do anexo; `check-fonts.ts --dir <tmp>/fonts` → exit 0 (`60 woff2, 1690020 B de 3000000 B`). Removido `lato-latin-700-normal.woff2` → `❌ [file-missing] …`, exit 1. `dist/fonts/` **não** foi criado no repositório.
+- Mutações provadas no teste do gate (cada uma devolve só o código esperado): arquivo removido do disco (`file-missing`, restaurado depois), licença da `Inter` removida e corpo da `Lato` esvaziado (`license-missing`), total estourado (`total-over-budget`, com arquivo extra de 3 MB, e com teto reduzido a 1 MB), teto de família reduzido abaixo da maior (`family-over-budget`, família `Merriweather`), arquivo vazio, órfão, família sem entrada, família extra, manifesto ausente.
+- `npm run token-types:check` → em dia (402 tokens). `npm run catalog:check` → em dia. `npm run guide:check` → em dia. `npm run themes:catalog:check`, `barrel:check`, `zero-brand:check`, `kit-names:check`, `persistence-doc:check`, `deep-import:check`, `gate-limits:check` (52 scripts) → OK. `npm run token-docs:check` → OK. `npx tsc --noEmit` → 0 erros.
+- `npm run dev-kit:check` → **defasado** em `sarak-dev/state.json`, `GUIA-MANUTENCAO.md`, `START-HERE.md`; não rodei `dev-kit` (o revisor regenera, conforme a instrução).
+- Comprimento da URL `css2` de `buildGoogleFontsUrl()` com 41 famílias: **1409 caracteres** (780 com as 19 antigas). Muito abaixo de ~8 KB; nenhum achado.
+- Não rodei: `npm run build`, suíte completa, baseline, Anel 0/1, navegador, `npm run guide`/`dev-kit`.
+
+**Critérios de aceite** (os do lote 2)
+- [x] `dist/fonts/` e manifesto gerados da lista única — evidência: `embed-fonts.ts` lê `listLoadableFamilies()`; saída de 41 famílias/60 arquivos/1.690.020 B no diretório temporário (o `dist/fonts/` real nasce no `build` do revisor).
+- [x] `THIRD-PARTY-FONTS` gerado dos pacotes — evidência: saída do passo; 41 seções.
+- [x] `fonts:check` no `build`, no Anel 1 e na CI, com mutação e orçamento — evidência: `package.json`, `.githooks/pre-commit`, `gates.yml`, teste do gate.
+- [x] Os 19 `value` atuais inalterados; 22 novas como opções, com paridade — evidência: `git diff -- src/core/Design/schema/typography.ts` (só acréscimos, exceto a vírgula); `token-types:check` e `catalog:check` em dia.
+- [ ] `fonts:check` verde sobre o `dist/` real — pendente: o `dist/fonts/` não existe até o revisor rodar `npm run build`.
+
+**Decisões e suposições**
+- **`SINGLE_FACE` com VT323 e Patrick Hand (fora do que a instrução listava).** A instrução pede que `googleFontsUrl` "continue funcionando" com a lista maior. Sem isso, as duas famílias de face única receberiam `wght@400;700` (o `DEFAULT_WEIGHTS`) e o Google rejeita a requisição `css2` inteira por esse eixo — o que derrubaria as fontes de todos os temas no modo padrão de hoje. É um acréscimo de dois nomes a um conjunto existente, com asserção no teste. Se o revisor preferir deixar isso ao lote 3, basta reverter essa linha e a asserção.
+- **`THIRD-PARTY-FONTS` fica em `dist/fonts/THIRD-PARTY-FONTS`** (e não na raiz de `dist/`): a licença viaja com a pasta que o host copiar ao usar `baseUrl`. É o mesmo pacote e o mesmo `files`.
+- **Crédito = `metadata.json`; texto = `LICENSE`.** O `LICENSE` do Satisfy (Apache 2.0) não traz linha de copyright, e o do Lato repete o crédito por arquivo; o `metadata.json` tem o crédito do titular, cortado antes do primeiro nome de arquivo de origem.
+- **Orçamento:** total 3.000.000 B (decimal, como o anexo) contado sobre os `.woff2` em disco (órfão também pesa); por família 150.000 B (a maior, Merriweather, tem 97.548 B). Sem exceção por família, porque não há.
+- O gate importa a lista por `listLoadableFamilies()` (fonte única do carregador), que já exclui `system-ui`.
+- O `value` das novas famílias de `Display` segue o genérico mais próximo do desenho (Orbitron/Oswald `sans-serif`, VT323 `monospace`) — a instrução dizia "genérico válido", não qual.
+
+**Achados fora do escopo (não corrigidos)**
+- `.githooks/pre-commit`: o bloco novo lê `dist/fonts/`, que é saída de build. Um commit que toque código antes de o `dist/` ser reconstruído e versionado com a pasta nova será barrado pelo Anel 1 até o `npm run build`. É consequência da instrução (Anel 1), não de erro de implementação — o revisor deve buildar antes de commitar.
+- `gates.yml` lista `fonts:check` entre os checks "que o `gates:full` não alcança", mas ele roda também no `build`, que o `gates:full` encadeia (mesma situação do `token-docs:check`, já listado). Comentário acrescentado; a duplicação é deliberada.
+- `src/features/DesignEngine/Panels/LayoutTab.tsx:3` — a lista local de duas fontes (já no backlog 35).
+
+**Pendências / riscos**
+- `npm run build` real, `dist/fonts/` versionado, `guide`/`dev-kit` e `sarak-ui/docs/migracoes.md` (espelho de `docs/migracoes.md`) são do revisor.
+- O `build` agora também depende de `node_modules/@fontsource*` instalado; clone limpo sem `npm ci` falha em `fonts:embed` com mensagem que nomeia a família.
+- Nenhum tema alterado; o comportamento padrão (Google Fonts) não mudou — a nota MAJOR diz isso.
+
+## Resumo da execução (correção 1) — 2026-10-16
+
+**Resultado:** Concluído
+
+**Achado 1 — paridade schema ↔ partições do catálogo (`catalog-drift`)**
+- Acrescentei as 22 famílias novas, com os mesmos `value` e na mesma ordem de `THEME_FONTS`, aos `allowedValues` de `headingFont`, `bodyFont` e `monoFont` em `src/core/Design/catalog/partitions/typography.json` (20 → 42 opções cada) e de `identityFontFamily` em `src/core/Design/catalog/partitions/branding_config.json` (21 → 43). A opção `var(--font-heading, var(--font-main, inherit))` foi preservada na posição original. As listas foram geradas a partir de `THEME_FONTS` por um script temporário (scratchpad, fora do repositório); o JSON foi reescrito com o mesmo formato (ida e volta idêntica antes de alterar). Nenhum campo novo; só paridade de opções. Nenhum outro arquivo da partição citava as famílias (`grep Archivo` só achou esses dois).
+- Evidência: `npx vitest run gates/scripts/audit/__tests__/catalog-drift.test.ts` → 1 arquivo, 10 testes passam. `npx vitest run src/core/Design` → 23 arquivos, 178 testes passam. `npx vitest run gates/scripts/audit gates/scripts/contrato scripts` → 52 arquivos, 616 testes passam.
+
+**Não rodei:** suíte completa, `tsc`, baseline, Anel 0/1, navegador, `build`, `guide`, `dev-kit`.
+
+**Arquivos alterados:** `src/core/Design/catalog/partitions/typography.json`, `src/core/Design/catalog/partitions/branding_config.json`, esta plan (bloco e status). Nada mais foi tocado.
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -436,3 +520,51 @@ ele aceitou a segunda onda). `latin` só; o manifesto guarda o campo de subconju
    pesadas — o carregador só busca o peso que o design pede.
 
 **Status: 🔴 A executar (lote 2).** Retida pela `plan-117` 🟢 (a dependência declarada).
+
+## Nota do revisor — 2026-10-16 — paralelismo
+
+A verificação passou a ser só do revisor e **a regeneração dos gerados de kit (`guide`, `dev-kit`) também**: o executor edita as fontes e roda só o teste do que escreveu; o revisor regenera uma vez. Por isso o lote 2 desta plan roda **em paralelo** com o lote 2 da `plan-117` (arquivos de código disjuntos: cartões e estilos × build, `typography` e `package.json`). A dependência declarada no frontmatter vale para o fechamento (🟢), não para despachar o lote 2.
+
+## Veredito — 2026-10-16 — lote 2 — 🔴 Reprovado (1 achado)
+
+**Conferido no worktree:** `npm run fonts:embed` + `fonts:check` reais: **41 famílias, 60 woff2, 1.690.020 B** (o total do
+anexo), `dist/fonts/` com `manifest.json` e `THIRD-PARTY-FONTS` (212 KB, uma seção por família, Apache-2.0 do Satisfy
+presente, Reserved Font Names declarados); manifesto de Lato (300/400/700/900), Poppins (7 pesos), PT Serif (400/700),
+Patrick Hand (400) e Inter/Fraunces (`wght` 100–900) conferido; `tsc` 0; os 22 `value` novos com genérico válido e os 19
+antigos intactos (único byte antigo diferente: a vírgula depois de `JetBrains Mono`); `fonts:check` no `build`, no
+Anel 1 e na CI. Teste do gate com mutação, `googleFontsUrl` (URL `css2` de 1.409 caracteres) e o recorte
+`src/core/Design src/core/Provider src/features/DesignEngine gates/scripts/contrato scripts`: **1.674/1.675**. O
+acréscimo de `VT323` e `Patrick Hand` ao `SINGLE_FACE` é correto e fica (sem ele o Google rejeita o `css2`).
+
+**Achado:**
+
+1. **A paridade schema ↔ partições do catálogo quebrou — `gates/scripts/audit/__tests__/catalog-drift.test.ts` falha**
+   (*"o catálogo tem o tipo e os valores permitidos do schema, nos tokens do schema"*): `identityFontFamily`,
+   `headingFont`, `bodyFont` (e o quarto token de fonte que a saída lista) têm no schema as 41+ opções, mas
+   `src/core/Design/catalog/partitions/typography.json` e `branding_config.json` ainda trazem as 19 antigas
+   (`allowedValues`). Critério violado: a paridade 1:1:1 (`04`, R4) — o executor conferiu `token-types:check` e
+   `catalog:check`, que não olham as partições, e não rodou o teste de drift, que é o que cobra o `allowedValues`.
+   **Correção:** acrescentar as 22 famílias novas, **com os mesmos `value`** do schema e na mesma ordem, aos
+   `allowedValues` de cada token de fonte nas partições (`typography.json`, `branding_config.json`, e onde mais o teste
+   apontar), pela skill `ui-refatorar-componente`/`ui-novo-componente`; rodar `catalog-drift.test.ts` e
+   `src/core/Design` até verdes.
+
+A verificação **completa** (suíte inteira, baseline, Anel 1, build) roda **uma vez**, depois do lote 2 da `plan-117`,
+sobre as duas plans juntas; se ela acusar algo atribuível a esta, reabro.
+
+**Status: 🔵 Em correção.** O resto da entrega está aprovado como está.
+
+## Veredito — 2026-10-16 — correção 1 (lote 2) — 🟢 Aprovado
+
+**Conferido pelo revisor, na verificação conjunta com a `plan-117`:** as 22 famílias estão nos `allowedValues` de
+`headingFont`, `bodyFont`, `monoFont` e `identityFontFamily` nas partições, e **`catalog-drift.test.ts` passa dentro da
+suíte completa**. Regenerei `token-types`, `guide` e `dev-kit`; `npm run build` real **OK** (com `fonts:embed` e
+`fonts:check`: 41 famílias, 60 woff2, 1.690.020 B no `dist/fonts/`); `npm run verify --tier=full`: `tsc`, **suíte completa
+sem falha**, baseline com `tsc`, os 23 gates do Anel 1, R36, `guide`/`dev-kit` e Anel 0 (1.433 linhas, 0 achados)
+verdes (o único vermelho foi o índice de plans defasado, que regenerei — não é desta plan). Navegador (348 casos): 346
+passaram; as 2 falhas não são desta entrega (ver o veredito da `plan-117`).
+
+**Lote 2 da `plan-118` fechado.** Pipeline, catálogo de 41 famílias, `THIRD-PARTY-FONTS`, gate `fonts:check` (build,
+Anel 1, CI) e paridade das partições.
+
+**Status: 🔴 A executar (lote 3: o carregador em runtime e `options.fonts`).**

@@ -204,6 +204,17 @@ if ! npx tsx gates/scripts/contrato/check-token-documentation.ts; then
 fi
 echo "[Sarak] Anel 1 (documentação de token) OK."
 
+# Fontes embarcadas (toda família do painel tem arquivo, crédito e licença em dist/fonts; peso dentro do orçamento).
+# Lê o dist/fonts gerado pelo build (`npm run fonts:embed`); sem ele o gate acusa.
+if ! npx tsx gates/scripts/contrato/check-fonts.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: fontes embarcadas"
+  echo "   Regra violada : — (05-build-e-distribuicao · plan de fontes embarcadas)"
+  echo "   Veja o detalhe: npm run fonts:check (gere dist/fonts com npm run build)"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (fontes embarcadas) OK."
+
 # Contrato do painel (padrão na faixa e na grade, valor de tema dentro do contrato numérico, todo tipo do
 # schema com controle, opção que grava o value). Em TypeScript pelo mesmo motivo: lê o schema e os temas.
 if ! npx tsx gates/scripts/contrato/check-panel-contract.ts; then

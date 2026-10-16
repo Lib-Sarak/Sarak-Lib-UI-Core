@@ -88,5 +88,12 @@ repouso, sob o ponteiro e pressionado) e saíram da exceção `achado-lote-1`.
 | `cardActionClickScale` | o botão de ação encolhe até a escala do token enquanto pressionado (propriedade `scale`; o aperto de elemento e o do átomo deixam de somar) | idem |
 | `imageCardHoverZoom` | o hover vive na raiz do `SarakImageCard` e desce à camada da imagem por variante: o zoom vale com o ponteiro sobre o cartão inteiro | idem |
 
-Ficam abertos, para os lotes 2 e 3 da plan-117: `borderBeamEnabled`, `cardSearchBorderBeamActive`,
-`cardContentAlignment` e `tableActionPosition`.
+Mais dois deixaram de ser achado no lote 2 da plan-117: passaram a desenhar, foram medidos em navegador (ligado ×
+desligado, em repouso e com o campo em foco) e saíram da exceção `achado-lote-1`.
+
+| Token | O que desenha agora | Medido |
+|---|---|---|
+| `borderBeamEnabled` | anel de gradiente cônico na primária que gira (`--beam-angle`), mascarado para a borda, com o raio do cartão; desligado, a camada é `display: none` e nenhuma animação roda | `cartao-que-se-move.spec.ts` |
+| `cardSearchBorderBeamActive` | o mesmo anel no `SarakSearchCard`, só com o campo em foco | idem |
+
+Ficam abertos, para o lote 3 da plan-117: `cardContentAlignment` e `tableActionPosition`.

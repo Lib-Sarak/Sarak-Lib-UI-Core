@@ -265,6 +265,10 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'cartao-clique-nenhum': { cardActionClickScale: 1 },
     'cartao-zoom-forte': { imageCardHoverZoom: 1.5 },
     'cartao-zoom-nenhum': { imageCardHoverZoom: 1 },
+    'cartao-beam': { borderBeamEnabled: true },
+    'cartao-beam-busca-desligado': { cardSearchBorderBeamActive: false },
+    'cartao-beam-reduzido': { borderBeamEnabled: true, reducedMotion: true },
+    'cartao-beam-raio': { borderBeamEnabled: true, cardBorderRadius: { mob: 30, tab: 30, desk: 30 } },
     'schema-sem-suavizacao': { textSmoothing: false },
 };
 
@@ -371,7 +375,8 @@ const App: React.FC = () => {
  *     a tabela e um alternador.
  *   - `cartao-movimento`: um `SarakActionCard`, um `SarakTitleCard`, um `SarakSearchCard` e um `SarakImageCard` lado a lado, cada um
  *     em `data-probe` próprio — a cena em que se mede o spotlight que segue o cursor, o aperto do botão de ação e o zoom da imagem
- *     sob o ponteiro (`?tema=cartao-*`).
+ *     sob o ponteiro (`?tema=cartao-*`), o traço luminoso da borda (`cartao-beam*`) e a grade de 48 cartões (`?cena=cartao-beam-grade`)
+ *     em que se conta o custo da animação.
  *   - `legivel`: o que o componente desenha sobre a cor sólida e sobre a superfície do tema — badge sólido (primário, perigo)
  *     e suave (sucesso), botão de perigo, abas em pílula (a bandeja de tinta) e o alternador da barra de prova.
  * `?css=escopado` troca o `sarak.css` global pelo `sarak-scoped.css` (o artefato do Modo Embarcado, com `:root` virado em
@@ -661,6 +666,15 @@ const CardMotionScene: React.FC = () => (
     </div>
 );
 
+/** 48 cartões de título com o traço aceso (`?tema=cartao-beam`): a cena em que se conta animações em curso e custo de estilo/pintura. */
+const CardBeamGridScene: React.FC = () => (
+    <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(6, 180px)', gap: '16px' }}>
+        {Array.from({ length: 48 }, (_, index) => (
+            <SarakTitleCard key={index} item={{ nome: `Cartão ${index}` }} mapping={SCENE_MAPPING} />
+        ))}
+    </div>
+);
+
 const SCHEMA_ROWS = [{ nome: 'Ana' }, { nome: 'Bia' }, { nome: 'Caio' }];
 
 /** Uma peça de cada token da `plan-113`; o recorte (`?tema=schema-*`) é o que muda, a cena é a mesma. */
@@ -915,6 +929,7 @@ const SCENES: Record<string, React.FC> = {
     transicao: TransitionScene,
     'schema-modal': SchemaModalScene,
     'cartao-movimento': CardMotionScene,
+    'cartao-beam-grade': CardBeamGridScene,
 };
 
 /**

@@ -9,6 +9,7 @@ import { SarakSearchCard } from '../../Cards/SarakSearchCard';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 import { useSpotlightPointer } from '../../Cards/hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from '../../Cards/hooks/usePauseBeamOffscreen';
 
 /** Um par rótulo/valor genérico do painel de detalhes (Spec 42 §2.2 — dirigido por `mapping.details`). */
 interface SarakCoreCardDetail {
@@ -43,6 +44,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
     const { design } = useSarakUI();
     const { getFlexStyles, getGridStyles } = useStructuralStyles();
     const spotlight = useSpotlightPointer(design);
+    usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (variant === 'title') {

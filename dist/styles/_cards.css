@@ -114,18 +114,51 @@
     );
 }
 
-/* Movimento reduzido (token e preferência do sistema): sem aperto e sem spotlight. */
+/* TRAÇO LUMINOSO do cartão (`borderBeamEnabled`; no `SarakSearchCard` também `cardSearchBorderBeamActive`, só com o
+   campo em foco): um anel de gradiente cônico na cor primária que gira com `--beam-angle` (`@property` e
+   `@keyframes beam-rotate` em `_animations.css`). O anel é a própria camada com `padding` da largura da borda, e a
+   máscara (conteúdo × caixa inteira, `exclude`) deixa só a borda à mostra. O raio é `inherit`: acompanha o do cartão,
+   canto a canto, inclusive o que uma classe do consumidor troca. A raiz acende por `data-border-beam="1"`; fora disso
+   a camada é `display: none` e não há animação rodando. */
+.sarak-card > .border-beam-effect {
+    display: none;
+}
+.sarak-card[data-border-beam="1"] > .border-beam-effect {
+    --beam-width: var(--sarak-card-border-width, 1px);
+    --beam-color: var(--sarak-primary-color, var(--theme-primary));
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: var(--beam-width);
+    background: conic-gradient(from var(--beam-angle), transparent 0%, transparent 70%, var(--beam-color) 100%);
+    -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-rotate calc(var(--duration-slow, 0.6s) * 5) linear infinite;
+}
+/* Cartão fora da tela (`usePauseBeamOffscreen`): o giro pausa e o custo de estilo some, sem apagar o anel. */
+.sarak-card[data-border-beam-paused="1"] > .border-beam-effect {
+    animation-play-state: paused;
+}
+
+/* Movimento reduzido (token e preferência do sistema): sem aperto, sem spotlight e sem traço. */
 :root[data-sx-reduced-motion="true"] .sarak-card-action-btn:active {
     scale: 1;
 }
-:root[data-sx-reduced-motion="true"] .sarak-card > .spotlight-effect {
+:root[data-sx-reduced-motion="true"] .sarak-card > .spotlight-effect,
+:root[data-sx-reduced-motion="true"] .sarak-card > .border-beam-effect {
     display: none;
 }
 @media (prefers-reduced-motion: reduce) {
     .sarak-card-action-btn:active {
         scale: 1;
     }
-    .sarak-card > .spotlight-effect {
+    .sarak-card > .spotlight-effect,
+    .sarak-card[data-border-beam] > .border-beam-effect {
         display: none;
     }
 }

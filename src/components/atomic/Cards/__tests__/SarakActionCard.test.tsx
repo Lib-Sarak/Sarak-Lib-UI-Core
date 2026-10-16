@@ -125,4 +125,14 @@ describe('SarakActionCard — aperto do botão e spotlight dirigidos pelo token'
         );
         expect(container.querySelector('.sarak-card')?.getAttribute('data-spotlight')).toBe(expected);
     });
+
+    it.each([[true, '1'], [false, '0']])('borderBeamEnabled %s grava data-border-beam %s na raiz', (enabled, expected) => {
+        const { container } = render(
+            <SarakUIProvider config={{ mode: 'dark', borderBeamEnabled: enabled }}>
+                <SarakActionCard item={item} mapping={mapping} />
+            </SarakUIProvider>
+        );
+        expect(container.querySelector('.sarak-card')?.getAttribute('data-border-beam')).toBe(expected);
+        expect(container.querySelector('.sarak-card > .border-beam-effect')).not.toBeNull();
+    });
 });

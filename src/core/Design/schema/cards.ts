@@ -621,6 +621,10 @@ export const CardSchema: ComponentSchema = {
             id: 'borderBeamEnabled',
             label: 'Ativar Border Beam',
             type: 'boolean',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: 'Anel de luz na cor primária que gira pela borda de todo cartão (título, ação, busca e composto). Desligado (padrão), nenhuma animação roda. Fica parado fora da tela, some com movimento reduzido, e dezenas de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque.',
+            interactsWith: ['primaryColor', 'cardBorderRadius', 'cardBorderWidth'],
             description: 'Ativa um traço luminoso animado percorrendo a borda do card (efeito "Border Beam"), o mesmo conceito de `cardSearchBorderBeamActive` mas aplicável a qualquer card do sistema.',
             defaultValue: false
         },

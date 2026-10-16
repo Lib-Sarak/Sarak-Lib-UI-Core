@@ -563,10 +563,10 @@ onde, e de qual outro token depende. O `catalog.json` do kit traz os campos em `
 Nada muda para o tema salvo: valor persistido segue valendo. Quem tem token próprio nesses grupos pode usar o mapa
 para saber se o valor também precisa existir na `contraparte`.
 
-Quatro tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
-decisão: `borderBeamEnabled`, `cardSearchBorderBeamActive`, `cardContentAlignment` e `tableActionPosition`.
-Declará-los num tema não muda a tela. (`cardSpotlightOpacity`, `cardActionClickScale` e `imageCardHoverZoom`
-passaram a desenhar — ver a nota seguinte.)
+Dois tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
+decisão: `cardContentAlignment` e `tableActionPosition`. Declará-los num tema não muda a tela.
+(`cardSpotlightOpacity`, `cardActionClickScale` e `imageCardHoverZoom` passaram a desenhar — ver a nota seguinte —,
+e `borderBeamEnabled` e `cardSearchBorderBeamActive`, na nota depois dela.)
 
 ### Spotlight, aperto do botão de ação e zoom da capa passam a desenhar por padrão
 
@@ -582,6 +582,23 @@ nada desenhava passam a mudar a tela, com o valor padrão que o schema sempre de
 Quem não quer o efeito declara `cardSpotlightOpacity: 0`, `imageCardHoverZoom: 1` e `cardActionClickScale: 1`.
 Movimento reduzido (token `reducedMotion` ou a preferência do sistema) zera os três. O spotlight com `0` ou sob
 movimento reduzido não registra nenhum listener de ponteiro.
+
+### O traço luminoso da borda passa a desenhar: o do campo de busca acende por padrão; `borderBeamEnabled` é opt-in
+
+**Classificação: MAJOR (visível por padrão, sem mudança de assinatura).** `cardSearchBorderBeamActive` e
+`borderBeamEnabled` eram oferecidos pelo painel e nada os desenhava (ligar ou desligar só acrescentava um `<div>`
+vazio). Passam a desenhar um anel de luz na cor primária que gira pela borda do cartão e acompanha o raio dele:
+
+| Token | O que desenha | Padrão |
+|---|---|---|
+| `cardSearchBorderBeamActive` | O traço do `SarakSearchCard`, **só enquanto o campo de busca tem o foco**; fora do foco nada anima. | `true` — **passa a desenhar por padrão** |
+| `borderBeamEnabled` | O traço aceso o tempo todo em qualquer cartão (título, ação, busca e composto). | `false` — opt-in, nada muda para quem não o declara |
+
+Quem não quer o traço do campo de busca declara `cardSearchBorderBeamActive: false`. O traço some com movimento
+reduzido (token `reducedMotion` ou a preferência do sistema) e o giro pausa com o cartão fora da tela. **Custo:** é
+uma animação por cartão aceso, repintada a cada quadro; dezenas de cartões visíveis ao mesmo tempo com o traço ligado
+custam quadros (medido em Chromium sem GPU: 42 cartões visíveis, de 61 para cerca de 11 quadros por segundo) — use
+`borderBeamEnabled` em poucos cartões de destaque, não numa grade inteira.
 
 ### Exports removidos do barril público
 
@@ -790,6 +807,27 @@ do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria f
 ### `SarakTextarea` e `SarakRichText` passam a aceitar `label`
 
 **Classificação: MINOR (props opcionais aditivas).** Os dois átomos passam a exibir e associar o rótulo informado ao controle editável. Usos existentes continuam válidos; informe `label` para que o campo tenha um nome acessível ligado ao rótulo visível.
+
+### A biblioteca passa a levar as próprias fontes (`dist/fonts/`) e o catálogo de tipografia cresce de 19 para 41 famílias
+
+**Classificação: MAJOR (sai na 8.0.0).** O pacote passa a trazer `dist/fonts/` (~1,7 MB): 41 famílias em woff2,
+subconjunto `latin`, mais `manifest.json` (família → arquivos → pesos e eixos) e o `THIRD-PARTY-FONTS` com o crédito e o
+texto de licença de cada família (SIL OFL 1.1; Apache 2.0 para Satisfy e Roboto Slab). Quem empacota a lib e controla o
+que entra no artefato final passa a ver essa pasta no pacote.
+
+**O que muda agora, neste passo:** o pacote leva os arquivos e o painel passa a oferecer 22 famílias novas em
+`THEME_FONTS` (Chakra Petch, Nunito, DM Sans, Manrope, Work Sans, Open Sans, Raleway, Source Sans 3, Poppins, Lato,
+Orbitron, VT323, Oswald, Source Serif 4, Roboto Slab, Lora, Merriweather, PT Serif, Patrick Hand, Fira Code, IBM Plex
+Mono, Space Mono). Os 19 `value` que já existiam não mudaram, nenhuma família saiu, e um tema salvo continua válido.
+
+**O que ainda NÃO muda:** o comportamento padrão. Até o carregador em runtime chegar, as fontes continuam vindo do
+Google Fonts, como antes; o consumidor não precisa fazer nada. Quando o carregador chegar, o padrão passa a ser
+embarcado (sem requisição a terceiros) e a origem vira escolha do host (`options.fonts`).
+
+**Limites que vale conhecer:** das fontes variáveis entra só o eixo `wght` (os eixos `opsz`, `wdth`, `SOFT` e `WONK` não);
+das estáticas entram só os pesos que o pacote da família tem, e o navegador sintetiza os demais. Por isso o tema que quer
+evitar peso sintetizado escolhe pesos que a família tem (por exemplo, Space Mono tem 400 e 700; VT323, Patrick Hand e
+Bebas Neue, só 400).
 
 ---
 

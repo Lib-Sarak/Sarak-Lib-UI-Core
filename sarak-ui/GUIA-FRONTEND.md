@@ -682,13 +682,18 @@ O `tableHeaderBg` também pinta a barra de ferramentas do editor de texto rico e
 
 ## 6.4 Tokens que o schema oferece e ainda não mudam a tela
 
-Medidos em navegador e deixados fora do mapa (A.4b) até uma decisão: `borderBeamEnabled`,
-`cardSearchBorderBeamActive`, `cardContentAlignment` e `tableActionPosition`. Declará-los num tema é inofensivo e
-inútil; não construa expectativa visual sobre eles.
+Medidos em navegador e deixados fora do mapa (A.4b) até uma decisão: `cardContentAlignment` e
+`tableActionPosition`. Declará-los num tema é inofensivo e inútil; não construa expectativa visual sobre eles.
 
 `cardSpotlightOpacity` (luz que segue o cursor), `imageCardHoverZoom` (zoom da capa sob o ponteiro) e
 `cardActionClickScale` (aperto do botão de ação) **desenham por padrão** — 0,1 · 1,05 · 0,96. Para desligar:
 `0`, `1` e `1`. Movimento reduzido zera os três.
+
+`borderBeamEnabled` e `cardSearchBorderBeamActive` desenham o **traço luminoso**: um anel de luz na cor primária que
+gira só pela borda do cartão e acompanha o raio dele. `cardSearchBorderBeamActive` (padrão `true`) acende o traço do
+`SarakSearchCard` **só com o campo de busca em foco**; `borderBeamEnabled` (padrão `false`, opt-in) o mantém aceso em
+qualquer cartão. Desligados, nenhuma animação roda; fora da tela o giro pausa e movimento reduzido apaga o traço. Dezenas
+de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque.
 
 ---
 
@@ -861,12 +866,13 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**116** de 402 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**118** de 402 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
 
 #### Card Geral (`cards`)
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
+| `borderBeamEnabled` | estético | não | Anel de luz na cor primária que gira pela borda de todo cartão (título, ação, busca e composto). Desligado (padrão), nenhuma animação roda. Fica parado fora da tela, some com movimento reduzido, e dezenas de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque. | `primaryColor` · `cardBorderRadius` · `cardBorderWidth` |
 | `cardBackdropBlur` | estético | não | Desfoca o que passa por trás do cartão, como vidro fosco; só se vê com superfície translúcida, e o material de superfície soma desfoque a este valor. | `cardSurfaceOpacity` |
 | `cardBorderBottom` | estético | não | Sobrepõe a espessura da borda só na base do cartão; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
 | `cardBorderLeft` | estético | não | Sobrepõe a espessura da borda só no lado esquerdo do cartão; sem declarar, vale `cardBorderWidth`. | `cardBorderWidth` |
@@ -968,6 +974,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
 | `cardSearchBgFocus` | estético | sim | Fundo do campo do `SarakSearchCard` enquanto ele tem o foco. | — |
+| `cardSearchBorderBeamActive` | estético | não | Anel de luz na cor primária que gira pela borda do `SarakSearchCard` só enquanto o campo de busca tem o foco; fora do foco nada anima. Ligado por padrão. `borderBeamEnabled` o mantém aceso mesmo sem foco; movimento reduzido o apaga. | `borderBeamEnabled` · `primaryColor` |
 | `cardSearchPlaceholderColor` | estético | sim | Cor do texto de exemplo do campo do `SarakSearchCard`, antes de digitar. | — |
 | `cardSearchTextFocusColor` | estético | sim | Cor do texto digitado no campo do `SarakSearchCard` enquanto ele tem o foco; precisa de contraste com o fundo em foco. | `cardSearchBgFocus` |
 

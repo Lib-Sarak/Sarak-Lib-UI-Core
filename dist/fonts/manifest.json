@@ -1,0 +1,1272 @@
+{
+  "version": 1,
+  "families": {
+    "Inter": {
+      "package": "@fontsource-variable/inter",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "inter-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 48256
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)"
+      }
+    },
+    "Outfit": {
+      "package": "@fontsource-variable/outfit",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "outfit-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 32292
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2021 The Outfit Project Authors (https://github.com/Outfitio/Outfit-Fonts)"
+      }
+    },
+    "Roboto": {
+      "package": "@fontsource-variable/roboto",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "roboto-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 43136
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic)"
+      }
+    },
+    "Montserrat": {
+      "package": "@fontsource-variable/montserrat",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "montserrat-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 37956
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)"
+      }
+    },
+    "Space Grotesk": {
+      "package": "@fontsource-variable/space-grotesk",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 300,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "space-grotesk-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "300 700",
+          "bytes": 22288
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)"
+      }
+    },
+    "Plus Jakarta Sans": {
+      "package": "@fontsource-variable/plus-jakarta-sans",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "plus-jakarta-sans-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 800",
+          "bytes": 27348
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Plus Jakarta Sans Project Authors (https://github.com/tokotype/PlusJakartaSans)"
+      }
+    },
+    "Lexend": {
+      "package": "@fontsource-variable/lexend",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "lexend-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 39680
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Lexend Project Authors (https://github.com/googlefonts/lexend)"
+      }
+    },
+    "Sora": {
+      "package": "@fontsource-variable/sora",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "sora-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 800",
+          "bytes": 33652
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Sora Project Authors (https://github.com/sora-xor/sora-font)"
+      }
+    },
+    "Syne": {
+      "package": "@fontsource-variable/syne",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "syne-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 800",
+          "bytes": 34608
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Syne Project Authors (https://gitlab.com/bonjour-monde/fonderie/syne-typeface)"
+      }
+    },
+    "Archivo": {
+      "package": "@fontsource-variable/archivo",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "archivo-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 34928
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+      }
+    },
+    "Chakra Petch": {
+      "package": "@fontsource/chakra-petch",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        300,
+        400,
+        500,
+        600,
+        700
+      ],
+      "files": [
+        {
+          "file": "chakra-petch-latin-300-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 300,
+          "bytes": 10008
+        },
+        {
+          "file": "chakra-petch-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 9756
+        },
+        {
+          "file": "chakra-petch-latin-500-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 500,
+          "bytes": 9956
+        },
+        {
+          "file": "chakra-petch-latin-600-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 600,
+          "bytes": 9968
+        },
+        {
+          "file": "chakra-petch-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 9900
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2018 The Chakra Petch Project Authors (https://github.com/m4rc1e/Chakra-Petch.git)"
+      }
+    },
+    "Nunito": {
+      "package": "@fontsource-variable/nunito",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 1000
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "nunito-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 1000",
+          "bytes": 39128
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito)"
+      }
+    },
+    "DM Sans": {
+      "package": "@fontsource-variable/dm-sans",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 1000
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "dm-sans-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 1000",
+          "bytes": 36932
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts)"
+      }
+    },
+    "Manrope": {
+      "package": "@fontsource-variable/manrope",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "manrope-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 800",
+          "bytes": 24836
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)"
+      }
+    },
+    "Work Sans": {
+      "package": "@fontsource-variable/work-sans",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "work-sans-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 50316
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Work Sans Project Authors (https://github.com/weiweihuanghuang/Work-Sans)"
+      }
+    },
+    "Open Sans": {
+      "package": "@fontsource-variable/open-sans",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 300,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "open-sans-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "300 800",
+          "bytes": 48320
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Open Sans Project Authors (https://github.com/googlefonts/opensans)"
+      }
+    },
+    "Raleway": {
+      "package": "@fontsource-variable/raleway",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "raleway-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 48264
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2010 The Raleway Project Authors (impallari@gmail.com), with Reserved Font Name \"Raleway\"."
+      }
+    },
+    "Source Sans 3": {
+      "package": "@fontsource-variable/source-sans-3",
+      "version": "5.3.1",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "source-sans-3-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 900",
+          "bytes": 28872
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Google Inc."
+      }
+    },
+    "Poppins": {
+      "package": "@fontsource/poppins",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        300,
+        400,
+        500,
+        600,
+        700,
+        800,
+        900
+      ],
+      "files": [
+        {
+          "file": "poppins-latin-300-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 300,
+          "bytes": 7840
+        },
+        {
+          "file": "poppins-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 7884
+        },
+        {
+          "file": "poppins-latin-500-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 500,
+          "bytes": 7748
+        },
+        {
+          "file": "poppins-latin-600-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 600,
+          "bytes": 8000
+        },
+        {
+          "file": "poppins-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 7816
+        },
+        {
+          "file": "poppins-latin-800-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 800,
+          "bytes": 7824
+        },
+        {
+          "file": "poppins-latin-900-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 900,
+          "bytes": 7632
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)"
+      }
+    },
+    "Lato": {
+      "package": "@fontsource/lato",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        300,
+        400,
+        700,
+        900
+      ],
+      "files": [
+        {
+          "file": "lato-latin-300-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 300,
+          "bytes": 23236
+        },
+        {
+          "file": "lato-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 23580
+        },
+        {
+          "file": "lato-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 23040
+        },
+        {
+          "file": "lato-latin-900-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 900,
+          "bytes": 22504
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright (c) 2010-2011 by tyPoland Lukasz Dziedzic (team@latofonts.com) with Reserved Font Name \"Lato\". Licensed under the SIL Open Font License, Version 1.1."
+      }
+    },
+    "Unbounded": {
+      "package": "@fontsource-variable/unbounded",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "unbounded-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 900",
+          "bytes": 50904
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2022 The Unbounded Project Authors (https://github.com/googlefonts/unbounded)"
+      }
+    },
+    "Bebas Neue": {
+      "package": "@fontsource/bebas-neue",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400
+      ],
+      "files": [
+        {
+          "file": "bebas-neue-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 13768
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2019 The Bebas Neue Project Authors (https://github.com/dharmatype/Bebas-Neue)"
+      }
+    },
+    "Orbitron": {
+      "package": "@fontsource-variable/orbitron",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "orbitron-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 900",
+          "bytes": 11800
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2018 The Orbitron Project Authors (https://github.com/theleagueof/orbitron)"
+      }
+    },
+    "VT323": {
+      "package": "@fontsource/vt323",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400
+      ],
+      "files": [
+        {
+          "file": "vt323-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 17936
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2011, The VT323 Project Authors (peter.hull@oikoi.com)"
+      }
+    },
+    "Oswald": {
+      "package": "@fontsource-variable/oswald",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "oswald-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 700",
+          "bytes": 28488
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2016 The Oswald Project Authors (https://github.com/googlefonts/OswaldFont)"
+      }
+    },
+    "Playfair Display": {
+      "package": "@fontsource-variable/playfair-display",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "playfair-display-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 900",
+          "bytes": 38404
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\"."
+      }
+    },
+    "Fraunces": {
+      "package": "@fontsource-variable/fraunces",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "fraunces-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 36620
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The Fraunces Project Authors (github.com/undercasetype/Fraunces)"
+      }
+    },
+    "Source Serif 4": {
+      "package": "@fontsource-variable/source-serif-4",
+      "version": "5.3.1",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 200,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "source-serif-4-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "200 900",
+          "bytes": 50936
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Google Inc."
+      }
+    },
+    "Roboto Slab": {
+      "package": "@fontsource-variable/roboto-slab",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "roboto-slab-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 900",
+          "bytes": 34236
+        }
+      ],
+      "license": {
+        "type": "Apache-2.0",
+        "notice": "Copyright 2018 The Roboto Slab Project Authors (https://github.com/googlefonts/robotoslab)"
+      }
+    },
+    "Lora": {
+      "package": "@fontsource-variable/lora",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "lora-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 700",
+          "bytes": 37788
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name \"Lora\"."
+      }
+    },
+    "Merriweather": {
+      "package": "@fontsource-variable/merriweather",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 300,
+          "max": 900
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "merriweather-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "300 900",
+          "bytes": 97548
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2024 The Merriweather Project Authors (https://github.com/EbenSorkin/Merriweather4) with Reserved Font Name \"Merriweather\"."
+      }
+    },
+    "PT Serif": {
+      "package": "@fontsource/pt-serif",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400,
+        700
+      ],
+      "files": [
+        {
+          "file": "pt-serif-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 33116
+        },
+        {
+          "file": "pt-serif-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 29588
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright © 2010 ParaType Ltd. All rights reserved."
+      }
+    },
+    "Dancing Script": {
+      "package": "@fontsource-variable/dancing-script",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "dancing-script-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 700",
+          "bytes": 42708
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2016 The Dancing Script Project Authors (https://github.com/googlefonts/DancingScript), with Reserved Font Name 'Dancing Script'."
+      }
+    },
+    "Pacifico": {
+      "package": "@fontsource/pacifico",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400
+      ],
+      "files": [
+        {
+          "file": "pacifico-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 32280
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2018 The Pacifico Project Authors (https://github.com/googlefonts/Pacifico)"
+      }
+    },
+    "Satisfy": {
+      "package": "@fontsource/satisfy",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400
+      ],
+      "files": [
+        {
+          "file": "satisfy-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 22724
+        }
+      ],
+      "license": {
+        "type": "Apache-2.0",
+        "notice": "Copyright (c) 2011 by Font Diner, Inc. All rights reserved."
+      }
+    },
+    "Caveat": {
+      "package": "@fontsource-variable/caveat",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 400,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "caveat-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "400 700",
+          "bytes": 74932
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2014 The Caveat Project Authors (https://github.com/googlefonts/caveat)"
+      }
+    },
+    "Patrick Hand": {
+      "package": "@fontsource/patrick-hand",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400
+      ],
+      "files": [
+        {
+          "file": "patrick-hand-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 23944
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright (c) 2010-2012 Patrick Wagesreiter (mail@patrickwagesreiter.at)"
+      }
+    },
+    "JetBrains Mono": {
+      "package": "@fontsource-variable/jetbrains-mono",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 100,
+          "max": 800
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "jetbrains-mono-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "100 800",
+          "bytes": 40404
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)"
+      }
+    },
+    "Fira Code": {
+      "package": "@fontsource-variable/fira-code",
+      "version": "5.3.0",
+      "variable": true,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {
+        "wght": {
+          "min": 300,
+          "max": 700
+        }
+      },
+      "weights": [],
+      "files": [
+        {
+          "file": "fira-code-latin-wght-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": "300 700",
+          "bytes": 36276
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2014-2020 The Fira Code Project Authors (https://github.com/tonsky/FiraCode)"
+      }
+    },
+    "IBM Plex Mono": {
+      "package": "@fontsource/ibm-plex-mono",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        300,
+        400,
+        500,
+        600,
+        700
+      ],
+      "files": [
+        {
+          "file": "ibm-plex-mono-latin-300-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 300,
+          "bytes": 14748
+        },
+        {
+          "file": "ibm-plex-mono-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 14708
+        },
+        {
+          "file": "ibm-plex-mono-latin-500-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 500,
+          "bytes": 14888
+        },
+        {
+          "file": "ibm-plex-mono-latin-600-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 600,
+          "bytes": 15620
+        },
+        {
+          "file": "ibm-plex-mono-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 14908
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2017 IBM Corp. All rights reserved."
+      }
+    },
+    "Space Mono": {
+      "package": "@fontsource/space-mono",
+      "version": "5.3.0",
+      "variable": false,
+      "subsets": [
+        "latin"
+      ],
+      "axes": {},
+      "weights": [
+        400,
+        700
+      ],
+      "files": [
+        {
+          "file": "space-mono-latin-400-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 400,
+          "bytes": 16520
+        },
+        {
+          "file": "space-mono-latin-700-normal.woff2",
+          "subset": "latin",
+          "style": "normal",
+          "weight": 700,
+          "bytes": 16724
+        }
+      ],
+      "license": {
+        "type": "OFL-1.1",
+        "notice": "Copyright 2016 The Space Mono Project Authors (https://github.com/googlefonts/spacemono)"
+      }
+    }
+  }
+}

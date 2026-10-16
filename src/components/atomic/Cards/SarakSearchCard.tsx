@@ -7,6 +7,7 @@ import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useSpotlightPointer } from './hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from './hooks/usePauseBeamOffscreen';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
 
@@ -42,6 +43,9 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
     const spotlight = useSpotlightPointer(design);
     const [searchText, setSearchText] = useState('');
     const [focused, setFocused] = useState(false);
+    // O traço do campo de busca só desenha com o campo em foco; `borderBeamEnabled` o mantém aceso em qualquer cartão.
+    const beamOn = design.borderBeamEnabled === true || (focused && design.cardSearchBorderBeamActive !== false);
+    usePauseBeamOffscreen(spotlight.ref, beamOn);
     
     // Capability toggling state
     const [caps, setCaps] = useState<Record<string, boolean>>({
@@ -77,15 +81,13 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
             }}
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={spotlight.dataSpotlight}
-            data-border-beam={design.borderBeamEnabled ? '1' : '0'}
+            data-border-beam={beamOn ? '1' : '0'}
         >
             {/* Ambient Atmosphere */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />
             
-            {/* Border Beam - lights up on focus or hover */}
-            {design.cardSearchBorderBeamActive !== false && (
-                <div className="border-beam-effect" style={{ opacity: focused ? 1 : 0.4 }} />
-            )}
+            {/* Border Beam: a regra CSS só o desenha com `data-border-beam="1"` na raiz */}
+            <div className="border-beam-effect" />
 
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (

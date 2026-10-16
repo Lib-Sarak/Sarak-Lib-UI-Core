@@ -100,8 +100,8 @@ nenhum `defaultValue`.
 | P1 | `cardActionClickScale` — ligar o escalonamento do botão de ação ao clicar | plan-110 lote 1 | ligar | 1 | fechada |
 | P2 | `imageCardHoverZoom` — o zoom da imagem de capa no hover nunca dispara | plan-110 lote 1 | ligar | 1 | fechada |
 | P3 | `cardSpotlightOpacity` — o spotlight que segue o cursor não tem regra CSS | plan-110 lote 1 | ligar | 1 | fechada |
-| P4 | `borderBeamEnabled` — o traço luminoso na borda do cartão não tem regra CSS | plan-110 lote 1 | ligar | 2 | aberta |
-| P5 | `cardSearchBorderBeamActive` — o traço no cartão de busca em foco | plan-110 lote 1 | ligar | 2 | aberta |
+| P4 | `borderBeamEnabled` — o traço luminoso na borda do cartão não tem regra CSS | plan-110 lote 1 | ligar | 2 | fechada |
+| P5 | `cardSearchBorderBeamActive` — o traço no cartão de busca em foco | plan-110 lote 1 | ligar | 2 | fechada |
 | P6 | `cardContentAlignment` — redundante com `cardTextAlign`; ligá-lo regride o layout | plan-110 lote 1 | retirar | 3 | aberta |
 | P7 | `tableActionPosition` — a tabela não tem coluna de ações | plan-110 lote 1 | retirar | 3 | aberta |
 | P8 | `getCardStyles` morto e `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` o citando; `cardVariant` com `axis: 'texture'` | plan-110 lote 1 (backlog 34) | retirar/corrigir | 3 | aberta |
@@ -315,6 +315,87 @@ Dois listeners (`pointermove`, `pointerleave`) por cartão, **somente** quando o
 
 **Escopo:** nenhum `src/` de produto, nem `_card-defaults.css`, nem `_cards.css` foram tocados nesta rodada; só o spec de navegador e os três testes acima.
 
+## Resumo da execução (lote 2: P4, P5) — 2026-10-16
+
+**Resultado:** Concluído com pendências (o caso de navegador foi medido contra um build **fora do repositório**, não contra o `dist/`; `build`, `verify` e o caso contra o `dist/` ficam para o revisor).
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+ M specs/plan/plan-118-fontes-embarcadas.md
+```
+(Durante a execução apareceram, vindos da execução paralela da plan-118 e não tocados por mim: `.githooks/pre-commit`, `.github/workflows/gates.yml`, `package.json`, `src/core/Design/schema/typography.ts`, `src/core/Provider/utils/googleFontsUrl*`, `dist/fonts/`, `scripts/embed-fonts.ts`, `scripts/fonts/`, `gates/scripts/contrato/check-fonts*`, e 21 linhas de `docs/migracoes.md` de outra subseção.)
+
+**O que foi feito**
+- P4/P5 — `src/styles/_cards.css`: a regra que faltava. `.sarak-card > .border-beam-effect { display: none }`; com `data-border-beam="1"` na raiz, a camada vira um anel: `conic-gradient(from var(--beam-angle), transparent 0–70%, var(--beam-color))`, `padding` = largura da borda (`--beam-width: var(--sarak-card-border-width, 1px)`), máscara de duas camadas (`content-box` × caixa inteira) com `mask-composite: exclude` e `-webkit-mask-composite: xor`, `border-radius: inherit` (acompanha o raio do cartão, canto a canto, inclusive o que uma classe do consumidor troca), cor `var(--sarak-primary-color, var(--theme-primary))`, `animation: beam-rotate calc(var(--duration-slow, 0.6s) * 5) linear infinite` (usa o `@keyframes` e o `@property --beam-angle` que já existiam). `--beam-width` e `--beam-color` declaradas na própria regra (um dono). Nada voltou para a regra-base de `.sarak-card`.
+- P5 — `SarakSearchCard.tsx`: `beamOn = borderBeamEnabled === true || (focused && cardSearchBorderBeamActive !== false)`; a raiz escreve `data-border-beam={beamOn ? '1' : '0'}`; a camada `.border-beam-effect` passou a existir sempre (antes saía com o token `false`) e perdeu o `style={{opacity}}` inline. Resultado: o traço do campo de busca só acende com o campo em foco; `borderBeamEnabled` o mantém aceso.
+- P4 — `SarakActionCard`, `SarakTitleCard`, `SarakCoreCard` já escreviam `data-border-beam` e a camada; só ganharam o hook abaixo (sem outra mudança).
+- Custo — `src/components/atomic/Cards/hooks/usePauseBeamOffscreen.ts` (novo): com o traço aceso, um `IntersectionObserver` marca a raiz com `data-border-beam-paused="1"` fora da tela (atributo gravado direto, sem `setState`); `_cards.css`: `.sarak-card[data-border-beam-paused="1"] > .border-beam-effect { animation-play-state: paused }`. Ligado nos quatro cartões; traço apagado = nenhum observador.
+- Movimento reduzido — `_cards.css`: sob `:root[data-sx-reduced-motion="true"]` e `@media (prefers-reduced-motion: reduce)` a camada é `display: none` (junto do spotlight). **Escolha: apagar, não deixar o anel parado** — um arco congelado num ângulo arbitrário não é um estado reconhecível e pareceria defeito; nada depende do efeito (o foco do campo tem o próprio estilo de foco do `SarakInput`).
+- Documentação — `schema/cards.ts` (`borderBeamEnabled`) e `schema/card-search.ts` (`cardSearchBorderBeamActive`): `kind: 'aesthetic'`, `modeDependent: false`, `usage` (com o aviso de custo) e `interactsWith`; as duas entradas `achado-lote-1` saíram de `gates/allowlists/tokenDocumentationPending.json` (edição pontual); `npm run token-types` regenerou só `design-token-docs.json`; `sarak-ui/GUIA-FRONTEND.md` §6.4 (texto-fonte; o gerador **não** foi rodado); `docs/migracoes.md` (`## 8.0.0`): nova subseção do traço luminoso (MAJOR: o do campo de busca passa a desenhar por padrão; `borderBeamEnabled` é opt-in) e o parágrafo "quatro tokens" da subseção de documentação corrigido para dois; `specs/plan/anexos/plan-110-tokens-funcionais.md` §4.1 (desfecho dos dois).
+- Provas — `browser-tests/cartao-que-se-move.spec.ts` (+11 casos, de 13 para 24) e recortes/cena em `browser-tests/fixtures/harness-entry.tsx` (`cartao-beam`, `cartao-beam-busca-desligado`, `cartao-beam-raio`, `cartao-beam-reduzido`; cena `cartao-beam-grade` com 48 cartões). `waitUntilStill` passou a ignorar a animação `beam-rotate` (ela gira para sempre e não move a caixa; sem isso o cartão "nunca parava").
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/_cards.css` | alterado | regra do anel, pausa fora da tela, movimento reduzido |
+| `src/components/atomic/Cards/SarakSearchCard.tsx` | alterado | `beamOn`, `data-border-beam` por foco, camada sempre presente, hook de pausa |
+| `src/components/atomic/Cards/SarakActionCard.tsx` · `SarakTitleCard.tsx` · `Templates/components/SarakCoreCard.tsx` | alterado | só o hook de pausa (import + 1 linha) |
+| `src/components/atomic/Cards/hooks/usePauseBeamOffscreen.ts` | criado | pausa o giro fora da tela |
+| `src/components/atomic/Cards/hooks/__tests__/usePauseBeamOffscreen.test.tsx` | criado | 3 testes do hook |
+| `src/components/atomic/Cards/__tests__/SarakSearchCard.test.tsx` · `SarakActionCard.test.tsx` | alterado | testes de `data-border-beam` (foco, token falso, opt-in, camada presente) |
+| `src/components/atomic/Cards/__tests__/__snapshots__/SarakSearchCard.test.tsx.snap` | alterado | some o `style="opacity: 0.4;"` da camada (o único diff) |
+| `src/core/Design/schema/cards.ts` · `card-search.ts` | alterado | documentação dos dois tokens |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −2 entradas `achado-lote-1` |
+| `src/core/Provider/generated/design-token-docs.json` | alterado (gerado) | `token-types` |
+| `browser-tests/cartao-que-se-move.spec.ts` · `fixtures/harness-entry.tsx` | alterado | 11 casos novos; recortes e cena |
+| `sarak-ui/GUIA-FRONTEND.md` · `docs/migracoes.md` · `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | notas |
+
+**Verificações executadas** (só o que eu escrevi ou toquei; sem `build`, sem `guide`/`dev-kit`, sem suíte completa)
+- `npx vitest run src/components/atomic/Cards src/components/atomic/Templates/components src/styles/__tests__/cartaoQueCedeAClasse.test.ts` → 26 arquivos, 120/120 testes, 0 falha (inclui `cartaoQueCedeAClasse`, que cobra a base do cartão fora de `_cards.css`). Antes disso, uma rodada mais larga (`Cards`, `Templates`, `styles`: 74 arquivos) acusou 1 snapshot (o `style` removido, atualizado só neste arquivo e conferido no diff) e 2 testes do hook por eu ter mockado o `IntersectionObserver` sem classe; corrigidos e repetidos.
+- Navegador, contra um build **fora do repositório** (esbuild com alias para `src/index.ts` + Tailwind CLI, em pasta do scratchpad; `dist/` intocado; config do Playwright minimal apontando para o spec real) → `cartao-que-se-move.spec.ts` **24/24** (13 do lote 1 + 11 novos). Medido: desligado = `display: none` e 0 `beam-rotate` rodando nos três cartões; ligado = `display: block`, `background-image` com `conic-gradient` contendo a cor computada de `--sarak-primary-color`, `mask-composite: exclude, exclude`, `padding-top` = largura da borda do cartão, `border-top-left-radius` = o do cartão (e 30 px = 30 px quando o tema troca o raio), `animation-name: beam-rotate`, `infinite`, e `--beam-angle` diferente 400 ms depois; busca com padrão `true`: `none` em repouso, `block` com o campo em foco (1 animação), `none` de novo ao sair; token `false`: nunca; `borderBeamEnabled` liga a busca sem foco; movimento reduzido (token e `emulateMedia`) = `none` e 0 animações, mesmo com o campo em foco.
+- Mutação: trocar o seletor `[data-border-beam="1"]` da regra do anel por `"9"` e reconstruir o CSS → **6 dos 10** casos de traço caem (anel dos três cartões, raio, padrão da busca em foco, `borderBeamEnabled` na busca); os 4 que passam são os de "desligado/nenhum" (esperado: sem a regra, nada aparece). `_cards.css` restaurado idêntico (diffstat conferido).
+- Inspeção da imagem (`screenshot` da grade com o traço): o anel aparece só na borda, com os cantos arredondados do cartão, miolo vazio — o que o teste não prova por pixel (declarado nos limites do spec).
+- `npm run token-types` → 402 tokens; `token-types:check` OK; `token-docs:check` → 118 de 402 documentados (eram 116), 284 em exceção; `token-reader:check`, `css-important:check`, `variable-contract:check`, `fixed-translucent:check`, `barrel:check` → todos OK.
+- `npx tsc --noEmit -p .` filtrado por `Cards/`, `usePauseBeam`, `SarakCoreCard` → 0 linhas (não li o total do projeto: não é meu).
+- Anel 0 / R36: não rodados por mim (do revisor).
+
+**Custo medido** (cena `cartao-beam-grade`, 48 `SarakTitleCard`, 42 deles visíveis na janela 1280×900; Chromium headless **sem GPU**, que é pessimista; quadros de `requestAnimationFrame` em 3 s e CDP `Performance.getMetrics`)
+| Situação | animações `beam-rotate` correndo | quadros em 3 s | estilo recalculado |
+|---|---|---|---|
+| traço desligado (padrão) | 0 | 182 (~61/s) | 0 |
+| ligado, 48 cartões | 48 | 32 (~11/s) | 0,059 s/s |
+| ligado, 48 cartões, **depois da pausa fora da tela** | 42 | 33 | 0,065 s/s |
+- Onde está o custo: tirar o `backdrop-filter` do cartão (padrão `cardBackdropBlur` 12) leva ligado de 32 para 140 quadros — o giro repinta o cartão e o desfoque do fundo é refeito a cada quadro; tirar a máscara quase não muda (52). `will-change: transform` no anel rendeu só 54 quadros (não adotado).
+- Fora da tela: com 480 cartões clonados no DOM o recálculo de estilo subiu para 0,45 s/s (as animações fora da janela custam estilo mesmo sem pintar), o que justifica a **pausa por `IntersectionObserver`**; o caso de navegador novo prova que, com 48 cartões numa grade mais alta que a janela, só os visíveis giram (`running + paused = 48`, `paused > 0`) e que rolar troca quais. (A medição de 480 não vale como número do hook: os clones não têm efeito React; o número só mostra o custo sem pausa.)
+- **Escolha dita:** pausar fora da viewport (feito) e **não** limitar a hover/foco, porque o token promete um traço contínuo; o custo **dentro** da janela continua e está registrado no `usage` dos dois tokens e na nota de migração ("use em poucos cartões de destaque"). O padrão de `borderBeamEnabled` é `false`, então só quem opta paga.
+
+**Critérios de aceite (lote 2)**
+- [x] P4/P5 mudam o estilo computado no navegador (ligado × desligado; repouso e foco), com caso novo e mutação — evidência: os 11 casos e a mutação acima. Falta rodar contra o `dist/` (revisor).
+- [x] Movimento reduzido apaga o traço; token desligado não anima nem registra observador — evidência: casos de movimento reduzido e `usePauseBeamOffscreen.test.tsx` ("traço apagado: não observa nada").
+- [x] `usage`/`kind`/`modeDependent`/`interactsWith` dos dois; saem da exceção — `token-docs:check` OK (118).
+- [x] Nenhum `defaultValue`, tema, token novo ou opção nova alterados — `git diff` de `schema/` mostra só os campos de documentação.
+- [x] Cor de token, sem `!important` novo, uma variável um dono, base do cartão fora de `_cards.css` — `fixed-translucent`, `css-important`, `variable-contract` e `cartaoQueCedeAClasse` verdes.
+- [ ] Executar o caso novo contra o `dist/` e a verificação completa — motivo: `npm run build` e `npm run verify` não são meus; o `dist/` atual é anterior ao meu CSS.
+
+**Decisões e suposições**
+- Movimento reduzido **apaga** o anel (ver acima), em vez de deixá-lo estático.
+- A camada `.border-beam-effect` do `SarakSearchCard` passa a existir sempre (antes só com o token `!== false`), porque `borderBeamEnabled` precisa acendê-la mesmo com `cardSearchBorderBeamActive: false`; "nenhum nó extra" vale para o que o CSS desenha (`display: none` = sem animação, sem pintura), não para o `<div>` vazio, que os outros três cartões já tinham.
+- O foco que acende o traço é o estado `focused` que o componente já tinha (`onFocus`/`onBlur` do campo), não `:focus-within` — assim vale também para o teste de componente em jsdom.
+- `modeDependent: false` nos dois (são booleanos; a cor vem da primária, que já tem a própria contraparte). `interactsWith`: `primaryColor`, `cardBorderRadius`, `cardBorderWidth` (o anel segue cor, raio e largura) e, na busca, `borderBeamEnabled`.
+- `mask: linear-gradient(black 0 0)` — a máscara só usa alfa; `fixed-translucent:check` não acusou.
+- O hook de pausa não foi pedido literalmente: a instrução o autoriza ("prefira pausar fora da viewport ... e diga a escolha") e a medição o justifica.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo. (`useExpandableCard.test.ts` com `// TODO` pré-existente, já anotado no lote 1.)
+
+**Pendências / riscos**
+- O revisor precisa de `npm run build` e do caso contra o `dist/`; o CSS do `dist/` atual não tem a regra.
+- O custo dentro da janela existe (ver tabela): numa grade inteira com `borderBeamEnabled` e cartões com desfoque de fundo o giro derruba a taxa de quadros; está avisado no `usage` e na nota de migração, mas não foi mitigado por limite de hover/foco (decisão acima).
+- `npm run guide` e `npm run dev-kit` não foram rodados (instrução): `sarak-ui/catalog.json` e o `GUIA` gerado só refletem o `usage` novo depois que o revisor regenerar; `guide:check` pode acusar divergência até lá (o `GUIA-FRONTEND.md` foi editado à mão apenas no §6.4).
+- Não conferido por pixel no spec: o miolo do cartão vazio (inspeção visual da captura, manual).
+
 ---
 
 # 10. Veredito
@@ -395,3 +476,27 @@ movimento reduzido zera os três, token 0 não registra listener, a base do cart
 `defaultValue` nem tema tocado.
 
 **Status: 🔴 A executar (lote 2: P4, P5 — o traço luminoso).** Os lotes 2 e 3 seguem a §5.2.
+
+## Veredito — 2026-10-16 — lote 2 (P4, P5) — 🟢 Aprovado
+
+**Conferido pelo revisor:**
+- **Diff:** a regra do anel em `_cards.css` (cônico mascarado só na borda, `border-radius: inherit`, cor da primária,
+  `display: none` quando apagado), o `beamOn` do `SarakSearchCard` (aceso por foco ou por `borderBeamEnabled`), o hook
+  `usePauseBeamOffscreen` (observador só com o traço aceso; atributo gravado direto, sem `setState`) e o movimento
+  reduzido **apagando** o anel — escolha justificada e aceita (um arco congelado num ângulo arbitrário pareceria defeito).
+  Base do cartão fora de `_cards.css`, cor de token, sem `!important` novo.
+- **Verificação conjunta com a `plan-118`** (regenerei `token-types`/`guide`/`dev-kit`): `npm run build` OK;
+  `verify --tier=full`: `tsc`, **suíte completa sem falha**, baseline com `tsc`, Anel 1 inteiro (incluindo
+  `token-docs` 118 de 402, `variable-contract`, `css-important`, `fixed-translucent`, `token-reader`), R36 e Anel 0 verdes.
+- **Navegador contra o `dist/` real:** bateria inteira **346/348**; os **24 casos de `cartao-que-se-move`** (13 do
+  lote 1 + 11 novos, o spotlight robusto) e `tema-sob-demanda` passaram. As 2 falhas não são desta entrega: o caso
+  `isSplitViewEnabled responde à largura da região…` é a intermitência registrada no backlog 15, e o caso do tablet
+  caiu com `page.goto: browser has been closed` depois de a bateria ter medido **10,3 h** (o computador suspendeu no
+  meio); **os dois passam isolados, 2 de 2**.
+- **Custo medido** (48 cartões, headless sem GPU): ligado, o giro derruba a taxa de quadros (11/s contra 61/s);
+  a causa é o `backdrop-filter` do cartão repintado a cada quadro. A mitigação (pausa fora da viewport) está feita,
+  e o custo dentro da janela está avisado no `usage` e na nota de migração; `borderBeamEnabled` é opt-in. Aceito.
+
+**Lote 2 da `plan-117` fechado (P4, P5).** Faltam P6–P8 (retirada, lote 3) e as candidatas C1–C3 a decidir.
+
+**Status: 🔴 A executar (lote 3).**

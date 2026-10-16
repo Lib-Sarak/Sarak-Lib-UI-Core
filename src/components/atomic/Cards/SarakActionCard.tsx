@@ -6,6 +6,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useSpotlightPointer } from './hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from './hooks/usePauseBeamOffscreen';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
@@ -32,6 +33,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
     const spotlight = useSpotlightPointer(design);
+    usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
     const { getGridStyles, getFlexStyles } = useStructuralStyles();
     const [isExpanded, setIsExpanded] = useState(false);
 

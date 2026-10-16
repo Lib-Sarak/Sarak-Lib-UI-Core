@@ -6523,7 +6523,15 @@
         "type": "boolean",
         "responsive": false,
         "group": "cards",
-        "label": "Ativar Border Beam"
+        "label": "Ativar Border Beam",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Anel de luz na cor primária que gira pela borda de todo cartão (título, ação, busca e composto). Desligado (padrão), nenhuma animação roda. Fica parado fora da tela, some com movimento reduzido, e dezenas de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque.",
+        "interactsWith": [
+          "primaryColor",
+          "cardBorderRadius",
+          "cardBorderWidth"
+        ]
       },
       {
         "id": "borderRadius",
@@ -7136,7 +7144,14 @@
         "type": "boolean",
         "responsive": false,
         "group": "cardSearch",
-        "label": "Border Beam no Foco"
+        "label": "Border Beam no Foco",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Anel de luz na cor primária que gira pela borda do `SarakSearchCard` só enquanto o campo de busca tem o foco; fora do foco nada anima. Ligado por padrão. `borderBeamEnabled` o mantém aceso mesmo sem foco; movimento reduzido o apaga.",
+        "interactsWith": [
+          "borderBeamEnabled",
+          "primaryColor"
+        ]
       },
       {
         "id": "cardSearchPlaceholderColor",
@@ -9822,6 +9837,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "0dba5fe762c7"
+    "kitHash": "165522c4d4d6"
   }
 }

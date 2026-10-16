@@ -24,6 +24,10 @@ export const CardSearchSchema: ComponentSchema = {
             id: 'cardSearchBorderBeamActive',
             label: 'Border Beam no Foco',
             type: 'boolean',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: 'Anel de luz na cor primária que gira pela borda do `SarakSearchCard` só enquanto o campo de busca tem o foco; fora do foco nada anima. Ligado por padrão. `borderBeamEnabled` o mantém aceso mesmo sem foco; movimento reduzido o apaga.',
+            interactsWith: ['borderBeamEnabled', 'primaryColor'],
             description: 'Ativa um traço luminoso animado percorrendo a borda do card de busca quando o input está em foco (efeito "Border Beam"). Use para dar destaque extra ao campo de busca em temas mais expressivos/tech; desligue em temas sóbrios/corporativos.',
             defaultValue: true,
             cssVars: ['--sarak-card-search-border-beam-active']

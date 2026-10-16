@@ -256,6 +256,10 @@
       "comando": "node gates/scripts/contrato/check-fixed-translucent.mjs"
     },
     {
+      "nome": "npm run fonts:check",
+      "comando": "npx tsx gates/scripts/contrato/check-fonts.ts"
+    },
+    {
       "nome": "npm run gate-limits:check",
       "comando": "node gates/scripts/contrato/check-gate-limits.mjs"
     },
