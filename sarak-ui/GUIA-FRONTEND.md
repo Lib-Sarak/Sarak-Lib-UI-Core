@@ -648,7 +648,8 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 > **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. O lote 2
 > acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. O lote 3
 > acrescenta fundo, vidro, sombra, rolagem, movimento, camadas e os componentes especializados, **medidos em
-> navegador** (o que cada valor mudou na tela, não só quem o lê). As
+> navegador** (o que cada valor mudou na tela, não só quem o lê). O lote 4 acrescenta o cromo, a estrutura, a marca e as
+> preferências do usuário (§6.8). As
 > necessidades que ainda estão **⏳** não foram abertas token a token; procure no catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
@@ -673,9 +674,10 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | movimento: duração, curva e atraso | tokens `motion*`, `animEnabled`, `pageTransitionType` e `reducedMotion` | cartões, campos, painéis, troca de página, tabela e gráfico leem o mesmo ritmo; `transition: all 0.3s` fixo ignora o tema e o movimento reduzido |
 | camadas de empilhamento | tokens `zIndex*` | menus, busca, modais, gavetas, dicas e avisos derivam da mesma escada; um `z-index` fixo seu entra na disputa |
 | estado vazio, esqueleto de carga, motor de fluxo, matriz expansível | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria, desfoque e cores têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
-| navegação, cromo e slots | ⏳ `SarakAppChrome` (§2 e A.3) | ⏳ lote seguinte |
+| navegação, cromo e slots | `SarakAppChrome` (§2 e A.3), com `SarakShellNav` e os widgets de busca, usuário, notificações e preferências | lateral ou topo, barra do celular, recolher, marca, cores, sombra, grão e posição de cada widget vêm dos tokens `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` e `preference*Position` (§6.8); um cromo escrito à mão perde tudo isso e a barra do celular |
 | calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
-| idioma, preferências do usuário, persistência do tema | ⏳ | ⏳ lote seguinte |
+| escolha de modo, tamanho da fonte, orientação da navegação e idioma pelo usuário | os widgets do cromo e `useSarakPreferences` (preferências sobrepostas ao tema, nunca gravadas nele) | o administrador decide por token se cada escolha fica fixa na barra, no menu ⚙ ou não é oferecida (`preference*Position`, §6.8); um alternador seu não aplica a contraparte do tema |
+| idioma (textos da lib), persistência do tema | ⏳ | ⏳ lote seguinte |
 | modo embarcado (ilha sobre um front existente) | ⏳ (§2 e skill) | ⏳ lote seguinte |
 | painel de customização | ⏳ `SarakCustomizationPanel` | ⏳ lote seguinte |
 | tema derivado da marca do cliente | ⏳ (§3.9) | ⏳ lote seguinte |
@@ -793,6 +795,35 @@ O que a medição em navegador mostrou, e que o schema sozinho não diz:
 - **Tokens que o schema oferece e ainda não mudam a tela:** `motionEaseIn` (a saída de modal, busca e gaveta não toca a
   curva: o componente é removido no mesmo quadro) e `matrixGap` (a variável é escrita e nenhuma regra a lê). Não os use
   para identidade de tema enquanto não forem ligados.
+
+## 6.8 Cromo, estrutura, marca e preferências do usuário
+
+Medido em navegador (lote 4):
+
+- **A preferência do usuário vence o tema.** `navigationStyle`, `bodySize` e o modo claro/escuro têm uma preferência
+  sobreposta (`useSarakPreferences`): com a preferência definida, o valor do tema não aparece. A paleta **só inverte
+  pela preferência de modo** (que aplica a contraparte); `mode` no tema declara o modo nativo e, sozinho, não repinta a
+  tela. A orientação e o tamanho da fonte só chegam ao usuário se `preference*Position` os oferece (padrão: fixas na barra).
+- **Cada widget do cromo tem posição própria.** `chromeSearchPosition`, `chromeUserPosition`, `chromeNotificationsPosition`
+  e os cinco `preference*Position` aceitam fixa, menu ⚙ ou não oferecida; "não oferecida" tira o controle do usuário, e
+  o ⚙ só nasce quando algum widget está em `menu`.
+- **Lateral e topo têm tokens separados.** `sidebar*` só valem com navegação lateral e `topbar*`/`navbarLayout` só com a
+  do topo; o recolhimento (`isNavHidden`) estreita a lateral até `sidebarMinWidth` e encolhe o topo para
+  `topbarCollapsedHeight`. No celular decidem `mobileNavigationStyle` e os `breakpoint*`: abaixo de `breakpointTablet` o
+  cromo muda de forma.
+- **Estrutura.** `layoutPadding`, `maxContentWidth` e `layoutDensity` agem na região de conteúdo do cromo (a densidade
+  multiplica o respiro); `layoutGap*` são a escala de espaçamento (a `SarakGrid` e o `SarakFlex` leem `layoutGap`, o
+  cromo lê as escalas); `layoutGridTemplate` e `layoutGridMinCell` governam a `SarakGrid`; `formLabelPosition` e
+  `formFieldDensity` o `SarakFormGroup`; `switchLabelPosition` só o `SarakSwitch`.
+- **Bordas e ícones.** `borderRadius` é o raio dos componentes sem raio próprio (o acordeão ignora o valor 0);
+  `borderWidth` e `borderStyle` alcançam o cromo, as divisórias e as classes de borda. `iconFamily` troca o desenho de
+  todos os ícones; `iconStrokeWidth` só vale em Lucide e Tabler, e `iconWeight` escolhe o desenho em Phosphor.
+- **Marca.** `identity*` agem no bloco da marca da lateral e do topo (texto; a imagem do logo só muda de tamanho por
+  `shellBrandLogoSize` e `brandLogoSizeCollapsed`).
+- **Tokens que o schema oferece e ainda não mudam a tela:** `contentAlignment` (as classes de centralização perdem para o
+  estilo em linha da região de conteúdo) e `sidebarCollapsedWidth` (o piso de `sidebarMinWidth`, de no mínimo 150 px,
+  vence os 48 a 100 px que o token aceita). `searchPositionTopbar: center` só se distingue de `left` sem itens de
+  navegação. Não use esses valores como identidade de tema enquanto não forem ligados.
 
 ---
 
@@ -965,7 +996,87 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**318** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**395** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+
+#### 0. Configurações Globais (`global`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `bodySize` | estético | não | Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor. | — |
+| `mobileNavigationStyle` | funcional | não | Onde a navegação fica no celular: barra na base, gaveta atrás do hambúrguer ou automático (barra com até 5 destinos, gaveta acima disso). Tablet e desktop não mudam. | `navigationStyle` |
+| `mode` | estético | não | Declara o modo nativo do tema: define o ícone do alternador e a mistura da vinheta. A paleta só inverte pela preferência de modo do usuário (`colorMode`), que aplica a contraparte; sozinho, o valor não repinta a tela. | `vignetteOpacity` |
+| `navigationStyle` | funcional | não | Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema. | `sidebarPosition` · `mobileNavigationStyle` |
+
+#### Identidade Visual (`branding`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `identityAlignment` | estético | não | Alinha a marca (logo e nome) dentro do bloco de identidade do cromo, na lateral e no topo: esquerda, centro ou direita. | — |
+| `identityFontFamily` | estético | não | Família do nome da marca no cromo (só o texto, não a imagem do logo); o padrão herda a fonte de títulos do tema. | — |
+| `identityFontWeight` | estético | não | Peso da fonte do nome da marca no cromo; pesos altos dão presença de logotipo e baixos um ar editorial. | — |
+| `identityHoverEffect` | estético | não | Resposta do bloco da marca sob o ponteiro: Nenhum, Brilho (sombra luminosa), Opacidade (esmaece a 70%) ou Escala (cresce 4%). | — |
+| `identityPadding` | estético | não | Respiro extra ao redor do bloco da marca no cromo, somado ao respiro base; também aumenta a altura do bloco na lateral. | — |
+| `identityTracking` | estético | não | Espaçamento entre as letras do nome da marca no cromo; positivo afasta (wordmark), negativo aperta, e o bloco inteiro cresce ou encolhe. | — |
+
+#### Configurações de Layout (`system`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `borderRadius` | estético | não | Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros. O acordeão ignora o valor 0 e volta ao raio do cartão. | `cardBorderRadius` |
+| `borderStyle` | estético | não | Traço das bordas que seguem o sistema (contínuo, tracejado, pontilhado ou sem borda): o cromo, o separador do painel dividido e as classes utilitárias de borda. | — |
+| `borderWidth` | estético | não | Espessura das linhas divisórias do feed de atividade e do separador do painel dividido, e das demais linhas que leem a variável de borda do sistema (dados, botões de ícone com contorno). | — |
+| `iconFamily` | estético | não | Família dos ícones do cromo e dos componentes: Phosphor, Lucide ou Tabler; troca o desenho de todos os ícones (Phosphor em peso, as outras em traço). | — |
+| `iconStrokeWidth` | estético | não | Espessura do traço dos ícones Lucide e Tabler; os ícones Phosphor, desenhados por peso, ignoram o valor. | `iconFamily` |
+| `iconWeight` | estético | não | Peso do ícone: na família Phosphor escolhe o desenho (fino, regular, negrito, preenchido); em Tabler ajusta a espessura do traço. | `iconFamily` |
+| `isAutoHideEnabled` | funcional | não | Esconde a navegação até o ponteiro chegar à borda e devolve a largura ao conteúdo; ligado, a barra não aparece no primeiro quadro. | — |
+| `isSplitViewEnabled` | funcional | não | Habilita o painel secundário ao lado do conteúdo do cromo (`secondaryContent`); desligado, o painel não é desenhado. | — |
+| `layoutDensity` | estético | não | Escala o respiro interno da região de conteúdo do cromo: compacto reduz a 75%, confortável mantém e espaçoso aumenta a 125%. | — |
+| `layoutGap` | estético | não | Espaçamento padrão entre irmãos quando o componente não define o seu: o `SarakFlex` e a `SarakGrid` (sem `globalSectionGap`) leem este valor, por breakpoint. | — |
+| `layoutGapLg` | estético | não | Escala grande de espaçamento: entre seções e estados vazios, por breakpoint. | — |
+| `layoutGapMd` | estético | não | Escala média de espaçamento, a mais usada: entre os grupos do cromo e nos blocos de conteúdo padrão, por breakpoint. | — |
+| `layoutGapSm` | estético | não | Escala pequena de espaçamento: o respiro dos botões e dos campos do cromo e dos agrupamentos densos, por breakpoint. | — |
+| `layoutPadding` | estético | não | Respiro entre a região de conteúdo do cromo e as bordas, em pixels, com um valor por breakpoint; a densidade multiplica este valor. | — |
+| `maxContentWidth` | estético | não | Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira. | — |
+
+#### Container de Nav (`navigation`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `brandLogoSizeCollapsed` | funcional | não | Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
+| `chromeNotificationsPosition` | funcional | não | Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas. | — |
+| `chromeSearchPosition` | funcional | não | Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem. | `searchPositionTopbar` · `searchPositionSidebar` |
+| `chromeUserPosition` | funcional | não | Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço. | — |
+| `isNavHidden` | funcional | não | Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher. | `sidebarMinWidth` · `topbarCollapsedHeight` · `brandLogoSizeCollapsed` |
+| `navActiveMarkerColor` | estético | sim | Cor do marcador luminoso ao lado do item ativo e do brilho dele. | `navActiveMarkerGlow` |
+| `navActiveMarkerGlow` | estético | não | Raio do brilho do marcador do item ativo; 0 deixa só a barrinha. | `navActiveMarkerColor` |
+| `navbarLayout` | funcional | não | Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
+| `navItemActiveColor` | estético | sim | Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo. | — |
+| `searchDropdownGap` | funcional | não | Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo. | `searchDropdownWidth` |
+| `searchDropdownWidth` | funcional | não | Largura máxima da paleta de busca. | `searchDropdownGap` |
+| `searchPositionSidebar` | funcional | não | Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco. | `navigationStyle` · `chromeSearchPosition` |
+| `searchPositionTopbar` | funcional | não | Onde a busca fica na barra do topo: esquerda, direita (no grupo final) ou oculta; centro só se distingue da esquerda quando não há itens de navegação para ocupar o espaço. | `navigationStyle` · `chromeSearchPosition` |
+| `shellBrandLogoSize` | funcional | não | Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca. | `navigationStyle` |
+| `sidebarActiveColor` | estético | sim | Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`. | `navigationStyle` · `navActiveMarkerColor` |
+| `sidebarBlur` | estético | não | Desfoque do que passa atrás da navegação lateral, útil com cor translúcida. | `sidebarColor` |
+| `sidebarColor` | estético | sim | Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo. | `navigationStyle` |
+| `sidebarHoverColor` | estético | sim | Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
+| `sidebarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado. | `navigationStyle` |
+| `sidebarMaxWidth` | funcional | não | Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado. | `sidebarWidth` |
+| `sidebarMinWidth` | funcional | não | Piso de largura da navegação lateral, inclusive recolhida; o valor também limita `sidebarWidth` e `sidebarCollapsedWidth`. | `sidebarWidth` |
+| `sidebarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a navegação lateral; 0 desliga. | `navigationStyle` |
+| `sidebarPosition` | funcional | não | Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral. | `navigationStyle` |
+| `sidebarShadow` | estético | sim | Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte. | `navigationStyle` |
+| `sidebarWidth` | funcional | não | Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`. | `sidebarMinWidth` · `sidebarMaxWidth` |
+| `tabGap` | estético | não | Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo. | — |
+| `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint. | — |
+| `topbarActiveColor` | estético | sim | Fundo do item ativo da barra do topo; o padrão é transparente. | `navigationStyle` |
+| `topbarCollapsedHeight` | funcional | não | Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
+| `topbarColor` | estético | sim | Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo. | `navigationStyle` |
+| `topbarHeight` | funcional | não | Altura da barra do topo, por breakpoint. | `navigationStyle` |
+| `topbarHoverColor` | estético | sim | Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
+| `topbarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado. | `navigationStyle` |
+| `topbarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a barra do topo; 0 desliga. | `navigationStyle` |
+| `topbarTitleColor` | estético | sim | Cor do nome da marca na barra do topo. | `navigationStyle` |
 
 #### Card Geral (`cards`)
 
@@ -1399,6 +1510,33 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `globalBackgroundBlur` | estético | não | Desfoque da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. | `globalBackgroundImageUrl` |
 | `globalBackgroundImageUrl` | estético | sim | Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive. | `globalBackgroundOpacity` · `globalBackgroundBlur` |
 | `globalBackgroundOpacity` | estético | sim | Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`. | `globalBackgroundImageUrl` |
+
+#### Estrutura e Macro-Layout (`structural`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `breakpointDesktop` | funcional | não | Largura de janela a partir da qual valem os valores `desk` dos tokens responsivos e o cromo de desktop; abaixo, os de tablet. | `breakpointTablet` |
+| `breakpointTablet` | funcional | não | Largura de janela a partir da qual a interface deixa de ser celular: abaixo dela o cromo usa a barra do celular e os valores `mob`; acima, os de tablet. | `breakpointDesktop` |
+| `formFieldDensity` | estético | não | Espaço entre rótulo e campo no `SarakFormGroup`: compacta 3 px, confortável 6 px, espaçosa 24 px. | `formLabelPosition` |
+| `formLabelPosition` | funcional | não | Posição do rótulo no `SarakFormGroup`: acima do campo ou à esquerda, na mesma linha. | `formFieldDensity` |
+| `globalFlowAlign` | funcional | não | Alinhamento transversal do catálogo: esticar, início, centro ou fim. | `globalFlowDirection` |
+| `globalFlowDirection` | funcional | não | Direção em que o catálogo empilha seus blocos: coluna ou linha com quebra. | `globalFlowAlign` |
+| `globalSectionGap` | estético | não | Espaçamento entre as seções de uma grade e de um catálogo; prevalece sobre `layoutGap` na `SarakGrid`. | `layoutGap` |
+| `headerAlignment` | estético | não | Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início. | — |
+| `layoutGridMinCell` | funcional | não | Largura mínima de cada célula da grade auto-fit; célula menor cabe mais colunas, maior as reduz. | `layoutGridTemplate` |
+| `layoutGridTemplate` | funcional | não | Como a `SarakGrid` distribui os itens: 12 colunas (cada item ocupa 4), auto-fit pela largura mínima da célula ou masonry em colunas. | `layoutGridMinCell` |
+| `splitPaneMinWidth` | funcional | não | Largura mínima dos dois lados do `SarakSplitPane` ao arrastar a divisória; evita fechar um painel por acidente. | — |
+| `switchLabelPosition` | funcional | não | Posição do texto do `SarakSwitch` em relação ao controle: à direita, à esquerda ou nas pontas. O `SarakCheckbox` e o `SarakRadio` não seguem este token. | — |
+
+#### Preferências do Usuário (`preferences`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `preferenceFontSizePosition` | funcional | não | Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida. | — |
+| `preferenceLanguagePosition` | funcional | não | Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida. | — |
+| `preferenceModePosition` | funcional | não | Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário. | — |
+| `preferenceNavCollapsePosition` | funcional | não | Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido. | — |
+| `preferenceNavigationStylePosition` | funcional | não | Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida. | — |
 
 ### A.5 Ícones (117 nomes válidos)
 

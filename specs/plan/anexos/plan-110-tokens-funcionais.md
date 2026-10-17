@@ -178,3 +178,40 @@ de gráfico foram conferidos com `canvas` e sem erros de console:
 | `colorVariation` | altera a matiz das variantes de hover/pressionado consumidas pelos estados globais de `button` | idem |
 | `chartType` | os tipos `area`, `bar`, `pie`, `scatter`, `gauge`, `radar` e `heatmap` renderizam; radar usa tooltip por item e heatmap tem dois eixos categoria | idem |
 | `rangeActiveColor` | pinta o trilho ativo, os dois polegares e as dicas de valor do `SarakRangeSlider` | idem |
+
+# 7. Decisões não óbvias (lote 4: global, marca, layout, navegação, estruturais e preferências)
+
+Os 79 tokens foram abertos no leitor e medidos em navegador (cena de `src/`, Chromium 153, cromo lateral e do topo,
+viewport de celular, preferência do usuário ligada pela porta pública `useSarakPreferences`).
+
+| Token(s) | Decisão | Motivo |
+|---|---|---|
+| `navigationStyle`, `mobileNavigationStyle`, `sidebarPosition`, `navbarLayout`, `isNavHidden`, `isSplitViewEnabled`, `isAutoHideEnabled` | funcional | posição e comportamento do cromo (§1): iguais em todo tema; a preferência do usuário vence o tema |
+| `sidebarWidth`/`MinWidth`/`MaxWidth`, `topbarHeight`/`CollapsedHeight`, `*LabelMaxWidth`, `shellBrandLogoSize`, `brandLogoSizeCollapsed`, `searchDropdown*`, `searchPosition*` | funcional | larguras e posições do cromo |
+| `chrome*Position`, `preference*Position` | funcional | posição de cada widget: decisão do administrador, não identidade do tema |
+| `breakpointTablet`/`Desktop` | funcional | breakpoints |
+| `layoutGridTemplate`, `layoutGridMinCell`, `globalFlow*`, `formLabelPosition`, `switchLabelPosition`, `splitPaneMinWidth` | funcional | estrutura e posição dos controles: não devem mudar ao trocar o tema |
+| `layoutDensity`, `layoutPadding`, `layoutGap*`, `globalSectionGap`, `maxContentWidth`, `tabGap`, `tabSectionMargin`, `formFieldDensity`, `bodySize` | estético | densidade visual (eixo `density`) |
+| `borderRadius`, `borderWidth`, `borderStyle`, `icon*`, `identity*`, `headerAlignment` | estético | geometria, ícone e identidade; a contraparte os herda do modo principal |
+| `sidebarColor`/`HoverColor`/`ActiveColor`, `topbar*Color`, `nav*Color`, `*NoiseOpacity`, `sidebarShadow` | carrega modo | cor, opacidade e sombra escrita à mão (1.1) |
+| `sidebarBlur`, `navActiveMarkerGlow` | não carrega | geometria do efeito |
+| `mode` | estético, não carrega | declara o modo nativo de cada tema; é o eixo da contraparte, não parte dela |
+
+## 7.1 Medido e diferente do que o schema dizia
+
+| Token | O que o navegador mostrou |
+|---|---|
+| `mode` | em `config` (com ou sem tema carregado) muda só o ícone do alternador, `--sarak-mode` e a vinheta; a paleta inverte pela preferência `colorMode` (medido: `config` claro + preferência escura = escuro; preferência clara = claro) |
+| `searchPositionTopbar: center` | igual a `left` com itens de navegação (o `flex-1` da navegação ocupa o espaço); sem itens desloca ~12 px |
+| `borderRadius: 0` | o `SarakAccordion` o trata como ausente (`||`) e mantém 12 px; 2 e 30 funcionam |
+| `iconStrokeWidth` | só Lucide e Tabler (stroke-width 3 → 1,5/4,5 px e 2,5 → 1,25/3,75 px); Phosphor ignora |
+| `switchLabelPosition` | só o `SarakSwitch`; `SarakCheckbox` e `SarakRadio` não mudam |
+
+## 7.2 Tokens sem efeito visível (achados, não documentados)
+
+Ficam na lista de exceção do gate com o rótulo `achado-lote-4`.
+
+| Token | O que se mediu |
+|---|---|
+| `contentAlignment` | `center` acrescenta `max-w-7xl mx-auto w-full px-*` (`chromeStructuralStyles.ts:37`) ao mesmo elemento que recebe, em linha, `max-width`, `margin-inline: auto`, `width: 100%` e `padding` (`resolveChromeContentStyle`); o estilo em linha vence: nenhuma propriedade muda, na lateral e no topo, com `maxContentWidth` de 1000 px |
+| `sidebarCollapsedWidth` | a lateral recolhida mede 200 px (`sidebarMinWidth`) com 74 e com 100; com `sidebarMinWidth: 150` mede 150. O token aceita 48 a 100 px e o piso (150 a 400 px, `ChromeSidebarBody.tsx:111`) sempre vence |

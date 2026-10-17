@@ -11,6 +11,10 @@ export const NavigationSchema: ComponentSchema = {
 
         {
             id: 'isNavHidden',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
+            interactsWith: ['sidebarMinWidth', 'topbarCollapsedHeight', 'brandLogoSizeCollapsed'],
             label: 'Ocultar Navegação',
             type: 'boolean',
             description: 'Quando ativo, recolhe a navegação: a barra lateral fica no trilho estreito (74 px) e a barra do topo na geometria compacta — o conteúdo ganha o espaço, e o menu continua alcançável. Não a remove da tela.',
@@ -20,6 +24,10 @@ export const NavigationSchema: ComponentSchema = {
         // --- SIDEBAR CONFIGURATIONS ---
         {
             id: 'sidebarPosition',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral.",
+            interactsWith: ['navigationStyle'],
             label: 'Posição da Sidebar',
             type: 'select',
             description: 'Lado da tela onde a sidebar é ancorada quando `navigationStyle` é \'sidebar\' — Esquerda é a convenção ocidental padrão; Flutuante a destaca do restante do layout com espaçamento ao redor.',
@@ -35,6 +43,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`.",
+            interactsWith: ['sidebarMinWidth', 'sidebarMaxWidth'],
             label: 'Largura da Sidebar',
             type: 'slider',
             description: 'Largura padrão da sidebar, em pixels, com valores independentes por breakpoint. Sidebars mais largas cabem mais texto/hierarquia; mais estreitas favorecem espaço para o conteúdo principal.',
@@ -47,6 +59,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'shellBrandLogoSize',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca.",
+            interactsWith: ['navigationStyle'],
             label: 'Altura do Logo da Marca',
             type: 'slider',
             description: 'Altura, em pixels, do logo da marca no cabeçalho do shell. Logos maiores dominam a navegação; menores cedem espaço ao nome do sistema e aos itens de menu.',
@@ -69,6 +85,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarLabelMaxWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado.",
+            interactsWith: ['navigationStyle'],
             label: 'Largura Máxima do Rótulo (Sidebar)',
             type: 'slider',
             description: 'Largura máxima, em pixels, do texto de nome do sistema exibido no cabeçalho da sidebar — acima desse limite o texto trunca com reticências, para não invadir o botão de recolher.',
@@ -80,6 +100,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarMinWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Piso de largura da navegação lateral, inclusive recolhida; o valor também limita `sidebarWidth` e `sidebarCollapsedWidth`.",
+            interactsWith: ['sidebarWidth'],
             label: 'Largura Mínima da Sidebar',
             type: 'slider',
             description: 'Largura mínima, em pixels, que a sidebar pode atingir quando redimensionável pelo usuário — evita que ela colapse a ponto de truncar o conteúdo de forma ilegível.',
@@ -92,6 +116,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarMaxWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado.",
+            interactsWith: ['sidebarWidth'],
             label: 'Largura Máxima da Sidebar',
             type: 'slider',
             description: 'Largura máxima, em pixels, que a sidebar pode atingir quando redimensionável pelo usuário.',
@@ -104,6 +132,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo.",
+            interactsWith: ['navigationStyle'],
             label: 'Cor da Sidebar (Fundo)',
             type: 'color',
             description: 'Cor de fundo da sidebar — costuma diferenciar-se levemente do fundo geral da aplicação para demarcar a área de navegação.',
@@ -113,6 +145,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarHoverColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
+            interactsWith: ['navigationStyle'],
             label: 'Hover da Sidebar',
             type: 'color',
             description: 'Cor de fundo de um item de menu da sidebar ao passar o mouse — sinaliza que o item é clicável antes de ser selecionado.',
@@ -122,6 +158,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarActiveColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`.",
+            interactsWith: ['navigationStyle', 'navActiveMarkerColor'],
             label: 'Ativo da Sidebar',
             type: 'color',
             description: 'Cor de fundo do item de menu atualmente selecionado na sidebar — deve ter contraste claro em relação a `sidebarHoverColor` e ao restante dos itens, para indicar a localização atual do usuário.',
@@ -131,6 +171,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarNoiseOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade da textura de grão sobre a navegação lateral; 0 desliga.",
+            interactsWith: ['navigationStyle'],
             label: 'Opacidade do Ruído (Sidebar)',
             type: 'slider',
             description: 'Opacidade de uma textura de ruído/grão sobreposta ao fundo da sidebar — em 0 fica imperceptível; valores altos dão um clima mais texturizado/analógico à navegação.',
@@ -142,6 +186,10 @@ export const NavigationSchema: ComponentSchema = {
         // --- TOPBAR CONFIGURATIONS ---
         {
             id: 'navbarLayout',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
+            interactsWith: ['navigationStyle'],
             label: 'Comportamento da Topbar',
             type: 'select',
             description: 'Comportamento de scroll da topbar quando `navigationStyle` é \'topbar\': Fixo no Topo (sempre visível), Rola com o conteúdo (some ao rolar) ou Oculta (nunca exibida).',
@@ -157,6 +205,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarHeight',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Altura da barra do topo, por breakpoint.",
+            interactsWith: ['navigationStyle'],
             label: 'Altura da Topbar',
             type: 'slider',
             description: 'Altura da barra de navegação superior, em pixels, com valores independentes por breakpoint. Alturas maiores dão mais espaço para itens de menu/busca; menores maximizam a área útil de conteúdo.',
@@ -169,6 +221,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarCollapsedHeight',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+            interactsWith: ['isNavHidden'],
             label: 'Altura da Topbar (Recolhida)',
             type: 'slider',
             description: 'Altura, em pixels, da topbar quando está no modo recolhido (hover-to-expand) — independente de `topbarHeight`, que só vale no modo expandido.',
@@ -180,6 +236,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'brandLogoSizeCollapsed',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+            interactsWith: ['isNavHidden'],
             label: 'Altura do Logo da Marca (Recolhida)',
             type: 'slider',
             description: 'Altura, em pixels, do logo da marca no cabeçalho do shell quando a navegação está no modo recolhido — independente de `shellBrandLogoSize`, que só vale no modo expandido.',
@@ -191,6 +251,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
+            interactsWith: ['navigationStyle'],
             label: 'Cor da Topbar (Fundo)',
             type: 'color',
             description: 'Cor de fundo da barra de navegação superior — costuma diferenciar-se levemente do fundo geral da aplicação.',
@@ -200,6 +264,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarHoverColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido.",
+            interactsWith: ['navigationStyle'],
             label: 'Hover da Topbar',
             type: 'color',
             description: 'Cor de fundo de um item de menu da topbar ao passar o mouse.',
@@ -209,6 +277,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarActiveColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Fundo do item ativo da barra do topo; o padrão é transparente.",
+            interactsWith: ['navigationStyle'],
             label: 'Ativo da Topbar',
             type: 'color',
             description: 'Cor de fundo do item de menu atualmente selecionado na topbar — deve ter contraste claro em relação a `topbarHoverColor`.',
@@ -218,6 +290,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarNoiseOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+            interactsWith: ['navigationStyle'],
             label: 'Opacidade do Ruído (Topbar)',
             type: 'slider',
             description: 'Opacidade de uma textura de ruído/grão sobreposta ao fundo da topbar — mesmo conceito de `sidebarNoiseOpacity`, aplicado à barra superior.',
@@ -228,6 +304,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarTitleColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Cor do nome da marca na barra do topo.",
+            interactsWith: ['navigationStyle'],
             label: 'Cor do Título (Topbar)',
             type: 'color',
             description: 'Cor do texto de título/breadcrumb exibido na topbar — deve manter contraste alto contra `topbarColor`.',
@@ -237,6 +317,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'topbarLabelMaxWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado.",
+            interactsWith: ['navigationStyle'],
             label: 'Largura Máxima do Rótulo (Topbar)',
             type: 'slider',
             description: 'Largura máxima, em pixels, do texto de nome do sistema exibido na topbar — acima desse limite o texto trunca com reticências, para não invadir os itens de menu vizinhos.',
@@ -263,6 +347,9 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'tabGap',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo.",
             label: 'Espaço entre Abas',
             type: 'slider',
             description: 'Espaçamento, em pixels, entre abas de navegação (ex. dentro da topbar ou de um grupo de tabs), com valores independentes por breakpoint.',
@@ -275,6 +362,9 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'tabSectionMargin',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint.",
             label: 'Margem da Seção de Abas',
             type: 'slider',
             description: 'Margem externa da seção de abas em relação aos elementos vizinhos, em pixels, com valores independentes por breakpoint — também usada como referência de área segura (`--safe-area-padding`) em dispositivos com notch/gestos.',
@@ -288,6 +378,9 @@ export const NavigationSchema: ComponentSchema = {
         // --- ITENS DE MENU ---
         {
             id: 'navItemActiveColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo.",
             label: 'Cor do Item Ativo',
             type: 'color',
             description: 'Cor de texto/ícone do item de menu atualmente selecionado — normalmente espelha a cor primária do sistema para reforçar onde o usuário está.',
@@ -301,6 +394,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'navActiveMarkerColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Cor do marcador luminoso ao lado do item ativo e do brilho dele.",
+            interactsWith: ['navActiveMarkerGlow'],
             label: 'Cor do Marcador Ativo',
             type: 'color',
             description: 'Cor do indicador visual (barra/ponto) que marca qual item de menu está ativo — separado da cor do texto do item para permitir combinações independentes.',
@@ -310,6 +407,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'navActiveMarkerGlow',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Raio do brilho do marcador do item ativo; 0 deixa só a barrinha.",
+            interactsWith: ['navActiveMarkerColor'],
             label: 'Brilho do Marcador',
             type: 'slider',
             description: 'Intensidade do brilho (glow) ao redor do marcador de item ativo — 0 remove o efeito; valores altos dão mais destaque ao indicador de seleção.',
@@ -321,6 +422,10 @@ export const NavigationSchema: ComponentSchema = {
         // --- ESTÉTICA AVANÇADA DO SHELL ---
         {
             id: 'sidebarBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+            interactsWith: ['sidebarColor'],
             label: 'Backdrop Blur (Sidebar)',
             type: 'slider',
             description: 'Intensidade do desfoque de fundo da sidebar — só produz efeito visível quando a sidebar tem fundo translúcido, criando um clima de vidro fosco sobre o conteúdo atrás dela.',
@@ -332,6 +437,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarShadow',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte.",
+            interactsWith: ['navigationStyle'],
             label: 'Sombra da Sidebar',
             type: 'text',
             description: 'Definição CSS completa de `box-shadow` da sidebar — separa visualmente a navegação do conteúdo principal com uma sombra projetada lateralmente.',
@@ -341,6 +450,10 @@ export const NavigationSchema: ComponentSchema = {
         // --- PESQUISA (SEARCH BAR) ---
         {
             id: 'searchPositionTopbar',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Onde a busca fica na barra do topo: esquerda, direita (no grupo final) ou oculta; centro só se distingue da esquerda quando não há itens de navegação para ocupar o espaço.",
+            interactsWith: ['navigationStyle', 'chromeSearchPosition'],
             label: 'Posição Pesquisa (Topbar)',
             type: 'select',
             description: 'Posição do campo de busca dentro da topbar — Esquerda/Centro/Direita posicionam o campo, Oculta remove a busca da topbar (pode ainda existir via atalho de teclado/paleta de comando).',
@@ -357,6 +470,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'searchPositionSidebar',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco.",
+            interactsWith: ['navigationStyle', 'chromeSearchPosition'],
             label: 'Posição Pesquisa (Sidebar)',
             type: 'select',
             description: 'Posição do campo de busca dentro da sidebar — Topo/Rodapé posicionam o campo. Para não oferecer a busca, use o token de composição da barra.',
@@ -371,6 +488,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'chromeSearchPosition',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem.",
+            interactsWith: ['searchPositionTopbar', 'searchPositionSidebar'],
             label: 'Composição: Busca',
             type: 'select',
             description: 'Define se a busca fica fixa na barra, dentro do menu de preferências ou não é oferecida.',
@@ -386,6 +507,9 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'chromeUserPosition',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço.",
             label: 'Composição: Usuário',
             type: 'select',
             description: 'Define se o widget do usuário fica fixo na barra, dentro do menu de preferências ou não é oferecido.',
@@ -401,6 +525,9 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'chromeNotificationsPosition',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas.",
             label: 'Composição: Notificações',
             type: 'select',
             description: 'Define se as notificações ficam fixas na barra, dentro do menu de preferências ou não são oferecidas.',
@@ -416,6 +543,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'searchDropdownGap',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo.",
+            interactsWith: ['searchDropdownWidth'],
             label: 'Espaço do Dropdown de Busca',
             type: 'slider',
             description: 'Distância, em `rem`, entre o campo de busca da topbar e o dropdown de resultados que aparece abaixo dele.',
@@ -427,6 +558,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'searchDropdownWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Largura máxima da paleta de busca.",
+            interactsWith: ['searchDropdownGap'],
             label: 'Largura do Dropdown de Busca',
             type: 'slider',
             description: 'Largura, em pixels, do painel de resultados exibido abaixo do campo de busca da topbar.',

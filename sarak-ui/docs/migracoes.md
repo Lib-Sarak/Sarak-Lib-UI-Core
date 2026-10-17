@@ -956,6 +956,13 @@ filtram só a camada de textura; `bgNoiseDensity` regula só o grão de filme; `
 alternador e o botão HTML sem classe. Valores padrão, opções e leitores não mudaram; temas existentes mantêm o
 comportamento.
 
+### Lote 4 da documentação dos tokens
+
+Os tokens globais, de marca, de layout, de navegação, estruturais e de preferências do usuário informam no schema o uso,
+a classificação, a dependência de modo e as interações, conferidos em navegador. A `description` de `mode` passou a
+dizer o que o valor faz (declara o modo nativo; a paleta inverte pela preferência do usuário). Valores padrão, opções e
+leitores não mudaram; temas existentes mantêm o comportamento.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.

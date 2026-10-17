@@ -47,6 +47,15 @@ const POSITION_OPTIONS = [
     { value: 'pinned', label: 'Fixa na barra' },
 ];
 
+/** O que cada posição muda na tela (medido no cromo): o controle sai da barra, vai para o menu ⚙ ou some. */
+const POSITION_USAGE: Record<string, string> = {
+    preferenceModePosition: "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário.",
+    preferenceFontSizePosition: "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida.",
+    preferenceNavigationStylePosition: "Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida.",
+    preferenceNavCollapsePosition: "Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido.",
+    preferenceLanguagePosition: "Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida.",
+};
+
 const buildPositionToken = (
     id: string,
     label: string,
@@ -54,6 +63,9 @@ const buildPositionToken = (
     defaultValue: SarakPreferencePosition,
 ): NonNullable<ComponentSchema['tokens']>[number] => ({
     id,
+    kind: 'functional',
+    modeDependent: false,
+    usage: POSITION_USAGE[id],
     label,
     type: 'select' as const,
     description,

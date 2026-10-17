@@ -328,757 +328,217 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
-## Resumo da execução — lote 0 — 2026-10-11
+## Histórico consolidado dos lotes 0 a 2 (aprovados)
 
-**Resultado:** Concluído (lote 0). **Parado para a aprovação do dono**, como manda a §5 passo 3. O lote 1 não foi
-iniciado.
+> O texto integral dos resumos e das tabelas por token está no histórico do Git
+> (`git log -p -- specs/plan/plan-110-temas-que-mostram-a-biblioteca.md`, a partir de `5877b789`). Aqui fica o que um
+> executor novo precisa saber.
 
-**Estado do worktree ao iniciar**
-```
- M specs/00-indice.md
-?? specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
-```
-
-**O que foi feito**
-- Criei `specs/plan/anexos/plan-110-direcao-de-arte.md`, o anexo de direção de arte da §5 passo 2, com os itens
-  (a) a (e). O mapa do conjunto está na §5, as 19 fichas na §7, as 5 direções novas e os ids na §8 e o teto de peso
-  na §4.4. Ele traz ainda a auditoria dos 14 (§1), o arsenal que desenha e o que não desenha (§3), as decisões D1 a
-  D7 que cabem ao dono (§0) e os achados fora do escopo (§9).
-- Toda medição foi feita por script de **leitura** fora do repositório (no scratchpad da sessão), sobre
-  `SARAK_GLOBAL_THEMES`, `MASTER_DESIGN_MAP`, as partições do catálogo, `src/styles/` e o `dist/`. O método está
-  escrito no anexo (§4.1, §3), para o revisor reproduzir.
-
-**Arquivos alterados**
-| Arquivo | Natureza | O que mudou |
+| Lote | Resultado | Onde a verdade vive agora |
 |---|---|---|
-| `specs/plan/anexos/plan-110-direcao-de-arte.md` | criado | o anexo de direção de arte do lote 0 |
-| `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` | alterado | este resumo e o `status` |
+| **0** — auditoria e direção de arte (2026-10-11) | Anexo de direção de arte: auditoria dos 14 temas, arsenal que desenha e o que não desenha, decisões D1 a D7, as 19 fichas, as 5 direções novas e os ids. Aprovado pelo dono. | `specs/plan/anexos/plan-110-direcao-de-arte.md` |
+| **0.1** — pré-requisito (prompt direto) | `generate-showcase.mts` volta a funcionar e a aba "Temas e JSON" usa o catálogo sob demanda. | código (`browser-tests/`, `TemplatesTab`) |
+| **1** (2026-10-14/15) — `cards`, `cardTitle`, `cardAction`, `cardSearch`, `overlays`, `tables`: 120 tokens | Infraestrutura (campos `kind`/`modeDependent`/`usage`/`interactsWith` no tipo e na paridade; gate `token-docs:check` com exceção que se esvazia; catálogo e apêndice do kit; esqueleto do mapa "o que a lib já faz"). **7 tokens sem efeito** achados no navegador (spotlight, traço luminoso, zoom, escala do clique, `cardContentAlignment`, `tableActionPosition`) mais código morto e `cardImagePosition` sem leitor — todos resolvidos pela `plan-117`. Os 23 tokens do painel ficaram documentados pelo leitor (aceito). | schema, `gates/allowlists/tokenDocumentationPending.json`, anexo `plan-110-tokens-funcionais.md`, GUIA §6, skill `ui-integra-consumidor` |
+| **2** (2026-10-16/17) — `typography`, `buttons`, `inputs`, `switches`, `colors`, `data`, `chat`, `status`: 111 tokens | Reprovado uma vez (sem medição no navegador); a correção mediu os 111 em Chromium (tabela por token no histórico). Achados: `actionGlowShadow*` (3), `colorDepth`/`colorVariation`, `chartType` `radar`/`heatmap` (quebram o ECharts) e `rangeActiveColor` (o trilho ignora o token) — viraram P10 a P13 da `plan-117`. `usage` de `headingFont` corrigido. | schema, anexo, GUIA §6.5–§6.6, skill |
+| **3** (2026-10-17) — `advanced`, `animations`, `atmosphere`, `engineering`, `layers`, `media`, `motion`, `scrollbars`, `specialized`: 92 tokens | Medidos em Chromium 153 (tabela por token no histórico): 90 documentados; **2 sem efeito**, `motionEaseIn` (tem leitor, a medição não viu efeito) e `matrixGap` (`--matrix-gap` definida e nunca lida), na exceção `achado-lote-3` e no registro da `plan-117` (P14, P15). Quatro `description` que diziam o contrário do medido foram corrigidas (`globalSaturation`, `globalContrast`, `bgNoiseDensity`, `motionEaseOut`). | schema, anexo §6, GUIA §6 e §6.7, skill |
 
-**Verificações executadas**
-- Contagem sobre `SARAK_GLOBAL_THEMES`: 439 tokens; 256 a 268 por tema; 169 que nenhum tema define; 11 com o mesmo
-  valor nos 14. São os números da §2 desta plan, e eles conferem. Há **22** tokens com `visualImpact`;
-  `mobileNavigationStyle` está definido em 0 de 14 temas e `texture` em 12 de 14.
-- Peso (`esbuild` com bundle, minify e ESM, mais `gzip -9`): `SARAK_GLOBAL_THEMES` dá 106,5 KB minificado e
-  **14,1 KB gzip**; cada tema, 2,3 a 2,8 KB gzip. O boot do `dist/` (`index.js` mais 9 chunks estáticos) soma
-  **209,2 KB gzip**, então os temas são **6,8%** do boot. Os temas estão em `dist/chunk-SF4ILM6Z.js`, um dos chunks
-  estáticos. O `dist/` foi gerado sobre `29dfb52`, e `git diff --stat 29dfb52 HEAD -- src/core/Design/presets/themes`
-  saiu vazio.
-- Projeção para 19 temas com os 440 tokens: **21,8 KB gzip**. Os 14 atuais no mesmo formato dão 14,4 KB, o que bate
-  com os 14,1 KB do bundle.
-- `npm run themes:diversity` (o quadro atual): 9 de 14 temas escuros; 9 de 14 com primária S=100; 4 de 14 na
-  família ciano+magenta; 2 com fundo de luminosidade média.
-- Distância par a par sobre 10 eixos (script): **hoje, 3** (2 pares); **na proposta, 5**. Triplas textura + botão +
-  título repetidas: 2 hoje, 0 na proposta. Na proposta há 16 texturas de cartão, 15 fontes, Phosphor com 6 pesos e
-  Lucide e Tabler com 4 cada, os 6 estilos de botão e as 5 transições.
-- Contrato dos tokens citados nas fichas conferido no schema: `chartThickness` tem passo 1; `iconStrokeWidth` tem
-  passo 0,5; `borderStyle: dashed`, `inputBorderType: underline`, `sidebarPosition: right/floating` e
-  `contentAlignment: center` existem. Corrigi no anexo os valores fora do passo antes de entregar.
-- Busca de consumidor de token, pelo id e pelas `cssVars` em `src/`, fora de schema, presets, catálogo, gerados e
-  testes. Resultado no anexo §3.2 e achados A1 a A5.
-- Padrões de segredo de `gates/scripts/segredo/config.json` aplicados ao anexo e à plan: 0 achados.
-- **Não rodei** suíte, `tsc`, `audit` nem build: o lote 0 não toca código.
-
-**Critérios de aceite**
-- [ ] Anexo de direção de arte aprovado pelo dono antes do lote 1 — **pendente: é a parada deste lote**. O anexo
-  está entregue, e as decisões estão em §0 (D1 a D7).
-- Os demais critérios da §6 são dos lotes 1 a 3, que não foram iniciados.
-
-**Decisões e suposições**
-- As cores das fichas são **âncoras**: o solucionador de contraste ajusta só a luminosidade do texto no lote 1. A
-  aprovação pedida é da direção (matiz, saturação, recurso, estrutura), não do hex final.
-- Propus trocar o modo nativo de dois temas existentes (`neo-brutalism` e `cyber-retro-wave`, ambos para claro) e
-  reconceituar `cyber-retro-wave` como Y2K cromado e `data-terminal` como caderno de laboratório. Os ids são
-  mantidos. Isso fica para o dono decidir (D2), porque muda a cara de um id que o consumidor pode ter salvo.
-- Troquei duas coisas do ponto de partida do revisor para o "orgânico": a cor de marca é musgo, não terracota, e a
-  textura de cartão é `wood`, não `stucco`. As razões (critério 6 do medidor e textura de branco fixo) estão no
-  anexo §8.
-- Li o critério "3 famílias de ícone com pelo menos 4 pesos" do teste (b) como ≥4 pesos no conjunto. A proposta
-  cumpre também a leitura mais forte, ≥4 por família.
-- Os temas não declaram posição de preferência nem de composição da barra: chave ausente vale o padrão de fábrica
-  (`09` §4.7; `06` §2.1.1).
-
-**Achados fora do escopo (não corrigidos)** — detalhados no anexo §9, de A1 a A11:
-- `src/core/Design/schema/atmosphere.ts:96-120` — `bgGradientMode`/`bgGradientAngle` não têm consumidor. O
-  critério "os 4 modos de gradiente" do teste (b) cobra variedade de um token que não desenha (D6).
-- `src/core/Provider/manifest.ts:126` × `src/styles/_surfaces.css` — nenhuma opção de `surfaceMaterial` (marcado
-  `visualImpact`) tem regra CSS. Defeito da mesma classe em `shadowColorMode`, `systemTone` (só `cyber` desenha) e
-  `switchStyleType`; `--sarak-noise-opacity` é emitido e ninguém o lê.
-- `src/core/Provider/hooks/useSarakUIEffects.ts` — `Orbitron`, `Chakra Petch`, `VT323` e `Fira Code`, usadas por
-  temas de hoje, não são carregadas: na tela, cai a fonte de reserva.
-- `src/styles/_atmosphere.css` — seis texturas desenham em branco fixo e somem em superfície clara.
-- `src/components/engines/charts/SubEngines/builders/types.ts:20-23` — as cores de status entram como séries 4 a 7
-  do gráfico, contra a regra da `dataviz`.
-- `src/styles/_cards.css:24-26` — a sombra de cartão tem geometria fixa, e por isso o brutalismo não alcança sombra
-  dura.
-- **Divergência entre a plan e o código, §5 passo 5:** a vitrine já existe (`npm run themes:showcase` →
-  `browser-tests/generate-showcase.mts`). O lote 3 seria estender a cena, não escrevê-la.
-
-**Pendências / riscos**
-- O lote 1 depende de D1 a D7.
-- `organic-clay` tem fundo de luminosidade média (é o que satisfaz o critério 2 do medidor). Ali, o texto
-  secundário e o mudo têm pouca margem de contraste, e a saída declarada é subir o fundo para L≈70.
-- `high-contrast` mira 7:1, mas o gate mede 4,5. A razão por par será relatada no lote 1, à mão.
-
-
-## Resumo da execução — lote 1 — 2026-10-14
-
-**Resultado:** Concluído com pendências (ver *Pendências / riscos*: os 23 tokens do painel foram abertos pelo leitor, não confirmados em navegador).
-
-**Estado do worktree ao iniciar**
-```
-M  browser-tests/fixtures/showcase-entry.tsx
-M  browser-tests/generate-showcase.mts
-MM specs/00-indice.md
-MM specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
-M  src/features/DesignEngine/Main/TemplatesTab.tsx
-M  src/features/DesignEngine/Main/__tests__/TemplatesTab.test.tsx
-```
-(O pré-requisito 0.1 foi commitado pelo dono durante a execução, `67bdb283`; depois disso o worktree só tinha `specs/00-indice.md` e esta plan modificados, e nenhum deles foi tocado por mim além do bloco abaixo e do `status`.)
-
-**O que foi feito**
-
-*Infraestrutura*
-- `src/core/Design/types.ts` — o tipo do token ganha `kind` (`aesthetic` | `functional`), `modeDependent`, `usage` e `interactsWith`, opcionais (R33: obrigatório no tipo quebraria o tema de consumidor; a obrigatoriedade é do gate).
-- `scripts/generate-token-types.ts` — além de `design-token-ids.ts`, gera `src/core/Provider/generated/design-token-docs.json` (id, pilar, rótulo e os quatro campos); o `--check` (que roda no `build`) compara os dois arquivos byte a byte. É a fonte única que o kit lê: o coletor do kit é Node puro e não importa TS.
-- `scripts/consumer-kit/collectKitSources.mjs`, `buildKitCatalog.mjs`, `renderAppendix.mjs` — o `catalog.json` do kit traz os campos em `designTokens.ids[]` e `designTokens.groups`; o apêndice do guia ganha **A.4b — Mapa dos tokens por pilar** (uma tabela por pilar: natureza, modo, o que muda, depende de), só com o que o schema documentou.
-- **Gate de documentação de token** — `gates/scripts/contrato/check-token-documentation.ts` (+ núcleo puro em `helpers/token-documentation-core.ts`), `npm run token-docs:check`, no `build` (depois do `token-types:check`), no Anel 1 (`.githooks/pre-commit`) e na CI (`gates.yml`, que passa de 13 para 14 `*:check`). Confere forma: `kind` válido, `modeDependent` booleano, `usage` de 25 a 420 caracteres e diferente do rótulo, `interactsWith` só com ids do schema e sem citar o próprio token. Exceção por token em `gates/allowlists/tokenDocumentationPending.json` (`{ id: lote }`), que **se esvazia**: entrada de token já documentado ou inexistente também bloqueia. Limites R18 declarados no cabeçalho.
-- Teste do gate com **mutação** (`gates/scripts/contrato/__tests__/check-token-documentation.test.ts`): remover o `usage` e remover o `kind` de um token documentado do schema real derrubam o gate.
-- Mapa **"o que a lib já faz — não recrie"**: `sarak-ui/GUIA-FRONTEND.md` §6 (nova linha na árvore §0.1) e seção equivalente em `.agents/skills/ui-integra-consumidor/SKILL.md`, preenchidos para cartões, sobreposições e tabelas; as demais necessidades ficam marcadas ⏳.
-- `docs/migracoes.md` — subseção em `## 8.0.0` (aditiva, MINOR dentro da MAJOR).
-- `specs/plan/anexos/plan-110-tokens-funcionais.md` — o critério estético × funcional, o que carrega modo, as decisões não óbvias por token e os tokens sem efeito.
-
-*Análise dos tokens (120 dos seis grupos)* — método: leitor no código; efeito em navegador por **diferença de estilo computado** (cena de `src/`, não do `dist/`, com um exemplar de cada componente; valor-padrão × valores extremos/opções, em repouso, sob o ponteiro, com foco e pressionado, com pseudoelementos). 144 variantes de 97 tokens na cena principal e nas sobreposições, 23 no painel; os que não mudaram nada foram reabertos à mão (tooltip, toast, placeholder, zoom da imagem, brilho no hover). Resultado: **113 documentados** (78 estéticos, 35 funcionais, 29 carregam modo) e **7 sem efeito visível** (achados; ficam na lista de exceção com o rótulo `achado-lote-1`).
-
-Lista (id → natureza, modo):
-- `cards` (75): cardBorderRadius → estético, sem modo; cardRadiusTL → estético, sem modo; cardRadiusTR → estético, sem modo; cardRadiusBL → estético, sem modo; cardRadiusBR → estético, sem modo; cardGeometricCut → estético, sem modo; cardBackdropBlur → estético, sem modo; cardSurfaceOpacity → estético, modo; cardBorderWidth → estético, sem modo; cardBorderOpacity → estético, modo; cardBorderTop → estético, sem modo; cardBorderBottom → estético, sem modo; cardBorderLeft → estético, sem modo; cardBorderRight → estético, sem modo; cardInnerGlowColor → estético, modo; cardInnerGlowWidth → estético, sem modo; cardTextureType → estético, sem modo; cardTextureOpacity → estético, modo; cardHeaderBg → estético, modo; cardHeaderBorder → estético, modo; cardHeaderPadding → estético, sem modo; cardFooterBg → estético, modo; cardFooterBorder → estético, modo; cardShadowSpread → estético, modo; cardShadowOffsetX → estético, sem modo; cardShadowOffsetY → estético, sem modo; cardShadowBlur → estético, sem modo; cardShadowExpansion → estético, sem modo; cardGlowColor → estético, modo; cardGlowIntensity → estético, modo; cardHoverTranslate → estético, sem modo; cardHoverGlowIncrease → estético, modo; cardSpotlightOpacity → SEM EFEITO VISÍVEL (achado); cardPaddingMd → estético, sem modo; cardLayoutDirection → estético, sem modo; cardImagePosition → estético, sem modo; cardTextAlign → estético, sem modo; cardContentAlignment → SEM EFEITO VISÍVEL (achado); cardShadow → estético, modo; borderBeamEnabled → SEM EFEITO VISÍVEL (achado); cardVariant → funcional, sem modo; imageCardOverlayOpacity → estético, modo; imageCardHoverZoom → SEM EFEITO VISÍVEL (achado); imageCardShadowOffsetY → estético, sem modo; imageCardShadowBlur → estético, sem modo; imageCardShadowSpread → estético, sem modo; imageCardGlowBlur → estético, sem modo; managementGroupListMaxHeight → funcional, sem modo; matrixNodeMinWidth → funcional, sem modo; catalogFilterMinWidth → funcional, sem modo; catalogSectionRadius → estético, sem modo; catalogItemRadius → estético, sem modo; presetCardHoverShadowOffsetY → funcional, sem modo; presetGlowShadowBlur → funcional, sem modo; presetGlowShadowBlurLg → funcional, sem modo; presetPreviewPaddingY → funcional, sem modo; presetMatteShadowBlur1 → funcional, sem modo; presetMatteShadowSpread1 → funcional, sem modo; presetMatteShadowOffsetY2 → funcional, sem modo; presetMatteShadowBlur2 → funcional, sem modo; presetMatteShadowSpread2 → funcional, sem modo; presetPreviewMinHeight → funcional, sem modo; presetMiniCardMaxWidth → funcional, sem modo; presetMiniCardHeight → funcional, sem modo; presetCardShadowOffsetY → funcional, sem modo; presetCardShadowBlur → funcional, sem modo; presetCardShadowSpread → funcional, sem modo; presetGridTextureSize → funcional, sem modo; controlHeightToggle → funcional, sem modo; progressBarMaxWidth → funcional, sem modo; devicePhoneHeight → funcional, sem modo; deviceTabletHeight → funcional, sem modo; devicePhoneNotchRadius → funcional, sem modo; deviceFrameRadius → funcional, sem modo; deviceDesktopMinWidth → funcional, sem modo
-- `cardTitle` (6): cardTitleFontSize → estético, sem modo; cardTitleColor → estético, modo; cardTitleFontWeight → estético, sem modo; cardTitleLetterSpacing → estético, sem modo; cardTitleIconGlow → estético, modo; cardTitleIconGlowBlur → estético, sem modo
-- `cardAction` (6): cardActionBtnPrimaryBg → estético, modo; cardActionBtnHoverBg → estético, modo; cardActionBtnText → estético, modo; cardActionBtnBorderRadius → estético, sem modo; cardActionBtnPadding → estético, sem modo; cardActionClickScale → SEM EFEITO VISÍVEL (achado)
-- `cardSearch` (4): cardSearchBgFocus → estético, modo; cardSearchBorderBeamActive → SEM EFEITO VISÍVEL (achado); cardSearchPlaceholderColor → estético, modo; cardSearchTextFocusColor → estético, modo
-- `overlays` (18): modalActionAlignment → estético, sem modo; modalHeaderStyle → estético, sem modo; modalOverlayColor → estético, modo; modalOverlayBlur → estético, sem modo; modalBorderRadius → estético, sem modo; modalWidthSm → funcional, sem modo; modalWidthMd → funcional, sem modo; modalWidthLg → funcional, sem modo; modalWidthXl → funcional, sem modo; modalWidthFull → funcional, sem modo; tooltipBg → estético, modo; tooltipRadius → estético, sem modo; tooltipTextColor → estético, modo; tooltipBorderColor → estético, modo; toastMinWidth → funcional, sem modo; toastMaxWidth → funcional, sem modo; toastAccentWidth → estético, sem modo; contextMenuMinWidth → funcional, sem modo
-- `tables` (11): tableDensity → estético, sem modo; tableActionPosition → SEM EFEITO VISÍVEL (achado); tableHeaderBg → estético, modo; tableRowHoverBg → estético, modo; tableZebraStriping → estético, sem modo; tableBorderRadius → estético, sem modo; tableCellPadding → estético, sem modo; tableBorderColor → estético, modo; kanbanHeaderPaddingY → estético, sem modo; kanbanHeaderTracking → estético, sem modo; kanbanCardRadius → estético, sem modo
-
-**Arquivos alterados**
-| Arquivo | Natureza | O que mudou |
-|---|---|---|
-| `src/core/Design/types.ts` | alterado | quatro campos opcionais no tipo do token |
-| `src/core/Design/schema/{cards,card-title,card-action,card-search,overlays,tables}.ts` | alterado | `kind`, `modeDependent`, `usage`, `interactsWith` nos 113 tokens documentados (nenhum `defaultValue`, opção ou leitor mudou) |
-| `scripts/generate-token-types.ts` | alterado | gera e confere `design-token-docs.json` |
-| `src/core/Provider/generated/design-token-docs.json` | criado (gerado) | documentação por token, com o rótulo de cada pilar |
-| `scripts/consumer-kit/{collectKitSources,buildKitCatalog,renderAppendix}.mjs` | alterado | campos no `catalog.json`; apêndice A.4b |
-| `gates/scripts/contrato/check-token-documentation.ts`, `helpers/token-documentation-core.ts` | criado | o gate e o núcleo |
-| `gates/scripts/contrato/__tests__/check-token-documentation.test.ts` | criado | casos plantados + mutação sobre o schema real |
-| `gates/allowlists/tokenDocumentationPending.json` | criado | 289 exceções: 282 dos lotes 2–4 e 7 achados |
-| `package.json`, `.githooks/pre-commit`, `.github/workflows/gates.yml` | alterado | `token-docs:check` no build, no Anel 1 e na CI |
-| `scripts/__tests__/generate-token-types.check.test.mjs`, `scripts/consumer-kit/__tests__/kitGenerator.test.mjs` | alterado | deriva do JSON de documentação; campos no catálogo e A.4b |
-| `sarak-ui/GUIA-FRONTEND.md`, `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | §6 "o que a lib já faz" e a seção equivalente na skill |
-| `docs/migracoes.md` | alterado | subseção do lote em `## 8.0.0` |
-| `specs/plan/anexos/plan-110-tokens-funcionais.md` | criado | critério e decisões |
-| `sarak-ui/*` (`catalog.json`, `GUIA-FRONTEND.md`, `START-HERE.md`, `VERSION`, `skill/SKILL.md`, `docs/migracoes.md`), `sarak-dev/*` (`GUIA-MANUTENCAO.md`, `START-HERE.md`, `state.json`) | regenerados | `npm run guide` e `npm run dev-kit`, por último |
-
-**Verificações executadas**
-- `npx tsc --noEmit` → exit 0, nenhum erro (repetido depois do último conserto).
-- `npx vitest run` (suíte completa, sozinha na árvore, repetida depois do último conserto) → **3464 de 3466 testes, 492 de 494 arquivos**. As 2 falhas são *timeout* de 5 s sob a carga da suíte inteira (1.624 s no total, com ~200 processos `node` de outras sessões na máquina): `gates/scripts/contrato/__tests__/check-theme-boot-closure.test.ts` ("a árvore real passa em src/", falhou também na 1ª passada) e `src/features/DesignEngine/hooks/__tests__/useDesignDraft.undoIntegration.test.tsx`. Isoladas, as duas passam (11 de 11). A 1ª passada tinha 3 falhas: `generate-token-types --check` (JSON gerado defasado por uma edição minha, **corrigida**), o mesmo `check-theme-boot-closure` e `PreviewCanvas.test.tsx` (passa isolada e passou na 3ª passada). Não toquei em nenhuma das rotas dos dois testes que estouram.
-- Suítes novas e alteradas, isoladas: `check-token-documentation.test.ts` (inclui 2 casos de mutação), `kitGenerator.test.mjs`, `generate-token-types.check.test.mjs` → 29 de 29.
-- `npm run audit:baseline -- --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
-- Anel 1 (`npm run`): `barrel:check`, `catalog:check`, `zero-brand:check`, `deep-import:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`, `persistence-doc:check`, `class-merge:check`, `icon-port:check`, `chrome-token-parity:check`, `token-reader:check`, `css-important:check`, `fixed-translucent:check`, `variable-contract:check`, `channel-dispute:check`, `panel-contract:check`, `token-types:check`, `token-docs:check` (novo), `themes:catalog:check`, `plan-index:check` → todos OK. **Por último:** `npm run guide` e `npm run dev-kit`, e depois `guide:check`, `dev-kit:check` e `kit-names:check` → OK.
-- R36: `node gates/scripts/contrato/check-trail-citation.mjs` → "nenhuma linha adicionada cita plan, veredito ou achado de veredito".
-- Anel 0 (simulado em Node, porque o Python do hook não existe nesta máquina): os 12 padrões de `gates/scripts/segredo/config.json` sobre as linhas adicionadas de `git diff HEAD` e sobre os arquivos não rastreados → 5.716 linhas, **0 achados**, 0 arquivos sensíveis novos.
-- Gate de documentação, estado real: `npm run token-docs:check` → "113 de 402 tokens documentados; 289 em exceção". Para cada limite que o gate promete: entrada plantada e resultado no teste (`kind` ausente → `kind-missing`; `usage` ausente → `usage-missing`; `usage` de 6 caracteres → `usage-too-short`; 421 caracteres → `usage-too-long`; `usage` igual ao rótulo → `usage-repeats-label`; `interactsWith: ['naoExiste']` → `interacts-unknown`; `interactsWith` citando o próprio token → `interacts-unknown`; `interactsWith` como texto → `interacts-invalid`; exceção de token já documentado → `staleExceptions`; exceção de id inexistente → `staleExceptions`; token completo e token em exceção passam).
-- Medição em navegador (cena montada de `src/`, fora do repositório, Chromium headless): 144 variantes dos 97 tokens fora do painel e 23 do painel; o que não mudou foi reaberto à mão (tooltip: `rgb(255,51,102)`/`12px`/`rgb(0,255,0)`/`rgb(0,0,255)` com os quatro tokens; toast: `min-width` 210 → 420 px, `max-width` 315 → 560 px, faixa 4 → 12 px; placeholder: `rgba(255,255,255,0.4)` → `rgb(255,51,102)`; zoom da imagem: `transform: none` nos três pontos testados com 1,05 e com 1,5).
-- `git status` ao fim: só os arquivos da tabela acima; nada commitado, nada em `dist/`.
-
-**Critérios de aceite** (do lote)
-- [x] Campos no tipo, paridade com o JSON gerado (`token-types:check`) e derivação ao `catalog.json` e ao apêndice por pilar — evidência: `scripts/generate-token-types.ts`, `scripts/consumer-kit/renderAppendix.mjs`, teste `kitGenerator.test.mjs`.
-- [x] Gate de documentação de token com exceção que se esvazia, limites R18 e mutação — `check-token-documentation.ts:1-34`, teste de mutação (2 casos).
-- [x] Os seis grupos: cada token aberto no leitor e no navegador, ou declarado como achado — 113 + 7 = 120 (tabela acima).
-- [x] Esqueleto do mapa no GUIA e na skill, preenchido para cartões, sobreposições e tabelas — `GUIA-FRONTEND.md` §6, `SKILL.md`.
-- [x] O que o lote ensinou entra no kit — GUIA §6.1 a §6.4 e a skill (textura × cor × modo, vidro, divisória, sombra, recorte, alcance dos tokens de layout, dois componentes de tabela).
-- [x] Nenhum token novo, opção nova, mudança de leitor ou de `defaultValue`; nenhum tema tocado — `git diff` dos schemas só acrescenta as quatro chaves.
-- [ ] Os 23 tokens do painel confirmados em navegador — motivo: ver pendências.
-
-**Decisões e suposições**
-- **Paridade 1:1:1.** Li "gravados no schema, com a paridade 1:1:1" como: o schema é a única fonte dos campos, e o artefato derivado (JSON gerado → catálogo → apêndice) é conferido byte a byte. **Não** copiei `usage` para as partições do catálogo (`partitions/*.json`): seria uma segunda cópia da prosa à mão, o que a plan proíbe (R17). A comparação de valor do `verify_parity` (`catalog-drift`) segue em tipo e opções.
-- **Gate, não teste.** O resultado tem de bloquear commit e `build`, e a lista de exceção é dado versionado que esvazia a cada lote — comportamento de gate (mesmo molde de `check-variable-contract`). O teste cobre o gate (mutação), não substitui.
-- **Valores em inglês no tipo** (`aesthetic`/`functional`), rótulos em português só no kit (ADR-023).
-- **Pilar = grupo do schema** (`cards`, `overlays`, …), com o `label` do `ComponentSchema`.
-- **Tokens sem efeito visível ficam na lista de exceção** (não documentados), com o rótulo `achado-lote-1`. Isso mantém o gate verde sem fingir documentação, mas a lista só esvazia quando o revisor decidir (remover o token, ligar o leitor ou aceitar).
-- `cardVariant` é **funcional**: escolhe qual cartão a grade desenha, e o tema o declara `classic`. `modalActionAlignment`/`modalHeaderStyle` são **estéticos** (disposição, não comportamento). Os `preset*`, `device*`, `controlHeightToggle` e `progressBarMaxWidth` são **funcionais** (só o painel os lê). Cada decisão com motivo no anexo.
-- `cardImagePosition` foi documentado como **parcial** (só `direita` com direção em linha muda algo); `left`, `top` e `none` não mudam nada hoje. Não o tratei como "sem efeito" porque um valor muda a tela.
-- `modeDependent`: cor, opacidade de superfície/borda/textura, força e cor da sombra e do brilho; geometria, tipografia, movimento e comportamento ficam no modo principal (regra do anexo §1.1).
-
-**Achados fora do escopo (não corrigidos)**
-- **Sete tokens sem efeito visível** (o motivo de cada um está no anexo §4): `cardSpotlightOpacity` (`SarakTitleCard.tsx:66-70` e irmãos escrevem `data-spotlight` e `.spotlight-effect`; nenhuma regra CSS os lê), `borderBeamEnabled` e `cardSearchBorderBeamActive` (`.border-beam-effect` sem regra; `_animations.css:21-30` declara `beam-rotate`/`--beam-angle` que ninguém usa), `cardActionClickScale` (`SarakActionCard.tsx:59`, variável calculada e não usada), `cardContentAlignment` (`useStructuralStyles.ts:100`, `getCardStyles` nunca chamado), `imageCardHoverZoom` (`SarakImageCard.tsx:66-77`: `whileHover` na camada da imagem, coberta pelo véu e pelo conteúdo; escala medida `none` ao passar o ponteiro em três pontos), `tableActionPosition` (`useTableLayoutStyles.ts:27-35`, classe calculada sem consumidor; a `SarakTable` não tem coluna de ação). O gate `token-reader:check` não os acusa porque o id aparece em componente — é o vão "textual" que o próprio gate declara (limite 2).
-- `schema/cards.ts` — `cardVariant` tem `axis: 'texture'` (selecionar o cartão da grade não é textura).
-- `useStructuralStyles.ts:100-127` — `getCardStyles` exportado e sem chamador, e o `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` em `schema/cards.ts` o cita como leitor.
-
-**Pendências / riscos**
-- **Painel (23 tokens `preset*`, `device*`, `controlHeightToggle`, `progressBarMaxWidth`):** documentados pelo **leitor** (`src/features/DesignEngine/Canvas/...`) e classificados como funcionais. A diferença de estilo no painel inteiro, com cada um no valor extremo, não mostrou efeito mensurável (só ruído de nome de classe): o valor chega à pré-visualização por rascunho do painel, não pelo `config` do Provider, e eu não abri cada aba para dirigir o rascunho. **Não confirmei em navegador.** Se o revisor quiser, é a única parte do lote que pede uma conferência manual no painel.
-- `build` e `cromo-css-real:check` **não rodados** (instrução do lote); `kit-names:check` leu o `dist/index.d.ts` que já existia.
-- A suíte completa teve **3 falhas na primeira passada** (`generate-token-types --check` por JSON gerado defasado por uma edição minha de `usage` depois da geração; `check-theme-boot-closure` por *timeout* de 5 s sob carga; `PreviewCanvas.test.tsx`, que passa isolada e passou na segunda passada). Corrigi a causa da primeira e repeti a suíte inteira depois do último conserto.
-- Os 282 tokens dos lotes 2–4 estão na lista de exceção do gate; ela só esvazia com esses lotes.
-
----
+**Decisões que valem para os lotes seguintes:** o schema é o mapa; a ficha é o JSON completo do tema; sem aprovação do
+dono por tema (a validação é no importador, na `8.0.0-rc.1`, e o lote 25 entrega o roteiro); o kit do importador é
+entrega de primeira classe; **a medição no navegador é obrigatória por token** (Chromium headless com
+`PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright`, `chromium.launch()` sem `executablePath`, cena
+de `src/` fora do repositório); token sem efeito é achado, nunca "documentado como tal"; a verificação é só do revisor,
+no nível do diff (`schema-meta` nos lotes 1–4).
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
 
-## Conferência do lote 0 — 2026-10-11 — aprovado pelo dono, lote 1 em espera
+## Vereditos consolidados dos lotes 0 a 2
 
-**Conferido pelo revisor:** o anexo inteiro (mapa do conjunto, 19 fichas, teto de peso, achados); por amostragem no código, os achados A1 (nada lê `--sarak-bg-gradient-*`), A2 (o CSS desenha `metallic`/`brushed`/`acrylic`/`matte`, que não são opções de `surfaceMaterial`), A6 (Orbitron, Chakra Petch, VT323 e Fira Code fora do carregador de fontes) e a vitrine existente (`npm run themes:showcase`) — o passo 5 da §5 foi corrigido para estender a vitrine.
+- **Lote 0 — 2026-10-11 — aprovado pelo dono.** D1 a D7 aprovadas como o anexo recomenda; regra reforçada: todo tema tem
+  claro e escuro e o modo oposto preserva a identidade. Os achados A1–A11 do anexo foram conferidos no código em
+  2026-10-14: A1–A10 fechados pelas plans 111–115, A11 (Google Fonts) fechado pelo embarque de fontes; D6 superada.
+- **Revisão da plan — 2026-10-14.** Plan reescrita pelo revisor com o dono: fatos atualizados contra o código; o schema
+  como mapa; ficha = JSON completo; kit do importador como entrega de primeira classe; teto por tema medido e ajustado no
+  lote 6; candidata `8.0.0-rc.1` antes da `8.0.0`.
+- **Lote 1 — 2026-10-15 — 🟢 aprovado.** Diff dos schemas só acrescenta metadados; gates verdes; suíte completa
+  3466/3466; 14 `usage` conferidos contra o leitor; os sete "sem efeito" reabertos e confirmados.
+- **Lote 2 — 2026-10-16 — 🔴 reprovado** (nenhum token medido no navegador; `usage` de `headingFont` desatualizado) e
+  **2026-10-17 — correção 🟢 aprovada**: 111 tokens medidos em Chromium 153, `schema-meta` verde, quatro pendências do
+  arsenal enviadas ao registro da `plan-117`.
 
-**Decisões do dono (2026-10-11):** D1 a D7 **aprovadas** como o anexo recomenda. **Regra reforçada:** todo tema tem claro e escuro e o modo oposto preserva a identidade (critério novo na §6). **Os achados A1–A10 do anexo serão corrigidos antes do lote 1**, numa plan própria; o lote 1 espera por ela, e as fichas que contornavam alavancas quebradas são revistas depois dela.
+- **Lote 3 — 2026-10-17 — 🟢 aprovado.** 92 tokens medidos; diff só de metadado de schema; `schema-meta` verde (318 de 399
+  documentados, 81 em exceção: 79 do lote 4 e os 2 achados); os dois achados conferidos por `git grep` e levados ao
+  registro da `plan-117`.
 
-## Revisão da plan — 2026-10-14 — reescrita para a execução (nenhum código tocado)
+**Próximo: lote 4.** Os gerados (`guide`, `dev-kit`, `token-types`) já saem regenerados pelo revisor.
 
-A `plan-116` foi sintetizada; a `plan-110` deixa de depender dela e foi **reescrita pelo revisor** com o dono:
+## Resumo da execução — lote 4 — 2026-10-17
 
-1. **Fatos atualizados** contra o código: 402 tokens, 223–239 por tema, 156 que nenhum tema define; o registro de
-   tema pela regra da `09` §2 obs. 3; o teto D5 do anexo substituído pelo teto **por tema, medido e ajustado no lote 6**.
-2. **Achados A1–A10 do anexo conferidos no código** (gradiente, material, cor e geometria da sombra, `systemTone`,
-   alternador, fontes por `THEME_FONTS`, texturas por `--theme-texture-color`, `cardVariant`, cores de status do gráfico):
-   fechados pelas plans 111–115. A11 (Google Fonts) continua e vira tema de documentação. O D6 do lote 0 está superado.
-3. **O schema é o mapa** (decisão do dono): lotes 1–4 analisam os 402 tokens por grupo e gravam `kind`,
-   `modeDependent`, `usage` e `interactsWith` no schema, derivados ao catálogo e ao kit, com gate de documentação.
-4. **A ficha é o JSON completo do tema**; sem aprovação do dono por tema (ele valida no importador, na `8.0.0-rc.1`):
-   a prova é automática por lote e o revisor confere as capturas; o lote 25 entrega o roteiro de validação.
-5. **O kit do importador é entrega de primeira classe**: do cliente ao tema, os temas como arquétipos, receitas,
-   armadilhas e o mapa "o que a lib já faz — não recrie".
-6. **Pré-requisito 0.1** (prompt direto): `generate-showcase.mts` importa um nome que não existe e a aba "Temas e
-   JSON" lista só os temas em memória — o lote 1 espera os dois.
-
-**Decisões do dono (2026-10-14):** teto por tema medido e ajustado; candidata `8.0.0-rc.1` antes da `8.0.0`;
-validação só no importador, ao final; documentação deve evitar que o importador recrie funcionalidade da lib.
-
-**Status: 🔴 A executar.** O lote 1 é despachado depois do pré-requisito 0.1.
-
-## Veredito — 2026-10-15 — lote 1 — 🟢 Aprovado
-
-**Conferido no worktree (não pelo resumo):**
-- **Diff dos schemas:** só acrescenta as quatro chaves (`kind`, `modeDependent`, `usage`, `interactsWith`); nenhum
-  `defaultValue`, opção ou leitor mudou; nenhum tema tocado.
-- **Gates e geradores:** `tsc` 0; `token-types:check` (JSON de documentação por byte), `token-docs:check` (113 de
-  402 documentados, 289 em exceção: 282 dos lotes 2–4 e 7 achados), `guide:check`, `dev-kit:check`, `catalog:check`,
-  `barrel:check`, `gate-limits:check` (51 scripts), `kit-names:check` verdes; `audit:baseline --with-tsc` igual ao
-  baseline; R36: nenhuma linha adicionada cita plan. Teste do gate de documentação (inclui a mutação sobre o schema
-  real) 10/10.
-- **Suíte completa, sozinha na árvore:** 494 arquivos, **3466/3466 testes, numa passada limpa** — os 2 *timeouts*
-  que o executor viu sob carga não se repetem.
-- **Amostra de `usage` contra o leitor** (14 tokens): `cardShadowSpread` ("acima de 100 a cor já é cheia" =
-  `min(100%, …)` em `_card-defaults.css:85`), `tableDensity` (só `useTableLayoutStyles`; a `SarakDataTable` não o lê),
-  `tableZebraStriping` (as duas tabelas), `cardImagePosition` (parcial: só `right` com direção em linha,
-  `useCardLayoutStyles.ts:30-32`), `cardGeometricCut`, `cardBackdropBlur`, `modalOverlayBlur`, `cardTextureType`,
-  `cardSurfaceOpacity`, `cardTitleIconGlow`, `cardGlowColor`, `tooltipBg`, `modalWidthMd` — todos confirmados.
-- **Os sete "sem efeito":** reabri `cardSpotlightOpacity` (4 escritas de `data-spotlight`, nenhuma regra),
-  `borderBeam*` (`.border-beam-effect` sem regra), `cardActionClickScale` (calculado em `SarakActionCard.tsx:59`,
-  não usado) e `tableActionPosition` (calculado, não consumido) — confirmados. Eles **não** foram documentados como
-  se funcionassem: ficam fora do mapa e o GUIA §6.4 avisa o importador.
-- **Kit:** o GUIA §6 ("o que a lib já faz") e a skill estão fiéis ao código (tabela do que `SarakTable` e
-  `SarakDataTable` leem; a textura × cor × modo; o `cardGeometricCut` que corta sombra e brilho).
-
-**Decisões do revisor:**
-1. **Aceito** os 23 tokens do painel (`preset*`, `device*`, `controlHeightToggle`, `progressBarMaxWidth`) como
-   *funcionais* documentados pelo leitor: o efeito deles vive na pré-visualização do painel, fora da cena medida.
-2. Os sete tokens sem efeito e os dois achados de código morto foram para o `00-backlog` (itens 33 e 34), com peso
-   *alto* para o primeiro: é decisão do dono (ligar, retirar ou aceitar), e o lote 25 não pode ensinar o importador
-   a usar o que não desenha. Item 4 do backlog (`solve_theme_contrast.ts`) estava resolvido e saiu.
-
-**Status: 🟠 Em revisão** (lote 2: `typography`, `buttons`, `inputs`, `switches`, `colors`, `data`, `chat`,
-`status`). O método e a infraestrutura estão prontos; o lote 2 só repete.
-
-## Resumo da execução — 2026-10-16
-
-**Resultado:** Concluído com pendências.
+**Resultado:** Concluído com pendências (dois tokens sem efeito entregues como achado; gerados defasados para o revisor regenerar).
 
 **Estado do worktree ao iniciar**
 ```
- M .agents/skills/ui-criar-tema/SKILL.md
- M .agents/skills/ui-integra-consumidor/SKILL.md
- M .claude/skills/ui-criar-tema/SKILL.md
- M .claude/skills/ui-integra-consumidor/SKILL.md
- M docs/migracoes.md
- M sarak-dev/GUIA-MANUTENCAO.md
- M sarak-dev/START-HERE.md
- M sarak-dev/state.json
- M sarak-ui/GUIA-FRONTEND.md
- M sarak-ui/docs/migracoes.md
- M sarak-ui/skill/SKILL.md
  M specs/00-indice.md
- M specs/adr/README.md
- M specs/arquitetura/02-design-engine.md
- M specs/arquitetura/04-contrato-de-tokens-e-paridade.md
- M specs/arquitetura/05-build-e-distribuicao.md
- D specs/plan/anexos/plan-118-catalogo-de-fontes.md
  M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
- M specs/plan/plan-117-pendencias-do-arsenal.md
- D specs/plan/plan-118-fontes-embarcadas.md
- M specs/specs/09-temas-e-presets.md
- M specs/specs/10-seguranca-e-acessibilidade.md
- M specs/specs/12-kit-do-consumidor.md
-?? .claude/settings.local.json
-?? specs/adr/023-fontes-embarcadas-carregadas-sob-demanda.md
 ```
+(O lote 4 da plan-117 já estava commitado — `c4674f15`; não o toquei nem o reli para limpar.)
 
 **O que foi feito**
-- Acrescentei `kind`, `modeDependent`, `usage` e `interactsWith` aos 111 tokens dos oito grupos — `typography.ts:68`, `buttons.ts:22`, `inputs.ts:13`, `switches.ts:13`, `colors.ts:13`, `data.ts:13`, `chat.ts:13`, `status.ts:22` — e removi esses ids de `gates/allowlists/tokenDocumentationPending.json`.
-- Acrescentei as decisões funcionais e as interações condicionais do lote 2 ao anexo `plan-110-tokens-funcionais.md:124`.
-- Completei o mapa de capacidades e as notas de uso no GUIA e na skill; acrescentei a nota de migração em 8.0.0: `sarak-ui/GUIA-FRONTEND.md:662`, `.agents/skills/ui-integra-consumidor/SKILL.md:460`, `docs/migracoes.md:944`.
-- Não alterei tokens, valores padrão, opções, leitores, presets, temas ou paletas.
+- Medi no Chromium 153 (Playwright 1.63, `PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright`, `chromium.launch()` sem `executablePath`) os **79 tokens** dos seis grupos. Cena montada de `src/` por alias, CSS gerado por Tailwind e bundle em scratchpad, **fora do repositório**: cromo lateral e do topo (com usuário, notificações, painel secundário, logo, busca aberta), viewport de celular (390 px) e de 600/1000/1280 px para os breakpoints, e uma cena estrutural (`SarakGrid`, `SarakFlex`, `SarakFormGroup`, `SarakSwitch`/`Checkbox`/`Radio`, `SarakSplitPane`, `SarakTable`, `SarakCatalogGrid`, `SarakActivityFeed`, `SarakAccordion`, ícones). Método: diferença de estilo computado de todo elemento e pseudoelemento, em repouso, hover, foco, pressionado, rolagem e recolhimento do cromo; elementos que surgem ou somem contam como mudança.
+- **Preferências do usuário:** o padrão de posição (`preference*Position`, `chrome*Position`) lê só o `design` do `config`, sem porta extra; medi a posição pelo cromo (o controle sai da barra, vai para o ⚙ ou some). Para `navigationStyle`, `bodySize` e `mode` liguei a **porta pública `useSarakPreferences().updatePreferences`** (`pref` na cena) e comparei: a preferência vence o valor do tema (ver tabela).
+- `kind`, `modeDependent`, `usage` e `interactsWith` em **77 tokens** (`global.ts`, `branding.ts`, `system.ts`, `icons.ts`, `navigation.ts`, `structural.ts`, `preferences.ts`); os 5 de preferência entram pelo auxiliar `buildPositionToken` (`preferences.ts`) com o mapa `POSITION_USAGE`, porque o id nasce de constante, não de literal. Removi os 77 de `gates/allowlists/tokenDocumentationPending.json`; `contentAlignment` e `sidebarCollapsedWidth` ficam na exceção com o rótulo `achado-lote-4`.
+- Corrigi a `description` de `mode` (dizia "alterna a aplicação inteira"; o valor sozinho não repinta a tela).
+- Documentação: GUIA §6 (linhas "navegação, cromo e slots" e "escolhas do usuário" preenchidas; estado do mapa) e novo §6.8; skill `ui-integra-consumidor` (linhas e armadilhas); `docs/migracoes.md` (subseção do lote 4 em `## 8.0.0`); anexo `plan-110-tokens-funcionais.md` §7.
 
-**Arquivos alterados**
-| Arquivo | Natureza | O que mudou |
-|---|---|---|
-| `src/core/Design/schema/typography.ts` | alterado | metadados nos 32 tokens de tipografia |
-| `src/core/Design/schema/buttons.ts` | alterado | metadados nos 25 tokens de botões |
-| `src/core/Design/schema/inputs.ts` | alterado | metadados nos 15 tokens de campos |
-| `src/core/Design/schema/switches.ts` | alterado | metadados nos 6 tokens de alternadores |
-| `src/core/Design/schema/colors.ts` | alterado | metadados nos 12 tokens de cores |
-| `src/core/Design/schema/data.ts` | alterado | metadados nos 7 tokens de dados |
-| `src/core/Design/schema/chat.ts` | alterado | metadados nos 6 tokens de chat |
-| `src/core/Design/schema/status.ts` | alterado | metadados nos 8 tokens de status |
-| `gates/allowlists/tokenDocumentationPending.json` | alterado | removidas as 111 exceções do lote 2 |
-| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | decisões funcionais e interações condicionais do lote 2 |
-| `sarak-ui/GUIA-FRONTEND.md` | alterado | mapa manual e notas de uso do lote 2 |
-| `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | mapa resumido do que a lib já entrega |
-| `docs/migracoes.md` | alterado | nota aditiva da documentação dos tokens na versão 8.0.0 |
-| `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` | alterado | status e este resumo |
-
-**Verificações executadas**
-- `npx.cmd vitest run gates/scripts/contrato/__tests__/check-token-documentation.test.ts` → 1 arquivo, 10 testes passaram.
-- `git diff --check` → sem erros.
-- `npm.cmd run verify -- --tier=schema-meta` → exit 1. `token-docs:check`, `catalog:check`, `themes:catalog:check`, `audit:baseline`, `plan-index:check`, `dev-kit:check` e a simulação do Anel 0 (876 linhas, 0 achados) passaram. Falharam `token-types:check` (`design-token-docs.json` defasado), o teste `generate-token-types.check.test.mjs` que exige esse JSON atualizado e `guide:check` (cópias em `sarak-ui/docs/migracoes.md` e `sarak-ui/skill/SKILL.md` defasadas).
-- Não havia navegador disponível nesta sessão; a consulta às superfícies retornou zero navegadores. Não medi diferenças de estilo em browser.
-
-**Critérios de aceite**
-- [x] Os 111 tokens dos oito grupos têm documentação válida — evidência: contagens por schema acima e `token-docs:check` aprovado.
-- [x] Exceções do lote 2 removidas, sem exceção obsoleta — evidência: `token-docs:check` aprovado.
-- [x] O mapa do kit e as decisões do lote foram acrescentados — evidência: GUIA §6.5–§6.6, skill e anexo §5.
-- [x] Nenhum `defaultValue`, opção, leitor ou tema foi alterado — diff dos oito schemas contém apenas campos de documentação.
-- [ ] Cada token conferido no navegador — pendente: não havia navegador disponível; `npm run dev-kit` não foi executado conforme instrução.
-- [ ] `schema-meta` verde — pendente: artefatos gerados permanecem sem regeneração para o revisor.
-
-**Decisões e suposições**
-- A execução seguiu sem a skill `dataviz`, conforme autorização explícita do dono; nenhuma paleta de gráfico foi alterada.
-- Classificações, modos e interações foram atribuídos pela leitura dos leitores e pelas regras do anexo; efeitos visuais não foram declarados como medidos.
-
-**Achados fora do escopo (não corrigidos)**
-- Nenhum token sem leitor ou código morto foi confirmado. A busca no código encontrou leitores para os 111 tokens; sem medição de navegador não classifiquei efeito visual ausente.
-
-**Pendências / riscos**
-- Medição visual dos 111 tokens continua pendente para o revisor; não há resultado de browser a reportar.
-- Gerados sem atualização: `src/core/Provider/generated/design-token-docs.json`, `sarak-ui/catalog.json`, o apêndice A.4b gerado de `sarak-ui/GUIA-FRONTEND.md` e as cópias de migrações/skill apontadas por `guide:check`. `dev-kit:check` passou e não apontou gerados defasados em `sarak-dev/`.
-- Nenhum commit foi criado.
-
-## Veredito — 2026-10-16 — lote 2 — 🔴 Reprovado (2 achados)
-
-**O que está certo (conferido):** o diff dos oito schemas é **só acréscimo** (352 linhas; nenhuma removida, nenhum
-`defaultValue`, opção, leitor ou tema tocado); os 111 tokens saíram da exceção e `token-docs:check` fecha em 228 de 399
-documentados (171 em exceção, os lotes 3 e 4). Regenerei `token-types`, `guide`, `dev-kit` e `plan-index`, e o nível
-**`schema-meta` ficou verde**: `token-types:check`, `token-docs:check`, `catalog:check`, `themes:catalog:check`, vitest de
-`Design`/`Provider/utils`/`contrato`/`scripts`, baseline, `plan-index:check`, `guide:check`, `dev-kit:check`; Anel 0:
-2.132 linhas, 0 achados; `trail-citation` limpo. **Amostra de `usage` contra o leitor** (15 tokens abertos por mim):
-`btnActiveScale` (`_elements.css:87`), `btnHoverScale` e `textSmoothing` (`_elements.css`), `textGlowIntensity`
-(`--sarak-text-glow`, `_elements.css:42`), `chatAnimationSpeed` (`--sarak-chat-anim-speed` em `MessageBubble`,
-`SarakChat`, `SarakChatEngine`), `statusGlowBlur` (`SarakBadge`), `switchPulseColor`/`switchBackdropBlur`
-(`switchStyles`), `inputBackdropBlur`/`inputShadow`/`inputBorderType` (`useAtomicStyles`), `btnBackdropBlur`,
-`btnNeonPulseSpeed`, `chatBubbleStyle` — todos têm leitor e a frase confere. O GUIA diz com honestidade que o lote 2
-acrescenta o **alcance dos leitores**, não o medido.
-
-**Achado 1 — o método da plan não foi cumprido: nenhum dos 111 tokens foi conferido no navegador.**
-Plan §5 ("Lotes 1 a 4"): "para **cada token do grupo**, o executor abre o leitor no código, **confere no navegador**
-(vitrine ou harness) o que o valor muda". O resumo declara o critério em aberto ("não havia navegador disponível nesta
-sessão"; o critério "Cada token conferido no navegador" ficou `[ ]`). Ler o leitor **não basta, e o lote 1 provou**: foi a
-medição por diferença de estilo computado que achou os sete tokens que o schema oferecia e nada desenhava (`token-reader`
-passava para eles). "Nenhum token sem leitor foi confirmado" vale para a leitura, não para a tela. Um critério em aberto
-por falta de ferramenta é motivo para reprovar (não existe aprovado com ressalva): o `usage`/`kind` só é honesto depois
-da medição. **Correção:** medir, no Chromium headless (Playwright, instalado na máquina), os 111 tokens dos oito grupos
-pelo método do lote 1 (cena montada de `src/`, **fora do repositório**, um exemplar de cada componente; valor padrão ×
-valores extremos/opções, em repouso, sob o ponteiro, com foco e pressionado, com pseudoelementos), registrar no resumo a
-tabela **token → o que mudou (propriedade e valores)**; o que **não** mudar, reabrir à mão antes de concluir; e **token
-sem efeito é achado** (resumo, não "documentado como tal"). Ajustar `usage`, `kind`, `modeDependent` e `interactsWith`
-ao que a medição mostrar. Sessão sem navegador não executa esta correção: pare e avise.
-
-**Achado 2 — `usage` de `headingFont` desatualizado em relação ao código.** `src/core/Design/schema/typography.ts:354`
-("aos títulos H1 e H2") repete a descrição antiga; o leitor aplica `--font-heading` a `h1`–`h4`
-(`src/styles/_elements.css:31,57,61`) e a `SarakTypography`/cromo. É o tipo de imprecisão que a medição do achado 1
-varre: corrija este e confira o mesmo vício nos demais títulos (`h1*`/`h2*`/`h3*`) e em `bodyFont`/`monoFont`.
-
-**Pergunta ao dono (não é achado):** o resumo diz que a skill `dataviz` foi dispensada "por autorização explícita do
-dono". A plan não registra essa dispensa. Se for verdade, diga-me para eu registrar na plan; as paletas de gráfico
-não foram alteradas, então não pesa no veredito.
-
-**Status: 🔵 Em correção.** O restante do lote está aprovado como está; os gerados já foram regenerados por mim.
-
-## Resumo da correção dos achados 1 e 2 - 2026-10-17
-
-### Achado 1 - conferência dos 111 tokens no Chromium
-
-A cena foi montada fora do repositório e importou os componentes e schemas reais de `src/`. O processo do Playwright usou `PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright` e `chromium.launch()` sem `executablePath` (Playwright 1.63.0; Chromium 153.0.8010.12). O harness confirmou 111 tokens: typography 32, buttons 25, inputs 15, switches 6, colors 12, data 7, chat 6 e status 8. Foram comparados valores padrão com alternativas declaradas ou extremos representativos e estados pertinentes (repouso, hover, foco, pressionado e interações condicionais); o chat foi preparado com slider manual e anexo. A cena continha um canvas. A passada final registrou 0 erros de página e 0 erros de console.
-
-A tabela registra, para cada token, o valor candidato, a fase e as propriedades computadas que mudaram, com valores anterior e posterior. O quadro combina a passada completa, as medições condicionais e a reabertura manual dos resultados sem efeito.
-
-### Itens medidos que ficam para decisão do revisor
-
-- `buttons.actionGlowShadowOffsetY`, `buttons.actionGlowShadowBlur` e `buttons.actionGlowShadowSpread` (`src/core/Design/schema/buttons.ts:358`, `:372`, `:386`): no filtro selecionado de `src/components/atomic/Templates/SarakCatalogGrid.tsx:110`, variar os candidatos não mudou `box-shadow` computado nem os pixels das capturas baseline/candidata. Não alterei leitor nem token.
-- `colors.colorDepth` e `colors.colorVariation` (`src/core/Design/schema/colors.ts:103`, `:116`; cálculo em `src/core/Design/hooks/useDesignVariables.ts:67-70`): com o botão primário sob hover e o gráfico fora do alvo, os candidatos não mudaram propriedade visível de DOM/Canvas. Apenas as propriedades derivadas `--sarak-primary-color-hover` e `--sarak-primary-color-active` mudaram. Não alterei o leitor nem os tokens.
-- `data.chartType` (`src/core/Design/schema/data.ts:50`): `radar` falhou no Chromium com `Cannot read properties of undefined (reading 'type') in ECharts axisPointer`; `heatmap` falhou com `Heatmap on cartesian must have two category axes`. As opções `area`, `bar`, `pie`, `scatter` e `gauge` produziram mudança no canvas. Mapeamento radar em `src/components/engines/charts/SubEngines/builders/advancedCharts.ts:21`; builder heatmap em `:107`. Não corrigi opções nem readers.
-- `inputs.rangeActiveColor` (`src/core/Design/schema/inputs.ts:211`): na captura Chromium, `::-webkit-slider-thumb` mudou `background-color` de `#00f2ff` para `#d832e6`, mas o trilho ativo permaneceu `#00f2ff`. O trilho usa a constante `ACTIVE` em `src/components/atomic/Inputs/SarakRangeSlider.tsx:27`; o CSS do polegar consome `--sarak-range-active-bg` em `src/styles/_utilities.css:40`. Ajustei apenas o `usage` para descrever os polegares, sem mudar o leitor.
-
-### Achado 2 - alinhamento das fontes e da tipografia
-
-Atualizei `headingFont` em `src/core/Design/schema/typography.ts:70,73`: o `usage` e a descrição agora registram os cabeçalhos HTML `h1-h6` e as variantes `h1`, `h2` e `h3` de SarakTypography. A família medida alterou `font-family` dos títulos; o alcance HTML também está declarado em `src/styles/_elements.css:30-33,57,61`. Revisei os tokens `h1*`, `h2*` e `h3*`; seus usos e descrições sao coerentes com as propriedades medidas. `bodyFont` (`typography.ts:82-94`) mudou a família de parágrafos e rótulos; `monoFont` (`:97-109`) mudou a família de trechos de código e valores tabulares. Os usos desses dois tokens correspondem a tela observada. Não encontrei outra descrição desatualizada nesse conjunto.
-
-### Verificações e gerados
-
-- `npx.cmd vitest run gates/scripts/contrato/__tests__/check-token-documentation.test.ts` - 1 arquivo, 10 testes passaram.
-- `npm.cmd run verify -- --tier=schema-meta` - exit 1. `token-types:check` apontou `src/core/Provider/generated/design-token-docs.json` defasado; a suíte interna també falhou em `generate-token-types.check.test.mjs` porque exige esse mesmo JSON atualizado. `token-docs:check`, `catalog:check`, `themes:catalog:check`, `audit:baseline`, `plan-index:check`, `guide:check`, `dev-kit:check` e Anel 0 (2.173 linhas, 0 achados) passaram.
-- Gerado defasado após esta alteração de metadados: `src/core/Provider/generated/design-token-docs.json`. Não rodei geradores, `guide`, `dev-kit` nem `build`; os demais checks gerados do tier passaram.
-
-### Tabela da medição
-
-| Token | Valor candidato, fase e propriedade computada: antes -> depois |
-|---|---|
-| `typography.headingFont` | `'Inter', sans-serif` [idle]: `typography native-h1 font-family Outfit, sans-serif→Inter, sans-serif`; `typography h2:1 font-family Outfit, sans-serif→Inter, sans-serif` (+3 propriedades/diferencas)<br>`'Unbounded', display` [idle]: `typography native-h1 font-family Outfit, sans-serif→Unbounded, display`; `typography h2:1 font-family Outfit, sans-serif→Unbounded, display` (+3 propriedades/diferencas)<br>`'Playfair Display', serif` [idle]: `typography native-h1 font-family Outfit, sans-serif→"Playfair Display", serif`; `typography h2:1 font-family Outfit, sans-serif→"Playfair Display", serif` (+3 propriedades/diferencas)<br>`'Dancing Script', cursive` [idle]: `typography native-h1 font-family Outfit, sans-serif→"Dancing Script", cursive`; `typography h2:1 font-family Outfit, sans-serif→"Dancing Script", cursive` (+3 propriedades/diferencas)<br>`'JetBrains Mono', monospace` [idle]: `typography native-h1 font-family Outfit, sans-serif→"JetBrains Mono", monospace`; `typography h2:1 font-family Outfit, sans-serif→"JetBrains Mono", monospace` (+3 propriedades/diferencas) |
-| `typography.bodyFont` | `'Outfit', sans-serif` [idle]: `typography p:6 font-family Inter, sans-serif→Outfit, sans-serif`; `typography label:7 font-family Inter, sans-serif→Outfit, sans-serif` (+3 propriedades/diferencas)<br>`'Unbounded', display` [idle]: `typography p:6 font-family Inter, sans-serif→Unbounded, display`; `typography label:7 font-family Inter, sans-serif→Unbounded, display` (+3 propriedades/diferencas)<br>`'Playfair Display', serif` [idle]: `typography p:6 font-family Inter, sans-serif→"Playfair Display", serif`; `typography label:7 font-family Inter, sans-serif→"Playfair Display", serif` (+3 propriedades/diferencas)<br>`'Dancing Script', cursive` [idle]: `typography p:6 font-family Inter, sans-serif→"Dancing Script", cursive`; `typography label:7 font-family Inter, sans-serif→"Dancing Script", cursive` (+3 propriedades/diferencas)<br>`'JetBrains Mono', monospace` [idle]: `typography p:6 font-family Inter, sans-serif→"JetBrains Mono", monospace`; `typography label:7 font-family Inter, sans-serif→"JetBrains Mono", monospace` (+3 propriedades/diferencas) |
-| `typography.monoFont` | `'Inter', sans-serif` [idle]: `typography code:9 font-family "JetBrains Mono", monospace→Inter, sans-serif`; `typography code:15 font-family "JetBrains Mono", monospace→Inter, sans-serif` (+3 propriedades/diferencas)<br>`'Unbounded', display` [idle]: `typography code:9 font-family "JetBrains Mono", monospace→Unbounded, display`; `typography code:15 font-family "JetBrains Mono", monospace→Unbounded, display` (+3 propriedades/diferencas)<br>`'Playfair Display', serif` [idle]: `typography code:9 font-family "JetBrains Mono", monospace→"Playfair Display", serif`; `typography code:15 font-family "JetBrains Mono", monospace→"Playfair Display", serif` (+3 propriedades/diferencas)<br>`'Dancing Script', cursive` [idle]: `typography code:9 font-family "JetBrains Mono", monospace→"Dancing Script", cursive`; `typography code:15 font-family "JetBrains Mono", monospace→"Dancing Script", cursive` (+3 propriedades/diferencas)<br>`'Fira Code', monospace` [idle]: `typography code:9 font-family "JetBrains Mono", monospace→"Fira Code", monospace`; `typography code:15 font-family "JetBrains Mono", monospace→"Fira Code", monospace` (+3 propriedades/diferencas) |
-| `typography.textColorMaster` | `#d832e6` [idle]: `typography h1:10 color rgb(255, 255, 255)→rgb(216, 50, 230)`; `typography h1:10 border-color rgb(255, 255, 255)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `typography.textColorSecondary` | `#d832e6` [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.03044, 0, 0, 1.03044, 0, 0)→matrix(1.0032, 0, 0, 1.0032, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 211.43,605.15,309.13,309.13→215.52,609.24,300.96,300.96` (+3 propriedades/diferencas) |
-| `typography.textColorMuted` | `#d832e6` [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.03431, 0, 0, 1.03431, 0, 0)→matrix(1.07467, 0, 0, 1.07467, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 210.85,604.57,310.29,310.29→204.8,598.52,322.4,322.4` (+3 propriedades/diferencas) |
-| `typography.h1Size` | 20 [idle]: `typography native-h1 font-size 48px→20px`; `typography native-h1 line-height 52.8px→22px` (+3 propriedades/diferencas)<br>120 [idle]: `typography native-h1 font-size 48px→120px`; `typography native-h1 line-height 52.8px→132px` (+3 propriedades/diferencas) |
-| `typography.h1Weight` | `300` [idle]: `typography native-h1 font-weight 900→300`; `typography h1:10 font-weight 900→300` (+3 propriedades/diferencas)<br>`400` [idle]: `typography native-h1 font-weight 900→400`; `typography h1:10 font-weight 900→400` (+3 propriedades/diferencas)<br>`600` [idle]: `typography native-h1 font-weight 900→600`; `typography h1:10 font-weight 900→600` (+3 propriedades/diferencas)<br>`700` [idle]: `typography native-h1 font-weight 900→700`; `typography h1:10 font-weight 900→700` (+3 propriedades/diferencas)<br>`800` [idle]: `typography native-h1 font-weight 900→800`; `typography h1:10 font-weight 900→800` (+3 propriedades/diferencas) |
-| `typography.h1LineHeight` | 0.8 [idle]: `typography native-h1 line-height 52.8px→38.4px`; `typography native-h1 height 52.7969px→38.3906px` (+3 propriedades/diferencas)<br>2 [idle]: `typography native-h1 line-height 52.8px→96px`; `typography native-h1 height 52.7969px→96px` (+3 propriedades/diferencas) |
-| `typography.h1LetterSpacing` | -5 [idle]: `typography native-h1 letter-spacing -1px→-5px`; `typography h1:10 letter-spacing -1px→-5px` (+3 propriedades/diferencas)<br>10 [idle]: `typography native-h1 letter-spacing -1px→10px`; `typography native-h1 height 52.7969px→105.594px` (+3 propriedades/diferencas) |
-| `typography.h2Size` | 18 [idle]: `typography h2:1 font-size 32px→18px`; `typography h2:1 line-height 38.4px→21.6px` (+3 propriedades/diferencas)<br>80 [idle]: `typography h2:1 font-size 32px→80px`; `typography h2:1 line-height 38.4px→96px` (+3 propriedades/diferencas) |
-| `typography.h2Weight` | `300` [idle]: `typography h2:1 font-weight 700→300`; `typography h3:2 font-weight 700→300` (+3 propriedades/diferencas)<br>`400` [idle]: `typography h2:1 font-weight 700→400`; `typography h3:2 font-weight 700→400` (+3 propriedades/diferencas)<br>`600` [idle]: `typography h2:1 font-weight 700→600`; `typography h3:2 font-weight 700→600` (+3 propriedades/diferencas)<br>`800` [idle]: `typography h2:1 font-weight 700→800`; `typography h3:2 font-weight 700→800` (+3 propriedades/diferencas)<br>`900` [idle]: `typography h2:1 font-weight 700→900`; `typography h3:2 font-weight 700→900` (+3 propriedades/diferencas) |
-| `typography.h2LineHeight` | 0.8 [idle]: `typography h2:1 line-height 38.4px→25.6px`; `typography h2:1 height 38.3906px→25.5938px` (+3 propriedades/diferencas)<br>2 [idle]: `typography h2:1 line-height 38.4px→64px`; `typography h2:1 height 38.3906px→64px` (+3 propriedades/diferencas) |
-| `typography.h3Size` | 14 [idle]: `typography h3:2 font-size 24px→14px`; `typography h3:2 line-height 38.4px→22.4px` (+3 propriedades/diferencas)<br>48 [idle]: `typography h3:2 font-size 24px→48px`; `typography h3:2 line-height 38.4px→76.8px` (+3 propriedades/diferencas) |
-| `typography.bodyLineHeight` | 1 [idle]: `typography h3:2 line-height 38.4px→24px`; `typography h3:2 height 38.3906px→24px` (+3 propriedades/diferencas)<br>2.5 [idle]: `typography h3:2 line-height 38.4px→60px`; `typography h3:2 height 38.3906px→60px` (+3 propriedades/diferencas) |
-| `typography.bodyWeight` | `300` [idle]: `typography h4:3 font-weight 400→300`; `typography h5:4 font-weight 400→300` (+3 propriedades/diferencas)<br>`500` [idle]: `typography h4:3 font-weight 400→500`; `typography h5:4 font-weight 400→500` (+3 propriedades/diferencas) |
-| `typography.headingTransform` | `uppercase` [idle]: `typography native-h1 text-transform none→uppercase`; `typography native-h1 height 52.7969px→105.594px` (+3 propriedades/diferencas)<br>`capitalize` [idle]: `typography native-h1 text-transform none→capitalize`; `typography h2:1 text-transform none→capitalize` (+3 propriedades/diferencas) |
-| `typography.textSmoothing` | false [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.05128, 0, 0, 1.05128, 0, 0)→matrix(1.08612, 0, 0, 1.08612, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 208.31,602.03,315.38,315.38→203.08,596.8,325.84,325.84` (+8 propriedades/diferencas) |
-| `typography.textGlowIntensity` | 1 [idle]: `typography native-h1 text-shadow rgb(0, 242, 255) 0px 0px 0px→rgb(0, 242, 255) 0px 0px 20px`; `typography h1:10 text-shadow rgb(0, 242, 255) 0px 0px 0px→rgb(0, 242, 255) 0px 0px 20px` (+3 propriedades/diferencas) |
-| `typography.typeScaleMicro` | 6 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.01154, 0, 0, 1.01154, 0, 0)→matrix(1.00783, 0, 0, 1.00783, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 214.27,607.99,303.46,303.46→214.83,608.54,302.35,302.35` (+8 propriedades/diferencas)<br>10 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.05683, 0, 0, 1.05683, 0, 0)→matrix(1.09346, 0, 0, 1.09346, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 207.48,601.19,317.05,317.05→201.98,595.7,328.04,328.04` (+8 propriedades/diferencas) |
-| `typography.typeScaleTiny` | 6 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.08098, 0, 0, 1.08098, 0, 0)→matrix(1.03417, 0, 0, 1.03417, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 203.85,597.57,324.3,324.3→210.87,604.59,310.25,310.25` (+8 propriedades/diferencas)<br>12 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.00212, 0, 0, 1.00212, 0, 0)→matrix(1.0301, 0, 0, 1.0301, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 215.68,609.4,300.64,300.64→211.48,605.2,309.03,309.03` (+8 propriedades/diferencas) |
-| `typography.typeScale3xs` | 6 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.07124, 0, 0, 1.07124, 0, 0)→matrix(1.09654, 0, 0, 1.09654, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 205.31,599.03,321.37,321.37→201.52,595.24,328.96,328.96` (+8 propriedades/diferencas)<br>12 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.07506, 0, 0, 1.07506, 0, 0)→matrix(1.03243, 0, 0, 1.03243, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 204.74,598.46,322.52,322.52→211.14,604.85,309.73,309.73` (+8 propriedades/diferencas) |
-| `typography.typeScale2xs` | 8 [idle]: `empty-state-abstract  height 284.5px→256.5px`; `empty-state-abstract  @rect 24,617.47,684,284.5→24,617.47,684,256.5` (+3 propriedades/diferencas)<br>14 [idle]: `empty-state-abstract  height 284.5px→336.5px`; `empty-state-abstract  @rect 24,617.47,684,284.5→24,617.47,684,336.5` (+3 propriedades/diferencas) |
-| `typography.typeScaleCaption` | 10 [idle]: `typography span:14 font-size 12px→10px`; `typography span:14 line-height 19.2px→16px` (+3 propriedades/diferencas)<br>16 [idle]: `typography span:14 font-size 12px→16px`; `typography span:14 line-height 19.2px→25.6px` (+3 propriedades/diferencas) |
-| `typography.trackingTight` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.06764, 0, 0, 1.06764, 0, 0)→matrix(1.09489, 0, 0, 1.09489, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 205.85,599.57,320.29,320.29→201.77,595.49,328.47,328.47` (+8 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.07901, 0, 0, 1.07901, 0, 0)→matrix(1.0348, 0, 0, 1.0348, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 204.15,597.87,323.7,323.7→210.78,604.5,310.44,310.44` (+8 propriedades/diferencas) |
-| `typography.trackingSnug` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.00601, 0, 0, 1.00601, 0, 0)→matrix(1.01913, 0, 0, 1.01913, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 215.1,608.82,301.8,301.8→213.13,606.85,305.74,305.74` (+8 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.06087, 0, 0, 1.06087, 0, 0)→matrix(1.09115, 0, 0, 1.09115, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 206.87,600.59,318.26,318.26→202.33,596.05,327.34,327.34` (+8 propriedades/diferencas) |
-| `typography.trackingWide` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.08617, 0, 0, 1.08617, 0, 0)→matrix(1.04536, 0, 0, 1.04536, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 203.07,596.79,325.85,325.85→209.2,602.92,313.61,313.61` (+3 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.01063, 0, 0, 1.01063, 0, 0)→matrix(1.01125, 0, 0, 1.01125, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 214.41,608.12,303.19,303.19→214.31,608.03,303.38,303.38` (+3 propriedades/diferencas) |
-| `typography.trackingWider` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.05596, 0, 0, 1.05596, 0, 0)→matrix(1.08705, 0, 0, 1.08705, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 207.61,601.33,316.79,316.79→202.94,596.66,326.12,326.12` (+7 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.09475, 0, 0, 1.09475, 0, 0)→matrix(1.05084, 0, 0, 1.05084, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 201.79,595.51,328.42,328.42→208.37,602.09,315.25,315.25` (+7 propriedades/diferencas) |
-| `typography.trackingWidest` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.01665, 0, 0, 1.01665, 0, 0)→matrix(1.00005, 0, 0, 1.00005, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 213.5,607.22,305,305→215.99,609.71,300.02,300.02` (+7 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.04777, 0, 0, 1.04777, 0, 0)→matrix(1.08473, 0, 0, 1.08473, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 208.83,602.55,314.33,314.33→203.29,597.01,325.42,325.42` (+7 propriedades/diferencas) |
-| `typography.trackingUltra` | 0 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.09192, 0, 0, 1.09192, 0, 0)→matrix(1.04682, 0, 0, 1.04682, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 202.21,595.93,327.58,327.58→208.98,602.7,314.04,314.04` (+8 propriedades/diferencas)<br>1 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.01467, 0, 0, 1.01467, 0, 0)→matrix(1.0021, 0, 0, 1.0021, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 213.8,607.52,304.4,304.4→215.68,609.4,300.63,300.63` (+8 propriedades/diferencas) |
-| `typography.typeScaleXs` | 8 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.04952, 0, 0, 1.04952, 0, 0)→matrix(1.08664, 0, 0, 1.08664, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 208.57,602.29,314.86,314.86→203,596.72,325.99,325.99` (+3 propriedades/diferencas)<br>14 [idle]: `empty-state-abstract div:0/div:0 transform matrix(1.09674, 0, 0, 1.09674, 0, 0)→matrix(1.04908, 0, 0, 1.04908, 0, 0)`; `empty-state-abstract div:0/div:0 @rect 201.49,595.21,329.02,329.02→208.64,602.36,314.73,314.73` (+3 propriedades/diferencas) |
-| `typography.typeScaleXl` | 14 [idle]: `typography h3:12 font-size 20px→14px`; `typography h3:12 line-height 24px→16.8px` (+3 propriedades/diferencas)<br>28 [idle]: `typography h3:12 font-size 20px→28px`; `typography h3:12 line-height 24px→33.6px` (+3 propriedades/diferencas) |
-| `buttons.buttonIconPosition` | `right` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary @class flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.98]→flex justify-center items-center gap-2 w-max min-w-fit flex-row-reverse font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.98]`; `buttons button:0/span:0 @rect 754,39,12.23,17.5→832.34,39,12.23,17.5` (+3 propriedades/diferencas) |
-| `buttons.buttonWidthStrategy` | `full` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary width 134.578px→684px`; `buttons button-primary min-width fit-content→auto` (+3 propriedades/diferencas) |
-| `buttons.btnBorderRadius` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→0px`; `buttons button:1 border-radius 8px→0px` (+3 propriedades/diferencas)<br>120 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→120px`; `buttons button:1 border-radius 8px→120px` (+3 propriedades/diferencas) |
-| `buttons.btnRadiusTL` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→0px 8px 8px`; `buttons button:1 border-radius 8px→0px 8px 8px` (+3 propriedades/diferencas)<br>120 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→120px 8px 8px`; `buttons button:1 border-radius 8px→120px 8px 8px` (+3 propriedades/diferencas) |
-| `buttons.btnRadiusTR` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 0px 8px 8px`; `buttons button:1 border-radius 8px→8px 0px 8px 8px` (+3 propriedades/diferencas)<br>120 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 120px 8px 8px`; `buttons button:1 border-radius 8px→8px 120px 8px 8px` (+3 propriedades/diferencas) |
-| `buttons.btnRadiusBL` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 8px 8px 0px`; `buttons button:1 border-radius 8px→8px 8px 8px 0px` (+3 propriedades/diferencas)<br>120 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 8px 8px 120px`; `buttons button:1 border-radius 8px→8px 8px 8px 120px` (+3 propriedades/diferencas) |
-| `buttons.btnRadiusBR` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 8px 0px`; `buttons button:1 border-radius 8px→8px 8px 0px` (+3 propriedades/diferencas)<br>120 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-radius 8px→8px 8px 120px`; `buttons button:1 border-radius 8px→8px 8px 120px` (+3 propriedades/diferencas) |
-| `buttons.btnHoverScale` | 0.8 [hover-button, focus-button]: `buttons button-primary transform matrix(1.02, 0, 0, 1.02, 0, -1)→matrix(0.8, 0, 0, 0.8, 0, -1)`; `buttons button-primary @rect 730.65,22.52,137.27,48.45→745.46,27.75,107.66,38` (+2 propriedades/diferencas)<br>1.2 [hover-button, focus-button]: `buttons button-primary transform matrix(1.02, 0, 0, 1.02, 0, -1)→matrix(1.2, 0, 0, 1.2, 0, -1)`; `buttons button-primary @rect 730.65,22.52,137.27,48.45→718.54,18.25,161.49,57` (+2 propriedades/diferencas) |
-| `buttons.btnActiveScale` | 0.8 [pressed-button]: `buttons button-primary transform matrix(0.98, 0, 0, 0.98, 0, 0)→matrix(0.8, 0, 0, 0.8, 0, 0)`; `buttons button-primary @rect 734.66,24.94,129.25,45.62→746.53,29.13,105.51,37.24` (+2 propriedades/diferencas)<br>1.2 [pressed-button]: `buttons button-primary transform matrix(0.98, 0, 0, 0.98, 0, 0)→matrix(1.2, 0, 0, 1.2, 0, 0)`; `buttons button-primary @rect 734.66,24.94,129.25,45.62→720.16,19.82,158.26,55.86` (+2 propriedades/diferencas) |
-| `buttons.btnPrimaryBg` | `#d832e6` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary background-color rgb(0, 242, 255)→rgb(216, 50, 230)`; `buttons icon-button background-color rgb(0, 242, 255)→rgb(216, 50, 230)` (+2 propriedades/diferencas) |
-| `buttons.btnPrimaryText` | `#d832e6` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary color rgb(0, 0, 0)→rgb(216, 50, 230)`; `buttons button-primary outline-color rgb(0, 0, 0)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `buttons.btnSecondaryBg` | `#d832e6` [idle, hover-button, focus-button, pressed-button]: `buttons button:1 background-color rgba(255, 255, 255, 0.05)→rgb(216, 50, 230)`; `buttons icon-md-secondary background-color rgba(255, 255, 255, 0.05)→rgb(216, 50, 230)` (+1 propriedades/diferencas) |
-| `buttons.btnGhostHoverBg` | `#d832e6` [hover-ghost]: `buttons button-ghost background-color rgba(255, 255, 255, 0.05)→rgb(216, 50, 230)` |
-| `buttons.btnStyleType` | `neon` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-color rgb(0, 0, 0)→rgba(0, 242, 255, 0.4)`; `buttons button-primary border-width 0px→1px` (+3 propriedades/diferencas)<br>`frosted` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-color rgb(0, 0, 0)→rgba(255, 255, 255, 0.1)`; `buttons button-primary border-width 0px→1px` (+3 propriedades/diferencas)<br>`borderline` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary color rgb(0, 0, 0)→rgb(0, 242, 255)`; `buttons button-primary background-color rgb(0, 242, 255)→rgba(0, 0, 0, 0)` (+3 propriedades/diferencas)<br>`cyberpunk` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary color rgb(0, 0, 0)→rgb(0, 242, 255)`; `buttons button-primary background-color rgb(0, 242, 255)→rgba(0, 0, 0, 0)` (+3 propriedades/diferencas)<br>`neumorphism` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-style solid→none`; `buttons button-primary box-shadow rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px→color(srgb 0 0 0 / 0.2) 5px 5px 10px 0px, color(srgb 1 1 1 / 0.05) -5px -5px 10px 0px` (+3 propriedades/diferencas) |
-| `buttons.btnNeonGlowColor` | `#d832e6` [idle, hover-button, focus-button, pressed-button]: `buttons button-primary border-color rgba(0, 242, 255, 0.4)→rgb(216, 50, 230)`; `buttons button-primary box-shadow rgba(0, 242, 255, 0.4) 0px 0px 10px 0px→rgb(216, 50, 230) 0px 0px 10px 0px` (+3 propriedades/diferencas) |
-| `buttons.btnNeonPulseSpeed` | 4 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary box-shadow rgba(0, 242, 255, 0.4) 0px 0px 10px 0px→rgba(0, 242, 255, 0.4) 0px 0px 10.7481px 0px`; `buttons button-primary animation-name none→sarak-btn-neon-pulse` (+3 propriedades/diferencas) |
-| `buttons.btnBackdropBlur` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary backdrop-filter blur(8px)→none`; `buttons button:1 backdrop-filter blur(8px)→none` (+3 propriedades/diferencas)<br>30 [idle, hover-button, focus-button, pressed-button]: `buttons button-primary backdrop-filter blur(8px)→blur(30px)`; `buttons button:1 backdrop-filter blur(8px)→blur(30px)` (+3 propriedades/diferencas) |
-| `buttons.iconButtonGlowBlurSm` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow rgba(0, 242, 255, 0.4) 0px 0px 5px 0px→rgba(0, 242, 255, 0.4) 0px 0px 0px 0px`; `buttons icon-lg-primary box-shadow rgba(0, 242, 255, 0.4) 0px 0px 5px 0px→rgba(0, 242, 255, 0.4) 0px 0px 0px 0px`<br>30 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow rgba(0, 242, 255, 0.4) 0px 0px 5px 0px→rgba(0, 242, 255, 0.4) 0px 0px 30px 0px`; `buttons icon-lg-primary box-shadow rgba(0, 242, 255, 0.4) 0px 0px 5px 0px→rgba(0, 242, 255, 0.4) 0px 0px 30px 0px` |
-| `buttons.iconButtonGlowBlurMd` | 0 [hover-icon-md]: `buttons icon-md-secondary box-shadow rgba(0, 242, 255, 0.4) 0p→rgba(0, 242, 255, 0.4) 0p`<br>30 [hover-icon-md]: `buttons icon-md-secondary box-shadow rgba(0, 242, 255, 0.4) 0p→rgba(0, 242, 255, 0.4) 0p` |
-| `buttons.iconButtonGlowBlurLg` | 0 [hover-icon-lg]: `buttons icon-lg-primary box-shadow rgba(0, 242, 255, 0.4) 0p→rgba(0, 242, 255, 0.4) 0p`<br>40 [hover-icon-lg]: `buttons icon-lg-primary box-shadow rgba(0, 242, 255, 0.4) 0p→rgba(0, 242, 255, 0.4) 0p` |
-| `buttons.iconButtonFrostedShadowOffsetY` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`; `buttons icon-lg-primary box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`<br>20 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`; `buttons icon-lg-primary box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0` |
-| `buttons.iconButtonFrostedShadowBlur` | 0 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`; `buttons icon-lg-primary box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`<br>40 [idle, hover-button, focus-button, pressed-button]: `buttons icon-button box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0`; `buttons icon-lg-primary box-shadow color(srgb 0 0 0 / 0.3) 0→color(srgb 0 0 0 / 0.3) 0` |
-| `buttons.actionGlowShadowOffsetY` | 0: sem mudanca no box-shadow computado ou nos pixels para o candidato 0; capturas baseline/candidata identicas<br>40: sem mudanca no box-shadow computado ou nos pixels para o candidato 40; capturas baseline/candidata identicas |
-| `buttons.actionGlowShadowBlur` | 0: sem mudanca no box-shadow computado ou nos pixels para o candidato 0; capturas baseline/candidata identicas<br>60: sem mudanca no box-shadow computado ou nos pixels para o candidato 60; capturas baseline/candidata identicas |
-| `buttons.actionGlowShadowSpread` | 0: sem mudanca no box-shadow computado ou nos pixels para o candidato 0; capturas baseline/candidata identicas<br>40: sem mudanca no box-shadow computado ou nos pixels para o candidato 40; capturas baseline/candidata identicas |
-| `inputs.inputIconPosition` | `right` [idle, focus-input]: `inputs div:1/div:1/div:0/div:0 @rect 34.5,1754.34,8.08,22.39→689.42,1754.34,8.08,22.39`; `inputs div:1/div:1/div:0/div:0 @class absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]→absolute right-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]` (+4 propriedades/diferencas) |
-| `inputs.inputBorderRadius` | 0 [idle, focus-input]: `inputs input-main border-radius 8px→0px`; `inputs input-icon-position border-radius 8px→0px` (+3 propriedades/diferencas)<br>120 [idle, focus-input]: `inputs input-main border-radius 8px→120px`; `inputs input-icon-position border-radius 8px→120px` (+3 propriedades/diferencas) |
-| `inputs.inputPadding` | 0 [idle, focus-input]: `inputs div:0 height 79.8906px→47.8906px`; `inputs div:0 @rect 24,1621.97,684,79.89→24,1621.97,684,47.89` (+3 propriedades/diferencas)<br>32 [idle, focus-input]: `inputs div:0 height 79.8906px→111.891px`; `inputs div:0 @rect 24,1621.97,684,79.89→24,1621.97,684,111.89` (+3 propriedades/diferencas) |
-| `inputs.inputBorderType` | `dashed` [idle, focus-input]: `inputs div:0 height 79.8906px→81.8906px`; `inputs div:0 @rect 24,1621.97,684,79.89→24,1621.97,684,81.89` (+3 propriedades/diferencas)<br>`none` [idle, focus-input]: `inputs div:0 height 79.8906px→77.8906px`; `inputs div:0 @rect 24,1621.97,684,79.89→24,1621.97,684,77.89` (+3 propriedades/diferencas)<br>`underline` [idle, focus-input]: `inputs input-main border-color rgba(255, 255, 255, 0.1)→rgb(255, 255, 255) rgb(255, 255, 255) rgba(255, 255, 255, 0.1)`; `inputs input-main border-width 1px→0px 0px 2px` (+3 propriedades/diferencas) |
-| `inputs.inputBg` | `#d832e6` [idle, focus-input]: `inputs input-main background-color rgba(255, 255, 255, 0.03)→rgb(216, 50, 230)`; `inputs input-icon-position background-color rgba(255, 255, 255, 0.03)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `inputs.inputBackdropBlur` | 50 [idle, focus-input]: `inputs input-main backdrop-filter none→blur(50px)`; `inputs input-icon-position backdrop-filter none→blur(50px)` (+3 propriedades/diferencas) |
-| `inputs.inputShadow` | `0 0 18px rgba(255, 0, 255, 0.8)` [idle, focus-input]: `inputs input-main box-shadow none→rgba(255, 0, 255, 0.8) 0px 0px 18px 0px`; `inputs input-icon-position box-shadow none→rgba(255, 0, 255, 0.8) 0px 0px 18px 0px` (+3 propriedades/diferencas) |
-| `inputs.inputBorderColor` | `#d832e6` [idle, focus-input]: `inputs input-main border-color rgba(255, 255, 255, 0.1)→rgb(216, 50, 230)`; `inputs input-icon-position border-color rgba(255, 255, 255, 0.1)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `inputs.inputFocusBorderColor` | `#d832e6` [focus-input]: `inputs input-main border-color rgb(0, 242, 255)→rgb(216, 50, 230)` |
-| `inputs.inputTextColor` | `#d832e6` [idle, focus-input]: `inputs input-main color rgb(255, 255, 255)→rgb(216, 50, 230)`; `inputs input-main outline-color rgb(255, 255, 255)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `inputs.inputIconColor` | `#d832e6` [idle, focus-input]: `inputs div:1/div:1/div:0/div:0 color rgba(255, 255, 255, 0.4)→rgb(216, 50, 230)`; `inputs div:1/div:1/div:0/div:0 border-color rgba(255, 255, 255, 0.4)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `inputs.inputErrorColor` | `#d832e6` [idle, focus-input]: `inputs div:2/div:2 border-color rgb(255, 77, 79)→rgb(216, 50, 230)`; `inputs div:2/p:3 color rgb(255, 77, 79)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `inputs.multiSelectInputMinWidth` | 2 [idle, focus-input]: `inputs div:7/div:1/div:0/input:0 min-width 84px→28px`<br>16 [idle, focus-input]: `inputs div:7/div:1/div:0/input:0 min-width 84px→224px` |
-| `inputs.searchBackdropBlur` | 0 [idle, focus-input]: `inputs div:3/div:0 backdrop-filter blur(8px)→blur(0px)`<br>30 [idle, focus-input]: `inputs div:3/div:0 backdrop-filter blur(8px)→blur(30px)` |
-| `inputs.rangeActiveColor` | `#d832e6`: captura Chromium do ::-webkit-slider-thumb: background-color #00f2ff -> #d832e6; trilho ativo permaneceu #00f2ff |
-| `switches.switchTrackActiveBg` | `#d832e6` [idle, hover-switch, focus-switch]: `switches label:1/div:0/div:1 background-color color(srgb 0 0.94902 1 / 0.55)→color(srgb 0.847059 0.196078 0.901961 / 0.55)` |
-| `switches.switchThumbBg` | `#d832e6` [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:2 background-color color(srgb 1 1 1 / 0.85)→color(srgb 0.847059 0.196078 0.901961 / 0.85)`; `switches label:1/div:0/div:2 background-color color(srgb 1 1 1 / 0.85)→color(srgb 0.847059 0.196078 0.901961 / 0.85)` (+3 propriedades/diferencas) |
-| `switches.checkboxActiveColor` | `#d832e6` [idle, hover-switch, focus-switch]: `switches label:2/div:0/div:0/div:1 background-color rgb(0, 242, 255)→rgb(216, 50, 230)` |
-| `switches.switchStyleType` | `asymmetric` [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:1 border-radius 3.35544e+07px→14px 6px`; `switches label:0/div:0/div:2 border-radius 3.35544e+07px→8px 3px` (+2 propriedades/diferencas)<br>`pulsing` [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:2 border-radius 3.35544e+07px→50%`; `switches label:1/div:0/div:2 border-radius 3.35544e+07px→50%` (+3 propriedades/diferencas)<br>`glass` [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:1 border-color rgb(255, 255, 255)→rgba(255, 255, 255, 0.1)`; `switches label:0/div:0/div:1 border-width 0px→1px` (+3 propriedades/diferencas) |
-| `switches.switchBackdropBlur` | 0 [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:1 backdrop-filter blur(4px)→blur(0px)`; `switches label:1/div:0/div:1 backdrop-filter blur(4px)→blur(0px)`<br>20 [idle, hover-switch, focus-switch]: `switches label:0/div:0/div:1 backdrop-filter blur(4px)→blur(20px)`; `switches label:1/div:0/div:1 backdrop-filter blur(4px)→blur(20px)` |
-| `switches.switchPulseColor` | `#d832e6` [idle, hover-switch, focus-switch]: `switches label:1/div:0/div:2 box-shadow rgb(0, 242, 255) 0px 0px →rgb(216, 50, 230) 0px 0px`; `texture-card div:0/div:3/div:2/div:0/div:1/label:1/div:0/div: box-shadow rgb(0, 242, 255) 0px 0px →rgb(216, 50, 230) 0px 0px` (+1 propriedades/diferencas) |
-| `colors.primaryColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `buttons button:2 color rgb(0, 242, 255)→rgb(216, 50, 230)`; `buttons button:2 border-color rgb(0, 242, 255)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `colors.secondaryColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:147141865→642x238:3652889062`; `data div:0/div:0/div:1/div:0/div:0/div:1/div:1/div:0/ background-color rgb(112, 0, 255)→rgb(216, 50, 230)` (+1 propriedades/diferencas) |
-| `colors.tertiaryColor` | `#d832e6` [idle, hover-button, focus-input]: `data div:0/div:0/div:1 visibility hidden→visible`; `data div:0/div:0/div:1/div:0 visibility hidden→visible` (+3 propriedades/diferencas) |
-| `colors.accentColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:147141865→642x238:3190930637`; `data div:0/div:0/div:1/div:0/div:0/div:1/div:2/div:0/ background-color rgb(246, 0, 204)→rgb(170, 0, 182)` |
-| `colors.surfaceColor` | `#d832e6` [idle, hover-button, focus-input]: `data div:0/div:0/div:1/div:0/div:0/div:1/div:2/div:0/ background-color rgb(170, 0, 182)→rgb(246, 0, 204)` |
-| `colors.textureColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `data div:0/div:0/div:1 font-size 14px→11px`; `data div:0/div:0/div:1 line-height 22.4px→17px` (+3 propriedades/diferencas) |
-| `colors.titleColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `colors div:0/h2:0 color rgb(255, 255, 255)→rgb(216, 50, 230)`; `colors div:0/h2:0 border-color rgb(255, 255, 255)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `colors.colorDepth` | 0: sem propriedade visivel de DOM/Canvas alterada; apenas as variaveis derivadas --sarak-primary-color-hover/active mudaram<br>5: sem propriedade visivel de DOM/Canvas alterada; apenas as variaveis derivadas --sarak-primary-color-hover/active mudaram |
-| `colors.colorVariation` | 5: sem propriedade visivel de DOM/Canvas alterada; apenas as variaveis derivadas --sarak-primary-color-hover/active mudaram |
-| `colors.colorBgModal` | `#d832e6` [modal-open]: `colors div:2/div:1 background-color rgb(30, 41, 59)→rgb(216, 50, 230)`; `colors div:2/div:1 transform matrix(1, 0, 0, 1, 0, -0.213787)→matrix(1.00142, 0, 0, 1.00142, 0, -0.168504)` (+3 propriedades/diferencas) |
-| `colors.cardBackgroundColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `social-button button:0 background-color rgba(15, 23, 42, 0.6)→rgb(216, 50, 230)`; `colors div:0 background-color color(srgb 0.0588235 0.0901961 0.164706 / 0.48)→color(srgb 0.847059 0.196078 0.901961 / 0.8)` (+2 propriedades/diferencas) |
-| `colors.cardBorderColor` | `#d832e6` [idle, hover-button, focus-input, hover-chart]: `catalog-grid div:0/section:0 border-color color(srgb 1 1 1 / 0.101961)→color(srgb 0.847059 0.196078 0.901961)`; `colors div:0 border-color color(srgb 1 1 1 / 0.101961)→color(srgb 0.847059 0.196078 0.901961)` (+3 propriedades/diferencas) |
-| `data.chartColorPalette` | `#d832e6` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:147141865→642x238:3697060605`; `data div:0/div:0/div:1 border-color rgb(216, 50, 230)→rgba(255, 255, 255, 0.1)` (+3 propriedades/diferencas) |
-| `data.chartGridOpacity` | 0 [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:147141865→642x238:1574489936`; `data div:0/div:0/div:1 visibility visible→hidden` (+3 propriedades/diferencas)<br>0.5 [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:147141865→642x238:4149570366`; `data div:0/div:0/div:1 visibility visible→hidden` (+3 propriedades/diferencas) |
-| `data.chartTooltipBg` | `#d832e6` [idle, hover-chart]: `data div:0/div:0/div:1 visibility hidden→visible`; `data div:0/div:0/div:1/div:0 visibility hidden→visible` (+3 propriedades/diferencas) |
-| `data.chartType` | `area` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:901121901→642x238:2681047811`; `data div:0/div:0/div:1 background-color rgb(216, 50, 230)→rgba(15, 23, 42, 0.9)` (+3 propriedades/diferencas)<br>`bar` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:901121901→642x238:3931688874`<br>`pie` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3283425848→642x238:1546867110`; `data div:0/div:0/div:1 width 137.375px→158.156px` (+3 propriedades/diferencas)<br>`scatter` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3283425848→642x238:3705829390`; `data div:0/div:0/div:1/div:0/div:0/div:1/div:0/div:0/ background-color rgb(112, 0, 255)→rgb(0, 166, 175)`<br>`gauge` [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3283425848→642x238:1343806522`; `data div:0/div:0/div:1 width 158.156px→147.141px` (+3 propriedades/diferencas)<br>`radar`: ERRO Chromium: Cannot read properties of undefined (reading 'type') in ECharts axisPointer<br>`heatmap`: ERRO Chromium: Heatmap on cartesian must have two category axes |
-| `data.chartShowGrid` | false [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3558776764→642x238:3038612953`; `data div:0/div:0/div:1 transform matrix(1, 0, 0, 1, 341, 139)→matrix(1, 0, 0, 1, 341, -4)` (+3 propriedades/diferencas) |
-| `data.chartThickness` | 1 [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3558776764→642x238:3725666630`<br>8 [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3558776764→642x238:4065823058` |
-| `data.chartSmoothing` | false [idle, hover-chart]: `data div:0/div:0/div:0/canvas:0 @canvas 642x238:3558776764→642x238:2637505781` |
-| `chat.chatBubbleRadius` | 0 [idle, focus-chat-engine, focus-chat-template]: `chat div:0/div:0/div:0/div:0 border-radius 9.6px→0px`; `chat div:0/div:1/div:0/div:0/div:1 border-radius 0px 12px 12px→0px` (+3 propriedades/diferencas)<br>24 [idle, focus-chat-engine, focus-chat-template]: `chat div:0/div:0/div:0/div:0 border-radius 9.6px→19.2px`; `chat div:0/div:1/div:0/div:0/div:1 border-radius 0px 12px 12px→0px 24px 24px` (+3 propriedades/diferencas) |
-| `chat.chatUserBg` | `#d832e6` [idle, focus-chat-engine, focus-chat-template]: `chat div:0/div:1/div:1/div:0/div:1 color rgb(255, 255, 255)→rgb(2, 6, 23)`; `chat div:0/div:1/div:1/div:0/div:1 background-color rgba(255, 255, 255, 0.05)→rgb(216, 50, 230)` (+3 propriedades/diferencas) |
-| `chat.chatBubbleStyle` | `solid` [idle, focus-chat-engine, focus-chat-template]: `chat div:0/div:1/div:0/div:0/div:1 color rgb(255, 255, 255)→rgb(2, 6, 23)`; `chat div:0/div:1/div:0/div:0/div:1 background-color rgba(15, 23, 42, 0.6)→rgb(0, 242, 255)` (+3 propriedades/diferencas)<br>`minimal` [idle, focus-chat-engine, focus-chat-template]: `chat div:0/div:1/div:0 height 47.0625px→28px`; `chat div:0/div:1/div:0 @rect 46,3120.95,640,47.06→46,3120.95,640,28` (+3 propriedades/diferencas) |
-| `chat.chatAnimationSpeed` | 0 [idle, focus-chat-engine, focus-chat-template]: `chat div:0 transition-duration 0.05s→0s`; `chat div:0/div:1/div:0/div:0/div:1 transition-duration 0.05s→0s` (+2 propriedades/diferencas)<br>0.5 [idle, focus-chat-engine, focus-chat-template]: `chat div:0 transition-duration 0.05s→0.5s`; `chat div:0/div:1/div:0/div:0/div:1 transition-duration 0.05s→0.5s` (+2 propriedades/diferencas) |
-| `chat.chatAttachmentNameMaxWidth` | 60 [idle, focus-chat-engine, focus-chat-template]: `chat-template div:0/footer:2/div:0/div:0/div:0 width 267px→177px`; `chat-template div:0/footer:2/div:0/div:0/div:0 @rect 769,3224.45,267,61→769,3224.45,177,61` (+3 propriedades/diferencas)<br>300 [idle, focus-chat-engine, focus-chat-template]: `chat-template div:0/footer:2/div:0/div:0/div:0 width 267px→369.141px`; `chat-template div:0/footer:2/div:0/div:0/div:0 @rect 769,3224.45,267,61→769,3224.45,369.14,61` (+3 propriedades/diferencas) |
-| `chat.chatTokenSliderMinWidth` | 60 [idle, focus-chat-engine, focus-chat-template]: `chat-template div:0/footer:2/div:1/div:0/div:1 min-width 120px→60px`<br>300 [idle, focus-chat-engine, focus-chat-template]: `chat-template div:0/footer:2/div:1/div:0/div:1 min-width 120px→300px` |
-| `status.statusSuccessColor` | `#d832e6` [idle, hover-badge]: `status span:0 color color(srgb 0.625098 0.890196 0.802353)→color(srgb 0.938824 0.678431 0.960784)`; `status span:0 background-color color(srgb 0.0627451 0.72549 0.505882 / 0.1)→color(srgb 0.847059 0.196078 0.901961 / 0.1)` (+3 propriedades/diferencas) |
-| `status.statusErrorColor` | `#d832e6` [idle, hover-badge]: `status span:1 color color(srgb 0.974902 0.706667 0.706667)→color(srgb 0.938824 0.678431 0.960784)`; `status span:1 background-color color(srgb 0.937255 0.266667 0.266667 / 0.1)→color(srgb 0.847059 0.196078 0.901961 / 0.1)` (+3 propriedades/diferencas) |
-| `status.statusWarningColor` | `#d832e6` [idle, hover-badge]: `status span:2 color color(srgb 0.984314 0.847843 0.617255)→color(srgb 0.938824 0.678431 0.960784)`; `status span:2 background-color color(srgb 0.960784 0.619608 0.0431373 / 0.1)→color(srgb 0.847059 0.196078 0.901961 / 0.1)` (+3 propriedades/diferencas) |
-| `status.statusInfoColor` | `#d832e6` [idle, hover-badge]: `status span:3 color color(srgb 0.692549 0.803922 0.985882)→color(srgb 0.938824 0.678431 0.960784)`; `status span:3 background-color color(srgb 0.231373 0.509804 0.964706 / 0.1)→color(srgb 0.847059 0.196078 0.901961 / 0.1)` (+3 propriedades/diferencas) |
-| `status.badgeRadius` | 0 [idle, hover-badge]: `status span:0 border-radius 99px→0px`; `status span:1 border-radius 99px→0px` (+2 propriedades/diferencas)<br>100 [idle, hover-badge]: `status span:0 border-radius 99px→100px`; `status span:1 border-radius 99px→100px` (+2 propriedades/diferencas) |
-| `status.statusGlowBlur` | 24 [idle, hover-badge]: `status span:0 box-shadow rgb(16, 185, 129) 0px 0px 0px 0px→rgb(16, 185, 129) 0px 0px 24px 0px`; `status span:1 box-shadow rgb(239, 68, 68) 0px 0px 0px 0px→rgb(239, 68, 68) 0px 0px 24px 0px` (+2 propriedades/diferencas) |
-| `status.progressBarHeight` | 2 [idle, hover-badge]: `status div:4 height 37.5px→31.5px`; `status div:4 @rect 24,3517.95,684,37.5→24,3517.95,684,31.5` (+3 propriedades/diferencas)<br>32 [idle, hover-badge]: `status div:4 height 37.5px→61.5px`; `status div:4 @rect 24,3517.95,684,37.5→24,3517.95,684,61.5` (+3 propriedades/diferencas) |
-| `status.progressBarRadius` | 0 [idle, hover-badge]: `status div:4/div:1 border-radius 8px→0px`; `status div:4/div:1/div:0 border-radius 8px→0px`<br>32 [idle, hover-badge]: `status div:4/div:1 border-radius 8px→32px`; `status div:4/div:1/div:0 border-radius 8px→32px` |
-
-## Veredito — 2026-10-17 — correção 1 (lote 2) — 🟢 Aprovado
-
-**Conferido:** o achado 1 foi cumprido — a tabela do resumo tem **uma linha por token (111)**, com valor candidato, fase
-e propriedade computada antes → depois, medida em Chromium 153 (Playwright 1.63) com a cena fora do repositório e zero
-erro de página ou de console; o que não mudou foi reaberto à mão. O achado 2 também: o `usage` de `headingFont`
-(`typography.ts:70`) agora diz `h1`–`h6` e as variantes de `SarakTypography`, e `rangeActiveColor` (`inputs.ts:214`)
-descreve o que o código faz (os polegares). Regenerei `token-types`, `guide`, `dev-kit` e `plan-index`; nível
-**`schema-meta` verde** (paridade, `token-docs`, catálogo, vitest de `Design`/`Provider/utils`/`contrato`/`scripts`,
-baseline, kits; Anel 0: 2.314 linhas, 0 achados).
-
-**A medição achou quatro pendências do arsenal — não são do lote 2, entram no registro da `plan-117` (§5.1, P10 a P13,
-lote 4 dela), onde se corrigem antes de o tema seguinte ser ajustado:** `actionGlowShadow*` (3 tokens sem efeito),
-`colorDepth`/`colorVariation` (variáveis sem consumidor — conferi por `git grep`), `chartType` `radar`/`heatmap` (quebram
-o ECharts) e `rangeActiveColor` (o trilho ignora o token). Nenhum leitor foi tocado neste lote, de propósito.
-
-**Lote 2 fechado.** Próximo: lote 3 (`atmosphere`, `animations`, `motion`, `engineering`, `specialized`, `scrollbars`,
-`layers`, `advanced`, `media`) — com a medição no navegador desde o início (Chromium em `node_modules/.cache/ms-playwright`).
-
-**Status: 🔴 A executar (lote 3).**
-
-## Resumo da execução — lote 3 — 2026-10-17
-
-**Resultado:** Concluído com pendências (dois tokens sem efeito, entregues como achado; ver *Achados* e *Pendências*).
-
-**Estado do worktree ao iniciar**
-```
-M  .agents/skills/ui-criar-tema/SKILL.md
-M  .agents/skills/ui-integra-consumidor/SKILL.md
-M  .claude/skills/ui-criar-tema/SKILL.md
-M  .claude/skills/ui-integra-consumidor/SKILL.md
-M  docs/migracoes.md
-M  gates/allowlists/tokenDocumentationPending.json
-M  sarak-dev/GUIA-MANUTENCAO.md
-M  sarak-dev/START-HERE.md
-M  sarak-dev/state.json
-M  sarak-ui/GUIA-FRONTEND.md
-M  sarak-ui/START-HERE.md
-M  sarak-ui/VERSION
-M  sarak-ui/catalog.json
-M  sarak-ui/docs/migracoes.md
-M  sarak-ui/skill/SKILL.md
-M  specs/00-indice.md
-A  specs/adr/023-fontes-embarcadas-carregadas-sob-demanda.md
-M  specs/adr/README.md
-M  specs/arquitetura/02-design-engine.md
-M  specs/arquitetura/04-contrato-de-tokens-e-paridade.md
-M  specs/arquitetura/05-build-e-distribuicao.md
-M  specs/plan/anexos/plan-110-tokens-funcionais.md
-D  specs/plan/anexos/plan-118-catalogo-de-fontes.md
-M  specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
-M  specs/plan/plan-117-pendencias-do-arsenal.md
-D  specs/plan/plan-118-fontes-embarcadas.md
-M  specs/specs/09-temas-e-presets.md
-M  specs/specs/10-seguranca-e-acessibilidade.md
-M  specs/specs/12-kit-do-consumidor.md
-M  src/core/Design/schema/{buttons,chat,colors,data,inputs,status,switches,typography}.ts
-M  src/core/Provider/generated/design-token-docs.json
-```
-(Tudo estagiado; nada não-estagiado ao iniciar. Durante a execução apareceram, sem que eu os tocasse, a execução paralela do plan-117 lote 4: `SarakRangeSlider.tsx` (+teste), `axisOptions.ts` (+teste), mudanças em `colors.ts`/`inputs.ts` e `browser-tests/arsenal-lote4-*`. Não são meus.)
-
-**O que foi feito**
-- Medi no Chromium 153 (Playwright 1.63, `PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright`, `chromium.launch()` sem `executablePath`) os **92 tokens** dos nove grupos. Cena montada de `src/` por alias (`@sarak/lib-ui-core` → `src/index.ts`), CSS gerado por Tailwind e bundle em pasta de scratchpad, **fora do repositório**. Método: diferença de estilo computado (todo elemento e `::before`/`::after`; `::-webkit-scrollbar*` na rolagem) entre cena-base e variante, em repouso, hover, foco e pressionado; movimento dirigido por JS (framer-motion) por amostragem quadro a quadro; painel de customização aberto para os 3 tokens do painel. Controle de ruído (base × base) rodado antes. 0 erro de página/console nas cenas.
-- Acrescentei `kind`, `modeDependent`, `usage` e `interactsWith` a **90 tokens** em `advanced.ts`, `animations.ts`, `atmosphere.ts`, `engineering.ts`, `layers.ts`, `media.ts`, `motion.ts`, `scrollbars.ts`, `specialized.ts`; removi esses 90 de `gates/allowlists/tokenDocumentationPending.json` e deixei `motionEaseIn` e `matrixGap` na exceção com o rótulo `achado-lote-3`.
-- Corrigi quatro `description` que diziam o contrário do medido: `globalSaturation`, `globalContrast`, `bgNoiseDensity` (`atmosphere.ts`) e `motionEaseOut` (`motion.ts`).
-- Regenerei `src/core/Provider/generated/design-token-docs.json` (`npm run token-types`).
-- Documentação: GUIA §6 (linhas do mapa) e novo §6.7; skill `ui-integra-consumidor` (linhas do mapa e armadilhas); `docs/migracoes.md` (subseção do lote 3 em `## 8.0.0`); anexo `plan-110-tokens-funcionais.md` §6.
-
-**Tabela da medição — token → propriedade, antes → depois** (valor candidato; cena `main` salvo se dito)
+**Tabela da medição — token → propriedade, antes → depois** (valor candidato; cena `chrome` lateral salvo se dito)
 | Token | Propriedade (elemento): antes → depois |
 |---|---|
-| `colorBgBody` | `#ff0000`: `background-color` (body) rgb(5,5,5) → rgb(255,0,0); piso do gradiente idem |
-| `colorBgLayer1` | `#ff0000`: `background-image` (body) linear/radial: parada da camada 1 passa a vermelho; com `bgGradientMode: none` só a variável muda |
-| `colorBgLayer2` | `#00ff00`, mesh: `background-image` (body), 3ª mancha muda; modo linear (padrão): só a variável |
-| `bgBaseColor` | `#ff0000`: `background-color` (`.sarak-glass`) rgba(10,10,12,.8) → rgba(255,0,0,.8); gaveta (overlays) rgb(10,10,12) → rgb(255,0,0); bordas dos painéis do fluxo idem |
-| `bgGradientMode` | `none`: `background-image` (body) linear-gradient(135deg…) → none; `radial` → radial-gradient(120% 90% at 50% 0%…); `mesh` → 4 camadas de radial-gradient |
-| `bgGradientAngle` | `0`/`90`/`270`: linear-gradient(135deg…) → (0deg/90deg/270deg…); modo radial: nada |
-| `surfaceMaterial` | `sleek`: `backdrop-filter` (cartão) blur(24px) saturate(1.6) → blur(12px); `industrial`: `background-image` → repeating-linear-gradient(90deg…); `organic`: `backdrop-filter` → none, `box-shadow` inset 0 2px 10px |
-| `surfaceIntensity` | `0`: `box-shadow` inset (cartão) rgba(255,255,255,.15) → alfa 0, gradiente .13 → .04; `1`: `backdrop-filter` blur(24px) → blur(36px) |
-| `borderType` | `cyber`: `border-*-style` (cartão) solid → dashed, cor → cor de textura .7; `glow`: cor → .5; `none`: cor → transparente; `double`: espessura +4 px (altura 2296,38 → 2300,38) |
-| `systemTone` | `cyber`: `background-image` (body) → radial + 2 linear de 20px (grade HUD); `tactical` → idem 24px monocromo |
-| `texture` | `dots`/`noise`/`waves`: `html`/`body` ganham `position: relative` e `::before`/`::after` com `content`; `none`: sem camada |
-| `textureOpacity` | `0`/`0.8` (texture grid): `opacity` (`html::before`) 0.1 → 0 / 0.8; com `texture: none`: só a variável |
-| `bgNoiseDensity` | `0`/`0.5`: `opacity` (camada fixa de grão, `body>div:0>div:0`) 0.05 → 0 / 0.5, em qualquer textura; o `html::before` da textura noise não muda (opacidade 0,1 com densidade 0,5) |
-| `bgNoiseAnimation` | `2` (texture noise): `animation-duration` (`html::before`/`body::before`) 1s → 2s (e `0` → 0s); com grid nada |
-| `glassBlur` | `0`/`60`: `backdrop-filter` (`.sarak-glass`) blur(10px) → blur(0px)/blur(60px) |
-| `glassOpacity` | `0`/`0.8`: `background-image` (cartão) alfa do gradiente .09 / .41 (padrão .13); `.sarak-glass` não muda |
-| `glassSpecularity` | `0`/`1`: `box-shadow` (`.sarak-glass`) inset rgba(255,255,255,.1) → alfa 0 / rgb(255,255,255) |
-| `glassRoughness` | `0`/`1`: `backdrop-filter` (`.sarak-glass`) contrast(.95) → contrast(1)/contrast(0) |
-| `glassSaturation` | `0.5`/`3`: `backdrop-filter` (`.sarak-glass`) saturate(1.2) → saturate(.5)/saturate(3) |
-| `glassEdgeWidth` | `0`/`6`: `border-*-width` (`.sarak-glass`) 1px → 0/6px |
-| `glassEdgeColor` | `#ff0000`: `border-*-color` (`.sarak-glass`) rgba(255,255,255,.1) → rgb(255,0,0) |
-| `shadowIntensity` | `0`/`2`: `opacity` (`.shadow-theme`) 0.65 → 0.3 / 1 (o elemento inteiro) |
-| `layeredShadows` | `0`/`2`: `box-shadow` (`.shadow-theme`) alfas .4/.2 → 0/0 e .8/.4 |
-| `shadowOrientation` | `top`: `--sarak-shadow-dir-y` 1 → -1 e `box-shadow` (cartão) desloca para cima; `dynamic`: em hover 0 30px 60px → 2.69px 12.07px 60px; `center`, `bottom-right` idem |
-| `shadowColorMode` | `colored`/`ambient` (primária vermelha, fundo claro): `box-shadow` (cartão) sombra preta → tom vermelho / tom de baixa saturação |
-| `shadowAmbientAlpha` | `0`/`1`: `box-shadow` (`.shadow-theme`) camada de contato .4 → 0 / 1 |
-| `shadowProjectionBlur` | `0`/`200`: `box-shadow` (`.shadow-theme`) camada de projeção 0 40px 60px → 0 0 0 / 0 …px 300px |
-| `shadowProjectionAlpha` | `0`/`1`: `box-shadow` (`.shadow-theme`) camada de projeção .2 → 0 / 1 |
-| `vignetteOpacity` | com `texture: grid`: `background-image` (`html::after`/`body::after`) radial rgba(0,0,0,.3) → alfa 0 / rgb(0,0,0); com `texture: none` não há `::after` |
-| `vignetteSoftness` | com `texture: grid`: parada transparente 20% → 95% (`0`) / 4% (`60`) |
-| `globalSaturation` | `0`/`2` (texture grid): `filter` (`html::before`) saturate(1) → saturate(0)/(2); sem textura só a variável |
-| `globalContrast` | `0.5`/`3`: `filter` (`html::before`) contrast(1) → contrast(.5)/(3) |
-| `animEnabled` | `false` (cena de troca de página): a página `b` aparece em 24 ms sem fade (antes: opacidade 1 → 0,02 → 0 → 0,99 em ~500 ms) |
-| `pageTransitionType` | `slide-up`: `transform` (página) translateY(0 → -20px) na saída; `slide-side`: translateX(-50px); `zoom`: scale(1,05); `none`: troca em 27 ms; `fade`: só opacidade |
-| `cardHoverStyle` | `glow-only`: hover `transform` (cartão) scale(1.01) translateY(-4px) → none, `::before` opacity .2 → 1; `expand`: scale(1.02) sem translateY |
-| `motionEaseMain` | `cubic-bezier(.1,.7,.1,1)`: `transition-timing-function` (sidebar, botões, campos, body) .4,0,.2,1 → .1,.7,.1,1 (406 elementos) |
-| `motionEaseOut` | `cubic-bezier(.9,0,.9,1)`: `animation-timing-function` (alternador pulsante) 0,0,.2,1 → .9,0,.9,1; o `transition` do `SarakButton` pressionado não muda (`all 0.1s cubic-bezier(.4,0,.2,1)` nos dois) |
-| `motionEaseIn` | **sem efeito** — ver Achados |
-| `motionDurationInstant` | `0`/`0.2`: `transition-duration` (botão pressionado) 0.1s → 0s / 0.2s |
-| `motionDurationFast` | `0.45`: `transition-duration` (nav, campos, botões) 0.2s → 0.45s (306 elementos) |
-| `motionDurationNormal` | `0.9`: `transition-duration` (body, cartão, acordeão, alternador, `main`) 0.3s → 0.9s; troca de página: fade-out de ~0,3 s → ~0,9 s |
-| `motionDurationSlow` | `1.5`: `transition-duration` (`body::before`, `::before` dos cartões) 0.6s → 1.5s; barras do `SarakChart` aos 1251 ms: 94 px (base: 101 px) |
-| `motionStaggerDelay` | `0.2`: linhas da `SarakTable` passam de 50% de opacidade em [257,414,414,414] ms → [252,547,698,844] ms; as barras do gráfico também escalonam |
-| `focusRingWidth` | `0`/`6`: `outline-width` (botão em foco) 2px → 0 / 6px |
-| `reducedMotion` | `true`: `transition-duration`/`animation-duration` (4.098 propriedades, todo o DOM) → 1e-05s; barras do gráfico completas em 778 ms (base 1444 ms) |
-| `touchTargetMin` | `56` com `pointer: coarse`: `height`/`min-height`/`width` (botões, nav) 44px → 56px; com mouse: só a variável |
-| `zIndexToast` | `9900`: `z-index` (aviso) 9100 → 9900 |
-| `zIndexBase` | `50`: `z-index` (lista do autocompletar) 1 → 50 |
-| `zIndexSidebar` | `900`: `z-index` (`aside`) 500 → 900; camada do grão 550 → 950; busca 700 → 1100 |
-| `zIndexModal` | `4000`: `z-index` (modal e véu) 2000 → 4000; gaveta 2001 → 4001 |
-| `zIndexTooltip` | `9500`: `z-index` (tooltip) 9000 → 9500 |
-| `matrixRadius` | `0`: `border-*-radius` (item da matriz) 12px → 0 |
-| `matrixItemBg` | `#ff0000`: `background-color` (item) rgba(255,255,255,.02) → rgb(255,0,0) |
-| `matrixBorderColor` | `#00ff00`: `border-*-color` (item) rgba(255,255,255,.05) → rgb(0,255,0) |
-| `matrixBlur` | `40`: `backdrop-filter` (item) blur(10px) → blur(40px) |
-| `matrixGap` | **sem efeito** — ver Achados |
-| `globalBackgroundImageUrl` | SVG `data:` (cena `bg`): surge um `div` do Provider com a imagem (captura: fundo vermelho com disco verde); `body::before` continua `none` |
-| `globalBackgroundBlur` | `20`: `filter` (camada da imagem e `body::before`) blur(0px) → blur(20px) |
-| `globalBackgroundOpacity` | `0.5`: `opacity` (camada da imagem e `body::before`) 1 → 0.5 |
-| `scrollWidth` | `12`: `width`/`height` (`::-webkit-scrollbar`) 6px → 12px (escalar e responsivo iguais) |
-| `scrollRadius` | `0`: `border-*-radius` (`::-webkit-scrollbar-thumb`/`-track`) 10px → 0 |
-| `scrollTrackOpacity` | `0.5`: `background-color` (`::-webkit-scrollbar-track`) rgba(255,255,255,.05) → .5 |
-| `scrollThumbColor` | `#ff0000`: `background-color` (`::-webkit-scrollbar-thumb`) branco .2 → vermelho .2 |
-| `scrollThumbOpacity` | `1`: `background-color` (thumb) branco .2 → 1 |
-| `scrollThumbHoverOpacity` | `1`: `background-color` (thumb em hover) .5 → 1 |
-| `scrollPadding` | `4`: `border-*-width` (thumb) 2px → 4px |
-| `aiGlowColor` | `#ff0000` (chat carregando): `background-color` (avatar) oklab(.87…/.2) → oklab(.63…/.2); `border-*-color` (ícone) rgb(0,242,255) → rgb(255,0,0); pontos idem |
-| `chatBubbleGlassBlur` | `30`: `backdrop-filter` (bolha do assistente) blur(12px) → blur(30px) |
-| `flowNodeRadius` | `30` e `{30,30,30}`: `border-*-radius` (nó) 12px → 30px |
-| `flowGridStyle` | `lines`: o `<circle>` do padrão de pontos deixa de existir (o grid vira linhas) |
-| `flowHandleSize` | `16`: `width` (handle) 8px → 16px; nó +16 px de altura; caminho da aresta muda |
-| `flowNodePadding` | `24`: `padding-*` (nó) 10px → 24px; altura 55,6 → 83,6 px |
-| `flowNodeBlur` | `20`: `backdrop-filter` (nó) blur(5px) → blur(20px) |
-| `dotGridDotOffset` | `8`: `background-image` (estado vazio geométrico e `AuthHero`) `circle at 2px 2px` → `at 8px 8px` |
-| `dotGridDotSize` | `5`: mesma camada: `1px` → `5px` |
-| `dotGridTileSize` | `90`: `background-size` 40px 40px → 90px 90px |
-| `emptyStateOrbOuter` | `800`: `width`/`height` (anel externo geométrico) 500px → 800px; altura da página +300 px |
-| `emptyStateOrbInner` | `500`: `height` (orbe abstrato) 300px → 500px |
-| `emptyStateOrbBlur` | `10`: `filter` (orbe abstrato) blur(100px) → blur(10px) |
-| `emptyStateVoidLetterOffset` | `2`: `margin-inline-start` (h2 geométrico) 16.8px → 42px |
-| `emptyStateRingRadius` | `4`: `border-*-radius` (anel abstrato) 28px → 56px |
-| `emptyStateCaptionMaxWidth` | `120`: altura da cena abstrata +60 px (a legenda quebra em mais linhas) |
-| `skeletonRowHeight` | `3`: altura da cena 2296 → 2408 px (linhas de 1rem → 3rem) |
-| `skeletonCircleSize` | `5`: `width` (esqueleto circular) 35px → 70px |
-| `skeletonRowRadius` | `20`: `border-*-radius` (linha) 4px → 20px |
-| `authHeroOrbBlur` | `10`: `filter` (orbe do `AuthHero`) blur(120px) → blur(10px) |
-| `chartEngineMinHeight` | `400`: `min-height` (gráfico Recharts) 180px → 400px |
-| `engineMinHeightLg` | `800`: `min-height` (`SarakFlowEngine`, `SarakChatEngine`) 500px → 800px |
-| `engineMinHeightSm` | `500`: `min-height` (placeholder do `LazyEngineWrapper`) 300px → 500px |
-| `designEngineSidebarMinWidth` | `400` (painel aberto): `min-width` (barra lateral) 280px → 400px, largura 320 → 400 |
-| `designEngineSidebarMaxWidth` | `400` com min 200: `max-width` 600px → 400px (a largura inicial de 320 px já cabe: não muda) |
-| `layoutPreviewMaxH` | `300`/`40` (aba "Temas e JSON"): `max-height` do bloco de JSON 120px → 300px / 40px |
+| `mode` | `light` (com e sem tema carregado): só `d` do ícone do alternador (sol → lua) e `--sarak-mode`, `--sarak-vignette-color` .3 → 0; `body` segue `rgb(5,5,5)`. Com preferência `colorMode: light` + tema: `body` → `rgb(249,250,250)`; `mode: light` + preferência `dark` → escuro |
+| `navigationStyle` | `topbar` (`navigationStyle="auto"`): `aside` e 150 elementos deixam de existir, `header` surge, `[conteudo]` 944 → 1216 px; com preferência `sidebar` o resultado é igual ao da base (a preferência vence) |
+| `mobileNavigationStyle` | 390 px, 7 itens: `bottom` cria `nav` fixa (37 elementos), `main` 736 → 668,5 px; 4 itens: `drawer` remove a barra da base, `main` 668,5 → 736 px |
+| `bodySize` | `20px`: `font-size` (`html`) 14px → 20px, `line-height` 21 → 30px, bloco da marca 75,4 → 94 px; com preferência `sm`: 12 → 18 px |
+| `identityAlignment` | `center`/`right`: `justify-content` (bloco da marca, lateral e topo) flex-start → center / flex-end |
+| `identityPadding` | `24`: `padding-block` (bloco da marca) 16 → 24px, altura 85 → 101px |
+| `identityFontFamily` | `'Playfair Display', serif`: `font-family` (nome da marca) Inter → "Playfair Display", serif |
+| `identityFontWeight` | `300`: `font-weight` 700 → 300 |
+| `identityTracking` | `4`: `letter-spacing` normal → 4px, largura do bloco 125,5 → 145,5 px |
+| `identityHoverEffect` | em hover: `none` `opacity` 0.7 → 1; `glow` `filter` none → drop-shadow(… 0 0 8px); `scale` `transform` none → scale(1.04) |
+| `layoutDensity` | `compact`/`spacious`: `padding-block` (`main`) 32 → 24 / 40px |
+| `maxContentWidth` | `1000px`: `max-width` (`main`) 1440 → 1000px, `margin-inline` 0 → 4px |
+| `layoutPadding` | `5` e `{5,5,5}`: `padding` (`main`) 32 → 5px |
+| `isSplitViewEnabled` | `true`: surgem 4 elementos (grade do painel secundário) em `main` |
+| `isAutoHideEnabled` | `true`: `aside` e 151 elementos somem no primeiro quadro, `main` 1008 → 1280 px |
+| `borderRadius` | `30`: `border-*-radius` (`SarakAccordion`) 12 → 30px; `2` → 2px; `0`: só a variável (o acordeão trata 0 como ausente) |
+| `borderWidth` | `4`: `border-inline-start-width` (feed de atividade) 1 → 4px; `width` (divisória do painel dividido) 1 → 4px |
+| `borderStyle` | `dashed`: `border-*-style` (`aside`, divisória do painel dividido, 217 propriedades) solid → dashed |
+| `layoutGap` | `60` (cena estrutural): `column-gap`/`row-gap` (`SarakFlex`) 24 → 60px |
+| `layoutGapSm` | `40`: `height` (campo de busca do cromo) 30,4 → 44,4px, `bottom` 13 → 6px (346 mudanças) |
+| `layoutGapMd` | `40`: `column-gap` (grupos do cromo) 6 → 10px, `padding-block` (`nav`) 24 → 40px |
+| `layoutGapLg` | `60`: altura da página (cena `main`) 2574 → 2694 px, posição do orbe do estado vazio −7,75 → 16,25px |
+| `iconFamily` | `lucide`/`tabler`: 18–24 elementos de ícone refeitos; `fill` rgb(0,242,255) → none, `stroke` none → cor, `stroke-linecap` butt → round |
+| `iconWeight` | `bold`: Phosphor `path d` do ícone refeito; Tabler `stroke-width` 2,5 → 2px |
+| `iconStrokeWidth` | `0.5`/`3`: `stroke-width` (ícone Lucide) 3 → 1,5 / 4,5px; Tabler 2,5 → 1,25 / 3,75px; Phosphor só a variável |
+| `isNavHidden` | `true`: lateral `width` 240 → 200px (piso), 76 elementos some (rótulos), bloco da marca 75 → 53px; topo `height` 64 → 40px, logo 68 → 32px |
+| `sidebarPosition` | `right`: `flex-direction` (corpo) row → row-reverse, borda do `aside` passa do lado direito para o esquerdo; `floating`: `border-radius` 0 → 12px nos 4 cantos e margem |
+| `sidebarWidth` | `300` e `{300,300,300}`: `width` (`aside`) 240 → 300px |
+| `shellBrandLogoSize` | `48` (com logo): altura do bloco da marca 85 → 101px |
+| `sidebarLabelMaxWidth` | `60`: `max-width` (nome da marca) 120 → 60px |
+| `sidebarMinWidth` | `300`: `min-width` (`aside`) 200 → 300px |
+| `sidebarMaxWidth` | `260`: `max-width` (`aside`) 450 → 260px |
+| `sidebarColor` | `#ff0000`: `background-color` (`aside`) rgb(0,0,0) → rgb(255,0,0) |
+| `sidebarHoverColor` | `#ff0000`, hover no 2º item: `background-color` rgba(255,255,255,.06) → rgb(255,0,0) |
+| `sidebarActiveColor` | `#ff0000`: `background-color` (item ativo) transparente → rgb(255,0,0) |
+| `sidebarNoiseOpacity` | `0.5`: `opacity` (camada de grão do `aside`) 0 → 0.5 |
+| `sidebarBlur` | `40`: `backdrop-filter` (`aside`) blur(10px) → blur(40px) |
+| `sidebarShadow` | `10px 0 30px rgba(255,0,0,1)`: `box-shadow` (`aside`) rgba(0,0,0,.5) → rgb(255,0,0) |
+| `navItemActiveColor` | `#ff0000`: `border-*-color`, texto e ícone do item ativo rgb(0,242,255) → rgb(255,0,0) |
+| `navActiveMarkerColor` | `#ff0000`: `background-color` e `box-shadow` (marcador) rgb(0,242,255) → rgb(255,0,0) |
+| `navActiveMarkerGlow` | `0`/`40`: `box-shadow` (marcador) 0 0 10px → 0 0 0 / 0 0 40px |
+| `tabGap` | `23`: `column-gap`/`row-gap` (lista de itens) 4 → 11,5px, altura 154 → 176,5px |
+| `tabSectionMargin` | `23`: `margin-block` (`aside`) 16 → 23px |
+| `searchPositionSidebar` | `bottom`: `padding-block` (bloco da busca) 0/7 → 7/0px |
+| `chromeSearchPosition` | `menu`/`off`: o campo de busca da lateral deixa de existir (68/67 elementos) e o bloco muda de fundo/borda |
+| `chromeUserPosition` | `menu`/`off`: 15/10 elementos do widget de usuário somem; `nav` 404,7 → 453,3 / 485,2px de altura |
+| `chromeNotificationsPosition` | `menu`/`off`: 53/52 elementos do widget de notificações somem; `nav` 453,2 → 453,3 / 485,2px |
+| `searchDropdownGap` | `2` (busca aberta): `margin-top` (paleta) 97 → 118px |
+| `searchDropdownWidth` | `600`: `max-width`/`width` (paleta) 400 → 600px |
+| `navbarLayout` | topo; `inline`: `position` (`header`) sticky → relative; `hidden`: `display` flex → none (1.371 mudanças) |
+| `topbarHeight` | `100` e `{100,100,100}`: `height` (`header`) 64 → 100px |
+| `topbarCollapsedHeight` | `24` com `isNavHidden`: `height` (`header`) 40 → 24px; sem `isNavHidden` só a variável |
+| `brandLogoSizeCollapsed` | `32` com `isNavHidden` e logo: `width`/`height` (logo do topo) 52 → 64px |
+| `topbarColor` | `#ff0000`: `background-color` (`header`) rgb(0,0,0) → rgb(255,0,0) |
+| `topbarHoverColor` | `#ff0000`, hover: `background-color` (item) rgba(255,255,255,.06) → rgb(255,0,0) |
+| `topbarActiveColor` | `#ff0000`: `background-color` (item ativo) transparente → rgb(255,0,0) |
+| `topbarNoiseOpacity` | `0.5`: `opacity` (grão do `header`) 0 → 0.5 |
+| `topbarTitleColor` | `#ff0000`: `color`/`border-color` (nome da marca no topo) rgb(255,255,255) → rgb(255,0,0) |
+| `topbarLabelMaxWidth` | `60`: `max-width` (nome da marca no topo) 150 → 60px |
+| `searchPositionTopbar` | `right`: busca vai para o grupo final (90 elementos refeitos, x 154 → 201px); `hidden`: 77 elementos somem; `center`: igual a `left` com itens (x 154), 170 × 158px sem itens |
+| `preferenceModePosition` | `off`/`menu`: o alternador "Modo Claro" (5/10 elementos) sai da barra; `nav` 453,2 → 488,7 / 456,8px |
+| `preferenceFontSizePosition` | `off`/`menu`: o seletor P/M/G (18/23 elementos) sai da barra; `nav` 453,2 → 522,2 / 490,3px |
+| `preferenceNavigationStylePosition` | `off`/`menu`: o seletor Lateral/Topo (17/22 elementos) sai da barra; `nav` → 522,2 / 490,3px |
+| `preferenceNavCollapsePosition` | `off`/`menu`: o botão "Recolher navegação" (3/8 elementos) sai da barra |
+| `preferenceLanguagePosition` | `off`/`menu`: o seletor de idioma (8/13 elementos) sai da barra; `nav` 453,2 → 491,7 / 459,8px |
+| `breakpointTablet` | `1100` com janela de 1000 px: o `aside` some e surge o `header` do celular (93 elementos); `500` com 600 px: o inverso |
+| `breakpointDesktop` | `900` com 1000 px e `layoutPadding` `{5,10,50}`: padding passa de 10 para 50 px e `[conteudo]` 980 → 628 px; `1500` com 1280 px: 50 → 10 px |
+| `layoutGridTemplate` | `col-12`: `grid-column` (item) auto → span 4, largura 312 → 416px; `masonry`: `display` grid → block, `column-count` auto → 3 |
+| `layoutGridMinCell` | `160`/`480`: largura da célula 312 → 178,3 / 624px |
+| `globalSectionGap` | `60`: `row-gap` (`SarakGrid`) 24 → 60px; `column-gap` (catálogo) 24 → 60px |
+| `globalFlowDirection` | `row`: `flex-direction` (catálogo) column → row, `flex-wrap` nowrap → wrap |
+| `globalFlowAlign` | `center`: `align-items` (catálogo) normal → center |
+| `headerAlignment` | `center`/`start`: `justify-content` (cabeçalho da tabela) space-between → center / flex-start |
+| `formLabelPosition` | `left`: `flex-direction` (`SarakFormGroup`) column → row, `align-items` normal → center, rótulo 1248 → 40,5px |
+| `formFieldDensity` | `tight`/`relaxed`: `row-gap` (`SarakFormGroup`) 6 → 3 / 24px |
+| `switchLabelPosition` | `left`: `flex-direction` (`SarakSwitch`) row → row-reverse; `space-between`: `justify-content` normal → space-between; `SarakCheckbox` e `SarakRadio` não mudam |
+| `splitPaneMinWidth` | `300`: `min-width` (painel esquerdo) 100 → 300px |
+| `contentAlignment` | **sem efeito** — ver Achados |
+| `sidebarCollapsedWidth` | **sem efeito** — ver Achados |
 
 **Arquivos alterados**
 | Arquivo | Natureza | O que mudou |
 |---|---|---|
-| `src/core/Design/schema/{advanced,animations,atmosphere,engineering,layers,media,motion,scrollbars,specialized}.ts` | alterado | `kind`/`modeDependent`/`usage`/`interactsWith` em 90 tokens; 4 `description` corrigidas (nenhum `defaultValue`, opção ou leitor) |
-| `src/core/Provider/generated/design-token-docs.json` | regenerado | por `npm run token-types` (contém também o que o plan-117 mudou em `colors.ts`/`inputs.ts`) |
-| `gates/allowlists/tokenDocumentationPending.json` | alterado | −90 exceções do lote 3; `motionEaseIn` e `matrixGap` → `achado-lote-3` |
-| `sarak-ui/GUIA-FRONTEND.md` | alterado | linhas do mapa §6, estado do mapa, novo §6.7 |
+| `src/core/Design/schema/{global,branding,system,icons,navigation,structural,preferences}.ts` | alterado | `kind`/`modeDependent`/`usage`/`interactsWith` em 77 tokens (`preferences.ts` por `buildPositionToken` + `POSITION_USAGE`); `description` de `mode` corrigida (nenhum `defaultValue`, opção ou leitor) |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −77 exceções do lote 4; `contentAlignment` e `sidebarCollapsedWidth` → `achado-lote-4` |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | linhas do mapa §6, estado do mapa, novo §6.8 |
 | `.agents/skills/ui-integra-consumidor/SKILL.md` (= `.claude/skills/…`, symlink) | alterado | linhas do mapa e armadilhas |
-| `docs/migracoes.md` | alterado | subseção do lote 3 em `## 8.0.0` |
-| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | §6 (decisões e achados do lote 3) |
+| `docs/migracoes.md` | alterado | subseção do lote 4 em `## 8.0.0` |
+| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | §7 (decisões e achados do lote 4) |
 | `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` | alterado | este resumo e o `status` |
 
 **Verificações executadas**
-- Medição em navegador: ver tabela. Controle de ruído (base × base): as diferenças restantes eram movimento JS em andamento (resolvido com espera de 2,8 s); controle positivo `colorBgBody` mudou `background-color` do body e do `div` raiz.
-- `npm run token-types` → 399 tokens; `npm run token-types:check` → em dia; `npm run token-docs:check` → "318 de 399 tokens documentados; 81 em exceção" (79 do lote 4 + 2 achados).
-- `npx vitest run gates/scripts/contrato/__tests__/check-token-documentation.test.ts scripts/__tests__/generate-token-types.check.test.mjs` → 2 arquivos, 13 testes verdes.
-- `npm run catalog:check` → em dia. `npm run guide:check` → **falha esperada** (`sarak-ui/START-HERE.md` e `sarak-ui/skill/SKILL.md` defasados): não rodei `guide`, `dev-kit` nem `build`, como mandado.
-- Não rodei suíte completa, `tsc`, baseline, Anel 0/1 nem R36.
+- `npm run token-docs:check` → "395 de 399 tokens documentados; 4 em exceção" (os 4 são os achados dos lotes 3 e 4; a lista de exceção dos lotes 1–4 fica sem nenhum token por documentar).
+- `npm run verify -- --tier=schema-meta` → **3 verificações falham, as três por gerado defasado** (instrução do lote: eu não regenero): `token-types:check` (`design-token-docs.json` DEFASADO), o teste `generate-token-types.check.test.mjs` (o mesmo JSON; 1 falha em 89 s, o resto de `src/core/Design`, `Provider/utils`, `gates/scripts/contrato` e `scripts` passou) e `guide:check` (`sarak-ui/docs/migracoes.md` e `sarak-ui/skill/SKILL.md`). Passaram: `catalog:check`, `themes:catalog:check`, `audit:baseline`, `plan-index:check`, `dev-kit:check` e Anel 0 simulado (408 linhas, 0 achados).
+- Não escrevi nem alterei teste; não rodei `guide`, `dev-kit`, `token-types` nem build; não rodei suíte completa, `tsc` nem Anel 1.
+
+**Gerados que ficam defasados (para o revisor regenerar):** `src/core/Provider/generated/design-token-docs.json` (`npm run token-types`); `sarak-ui/docs/migracoes.md`, `sarak-ui/skill/SKILL.md`, o apêndice A.4b de `sarak-ui/GUIA-FRONTEND.md` e `sarak-ui/catalog.json` (`npm run guide`, depois do `token-types`); `sarak-dev/*` pode carimbar contagens (`dev-kit`).
 
 **Critérios de aceite**
-- [x] Cada token dos 9 grupos aberto no leitor e medido no navegador — evidência: tabela acima.
-- [x] Token sem efeito tratado como achado, não como documentado — `motionEaseIn` e `matrixGap` em `achado-lote-3`.
-- [x] `kind`/`modeDependent`/`usage` (e `interactsWith`) para os tokens com efeito — `token-docs:check` verde, 90 documentados.
-- [x] Nenhum `defaultValue`, opção, leitor ou tema alterado; nenhum leitor corrigido.
-- [x] Kit, anexo e migração com o que o lote ensinou.
-- [ ] `schema-meta` verde — pendente: `guide:check` aponta `sarak-ui/START-HERE.md` e `sarak-ui/skill/SKILL.md` a regenerar (`guide`/`dev-kit`, que não rodei por instrução); `sarak-ui/catalog.json` não foi regenerado (`catalog:check` passa).
+- [x] Cada token dos 6 grupos aberto no leitor e medido no navegador — evidência: tabela acima.
+- [x] Token sem efeito tratado como achado, não como documentado — `contentAlignment` e `sidebarCollapsedWidth`.
+- [x] `kind`/`modeDependent`/`usage` (e `interactsWith`) nos tokens com efeito — `token-docs:check` verde, 395/399.
+- [x] Tokens de preferência medidos com a porta de preferências ligada onde ela vence o tema (`navigationStyle`, `bodySize`, `mode`) e pelo cromo onde a posição basta (`preference*Position`, `chrome*Position`).
+- [x] Nenhum `defaultValue`, opção ou leitor alterado; nenhum tema tocado; nada do lote 4 da plan-117 tocado.
+- [ ] `schema-meta` verde — pendente: três falhas por gerado defasado (acima).
 
 **Decisões e suposições**
-- Classificação pelo critério do anexo (§1): camadas, alvo de toque, anel de foco, `reducedMotion`, `animEnabled`, pisos de altura e `flowHandleSize` → funcional; `skeletonRowHeight`/`skeletonCircleSize` também funcional, por dependerem do conteúdo do host e não do tema (decisão minha; o revisor pode reclassificar). Movimento (`motion*`, `pageTransitionType`) → estético, herdado do modo principal.
-- Corrigi quatro `description` de schema (não só `usage`) porque diziam o contrário do medido, no precedente do `headingFont` do lote 2.
-- `motionEaseOut` documentado como efeito parcial (pulso do alternador e botão HTML sem classe), não como achado: um valor muda a tela.
-- `bgGradientAngle`, `bgNoiseAnimation`, `textureOpacity`, `vignette*`, `globalSaturation/Contrast` e `colorBgLayer*` documentados com a dependência em `interactsWith`: sem o par o valor só muda a variável.
-- A classe `.sarak-vignette-layer` (`_theme.css`) não tem elemento na lib que a use; não a tratei como parte do token.
+- Classificação pelo critério do anexo (§1). Dúvidas assumidas: `maxContentWidth`, `layoutPadding`, `layoutGap*`, `bodySize` e `formFieldDensity` → estético (densidade visual); `layoutGridTemplate`/`layoutGridMinCell`/`globalFlow*`/`formLabelPosition`/`switchLabelPosition`/`splitPaneMinWidth` → funcional (estrutura e posição dos controles, no precedente `buttonIconPosition` do lote 2); `searchDropdown*` → funcional (largura e posição do cromo). O revisor pode reclassificar.
+- `mode` é estético e não carrega modo: é o eixo da contraparte, declarado por tema.
+- Os 5 `preference*Position` ficam com `usage` num mapa dentro de `preferences.ts` porque o id é constante do módulo; o gate lê o valor avaliado, então basta.
+- `searchPositionTopbar` e `iconWeight` documentados com o efeito parcial medido, não como achado (um valor muda a tela).
 
 **Achados fora do escopo (não corrigidos)**
-- **`motionEaseIn` sem efeito**: `SarakModal` (`SarakModal.tsx:186`) e `SarakSearch` (`SarakSearch.tsx:70`) retornam `null` ao fechar, desmontando o `AnimatePresence` antes do `exit`; medido: o overlay do modal some em 19–31 ms e a busca em ~11 ms, com a curva padrão e com `cubic-bezier(.8,0,1,.2)`. O véu da `SarakDrawer` (`SarakScrim` com `animate`) anima só `duration` (some em ~866 ms nos dois casos). Nenhum `exit` com `ease` roda.
-- **`matrixGap` sem efeito**: `SarakExpandableMatrix.tsx:125` escreve `--matrix-gap` e nada o lê; o `gap` vem de `--sarak-layout-gap-md` (`:126`). Medido com 3 papéis.
-- **Default de `bgNoiseAnimation` ≠ valor emitido**: o schema declara `defaultValue: 0`, mas sem o token no `config` a variável sai `1s` (`--sarak-noise-speed: 1s`; com `bgNoiseAnimation: 0` sai `0s`). Em `texture: noise` o grão anima por omissão.
-- **`bgNoiseDensity` não governa a textura `noise`**: o CSS (`_atmosphere.css:127-131`) manda `opacity: var(--sarak-noise-density)`, mas a regra base (`:17`) vence — medido `html::before` com opacidade 0,1 com densidade 0,5 (só `textureOpacity` mexe). Regra morta em `_atmosphere.css`.
-- **`globalSaturation`/`globalContrast`** (descrição original: "toda a interface") só filtram o `::before` da textura.
-- **`shadowIntensity` reduz a opacidade do elemento `.shadow-theme` inteiro** (conteúdo incluso), em vez de escalar a sombra (`_utilities.css:11-14`).
-- **`button:active` de `_elements.css:84-89` é morto para o `SarakButton`**: o `transition` computado do botão pressionado segue `all 0.1s cubic-bezier(.4,0,.2,1)` mesmo com `motionEaseOut` trocado (a regra só vale para `<button>` sem classe).
+- **`contentAlignment` sem efeito**: `chromeStructuralStyles.ts:37` põe `max-w-7xl mx-auto w-full px-*` no mesmo elemento que recebe `maxWidth`, `marginInline`, `width` e `padding` em linha (`resolveChromeContentStyle`); o estilo em linha vence e nada muda (lateral e topo, com `maxContentWidth` 1000 px).
+- **`sidebarCollapsedWidth` sem efeito**: `ChromeSidebarBody.tsx:107` lê o token, mas `min-width: var(--sidebar-min-width, 150px)` (`:111`) vence — a lateral recolhida mede 200 px (74 e 100) e 150 px com `sidebarMinWidth: 150`; o piso do contrato do `sidebarMinWidth` (150) é maior que o teto do token (100).
+- **`borderRadius: 0` ignorado pelo acordeão**: `SarakAccordion.tsx` usa `(design?.borderRadius) || 'var(--sarak-card-radius,12px)'`, e 0 é falso: o raio fica em 12 px.
+- **`switchLabelPosition` não alcança `SarakCheckbox` nem `SarakRadio`**, apesar de os dois lerem `useStructuralStyles` (`getCheckboxLayoutStyles`, `getRadioLayoutStyles`): nenhuma propriedade mudou nos dois.
+- **`searchPositionTopbar: center`**: `mx-auto` (`ChromeTopbarBody.tsx:112`) não se distingue de `left` quando a navegação tem `flex-1` (o caso com itens).
+- **Aviso de console da cena estrutural** ("Function components cannot be given refs"), presente em todas as variantes da cena `struct`; não identifiquei o componente (a cena monta `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` e outros).
 
 **Pendências / riscos**
-- `schema-meta` não fica verde sem `npm run guide` (e `dev-kit`): duas cópias do kit defasadas, geradas, para o revisor regenerar.
-- `design-token-docs.json` agora mistura este lote e o plan-117 lote 4 (`colors.ts`/`inputs.ts` não-estagiados são dele); ao commitar, os dois caem no mesmo gerado.
-- `scroll*` medidos só em Chromium (`::-webkit-scrollbar`); o Firefox usa a barra do sistema (declarado no GUIA §6.7).
-- Contraste não textual (WCAG 1.4.11) por tema/modo: não se aplica a este lote (nenhum tema tocado).
+- `schema-meta` não fica verde sem `npm run token-types` e `npm run guide` (e `dev-kit`), todos do revisor.
+- Os 77 `usage` foram escritos pela medição e pelo leitor; `modeDependent` seguiu a regra de opacidade/cor/sombra do anexo (1.1), sem medir no modo claro (nenhum tema tocado).
+- `mobileNavigationStyle`, `breakpoint*` e `topbarHeight` foram medidos em janela de 390/600/1000/1280 px sem toque simulado (`pointer: coarse`).
+- Como este é o último lote de análise, o mapa "o que a lib já faz" ainda tem linhas ⏳ (i18n da lib, persistência do tema, modo embarcado, painel, tema derivado da marca, calendário/Gantt/Kanban); o lote 25 consolida.
 
-## Veredito — 2026-10-17 — lote 3 — 🟢 Aprovado
+## Veredito — 2026-10-17 — lote 4 — 🟢 Aprovado; a análise dos 399 tokens está concluída
 
-**Conferido:** a tabela do resumo cobre os 92 tokens dos nove grupos (propriedade antes → depois, medida em Chromium 153
-com a cena fora do repositório, com controle de ruído base × base e controle positivo); 90 foram documentados e saíram da
-exceção, e **dois entraram como achado, como a plan manda** (`motionEaseIn`, `matrixGap` → `achado-lote-3`), sem leitor
-tocado. As quatro `description` que diziam o contrário do medido foram corrigidas. O diff é só metadado de schema
-(`kind`/`modeDependent`/`usage`/`interactsWith`), sem `defaultValue`, opção ou leitor. Regenerei `token-types`, `guide`,
-`dev-kit` e `plan-index`; **`schema-meta` verde** (`token-docs:check` 318 de 399 documentados, 81 em exceção — 79 do lote
-4 e os 2 achados; vitest de `Design`/`Provider/utils`/`contrato`/`scripts`; baseline; kits; Anel 0: 2.299 linhas, 0
-achados); `trail-citation` limpo.
+**Conferido:** 79 tokens dos seis grupos medidos em Chromium 153 (tabela por token no resumo; preferências do usuário
+medidas com a porta `useSarakPreferences().updatePreferences` onde ela vence o tema, e pelo cromo onde a posição basta);
+77 documentados e 2 achados (`contentAlignment`, `sidebarCollapsedWidth`). O diff dos schemas é só metadado (274
+acréscimos, 1 remoção: a `description` de `mode`, corrigida); `buildPositionToken` ganhou `usage` por um mapa sem mudar
+comportamento; nenhum `defaultValue`, opção ou leitor tocado; nada do lote 4 da `plan-117` mexido. Regenerei
+`token-types`, `guide`, `dev-kit` e `plan-index`; **`schema-meta` verde** (`token-docs:check` **395 de 399**, os 4 em
+exceção são os achados dos lotes 3 e 4; vitest; baseline; kits; Anel 0: 1.553 linhas, 0 achados). Conferi no código dois
+achados: `chromeStructuralStyles.ts:37` e a faixa mínima de `ChromeSidebarBody.tsx:111` (`min-width` vence a largura do
+recolhido).
 
-**Os dois achados, conferidos por mim:** `matrixGap` — `SarakExpandableMatrix.tsx:125` só define `--matrix-gap` a partir do
-token e **nenhum CSS ou componente lê `--matrix-gap`** (`git grep`); `motionEaseIn` — há leitor (`useMotionTokens.ts:48`,
-`SarakModal` e `SarakSearch` na saída), mas a medição não viu efeito: a causa precisa ser achada. Ambos vão ao registro da
-`plan-117` (P14 e P15, lote 5 dela), onde se corrigem antes de o tema seguinte ser ajustado.
+**Pendências do arsenal achadas neste lote → registro da `plan-117` (P16 a P21, lote 5 dela):** `contentAlignment` e
+`sidebarCollapsedWidth` (sem efeito), `borderRadius: 0` ignorado pelo acordeão, `switchLabelPosition` que não alcança
+`SarakCheckbox` e `SarakRadio`, `searchPositionTopbar: center` indistinguível de `left`, e o aviso "Function components
+cannot be given refs" da cena estrutural.
 
-**Lote 3 fechado.** Próximo: lote 4 (`global`, `branding`, `system`, `navigation`, `structural`, `preferences`) — o último
-da análise de tokens; com ele os 399 tokens estarão classificados e medidos.
+**Lotes 1 a 4 fechados.** A análise de tokens está completa (399 classificados e medidos). **O lote 5 só começa depois que
+a `plan-117` fechar os lotes 4 e 5 dela:** ele revisa o `defaultValue` dos tokens funcionais e cria a trava de completude, e
+os tokens que a `plan-117` ligar ou retirar mudam o conjunto sobre o qual a trava e os padrões são calculados.
 
-**Status: 🔴 A executar (lote 4).**
+**Status: 🔴 A executar (lote 5, depois da `plan-117`).**

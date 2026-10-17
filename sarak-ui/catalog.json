@@ -6571,7 +6571,10 @@
         "type": "string",
         "responsive": false,
         "group": "global",
-        "label": "Tamanho Global das Fontes"
+        "label": "Tamanho Global das Fontes",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor."
       },
       {
         "id": "bodyWeight",
@@ -6603,14 +6606,23 @@
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Arredondamento Padrão"
+        "label": "Arredondamento Padrão",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros. O acordeão ignora o valor 0 e volta ao raio do cartão.",
+        "interactsWith": [
+          "cardBorderRadius"
+        ]
       },
       {
         "id": "borderStyle",
         "type": "string",
         "responsive": false,
         "group": "system",
-        "label": "Estilo da Borda"
+        "label": "Estilo da Borda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Traço das bordas que seguem o sistema (contínuo, tracejado, pontilhado ou sem borda): o cromo, o separador do painel dividido e as classes utilitárias de borda."
       },
       {
         "id": "borderType",
@@ -6630,28 +6642,49 @@
         "type": "number",
         "responsive": false,
         "group": "system",
-        "label": "Espessura da Borda"
+        "label": "Espessura da Borda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espessura das linhas divisórias do feed de atividade e do separador do painel dividido, e das demais linhas que leem a variável de borda do sistema (dados, botões de ícone com contorno)."
       },
       {
         "id": "brandLogoSizeCollapsed",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Altura do Logo da Marca (Recolhida)"
+        "label": "Altura do Logo da Marca (Recolhida)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+        "interactsWith": [
+          "isNavHidden"
+        ]
       },
       {
         "id": "breakpointDesktop",
         "type": "number",
         "responsive": false,
         "group": "structural",
-        "label": "Breakpoint Desktop"
+        "label": "Breakpoint Desktop",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura de janela a partir da qual valem os valores `desk` dos tokens responsivos e o cromo de desktop; abaixo, os de tablet.",
+        "interactsWith": [
+          "breakpointTablet"
+        ]
       },
       {
         "id": "breakpointTablet",
         "type": "number",
         "responsive": false,
         "group": "structural",
-        "label": "Breakpoint Tablet"
+        "label": "Breakpoint Tablet",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura de janela a partir da qual a interface deixa de ser celular: abaixo dela o cromo usa a barra do celular e os valores `mob`; acima, os de tablet.",
+        "interactsWith": [
+          "breakpointDesktop"
+        ]
       },
       {
         "id": "btnActiveScale",
@@ -7729,21 +7762,34 @@
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Composição: Notificações"
+        "label": "Composição: Notificações",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas."
       },
       {
         "id": "chromeSearchPosition",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Composição: Busca"
+        "label": "Composição: Busca",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem.",
+        "interactsWith": [
+          "searchPositionTopbar",
+          "searchPositionSidebar"
+        ]
       },
       {
         "id": "chromeUserPosition",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Composição: Usuário"
+        "label": "Composição: Usuário",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço."
       },
       {
         "id": "colorBgBody",
@@ -8101,14 +8147,26 @@
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Densidade dos Campos (Form)"
+        "label": "Densidade dos Campos (Form)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaço entre rótulo e campo no `SarakFormGroup`: compacta 3 px, confortável 6 px, espaçosa 24 px.",
+        "interactsWith": [
+          "formLabelPosition"
+        ]
       },
       {
         "id": "formLabelPosition",
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Posição do Rótulo (Form)"
+        "label": "Posição do Rótulo (Form)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do rótulo no `SarakFormGroup`: acima do campo ou à esquerda, na mesma linha.",
+        "interactsWith": [
+          "formFieldDensity"
+        ]
       },
       {
         "id": "glassBlur",
@@ -8238,14 +8296,26 @@
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Alinhamento do Fluxo Global"
+        "label": "Alinhamento do Fluxo Global",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Alinhamento transversal do catálogo: esticar, início, centro ou fim.",
+        "interactsWith": [
+          "globalFlowDirection"
+        ]
       },
       {
         "id": "globalFlowDirection",
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Direção do Fluxo Global"
+        "label": "Direção do Fluxo Global",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Direção em que o catálogo empilha seus blocos: coluna ou linha com quebra.",
+        "interactsWith": [
+          "globalFlowAlign"
+        ]
       },
       {
         "id": "globalSaturation",
@@ -8265,7 +8335,13 @@
         "type": "number",
         "responsive": false,
         "group": "structural",
-        "label": "Espaçamento entre Seções"
+        "label": "Espaçamento entre Seções",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaçamento entre as seções de uma grade e de um catálogo; prevalece sobre `layoutGap` na `SarakGrid`.",
+        "interactsWith": [
+          "layoutGap"
+        ]
       },
       {
         "id": "h1LetterSpacing",
@@ -8352,7 +8428,10 @@
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Alinhamento do Header"
+        "label": "Alinhamento do Header",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início."
       },
       {
         "id": "headingFont",
@@ -8444,63 +8523,96 @@
         "type": "string",
         "responsive": false,
         "group": "system",
-        "label": "Família de Ícones"
+        "label": "Família de Ícones",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Família dos ícones do cromo e dos componentes: Phosphor, Lucide ou Tabler; troca o desenho de todos os ícones (Phosphor em peso, as outras em traço)."
       },
       {
         "id": "iconStrokeWidth",
         "type": "number",
         "responsive": false,
         "group": "system",
-        "label": "Espessura do Ícone"
+        "label": "Espessura do Ícone",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espessura do traço dos ícones Lucide e Tabler; os ícones Phosphor, desenhados por peso, ignoram o valor.",
+        "interactsWith": [
+          "iconFamily"
+        ]
       },
       {
         "id": "iconWeight",
         "type": "string",
         "responsive": false,
         "group": "system",
-        "label": "Peso / Estilo do Ícone"
+        "label": "Peso / Estilo do Ícone",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Peso do ícone: na família Phosphor escolhe o desenho (fino, regular, negrito, preenchido); em Tabler ajusta a espessura do traço.",
+        "interactsWith": [
+          "iconFamily"
+        ]
       },
       {
         "id": "identityAlignment",
         "type": "string",
         "responsive": false,
         "group": "branding",
-        "label": "Alinhamento"
+        "label": "Alinhamento",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Alinha a marca (logo e nome) dentro do bloco de identidade do cromo, na lateral e no topo: esquerda, centro ou direita."
       },
       {
         "id": "identityFontFamily",
         "type": "string",
         "responsive": false,
         "group": "branding",
-        "label": "Fonte do Logo"
+        "label": "Fonte do Logo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Família do nome da marca no cromo (só o texto, não a imagem do logo); o padrão herda a fonte de títulos do tema."
       },
       {
         "id": "identityFontWeight",
         "type": "number",
         "responsive": false,
         "group": "branding",
-        "label": "Peso da Fonte"
+        "label": "Peso da Fonte",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Peso da fonte do nome da marca no cromo; pesos altos dão presença de logotipo e baixos um ar editorial."
       },
       {
         "id": "identityHoverEffect",
         "type": "string",
         "responsive": false,
         "group": "branding",
-        "label": "Efeito ao Hover"
+        "label": "Efeito ao Hover",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Resposta do bloco da marca sob o ponteiro: Nenhum, Brilho (sombra luminosa), Opacidade (esmaece a 70%) ou Escala (cresce 4%)."
       },
       {
         "id": "identityPadding",
         "type": "number",
         "responsive": false,
         "group": "branding",
-        "label": "Padding do Container"
+        "label": "Padding do Container",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro extra ao redor do bloco da marca no cromo, somado ao respiro base; também aumenta a altura do bloco na lateral."
       },
       {
         "id": "identityTracking",
         "type": "number",
         "responsive": false,
         "group": "branding",
-        "label": "Espaçamento (Tracking)"
+        "label": "Espaçamento (Tracking)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaçamento entre as letras do nome da marca no cromo; positivo afasta (wordmark), negativo aperta, e o bloco inteiro cresce ou encolhe."
       },
       {
         "id": "imageCardGlowBlur",
@@ -8705,21 +8817,35 @@
         "type": "boolean",
         "responsive": false,
         "group": "system",
-        "label": "Auto-ocultar Menus"
+        "label": "Auto-ocultar Menus",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Esconde a navegação até o ponteiro chegar à borda e devolve a largura ao conteúdo; ligado, a barra não aparece no primeiro quadro."
       },
       {
         "id": "isNavHidden",
         "type": "boolean",
         "responsive": false,
         "group": "navigation",
-        "label": "Ocultar Navegação"
+        "label": "Ocultar Navegação",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
+        "interactsWith": [
+          "sidebarMinWidth",
+          "topbarCollapsedHeight",
+          "brandLogoSizeCollapsed"
+        ]
       },
       {
         "id": "isSplitViewEnabled",
         "type": "boolean",
         "responsive": false,
         "group": "system",
-        "label": "Ativar Vista Dividida (Split)"
+        "label": "Ativar Vista Dividida (Split)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Habilita o painel secundário ao lado do conteúdo do cromo (`secondaryContent`); desligado, o painel não é desenhado."
       },
       {
         "id": "kanbanCardRadius",
@@ -8766,56 +8892,86 @@
         "type": "string",
         "responsive": false,
         "group": "system",
-        "label": "Densidade Visual"
+        "label": "Densidade Visual",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escala o respiro interno da região de conteúdo do cromo: compacto reduz a 75%, confortável mantém e espaçoso aumenta a 125%."
       },
       {
         "id": "layoutGap",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Espaçamento Padrão (Gap)"
+        "label": "Espaçamento Padrão (Gap)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaçamento padrão entre irmãos quando o componente não define o seu: o `SarakFlex` e a `SarakGrid` (sem `globalSectionGap`) leem este valor, por breakpoint."
       },
       {
         "id": "layoutGapLg",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Espaçamento Grande"
+        "label": "Espaçamento Grande",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escala grande de espaçamento: entre seções e estados vazios, por breakpoint."
       },
       {
         "id": "layoutGapMd",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Espaçamento Médio"
+        "label": "Espaçamento Médio",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escala média de espaçamento, a mais usada: entre os grupos do cromo e nos blocos de conteúdo padrão, por breakpoint."
       },
       {
         "id": "layoutGapSm",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Espaçamento Pequeno"
+        "label": "Espaçamento Pequeno",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escala pequena de espaçamento: o respiro dos botões e dos campos do cromo e dos agrupamentos densos, por breakpoint."
       },
       {
         "id": "layoutGridMinCell",
         "type": "number",
         "responsive": false,
         "group": "structural",
-        "label": "Largura Mínima da Célula (Auto-fit)"
+        "label": "Largura Mínima da Célula (Auto-fit)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima de cada célula da grade auto-fit; célula menor cabe mais colunas, maior as reduz.",
+        "interactsWith": [
+          "layoutGridTemplate"
+        ]
       },
       {
         "id": "layoutGridTemplate",
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Template de Grid Global"
+        "label": "Template de Grid Global",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Como a `SarakGrid` distribui os itens: 12 colunas (cada item ocupa 4), auto-fit pela largura mínima da célula ou masonry em colunas.",
+        "interactsWith": [
+          "layoutGridMinCell"
+        ]
       },
       {
         "id": "layoutPadding",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "system",
-        "label": "Respiro do Conteúdo (Padding)"
+        "label": "Respiro do Conteúdo (Padding)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Respiro entre a região de conteúdo do cromo e as bordas, em pixels, com um valor por breakpoint; a densidade multiplica este valor."
       },
       {
         "id": "layoutPreviewMaxH",
@@ -8899,14 +9055,23 @@
         "type": "string",
         "responsive": false,
         "group": "system",
-        "label": "Largura Máxima do Conteúdo"
+        "label": "Largura Máxima do Conteúdo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira."
       },
       {
         "id": "mobileNavigationStyle",
         "type": "string",
         "responsive": false,
         "group": "global",
-        "label": "Navegação no Celular"
+        "label": "Navegação no Celular",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Onde a navegação fica no celular: barra na base, gaveta atrás do hambúrguer ou automático (barra com até 5 destinos, gaveta acima disso). Tablet e desktop não mudam.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "modalActionAlignment",
@@ -9019,7 +9184,13 @@
         "type": "string",
         "responsive": false,
         "group": "global",
-        "label": "Tema do Sistema"
+        "label": "Tema do Sistema",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Declara o modo nativo do tema: define o ícone do alternador e a mistura da vinheta. A paleta só inverte pela preferência de modo do usuário (`colorMode`), que aplica a contraparte; sozinho, o valor não repinta a tela.",
+        "interactsWith": [
+          "vignetteOpacity"
+        ]
       },
       {
         "id": "monoFont",
@@ -9123,35 +9294,63 @@
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Cor do Marcador Ativo"
+        "label": "Cor do Marcador Ativo",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do marcador luminoso ao lado do item ativo e do brilho dele.",
+        "interactsWith": [
+          "navActiveMarkerGlow"
+        ]
       },
       {
         "id": "navActiveMarkerGlow",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Brilho do Marcador"
+        "label": "Brilho do Marcador",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Raio do brilho do marcador do item ativo; 0 deixa só a barrinha.",
+        "interactsWith": [
+          "navActiveMarkerColor"
+        ]
       },
       {
         "id": "navbarLayout",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Comportamento da Topbar"
+        "label": "Comportamento da Topbar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "navigationStyle",
         "type": "string",
         "responsive": false,
         "group": "global",
-        "label": "Estrutura de Navegação"
+        "label": "Estrutura de Navegação",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
+        "interactsWith": [
+          "sidebarPosition",
+          "mobileNavigationStyle"
+        ]
       },
       {
         "id": "navItemActiveColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Cor do Item Ativo"
+        "label": "Cor do Item Ativo",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo."
       },
       {
         "id": "pageTransitionType",
@@ -9172,35 +9371,50 @@
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Tamanho da Fonte"
+        "label": "Preferência: Tamanho da Fonte",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida."
       },
       {
         "id": "preferenceLanguagePosition",
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Idioma"
+        "label": "Preferência: Idioma",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida."
       },
       {
         "id": "preferenceModePosition",
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Modo Claro/Escuro"
+        "label": "Preferência: Modo Claro/Escuro",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
       },
       {
         "id": "preferenceNavCollapsePosition",
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Navegação Recolhida"
+        "label": "Preferência: Navegação Recolhida",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido."
       },
       {
         "id": "preferenceNavigationStylePosition",
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Navegação Topo/Lateral"
+        "label": "Preferência: Navegação Topo/Lateral",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida."
       },
       {
         "id": "presetCardHoverShadowOffsetY",
@@ -9521,28 +9735,54 @@
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Espaço do Dropdown de Busca"
+        "label": "Espaço do Dropdown de Busca",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo.",
+        "interactsWith": [
+          "searchDropdownWidth"
+        ]
       },
       {
         "id": "searchDropdownWidth",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Largura do Dropdown de Busca"
+        "label": "Largura do Dropdown de Busca",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima da paleta de busca.",
+        "interactsWith": [
+          "searchDropdownGap"
+        ]
       },
       {
         "id": "searchPositionSidebar",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Posição Pesquisa (Sidebar)"
+        "label": "Posição Pesquisa (Sidebar)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco.",
+        "interactsWith": [
+          "navigationStyle",
+          "chromeSearchPosition"
+        ]
       },
       {
         "id": "searchPositionTopbar",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Posição Pesquisa (Topbar)"
+        "label": "Posição Pesquisa (Topbar)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Onde a busca fica na barra do topo: esquerda, direita (no grupo final) ou oculta; centro só se distingue da esquerda quando não há itens de navegação para ocupar o espaço.",
+        "interactsWith": [
+          "navigationStyle",
+          "chromeSearchPosition"
+        ]
       },
       {
         "id": "secondaryColor",
@@ -9619,21 +9859,40 @@
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Altura do Logo da Marca"
+        "label": "Altura do Logo da Marca",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarActiveColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Ativo da Sidebar"
+        "label": "Ativo da Sidebar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`.",
+        "interactsWith": [
+          "navigationStyle",
+          "navActiveMarkerColor"
+        ]
       },
       {
         "id": "sidebarBlur",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Backdrop Blur (Sidebar)"
+        "label": "Backdrop Blur (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
       },
       {
         "id": "sidebarCollapsedWidth",
@@ -9647,63 +9906,118 @@
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Cor da Sidebar (Fundo)"
+        "label": "Cor da Sidebar (Fundo)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarHoverColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Hover da Sidebar"
+        "label": "Hover da Sidebar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarLabelMaxWidth",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Largura Máxima do Rótulo (Sidebar)"
+        "label": "Largura Máxima do Rótulo (Sidebar)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarMaxWidth",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Largura Máxima da Sidebar"
+        "label": "Largura Máxima da Sidebar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado.",
+        "interactsWith": [
+          "sidebarWidth"
+        ]
       },
       {
         "id": "sidebarMinWidth",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Largura Mínima da Sidebar"
+        "label": "Largura Mínima da Sidebar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Piso de largura da navegação lateral, inclusive recolhida; o valor também limita `sidebarWidth` e `sidebarCollapsedWidth`.",
+        "interactsWith": [
+          "sidebarWidth"
+        ]
       },
       {
         "id": "sidebarNoiseOpacity",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Opacidade do Ruído (Sidebar)"
+        "label": "Opacidade do Ruído (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Opacidade da textura de grão sobre a navegação lateral; 0 desliga.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarPosition",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Posição da Sidebar"
+        "label": "Posição da Sidebar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarShadow",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Sombra da Sidebar"
+        "label": "Sombra da Sidebar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "sidebarWidth",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Largura da Sidebar"
+        "label": "Largura da Sidebar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`.",
+        "interactsWith": [
+          "sidebarMinWidth",
+          "sidebarMaxWidth"
+        ]
       },
       {
         "id": "skeletonCircleSize",
@@ -9740,7 +10054,10 @@
         "type": "number",
         "responsive": false,
         "group": "structural",
-        "label": "Split Pane: Largura Mínima do Painel Secundário"
+        "label": "Split Pane: Largura Mínima do Painel Secundário",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura mínima dos dois lados do `SarakSplitPane` ao arrastar a divisória; evita fechar um painel por acidente."
       },
       {
         "id": "statusErrorColor",
@@ -9846,7 +10163,10 @@
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Posição do Rótulo (Switch)"
+        "label": "Posição do Rótulo (Switch)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do texto do `SarakSwitch` em relação ao controle: à direita, à esquerda ou nas pontas. O `SarakCheckbox` e o `SarakRadio` não seguem este token."
       },
       {
         "id": "switchPulseColor",
@@ -9906,7 +10226,10 @@
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Espaço entre Abas"
+        "label": "Espaço entre Abas",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo."
       },
       {
         "id": "tableBorderColor",
@@ -9983,7 +10306,10 @@
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Margem da Seção de Abas"
+        "label": "Margem da Seção de Abas",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint."
       },
       {
         "id": "tertiaryColor",
@@ -10177,56 +10503,104 @@
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Ativo da Topbar"
+        "label": "Ativo da Topbar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarCollapsedHeight",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Altura da Topbar (Recolhida)"
+        "label": "Altura da Topbar (Recolhida)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+        "interactsWith": [
+          "isNavHidden"
+        ]
       },
       {
         "id": "topbarColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Cor da Topbar (Fundo)"
+        "label": "Cor da Topbar (Fundo)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarHeight",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "navigation",
-        "label": "Altura da Topbar"
+        "label": "Altura da Topbar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Altura da barra do topo, por breakpoint.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarHoverColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Hover da Topbar"
+        "label": "Hover da Topbar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarLabelMaxWidth",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Largura Máxima do Rótulo (Topbar)"
+        "label": "Largura Máxima do Rótulo (Topbar)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarNoiseOpacity",
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Opacidade do Ruído (Topbar)"
+        "label": "Opacidade do Ruído (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "topbarTitleColor",
         "type": "string",
         "responsive": false,
         "group": "navigation",
-        "label": "Cor do Título (Topbar)"
+        "label": "Cor do Título (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do nome da marca na barra do topo.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
       },
       {
         "id": "touchTargetMin",
@@ -10573,6 +10947,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "e4eb66261d08"
+    "kitHash": "2baaeec4d381"
   }
 }

@@ -467,7 +467,9 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 | vidro, material e sombra | `SarakCard`, classes `.sarak-glass` e `.shadow-theme` | `glass*`, `surfaceMaterial` e `shadow*` trocam com o tema; CSS escrito à mão não |
 | rolagem, movimento, camadas | CSS da lib · `motion*`, `animEnabled`, `reducedMotion` · `zIndex*` | um ritmo e uma escada de camadas para tudo; `transition` e `z-index` fixos ficam fora |
 | estado vazio, esqueleto, fluxo, matriz | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria e desfoque têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
-| navegação e cromo · i18n e preferências · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido nos próximos lotes da análise de tokens | procure em `catalog.json` antes de construir |
+| navegação, cromo, slots e marca | `SarakAppChrome` (com `SarakShellNav` e os widgets) | lateral ou topo, barra do celular, recolher, cores, sombra, marca e posição de cada widget vêm de `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` |
+| escolhas do usuário (modo, fonte, orientação, idioma) | widgets do cromo e `useSarakPreferences` | o tema decide se cada uma fica fixa, no menu ⚙ ou não é oferecida (`preference*Position`); a preferência vence o tema |
+| i18n da lib · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido no lote final da análise de tokens | procure em `catalog.json` antes de construir |
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
 a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção
@@ -477,6 +479,11 @@ aperto do botão de ação) desenham e o que cada um faz está em `GUIA-FRONTEND
 **Armadilhas medidas (fundo, movimento, camadas):** `textureOpacity`, `vignette*`, `bgNoiseAnimation`, `globalSaturation`
 e `globalContrast` dependem de `texture` diferente de `none`; `bgGradientAngle` só gira o Linear; `shadowIntensity` muda
 a opacidade do elemento `.shadow-theme`; `motionEaseIn` e `matrixGap` ainda não mudam a tela (`GUIA-FRONTEND.md` §6.7).
+
+**Armadilhas medidas (cromo e preferências):** a paleta só inverte pela preferência de modo do usuário (`mode` no tema
+declara o nativo); a preferência vence o tema em `navigationStyle` e `bodySize`; `sidebar*` só valem com navegação
+lateral e `topbar*` com a do topo; `contentAlignment` e `sidebarCollapsedWidth` ainda não mudam a tela
+(`GUIA-FRONTEND.md` §6.8).
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —
