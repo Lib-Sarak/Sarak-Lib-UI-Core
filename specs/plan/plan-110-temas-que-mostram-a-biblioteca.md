@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
