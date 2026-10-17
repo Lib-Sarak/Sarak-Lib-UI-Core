@@ -111,6 +111,20 @@ describe('fonts:check — mutações que ele PEGA', () => {
     });
 });
 
+describe('fonts:check — o espelho em JS que o carregador lê (`font-manifest.ts`)', () => {
+    it('face a menos, peso trocado, família a mais ou a menos e URL que não aponta o arquivo derrubam', () => {
+        const snapshot = fresh();
+        const lato = snapshot.runtime.Lato;
+        const withoutInter = Object.fromEntries(Object.entries(snapshot.runtime).filter(([family]) => family !== 'Inter'));
+        const mutate = (runtime: FontsSnapshot['runtime']) => codes({ ...snapshot, runtime });
+        expect(mutate({ ...snapshot.runtime, Lato: { ...lato, faces: lato.faces.slice(1) } })).toEqual(['runtime-drift']);
+        expect(mutate({ ...snapshot.runtime, Lato: { ...lato, faces: lato.faces.map((face, index) => (index ? face : { ...face, weight: '500' })) } })).toEqual(['runtime-drift']);
+        expect(mutate({ ...snapshot.runtime, 'Fonte Nova': lato })).toEqual(['runtime-drift']);
+        expect(mutate({ ...snapshot.runtime, Lato: { ...lato, faces: lato.faces.map((face) => ({ ...face, url: 'file:///x/fonts/outro.woff2' })) } })).toEqual(['runtime-drift']);
+        expect(mutate(withoutInter)).toEqual(['runtime-drift']);
+    });
+});
+
 describe('passo de cópia — o que o manifesto declara', () => {
     it('só latin, só wght nas variáveis e só pesos com arquivo nas estáticas', () => {
         const { families } = fresh().manifest!;

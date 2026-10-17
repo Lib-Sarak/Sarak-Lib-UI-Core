@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 402 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **402** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 399 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **399** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 402 |
-| `SarakDesignTokens` (tipo público) | ids | 402 |
+| `catalog/partitions/` | tokens | 399 |
+| `SarakDesignTokens` (tipo público) | ids | 399 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (40)
+### B.3 Gates registrados (41)
 
 | Comando | O que roda |
 | --- | --- |
@@ -336,6 +336,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
 | `npm run fixed-translucent:check` | `node gates/scripts/contrato/check-fixed-translucent.mjs` |
 | `npm run fonts:check` | `npx tsx gates/scripts/contrato/check-fonts.ts` |
+| `npm run fonts:manifest:check` | `npx tsx scripts/generate-font-manifest.ts --check` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |

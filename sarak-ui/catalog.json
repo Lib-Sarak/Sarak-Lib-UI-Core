@@ -116,6 +116,8 @@
     "SarakContextMenuProps",
     "SarakCurrencyInput",
     "SarakCurrencyInputProps",
+    "SarakCustomFont",
+    "SarakCustomFontFile",
     "SarakCustomizationPanel",
     "SarakDataEmpty",
     "SarakDataEmptyProps",
@@ -160,7 +162,11 @@
     "SarakFlexProps",
     "SarakFlowEngine",
     "SarakFlowEngineProps",
+    "SarakFontFallback",
     "SarakFontSizePreference",
+    "SarakFontSource",
+    "SarakFontsOption",
+    "SarakFontsOptions",
     "SarakForm",
     "SarakFormGroup",
     "SarakFormGroupProps",
@@ -5602,7 +5608,6 @@
       "--sarak-card-border-top",
       "--sarak-card-border-width",
       "--sarak-card-clip-path",
-      "--sarak-card-content-alignment",
       "--sarak-card-footer-bg",
       "--sarak-card-footer-border",
       "--sarak-card-geometric-cut",
@@ -5616,7 +5621,6 @@
       "--sarak-card-hover-style",
       "--sarak-card-hover-translate",
       "--sarak-card-hover-y",
-      "--sarak-card-image-position",
       "--sarak-card-inner-glow-color",
       "--sarak-card-inner-glow-width",
       "--sarak-card-layout-direction",
@@ -6111,7 +6115,6 @@
       "--sarak-system-tone",
       "--sarak-tab-gap",
       "--sarak-tab-section-margin",
-      "--sarak-table-action-position",
       "--sarak-table-border",
       "--sarak-table-border-color",
       "--sarak-table-border-radius",
@@ -6327,7 +6330,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 402,
+    "count": 399,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -6883,13 +6886,6 @@
         "usage": "Espessura do contorno dos quatro lados de todo cartão e `.card`. Também define a espessura da linha divisória do cabeçalho e do rodapé de `SarakCard` e o contorno do `SarakImageCard`."
       },
       {
-        "id": "cardContentAlignment",
-        "type": "string",
-        "responsive": false,
-        "group": "cards",
-        "label": "Alinhamento do Conteúdo"
-      },
-      {
         "id": "cardFooterBg",
         "type": "string",
         "responsive": false,
@@ -7016,19 +7012,6 @@
         ]
       },
       {
-        "id": "cardImagePosition",
-        "type": "string",
-        "responsive": false,
-        "group": "cards",
-        "label": "Posição da Imagem",
-        "kind": "aesthetic",
-        "modeDependent": false,
-        "usage": "Com a direção em linha, o valor da direita inverte a ordem dos blocos dos cartões de título, ação, busca e expansível; os demais valores não mudam nada hoje.",
-        "interactsWith": [
-          "cardLayoutDirection"
-        ]
-      },
-      {
         "id": "cardInnerGlowColor",
         "type": "string",
         "responsive": false,
@@ -7062,10 +7045,7 @@
         "label": "Direção do Layout",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token.",
-        "interactsWith": [
-          "cardImagePosition"
-        ]
+        "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token."
       },
       {
         "id": "cardPaddingMd",
@@ -9278,13 +9258,6 @@
         "label": "Espaço entre Abas"
       },
       {
-        "id": "tableActionPosition",
-        "type": "string",
-        "responsive": false,
-        "group": "tables",
-        "label": "Posição das Ações"
-      },
-      {
         "id": "tableBorderColor",
         "type": "string",
         "responsive": false,
@@ -9837,6 +9810,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "165522c4d4d6"
+    "kitHash": "1c566e08535c"
   }
 }

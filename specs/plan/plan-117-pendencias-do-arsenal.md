@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -102,9 +102,10 @@ nenhum `defaultValue`.
 | P3 | `cardSpotlightOpacity` — o spotlight que segue o cursor não tem regra CSS | plan-110 lote 1 | ligar | 1 | fechada |
 | P4 | `borderBeamEnabled` — o traço luminoso na borda do cartão não tem regra CSS | plan-110 lote 1 | ligar | 2 | fechada |
 | P5 | `cardSearchBorderBeamActive` — o traço no cartão de busca em foco | plan-110 lote 1 | ligar | 2 | fechada |
-| P6 | `cardContentAlignment` — redundante com `cardTextAlign`; ligá-lo regride o layout | plan-110 lote 1 | retirar | 3 | aberta |
-| P7 | `tableActionPosition` — a tabela não tem coluna de ações | plan-110 lote 1 | retirar | 3 | aberta |
-| P8 | `getCardStyles` morto e `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` o citando; `cardVariant` com `axis: 'texture'` | plan-110 lote 1 (backlog 34) | retirar/corrigir | 3 | aberta |
+| P6 | `cardContentAlignment` — redundante com `cardTextAlign`; ligá-lo regride o layout | plan-110 lote 1 | retirar | 3 | fechada |
+| P7 | `tableActionPosition` — a tabela não tem coluna de ações | plan-110 lote 1 | retirar | 3 | fechada |
+| P8 | `getCardStyles` morto e `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` o citando; `cardVariant` com `axis: 'texture'` | plan-110 lote 1 (backlog 34) | retirar/corrigir | 3 | fechada |
+| P9 | `cardImagePosition` — a opção `top` (o padrão) não tem leitor; o código morto escondia isso (`token-reader:check` vermelho; R40 exige `ALLOWLIST` vazia) | plan-117 lote 3 | retirar | 3 (correção) | fechada |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | **a decidir pelo dono**: aceitar e documentar · ou embarcar fontes | — | candidata |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -396,6 +397,119 @@ Dois listeners (`pointermove`, `pointerleave`) por cartão, **somente** quando o
 - `npm run guide` e `npm run dev-kit` não foram rodados (instrução): `sarak-ui/catalog.json` e o `GUIA` gerado só refletem o `usage` novo depois que o revisor regenerar; `guide:check` pode acusar divergência até lá (o `GUIA-FRONTEND.md` foi editado à mão apenas no §6.4).
 - Não conferido por pixel no spec: o miolo do cartão vazio (inspeção visual da captura, manual).
 
+## Resumo da execução (lote 3: P6, P7, P8) — 2026-10-16
+
+**Resultado:** Concluído com pendências (o `token-reader` acusa uma opção sem leitor que o código morto mascarava — ver Pendências; precisa de decisão).
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+(O `status` da plan estava `🔴 A executar` ao chegar, não `🟡`; segui o despacho do prompt. Durante a execução apareceram, da `plan-118` em paralelo e não tocados por mim: `browser-tests/fixtures/harness-entry.tsx`, `browser-tests/fontes-embarcadas.spec.ts`, `gates/scripts/contrato/check-fonts*.ts`, `package.json`, `scripts/__tests__/generate-font-manifest.test.ts`, `scripts/fonts/runtimeManifest.ts`, `scripts/generate-font-manifest.ts`, `src/core/Provider/{SarakUIProvider.tsx,providerProps.ts,types.ts,fontLoader.ts}`, `src/core/Provider/__tests__/{EmbeddedMode,SarakUIProvider,fontLoader}.test.tsx`, `src/core/Provider/hooks/{useSarakUIEffects.ts,useSarakFonts.ts}` e o teste dele, `src/core/Provider/generated/font-manifest.ts`, `src/core/Provider/utils/fontSelection.ts`.)
+
+**O que foi feito**
+- P6/P7 (pela `ui-refatorar-componente`) — `cardContentAlignment` saiu de `src/core/Design/schema/cards.ts`, de `catalog/partitions/cards_engine.json` e de `theme_table_mapping.json`; `tableActionPosition` saiu de `schema/tables.ts`, de `partitions/components_base.json` e de `theme_table_mapping.json`. Nenhum tema/preset os carregava; nenhum CSS lia `--sarak-card-content-alignment`. `types.ts`/`payloadExtraKeys.ts` não citavam os ids: não foram tocados.
+- `npm run token-types` → 400 tokens (eram 402): regenerou `design-token-ids.ts` e `design-token-docs.json`.
+- `src/core/Provider/utils/removedTokenKeys.ts`: os dois ids entram em `REMOVED_TOKEN_KEYS`, com o motivo em comentário.
+- `gates/allowlists/tokenDocumentationPending.json`: −2 entradas; **a exceção `achado-lote-1` ficou vazia** (0 ocorrências).
+- P8 — `useStructuralStyles.ts`: apagados `getCardStyles` (e o bloco "EIXO 3") e a chave no retorno; confirmado antes que nenhum arquivo chamava `getCardStyles` (grep em `src/`, `gates/`, `scripts/`: só a definição, o retorno e o `structuralConsumer`/`consumerHook`). `schema/cards.ts` e `cards_engine.json`: `cardImagePosition` fica com o leitor `useCardLayoutStyles` só. `useTableLayoutStyles.ts`: apagados `actionColumnAlignmentClass` (interface e retorno), `actionAlignmentMap` e a leitura de `tableActionPosition` (inclusive da lista de dependências do `useMemo`); o único consumidor (`useSarakTableViewModel.ts:36`) só usa `cellDensityClass`.
+- P8 — `cardVariant`: **`axis` retirado** (não trocado). O `axis` de `types.ts:48-53` é "eixo visual, usado para medir a completude de um tema", e diz que "tokens estruturais/não-visuais (ex: `mode`, `navigationStyle`) podem não ter eixo"; `navigationStyle` (a "estrutura" de navegação) não tem. `cardVariant` é `kind: 'functional'`, escolha de componente que o tema não declara: nenhum dos seis eixos (`color`, `geometry`, `elevation`, `texture`, `density`, `motion`) o descreve. Nenhum código lê o `axis` do token (os eixos de `themeAxes.ts` são um mapa próprio), então a retirada não muda comportamento.
+- Testes dos trechos mortos: nenhum teste exercitava `getCardStyles` nem `actionColumnAlignmentClass` (o `useTableLayoutStyles.test.ts` só confere que o módulo existe); nada a remover, nenhum `skip`.
+- Teste novo `src/core/Provider/utils/__tests__/removedTokenKeys.test.ts` (2 casos, módulo novo a cada caso por causa do aviso único por sessão): `validateDesign` com `cardContentAlignment`/`tableActionPosition` descarta a chave, avisa uma vez com o nome entre aspas e "removido do schema", mantém o token vizinho (`cardTextAlign`/`tableDensity`), e a mescla com `sarakGetDefaultDesignState()` não traz a chave (cai no padrão).
+- Documentação: `docs/migracoes.md` `## 8.0.0` — subseção nova MAJOR *"`cardContentAlignment` e `tableActionPosition` saem do schema"* (antes/depois, o que fazer) e o parágrafo da subseção de documentação que dizia "continuam no schema" passou a apontar para ela; `sarak-ui/GUIA-FRONTEND.md` §6.4 (texto-fonte): lista de "não mudam a tela" → "Nenhum.", parágrafo reescrito sem citar os ids; `specs/plan/anexos/plan-110-tokens-funcionais.md` §4.1: desfecho dos dois e a exceção vazia; `.agents/skills/ui-integra-consumidor/SKILL.md:419-421`: a frase "Sete tokens do schema não mudam a tela hoje" estava falsa e passou a apontar os efeitos que desenham (`.claude/skills` é o mesmo arquivo, symlink).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/cards.ts` | alterado | −`cardContentAlignment`; `cardImagePosition` sem `getCardStyles`; `cardVariant` sem `axis` |
+| `src/core/Design/schema/tables.ts` | alterado | −`tableActionPosition` |
+| `src/core/Design/catalog/partitions/cards_engine.json` · `components_base.json` | alterado | −1 entrada cada; `consumerHook` de `cardImagePosition` |
+| `src/core/Design/catalog/theme_table_mapping.json` | alterado | −2 ids |
+| `src/core/Provider/generated/design-token-ids.ts` · `design-token-docs.json` | alterado (gerado) | `token-types` |
+| `src/core/Provider/utils/removedTokenKeys.ts` | alterado | +2 ids |
+| `src/core/Provider/utils/__tests__/removedTokenKeys.test.ts` | criado | 2 casos |
+| `src/components/atomic/hooks/useStructuralStyles.ts` | alterado | −`getCardStyles` |
+| `src/components/atomic/Tables/hooks/useTableLayoutStyles.ts` | alterado | −`actionColumnAlignmentClass` e o que só ele usava |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −2 entradas (exceção vazia) |
+| `docs/migracoes.md` · `sarak-ui/GUIA-FRONTEND.md` · `specs/plan/anexos/plan-110-tokens-funcionais.md` · `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | notas |
+
+**Verificações executadas**
+- `npx vitest run src/core/Provider/utils/__tests__/removedTokenKeys.test.ts` → 2/2 (a 1ª tentativa morreu com `Timeout waiting for worker to respond` sob carga, sem rodar teste; repetida, passou). **Mutação:** tirar `tableActionPosition` do `Set` → o caso dele cai (1 falha, 1 passa); restaurado (diff conferido).
+- `npx vitest run src/core/Design src/core/Provider src/components/atomic gates/scripts/audit gates/scripts/contrato scripts` (45 min, sob a carga da execução paralela) → **343 arquivos, 2399 testes: 2396 passaram, 3 falharam**:
+  1. `gates/scripts/contrato/__tests__/check-token-reader.test.mjs:614` — **meu**: `open` = `[{ kind: 'option', tokenId: 'cardImagePosition', value: 'top' }]` (ver Pendências).
+  2. `src/core/Provider/__tests__/SarakUIProvider.test.tsx:131` — padrão `bundled` de fontes: `expected 0 to be greater than 0`. Arquivo e código (`SarakUIProvider.tsx`, `fontLoader.ts`) da `plan-118` em execução; não tocados por mim.
+  3. `src/core/Provider/hooks/__tests__/useSarakUIEffects.test.ts:42` — `document.title`: `'Título do Host'` ≠ `'Sistema do Cliente'`. Arquivo e hook modificados pela `plan-118`; não tocados por mim.
+- `grep` dos dois ids em `src/`, `docs/`, `sarak-ui/`, `.agents/`: sobram `removedTokenKeys.ts` (+ o teste dele), `docs/migracoes.md` e, gerados (o revisor regenera), `sarak-ui/catalog.json` e `sarak-ui/docs/migracoes.md`. `sarak-ui/GUIA-FRONTEND.md` não os cita mais. `getCardStyles`/`actionColumnAlignmentClass` em `src/`: 0.
+- Não rodei: `guide`, `dev-kit`, `build`, suíte completa, `tsc`, baseline, Anel 0/1, navegador.
+
+**Critérios de aceite (lote 3)**
+- [x] Os dois tokens fora do schema, das partições, do mapeamento e dos tipos — `design-token-ids.ts` com 400; grep acima.
+- [x] Entrada em `REMOVED_TOKEN_KEYS`; tema salvo com a chave não quebra (aviso e padrão) — `removedTokenKeys.test.ts` 2/2, com mutação.
+- [x] Código morto removido; `cardVariant` sem `axis 'texture'` — diff de `useStructuralStyles.ts`, `useTableLayoutStyles.ts`, `cards.ts`.
+- [x] Exceção `achado-lote-1` vazia; GUIA §6.4 sem os sete — `tokenDocumentationPending.json`, GUIA.
+- [x] Nenhum `defaultValue`, tema, token novo ou opção nova.
+- [ ] `token-reader:check` verde — motivo: o achado de `cardImagePosition: 'top'` (Pendências), que pede decisão.
+- [ ] Tabela da §5.1 sem linha aberta — C1–C3 relatadas abaixo; decisão do dono/revisor.
+
+**Candidatas C1–C3 (achado, não correção — estado em 2026-10-16)**
+- **C1 — fontes só pelo Google Fonts.** Em tratamento pela `plan-118` (lotes 1, 1b e 2 aprovados; lote 3 em execução agora): `dist/fonts/` existe com 62 arquivos (woff2 + `THIRD-PARTY-FONTS`), e há carregador em curso (`src/core/Provider/fontLoader.ts`, `hooks/useSarakFonts.ts`, `utils/fontSelection.ts`, não rastreados). `src/core/Provider/utils/googleFontsUrl.ts:52` ainda monta `https://fonts.googleapis.com/css2?…`. O teste do padrão `bundled` (`SarakUIProvider.test.tsx:131`) falhava no momento da minha bateria. Sugestão: a C1 se fecha com a `plan-118`.
+- **C2 — catálogo.** Medido nas 6 partições: **400 entradas, 400 `tokenId` únicos, 0 duplicados** (nenhum `name` com "Duplicado"; os 7 duplicados do backlog 7 já não existem — o commit `e9dd00a5` trouxe o teste de unicidade); toda entrada tem token no schema (0 fora dos tipos). **26 entradas sem `name` nem `tags`** (eram 28), todas em `components_base.json` — de `tableZebraStriping` (`:1489`) a `rangeActiveColor` (`:1860`): `tableZebraStriping`, `tableBorderRadius`, `inputPadding`, `inputBorderType`, `inputBackdropBlur`, `inputShadow`, `inputIconColor`, `inputErrorColor`, `iconButtonGlowBlurSm/Md/Lg`, `iconButtonFrostedShadowOffsetY`, `iconButtonFrostedShadowBlur`, `actionGlowShadowOffsetY/Blur/Spread`, `kanbanHeaderPaddingY`, `kanbanHeaderTracking`, `kanbanCardRadius`, `toastMinWidth`, `toastMaxWidth`, `toastAccentWidth`, `contextMenuMinWidth`, `multiSelectInputMinWidth`, `searchBackdropBlur`, `rangeActiveColor`. (A plan diz "sem leitor"; o backlog 7 diz "sem `name` nem `tags`" — medi o do backlog.)
+- **C3 — `--sarak-font-size`.** A emissão em CSS do backlog 6 (`_typography.css:14-18`, `[data-font-scale]`) **não existe mais** (0 ocorrências em `src/**/*.css`; `data-font-scale` 0 fora de testes). O nome sobrevive só em `src/core/Provider/manifest.ts:153` (`fontScale.vars`, junto de `--sarak-font-scale`, `--font-size-factor`, `--theme-font-size-base`); o manifesto é importado só por `validation.ts:36` (chaves aceitas) e exportado no barril (`SARAK_DESIGN_MANIFEST`), não é emissor. `fontScale` não é token do schema (está em `payloadExtraKeys.ts:20`) e `overlayPreferences.ts:7-10` o chama de "legado e não emite nada". Nenhum leitor de `--sarak-font-size` em `src/` (CSS/TS), 0 ocorrências em `sarak-ui/catalog.json`. Dos seis nomes do backlog 6: `--sarak-palette` saiu do manifesto; `--sarak-error-color`, `--sarak-success-color`, `--sarak-warning-color`, `--sarak-font-scale` seguem no manifesto sem leitor CSS em `src/styles`/`src/components`; `--sarak-card-border` tem 18 arquivos leitores. Ou seja: hoje a C3 é "nome anunciado no manifesto público sem emissor", não "emitida fora de `tokens.cssVars`".
+
+**Decisões e suposições**
+- `cardVariant` sem `axis` (justificativa acima), em vez de `geometry`.
+- Atualizei a frase da skill `ui-integra-consumidor` (§3.1 da plan a inclui em "Documentar"); estava falsa ("sete tokens").
+- Não declarei o achado do `token-reader` na `ALLOWLIST`: seria silenciar um gate por conta própria.
+
+**Achados fora do escopo (não corrigidos)**
+- `useCardLayoutStyles.ts:28` — o padrão interno de `cardImagePosition` é `'none'`, o do schema é `'top'`; e `left` só "tem leitor" para o gate porque o literal `'left'` aparece na tabela de `cardTextAlign` (`alignStrats`, `:14`), coincidência textual (limite 2 do gate).
+
+**Pendências / riscos**
+- **`token-reader:check` vermelho por `cardImagePosition: 'top'`.** O único "leitor" da opção `top` (o padrão do token) era o `getCardStyles` morto; sem ele o gate vê a verdade que o anexo já registrava ("`left`, `top` e `none` não mudam nada"). Opções: (a) entrada na `ALLOWLIST` de `check-token-reader.mjs` com o motivo (parcialidade já documentada no `usage`) e uma linha nova na §5.1 para decidir o token; (b) retirar as opções sem efeito — mexe no `defaultValue` (`top`), fora desta plan; (c) fazer `top`/`left` desenharem — funcionalidade nova, fora desta plan. **Recomendo (a)**, com a decisão de fundo para o dono.
+- As 2 falhas de Provider são da `plan-118` em voo; a verificação conjunta do revisor dirá se persistem.
+- `sarak-ui/catalog.json`, `sarak-ui/docs/migracoes.md` e o apêndice do GUIA ainda trazem os ids até o revisor rodar `guide`/`dev-kit`.
+
+## Resumo da execução (correção 1) — 2026-10-16
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar:** os arquivos do lote 3 (meus) mais os da `plan-118` e do revisor: `dist/` reconstruído (chunks trocados), `sarak-ui/*` e `sarak-dev/*` regenerados, `specs/00-{backlog,indice,prompt-executor}.md`, `scripts/verify-changes*.mjs`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` e os de fontes já listados no resumo do lote 3. Nada disso foi tocado por mim nesta rodada, exceto `sarak-ui/GUIA-FRONTEND.md` (texto-fonte, por substituição exata).
+
+**Achado 1 (P9) — `cardImagePosition` retirado** (pela `ui-refatorar-componente`)
+- `src/core/Design/schema/cards.ts`: o token saiu; `cardLayoutDirection` perdeu o `interactsWith: ['cardImagePosition']` (o campo é opcional; não pus outro id no lugar).
+- `catalog/partitions/cards_engine.json`: −a entrada; `relatedTokens` de `cardLayoutDirection` sem o id. `theme_table_mapping.json`: −o id.
+- `npm run token-types` → **399 tokens** (eram 400).
+- `src/core/Provider/utils/removedTokenKeys.ts`: + `'cardImagePosition'`, com o motivo. `__tests__/removedTokenKeys.test.ts`: + o caso (`right` salvo com `cardLayoutDirection: 'row'` → chave descartada, aviso que a nomeia, `cardLayoutDirection` mantido, padrão sem a chave).
+- `src/components/atomic/Cards/hooks/useCardLayoutStyles.ts`: sai a leitura de `cardImagePosition` e o ramo `flex-row-reverse`; `containerClass = direction === 'row' ? 'flex flex-row' : 'flex flex-col'` (const, sem o `.trim()` que já não tinha o que aparar); dependências do `useMemo` sem o id; JSDoc sem "Posição de Imagem". `__tests__/useCardLayoutStyles.test.ts`: o caso do `row-reverse` saiu; o caso de `row` passou a afirmar `containerClass` exato (`'flex flex-row'`).
+- Nenhum tema/preset declarava o id (`grep` em `src/core/Design/presets`: 0). Nenhuma opção nova; `check-token-reader.mjs` e a `ALLOWLIST` intocados.
+- `docs/migracoes.md`: a subseção do lote 3 virou *"`cardContentAlignment`, `tableActionPosition` e `cardImagePosition` saem do schema"* (o ponteiro na subseção de documentação acompanha): 402 → 399, linha de antes/depois de `right` em linha (`flex-row-reverse` → `flex-row`), e o que fazer: `className="flex-row-reverse"` no cartão. **Medido** antes de escrever (`compile` do `tailwindcss` 4.2.2 instalado): `.flex-row-reverse` é emitida depois de `.flex-row`, então vence na concatenação do `className` com o `containerClass` na raiz.
+- `sarak-ui/GUIA-FRONTEND.md` (texto-fonte, antes do apêndice): o item dos tokens de direção perdeu `cardImagePosition` e ganhou a dica do `className`; §6.4 cobre "os que não mudavam (ou só mudavam com um valor)". As 3 citações restantes estão no apêndice gerado (linhas 861, 896, 899).
+- `specs/plan/anexos/plan-110-tokens-funcionais.md` §4.1: desfecho de `cardImagePosition`.
+
+**Achado 2 — snapshots**
+- `PreviewCanvas.test.tsx.snap`: 22 linhas saem, 16 entram. Conferido por script sobre o `git diff -U0`: 6 das removidas são os atributos `data-sx-card-content-alignment` / `data-sx-table-action-position` / `data-sx-card-image-position`; nas outras 16, apagar `--sarak-card-content-alignment`, `--sarak-table-action-position` e `--sarak-card-image-position` da linha antiga dá exatamente a nova (**0 diferenças além disso**).
+- `PresetCard.test.tsx.snap`: 1 linha ↔ 1 linha; as mesmas três variáveis e mais nada (0 diferenças).
+- Nenhum outro `.snap` mudou (`git diff --stat -- '*.snap'`: só esses dois).
+
+**Verificações executadas**
+- `npx vitest run` dos 3 arquivos tocados (`removedTokenKeys`, `useCardLayoutStyles`, `check-token-reader.test.mjs`) → 3 arquivos, 52/52.
+- `node gates/scripts/contrato/check-token-reader.mjs` → `[OK] Todo valor emitido tem leitor.` (ALLOWLIST vazia).
+- `npx vitest run -u …PreviewCanvas.test.tsx` → 4/4, 1 snapshot atualizado.
+- `npx vitest run -u …PresetCard.test.tsx` → por algum motivo **rodou a suíte inteira** (502 arquivos), não só o arquivo: 3535/3536, 1 snapshot atualizado (o do `PresetCard`); a falha é `check-public-types-parity.test.mjs` (abaixo). Registro porque não era o pedido; o `-u` só reescreveu esse snapshot.
+- `npm run verify -- --tier=quick` → `tsc` OK, `audit:baseline --with-tsc` OK, Anel 1 OK (inclusive `token-reader`, `token-types`, `token-docs`, `catalog`, `barrel`, `variable-contract`), Anel 0 simulado 0 achados; **3 FAIL que não são desta correção**: `plan-index:check` (`plan-118`: índice 🔵 × frontmatter 🟠), `guide:check` (5 arquivos de `sarak-ui/` defasados) e `dev-kit:check` (3 de `sarak-dev/`) — regeneração do revisor.
+- `npx vitest run src/core/Design src/core/Provider src/components/atomic src/features/DesignEngine gates/scripts/audit gates/scripts/contrato scripts` → **432 arquivos, 2862 testes: 2861 passaram, 1 falhou** — `check-public-types-parity.test.mjs:127`: `SarakFontSource`, `SarakFontsOption`, `SarakFontsOptions` declarados no `dist/index.d.ts` sem export (tipos da `plan-118`, cuja correção mexe em `src/index.ts`).
+- Não rodei: `guide`, `dev-kit`, `build`, navegador.
+
+**Critérios**
+- [x] `cardImagePosition` fora do schema, das partições, do mapeamento e dos tipos — 399 tokens; `grep` em `src/`, `docs/`, `sarak-ui/`, `.agents/`: sobram `removedTokenKeys.ts` (+ teste), `docs/migracoes.md` e os gerados (`sarak-ui/catalog.json`, apêndice do GUIA).
+- [x] `REMOVED_TOKEN_KEYS` + teste — 3/3 casos.
+- [x] `token-reader:check` e `check-token-reader.test.mjs` verdes com a `ALLOWLIST` vazia.
+- [x] Snapshots atualizados com só as três variáveis.
+- [x] Nenhum `defaultValue`, tema, token ou opção novos.
+
+**Decisões e suposições**
+- `interactsWith` de `cardLayoutDirection` removido em vez de apontado para outro token: nenhum outro token muda o efeito da direção.
+
 ---
 
 # 10. Veredito
@@ -500,3 +614,49 @@ movimento reduzido zera os três, token 0 não registra listener, a base do cart
 **Lote 2 da `plan-117` fechado (P4, P5).** Faltam P6–P8 (retirada, lote 3) e as candidatas C1–C3 a decidir.
 
 **Status: 🔴 A executar (lote 3).**
+
+## Veredito — 2026-10-16 — lote 3 (P6, P7, P8) — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido):** os dois tokens saíram do schema, das partições e do mapeamento (400 tokens, antes 402),
+estão em `REMOVED_TOKEN_KEYS` com teste (aviso nomeando a chave, padrão no lugar, mutação provada), a exceção
+`achado-lote-1` ficou **vazia**, `getCardStyles` e `actionColumnAlignmentClass` saíram, `cardVariant` ficou sem `axis`
+(a justificativa é correta: nenhum dos seis eixos o descreve), nota MAJOR e GUIA §6.4 reescritos. As candidatas C1–C3
+foram relatadas como achado, sem correção, como a plan manda: **C2** (os 7 `tokenId` duplicados não existem mais; sobram
+26 entradas sem `name`/`tags` em `components_base.json`) e **C3** (`--sarak-font-size` já não é emitida) estão
+**desatualizadas no backlog** — vou atualizar os itens 6 e 7; **C1** fecha com a `plan-118`.
+
+**Verificação conjunta com a `plan-118` — o que quebrou nesta plan:**
+
+1. **`token-reader:check` vermelho** (`cardImagePosition = "top"`; também `check-token-reader.test.mjs`). O único
+   "leitor" de `top` era o `getCardStyles` morto: o código morto escondia que a opção não é lida por ninguém
+   (`useCardLayoutStyles` só age em `right` com direção em linha). A R40 exige a `ALLOWLIST` **vazia**, então a
+   opção (a) do resumo (entrada na `ALLOWLIST`) não é permitida, e (b)/(c) mexem em `defaultValue` ou criam
+   funcionalidade. **Decisão do revisor (P9): retirar `cardImagePosition`** pelo mesmo caminho de P6/P7: nenhum tema o
+   declara, o efeito era a inversão da ordem dos blocos num cartão em linha, e "token oferecido muda a tela ou sai" é a
+   regra do dono para esta plan. **Correção:** retirar do schema, das partições, do mapeamento e dos tipos
+   (`npm run token-types`); entrada em `REMOVED_TOKEN_KEYS` com teste; simplificar `useCardLayoutStyles` (a direção em
+   linha vira sempre `flex-row`) e o que só `cardImagePosition` usava; nota MAJOR (o que o importador faz para inverter
+   a ordem: o próprio `className`); GUIA/anexo. O dono pode vetar; sem veto, é o que a plan manda.
+2. **Dois snapshots perderam as variáveis que a retirada removeu:** `PresetCard.test.tsx` e `PreviewCanvas.test.tsx`
+   (`--sarak-card-content-alignment` e `--sarak-table-action-position` saíram do `style`). É consequência correta de
+   P6/P7: **atualizar os dois snapshots** (`-u` só nesses arquivos), conferindo no diff que **só** essas variáveis (e,
+   depois do achado 1, a de `cardImagePosition`) mudaram.
+
+Os outros vermelhos da verificação conjunta (`public-types`, cobertura de `useSarakFonts`, tamanho de `font-manifest.ts`)
+são da `plan-118`.
+
+**Status: 🔵 Em correção.** O resto da entrega está aprovado como está.
+
+## Veredito — 2026-10-16 — correção 1 (lote 3: P9) — 🟢 Aprovado
+
+**Conferido:** `cardImagePosition` saiu do schema, das partições, do mapeamento (399 tokens) e dos tipos; está em
+`REMOVED_TOKEN_KEYS` com teste; `useCardLayoutStyles` simplificado (linha vira sempre `flex-row`); os dois snapshots
+mudaram **só** nas variáveis retiradas; `token-reader:check` verde com a `ALLOWLIST` vazia.
+
+**Verificação conjunta (nível `full` + navegador, uma vez):** `tsc`, baseline com `tsc`, Anel 1, R36 e Anel 0 (1.853
+linhas, 0 achados) verdes; kits regenerados e em dia. Suíte: as únicas falhas (13, `cssSafety.test.ts`) e as 2 do
+navegador (`fontes-do-host.spec.ts`) são do **lote 4 da `plan-118`**, em execução em paralelo no mesmo worktree;
+`cssSafety` passa isolado (38/38). Navegador: 350 de 352 passam, incluindo todos os casos do arsenal desta plan.
+
+**Tabela §5.1:** nenhuma linha aberta. C1 fecha com a `plan-118`; C2 e C3 estão desatualizadas e já refletidas no
+backlog (item 7). **Plan aprovada**; a síntese (02/04/09) aguarda autorização do dono. Libera os lotes 5+ da `plan-110`.

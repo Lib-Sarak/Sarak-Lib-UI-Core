@@ -1,11 +1,29 @@
 import type { SarakDesignState } from '../../../../core/Provider/types';
-import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
+import { sarakGetAllDesignTokens, sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 
 export interface ThemeExportPayload {
     id: string;
     name: string;
     design: SarakDesignState;
+    /**
+     * Famílias de fonte que o tema usa e que não são da lib (vieram de `options.fonts.custom` deste host): quem
+     * importar o tema precisa registrá-las no próprio Provider, senão o token cai no padrão. Fora do `design` e só
+     * presente quando há alguma — o formato `{ id, name, design }` continua o mesmo.
+     */
+    requiresFonts?: string[];
 }
+
+/** Famílias dos tokens de fonte do design que não estão nas opções do schema (as da lib e a herança da identidade). */
+export const listHostFontFamilies = (design: SarakDesignState): string[] => {
+    const values = design as Record<string, unknown>;
+    const families = new Set<string>();
+    for (const token of sarakGetAllDesignTokens().filter((candidate) => candidate.type === 'font')) {
+        const value = values[token.id];
+        const catalog = (token.constraints?.options ?? token.options ?? []).map((opt) => String(opt.value ?? opt.id ?? ''));
+        if (typeof value === 'string' && value !== '' && !catalog.includes(value)) families.add(value.split(',')[0].replace(/['"]/g, '').trim());
+    }
+    return [...families];
+};
 
 /**
  * Resolve o conjunto COMPLETO de tokens (Spec 40.1 — L6): parte dos defaults de TODOS
@@ -38,12 +56,16 @@ export const slugifyThemeId = (name: string): string => {
  * do próprio repo e passa via `customThemes` do `SarakUIProvider`. Não há
  * persistência em servidor: "salvar um tema" É exportar este JSON.
  */
-export const buildThemeExportPayload = (design: SarakDesignState, name: string): ThemeExportPayload => ({
-    id: slugifyThemeId(name),
-    name: name.trim() || 'Meu Novo Tema',
-    // Exporta o conjunto COMPLETO de tokens (L6), nunca um subconjunto do rascunho.
-    design: resolveCompleteDesign(design)
-});
+export const buildThemeExportPayload = (design: SarakDesignState, name: string): ThemeExportPayload => {
+    const requiresFonts = listHostFontFamilies(design);
+    return {
+        id: slugifyThemeId(name),
+        name: name.trim() || 'Meu Novo Tema',
+        // Exporta o conjunto COMPLETO de tokens (L6), nunca um subconjunto do rascunho.
+        design: resolveCompleteDesign(design),
+        ...(requiresFonts.length > 0 ? { requiresFonts } : {}),
+    };
+};
 
 /** Dispara o download do JSON no navegador. Só roda no cliente (`document` real). */
 export const downloadThemeJson = (payload: ThemeExportPayload): void => {

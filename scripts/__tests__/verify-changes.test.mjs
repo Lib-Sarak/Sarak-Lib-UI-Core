@@ -44,4 +44,12 @@ describe('verify-changes — o nível mínimo que cobre a mudança', () => {
         expect(isMetadataOnly(["+  modeDependent: true,", '+', "+  interactsWith: ['a'],"])).toBe(true);
         expect(isMetadataOnly(["+  label: 'x',"])).toBe(false);
     });
+
+    it('quick = full sem a suíte (o que o executor roda antes de entregar)', () => {
+        const flat = (tier) => commandsFor(tier).map(([cmd, args]) => `${cmd} ${args.join(' ')}`);
+        expect(flat('quick').some((c) => c.includes('vitest'))).toBe(false);
+        expect(flat('quick').some((c) => c.includes('audit:baseline'))).toBe(true);
+        expect(flat('quick').some((c) => c.includes('token-reader:check'))).toBe(true);
+        expect(flat('full').length).toBe(flat('quick').length + 1);
+    });
 });

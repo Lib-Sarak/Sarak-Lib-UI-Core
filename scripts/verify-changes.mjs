@@ -7,7 +7,8 @@
 //
 //   node scripts/verify-changes.mjs            classifica e RODA
 //   node scripts/verify-changes.mjs --dry      só classifica e imprime os comandos
-//   node scripts/verify-changes.mjs --tier=full|themes|schema-meta|docs   força o nível
+//   node scripts/verify-changes.mjs --tier=full|quick|themes|schema-meta|docs   força o nível
+//   `quick` = `full` SEM a suíte e SEM build (tsc, baseline, Anel 1: ~3 min) — é o que o executor roda antes de entregar.
 //
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este script NÃO vê
@@ -94,6 +95,10 @@ export function commandsFor(tier) {
       npm('token-types:check'), npm('token-docs:check'), npm('catalog:check'), npm('themes:catalog:check'),
       vitest('src/core/Design', 'src/core/Provider/utils/__tests__', 'gates/scripts/contrato', 'scripts'),
       npm('audit:baseline'), npm('plan-index:check'), ...kits,
+    ];
+    case 'quick': return [
+      ['npx', ['tsc', '--noEmit']], npm('audit:baseline', '--with-tsc'),
+      ...ANEL1.map((script) => npm(script)), node('gates/scripts/contrato/check-trail-citation.mjs'), ...kits,
     ];
     case 'full': return [
       ['npx', ['tsc', '--noEmit']], vitest(), npm('audit:baseline', '--with-tsc'),

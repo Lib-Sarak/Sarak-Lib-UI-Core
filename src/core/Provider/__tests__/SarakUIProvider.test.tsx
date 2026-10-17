@@ -120,9 +120,22 @@ describe('SarakUIProvider', () => {
         expect(screen.queryByTestId('hidden-child')).not.toBeInTheDocument();
     });
 
-    it('injeta as fontes no head do document ao montar', () => {
+    it('padrão `bundled`: injeta o `@font-face` das famílias do design, sem Google Fonts nem `preconnect`', () => {
+        document.querySelectorAll('link[rel="preconnect"], #sarak-core-fonts, style[data-sarak-font]').forEach((el) => el.remove());
         render(
             <SarakUIProvider>
+                <div />
+            </SarakUIProvider>
+        );
+
+        expect(document.querySelectorAll('style[data-sarak-font]').length).toBeGreaterThan(0);
+        expect(document.getElementById('sarak-core-fonts')).toBeNull();
+        expect(document.querySelectorAll('link[rel="preconnect"]')).toHaveLength(0);
+    });
+
+    it("`options.fonts: 'google'` injeta as fontes do Google no head do document ao montar", () => {
+        render(
+            <SarakUIProvider options={{ fonts: 'google' }}>
                 <div />
             </SarakUIProvider>
         );

@@ -97,3 +97,26 @@ desligado, em repouso e com o campo em foco) e saíram da exceção `achado-lote
 | `cardSearchBorderBeamActive` | o mesmo anel no `SarakSearchCard`, só com o campo em foco | idem |
 
 Ficam abertos, para o lote 3 da plan-117: `cardContentAlignment` e `tableActionPosition`.
+
+Os dois últimos saíram do schema no lote 3 da plan-117 (2026-10-16): fora das partições do catálogo, do mapeamento de
+tema e dos tipos gerados (400 tokens), com entrada em `REMOVED_TOKEN_KEYS` — o tema salvo com a chave carrega, com
+aviso, e a chave é descartada. O código morto que os lia também saiu (`getCardStyles` em `useStructuralStyles`,
+`actionColumnAlignmentClass` em `useTableLayoutStyles`), e com ele o ramo morto de `cardImagePosition`, que fica só
+com o leitor `useCardLayoutStyles`.
+
+| Token | Desfecho |
+|---|---|
+| `cardContentAlignment` | retirado — redundante com `cardTextAlign`, que já distribui o conteúdo |
+| `tableActionPosition` | retirado — a `SarakTable` não tem coluna de ações |
+
+A exceção `achado-lote-1` do gate de documentação ficou vazia: dos sete, cinco desenham e dois saíram.
+
+Na correção do lote 3 (2026-10-16) saiu também `cardImagePosition`, o "parcial" desta seção: sem o `getCardStyles`
+morto, a opção `top` (o padrão) ficou sem leitor e o `token-reader` acusou. Só `right` com `cardLayoutDirection` em
+linha mudava algo (invertia a ordem dos blocos). Saiu do schema, das partições, do mapeamento e dos tipos (399 tokens),
+com entrada em `REMOVED_TOKEN_KEYS`; o `useCardLayoutStyles` passou a desenhar a direção em linha sempre como
+`flex-row`. Quem invertia a ordem usa o `className` do cartão (`flex-row-reverse`).
+
+| Token | Desfecho |
+|---|---|
+| `cardImagePosition` | retirado — só um valor, numa combinação, mudava a tela; a ordem dos blocos é do `className` |

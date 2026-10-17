@@ -5,6 +5,7 @@ import {
     SliderControl, ResponsiveSliderControl, ColorControl, SwitchControl, SelectControl, InputControl, MediaUploaderControl
 } from './DesignControls';
 import { ExceptionRelation } from './ExceptionRelation';
+import { FontSelectControl } from './controls/FontSelectControl';
 
 import type { SarakDesignState } from '../../../core/Provider/types';
 import type { SarakTokenValue } from '../../../core/Design/types';
@@ -75,14 +76,23 @@ function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange
             );
 
         case 'select':
-        case 'font':
             return (
                 <SelectControl
                     label={token.label}
                     description={token.description}
                     value={value as string}
                     options={token.constraints?.options || token.options || []}
-                    isFont={token.type === 'font'}
+                    onChange={onChange}
+                />
+            );
+
+        case 'font':
+            return (
+                <FontSelectControl
+                    label={token.label}
+                    description={token.description}
+                    value={value as string}
+                    options={token.constraints?.options || token.options || []}
                     onChange={onChange}
                 />
             );

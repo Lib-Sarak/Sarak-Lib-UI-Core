@@ -1,6 +1,7 @@
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
 import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
+import type { SarakFontsOption } from './providerProps';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -136,12 +137,14 @@ export interface SarakUIOptions {
     /** Ajustes válidos apenas em `mode: 'embedded'`. */
     embedded?: {
         /**
-         * Opt-in explícito para injetar as fontes do Google no `<head>` do host.
+         * Opt-in explícito para injetar as fontes (da origem de `fonts`) no `<head>` do host.
          * Default `false`: no Modo Embarcado a ilha herda as fontes do host, e a lib
          * não escreve `<link>`/`@import` global sem permissão.
          */
         injectGlobalFonts?: boolean;
     };
+    /** Origem das fontes do tema; padrão `'bundled'` (ver `SarakFontsOption`). */
+    fonts?: SarakFontsOption;
     persistence?: {
         /** Estratégia de persistência (ADR-009 §2.2). Default `'hybrid'` = localStorage + onSave/onLoad; `'local'` ignora as duas portas; `'remote'` para de gravar localStorage e SUBSTITUI pelo que `onLoad` resolver, degradando para `'local'` com aviso único sem porta configurada. */
         strategy?: 'local' | 'remote' | 'hybrid';
@@ -239,3 +242,5 @@ export interface SarakUIContextType {
 // `SarakUIProviderProps` mora em `./providerProps.ts` — só para manter este
 // arquivo abaixo do limite de linhas do auditor de Clean Code (250).
 export type { SarakUIProviderProps } from './providerProps';
+export type { SarakFontSource, SarakFontsOptions, SarakFontsOption } from './providerProps';
+export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './providerProps';

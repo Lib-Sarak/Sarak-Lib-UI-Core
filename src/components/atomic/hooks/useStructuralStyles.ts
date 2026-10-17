@@ -95,34 +95,6 @@ export const useStructuralStyles = () => {
     };
 
     // ==========================================
-    // EIXO 3: ANATOMIA DE CARDS
-    // ==========================================
-    const getCardStyles = () => {
-        const mediaPos = (design?.cardImagePosition as string) || 'top';
-        const contentAlign = (design?.cardContentAlignment as string) || 'start';
-
-        const mediaStrategies: Record<string, string> = {
-            'left': 'flex flex-row relative overflow-hidden',
-            'right': 'flex flex-row-reverse relative overflow-hidden',
-            'top': 'flex flex-col relative overflow-hidden'
-        };
-
-        const alignStrategies: Record<string, string> = {
-            'center': 'items-center text-center',
-            'space-between': 'justify-between',
-            'start': 'items-start'
-        };
-
-        const baseClass = mediaStrategies[mediaPos] || mediaStrategies['top'];
-        const alignClass = alignStrategies[contentAlign] || alignStrategies['start'];
-
-        return {
-            className: `${baseClass} ${alignClass}`,
-            style: {}
-        };
-    };
-
-    // ==========================================
     // EIXO 4: MICRO-LAYOUT DE INPUTS
     // ==========================================
     const getInputIconStyles = () => {
@@ -225,7 +197,6 @@ export const useStructuralStyles = () => {
         getGridStyles,
         getFlexStyles,
         getFormGroupStyles,
-        getCardStyles,
         getInputIconStyles,
         getSwitchLayoutStyles,
         getCheckboxLayoutStyles,

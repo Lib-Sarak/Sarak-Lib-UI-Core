@@ -10,8 +10,9 @@
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
 // -------------------------------------------------------------------------
-// 1. ESCOPO: a lista `THEME_FONTS` contra `fonts/manifest.json`, os `.woff2` em `fonts/` e o `THIRD-PARTY-FONTS`.
-//    Não vê o carregador em runtime (lote seguinte), nem o `@font-face` que ele gera, nem a rede do consumidor.
+// 1. ESCOPO: a lista `THEME_FONTS` contra `fonts/manifest.json`, os `.woff2` em `fonts/`, o `THIRD-PARTY-FONTS` e o
+//    espelho em JS que o carregador lê (`src/core/Provider/generated/font-manifest.ts`: faces e o literal de cada URL).
+//    Não vê o `@font-face` que o carregador gera nem a rede do consumidor (isso é do teste do carregador e do navegador).
 // 2. Confere PRESENÇA e TAMANHO, não CONTEÚDO: que o arquivo existe, não está vazio e soma dentro do orçamento. NÃO
 //    prova que o woff2 é uma fonte válida nem que é a família certa — um arquivo errado de bom tamanho passa.
 // 3. A licença é conferida por FORMA: seção da família no `THIRD-PARTY-FONTS` com o crédito do manifesto e corpo de
@@ -24,8 +25,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { listLoadableFamilies } from '../../../src/core/Provider/utils/googleFontsUrl';
-import { MANIFEST_FILE, type FontManifest } from '../../../scripts/embed-fonts';
+import { FONTS_DIRNAME, MANIFEST_FILE, type FontManifest } from '../../../scripts/embed-fonts';
 import { THIRD_PARTY_FILE, parseThirdPartyFonts } from '../../../scripts/fonts/thirdPartyFonts';
+import { toRuntimeFamilies, type RuntimeFace } from '../../../scripts/fonts/runtimeManifest';
+import { BUNDLED_FONTS } from '../../../src/core/Provider/generated/font-manifest';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const DEFAULT_DIR = path.join(ROOT, 'dist', 'fonts');
@@ -44,7 +47,8 @@ export type FontViolationCode =
     | 'file-orphan'
     | 'license-missing'
     | 'family-over-budget'
-    | 'total-over-budget';
+    | 'total-over-budget'
+    | 'runtime-drift';
 
 export interface FontViolation {
     code: FontViolationCode;
@@ -61,7 +65,16 @@ export interface FontsSnapshot {
     thirdParty: string;
     /** Tamanho em bytes de cada `.woff2` em disco, por nome de arquivo. */
     diskFiles: Record<string, number>;
+    /** O espelho em JS do manifesto (`font-manifest.ts`), com a URL que cada face resolve. */
+    runtime: Record<string, RuntimeModuleFamily>;
 }
+
+export interface RuntimeModuleFamily {
+    variable: boolean;
+    faces: (RuntimeFace & { url: string })[];
+}
+
+const RUNTIME_MODULE = 'src/core/Provider/generated/font-manifest.ts';
 
 export interface FontsBudget {
     totalBytes: number;
@@ -131,6 +144,20 @@ function checkBudget(snapshot: FontsSnapshot, manifest: FontManifest, budget: Fo
     return violations;
 }
 
+function checkRuntimeModule(snapshot: FontsSnapshot, manifest: FontManifest): FontViolation[] {
+    const expected = toRuntimeFamilies(manifest.families);
+    const violations: FontViolation[] = [];
+    for (const family of new Set([...Object.keys(expected), ...Object.keys(snapshot.runtime)])) {
+        const mirror = snapshot.runtime[family];
+        const shape = mirror && { variable: mirror.variable, faces: mirror.faces.map(({ file, weight, subset }) => ({ file, weight, subset })) };
+        const urlsMatch = !mirror || mirror.faces.every((face) => face.url.endsWith(`/${FONTS_DIRNAME}/${face.file}`));
+        if (JSON.stringify(shape) !== JSON.stringify(expected[family]) || !urlsMatch) {
+            violations.push({ code: 'runtime-drift', family, detail: `${family}: ${RUNTIME_MODULE} não bate com fonts/${MANIFEST_FILE} — rode "npm run fonts:manifest"` });
+        }
+    }
+    return violations;
+}
+
 export function checkFonts(snapshot: FontsSnapshot, budget: FontsBudget = DEFAULT_BUDGET): FontViolation[] {
     const { manifest } = snapshot;
     if (!manifest) return [{ code: 'manifest-missing', detail: `fonts/${MANIFEST_FILE} não existe — rode "npm run fonts:embed"` }];
@@ -139,11 +166,21 @@ export function checkFonts(snapshot: FontsSnapshot, budget: FontsBudget = DEFAUL
         ...checkFiles(snapshot, manifest),
         ...checkLicenses(snapshot, manifest),
         ...checkBudget(snapshot, manifest, budget),
+        ...checkRuntimeModule(snapshot, manifest),
     ];
 }
 
 function readIfExists(file: string): string | null {
     return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+}
+
+function readRuntimeModule(): Record<string, RuntimeModuleFamily> {
+    const runtime: Record<string, RuntimeModuleFamily> = {};
+    for (const [family, entry] of Object.entries(BUNDLED_FONTS)) {
+        const faces = entry.faces.map(({ file, weight, subset, url }) => ({ file, weight, subset, url: url().href }));
+        runtime[family] = { variable: entry.variable, faces };
+    }
+    return runtime;
 }
 
 export function readSnapshot(fontsDir: string = DEFAULT_DIR): FontsSnapshot {
@@ -159,6 +196,7 @@ export function readSnapshot(fontsDir: string = DEFAULT_DIR): FontsSnapshot {
         manifest: manifestText === null ? null : (JSON.parse(manifestText) as FontManifest),
         thirdParty: readIfExists(path.join(fontsDir, THIRD_PARTY_FILE)) ?? '',
         diskFiles,
+        runtime: readRuntimeModule(),
     };
 }
 

@@ -16,6 +16,7 @@ import { SarakUIContextType, SarakUIProviderProps, SarakThemePayload, SarakTheme
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
+import { useSarakFonts } from './hooks/useSarakFonts';
 import { useSarakDrafting } from './hooks/useSarakDrafting';
 import { useSarakStylesheetGuard } from './hooks/useSarakStylesheetGuard';
 import { usePreferencesManager } from './hooks/usePreferencesManager';
@@ -129,9 +130,9 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
         [liveDesign, preferences, activeTheme, systemColorScheme],
     );
 
-    // 4. Efeitos globais (Fontes, Título, Ícone), inertes no Modo Embarcado. FONTE ÚNICA da identidade
-    //    da aba (Spec 47): `branding.tabName` e `systemName`; sem nenhuma, o `index.html` do host fica intocado.
-    useSarakUIEffects(branding, mode, options?.embedded?.injectGlobalFonts, design?.systemName);
+    // 4. Efeitos globais, inertes no Modo Embarcado: identidade da aba (Spec 47) e fontes (`options.fonts`).
+    useSarakUIEffects(branding, mode, design?.systemName);
+    useSarakFonts(effectiveDesign, mode, options);
 
     // 4.5 Guarda do stylesheet (Modo App injeta; Embarcado desfaz o CSS global — Spec 24).
     useSarakStylesheetGuard(mode, scopeElement);

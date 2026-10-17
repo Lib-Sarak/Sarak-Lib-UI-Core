@@ -120,6 +120,9 @@ Suposição não registrada é reprovação garantida.
 - [ ] Rodei, no desenvolvimento, **só os testes dos arquivos que escrevi ou toquei** e **li** a saída. A suíte
   completa, `tsc`, baseline, Anel 0/1 e o navegador **não** são seus: o revisor roda (`npm run verify`). Não
   escreva "suíte verde" no resumo — escreva o que **você** rodou.
+  **Uma exceção barata** *(2026-10-16, depois de duas rodadas de correção que ela teria evitado)*: antes de entregar, rode
+  `npm run verify -- --tier=quick` (`tsc`, baseline e Anel 1, ~3 min, **sem** suíte e **sem** build) — o que ele acusar é seu.
+  Tipo novo de `options`/props que o consumidor usa também se exporta em `src/index.ts` (só o build confere).
 - [ ] Se a instrução declarou `Gate: <regra>` (§3, item 8.1): mostrei entrada exata e resultado para cada
   limite/falso positivo que a regra promete não ter — por teste **do próprio gate**, não pela suíte inteira.
 - [ ] Fotografei o worktree (`git status --short`) antes da primeira edição, e a fotografia está no resumo.

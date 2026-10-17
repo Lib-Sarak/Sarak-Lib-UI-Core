@@ -42,7 +42,11 @@ export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersPr
             const payload = buildThemeExportPayload(draft, name);
             downloadThemeJson(payload);
             setCurrentThemeName(payload.name);
-            showToast('success', `Tema "${payload.name}" exportado — cole o JSON em \`customThemes\` no seu código.`);
+            if (payload.requiresFonts) {
+                showToast('warning', `Tema "${payload.name}" exportado — usa fontes deste host (${payload.requiresFonts.join(', ')}): quem o importar precisa registrá-las em \`options.fonts.custom\`.`);
+            } else {
+                showToast('success', `Tema "${payload.name}" exportado — cole o JSON em \`customThemes\` no seu código.`);
+            }
             setIsSaveModalOpen(false);
         } catch (error) {
             console.error(error);

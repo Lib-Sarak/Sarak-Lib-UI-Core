@@ -82,5 +82,5 @@ describe('check-theme-boot-closure — o fecho estático do entry', () => {
 
     it('a árvore real passa em src/', () => {
         expect(runChecks({ mode: 'src' })).toEqual([]);
-    });
+    }, 60000); // anda o grafo estático inteiro de src/index.ts (AST de ~1000 arquivos)
 });

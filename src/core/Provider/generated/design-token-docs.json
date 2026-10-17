@@ -400,11 +400,6 @@
    "usage": "Espessura do contorno dos quatro lados de todo cartão e `.card`. Também define a espessura da linha divisória do cabeçalho e do rodapé de `SarakCard` e o contorno do `SarakImageCard`."
   },
   {
-   "id": "cardContentAlignment",
-   "group": "cards",
-   "label": "Alinhamento do Conteúdo"
-  },
-  {
    "id": "cardFooterBg",
    "group": "cards",
    "label": "Fundo do Footer",
@@ -509,17 +504,6 @@
    ]
   },
   {
-   "id": "cardImagePosition",
-   "group": "cards",
-   "label": "Posição da Imagem",
-   "kind": "aesthetic",
-   "modeDependent": false,
-   "usage": "Com a direção em linha, o valor da direita inverte a ordem dos blocos dos cartões de título, ação, busca e expansível; os demais valores não mudam nada hoje.",
-   "interactsWith": [
-    "cardLayoutDirection"
-   ]
-  },
-  {
    "id": "cardInnerGlowColor",
    "group": "cards",
    "label": "Cor do Glow Interno",
@@ -547,10 +531,7 @@
    "label": "Direção do Layout",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token.",
-   "interactsWith": [
-    "cardImagePosition"
-   ]
+   "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token."
   },
   {
    "id": "cardPaddingMd",
@@ -2215,11 +2196,6 @@
    "id": "tabGap",
    "group": "navigation",
    "label": "Espaço entre Abas"
-  },
-  {
-   "id": "tableActionPosition",
-   "group": "tables",
-   "label": "Posição das Ações"
   },
   {
    "id": "tableBorderColor",

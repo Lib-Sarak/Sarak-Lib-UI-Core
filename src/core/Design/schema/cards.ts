@@ -532,7 +532,6 @@ export const CardSchema: ComponentSchema = {
             kind: 'aesthetic',
             modeDependent: false,
             usage: 'Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token.',
-            interactsWith: ['cardImagePosition'],
             description: 'Direção de empilhamento do conteúdo interno do card — Vertical é o padrão (imagem/título acima, corpo abaixo); Horizontal organiza os elementos lado a lado (comum em cards de lista compactos).',
             axis: 'geometry',
             constraints: {
@@ -544,28 +543,6 @@ export const CardSchema: ComponentSchema = {
             defaultValue: 'column',
             cssVars: ['--sarak-card-layout-direction'],
             structuralConsumer: ['useCardLayoutStyles']
-        },
-        {
-            id: 'cardImagePosition',
-            label: 'Posição da Imagem',
-            type: 'select',
-            kind: 'aesthetic',
-            modeDependent: false,
-            usage: 'Com a direção em linha, o valor da direita inverte a ordem dos blocos dos cartões de título, ação, busca e expansível; os demais valores não mudam nada hoje.',
-            interactsWith: ['cardLayoutDirection'],
-            description: 'Posição da imagem de capa dentro do card — Nenhuma remove a imagem; Topo é o padrão para cards verticais; Esquerda/Direita posicionam a imagem lateralmente em cards horizontais.',
-            axis: 'geometry',
-            constraints: {
-                options: [
-                    { id: 'none', value: 'none', label: 'Nenhuma' },
-                    { id: 'top', value: 'top', label: 'Topo' },
-                    { id: 'left', value: 'left', label: 'Esquerda' },
-                    { id: 'right', value: 'right', label: 'Direita' }
-                ]
-            },
-            defaultValue: 'top',
-            cssVars: ['--sarak-card-image-position'],
-            structuralConsumer: ['useCardLayoutStyles', 'useStructuralStyles.getCardStyles']
         },
         {
             id: 'cardTextAlign',
@@ -586,23 +563,6 @@ export const CardSchema: ComponentSchema = {
             defaultValue: 'left',
             cssVars: ['--sarak-card-text-align'],
             structuralConsumer: ['useCardLayoutStyles']
-        },
-        {
-            id: 'cardContentAlignment',
-            label: 'Alinhamento do Conteúdo',
-            type: 'select',
-            description: 'Alinhamento vertical/distribuição do conteúdo interno do card — Início agrupa no topo; Centro centraliza; Espaçado (Between) empurra os elementos para as extremidades (útil quando o rodapé deve "grudar" na base do card).',
-            axis: 'geometry',
-            constraints: {
-                options: [
-                    { id: 'start', value: 'start', label: 'Início' },
-                    { id: 'center', value: 'center', label: 'Centro' },
-                    { id: 'space-between', value: 'space-between', label: 'Espaçado (Between)' }
-                ]
-            },
-            defaultValue: 'start',
-            cssVars: ['--sarak-card-content-alignment'],
-            structuralConsumer: ['useStructuralStyles.getCardStyles']
         },
         {
             id: 'cardShadow',
@@ -639,7 +599,6 @@ export const CardSchema: ComponentSchema = {
             usage: 'Escolhe qual cartão a `SarakCardGrid` desenha para cada registro quando a prop `variant` não é passada; é escolha de componente, não de estilo, e o tema não a declara.',
             interactsWith: ['cardTitleFontSize', 'cardActionBtnPrimaryBg', 'cardSearchBgFocus'],
             description: 'Especialização de card a ser renderizada — Classic (detalhe genérico), Sleek Title (metadados de título), Tactile CTA (ação/botão) ou Reactive Search (filtro de busca). Cada variante ativa os tokens das famílias `cardTitle`/`cardAction`/`cardSearch` correspondentes.',
-            axis: 'texture',
             constraints: {
                 options: [
                     { id: 'classic', value: 'classic', label: 'Classic IA Detail Card' },

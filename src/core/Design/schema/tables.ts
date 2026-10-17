@@ -28,21 +28,6 @@ export const TablesSchema: ComponentSchema = {
             structuralConsumer: ['useTableLayoutStyles']
         },
         {
-            id: 'tableActionPosition',
-            label: 'Posição das Ações',
-            type: 'select',
-            description: 'Lado da linha da tabela onde os botões de ação (editar, excluir etc.) são renderizados. Direita é a convenção mais comum em tabelas ocidentais.',
-            axis: 'geometry',
-            constraints: {
-                options: [
-                    { id: 'left', value: 'left', label: 'Esquerda' },
-                    { id: 'right', value: 'right', label: 'Direita' }
-                ]
-            },
-            defaultValue: 'right',
-            structuralConsumer: ['useTableLayoutStyles']
-        },
-        {
             id: 'tableHeaderBg',
             label: 'Fundo do Cabeçalho',
             type: 'color',

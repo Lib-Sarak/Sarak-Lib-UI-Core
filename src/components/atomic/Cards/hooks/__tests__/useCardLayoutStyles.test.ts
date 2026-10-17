@@ -17,18 +17,9 @@ describe('useCardLayoutStyles', () => {
             cardLayoutDirection: 'row'
         }));
 
-        expect(result.current.containerClass).toContain('flex-row');
+        expect(result.current.containerClass).toBe('flex flex-row');
         expect(result.current.contentClass).toContain('flex-row');
         expect(result.current.headerClass).toContain('flex-col gap-2');
-    });
-
-    it('deve mapear a direcao "row" com imagem a direita (row-reverse)', () => {
-        const { result } = renderHook(() => useCardLayoutStyles({
-            cardLayoutDirection: 'row',
-            cardImagePosition: 'right'
-        }));
-
-        expect(result.current.containerClass).toContain('flex-row-reverse');
     });
 
     it('deve mapear alinhamentos centrais (center)', () => {

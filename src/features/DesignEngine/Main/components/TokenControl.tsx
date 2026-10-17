@@ -8,6 +8,7 @@ import {
     MediaUploaderControl
 } from '../../components/DesignControls';
 import { ExceptionRelation } from '../../components/ExceptionRelation';
+import { FontSelectControl } from '../../components/controls/FontSelectControl';
 import { getTokenBounds } from '../../../../core/Design/utils/tokenBounds';
 import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
@@ -49,7 +50,7 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
         />
     ),
     select: (props) => <SelectControl label={props.token.label} description={props.token.description} options={props.token.constraints?.options || props.token.options || []} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
-    font: (props) => <SelectControl label={props.token.label} description={props.token.description} options={props.token.constraints?.options || props.token.options || []} isFont={true} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,
+    font: (props) => <FontSelectControl label={props.token.label} description={props.token.description} options={props.token.constraints?.options || props.token.options || []} value={props.value as string} onChange={(val) => props.onChange(val)} />,
     switch: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
     boolean: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} value={props.value as boolean} onChange={(val) => props.onChange(val)} />,
     input: (props) => <InputControl label={props.token.label} description={props.token.description} placeholder={props.token.defaultValue as string} {...props} value={props.value as string} onChange={(val) => props.onChange(val)} />,

@@ -563,8 +563,8 @@ onde, e de qual outro token depende. O `catalog.json` do kit traz os campos em `
 Nada muda para o tema salvo: valor persistido segue valendo. Quem tem token próprio nesses grupos pode usar o mapa
 para saber se o valor também precisa existir na `contraparte`.
 
-Dois tokens desses grupos foram medidos **sem efeito visível** e continuam no schema, sem documentação, até uma
-decisão: `cardContentAlignment` e `tableActionPosition`. Declará-los num tema não muda a tela.
+Dois tokens desses grupos foram medidos **sem efeito visível** e saíram do schema: `cardContentAlignment` e
+`tableActionPosition` (ver a nota *`cardContentAlignment`, `tableActionPosition` e `cardImagePosition` saem do schema*).
 (`cardSpotlightOpacity`, `cardActionClickScale` e `imageCardHoverZoom` passaram a desenhar — ver a nota seguinte —,
 e `borderBeamEnabled` e `cardSearchBorderBeamActive`, na nota depois dela.)
 
@@ -599,6 +599,30 @@ reduzido (token `reducedMotion` ou a preferência do sistema) e o giro pausa com
 uma animação por cartão aceso, repintada a cada quadro; dezenas de cartões visíveis ao mesmo tempo com o traço ligado
 custam quadros (medido em Chromium sem GPU: 42 cartões visíveis, de 61 para cerca de 11 quadros por segundo) — use
 `borderBeamEnabled` em poucos cartões de destaque, não numa grade inteira.
+
+### `cardContentAlignment`, `tableActionPosition` e `cardImagePosition` saem do schema
+
+**Classificação: MAJOR (chave sai do payload de tema; um caso muda a tela).** Os dois primeiros eram oferecidos pelo
+painel e nada os desenhava:
+`cardContentAlignment` só era lido por um método de estilo que nenhum cartão chamava (e quem já distribui o conteúdo do
+cartão é `cardTextAlign`), e `tableActionPosition` era calculado sem que a `SarakTable` tenha coluna de ações.
+`cardImagePosition` só mudava a tela num caso: com `cardLayoutDirection: 'row'` e o valor `right`, invertia a ordem dos
+blocos dos cartões de título, ação, busca e expansível; `none`, `top` (o padrão) e `left` não mudavam nada. O tipo
+`SarakDesignTokens` perde as três chaves (de 402 para 399) e o painel deixa de mostrá-las. Para os dois primeiros a
+tela não muda; para `cardImagePosition`, só muda quem tinha `right` com a direção em linha.
+
+| Antes | Depois |
+|---|---|
+| `{ cardContentAlignment: 'space-between', cardTextAlign: 'center' }` aceito, e só `cardTextAlign` mudava a tela | `cardContentAlignment` é descartado ao carregar o tema, com um aviso no console que nomeia a chave; `cardTextAlign` segue valendo |
+| `{ tableActionPosition: 'left' }` aceito e sem efeito | descartado ao carregar, com o mesmo aviso; a tabela desenha o padrão, como já desenhava |
+| `{ cardLayoutDirection: 'row', cardImagePosition: 'right' }` → blocos do cartão em ordem inversa (`flex-row-reverse`) | `cardImagePosition` é descartado com o mesmo aviso; o cartão em linha desenha os blocos na ordem do código (`flex-row`) |
+
+**O que fazer:** nada é obrigatório — o tema salvo com as chaves continua carregando (o valor cai no padrão, com
+aviso). Para não ver o aviso, apague as três chaves do tema; para distribuir o conteúdo do cartão, use
+`cardTextAlign`. Quem invertia a ordem dos blocos com `right` passa a invertê-la no próprio cartão, pelo `className`
+(`className="flex-row-reverse"`: no CSS do Tailwind ela vem depois de `flex-row` e vence). Código que tipava
+`design.cardContentAlignment`, `design.tableActionPosition` ou `design.cardImagePosition` deixa de compilar: apague a
+leitura.
 
 ### Exports removidos do barril público
 
@@ -820,9 +844,69 @@ que entra no artefato final passa a ver essa pasta no pacote.
 Orbitron, VT323, Oswald, Source Serif 4, Roboto Slab, Lora, Merriweather, PT Serif, Patrick Hand, Fira Code, IBM Plex
 Mono, Space Mono). Os 19 `value` que já existiam não mudaram, nenhuma família saiu, e um tema salvo continua válido.
 
-**O que ainda NÃO muda:** o comportamento padrão. Até o carregador em runtime chegar, as fontes continuam vindo do
-Google Fonts, como antes; o consumidor não precisa fazer nada. Quando o carregador chegar, o padrão passa a ser
-embarcado (sem requisição a terceiros) e a origem vira escolha do host (`options.fonts`).
+**O padrão deixa de ser o Google Fonts.** Com `options.fonts` omitido (`'bundled'`), o Provider injeta um `@font-face`
+só para as famílias que o design no ar usa (título, corpo, mono e a fonte do logo), uma vez por família, com
+`font-display: swap`, só os pesos que têm arquivo e o `unicode-range` latin, apontando para `dist/fonts/` do pacote.
+Nenhuma requisição a `fonts.googleapis.com`/`fonts.gstatic.com` e nenhum `<link rel="preconnect">`. Trocar de tema
+carrega a família nova; a anterior não é buscada de novo. A política de segurança de conteúdo do host passa a precisar de
+`font-src` com a própria origem (ou a do `baseUrl`), e não mais dos domínios do Google.
+
+**`options.fonts` (novo):**
+
+| Valor | O que a lib faz |
+|---|---|
+| omitido ou `'bundled'` | o `@font-face` das famílias em uso, com os arquivos do pacote (`new URL('./fonts/…', import.meta.url)`) |
+| `{ baseUrl: 'https://…/fonts/' }` | o mesmo, com os arquivos em `baseUrl` + nome do arquivo: para quem serve a pasta `fonts/` do pacote de outra origem (CDN própria) ou usa um bundler que não reescreve aquele `new URL` |
+| `'google'` | o comportamento anterior, igual: `@import` do Google Fonts com toda família de `THEME_FONTS` e os dois `preconnect` |
+| `'none'` | nada; o host carrega as fontes |
+
+**Para voltar ao comportamento antigo:** `<SarakUIProvider options={{ fonts: 'google' }}>`. O Modo Embarcado não muda:
+sem `options.embedded.injectGlobalFonts` a ilha não injeta fonte de origem nenhuma; com ele, vale a origem de `options.fonts`.
+
+**Onde o arquivo é encontrado sem configurar nada** (medido em 2026-10-16 com o pacote em `node_modules`, Vite 8.0.16 e
+esbuild 0.27.7; webpack não foi medido):
+
+| Bundler do importador | O que acontece | O que fazer |
+|---|---|---|
+| Vite em dev | a URL é reescrita para `/node_modules/@sarak/lib-ui-core/dist/fonts/…` e a fonte carrega | nada |
+| `vite build` | os 60 woff2 viram assets com hash no build do importador (~1,7 MB em disco); o navegador só baixa os das famílias em uso | nada |
+| esbuild puro (ESM) | a URL fica relativa ao bundle (`/fonts/…`), que não tem a pasta → 404 | copiar `node_modules/@sarak/lib-ui-core/dist/fonts/` para a pasta pública e passar `baseUrl` |
+| esbuild IIFE | não há `import.meta.url` → `Invalid URL` | o mesmo |
+| CJS (`require`) no navegador | o substituto do `import.meta.url` aponta para a página, não para o pacote | o mesmo |
+
+Falha nunca é silenciosa: quando uma família não carrega, o console mostra, uma vez por família,
+`[Sarak:UI] A fonte "<família>" não carregou (origem tentada: …)` com a dica do `baseUrl`, e a página segue com a fonte de
+reserva do `value` (`sans-serif`, `serif`…).
+
+**Fontes do próprio host (`options.fonts.custom`, novo).** O importador registra as famílias que ele serve; a lib não
+embarca nem copia esses arquivos:
+
+```tsx
+<SarakUIProvider options={{ fonts: { custom: [
+    { family: 'Marca Sans', category: 'Sans-Serif', fallback: 'sans-serif', files: [
+        { url: '/fontes/marca-400.woff2', weight: 400 },
+        { url: '/fontes/marca-700.woff2', weight: 700 },
+    ] },
+] } }}>
+```
+
+A família entra no seletor do painel junto às da lib (na categoria dela; sem `category`, em "Personalizadas") e vale em
+qualquer token de fonte. O tema grava `'Marca Sans', sans-serif`. Com `'bundled'` ou `'google'` a lib injeta o
+`@font-face` dela quando o design a usa (o mesmo carregador sob demanda, com aviso se o arquivo não carregar); com
+`'none'`, não — o host carrega tudo sozinho.
+
+O que a lib valida no registro (o que falha é recusado com aviso): o nome só com letras, dígitos, espaço, hífen e
+sublinhado, até 64 caracteres, sem repetir uma família da lib; a `url` só `https:`, caminho do host (`/…` ou relativo) ou
+`data:font/…;base64,…` (`http:`, `file:`, `javascript:` e qualquer outro esquema são recusados); o peso em 100–900 (de
+100 em 100), `normal` ou `bold`; o estilo `normal` ou `italic`; o `fallback` uma família genérica.
+
+**Registrar não muda o que o tema aceita.** Como antes, qualquer pilha de fontes segura vale num token de fonte
+(`'Georgia, serif'`, `system-ui`…), registrada ou não; CSS cru continua recusado. Registrar serve para a lib **carregar** a
+família e **listá-la** no painel. Um tema vindo de outro host que use uma família que este Provider não registrou e que o
+sistema não tem instalada mostra a genérica da pilha (`'X', sans-serif` → `sans-serif`), sem aviso nem erro. O registro vale
+por Provider: cada ilha do Modo Embarcado carrega só os arquivos que ela registrou. O tema exportado pelo painel que usa
+fonte do host traz `requiresFonts: ['…']` ao lado de `design`, e o aviso do painel diz que quem importar precisa
+registrá-las.
 
 **Limites que vale conhecer:** das fontes variáveis entra só o eixo `wght` (os eixos `opsz`, `wdth`, `SOFT` e `WONK` não);
 das estáticas entram só os pesos que o pacote da família tem, e o navegador sintetiza os demais. Por isso o tema que quer

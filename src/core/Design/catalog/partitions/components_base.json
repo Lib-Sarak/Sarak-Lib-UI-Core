@@ -189,37 +189,6 @@
     ]
   },
   {
-    "tokenId": "tableActionPosition",
-    "name": "Posição de Ação da Tabela",
-    "description": "Onde as opções de ação (editar, deletar) ficam localizadas na linha.",
-    "type": "select",
-    "importance": 80,
-    "categories": [
-      "layout",
-      "tabelas",
-      "components_base"
-    ],
-    "tags": [
-      "table",
-      "action",
-      "layout"
-    ],
-    "databaseColumn": "components_base",
-    "schemaOrigin": "tables.ts",
-    "digitalTwins": [
-      "SarakTable"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "left",
-      "right"
-    ],
-    "relatedTokens": [],
-    "consumerHook": [
-      "useTableLayoutStyles"
-    ]
-  },
-  {
     "tokenId": "modalOverlayColor",
     "name": "Cor do Overlay (Modal)",
     "description": "Cor de fundo aplicada à tela quando um modal ou overlay é aberto.",

@@ -1027,6 +1027,34 @@ const OnDemandThemeScene: React.FC = () => {
     );
 };
 
+/**
+ * `?cena=fontes-embarcadas`: o tema pede Orbitron nos títulos e Lora no corpo, com as fontes embarcadas (padrão de
+ * `options.fonts`). `?fontes=<url>` vira o `baseUrl` (a pasta `fonts/` do `dist/`); sem ele vale o
+ * `new URL('./fonts/…', import.meta.url)`, que o IIFE do harness não tem — a cena do aviso.
+ */
+const EmbeddedFontsScene: React.FC = () => {
+    const baseUrl = searchParams.get('fontes') ?? undefined;
+    return (
+        <SarakUIProvider config={{ headingFont: "'Orbitron', sans-serif", bodyFont: "'Lora', serif" }} options={{ fonts: baseUrl ? { baseUrl } : 'bundled' }}>
+            <h1 data-probe="titulo" style={{ fontFamily: 'var(--font-heading)' }}>Título com a fonte do tema</h1>
+        </SarakUIProvider>
+    );
+};
+
+/**
+ * `?cena=fontes-do-host`: o título usa uma família que o HOST registra em `options.fonts.custom` ("Fonte Do Host"),
+ * com o arquivo em `?arquivo=<caminho relativo à página>`; `?fontes=<url>` é o `baseUrl` das fontes da lib (o corpo).
+ */
+const HostFontsScene: React.FC = () => {
+    const baseUrl = searchParams.get('fontes') ?? undefined;
+    const custom = [{ family: 'Fonte Do Host', files: [{ url: searchParams.get('arquivo') ?? '', weight: 400 as const }] }];
+    return (
+        <SarakUIProvider config={{ headingFont: "'Fonte Do Host', sans-serif" }} options={{ fonts: { baseUrl, custom } }}>
+            <h1 data-probe="titulo" style={{ fontFamily: 'var(--font-heading)' }}>Título com a fonte do host</h1>
+        </SarakUIProvider>
+    );
+};
+
 const SceneComponent = SCENES[searchParams.get('cena') ?? ''];
 
 const container = document.getElementById('root');
@@ -1049,6 +1077,10 @@ void swapToScopedStylesheet().then(() => {
         createRoot(container).render(<OnDemandThemeScene />);
     } else if (searchParams.get('cena') === 'troca-de-tema') {
         createRoot(container).render(<ThemeSwitchScene />);
+    } else if (searchParams.get('cena') === 'fontes-embarcadas') {
+        createRoot(container).render(<EmbeddedFontsScene />);
+    } else if (searchParams.get('cena') === 'fontes-do-host') {
+        createRoot(container).render(<HostFontsScene />);
     } else {
         createRoot(container).render(SceneComponent ? renderScene(SceneComponent) : <App />);
     }

@@ -101,11 +101,14 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
     });
 
     it('vazamento #5: não injeta as fontes globais no `<head>` sem opt-in', () => {
+        document.querySelectorAll('style[data-sarak-font]').forEach((el) => el.remove());
         renderEmbedded();
         expect(document.getElementById('sarak-core-fonts')).toBeNull();
+        expect(document.querySelector('style[data-sarak-font]')).toBeNull();
     });
 
     it('vazamento #5: injeta as fontes quando o consumidor pede explicitamente', () => {
+        document.querySelectorAll('style[data-sarak-font]').forEach((el) => el.remove());
         render(
             <SarakUIProvider
                 config={DESIGN}
@@ -114,7 +117,7 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
                 <div>ilha</div>
             </SarakUIProvider>,
         );
-        expect(document.getElementById('sarak-core-fonts')).not.toBeNull();
+        expect(document.querySelector('style[data-sarak-font]')).not.toBeNull();
     });
 
     it('não deixa o `<style>` de vars responsivas no `<head>` do host', () => {

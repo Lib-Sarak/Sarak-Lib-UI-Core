@@ -22,35 +22,35 @@ beforeEach(() => {
 
 describe('useSarakUIEffects — `document.title`', () => {
     it('não escreve nada quando não há branding nem systemName', () => {
-        renderHook(() => useSarakUIEffects(undefined, 'app', false, undefined));
+        renderHook(() => useSarakUIEffects(undefined, 'app', undefined));
         expect(document.title).toBe(HOST_TITLE);
     });
 
     it('não escreve nada com branding neutro (defaults sem identidade)', () => {
-        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', false, undefined));
+        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', undefined));
         expect(document.title).toBe(HOST_TITLE);
     });
 
     it('escreve o `tabName` quando fornecido', () => {
         const branding: BrandingState = { ...NEUTRAL_BRANDING, tabName: 'Aba do Cliente' };
-        renderHook(() => useSarakUIEffects(branding, 'app', false, undefined));
+        renderHook(() => useSarakUIEffects(branding, 'app', undefined));
         expect(document.title).toBe('Aba do Cliente');
     });
 
     it('escreve o `systemName` quando é a única porta preenchida', () => {
-        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', false, 'Sistema do Cliente'));
+        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', 'Sistema do Cliente'));
         expect(document.title).toBe('Sistema do Cliente');
     });
 
     it('precedência: `tabName` (específico) vence `systemName` (genérico)', () => {
         const branding: BrandingState = { ...NEUTRAL_BRANDING, tabName: 'Aba' };
-        renderHook(() => useSarakUIEffects(branding, 'app', false, 'Sistema'));
+        renderHook(() => useSarakUIEffects(branding, 'app', 'Sistema'));
         expect(document.title).toBe('Aba');
     });
 
     it('Modo Embarcado: não escreve o título nem com valor fornecido', () => {
         const branding: BrandingState = { ...NEUTRAL_BRANDING, tabName: 'Aba da Ilha' };
-        renderHook(() => useSarakUIEffects(branding, 'embedded', false, 'Sistema da Ilha'));
+        renderHook(() => useSarakUIEffects(branding, 'embedded', 'Sistema da Ilha'));
         expect(document.title).toBe(HOST_TITLE);
     });
 });
@@ -70,14 +70,14 @@ describe('useSarakUIEffects — favicon', () => {
         document.querySelector<HTMLLinkElement>("link[rel~='icon']")?.getAttribute('href');
 
     it('preserva o favicon do host quando não há `logoBase64`', () => {
-        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', false, 'Sistema'));
+        renderHook(() => useSarakUIEffects(NEUTRAL_BRANDING, 'app', 'Sistema'));
         expect(currentFavicon()).toBe(HOST_FAVICON);
     });
 
     it('troca o favicon quando o consumidor fornece `logoBase64`', () => {
         const LOGO = 'data:image/png;base64,iVBORw0KGgo=';
         const branding: BrandingState = { ...NEUTRAL_BRANDING, logoBase64: LOGO };
-        renderHook(() => useSarakUIEffects(branding, 'app', false, undefined));
+        renderHook(() => useSarakUIEffects(branding, 'app', undefined));
         expect(currentFavicon()).toBe(LOGO);
     });
 });

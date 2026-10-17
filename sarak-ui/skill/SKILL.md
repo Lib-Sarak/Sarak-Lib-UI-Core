@@ -417,8 +417,8 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
 a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção
-e alinhamento não alcançam o `SarakCard` composto. Sete tokens do schema não mudam a tela hoje — não prometa efeito
-visual deles (lista em `GUIA-FRONTEND.md` §6.4).
+e alinhamento não alcançam o `SarakCard` composto. Os efeitos de cartão (spotlight, traço luminoso, zoom da capa,
+aperto do botão de ação) desenham e o que cada um faz está em `GUIA-FRONTEND.md` §6.4.
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —

@@ -177,7 +177,6 @@
     "buttonIconPosition",
     "buttonWidthStrategy",
     "tableDensity",
-    "tableActionPosition",
     "modalOverlayColor",
     "modalOverlayBlur",
     "modalBorderRadius",
@@ -249,9 +248,7 @@
   ],
   "cards_engine": [
     "cardLayoutDirection",
-    "cardImagePosition",
     "cardTextAlign",
-    "cardContentAlignment",
     "cardShadow",
     "borderBeamEnabled",
     "cardBorderRadius",

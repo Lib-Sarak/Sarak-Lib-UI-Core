@@ -46,16 +46,16 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 402,
-        "idsUnicos": 402
+        "entradasBrutas": 399,
+        "idsUnicos": 399
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 402
+        "tokens": 399
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 402,
+        "ids": 399,
         "responsivos": 37
       }
     }
@@ -258,6 +258,10 @@
     {
       "nome": "npm run fonts:check",
       "comando": "npx tsx gates/scripts/contrato/check-fonts.ts"
+    },
+    {
+      "nome": "npm run fonts:manifest:check",
+      "comando": "npx tsx scripts/generate-font-manifest.ts --check"
     },
     {
       "nome": "npm run gate-limits:check",
