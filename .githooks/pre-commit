@@ -204,6 +204,16 @@ if ! npx tsx gates/scripts/contrato/check-token-documentation.ts; then
 fi
 echo "[Sarak] Anel 1 (documentação de token) OK."
 
+# Completude dos temas embarcados (todo estético no principal, os de modo na contraparte, nenhum funcional; exceção por tema que esvazia a cada lote).
+if ! npx tsx gates/scripts/contrato/check-theme-completeness.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: completude dos temas embarcados"
+  echo "   Regra violada : — (09-temas-e-presets §7)"
+  echo "   Veja o detalhe: npm run theme-completeness:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (completude dos temas) OK."
+
 # Fontes embarcadas (toda família do painel tem arquivo, crédito e licença em dist/fonts; peso dentro do orçamento).
 # Lê o dist/fonts gerado pelo build (`npm run fonts:embed`); sem ele o gate acusa.
 if ! npx tsx gates/scripts/contrato/check-fonts.ts; then

@@ -3425,7 +3425,7 @@
    "label": "Altura da Topbar (Recolhida)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+   "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
    "interactsWith": [
     "isNavHidden"
    ]

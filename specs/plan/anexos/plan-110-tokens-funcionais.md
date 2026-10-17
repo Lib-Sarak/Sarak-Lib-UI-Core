@@ -237,3 +237,40 @@ Medido em Chromium, por geometria e estilo computados, num build de `src/` feito
 | `contentAlignment` | retirado do schema: nunca mudou a tela (a classe perdia para o estilo em linha, e `maxContentWidth` já limita e centraliza); a chave salva cai no padrão com aviso | `main` sem `max-w-7xl`, mesma largura máxima, aviso no console |
 | `searchPositionTopbar: center` | a busca vem depois da navegação, no meio do espaço livre entre ela e o grupo final (não no centro geométrico da barra) | ponto médio da busca = ponto médio do vão (±3 px); `left` × `center` deslocam a busca em mais de 100 px |
 | `borderRadius` (forma responsiva) | o acordeão resolve a camada do dispositivo | 3 px (390), 7 px (900) e 11 px (1280) com `{ mob: 3, tab: 7, desk: 11 }` |
+
+# 10. Padrões funcionais revisados (lote 5)
+
+Os 98 tokens funcionais foram revistos como decisão de sistema: o padrão de cada um contra o leitor, contra os outros
+padrões (escada, alvo de toque, mínimo ≤ padrão ≤ máximo) e, onde o risco é de tela, contra o navegador (Chromium 153, build de
+`src/` fora do repositório; mouse, e toque com `pointer: coarse` em 390 e 1024 px). Nenhum token estético mudou.
+
+## 10.1 O que mudou
+
+| Token | Antes → depois | Motivo | Medido |
+|---|---|---|---|
+| `topbarCollapsedHeight` | 40 → 48 | o alvo de toque de 44 px (`touchTargetMin`) não cabia na barra recolhida: com toque a 1024 px os 11 controles mediam 44 px numa barra de 40 (−2,5 px acima, −1,5 px abaixo); com mouse a busca (43 px) já a transbordava. Com 48 px cabem nos dois ponteiros (1,5 a 2,5 px de folga) e a barra continua menor que a expandida (56 a 64 px) | altura da barra e `getBoundingClientRect` dos controles, 40 × 48 × 56, mouse e toque |
+
+A reserva `var(--sarak-topbar-collapsed-height, 40px)` virou `48px` pela ferramenta do `variable-contract`
+(`fix-fallbacks.ts --write`); `variable-contract:check` verde.
+
+## 10.2 O que foi revisto e fica (com o porquê)
+
+| Família | Tokens | Decisão e razão |
+|---|---|---|
+| Escada de camadas | `zIndexBase`, `zIndexSidebar`, `zIndexModal`, `zIndexTooltip`, `zIndexToast` (1 · 500 · 2000 · 9000 · 9100) | fica. Todo derivado do código cabe entre os degraus: ruído e menus 550 a 600, busca 700, cartão expandido 1900, modal 2000 a 2300, tooltip e menu de contexto 9000, toast 9100. Lido em `ChromeSlots`, `SarakModal`, `SarakSearch`, `SarakSpotlight`, `SarakToast`, `SarakTooltip`, `SarakContextMenu` |
+| Alvo de toque e foco | `touchTargetMin` 44, `focusRingWidth` 2, `reducedMotion` false, `animEnabled` true | fica. 44 px é o que a spec 07 §5 fixa; o anel de 2 px é o mínimo da WCAG 2.4.13; o movimento reduzido já vale pela media query do sistema (`_motion.css`), então o padrão do token pode ser falso |
+| Larguras do cromo | `sidebarWidth`/`MinWidth`/`MaxWidth`, `topbarHeight`, `sidebarCollapsedWidth`, `*LabelMaxWidth`, `shellBrandLogoSize`, `searchDropdown*` | fica. Mínimo ≤ largura ≤ máximo nas três camadas; `topbarHeight` (56 a 64) contém o alvo de 44; a paleta de 400 px só existe a partir de 768 px (a barra de busca é `hidden md:flex`) |
+| Larguras de uso | `modalWidth*`, `toast*Width`, `contextMenuMinWidth`, `layoutGridMinCell` | fica, **medido a 320, 360 e 390 px com toque**: sem rolagem horizontal; o modal fecha em viewport − 48 px e a grade de 280 px cabe a 320 px (célula de 280 px) |
+| Comportamento e posições | `navigationStyle`, `mobileNavigationStyle`, `sidebarPosition`, `navbarLayout`, `chrome*Position`, `preference*Position`, `*Position`/`Strategy` de botão e campo, `formLabelPosition`, `switchLabelPosition`, `global*`, `cardVariant` | fica. São o padrão de fábrica que a spec 09 §4.7 e §7 exigem de todo tema; rótulo em cima é o mobile-first |
+| Pisos de componente | `matrixNodeMinWidth`, `catalogFilterMinWidth`, `managementGroupListMaxHeight`, `skeleton*`, `chartEngineMinHeight`, `engineMinHeight*`, `splitPaneMinWidth`, `multiSelectInputMinWidth`, `chat*`, `inputPadding` | fica. Leitura do consumidor sem conflito com os demais padrões; o painel dividido empilha no celular, então o piso de 100 px só vale em tablet e desktop |
+| Só do painel de customização | `preset*`, `device*`, `designEngine*`, `layoutPreviewMaxH`, `controlHeightToggle`, `progressBarMaxWidth` | fica. Nenhum componente do sistema muda; o valor é do painel |
+| Navegação (resto) | `isSplitViewEnabled`, `isAutoHideEnabled`, `isNavHidden`, `breakpointTablet`/`Desktop` (768 · 1024) | fica. Desligado por padrão; breakpoints são os de mercado e o painel já os mede |
+
+## 10.3 Achados do lote (não corrigidos)
+
+| Achado | Onde |
+|---|---|
+| A faixa de `topbarCollapsedHeight` (24 a 56) oferece valores abaixo do alvo de toque; trocar o padrão não conserta quem os escolhe (`09` §4.4.3) | `schema/navigation.ts`, `constraints` |
+| A faixa de `focusRingWidth` começa em 0, apesar de o `usage` dizer que abaixo de 2 px compromete a acessibilidade | `schema/engineering.ts` |
+| As faixas de `zIndexSidebar` (até 1000) e de `zIndexModal` (desde 1000) se tocam: com os extremos, a busca (sidebar + 200) fica acima do modal. Lido no código, não medido | `schema/layers.ts` |
+| Temas declaram funcionais que divergem do padrão (`sidebarWidth` 200 a 320, `topbarHeight` 56 a 80, `focusRingWidth` 2 a 4, `zIndexSidebar` 50, `zIndexModal` 1000, `searchPositionTopbar: center`): ao sair da exceção da trava de completude, cada tema perde essa personalidade e passa a valer o padrão do sistema | `themes/*.ts`, lotes 6 a 19 |

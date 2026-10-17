@@ -656,6 +656,19 @@ limita e centraliza por `maxContentWidth`. O tipo `SarakDesignTokens` perde a ch
 `design.contentAlignment` deixa de compilar. Quem usava `searchPositionTopbar: 'center'` vê a busca sair de junto da marca
 para o meio da barra.
 
+### A barra do topo recolhida passa de 40 para 48 px, para caber o alvo de toque
+
+**Classificação: MAJOR (muda o padrão de `topbarCollapsedHeight`).** Com `isNavHidden` ligado e navegação de topo, os controles da barra
+(busca, alternadores, usuário) mediam 38 a 43 px com mouse e 44 px com ponteiro de dedo, e a barra tinha 40 px: eles transbordavam
+a barra (2,5 px acima e 1,5 px abaixo, medido em 1024 px com toque). Com 48 px todos cabem nos dois ponteiros.
+
+| Antes | Depois |
+|---|---|
+| `topbarCollapsedHeight` padrão 40 (reserva `var(--sarak-topbar-collapsed-height, 40px)`) | padrão 48 (a reserva acompanha) |
+
+**O que fazer:** nada é obrigatório. Tema salvo que declara `topbarCollapsedHeight` mantém o valor dele; quem quer os 40 px de
+antes declara `topbarCollapsedHeight: 40`. A faixa do token (24 a 56) não mudou.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

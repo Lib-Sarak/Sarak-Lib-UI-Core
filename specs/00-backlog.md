@@ -96,6 +96,7 @@ via normal.
 | 36 | Dois casos de navegador medem tempo de quadro e são intermitentes: `tema-sob-demanda.spec.ts` ("o fallback fica na tela até o tema chegar…", exige um quadro só com o fallback; falhou 2 de 4 execuções isoladas) e `gantt-altura-e-contraste.spec.ts` ("o harness liga mesmo o tema claro", falhou sob a bateria completa, passou isolado). Medir a taxa antes de afrouxar; ambos passam no controle do `HEAD` | revisão da `plan-118` (lote 4) | 2026-10-16 | baixo |
 | 37 | `SarakScrim.tsx:59,76` lê `motionEaseIn` num `exit`, mas a `SarakDrawer` anima o véu por `animate` e `shouldRender`, não por `AnimatePresence`: o véu da gaveta segue sem tocar a curva do token (o modal e a paleta já a tocam) | revisão da `plan-117` (lote 5) | 2026-10-17 | baixo |
 | 38 | `SarakExpandableMatrix`/`RecursiveMatrixNode`: os filhos aninhados (`gap` de 8 px) e a lista de linhas (4 px) têm espaçamento fixo próprio, fora de `matrixGap` (só o contêiner dos sub-itens lê o token) | revisão da `plan-117` (lote 5) | 2026-10-17 | baixo |
+| 39 | Faixas de token funcional que o contrato permite e o sistema não deveria: `topbarCollapsedHeight` (24–56) fica abaixo do alvo de toque de 44; `focusRingWidth` aceita 0 (anel de foco some); as faixas de `zIndexSidebar` e `zIndexModal` se tocam (a lateral pode passar o modal). Decidir faixa mínima por token, com o que cada uma quebra | revisão da `plan-110` (lote 5) | 2026-10-17 | médio |
 
 ---
 

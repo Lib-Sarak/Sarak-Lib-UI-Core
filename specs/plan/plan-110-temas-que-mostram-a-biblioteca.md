@@ -542,3 +542,93 @@ a `plan-117` fechar os lotes 4 e 5 dela:** ele revisa o `defaultValue` dos token
 os tokens que a `plan-117` ligar ou retirar mudam o conjunto sobre o qual a trava e os padrões são calculados.
 
 **Status: 🔴 A executar (lote 5, depois da `plan-117`).**
+
+## Resumo da execução — lote 5 — 2026-10-17
+
+**Resultado:** Concluído com pendências (gerados defasados para o revisor regenerar; a vitrine foi medida a partir de `src/`, não do `dist/`).
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- **5.1** Revi os 98 tokens funcionais (padrão × leitor × os outros padrões; navegador onde o risco é de tela). **Uma mudança:** `topbarCollapsedHeight` 40 → 48 (`schema/navigation.ts`), com o motivo e a medição no anexo `plan-110-tokens-funcionais.md` §10. A reserva `var(--sarak-topbar-collapsed-height, 40px)` virou 48px em `ChromeTopbarBody.tsx:101` pela ferramenta (`fix-fallbacks.ts --write`); o `usage` do token ganhou a razão. Os demais ficam, cada família com o porquê (§10.2). Nenhum estético mudou.
+- **5.2** `showcase-entry.tsx`: formulário com erro, selos de status com forma, gráfico, calendário, estado vazio e chat (cada um em `data-showcase`), mais a cena `?cena=modal`. `generate-showcase.mts`: eixos modo × dispositivo (desktop 1440×960; celular 390×844 com toque real) × cena (`telas`, `modal`), `--tema=` e `--dispositivos=`, e a janela cresce até o fim do contêiner que rola (antes `fullPage` só mostrava a primeira tela).
+- **5.3** Trava de completude `theme-completeness:check`: `helpers/theme-completeness-core.ts`, `check-theme-completeness.ts`, `gates/allowlists/themeCompletenessPending.json` (os 14 temas, com o lote em que saem: 6 a 19), teste do gate. Ligada em `package.json`, `.githooks/pre-commit` (Anel 1) e `.github/workflows/gates.yml` (o título do passo passou de 15 para 16 `*:check`).
+- Nota MAJOR em `docs/migracoes.md` (`## 8.0.0`). Dois snapshots atualizados só na variável nova (40px → 48px).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/navigation.ts` | alterado | `topbarCollapsedHeight` padrão 48 e `usage` |
+| `src/components/Layout/chrome/ChromeTopbarBody.tsx` | alterado | reserva 48px |
+| `...PreviewCanvas.test.tsx.snap`, `...PresetCard.test.tsx.snap` | alterado | 40px → 48px (16 + 1 ocorrências) |
+| `gates/scripts/contrato/check-theme-completeness.ts`, `helpers/theme-completeness-core.ts` | criado | a trava e seu núcleo puro |
+| `gates/scripts/contrato/__tests__/check-theme-completeness.test.ts` | criado | casos plantados, tema sintético completo e 3 mutações |
+| `gates/allowlists/themeCompletenessPending.json` | criado | os 14 temas |
+| `package.json`, `.githooks/pre-commit`, `.github/workflows/gates.yml` | alterado | script, Anel 1 e CI |
+| `browser-tests/fixtures/showcase-entry.tsx`, `browser-tests/generate-showcase.mts` | alterado | a vitrine estendida |
+| `docs/migracoes.md`, `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | nota MAJOR; §10 do anexo |
+
+**Verificações executadas**
+- `npx vitest run gates/scripts/contrato/__tests__/check-theme-completeness.test.ts` → 15/15 (+ `check-gate-limits` 4/4).
+- **Gate (8.1), entrada → resultado:** estético ausente no principal → `missing-aesthetic`; ausente na contraparte → `missing-mode-aesthetic`; sem contraparte → `contraparte-missing`; funcional no tema / na contraparte → `declares-functional` / `contraparte-declares-functional`; estético fixo na contraparte → `contraparte-declares-fixed-aesthetic`; exceção de tema completo ou inexistente → `staleExceptions`; passam: tema completo, `mode` na contraparte, `enabledLanguages`, `0`/`false`/`null`/`''` como declarados, tema em exceção e um tema sintético completo derivado do dicionário real. Mutação no dicionário real: sem `cardBorderRadius` no principal, sem `cardBackgroundColor` na contraparte, com `sidebarWidth` no tema — cada uma derruba só o gate esperado. Hoje: 0 de 14 completos, 14 em exceção; medido: 79 a 94 estéticos faltando no principal, 47 a 59 na contraparte e 17 a 20 funcionais declarados por tema; contraparte com estético fixo: 0.
+- Chromium 153 (`PLAYWRIGHT_BROWSERS_PATH` absoluto, `chromium.launch()` sem `executablePath`), build de `src/` e CSS por Tailwind em scratchpad, fora do repositório: barra recolhida 40 × 48 × 56 com mouse (1200 px) e toque (1024 px); grade, modal e rolagem horizontal a 320/360/390 px; vitrine do `sarak-sovereign`: 10 capturas, 0 falha, imagens abertas (desktop escuro, celular claro com modal).
+- `npm run verify -- --tier=quick` → `tsc` ok, `audit:baseline --with-tsc` ok, 22 `*:check` do Anel 1 ok, Anel 0 simulado 0 achado. Falharam: `token-types:check` e `guide:check` (gerados defasados, abaixo), `dev-kit:check` (idem) e `check-trail-citation` — este eu corrigi depois (comentário do gate citava o anexo) e reexecutei: verde.
+- Vitest (pastas `features/DesignEngine`, `Layout`, `core/Design`, `core/Provider`): só os 2 snapshots falharam, e foram atualizados.
+
+**Critérios de aceite**
+- [x] Padrões funcionais revisados, cada mudança com motivo — anexo §10.
+- [x] Reservas acompanham — `variable-contract:check` verde.
+- [x] Vitrine estendida e medida em navegador, dois modos, desktop e celular — 10 capturas.
+- [x] Trava de completude com limites (R18, no cabeçalho), mutação e lista de exceção por tema — teste do gate.
+- [ ] Vitrine pelo `npm run themes:showcase` (lê `dist/`) — não rodei (sem build); o gerador foi exercitado numa cópia que só troca o harness por um build de `src/`.
+
+**Decisões e suposições**
+- Só um padrão funcional mudou: os demais não tinham defeito medido ou lido; não troquei padrão por gosto (e §4.4.3 da `09`: padrão não conserta valor ruim oferecido).
+- Contraparte com estético que não carrega modo é falha da mesma regra (§6 da plan: "troca só o que carrega modo"); `mode` é a única exceção. Hoje nenhum tema o faz.
+- Valor da lista de exceção = lote em que o tema sai, na ordem do anexo de direção (sovereign 6; cyberpunk-neon 7 … aurora-veil 19). Não é conferido.
+- Não alterei `scripts/verify-changes.mjs` (é do revisor, fora da §3.1): a trava não está no `ANEL1` nem no nível `themes` dele.
+- Calendário da vitrine marca o dia de hoje (comportamento do componente); o resto é dado fixo.
+
+**Achados fora do escopo (não corrigidos)**
+- Anexo §10.3: faixa de `topbarCollapsedHeight` (24–56) abaixo do alvo de toque; `focusRingWidth` aceita 0; faixas de `zIndexSidebar` e `zIndexModal` se tocam; temas declaram funcionais que divergem do padrão.
+
+**Pendências / riscos**
+- **Gerados defasados (revisor regenera):** `src/core/Provider/generated/design-token-docs.json` (`npm run token-types`, o `usage` mudou); `sarak-ui/docs/migracoes.md` e o que o `guide` carimba; `sarak-dev/*` (`dev-kit`). Não rodei guide, dev-kit, token-types nem build.
+- A vitrine por `dist/` e o `cromo-css-real` dependem do build do revisor; a mudança de 48 px não altera o `cromo-css-real.spec.ts` (compara recolhida ≠ expandida).
+- Mudança de padrão classifica o diff como `full` no `verify-changes`.
+
+## Veredito — 2026-10-17 — lote 5 — 🟢 Aprovado
+
+**Conferido:**
+- **5.1** — os 98 tokens funcionais foram revistos; **uma** mudança, `topbarCollapsedHeight` 40 → 48 (`schema/navigation.ts`), com
+  motivo e medição no anexo §10; a reserva do `ChromeTopbarBody` acompanhou pela ferramenta do `variable-contract`;
+  nenhum estético mudou; dois snapshots atualizados só na variável nova.
+- **5.2** — a vitrine passou a montar as telas que a plan lista: cromo com navegação, formulário com erro, selos com forma,
+  tabela, cartões, gráfico, calendário, estado vazio, chat e a cena do modal, em modo × dispositivo (desktop 1440 e celular
+  390 com toque). **Abri eu mesmo** `sarak-sovereign__dark__sidebar__desktop__telas.png` e
+  `sarak-sovereign__light__sidebar__mobile__telas.png`, geradas pelo `npm run themes:showcase` contra o `dist/`
+  reconstruído: 10 capturas, 0 falha, todas as telas presentes e legíveis (no celular, navegação de base e tabela em cartões).
+- **5.3** — `theme-completeness:check`: uma regra só, limites declarados (R18), casos plantados, três mutações no dicionário
+  real e a lista de exceção por tema (`themeCompletenessPending.json`, os 14 temas, com o lote em que saem); ligada ao
+  `package.json`, ao pre-commit e à CI. Roda no repositório: "0 de 14 temas completos; 14 em exceção", o estado esperado.
+
+**Verificação (nível `full`, uma vez):** regenerei `token-types` (398), `guide`, `dev-kit` e `plan-index`; `npm run build`
+real verde; **`verify --tier=full` verde** (`tsc`, suíte completa, baseline com `tsc`, Anel 1, R36, Anel 0: 771 linhas, 0
+achados); bateria completa do navegador contra o `dist/`: **376/376**.
+
+**Achados do executor fora do escopo (§10.3 do anexo):**
+- faixa de `topbarCollapsedHeight` (24–56) abaixo do alvo de toque;
+- `focusRingWidth` aceita 0;
+- faixas de `zIndexSidebar` e `zIndexModal` que se tocam.
+Vão ao `00-backlog` (item 39): são decisões de contrato de faixa, não token que não desenha. O quarto ("temas declaram
+funcionais que divergem do padrão") é o próprio trabalho dos lotes 6 a 24: a trava acusa `declares-functional` e cada tema
+sai da exceção ao ficar completo.
+
+**Dois itens do revisor, fora do lote:** o `scripts/verify-changes.mjs` não tem o `theme-completeness:check` no nível `themes`
+nem no Anel 1 (o executor não podia tocá-lo) — vira prompt direto separado; a **fotografia** do lote 6 (a seguir) inclui a
+mudança de todos os `defaultValue` estéticos para os do `sarak-sovereign`.
+
+**Lote 5 fechado.** Próximo: lote 6 (o `sarak-sovereign` refeito, os padrões estéticos e o teto de peso por tema).
+
+**Status: 🟡 Em execução (lote 6 despachado).**

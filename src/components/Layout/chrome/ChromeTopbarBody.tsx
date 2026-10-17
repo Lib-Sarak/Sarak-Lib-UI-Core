@@ -98,7 +98,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                     {...surfaceProps}
                     className={`relative flex items-center gap-4 px-4 shrink-0 border-b transition-[height] duration-[var(--duration-normal,0.3s)] ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
                     style={{
-                        height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 40px)' : 'var(--sarak-topbar-height, 64px)',
+                        height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 48px)' : 'var(--sarak-topbar-height, 64px)',
                         margin: 'var(--sarak-tab-section-margin, 8px)',
                         background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
                         borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',

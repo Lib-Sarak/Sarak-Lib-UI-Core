@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (41)
+### B.3 Gates registrados (42)
 
 | Comando | O que roda |
 | --- | --- |
@@ -353,6 +353,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
 | `npm run theme-boot:check` | `node gates/scripts/contrato/check-theme-boot-closure.mjs` |
+| `npm run theme-completeness:check` | `npx tsx gates/scripts/contrato/check-theme-completeness.ts` |
 | `npm run themes:catalog:check` | `npx tsx scripts/generate-theme-catalog.ts --check` |
 | `npm run token-docs:check` | `npx tsx gates/scripts/contrato/check-token-documentation.ts` |
 | `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |

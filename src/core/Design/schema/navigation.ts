@@ -227,7 +227,7 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarCollapsedHeight',
             kind: 'functional',
             modeDependent: false,
-            usage: "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+            usage: "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
             interactsWith: ['isNavHidden'],
             label: 'Altura da Topbar (Recolhida)',
             type: 'slider',
@@ -235,7 +235,7 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 24, max: 56 },
-            defaultValue: 40,
+            defaultValue: 48,
             cssVars: ['--sarak-topbar-collapsed-height']
         },
         {

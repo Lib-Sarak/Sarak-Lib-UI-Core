@@ -96,8 +96,9 @@ jobs:
             #   - variable-contract:check : mesmo padrão — vive só no Anel 1 do pre-commit.
             #   - panel-contract:check : mesmo padrão — vive só no Anel 1 do pre-commit.
             #   - channel-dispute:check : mesmo padrão — vive só no Anel 1 do pre-commit.
+            #   - theme-completeness:check : mesmo padrão — vive só no Anel 1 do pre-commit.
             #   - fonts:check : roda também no build; repetido aqui porque confere o dist/fonts versionado.
-            - name: Os 15 *:check que o gates:full não alcança
+            - name: Os 16 *:check que o gates:full não alcança
               run: |
                   npm run plan-index:check
                   npm run gate-limits:check
@@ -113,6 +114,7 @@ jobs:
                   npm run panel-contract:check
                   npm run channel-dispute:check
                   npm run token-docs:check
+                  npm run theme-completeness:check
                   npm run fonts:check
 
     # ---------------------------------------------------------------------

@@ -328,6 +328,10 @@
       "comando": "node gates/scripts/contrato/check-theme-boot-closure.mjs"
     },
     {
+      "nome": "npm run theme-completeness:check",
+      "comando": "npx tsx gates/scripts/contrato/check-theme-completeness.ts"
+    },
+    {
       "nome": "npm run themes:catalog:check",
       "comando": "npx tsx scripts/generate-theme-catalog.ts --check"
     },

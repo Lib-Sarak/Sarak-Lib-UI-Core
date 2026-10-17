@@ -57,6 +57,7 @@
         "variable-contract:check": "npx tsx gates/scripts/contrato/check-variable-contract.ts",
         "channel-dispute:check": "npx tsx gates/scripts/contrato/check-channel-dispute.ts",
         "token-docs:check": "npx tsx gates/scripts/contrato/check-token-documentation.ts",
+        "theme-completeness:check": "npx tsx gates/scripts/contrato/check-theme-completeness.ts",
         "fonts:embed": "npx tsx scripts/embed-fonts.ts",
         "fonts:check": "npx tsx gates/scripts/contrato/check-fonts.ts",
         "fonts:manifest": "npx tsx scripts/generate-font-manifest.ts",

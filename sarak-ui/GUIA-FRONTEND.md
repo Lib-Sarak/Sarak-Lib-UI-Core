@@ -1071,7 +1071,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `tabGap` | estético | não | Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo. | — |
 | `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint. | — |
 | `topbarActiveColor` | estético | sim | Fundo do item ativo da barra do topo; o padrão é transparente. | `navigationStyle` |
-| `topbarCollapsedHeight` | funcional | não | Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
+| `topbarCollapsedHeight` | funcional | não | Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele. | `isNavHidden` |
 | `topbarColor` | estético | sim | Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo. | `navigationStyle` |
 | `topbarHeight` | funcional | não | Altura da barra do topo, por breakpoint. | `navigationStyle` |
 | `topbarHoverColor` | estético | sim | Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
