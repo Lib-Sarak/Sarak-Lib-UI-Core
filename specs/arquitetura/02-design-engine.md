@@ -328,6 +328,20 @@ saída é a de sempre.
   soma ao brilho base no hover. Movimento reduzido e modo de desempenho cortam o movimento.
 - Cabeçalho e rodapé (`cardHeader*`, `cardFooter*`), botão de ação (`cardActionBtn*`) e busca do cartão
   (`cardSearch*`) leem os próprios tokens; a classe do consumidor ainda vence ([[03-superficie-publica]] §6.1.1).
+- **Spotlight (`cardSpotlightOpacity`).** Um gradiente radial da cor primária do tema, com a opacidade do token (0 =
+  nada), que **segue o cursor** nos quatro cartões (`SarakActionCard`, `SarakSearchCard`, `SarakTitleCard`,
+  `SarakCoreCard`). O hook compartilhado `useSpotlightPointer` grava `--sarak-spot-x`/`--sarak-spot-y` na raiz do
+  cartão, um quadro por vez, e só registra listener com opacidade > 0, ponteiro fino e movimento não reduzido; em
+  toque, sem movimento ou ao sair o gradiente fica no centro (`_cards.css` declara `50%`).
+- **Traço luminoso (`borderBeamEnabled`, `cardSearchBorderBeamActive`).** Um anel de gradiente cônico que gira com
+  `--beam-angle`, mascarado para ocupar só a borda, na cor primária e com o raio do cartão. `borderBeamEnabled` o liga
+  em qualquer cartão; no `SarakSearchCard` ele também acende com o campo em foco (`cardSearchBorderBeamActive`).
+  Desligado, nenhuma animação roda. `usePauseBeamOffscreen` pausa o giro fora da tela; com movimento reduzido a
+  camada é escondida, não deixada parada.
+- **Zoom da imagem (`imageCardHoverZoom`)** vale ao passar o ponteiro sobre o `SarakImageCard` inteiro (o hover é
+  das variantes da raiz, não da camada da imagem); 1 = sem zoom. **Escala do clique (`cardActionClickScale`)** é o
+  `scale` do botão de ação pressionado, em CSS (`.sarak-card-action-btn:active`). Movimento reduzido, do token ou do
+  sistema, zera os dois.
 
 ## 10.5 Movimento
 

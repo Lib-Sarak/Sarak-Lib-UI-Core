@@ -172,6 +172,11 @@ Três origens, e nada além delas:
 > aceita por `validateDesign`, então um payload de consumidor que a carregue **perde a chave com um `warn`**
 > (R6). É o mecanismo do achado **34**, e é por isso que a **R33** existe: o domínio de chaves de tema é
 > contrato público e só encolhe com major.
+>
+> O domínio também encolhe quando um token oferecido não tem leitor ([[00-regras-e-invariantes]] R40: ou muda a
+> tela, ou sai). Saíram assim `cardContentAlignment`, `tableActionPosition` e `cardImagePosition`: cada um entra em
+> `REMOVED_TOKEN_KEYS` (`removedTokenKeys.ts`), o valor salvo é descartado com aviso nomeando a chave e cai no
+> padrão, e a retirada vai na nota MAJOR de `docs/migracoes.md`.
 
 ## 4.2 Valor tipado pelo próprio token
 

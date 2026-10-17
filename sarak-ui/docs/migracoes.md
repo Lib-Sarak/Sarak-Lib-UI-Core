@@ -832,24 +832,49 @@ do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria f
 
 **Classificação: MINOR (props opcionais aditivas).** Os dois átomos passam a exibir e associar o rótulo informado ao controle editável. Usos existentes continuam válidos; informe `label` para que o campo tenha um nome acessível ligado ao rótulo visível.
 
-### A biblioteca passa a levar as próprias fontes (`dist/fonts/`) e o catálogo de tipografia cresce de 19 para 41 famílias
+### As fontes passam a vir do próprio pacote, não do Google Fonts: `options.fonts` é novo e o catálogo de tipografia cresce de 19 para 41 famílias
 
-**Classificação: MAJOR (sai na 8.0.0).** O pacote passa a trazer `dist/fonts/` (~1,7 MB): 41 famílias em woff2,
+**Classificação: MAJOR (sai na 8.0.0).** Duas coisas mudam para quem já importa a lib:
+
+1. **O comportamento padrão muda de Google para embarcado.** Sem configurar nada, a página deixa de pedir fontes a
+   `fonts.googleapis.com`/`fonts.gstatic.com`: o Provider carrega, do próprio pacote, só as famílias que o tema no ar
+   usa. Quem tinha `font-src` (política de segurança de conteúdo) liberando os domínios do Google precisa liberar a
+   própria origem; quem usa esbuild puro ou CJS no navegador precisa de `baseUrl` (tabela abaixo).
+2. **`options.fonts` é novo** — a origem (`'bundled'`, o padrão · `'google'` · `'none'`), o `baseUrl` e as fontes do
+   próprio host (`custom`).
+
+**O que o tema aceita não muda.** Um token de fonte continua aceitando qualquer pilha de fontes segura, registrada ou
+não; nenhum tema salvo deixa de valer, e a família que não carregar cai na genérica da pilha.
+
+**Checklist do importador:**
+- [ ] A política de segurança de conteúdo tem `font-src 'self'` (ou a origem do `baseUrl`); os domínios do Google só
+  se você escolher `fonts: 'google'`.
+- [ ] O bundler está na tabela "Onde o arquivo é encontrado" abaixo; se ele pede `baseUrl`, a pasta `fonts/` do pacote
+  está publicada e o `baseUrl` aponta para ela.
+- [ ] Você carregava as fontes por conta própria (folha do Google no `index.html`, `@fontsource` importado)? Passe
+  `fonts: 'none'` para a lib não carregar de novo, ou remova o seu carregamento e deixe a lib fazê-lo.
+- [ ] A fonte da marca é sua? Registre-a em `options.fonts.custom` (abaixo) para ela aparecer no painel e carregar
+  sob demanda.
+
+**Privacidade:** com o padrão, o navegador do usuário final não fala com terceiros para desenhar texto — o IP dele não
+vai ao Google, o que tira essa transferência do inventário de LGPD do host, e a tipografia funciona offline e em rede
+que bloqueia o domínio. `fonts: 'google'` volta a fazer essa requisição; é escolha explícita do host.
+
+**O pacote:** passa a trazer `dist/fonts/` (~1,7 MB): 41 famílias em woff2,
 subconjunto `latin`, mais `manifest.json` (família → arquivos → pesos e eixos) e o `THIRD-PARTY-FONTS` com o crédito e o
 texto de licença de cada família (SIL OFL 1.1; Apache 2.0 para Satisfy e Roboto Slab). Quem empacota a lib e controla o
 que entra no artefato final passa a ver essa pasta no pacote.
 
-**O que muda agora, neste passo:** o pacote leva os arquivos e o painel passa a oferecer 22 famílias novas em
+**O catálogo:** o painel passa a oferecer 22 famílias novas em
 `THEME_FONTS` (Chakra Petch, Nunito, DM Sans, Manrope, Work Sans, Open Sans, Raleway, Source Sans 3, Poppins, Lato,
 Orbitron, VT323, Oswald, Source Serif 4, Roboto Slab, Lora, Merriweather, PT Serif, Patrick Hand, Fira Code, IBM Plex
 Mono, Space Mono). Os 19 `value` que já existiam não mudaram, nenhuma família saiu, e um tema salvo continua válido.
 
-**O padrão deixa de ser o Google Fonts.** Com `options.fonts` omitido (`'bundled'`), o Provider injeta um `@font-face`
+**Como o padrão carrega.** Com `options.fonts` omitido (`'bundled'`), o Provider injeta um `@font-face`
 só para as famílias que o design no ar usa (título, corpo, mono e a fonte do logo), uma vez por família, com
 `font-display: swap`, só os pesos que têm arquivo e o `unicode-range` latin, apontando para `dist/fonts/` do pacote.
 Nenhuma requisição a `fonts.googleapis.com`/`fonts.gstatic.com` e nenhum `<link rel="preconnect">`. Trocar de tema
-carrega a família nova; a anterior não é buscada de novo. A política de segurança de conteúdo do host passa a precisar de
-`font-src` com a própria origem (ou a do `baseUrl`), e não mais dos domínios do Google.
+carrega a família nova; a anterior não é buscada de novo.
 
 **`options.fonts` (novo):**
 
@@ -879,7 +904,8 @@ Falha nunca é silenciosa: quando uma família não carrega, o console mostra, u
 reserva do `value` (`sans-serif`, `serif`…).
 
 **Fontes do próprio host (`options.fonts.custom`, novo).** O importador registra as famílias que ele serve; a lib não
-embarca nem copia esses arquivos:
+embarca nem copia esses arquivos. Use `custom` para uma família que **não** está no catálogo da lib (a fonte da marca);
+`baseUrl` é para servir de outro lugar **as mesmas** fontes do pacote:
 
 ```tsx
 <SarakUIProvider options={{ fonts: { custom: [
@@ -914,6 +940,12 @@ evitar peso sintetizado escolhe pesos que a família tem (por exemplo, Space Mon
 Bebas Neue, só 400).
 
 ---
+
+### Lote 2 da documentação dos tokens
+
+Os tokens de tipografia, botões, campos, alternadores, cores, gráficos, chat e status agora informam no schema seu
+uso, classificação, dependência de modo e interações relevantes. O lote não alterou valores padrão, opções nem
+leitores; temas existentes mantêm o mesmo comportamento.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 

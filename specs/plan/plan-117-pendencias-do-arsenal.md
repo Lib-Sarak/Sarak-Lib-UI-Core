@@ -3,13 +3,13 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🟢 Aprovada"
+status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
 depende_de: "—"
-retida_por: ""
-destino_sintese: "arquitetura/02-design-engine.md + arquitetura/04-contrato-de-tokens-e-paridade.md + specs/09-temas-e-presets.md"
+retida_por: "plan-110"
+destino_sintese: "sintetizada · retida por plan-110"
 ---
 
 # 1. Objetivo
@@ -106,7 +106,11 @@ nenhum `defaultValue`.
 | P7 | `tableActionPosition` — a tabela não tem coluna de ações | plan-110 lote 1 | retirar | 3 | fechada |
 | P8 | `getCardStyles` morto e `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` o citando; `cardVariant` com `axis: 'texture'` | plan-110 lote 1 (backlog 34) | retirar/corrigir | 3 | fechada |
 | P9 | `cardImagePosition` — a opção `top` (o padrão) não tem leitor; o código morto escondia isso (`token-reader:check` vermelho; R40 exige `ALLOWLIST` vazia) | plan-117 lote 3 | retirar | 3 (correção) | fechada |
-| C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | **a decidir pelo dono**: aceitar e documentar · ou embarcar fontes | — | candidata |
+| P10 | `actionGlowShadowOffsetY`/`Blur`/`Spread` — o único leitor é o `style` inline do botão da categoria selecionada em `SarakCatalogGrid.tsx:110`, com cor a 5% de opacidade; variar os três não muda `box-shadow` computado nem pixel (plan-110 lote 2, medido no navegador) | plan-110 lote 2 | investigar a causa; **ligar** se o efeito for alcançável (a sombra de destaque dos botões de ação desenha de verdade) ou **retirar** os três | 4 | aberta |
+| P11 | `colorDepth`/`colorVariation` — moldam `--sarak-primary-color-hover`/`-active` (`useDesignVariables.ts:67-70`), que **nenhum CSS ou componente lê** (`git grep`) | plan-110 lote 2 | **retirar** (regra "muda a tela ou sai"; o hover já tem tokens próprios) — o dono pode preferir **ligar** ao hover/pressionado | 4 | aberta, decisão do dono |
+| P12 | `chartType`: `radar` quebra o ECharts (`axisPointer` lê `type` de eixo que não existe) e `heatmap` (`Heatmap on cartesian must have two category axes`) — `advancedCharts.ts:21,107`; opções que o painel oferece e derrubam o gráfico | plan-110 lote 2 | **corrigir** os builders para o dado padrão do gráfico; se uma opção não for viável com dado genérico, retirar a opção (valor salvo cai no padrão, com aviso) | 4 | aberta |
+| P13 | `rangeActiveColor` — pinta só o polegar; o trilho ativo usa a constante `ACTIVE` (`SarakRangeSlider.tsx:27`), então "cor ativa" não colore o que o nome promete | plan-110 lote 2 | **ligar** o trilho ativo ao token (e ajustar o `usage`) | 4 | aberta |
+| C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
 
@@ -147,6 +151,22 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
     entradas `achado-lote-1` somem da exceção do gate.
 11. Conferir as **candidatas** da §5.1: o executor lê C1–C3 e relata o estado atual de cada uma (achado, não
     correção); o revisor decide.
+
+**Lote 4 — P10, P11, P12, P13 (achados da medição do lote 2 da `plan-110`).**
+12. Cada token é aberto no leitor e **conferido no navegador por diferença de estilo computado** (par valor padrão ×
+    extremo; para os gráficos, `canvas` e erro de console), antes e depois. P10: dizer **por que** o `box-shadow` não muda
+    (a ordem do `style`, a cor a 5%, o `SarakButton`) e então ligar ou retirar os três como um bloco. P11: retirar os dois
+    tokens (schema, partições, mapeamento, tipos, `REMOVED_TOKEN_KEYS` e a variável derivada que ninguém lê), salvo
+    decisão do dono por ligar. P12: cada opção de `chartType` renderiza sem erro de console com o dado padrão
+    (`area`, `bar`, `pie`, `scatter`, `gauge`, `radar`, `heatmap`), com um caso de navegador por opção. P13: o trilho
+    ativo do `SarakRangeSlider` usa o token.
+13. Nenhum `defaultValue` muda por conta própria; nota MAJOR para o que for retirado; metadados do schema e o GUIA
+    (§6.4) atualizados; `usage` fiel ao que o código faz.
+
+**Verificação otimizada (decisão do dono, 2026-10-17):** o executor roda só os testes dos arquivos que tocou. O revisor
+roda `verify --tier=quick` (`tsc`, baseline, Anel 1, R36), o vitest **só dos arquivos tocados e dos que os importam**
+(`vitest related`) e, no navegador, **só as specs da área** (gráfico, faixa, botão, catálogo) contra um `build` — a suíte
+inteira e a bateria completa do navegador rodam **uma vez**, no fechamento da plan, junto com o último lote.
 
 **Lotes seguintes:** abertos pelo revisor quando a tabela da §5.1 ganhar linha. Cada novo lote repete o método.
 
@@ -660,3 +680,11 @@ navegador (`fontes-do-host.spec.ts`) são do **lote 4 da `plan-118`**, em execu�
 
 **Tabela §5.1:** nenhuma linha aberta. C1 fecha com a `plan-118`; C2 e C3 estão desatualizadas e já refletidas no
 backlog (item 7). **Plan aprovada**; a síntese (02/04/09) aguarda autorização do dono. Libera os lotes 5+ da `plan-110`.
+
+## Nota do revisor — 2026-10-16 — plan mantida aberta como registro
+
+**Sintetizada** (a verdade vive em `02` §10.4, `04` §4.1 e `09` §4.4.4) e **retida pela `plan-110`**, por decisão do dono:
+ela segue como o **registro vivo** da §5.1 durante a aplicação dos temas. Pendência do arsenal que a `plan-110` achar
+**entra na tabela da §5.1 como linha nova e é corrigida aqui, em lote, antes de o tema seguinte ser ajustado** (não vai
+ao backlog). Hoje a tabela não tem linha aberta. A retenção expira sozinha: quando a `plan-110` for sintetizada, esta
+sai junto, no mesmo ato.

@@ -10,6 +10,9 @@ export const ColorsSchema: ComponentSchema = {
     tokens: [
         {
             id: 'primaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas.",
             label: 'Cor Primária (Base)',
             type: 'color',
             description: 'Cor de marca principal do sistema — links, anel de foco, estados ativos e elementos de destaque, e a base das variantes automáticas (`generateVariants: true`). O fundo do botão primário é `btnPrimaryBg` (que costuma repetir esta cor), não este token. É a cor mais impactante na identidade visual.',
@@ -20,6 +23,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'secondaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos.",
             label: 'Cor Secundária',
             type: 'color',
             description: 'Segunda cor de marca, usada para complementar a primária em elementos de menor ênfase ou para criar contraste em gradientes/composições multicoloridas.',
@@ -30,6 +36,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'tertiaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define uma terceira cor de marca disponível para composições e séries dos gráficos.",
             label: 'Cor Terciária',
             type: 'color',
             description: 'Terceira cor de marca, usada para variar ainda mais paletas de gráficos, ilustrações ou composições que precisam de mais de duas cores de destaque.',
@@ -40,6 +49,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'accentColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de acento usada na malha de fundo e na terceira série de marca dos gráficos.",
             label: 'Cor de Acento (Accent)',
             type: 'color',
             description: 'Cor de acento: a terceira cor das séries dos gráficos e uma das manchas da malha de fundo (`bgGradientMode: mesh`), além das variantes `--theme-accent-*` que o consumidor pode ler. Nenhum componente da lib a usa sozinha — um badge "novo" lê o status, não este token.',
@@ -49,6 +61,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'surfaceColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos.",
             label: 'Cor de Superfície',
             type: 'color',
             description: 'Cor base das superfícies elevadas do sistema (cards, painéis, modais) — geralmente um tom intermediário entre o fundo geral (`colorBgBody`) e o texto, para criar hierarquia de profundidade.',
@@ -58,6 +73,10 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'textureColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Dá cor às texturas de fundo e de cartão que aceitam cor do tema.",
+            interactsWith: ['texture', 'cardTextureType'],
             label: 'Cor da Textura',
             type: 'color',
             description: 'Cor usada em overlays de textura/ruído de fundo (ex. grão, padrões sutis) — normalmente aplicada com opacidade baixa, para não competir com o conteúdo principal.',
@@ -70,6 +89,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'titleColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos.",
             label: 'Cor do Título',
             type: 'color',
             description: 'Cor padrão de títulos e cabeçalhos de texto em todo o sistema — deve manter contraste alto contra `colorBgBody`/`surfaceColor`.',
@@ -79,6 +101,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'colorDepth',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a distância tonal entre as variantes de hover e active geradas para as cores.",
             label: 'Profundidade da Cor',
             type: 'number',
             description: 'Fator que controla o quão escuras/claras ficam as variantes derivadas automaticamente das cores base (`generateVariants`) — valores maiores produzem variantes de contraste mais extremo entre si.',
@@ -89,6 +114,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'colorVariation',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a variação de matiz e saturação entre as variantes de interação geradas.",
             label: 'Variação da Cor',
             type: 'number',
             description: 'Fator que controla o quanto as variantes derivadas automaticamente das cores base variam entre si em matiz/saturação — valores maiores produzem uma família de cores mais diversa a partir da mesma cor base.',
@@ -100,6 +128,9 @@ export const ColorsSchema: ComponentSchema = {
         // --- CORES DE SUPERFÍCIE ---
         {
             id: 'colorBgModal',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o painel de conteúdo de modais e diálogos.",
             label: 'Background Modais',
             type: 'color',
             description: 'Cor de fundo do container de conteúdo de modais/diálogos — diferente do overlay/scrim atrás do modal (`modalOverlayColor` em `overlays.ts`), esta é a cor do próprio painel do modal.',
@@ -110,6 +141,9 @@ export const ColorsSchema: ComponentSchema = {
         // --- CORES DE COMPONENTES ---
         {
             id: 'cardBackgroundColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo dos cartões e fornece a cor base às suas variantes.",
             label: 'Background dos Cards',
             type: 'color',
             description: 'Cor de fundo padrão de todos os cards do sistema.',
@@ -124,6 +158,9 @@ export const ColorsSchema: ComponentSchema = {
         },
         {
             id: 'cardBorderColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o contorno dos cartões do sistema.",
             label: 'Borda dos Cards',
             type: 'color',
             description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte.',

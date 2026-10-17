@@ -6407,28 +6407,40 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor de Acento (Accent)"
+        "label": "Cor de Acento (Accent)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a cor de acento usada na malha de fundo e na terceira série de marca dos gráficos."
       },
       {
         "id": "actionGlowShadowBlur",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Sombra de Ação: Desfoque"
+        "label": "Sombra de Ação: Desfoque",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a suavidade da sombra de destaque usada nas ações do catálogo."
       },
       {
         "id": "actionGlowShadowOffsetY",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Sombra de Ação: Offset Y"
+        "label": "Sombra de Ação: Offset Y",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desloca a sombra de destaque usada nas ações selecionadas do catálogo."
       },
       {
         "id": "actionGlowShadowSpread",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Sombra de Ação: Espalhamento"
+        "label": "Sombra de Ação: Espalhamento",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Expande ou contrai a área da sombra de destaque usada nas ações do catálogo."
       },
       {
         "id": "aiGlowColor",
@@ -6456,7 +6468,10 @@
         "type": "number",
         "responsive": false,
         "group": "status",
-        "label": "Raio das Badges"
+        "label": "Raio das Badges",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda as bordas das badges de status; valores altos formam uma pílula."
       },
       {
         "id": "bgBaseColor",
@@ -6498,14 +6513,20 @@
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Fonte de Corpo"
+        "label": "Fonte de Corpo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Aplica a família tipográfica aos parágrafos, rótulos e demais textos corridos."
       },
       {
         "id": "bodyLineHeight",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Altura da Linha (Corpo)"
+        "label": "Altura da Linha (Corpo)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaço entre linhas dos parágrafos e afeta a leitura de blocos longos."
       },
       {
         "id": "bodySize",
@@ -6519,7 +6540,10 @@
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Peso do Corpo"
+        "label": "Peso do Corpo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a espessura do texto corrido sem mudar o tamanho da fonte."
       },
       {
         "id": "borderBeamEnabled",
@@ -6590,119 +6614,191 @@
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Escala no Clique"
+        "label": "Escala no Clique",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original."
       },
       {
         "id": "btnBackdropBlur",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Desfoque de Vidro (Backdrop Blur)"
+        "label": "Desfoque de Vidro (Backdrop Blur)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "btnBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "buttons",
-        "label": "Arredondamento (Master)"
+        "label": "Arredondamento (Master)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado."
       },
       {
         "id": "btnGhostHoverBg",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Hover (Ghost)"
+        "label": "Hover (Ghost)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo do botão ghost enquanto o ponteiro está sobre ele."
       },
       {
         "id": "btnHoverScale",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Escala no Hover"
+        "label": "Escala no Hover",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Amplia ou reduz o botão enquanto o ponteiro está sobre ele; 1 mantém a escala original."
       },
       {
         "id": "btnNeonGlowColor",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Cor do Brilho (Neon)"
+        "label": "Cor do Brilho (Neon)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a cor do halo de botões neon e cyberpunk.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "btnNeonPulseSpeed",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Velocidade de Pulso (s)"
+        "label": "Velocidade de Pulso (s)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o ciclo do halo pulsante; zero mantém estático e o estilo neon precisa estar selecionado.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "btnPrimaryBg",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Fundo Primário"
+        "label": "Fundo Primário",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo do botão primário e define a tinta usada por alguns estilos do botão."
       },
       {
         "id": "btnPrimaryText",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Texto Primário"
+        "label": "Texto Primário",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore o texto do botão primário; escolha contraste suficiente com btnPrimaryBg."
       },
       {
         "id": "btnRadiusBL",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "buttons",
-        "label": "Canto: Inferior Esquerdo"
+        "label": "Canto: Inferior Esquerdo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o arredondamento do canto inferior esquerdo do botão em relação ao mestre.",
+        "interactsWith": [
+          "btnBorderRadius"
+        ]
       },
       {
         "id": "btnRadiusBR",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "buttons",
-        "label": "Canto: Inferior Direito"
+        "label": "Canto: Inferior Direito",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o arredondamento do canto inferior direito do botão em relação ao mestre.",
+        "interactsWith": [
+          "btnBorderRadius"
+        ]
       },
       {
         "id": "btnRadiusTL",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "buttons",
-        "label": "Canto: Superior Esquerdo"
+        "label": "Canto: Superior Esquerdo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o arredondamento do canto superior esquerdo do botão em relação ao mestre.",
+        "interactsWith": [
+          "btnBorderRadius"
+        ]
       },
       {
         "id": "btnRadiusTR",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "buttons",
-        "label": "Canto: Superior Direito"
+        "label": "Canto: Superior Direito",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Sobrepõe o arredondamento do canto superior direito do botão em relação ao mestre.",
+        "interactsWith": [
+          "btnBorderRadius"
+        ]
       },
       {
         "id": "btnSecondaryBg",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Fundo Secundário"
+        "label": "Fundo Secundário",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo dos botões secundários, inclusive nas estratégias neon e frosted."
       },
       {
         "id": "btnStyleType",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Estilo do Botão"
+        "label": "Estilo do Botão",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escolhe a aparência dos botões e ativa as regras condicionais de neon, vidro fosco, contorno ou relevo."
       },
       {
         "id": "buttonIconPosition",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Posição do Ícone"
+        "label": "Posição do Ícone",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posiciona o ícone à esquerda ou à direita do texto nos botões que recebem um ícone."
       },
       {
         "id": "buttonWidthStrategy",
         "type": "string",
         "responsive": false,
         "group": "buttons",
-        "label": "Largura do Botão"
+        "label": "Largura do Botão",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Faz o botão acompanhar o conteúdo ou ocupar toda a largura do contêiner."
       },
       {
         "id": "cardActionBtnBorderRadius",
@@ -6791,7 +6887,10 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Background dos Cards"
+        "label": "Background dos Cards",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo dos cartões e fornece a cor base às suas variantes."
       },
       {
         "id": "cardBorderBottom",
@@ -6811,7 +6910,10 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Borda dos Cards"
+        "label": "Borda dos Cards",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o contorno dos cartões do sistema."
       },
       {
         "id": "cardBorderLeft",
@@ -7405,7 +7507,10 @@
         "type": "string",
         "responsive": false,
         "group": "data",
-        "label": "Paleta de Cores (Série)"
+        "label": "Paleta de Cores (Série)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a primeira cor de série; as séries seguintes combinam as demais cores de marca."
       },
       {
         "id": "chartEngineMinHeight",
@@ -7419,56 +7524,89 @@
         "type": "number",
         "responsive": false,
         "group": "data",
-        "label": "Opacidade da Grade"
+        "label": "Opacidade da Grade",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Controla a opacidade das linhas de grade dos gráficos quando a grade está ligada.",
+        "interactsWith": [
+          "chartShowGrid"
+        ]
       },
       {
         "id": "chartShowGrid",
         "type": "boolean",
         "responsive": false,
         "group": "data",
-        "label": "Mostrar Grid de Fundo"
+        "label": "Mostrar Grid de Fundo",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Exibe ou oculta as linhas de referência dos eixos dos gráficos."
       },
       {
         "id": "chartSmoothing",
         "type": "boolean",
         "responsive": false,
         "group": "data",
-        "label": "Suavização da Linha"
+        "label": "Suavização da Linha",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Curva as linhas de dados em vez de ligar os pontos por segmentos retos.",
+        "interactsWith": [
+          "chartType"
+        ]
       },
       {
         "id": "chartThickness",
         "type": "number",
         "responsive": false,
         "group": "data",
-        "label": "Espessura da Linha"
+        "label": "Espessura da Linha",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a espessura das linhas nos gráficos de linha e área.",
+        "interactsWith": [
+          "chartType"
+        ]
       },
       {
         "id": "chartTooltipBg",
         "type": "string",
         "responsive": false,
         "group": "data",
-        "label": "Fundo do Tooltip"
+        "label": "Fundo do Tooltip",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo das dicas que aparecem sobre os dados dos gráficos."
       },
       {
         "id": "chartType",
         "type": "string",
         "responsive": false,
         "group": "data",
-        "label": "Tipo de Gráfico"
+        "label": "Tipo de Gráfico",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio."
       },
       {
         "id": "chatAnimationSpeed",
         "type": "number",
         "responsive": false,
         "group": "chat",
-        "label": "Velocidade de Digitação"
+        "label": "Velocidade de Digitação",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define a duração das transições do contêiner e das bolhas de SarakChatEngine; também controla o ritmo da prévia de digitação no painel."
       },
       {
         "id": "chatAttachmentNameMaxWidth",
         "type": "number",
         "responsive": false,
         "group": "chat",
-        "label": "Chat Input: Largura Máxima do Nome do Anexo"
+        "label": "Chat Input: Largura Máxima do Nome do Anexo",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Limita a largura do nome de arquivo anexado ao campo de chat para evitar que ele quebre o layout."
       },
       {
         "id": "chatBubbleGlassBlur",
@@ -7482,35 +7620,50 @@
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "chat",
-        "label": "Arredondamento das Bolhas"
+        "label": "Arredondamento das Bolhas",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda as bolhas de mensagens no chat em cada breakpoint."
       },
       {
         "id": "chatBubbleStyle",
         "type": "string",
         "responsive": false,
         "group": "chat",
-        "label": "Estilo de Bolha"
+        "label": "Estilo de Bolha",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escolhe o acabamento das mensagens do chat: vidro, fundo sólido ou apresentação minimalista."
       },
       {
         "id": "chatTokenSliderMinWidth",
         "type": "number",
         "responsive": false,
         "group": "chat",
-        "label": "Chat Input: Largura Mínima do Slider de Tokens"
+        "label": "Chat Input: Largura Mínima do Slider de Tokens",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Preserva largura mínima para o controle de limite de tokens no campo de chat."
       },
       {
         "id": "chatUserBg",
         "type": "string",
         "responsive": false,
         "group": "chat",
-        "label": "Fundo (Usuário)"
+        "label": "Fundo (Usuário)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo e a borda das mensagens enviadas pelo usuário."
       },
       {
         "id": "checkboxActiveColor",
         "type": "string",
         "responsive": false,
         "group": "switches",
-        "label": "Cor do Check Selecionado"
+        "label": "Cor do Check Selecionado",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o preenchimento e a marca dos checkboxes selecionados."
       },
       {
         "id": "chromeNotificationsPosition",
@@ -7559,21 +7712,30 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Background Modais"
+        "label": "Background Modais",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o painel de conteúdo de modais e diálogos."
       },
       {
         "id": "colorDepth",
         "type": "number",
         "responsive": false,
         "group": "colors",
-        "label": "Profundidade da Cor"
+        "label": "Profundidade da Cor",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a distância tonal entre as variantes de hover e active geradas para as cores."
       },
       {
         "id": "colorVariation",
         "type": "number",
         "responsive": false,
         "group": "colors",
-        "label": "Variação da Cor"
+        "label": "Variação da Cor",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a variação de matiz e saturação entre as variantes de interação geradas."
       },
       {
         "id": "contentAlignment",
@@ -7909,56 +8071,80 @@
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Espaçamento (H1)"
+        "label": "Espaçamento (H1)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Aproxima ou afasta os caracteres do H1; valores negativos compactam o título."
       },
       {
         "id": "h1LineHeight",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Altura da Linha (H1)"
+        "label": "Altura da Linha (H1)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaço entre linhas do H1; valores baixos comprimem títulos quebrados."
       },
       {
         "id": "h1Size",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "typography",
-        "label": "Tamanho (H1)"
+        "label": "Tamanho (H1)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho do título H1 em cada breakpoint; valores muito grandes podem quebrar linhas ou ocupar a tela."
       },
       {
         "id": "h1Weight",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Peso (H1)"
+        "label": "Peso (H1)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a espessura do título H1 e o peso visual do cabeçalho principal."
       },
       {
         "id": "h2LineHeight",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Altura da Linha (H2)"
+        "label": "Altura da Linha (H2)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaço entre linhas dos títulos H2 quando ocupam mais de uma linha."
       },
       {
         "id": "h2Size",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "typography",
-        "label": "Tamanho (H2)"
+        "label": "Tamanho (H2)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho dos títulos de seção H2 em cada breakpoint."
       },
       {
         "id": "h2Weight",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Peso (H2)"
+        "label": "Peso (H2)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla a espessura dos títulos H2 e sua hierarquia em relação ao H1."
       },
       {
         "id": "h3Size",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tamanho (H3)"
+        "label": "Tamanho (H3)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho dos subtítulos H3; eles reutilizam o peso configurado para H2."
       },
       {
         "id": "headerAlignment",
@@ -7972,49 +8158,85 @@
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Fonte de Títulos"
+        "label": "Fonte de Títulos",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Aplica a família escolhida aos cabeçalhos HTML h1–h6 e às variantes h1, h2 e h3 de SarakTypography; permite criar contraste com a fonte do corpo."
       },
       {
         "id": "headingTransform",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Transformação de Títulos"
+        "label": "Transformação de Títulos",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Converte a caixa dos títulos em maiúscula, capitalizada ou preserva a digitação original."
       },
       {
         "id": "iconButtonFrostedShadowBlur",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Sombra Frosted do Icon Button: Desfoque"
+        "label": "Sombra Frosted do Icon Button: Desfoque",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Suaviza a sombra do SarakIconButton no estilo frosted.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "iconButtonFrostedShadowOffsetY",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Sombra Frosted do Icon Button: Offset Y"
+        "label": "Sombra Frosted do Icon Button: Offset Y",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desloca para baixo a sombra do SarakIconButton quando o estilo frosted está ativo.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "iconButtonGlowBlurLg",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Glow do Icon Button: Desfoque Grande"
+        "label": "Glow do Icon Button: Desfoque Grande",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o desfoque grande do brilho de variantes primary e danger do SarakIconButton no hover.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "iconButtonGlowBlurMd",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Glow do Icon Button: Desfoque Médio"
+        "label": "Glow do Icon Button: Desfoque Médio",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o desfoque médio do brilho de variantes secundária e ghost do SarakIconButton.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "iconButtonGlowBlurSm",
         "type": "number",
         "responsive": false,
         "group": "buttons",
-        "label": "Glow do Icon Button: Desfoque Pequeno"
+        "label": "Glow do Icon Button: Desfoque Pequeno",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o desfoque do brilho pequeno do SarakIconButton em repouso ou no hover.",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "iconFamily",
@@ -8159,84 +8381,123 @@
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Desfoque de Fundo (Blur)"
+        "label": "Desfoque de Fundo (Blur)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoca o conteúdo atrás de campos translúcidos; sem fundo translúcido o desfoque não aparece.",
+        "interactsWith": [
+          "inputBg"
+        ]
       },
       {
         "id": "inputBg",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Fundo do Input"
+        "label": "Fundo do Input",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o fundo dos campos e alimenta as variantes de foco e hover."
       },
       {
         "id": "inputBorderColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Cor da Borda"
+        "label": "Cor da Borda",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o contorno dos campos em repouso."
       },
       {
         "id": "inputBorderRadius",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
         "group": "inputs",
-        "label": "Arredondamento"
+        "label": "Arredondamento",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda os campos de entrada em cada breakpoint."
       },
       {
         "id": "inputBorderType",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Estilo da Borda"
+        "label": "Estilo da Borda",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escolhe contorno sólido, tracejado, ausente ou somente inferior nos campos."
       },
       {
         "id": "inputErrorColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Cor de Erro"
+        "label": "Cor de Erro",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta a borda e o texto do campo quando a validação indica erro."
       },
       {
         "id": "inputFocusBorderColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Cor da Borda (Foco)"
+        "label": "Cor da Borda (Foco)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o contorno dos campos quando recebem foco."
       },
       {
         "id": "inputIconColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Cor dos Ícones"
+        "label": "Cor dos Ícones",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta os ícones internos e adjacentes aos campos."
       },
       {
         "id": "inputIconPosition",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Posição do Ícone"
+        "label": "Posição do Ícone",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posiciona à esquerda ou à direita os ícones internos de campos que os exibem."
       },
       {
         "id": "inputPadding",
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Espaçamento Interno (Y)"
+        "label": "Espaçamento Interno (Y)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
       },
       {
         "id": "inputShadow",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Sombra do Campo (CSS ou \"neumorphism\")"
+        "label": "Sombra do Campo (CSS ou \"neumorphism\")",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define a sombra dos campos; aceita CSS, neumorphism ou none."
       },
       {
         "id": "inputTextColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Cor do Texto"
+        "label": "Cor do Texto",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o texto digitado nos campos."
       },
       {
         "id": "isAutoHideEnabled",
@@ -8546,7 +8807,10 @@
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Fonte Mono (Dados)"
+        "label": "Fonte Mono (Dados)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Aplica a família monoespaçada a valores tabulares e trechos de código."
       },
       {
         "id": "motionDurationFast",
@@ -8609,7 +8873,10 @@
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Multi-Select: Largura Mínima do Input Interno"
+        "label": "Multi-Select: Largura Mínima do Input Interno",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Mantém largura mínima para o campo de texto do multiselect não ser comprimido pelas tags."
       },
       {
         "id": "navActiveMarkerColor",
@@ -8853,14 +9120,20 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor Primária (Base)"
+        "label": "Cor Primária (Base)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas."
       },
       {
         "id": "progressBarHeight",
         "type": "number",
         "responsive": false,
         "group": "status",
-        "label": "Altura da Barra de Progresso"
+        "label": "Altura da Barra de Progresso",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define a altura das barras de progresso."
       },
       {
         "id": "progressBarMaxWidth",
@@ -8877,14 +9150,20 @@
         "type": "number",
         "responsive": false,
         "group": "status",
-        "label": "Arredondamento da Barra de Progresso"
+        "label": "Arredondamento da Barra de Progresso",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Arredonda os cantos das barras de progresso."
       },
       {
         "id": "rangeActiveColor",
         "type": "string",
         "responsive": false,
         "group": "inputs",
-        "label": "Range Slider: Cor Ativa"
+        "label": "Range Slider: Cor Ativa",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta os polegares arrastáveis dos controles de faixa."
       },
       {
         "id": "reducedMotion",
@@ -8947,7 +9226,10 @@
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Search Palette: Desfoque do Backdrop"
+        "label": "Search Palette: Desfoque do Backdrop",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoca o conteúdo atrás da paleta de busca enquanto ela está aberta."
       },
       {
         "id": "searchDropdownGap",
@@ -8982,7 +9264,10 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor Secundária"
+        "label": "Cor Secundária",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos."
       },
       {
         "id": "shadowAmbientAlpha",
@@ -9150,42 +9435,60 @@
         "type": "string",
         "responsive": false,
         "group": "status",
-        "label": "Cor: Erro"
+        "label": "Cor: Erro",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta erros de validação, badges de falha e estados críticos."
       },
       {
         "id": "statusGlowBlur",
         "type": "number",
         "responsive": false,
         "group": "status",
-        "label": "Desfoque do Glow de Status"
+        "label": "Desfoque do Glow de Status",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espalhamento do brilho das badges na cor do status; zero desliga o efeito."
       },
       {
         "id": "statusInfoColor",
         "type": "string",
         "responsive": false,
         "group": "status",
-        "label": "Cor: Info"
+        "label": "Cor: Info",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta badges e mensagens de informação neutra."
       },
       {
         "id": "statusSuccessColor",
         "type": "string",
         "responsive": false,
         "group": "status",
-        "label": "Cor: Sucesso"
+        "label": "Cor: Sucesso",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta badges e outros estados de confirmação e sucesso."
       },
       {
         "id": "statusWarningColor",
         "type": "string",
         "responsive": false,
         "group": "status",
-        "label": "Cor: Alerta"
+        "label": "Cor: Alerta",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta avisos e estados que pedem atenção sem indicar falha."
       },
       {
         "id": "surfaceColor",
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor de Superfície"
+        "label": "Cor de Superfície",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos."
       },
       {
         "id": "surfaceIntensity",
@@ -9206,7 +9509,13 @@
         "type": "number",
         "responsive": false,
         "group": "switches",
-        "label": "Desfoque do Alternador (Vidro)"
+        "label": "Desfoque do Alternador (Vidro)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoca o fundo do trilho translúcido no estilo glass.",
+        "interactsWith": [
+          "switchStyleType"
+        ]
       },
       {
         "id": "switchLabelPosition",
@@ -9220,28 +9529,43 @@
         "type": "string",
         "responsive": false,
         "group": "switches",
-        "label": "Cor do Pulso (Pulsing Dot)"
+        "label": "Cor do Pulso (Pulsing Dot)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define a cor do anel que pulsa no alternador ligado no estilo pulsing.",
+        "interactsWith": [
+          "switchStyleType"
+        ]
       },
       {
         "id": "switchStyleType",
         "type": "string",
         "responsive": false,
         "group": "switches",
-        "label": "Estilo do Alternador (Switch)"
+        "label": "Estilo do Alternador (Switch)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Escolhe a forma e o acabamento do alternador: tátil, assimétrico, pulsante ou vidro."
       },
       {
         "id": "switchThumbBg",
         "type": "string",
         "responsive": false,
         "group": "switches",
-        "label": "Cor: Switch Botão"
+        "label": "Cor: Switch Botão",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o botão deslizante do alternador."
       },
       {
         "id": "switchTrackActiveBg",
         "type": "string",
         "responsive": false,
         "group": "switches",
-        "label": "Cor: Switch Ativo"
+        "label": "Cor: Switch Ativo",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Pinta o trilho do alternador quando ele está ligado."
       },
       {
         "id": "systemTone",
@@ -9339,42 +9663,60 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor Terciária"
+        "label": "Cor Terciária",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Define uma terceira cor de marca disponível para composições e séries dos gráficos."
       },
       {
         "id": "textColorMaster",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Texto Principal"
+        "label": "Texto Principal",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor."
       },
       {
         "id": "textColorMuted",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Texto Mudo / Hint"
+        "label": "Texto Mudo / Hint",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore dicas e placeholders; o contraste mais baixo da escala aparece em campos e textos auxiliares."
       },
       {
         "id": "textColorSecondary",
         "type": "string",
         "responsive": false,
         "group": "typography",
-        "label": "Texto Secundário"
+        "label": "Texto Secundário",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore textos secundários, como descrições e metadados, para reduzir a ênfase sem os ocultar."
       },
       {
         "id": "textGlowIntensity",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Intensidade de Glow (H1)"
+        "label": "Intensidade de Glow (H1)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Adiciona brilho ao H1 na cor primária; zero remove o efeito."
       },
       {
         "id": "textSmoothing",
         "type": "boolean",
         "responsive": false,
         "group": "typography",
-        "label": "Suavização (Smoothing)"
+        "label": "Suavização (Smoothing)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Alterna o antialiasing tipográfico aplicado à página; desligado, o navegador usa a suavização padrão."
       },
       {
         "id": "texture",
@@ -9388,7 +9730,14 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor da Textura"
+        "label": "Cor da Textura",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Dá cor às texturas de fundo e de cartão que aceitam cor do tema.",
+        "interactsWith": [
+          "texture",
+          "cardTextureType"
+        ]
       },
       {
         "id": "textureOpacity",
@@ -9402,7 +9751,10 @@
         "type": "string",
         "responsive": false,
         "group": "colors",
-        "label": "Cor do Título"
+        "label": "Cor do Título",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos."
       },
       {
         "id": "toastAccentWidth",
@@ -9548,91 +9900,130 @@
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Snug"
+        "label": "Tracking Snug",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaçamento de caracteres em textos curtos, um passo acima de trackingTight."
       },
       {
         "id": "trackingTight",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Tight"
+        "label": "Tracking Tight",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaçamento de caracteres em rótulos pequenos e textos curtos em caixa alta."
       },
       {
         "id": "trackingUltra",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Ultra"
+        "label": "Tracking Ultra",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaça fortemente o título do estado vazio; valores altos separam as letras."
       },
       {
         "id": "trackingWide",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Wide"
+        "label": "Tracking Wide",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Controla o espaçamento de textos curtos de categoria e de mensagens auxiliares."
       },
       {
         "id": "trackingWider",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Wider"
+        "label": "Tracking Wider",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Amplia o espaçamento de textos curtos que precisam de mais abertura que trackingWide."
       },
       {
         "id": "trackingWidest",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Tracking Widest"
+        "label": "Tracking Widest",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Aplica o espaçamento mais aberto da escala comum em rótulos de poucas palavras."
       },
       {
         "id": "typeScale2xs",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala 2XS"
+        "label": "Escala 2XS",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca."
       },
       {
         "id": "typeScale3xs",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala 3XS"
+        "label": "Escala 3XS",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores."
       },
       {
         "id": "typeScaleCaption",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala Caption"
+        "label": "Escala Caption",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho de legendas, notas e texto auxiliar."
       },
       {
         "id": "typeScaleMicro",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala Micro"
+        "label": "Escala Micro",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura."
       },
       {
         "id": "typeScaleTiny",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala Tiny"
+        "label": "Escala Tiny",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho de textos muito pequenos usados em badges e legendas."
       },
       {
         "id": "typeScaleXl",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala XL"
+        "label": "Escala XL",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho XL para texto de destaque, como o campo de busca e títulos auxiliares."
       },
       {
         "id": "typeScaleXs",
         "type": "number",
         "responsive": false,
         "group": "typography",
-        "label": "Escala XS"
+        "label": "Escala XS",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos."
       },
       {
         "id": "vignetteOpacity",
@@ -9810,6 +10201,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "1c566e08535c"
+    "kitHash": "bae4c81492f3"
   }
 }

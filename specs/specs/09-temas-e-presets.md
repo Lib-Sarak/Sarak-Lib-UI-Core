@@ -415,9 +415,17 @@ secundária, destaque e terciária) e nunca usa cor de status ([[03-superficie-p
 ### 4.4.4 O que o tema declara — fontes, e os tokens que saíram
 
 **Fonte é um valor da lista.** `bodyFont`, `headingFont`, `monoFont` e `identityFontFamily` recebem o `value`
-exato de `THEME_FONTS` (`src/core/Design/schema/typography.ts`), no formato `"'Nome', categoria-genérica"`; a
-URL do Google Fonts que o Provider injeta é derivada da mesma lista (`buildGoogleFontsUrl`), então só fonte da
-lista carrega. `identityFontFamily` aceita ainda o padrão, que herda a fonte de títulos do tema.
+exato de `THEME_FONTS` (`src/core/Design/schema/typography.ts`), no formato `"'Nome', categoria-genérica"`. A
+mesma lista alimenta o seletor do painel, o manifesto das fontes embarcadas e (com `options.fonts: 'google'`) a URL do
+Google; o carregador embarcado reconhece **só o valor exato** — outra grafia passa na validação (é pilha segura), mas
+nenhum arquivo é carregado e a tela mostra a genérica. Uma família nova nasce de uma entrada de `THEME_FONTS` com o
+`value` terminando numa genérica válida (`sans-serif`, `serif`, `monospace`, `cursive`) e do pacote `@fontsource*` que a
+embarca; os `value` antigos nunca mudam (tema salvo guarda a string). O tema escolhe **pesos que a família tem**: das
+variáveis entra só o eixo `wght`, das estáticas só os pesos com arquivo, e o navegador sintetiza o resto. A fonte
+própria do host entra por `options.fonts.custom` (o catálogo da lib é o ponto de partida, não o teto), e a família
+registrada vale em qualquer token de fonte; o tema exportado que a usa traz `requiresFonts` para o outro host
+registrá-la. `identityFontFamily` aceita ainda o padrão, que herda a fonte de títulos do tema. Como o pacote leva as
+fontes: [[05-build-e-distribuicao]] §2.2.
 
 **Token que saiu do schema é descartado com aviso**, e o valor salvo cai no padrão (`removedTokenKeys.ts`, a
 régua viva). Um tema não declara mais o que se fundiu num token que desenha nem o que não era de tema — a
@@ -426,12 +434,19 @@ ruído viraram `bgNoiseDensity`; a família de movimento `anim*`/`easeMain`/`eas
 tokens de peça interna do painel (pré-visualização de preset, largura do telefone, tecla, perspectiva e órbita
 do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borderRadiusSm/Md/Lg`,
 `contrastCurve`, `scrollbarWidth`, `scrollbarThumbColor`, `formLayoutDirection`, `layerElevationFactor`,
-`matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha; e
+`matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha;
+`cardContentAlignment` (redundante com `cardTextAlign`), `tableActionPosition` (a tabela não tem coluna de ações) e
+`cardImagePosition` (a opção padrão não tinha leitor) saíram porque nada os desenhava; e
 `aiPanelBg`, `identityRedirectUrl`, `industrialRegistry` e `inputSuccessColor` saíram sem
 substituto. `layout` saiu do schema (as opções nunca tiveram regra) e segue como chave aceita do payload, que o painel usa. Opções que saíram: `systemTone` `dark`/`light` (fica `none` · `cyber` · `tactical`) e os materiais
 `metallic`/`brushed`/`acrylic`/`matte`. Saíram também `securityShieldGlow`, `securityPulseSpeed`,
 `trackingSubtle`, `typeScaleDisplay` (sem componente que os use) e `cardHoverLift` (duplicata de `cardHoverTranslate`).
 A nota de cada mudança, com o destino do valor salvo, está em `docs/migracoes.md` (`## 8.0.0`).
+
+**Os efeitos de cartão são alavancas do tema.** Spotlight que segue o cursor (`cardSpotlightOpacity`), traço
+luminoso na borda (`borderBeamEnabled`, `cardSearchBorderBeamActive`), zoom da imagem (`imageCardHoverZoom`) e escala do
+clique (`cardActionClickScale`) desenham de verdade e respeitam movimento reduzido; o que cada um faz está em
+[[02-design-engine]] §10.4.
 
 **O schema oferece as intenções que um tema declara**, sem sentinela: *sem animação* é `motionDuration*` em 0;
 *pílula* é o máximo do raio do token (que já excede metade da altura do controle); `identityTracking` é em px. A

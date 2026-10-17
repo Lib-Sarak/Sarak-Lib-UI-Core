@@ -565,6 +565,41 @@ Independente da topologia:
   público dele, nunca pela tabela ou pelo endpoint interno.
 - **Uma cópia da lib.** Duas versões instaladas = dois contextos React = metade da tela sem tema.
 
+## 3.14 Fontes → a lib já carrega, do próprio pacote
+
+A lib leva as próprias fontes (`dist/fonts/`) e o Provider carrega **só as famílias que o tema no ar usa**, uma vez
+por família, sem pedir nada a terceiros. A lista, por categoria (sans, serif, display, manuscrita, mono), é o seletor
+de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor grava (`'Lora', serif`).
+
+- **Não recrie o carregador.** Nada de `@fontsource`, `<link>` do Google no seu `index.html` ou `@font-face` à mão
+  para uma família do catálogo: a lib carregaria de novo e a fonte deixaria de seguir a troca de tema.
+- **A origem é `options.fonts`:** omitido = `'bundled'` (o padrão); `{ baseUrl }` quando o seu bundler não acha os
+  arquivos (esbuild puro, CJS no navegador) ou você os serve de uma CDN própria — copie a pasta `fonts/` do pacote e
+  aponte para ela; `'google'` só se você **quer** o Google Fonts; `'none'` se você carrega tudo. Vite (dev e `build`)
+  acha os arquivos sozinho.
+- **A fonte da marca do cliente vai em `options.fonts.custom`**, não em `baseUrl`: `custom` acrescenta uma família
+  que a lib não tem, servida por você; `baseUrl` só muda de onde vêm as fontes da lib.
+
+```tsx
+<SarakUIProvider options={{ fonts: { custom: [
+  { family: 'Marca Sans', category: 'Sans-Serif', fallback: 'sans-serif', files: [
+    { url: '/fontes/marca-400.woff2', weight: 400 },
+    { url: '/fontes/marca-700.woff2', weight: 700 },
+  ] },
+] } }}>
+```
+
+- **Registrar não muda o que o tema aceita.** A família registrada entra no seletor do painel e vale em qualquer token
+  de fonte; uma pilha segura como `'Georgia, serif'` vale sem registro. Registrar é o que faz a lib carregar o arquivo
+  e listá-la.
+- **Privacidade e política de segurança de conteúdo:** no padrão, o IP do usuário não vai a um terceiro para desenhar
+  texto (LGPD) e a tipografia funciona offline. A diretiva é `font-src 'self'` (mais a origem do `baseUrl`, se for
+  outra); os domínios do Google só com `'google'`.
+- **Fonte que não carregou avisa:** `[Sarak:UI] A fonte "<família>" não carregou (origem tentada: …)` no console,
+  uma vez por família, e a página segue com a genérica da pilha.
+
+Detalhe e a tabela por bundler: `docs/migracoes.md`, `## 8.0.0`.
+
 ---
 
 # §4 — Templates copiáveis
@@ -610,9 +645,9 @@ Antes de escrever um componente seu, procure a necessidade aqui. Cada linha diz 
 reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de verdade, com tipo e prop, está no
 `catalog.json` (A.1 e A.4b abaixo); este mapa só aponta e ensina o que a medição mostrou.
 
-> **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. As demais
-> necessidades estão marcadas **⏳** e entram com as medições dos próximos lotes. Linha ⏳ não significa "a lib não
-> faz": significa "ainda não foi aberta token a token" — procure no catálogo antes de construir.
+> **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. O lote 2
+> acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. As
+> necessidades que ainda estão **⏳** não foram abertas token a token; procure no catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
 | --- | --- | --- |
@@ -623,9 +658,15 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | um diálogo | `SarakModal` (tamanhos nomeados, passos, foco preso, Escape); para painel lateral, `SarakDrawer` | foco preso, Escape, véu e animação são resolvidos; um `div` fixo com `z-index` próprio entra na disputa de camadas |
 | aviso passageiro | `useToast().notify(...)` | empilhamento, tipo e largura vêm de `overlays` e do Provider |
 | dica ao passar o ponteiro / menu de contexto | `SarakTooltip` · `SarakContextMenu` | o menu de contexto se desloca para dentro da tela e fecha por clique fora e por Escape; o tooltip já lê fundo, texto, borda e raio do tema |
+| carregar as fontes do tema (e a da marca) | o Provider, com `options.fonts` e `options.fonts.custom` (§3.14) | só a família em uso é baixada, sem rede de terceiros, e a fonte segue a troca de tema; um `@font-face` seu fica fora disso |
+| tipografia e cores da interface | `SarakTypography` · tokens `text*` e `color*` | família, escala, peso, espaçamento, halo e cores vêm do tema; as cores têm valores para os dois modos |
+| ação principal ou botão de ícone | `SarakButton` · `SarakIconButton` | variantes, ícones, largura, raio, brilho e vidro seguem os tokens de botão |
+| campo, seleção ou alternância | `SarakInput` · `SarakSelect` · `SarakSwitch` | foco, fundo, borda, ícone, espaçamento e estilos do alternador acompanham o tema |
+| gráfico de dados | `SarakChartEngine` | paleta, grade, dicas, espessura e suavização são configuráveis; a prop `type` pode escolher a forma adequada aos dados |
+| conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e limites de largura já têm tokens |
+| estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
 | navegação, cromo e slots | ⏳ `SarakAppChrome` (§2 e A.3) | ⏳ lote seguinte |
-| formulário e validação | ⏳ | ⏳ lote seguinte |
-| gráfico, calendário, Gantt, Kanban | ⏳ `SarakChartEngine`, `SarakKanban` | ⏳ lote seguinte |
+| calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
 | idioma, preferências do usuário, persistência do tema | ⏳ | ⏳ lote seguinte |
 | modo embarcado (ilha sobre um front existente) | ⏳ (§2 e skill) | ⏳ lote seguinte |
 | painel de customização | ⏳ `SarakCustomizationPanel` | ⏳ lote seguinte |
@@ -696,6 +737,28 @@ gira só pela borda do cartão e acompanha o raio dele. `cardSearchBorderBeamAct
 `SarakSearchCard` **só com o campo de busca em foco**; `borderBeamEnabled` (padrão `false`, opt-in) o mantém aceso em
 qualquer cartão. Desligados, nenhuma animação roda; fora da tela o giro pausa e movimento reduzido apaga o traço. Dezenas
 de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque.
+
+## 6.5 Tipografia, controles e cores
+
+- Os tokens `text*` controlam a pilha tipográfica, escala, peso, espaçamento e efeitos de texto usados por
+  `SarakTypography` e pelos componentes que consomem o motor de design. As famílias configuradas no tema continuam
+  sujeitas ao carregamento de fontes do Provider (§3.14).
+- Os tokens de `SarakButton` e `SarakIconButton` incluem geometria e efeitos condicionais: halo e pulso dependem do
+  estilo neon; desfoque e sombras de vidro dependem do estilo frosted. O estilo escolhido determina quais desses
+  ajustes aparecem.
+- `inputBackdropBlur` só desfoca o que está atrás do campo quando `inputBg` é translúcido. No `SarakSwitch`, os ajustes
+  de vidro e pulso dependem dos estilos que os usam.
+- As cores de marca e superfície têm valores por modo. O motor usa a contraparte ao trocar entre claro e escuro, em
+  vez de deixar componentes com cores fixas fora da mudança de tema.
+
+## 6.6 Dados, chat e status
+
+- `chartGridOpacity` só aparece com `chartShowGrid` ligado. Espessura e suavização se aplicam a linhas e áreas;
+  `SarakChartEngine` permite escolher o tipo de gráfico pela prop `type`.
+- Os limites de largura do chat evitam que nomes de anexos e o controle de tokens ocupem espaço sem limite; a
+  velocidade da animação também vem do tema.
+- `SarakBadge` oferece variantes semânticas; os tokens de status e progresso controlam as cores e os limites visuais
+  dos respectivos componentes.
 
 ---
 
@@ -868,7 +931,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**117** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**228** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
 
 #### Card Geral (`cards`)
 
@@ -1016,6 +1079,157 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `tableHeaderBg` | estético | sim | Fundo do cabeçalho da `SarakTable` e da `SarakDataTable`; também pinta a barra de ferramentas do editor de texto rico e a do visualizador de PDF. | — |
 | `tableRowHoverBg` | estético | sim | Fundo da linha sob o ponteiro na `SarakTable`; a `SarakDataTable` não lê este token. | — |
 | `tableZebraStriping` | estético | não | Alterna o fundo das linhas da `SarakTable` e da `SarakDataTable`, para seguir a linha em tabelas largas. | — |
+
+#### Tipografia e Escala (`typography`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `bodyFont` | estético | não | Aplica a família tipográfica aos parágrafos, rótulos e demais textos corridos. | — |
+| `bodyLineHeight` | estético | não | Controla o espaço entre linhas dos parágrafos e afeta a leitura de blocos longos. | — |
+| `bodyWeight` | estético | não | Controla a espessura do texto corrido sem mudar o tamanho da fonte. | — |
+| `h1LetterSpacing` | estético | não | Aproxima ou afasta os caracteres do H1; valores negativos compactam o título. | — |
+| `h1LineHeight` | estético | não | Controla o espaço entre linhas do H1; valores baixos comprimem títulos quebrados. | — |
+| `h1Size` | estético | não | Define o tamanho do título H1 em cada breakpoint; valores muito grandes podem quebrar linhas ou ocupar a tela. | — |
+| `h1Weight` | estético | não | Controla a espessura do título H1 e o peso visual do cabeçalho principal. | — |
+| `h2LineHeight` | estético | não | Controla o espaço entre linhas dos títulos H2 quando ocupam mais de uma linha. | — |
+| `h2Size` | estético | não | Define o tamanho dos títulos de seção H2 em cada breakpoint. | — |
+| `h2Weight` | estético | não | Controla a espessura dos títulos H2 e sua hierarquia em relação ao H1. | — |
+| `h3Size` | estético | não | Define o tamanho dos subtítulos H3; eles reutilizam o peso configurado para H2. | — |
+| `headingFont` | estético | não | Aplica a família escolhida aos cabeçalhos HTML h1–h6 e às variantes h1, h2 e h3 de SarakTypography; permite criar contraste com a fonte do corpo. | — |
+| `headingTransform` | estético | não | Converte a caixa dos títulos em maiúscula, capitalizada ou preserva a digitação original. | — |
+| `monoFont` | estético | não | Aplica a família monoespaçada a valores tabulares e trechos de código. | — |
+| `textColorMaster` | estético | sim | Colore o texto principal de parágrafos e rótulos; títulos usam titleColor. | — |
+| `textColorMuted` | estético | sim | Colore dicas e placeholders; o contraste mais baixo da escala aparece em campos e textos auxiliares. | — |
+| `textColorSecondary` | estético | sim | Colore textos secundários, como descrições e metadados, para reduzir a ênfase sem os ocultar. | — |
+| `textGlowIntensity` | estético | sim | Adiciona brilho ao H1 na cor primária; zero remove o efeito. | — |
+| `textSmoothing` | estético | não | Alterna o antialiasing tipográfico aplicado à página; desligado, o navegador usa a suavização padrão. | — |
+| `trackingSnug` | estético | não | Controla o espaçamento de caracteres em textos curtos, um passo acima de trackingTight. | — |
+| `trackingTight` | estético | não | Controla o espaçamento de caracteres em rótulos pequenos e textos curtos em caixa alta. | — |
+| `trackingUltra` | estético | não | Espaça fortemente o título do estado vazio; valores altos separam as letras. | — |
+| `trackingWide` | estético | não | Controla o espaçamento de textos curtos de categoria e de mensagens auxiliares. | — |
+| `trackingWider` | estético | não | Amplia o espaçamento de textos curtos que precisam de mais abertura que trackingWide. | — |
+| `trackingWidest` | estético | não | Aplica o espaçamento mais aberto da escala comum em rótulos de poucas palavras. | — |
+| `typeScale2xs` | estético | não | Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca. | — |
+| `typeScale3xs` | estético | não | Define o degrau 3XS usado em rótulos compactos de cartões e indicadores. | — |
+| `typeScaleCaption` | estético | não | Define o tamanho de legendas, notas e texto auxiliar. | — |
+| `typeScaleMicro` | estético | não | Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura. | — |
+| `typeScaleTiny` | estético | não | Define o tamanho de textos muito pequenos usados em badges e legendas. | — |
+| `typeScaleXl` | estético | não | Define o tamanho XL para texto de destaque, como o campo de busca e títulos auxiliares. | — |
+| `typeScaleXs` | estético | não | Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos. | — |
+
+#### Botão de Ação (`buttons`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `actionGlowShadowBlur` | estético | não | Controla a suavidade da sombra de destaque usada nas ações do catálogo. | — |
+| `actionGlowShadowOffsetY` | estético | não | Desloca a sombra de destaque usada nas ações selecionadas do catálogo. | — |
+| `actionGlowShadowSpread` | estético | não | Expande ou contrai a área da sombra de destaque usada nas ações do catálogo. | — |
+| `btnActiveScale` | estético | não | Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original. | — |
+| `btnBackdropBlur` | estético | não | Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque. | `btnStyleType` |
+| `btnBorderRadius` | estético | não | Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado. | — |
+| `btnGhostHoverBg` | estético | sim | Pinta o fundo do botão ghost enquanto o ponteiro está sobre ele. | — |
+| `btnHoverScale` | estético | não | Amplia ou reduz o botão enquanto o ponteiro está sobre ele; 1 mantém a escala original. | — |
+| `btnNeonGlowColor` | estético | sim | Define a cor do halo de botões neon e cyberpunk. | `btnStyleType` |
+| `btnNeonPulseSpeed` | estético | não | Define o ciclo do halo pulsante; zero mantém estático e o estilo neon precisa estar selecionado. | `btnStyleType` |
+| `btnPrimaryBg` | estético | sim | Pinta o fundo do botão primário e define a tinta usada por alguns estilos do botão. | — |
+| `btnPrimaryText` | estético | sim | Colore o texto do botão primário; escolha contraste suficiente com btnPrimaryBg. | — |
+| `btnRadiusBL` | estético | não | Sobrepõe o arredondamento do canto inferior esquerdo do botão em relação ao mestre. | `btnBorderRadius` |
+| `btnRadiusBR` | estético | não | Sobrepõe o arredondamento do canto inferior direito do botão em relação ao mestre. | `btnBorderRadius` |
+| `btnRadiusTL` | estético | não | Sobrepõe o arredondamento do canto superior esquerdo do botão em relação ao mestre. | `btnBorderRadius` |
+| `btnRadiusTR` | estético | não | Sobrepõe o arredondamento do canto superior direito do botão em relação ao mestre. | `btnBorderRadius` |
+| `btnSecondaryBg` | estético | sim | Pinta o fundo dos botões secundários, inclusive nas estratégias neon e frosted. | — |
+| `btnStyleType` | estético | não | Escolhe a aparência dos botões e ativa as regras condicionais de neon, vidro fosco, contorno ou relevo. | — |
+| `buttonIconPosition` | funcional | não | Posiciona o ícone à esquerda ou à direita do texto nos botões que recebem um ícone. | — |
+| `buttonWidthStrategy` | funcional | não | Faz o botão acompanhar o conteúdo ou ocupar toda a largura do contêiner. | — |
+| `iconButtonFrostedShadowBlur` | estético | não | Suaviza a sombra do SarakIconButton no estilo frosted. | `btnStyleType` |
+| `iconButtonFrostedShadowOffsetY` | estético | não | Desloca para baixo a sombra do SarakIconButton quando o estilo frosted está ativo. | `btnStyleType` |
+| `iconButtonGlowBlurLg` | estético | não | Controla o desfoque grande do brilho de variantes primary e danger do SarakIconButton no hover. | `btnStyleType` |
+| `iconButtonGlowBlurMd` | estético | não | Controla o desfoque médio do brilho de variantes secundária e ghost do SarakIconButton. | `btnStyleType` |
+| `iconButtonGlowBlurSm` | estético | não | Controla o desfoque do brilho pequeno do SarakIconButton em repouso ou no hover. | `btnStyleType` |
+
+#### Campo de Entrada (Input) (`inputs`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `inputBackdropBlur` | estético | não | Desfoca o conteúdo atrás de campos translúcidos; sem fundo translúcido o desfoque não aparece. | `inputBg` |
+| `inputBg` | estético | sim | Pinta o fundo dos campos e alimenta as variantes de foco e hover. | — |
+| `inputBorderColor` | estético | sim | Pinta o contorno dos campos em repouso. | — |
+| `inputBorderRadius` | estético | não | Arredonda os campos de entrada em cada breakpoint. | — |
+| `inputBorderType` | estético | não | Escolhe contorno sólido, tracejado, ausente ou somente inferior nos campos. | — |
+| `inputErrorColor` | estético | sim | Pinta a borda e o texto do campo quando a validação indica erro. | — |
+| `inputFocusBorderColor` | estético | sim | Pinta o contorno dos campos quando recebem foco. | — |
+| `inputIconColor` | estético | sim | Pinta os ícones internos e adjacentes aos campos. | — |
+| `inputIconPosition` | funcional | não | Posiciona à esquerda ou à direita os ícones internos de campos que os exibem. | — |
+| `inputPadding` | funcional | não | Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque. | — |
+| `inputShadow` | estético | não | Define a sombra dos campos; aceita CSS, neumorphism ou none. | — |
+| `inputTextColor` | estético | sim | Pinta o texto digitado nos campos. | — |
+| `multiSelectInputMinWidth` | funcional | não | Mantém largura mínima para o campo de texto do multiselect não ser comprimido pelas tags. | — |
+| `rangeActiveColor` | estético | sim | Pinta os polegares arrastáveis dos controles de faixa. | — |
+| `searchBackdropBlur` | estético | não | Desfoca o conteúdo atrás da paleta de busca enquanto ela está aberta. | — |
+
+#### Alternadores (Toggles) (`switches`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `checkboxActiveColor` | estético | sim | Pinta o preenchimento e a marca dos checkboxes selecionados. | — |
+| `switchBackdropBlur` | estético | não | Desfoca o fundo do trilho translúcido no estilo glass. | `switchStyleType` |
+| `switchPulseColor` | estético | sim | Define a cor do anel que pulsa no alternador ligado no estilo pulsing. | `switchStyleType` |
+| `switchStyleType` | estético | não | Escolhe a forma e o acabamento do alternador: tátil, assimétrico, pulsante ou vidro. | — |
+| `switchThumbBg` | estético | sim | Pinta o botão deslizante do alternador. | — |
+| `switchTrackActiveBg` | estético | sim | Pinta o trilho do alternador quando ele está ligado. | — |
+
+#### Paletas e Gradientes (`colors`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `accentColor` | estético | sim | Define a cor de acento usada na malha de fundo e na terceira série de marca dos gráficos. | — |
+| `cardBackgroundColor` | estético | sim | Pinta o fundo dos cartões e fornece a cor base às suas variantes. | — |
+| `cardBorderColor` | estético | sim | Pinta o contorno dos cartões do sistema. | — |
+| `colorBgModal` | estético | sim | Pinta o painel de conteúdo de modais e diálogos. | — |
+| `colorDepth` | estético | não | Controla a distância tonal entre as variantes de hover e active geradas para as cores. | — |
+| `colorVariation` | estético | não | Controla a variação de matiz e saturação entre as variantes de interação geradas. | — |
+| `primaryColor` | estético | sim | Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas. | — |
+| `secondaryColor` | estético | sim | Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos. | — |
+| `surfaceColor` | estético | sim | Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos. | — |
+| `tertiaryColor` | estético | sim | Define uma terceira cor de marca disponível para composições e séries dos gráficos. | — |
+| `textureColor` | estético | sim | Dá cor às texturas de fundo e de cartão que aceitam cor do tema. | `texture` · `cardTextureType` |
+| `titleColor` | estético | sim | Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos. | — |
+
+#### Gráficos & Dados (`data`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `chartColorPalette` | estético | sim | Define a primeira cor de série; as séries seguintes combinam as demais cores de marca. | — |
+| `chartGridOpacity` | estético | sim | Controla a opacidade das linhas de grade dos gráficos quando a grade está ligada. | `chartShowGrid` |
+| `chartShowGrid` | estético | não | Exibe ou oculta as linhas de referência dos eixos dos gráficos. | — |
+| `chartSmoothing` | estético | não | Curva as linhas de dados em vez de ligar os pontos por segmentos retos. | `chartType` |
+| `chartThickness` | estético | não | Controla a espessura das linhas nos gráficos de linha e área. | `chartType` |
+| `chartTooltipBg` | estético | sim | Pinta o fundo das dicas que aparecem sobre os dados dos gráficos. | — |
+| `chartType` | estético | não | Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio. | — |
+
+#### Interface de Chat (`chat`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `chatAnimationSpeed` | estético | não | Define a duração das transições do contêiner e das bolhas de SarakChatEngine; também controla o ritmo da prévia de digitação no painel. | — |
+| `chatAttachmentNameMaxWidth` | funcional | não | Limita a largura do nome de arquivo anexado ao campo de chat para evitar que ele quebre o layout. | — |
+| `chatBubbleRadius` | estético | não | Arredonda as bolhas de mensagens no chat em cada breakpoint. | — |
+| `chatBubbleStyle` | estético | não | Escolhe o acabamento das mensagens do chat: vidro, fundo sólido ou apresentação minimalista. | — |
+| `chatTokenSliderMinWidth` | funcional | não | Preserva largura mínima para o controle de limite de tokens no campo de chat. | — |
+| `chatUserBg` | estético | sim | Pinta o fundo e a borda das mensagens enviadas pelo usuário. | — |
+
+#### Cores Semânticas (`status`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `badgeRadius` | estético | não | Arredonda as bordas das badges de status; valores altos formam uma pílula. | — |
+| `progressBarHeight` | estético | não | Define a altura das barras de progresso. | — |
+| `progressBarRadius` | estético | não | Arredonda os cantos das barras de progresso. | — |
+| `statusErrorColor` | estético | sim | Pinta erros de validação, badges de falha e estados críticos. | — |
+| `statusGlowBlur` | estético | não | Controla o espalhamento do brilho das badges na cor do status; zero desliga o efeito. | — |
+| `statusInfoColor` | estético | sim | Pinta badges e mensagens de informação neutra. | — |
+| `statusSuccessColor` | estético | sim | Pinta badges e outros estados de confirmação e sucesso. | — |
+| `statusWarningColor` | estético | sim | Pinta avisos e estados que pedem atenção sem indicar falha. | — |
 
 ### A.5 Ícones (117 nomes válidos)
 

@@ -160,6 +160,48 @@ no `catalog.json` → `designTokens.ids`.
 que baixa o tema **completo** — cole num arquivo do repositório e adicione a `customThemes`. Não
 existe "salvar tema no banco": a central não tem servidor, e salvar **é** exportar.
 
+## Fontes — a lib já carrega; não recrie o carregador
+
+A lib **leva as próprias fontes** (`dist/fonts/`, woff2 `latin`, com o `THIRD-PARTY-FONTS` das licenças) e o
+Provider carrega **só as famílias que o tema no ar usa** (título, corpo, mono e a fonte do logo), uma vez por família,
+com `font-display: swap`. **Não** instale `@fontsource`, **não** cole o `<link>` do Google no **index.html** e **não**
+escreva `@font-face` à mão para as famílias do catálogo: a lib carregaria de novo, e a fonte deixaria de seguir a troca
+de tema. A lista de famílias, por categoria, é o seletor de fonte do painel; o `value` exato de cada uma é o que o
+tema grava.
+
+A origem é `options.fonts`:
+
+| Valor | Quando usar |
+|---|---|
+| omitido (`'bundled'`) | o padrão: os arquivos do pacote, sem rede de terceiros. Vite (dev e `build`) os encontra sozinho |
+| `{ baseUrl: '/fontes/' }` | o bundler não acha os arquivos (esbuild puro, CJS no navegador) ou você serve a pasta de uma CDN própria: copie `node_modules/@sarak/lib-ui-core/dist/fonts/` para lá e aponte o `baseUrl` |
+| `'google'` | só se o host **quer** o Google Fonts (o comportamento até a 7.x) |
+| `'none'` | o host carrega todas as fontes sozinho; a lib não injeta nada, nem as do `custom` |
+
+**Fonte da marca do cliente → `options.fonts.custom`**, não `baseUrl`. `baseUrl` muda de onde vêm **as fontes da
+lib**; `custom` acrescenta uma família que a lib **não tem**, servida pelo host (a lib não copia o arquivo):
+
+```tsx
+<SarakUIProvider options={{ fonts: { custom: [
+  { family: 'Marca Sans', category: 'Sans-Serif', fallback: 'sans-serif', files: [
+    { url: '/fontes/marca-400.woff2', weight: 400 },
+    { url: '/fontes/marca-700.woff2', weight: 700 },
+  ] },
+] } }}>
+```
+
+Ela aparece no seletor do painel, vale em qualquer token de fonte e o tema grava `'Marca Sans', sans-serif`. O
+registro é validado: nome só com letras, dígitos, espaço, hífen e sublinhado; `url` só `https:`, caminho do host ou
+`data:font/…;base64,…`; o que falha é recusado com aviso no console. **Registrar não muda o que o tema aceita** — uma
+pilha de fontes segura (`'Georgia, serif'`) vale sem registro; registrar serve para carregar e listar. Tema exportado
+que usa fonte do host traz `requiresFonts`: quem o importa em outro sistema registra a mesma família.
+
+**Privacidade e política de segurança de conteúdo:** com `'bundled'` o navegador do usuário não fala com terceiros para
+desenhar texto (o IP não vai ao Google — LGPD) e a tipografia funciona offline. A diretiva é `font-src 'self'` (mais a
+origem do `baseUrl`, se for outra, e `data:` se algum `custom` usar `data:`); os domínios do Google só com `'google'`.
+**Fonte que não carregou nunca é silenciosa:** o console mostra `[Sarak:UI] A fonte "<família>" não carregou (origem
+tentada: …)` com a dica do `baseUrl`, e a página segue com a genérica da pilha.
+
 ## Quando usar
 - Quando o usuário informar que está num repositório que consumirá a `Sarak-Lib-UI-Core` e precisa
   acoplar o Provider, Design Engine e cromo da aplicação.
@@ -250,8 +292,9 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      um `<div class="sarak-scope">` que ancora o CSS e recebe os tokens.
    - **Múltiplas ilhas:** N áreas de interface sob **1** Provider embarcado. **N Providers na mesma página está
      FORA do suporte** — disputariam a mesma classe de escopo e o mesmo stylesheet.
-   - **O que muda vs. Modo App (esperado, não é bug):** título/favicon continuam do host; as fontes do
-     Google não são injetadas (opt-in: `embedded: { injectGlobalFonts: true }`); overlays de página
+   - **O que muda vs. Modo App (esperado, não é bug):** título/favicon continuam do host; a lib não
+     carrega fonte nenhuma, de origem nenhuma — fonte é recurso do documento, e a ilha não o impõe
+     (opt-in: `embedded: { injectGlobalFonts: true }`, que passa a seguir `options.fonts`); overlays de página
      inteira (ruído, mídia de fundo global) não são renderizados — cobririam a página do host. Nesse
      modo, para arte/animação use os **slots do cromo**.
    - **Verificação antes de declarar pronto:** (1) o front existente está visualmente IDÊNTICO;
@@ -413,7 +456,14 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 | grade, catálogo, gestão agrupada | `SarakCardGrid` · `SarakCatalogGrid` · `SarakManagementGrid` | busca, filtros e os três estados de tela já vêm prontos |
 | tabela | `SarakTable` (simples, vira cartões no celular) · `SarakDataTable` (virtualizada) | `tableDensity` só na primeira, `tableCellPadding` só na segunda |
 | diálogo, gaveta, aviso, dica, menu de contexto | `SarakModal` · `SarakDrawer` · `useToast` · `SarakTooltip` · `SarakContextMenu` | foco, Escape, véu e camadas já resolvidos |
-| navegação e cromo · formulário · gráfico · i18n e preferências · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido nos próximos lotes da análise de tokens | procure em `catalog.json` antes de construir |
+| carregar as fontes do tema | o Provider, com `options.fonts` (seção "Fontes" acima) | só a família em uso é baixada, sem rede de terceiros; fonte própria entra por `options.fonts.custom` |
+| tipografia e cores da interface | `SarakTypography` · tokens `text*` e `color*` | família, escala, peso, espaçamento, halo e cores vêm do tema |
+| ação principal ou botão de ícone | `SarakButton` · `SarakIconButton` | variantes, geometria e efeitos seguem os tokens de botão |
+| campo, seleção ou alternância | `SarakInput` · `SarakSelect` · `SarakSwitch` | foco, fundo, borda, ícone, espaçamento e estilos do alternador acompanham o tema |
+| gráfico de dados | `SarakChartEngine` | paleta, grade, dicas e acabamento das séries vêm dos tokens; `type` escolhe a forma adequada aos dados |
+| conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e larguras têm tokens |
+| estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
+| navegação e cromo · i18n e preferências · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido nos próximos lotes da análise de tokens | procure em `catalog.json` antes de construir |
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
 a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção

@@ -38,6 +38,28 @@ importa — e que, sem a flag, o tsup externaliza por serem peers ([[019-arrasta
 
 > ⚠️ **O tsup externaliza `dependencies` sozinho, independentemente da flag.** Um harness de medição que só espelha a lista `--external` **MENTE** sobre o que está no bundle. Foi exatamente essa suposição que produziu uma hipótese refutada sobre o peso do bundle ([[03-superficie-publica]] §7). **Meça o `dist/`, não a flag.**
 
+## 2.2 As fontes embarcadas — `dist/fonts/`
+
+O pacote leva as fontes que o catálogo de tipografia oferece ([[09-temas-e-presets]]) para que o Provider as carregue sem
+rede de terceiros ([[023-fontes-embarcadas-carregadas-sob-demanda]]). Quatro peças, na ordem do `build`:
+
+- **`fonts:manifest`** gera `src/core/Provider/generated/font-manifest.ts` a partir da lista única (`THEME_FONTS`): uma
+  entrada por família, com **um `new URL('./fonts/<arquivo>', import.meta.url)` literal por arquivo** — o único formato
+  que o Vite reescreve em dev e no `build` do importador. `fonts:manifest:check` roda na fase 1 (gerado em dia).
+- **`fonts:embed`** (`scripts/embed-fonts.ts`) roda **depois** do `build:js` — o `tsup --clean` apagaria a pasta antes —
+  e escreve `dist/fonts/`: woff2 do subconjunto `latin`, só o eixo `wght` das variáveis e só os pesos com arquivo das
+  estáticas, mais `manifest.json` e `THIRD-PARTY-FONTS` (licença e crédito de cada família, gerados dos pacotes
+  `@fontsource*`, que são `devDependencies` — o consumidor não instala nenhum). Todas as licenças são redistribuíveis
+  (SIL OFL 1.1 e Apache 2.0).
+- **`fonts:check`** confere arquivo por arquivo contra o manifesto, a licença e o orçamento (3 MB no total, 150 KB por
+  família); roda no `build`, no Anel 1 e na CI, e tem teste com mutação. Medido em 2026-10-16: 41 famílias, 60 arquivos,
+  1.690.020 B.
+- **`dist/` é publicado inteiro** (`files`), então `dist/fonts/` viaja sem ajuste no `package.json`.
+
+> ⚠️ **Por que não vai no CSS.** O CSS da lib é injetado como string dentro do JS (`inject-css.mjs`), e um `url(...)`
+> relativo nele resolveria contra a página, não contra o `dist/`. Base64 entraria no boot de todo consumidor. Por isso o
+> carregamento é em runtime, por família, no Provider (`fontLoader.ts`, `options.fonts`).
+
 # 3. O contrato do pacote
 
 **Metadados de saída:**

@@ -19,6 +19,9 @@ export const ButtonsSchema: ComponentSchema = {
     tokens: [
         {
             id: 'buttonIconPosition',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Posiciona o ícone à esquerda ou à direita do texto nos botões que recebem um ícone.",
             label: 'Posição do Ícone',
             type: 'select',
             description: 'Lado do botão em que o ícone (quando presente) é renderizado em relação ao texto. Usar "Direita" para ações que avançam um fluxo (ex. "Próximo", "Continuar") e "Esquerda" para ações de retorno/padrão (ex. "Voltar", "Salvar").',
@@ -34,6 +37,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'buttonWidthStrategy',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Faz o botão acompanhar o conteúdo ou ocupar toda a largura do contêiner.",
             label: 'Largura do Botão',
             type: 'select',
             description: 'Estratégia de largura do botão. "Automático" ajusta ao conteúdo (padrão para botões inline/toolbar); "Largura Total" ocupa 100% do container pai — útil em formulários mobile ou CTAs de destaque.',
@@ -48,6 +54,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnBorderRadius',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado.",
             label: 'Arredondamento (Master)',
             type: 'slider',
             description: 'Raio de borda geral do botão em pixels. 0 = quadrado/anguloso (clima industrial/técnico), valores altos (>40px) = pílula/totalmente arredondado (clima amigável/lúdico). É o valor "mestre" — os 4 cantos individuais (`btnRadiusTL/TR/BL/BR`) sobrescrevem por canto quando precisar de assimetria.',
@@ -60,6 +69,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnRadiusTL',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Sobrepõe o arredondamento do canto superior esquerdo do botão em relação ao mestre.",
+            interactsWith: ['btnBorderRadius'],
             label: 'Canto: Superior Esquerdo',
             type: 'slider',
             description: 'Raio de borda do canto superior esquerdo do botão, em pixels — sobrescreve `btnBorderRadius` só nesse canto. Use para formas assimétricas (ex. botão "colado" a um input à esquerda, canto reto de um lado e arredondado do outro).',
@@ -73,6 +86,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnRadiusTR',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Sobrepõe o arredondamento do canto superior direito do botão em relação ao mestre.",
+            interactsWith: ['btnBorderRadius'],
             label: 'Canto: Superior Direito',
             type: 'slider',
             description: 'Raio de borda do canto superior direito do botão, em pixels — sobrescreve `btnBorderRadius` só nesse canto. Use para formas assimétricas junto com os demais cantos individuais.',
@@ -86,6 +103,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnRadiusBL',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Sobrepõe o arredondamento do canto inferior esquerdo do botão em relação ao mestre.",
+            interactsWith: ['btnBorderRadius'],
             label: 'Canto: Inferior Esquerdo',
             type: 'slider',
             description: 'Raio de borda do canto inferior esquerdo do botão, em pixels — sobrescreve `btnBorderRadius` só nesse canto. Use para formas assimétricas junto com os demais cantos individuais.',
@@ -99,6 +120,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnRadiusBR',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Sobrepõe o arredondamento do canto inferior direito do botão em relação ao mestre.",
+            interactsWith: ['btnBorderRadius'],
             label: 'Canto: Inferior Direito',
             type: 'slider',
             description: 'Raio de borda do canto inferior direito do botão, em pixels — sobrescreve `btnBorderRadius` só nesse canto. Use para formas assimétricas junto com os demais cantos individuais.',
@@ -114,6 +139,9 @@ export const ButtonsSchema: ComponentSchema = {
         // --- INTERAÇÃO ---
         {
             id: 'btnHoverScale',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Amplia ou reduz o botão enquanto o ponteiro está sobre ele; 1 mantém a escala original.",
             label: 'Escala no Hover',
             type: 'slider',
             description: 'Fator de escala (zoom) do botão ao passar o mouse. 1.0 = sem efeito, >1.0 = cresce (feedback tátil/lúdico), <1.0 = encolhe (raro, sensação de "afundar"). Valores sutis (1.01-1.05) são mais elegantes; valores altos (>1.1) chamam muita atenção.',
@@ -124,6 +152,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnActiveScale',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original.",
             label: 'Escala no Clique',
             type: 'slider',
             description: 'Fator de escala do botão no instante do clique/toque (estado `:active`). Valores abaixo de 1.0 simulam o botão "afundando" — reforço tátil de que o clique foi registrado. Costuma ser um pouco menor que `btnHoverScale` para dar sensação de profundidade progressiva.',
@@ -134,6 +165,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnPrimaryBg',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo do botão primário e define a tinta usada por alguns estilos do botão.",
             label: 'Fundo Primário',
             type: 'color',
             description: 'Cor de fundo do botão de maior ênfase (ação principal da tela, ex. "Confirmar", "Salvar"). É a cor mais visível do sistema depois da cor de marca — costuma ser a mesma ou derivada de `primaryColor`. Gera variantes automáticas de hover/active (`generateVariants: true`).',
@@ -144,6 +178,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnPrimaryText',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore o texto do botão primário; escolha contraste suficiente com btnPrimaryBg.",
             label: 'Texto Primário',
             type: 'color',
             description: 'Cor do texto/ícone dentro do botão primário. Deve manter contraste alto contra `btnPrimaryBg` (ex. texto escuro sobre fundo primário claro/neon) — não é gerado automaticamente, ajuste manual sempre que `btnPrimaryBg` mudar de luminosidade.',
@@ -153,6 +190,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnSecondaryBg',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo dos botões secundários, inclusive nas estratégias neon e frosted.",
             label: 'Fundo Secundário',
             type: 'color',
             description: 'Cor de fundo dos botões de ação secundária (ex. "Cancelar", "Voltar") — menos ênfase visual que o primário, tipicamente translúcido/neutro. Gera variantes automáticas de hover/active.',
@@ -163,6 +203,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnGhostHoverBg',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo do botão ghost enquanto o ponteiro está sobre ele.",
             label: 'Hover (Ghost)',
             type: 'color',
             description: 'Cor de fundo aplicada no hover de botões "ghost" (sem fundo/borda em repouso, só texto) — o único feedback visual de hover para esse estilo, já que não há fundo base para escurecer/clarear.',
@@ -174,6 +217,9 @@ export const ButtonsSchema: ComponentSchema = {
         // --- ESTILOS AVANÇADOS (SELEÇÃO DO USUÁRIO) ---
         {
             id: 'btnStyleType',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Escolhe a aparência dos botões e ativa as regras condicionais de neon, vidro fosco, contorno ou relevo.",
             label: 'Estilo do Botão',
             type: 'select',
             description: 'Define a linguagem visual completa do botão — matte (sólido, sóbrio, o mais neutro/corporativo), neon (brilho pulsante, clima cyberpunk/tech), frosted (vidro fosco translúcido, clima moderno/Apple-like), borderline (só contorno, minimalista/editorial), cyberpunk (wireframe anguloso), neumorphism (relevo suave, soft UI). Escolha isto ANTES de ajustar cores — o estilo muda quais outros tokens (glow, blur) fazem efeito.',
@@ -186,6 +232,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnNeonGlowColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor do halo de botões neon e cyberpunk.",
+            interactsWith: ['btnStyleType'],
             label: 'Cor do Brilho (Neon)',
             type: 'color',
             description: 'Cor do brilho/glow ao redor do botão — só tem efeito visível quando `btnStyleType` é \'neon\' ou \'cyberpunk\'. Normalmente usa a mesma cor de `btnPrimaryBg` em formato rgba com transparência, pra o brilho combinar com o botão.',
@@ -195,6 +245,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnNeonPulseSpeed',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o ciclo do halo pulsante; zero mantém estático e o estilo neon precisa estar selecionado.",
+            interactsWith: ['btnStyleType'],
             label: 'Velocidade de Pulso (s)',
             type: 'slider',
             description: 'Duração (em segundos) de um ciclo de pulsação do brilho neon — só relevante quando `btnStyleType` é \'neon\'. 0 (padrão) = brilho parado, sem pulso. Valores baixos (0.5-1s) = pulsação rápida/urgente; valores altos (2-4s) = pulsação lenta/ambiente.',
@@ -206,6 +260,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'btnBackdropBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque.",
+            interactsWith: ['btnStyleType'],
             label: 'Desfoque de Vidro (Backdrop Blur)',
             type: 'slider',
             description: 'Intensidade do desfoque do que está atrás do botão (efeito vidro fosco) — só produz efeito visível quando `btnStyleType` é \'frosted\'. Valores altos (>15px) intensificam a sensação de vidro espesso; valores baixos deixam o conteúdo de fundo quase legível através do botão.',
@@ -219,6 +277,10 @@ export const ButtonsSchema: ComponentSchema = {
         // --- GLOW DO ICON BUTTON (Spec 27) ---
         {
             id: 'iconButtonGlowBlurSm',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o desfoque do brilho pequeno do SarakIconButton em repouso ou no hover.",
+            interactsWith: ['btnStyleType'],
             label: 'Glow do Icon Button: Desfoque Pequeno',
             type: 'slider',
             description: 'Raio de desfoque (blur) do brilho ao redor de um botão de ícone pequeno. Aplica-se ao `SarakIconButton` na variante de tamanho "sm" — mantenha proporcional a `iconButtonGlowBlurMd`/`Lg` para consistência visual entre os 3 tamanhos.',
@@ -230,6 +292,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'iconButtonGlowBlurMd',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o desfoque médio do brilho de variantes secundária e ghost do SarakIconButton.",
+            interactsWith: ['btnStyleType'],
             label: 'Glow do Icon Button: Desfoque Médio',
             type: 'slider',
             description: 'Raio de desfoque (blur) do brilho ao redor de um botão de ícone de tamanho médio (variante padrão do `SarakIconButton`).',
@@ -241,6 +307,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'iconButtonGlowBlurLg',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o desfoque grande do brilho de variantes primary e danger do SarakIconButton no hover.",
+            interactsWith: ['btnStyleType'],
             label: 'Glow do Icon Button: Desfoque Grande',
             type: 'slider',
             description: 'Raio de desfoque (blur) do brilho ao redor de um botão de ícone grande — use valores mais altos que `Sm`/`Md` para manter a proporção visual do glow em relação ao tamanho maior do botão.',
@@ -252,6 +322,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'iconButtonFrostedShadowOffsetY',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desloca para baixo a sombra do SarakIconButton quando o estilo frosted está ativo.",
+            interactsWith: ['btnStyleType'],
             label: 'Sombra Frosted do Icon Button: Offset Y',
             type: 'slider',
             description: 'Deslocamento vertical (em pixels) da sombra do botão de ícone quando `btnStyleType` é \'frosted\' — valores maiores empurram a sombra mais para baixo, reforçando a sensação de elevação/flutuação do vidro fosco.',
@@ -263,6 +337,10 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'iconButtonFrostedShadowBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Suaviza a sombra do SarakIconButton no estilo frosted.",
+            interactsWith: ['btnStyleType'],
             label: 'Sombra Frosted do Icon Button: Desfoque',
             type: 'slider',
             description: 'Raio de desfoque da sombra do botão de ícone no estilo \'frosted\' — combine com `iconButtonFrostedShadowOffsetY` para controlar o quão "suave"/difusa é a sombra projetada.',
@@ -278,6 +356,9 @@ export const ButtonsSchema: ComponentSchema = {
         // --- SOMBRA DE AÇÃO (GLOW) COMPARTILHADA (Spec 27 — Catalog/Form/Management Grid) ---
         {
             id: 'actionGlowShadowOffsetY',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desloca a sombra de destaque usada nas ações selecionadas do catálogo.",
             label: 'Sombra de Ação: Offset Y',
             type: 'slider',
             description: 'Deslocamento vertical (em pixels) da sombra de destaque ("glow") compartilhada por botões de ação em Catalog Grid, Form e Management Grid — token transversal, não exclusivo de um único componente.',
@@ -289,6 +370,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'actionGlowShadowBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a suavidade da sombra de destaque usada nas ações do catálogo.",
             label: 'Sombra de Ação: Desfoque',
             type: 'slider',
             description: 'Raio de desfoque da sombra de destaque compartilhada por botões de ação — controla o quão suave/espalhado é o glow em Catalog Grid, Form e Management Grid.',
@@ -300,6 +384,9 @@ export const ButtonsSchema: ComponentSchema = {
         },
         {
             id: 'actionGlowShadowSpread',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Expande ou contrai a área da sombra de destaque usada nas ações do catálogo.",
             label: 'Sombra de Ação: Espalhamento',
             type: 'slider',
             description: 'Espalhamento (spread) da sombra de destaque compartilhada por botões de ação — valores maiores aumentam a área ocupada pelo glow antes do desfoque, independente do offset/blur.',

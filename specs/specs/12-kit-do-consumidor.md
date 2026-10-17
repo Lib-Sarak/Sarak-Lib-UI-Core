@@ -32,6 +32,12 @@ não pode ficar dessincronizado da versão instalada: **dentro dela**.
 | `VERSION` | **100% gerado**; formato textual mantido para o CLI atual | Gerador |
 | `docs/migracoes.md` | Cópia gerada do histórico de mudanças do contrato | Gerador |
 
+O que o kit ensina sobre **fontes** (prosa à mão: `GUIA-FRONTEND.md` §3.14 e a seção "Fontes" da skill) é o contrato
+de [[023-fontes-embarcadas-carregadas-sob-demanda]]: a lib já carrega as fontes e **o importador não recria o
+carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão para o catálogo); as origens de
+`options.fonts` e quando usar cada uma; `custom` para a fonte da marca e `baseUrl` só para servir **as mesmas** fontes
+de outro lugar; `font-src` e LGPD. O importador de temas também aprende a regra do `value` exato.
+
 O gerador é `scripts/generate-consumer-kit.mjs` (`npm run guide`), e o plano de saída dele
 (`scripts/consumer-kit/buildKitOutputs.mjs`) inclui `catalog.json`, `VERSION`, `GUIA-FRONTEND.md`,
 `START-HERE.md`, `docs/migracoes.md` e os arquivos da skill espelhada.

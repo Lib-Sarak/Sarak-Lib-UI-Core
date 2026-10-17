@@ -339,9 +339,19 @@ consumidor não disputa o `history` com ela.
 impede que um tema faça mal, não atesta procedência. Se o host aceita tema de fonte externa, a
 verificação de origem/integridade é dele.
 
-Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2) e, no modo app, `<link>` de webfont do Google
-(`useSarakUIEffects`) — um host com CSP restritiva precisa permitir esses dois, ou usar
-`mode: 'embedded'` sem `injectGlobalFonts` (default `false` no embarcado, `types.ts:137-144`).
+Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2 e um `@font-face` por família de fonte em uso). No
+padrão (`options.fonts` omitido) os arquivos de fonte são **do próprio pacote**: a diretiva é `font-src 'self'` (mais a
+origem do `baseUrl`, se for outra, e `data:` se um `custom` o usar), e **nenhum domínio de terceiro** é necessário. Os
+domínios do Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`, `preconnect`) só entram com `options.fonts:
+'google'`, opt-in explícito do host. No modo embarcado a ilha não carrega fonte alguma sem `injectGlobalFonts`
+(default `false`).
+
+**Privacidade (LGPD).** Com o padrão ou `'none'`, o navegador do usuário final não fala com terceiro para desenhar
+texto: o IP dele não vai ao Google, e a tipografia funciona offline. `'google'` volta a fazer essa requisição — a
+transferência passa a ser do inventário do host. **Fonte do host** (`options.fonts.custom`): o nome da família passa
+por padrão restrito e a `url` por `isSafeFontUrl` (`https:`, caminho do host ou `data:font/…;base64,…`; nenhum outro
+esquema), e tudo que vai ao CSS entra escapado (`cssString`); o que falha é recusado com aviso. Registrar não amplia o
+que o tema aceita — a pilha de fontes segura continua valendo.
 
 ## 3.5 Persistência
 

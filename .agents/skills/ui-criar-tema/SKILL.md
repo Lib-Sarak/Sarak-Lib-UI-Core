@@ -113,6 +113,17 @@ com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o de
 - **Valor enumerado.** Token de `select` só aceita as opções do schema (`bodySize` é `12/14/16/18/20px`;
   `cardHoverStyle` tem três opções). Valor fora da lista é descartado em runtime com aviso — a suíte acusa
   (`tokenContractParity`).
+- **Fonte por valor exato da lista.** `headingFont`, `bodyFont`, `monoFont` e `identityFontFamily` recebem o
+  `value` de uma entrada de `THEME_FONTS` (`src/core/Design/schema/typography.ts`) **byte a byte** — `"'Lora', serif"`,
+  não `'Lora'` nem `"Lora, serif"`. O carregador embarcado só reconhece o valor exato: outra grafia passa na validação
+  (é pilha de fontes segura), mas nenhum arquivo é carregado e a tela mostra a genérica. A lista, com a `category` de
+  cada família (`Sans-Serif`, `Display`, `Serif`, `Handwriting`, `Monospace`), é o próprio `THEME_FONTS` — não a
+  copie para o tema nem para documento. Na 8.0.0 entraram 22 famílias, entre elas as que a direção de arte dos temas
+  cyber e retrô pedia: Orbitron e VT323 (`Display`), Chakra Petch (`Sans-Serif`), Fira Code (`Monospace`).
+- **Peso que a família tem.** Das variáveis entra só o eixo `wght`; das estáticas, só os pesos com arquivo, e o
+  navegador sintetiza o resto. Escolha `h1Weight`, `bodyWeight` e afins entre os pesos da família — o manifesto
+  (`src/core/Provider/generated/font-manifest.ts`) diz quais são (VT323, Patrick Hand e Bebas Neue têm só 400; Space
+  Mono, 400 e 700).
 - **Mídia de fundo.** Tema shippado **nunca** aponta `globalBackgroundImageUrl` para servidor de terceiro:
   use as atmosferas geradas pela lib ou deixe vazio (`specs/specs/09-temas-e-presets.md` §5.1).
 - **Posição das preferências do usuário** (`preference*Position`). O gerador as escreve com o **padrão de
@@ -135,6 +146,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] O tema foi gerado a partir do gabarito vivo (não escrito do zero)?
 - [ ] Todas as chaves do `design` existem no dicionário (zero chave inventada)?
 - [ ] Os tipos batem com o `token.type` (number × string, enum válido)?
+- [ ] Toda fonte é o `value` exato de `THEME_FONTS`, e os pesos escolhidos existem na família (manifesto)?
 - [ ] O tema foi registrado em `presets/themes/` (`index.ts` ids, `all.ts`, `loaders.ts`) e o catálogo regenerado (`npm run themes:catalog`)?
 - [ ] `auditor_presets` sem chave órfã e suíte inteira verde?
 - [ ] A completude foi medida com `findMissingThemeAxes`, e as lacunas são deliberadas?

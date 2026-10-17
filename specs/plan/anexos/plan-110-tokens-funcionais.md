@@ -120,3 +120,13 @@ com entrada em `REMOVED_TOKEN_KEYS`; o `useCardLayoutStyles` passou a desenhar a
 | Token | Desfecho |
 |---|---|
 | `cardImagePosition` | retirado — só um valor, numa combinação, mudava a tela; a ordem dos blocos é do `className` |
+
+# 5. Decisões não óbvias (lote 2: tipografia, controles, cor, dados, chat e status)
+
+| Token(s) | Decisão | Motivo |
+|---|---|---|
+| `buttonIconPosition`, `buttonWidthStrategy`, `inputIconPosition`, `inputPadding` | funcional | posição e largura dos controles não devem mudar ao trocar o tema; o respiro vertical também preserva a área de toque do campo. |
+| `multiSelectInputMinWidth`, `chatAttachmentNameMaxWidth`, `chatTokenSliderMinWidth` | funcional | são limites de uso que evitam que tags, nomes de arquivo ou o controle de tokens quebrem o layout. |
+| `chartType`, `chartThickness`, `chartSmoothing` | estético | descrevem a apresentação padrão; `SarakChartEngine` aceita `type` para o consumidor preservar a forma adequada aos dados. Espessura e suavização só valem para tipos compatíveis. |
+| `textGlowIntensity` | carrega modo | acompanha o halo do título, cuja força precisa ser calibrada para a luminosidade de cada contraparte. |
+| Tokens de halo, vidro, textura e grade | `interactsWith` | o halo neon e o desfoque dependem do estilo de botão, o vidro e o pulso dependem do estilo de alternador, as cores de textura dependem de uma textura ativa, e a opacidade da grade só aparece com a grade ligada. |

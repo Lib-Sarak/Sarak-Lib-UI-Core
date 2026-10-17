@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "117"
+proximo_numero_plan: "119"
 ---
 
 # 0. O que é este arquivo
@@ -43,8 +43,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-110-temas-que-mostram-a-biblioteca](plan/plan-110-temas-que-mostram-a-biblioteca.md) | Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida | — | 🔴 A executar | specs/09-temas-e-presets.md + arquitetura/02-design-engine.md + arquitetura/04-contrato-de-tokens-e-paridade.md + specs/12-kit-do-consumidor.md |
-| 2 | [plan-117-pendencias-do-arsenal](plan/plan-117-pendencias-do-arsenal.md) | Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando | — | 🟢 Aprovada | arquitetura/02-design-engine.md + arquitetura/04-contrato-de-tokens-e-paridade.md + specs/09-temas-e-presets.md |
-| 3 | [plan-118-fontes-embarcadas](plan/plan-118-fontes-embarcadas.md) | Fazer a biblioteca entregar as proprias fontes, carregadas so quando o tema as usa e sem requisicao a terceiros, com a opcao de o host escolher a origem, e ampliar com seguranca o catalogo de familias que o schema e o painel oferecem | plan-117-pendencias-do-arsenal | 🔴 A executar | arquitetura/05-build-e-distribuicao.md + specs/10-seguranca-e-acessibilidade.md + specs/09-temas-e-presets.md + specs/12-kit-do-consumidor.md + adr/ |
+| 2 | [plan-117-pendencias-do-arsenal](plan/plan-117-pendencias-do-arsenal.md) | Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando | — | 🔴 A executar | sintetizada · retida por plan-110 |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
@@ -52,6 +51,18 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > só com a disjunção declarada pelo revisor ao despachar.
 >
 > 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-118` foi SINTETIZADA e REMOVIDA em 2026-10-16** (com o anexo `plan-118-catalogo-de-fontes.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **118** | [[05-build-e-distribuicao]] **§2.2 (nova)** — `dist/fonts/`, o manifesto gerado com um `new URL` literal por arquivo, `fonts:embed` depois do `build:js`, `THIRD-PARTY-FONTS`, o gate `fonts:check` e por que a fonte não vai no CSS · [[10-seguranca-e-acessibilidade]] §3.4 (CSP `font-src 'self'`, Google só com `'google'`, LGPD, validação da fonte do host) · [[09-temas-e-presets]] §4.4.4 (a lista de fontes, o `value` exato, pesos que a família tem, `options.fonts.custom` e `requiresFonts`) · [[12-kit-do-consumidor]] §1.1 (o que o kit ensina sobre fontes) · [[023-fontes-embarcadas-carregadas-sob-demanda]] (o desenho aceito e as três alternativas preteridas). **Ficou de fora:** a medição por família do anexo (vive no histórico do Git e no `fonts:check`, que mede de novo) e o histórico dos lotes. `00-contexto` revisado: nada a mudar. |
+
+> ⚪ **A `plan-117` foi SINTETIZADA em 2026-10-16 e RETIDA pela `plan-110`** (fica como registro vivo das pendências do arsenal; sai com a `plan-110`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **117** | [[02-design-engine]] §10.4 (spotlight que segue o cursor com `useSpotlightPointer`, traço luminoso com pausa fora da tela e apagado em movimento reduzido, zoom da imagem por variantes na raiz, escala do clique em CSS) · [[04-contrato-de-tokens-e-paridade]] §4.1 (token sem leitor sai pelo `REMOVED_TOKEN_KEYS`: `cardContentAlignment`, `tableActionPosition`, `cardImagePosition`) · [[09-temas-e-presets]] §4.4.4 (os três tokens na lista dos que saíram e os efeitos de cartão como alavancas do tema). **Ficou de fora:** as notas MAJOR e o GUIA §6.4, que já vivem em `docs/migracoes.md` e no kit; o método por lote e os números de custo do traço (resumos da plan, no histórico do Git). `00-contexto` revisado: nada a mudar. |
 
 > ⚪ **A `plan-116` foi SINTETIZADA e REMOVIDA em 2026-10-14** (com o anexo `plan-116-desenho.md`). Destino demonstrado:
 >
