@@ -10,6 +10,10 @@ export const MediaSchema: ComponentSchema = {
     tokens: [
         {
             id: 'globalBackgroundImageUrl',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
+            interactsWith: ['globalBackgroundOpacity', 'globalBackgroundBlur'],
             label: 'URL da Imagem de Fundo',
             type: 'image',
             description: 'URL de uma imagem exibida como fundo global da aplicação, atrás de todo o conteúdo — vazio significa nenhuma imagem de fundo (só a cor sólida de `colorBgBody`). Combine com `globalBackgroundOpacity`/`globalBackgroundBlur` para não comprometer a legibilidade do conteúdo.',
@@ -20,6 +24,10 @@ export const MediaSchema: ComponentSchema = {
         },
         {
             id: 'globalBackgroundBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desfoque da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida.",
+            interactsWith: ['globalBackgroundImageUrl'],
             label: 'Desfoque da Imagem Global',
             type: 'slider',
             description: 'Intensidade do desfoque aplicado à imagem de fundo global — só tem efeito quando `globalBackgroundImageUrl` está preenchido. Valores altos transformam a imagem numa mancha de cor ambiente em vez de um cenário reconhecível.',
@@ -31,6 +39,10 @@ export const MediaSchema: ComponentSchema = {
         },
         {
             id: 'globalBackgroundOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`.",
+            interactsWith: ['globalBackgroundImageUrl'],
             label: 'Opacidade da Imagem Global',
             type: 'slider',
             description: 'Opacidade da imagem de fundo global — valores baixos deixam a imagem como um traço sutil atrás do conteúdo; 1 = imagem totalmente visível (use com cautela para não prejudicar a legibilidade do texto).',

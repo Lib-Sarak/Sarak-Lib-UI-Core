@@ -646,7 +646,9 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 `catalog.json` (A.1 e A.4b abaixo); este mapa só aponta e ensina o que a medição mostrou.
 
 > **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. O lote 2
-> acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. As
+> acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. O lote 3
+> acrescenta fundo, vidro, sombra, rolagem, movimento, camadas e os componentes especializados, **medidos em
+> navegador** (o que cada valor mudou na tela, não só quem o lê). As
 > necessidades que ainda estão **⏳** não foram abertas token a token; procure no catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
@@ -665,6 +667,12 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | gráfico de dados | `SarakChartEngine` | paleta, grade, dicas, espessura e suavização são configuráveis; a prop `type` pode escolher a forma adequada aos dados |
 | conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e limites de largura já têm tokens |
 | estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
+| fundo da página com gradiente, textura, grão, vinheta ou imagem | o Provider, pelos tokens `bgGradient*`, `texture*`, `bgNoise*`, `vignette*` e `globalBackground*` | as camadas ficam atrás do conteúdo e seguem o modo; um `div` fixo seu com imagem disputa camada e fica fora da contraparte |
+| superfície de vidro, material e sombra | `SarakCard` (`surfaceMaterial`), a classe `.sarak-glass` e a classe `.shadow-theme` | desfoque, saturação, borda, reflexo e as duas camadas de sombra vêm de `glass*` e `shadow*`; `backdrop-filter` e `box-shadow` escritos à mão não trocam com o tema |
+| barra de rolagem | o CSS da lib, em todo elemento rolável | largura, raio, trilho e cursor vêm dos tokens `scroll*`; uma barra estilizada por você não acompanha o tema |
+| movimento: duração, curva e atraso | tokens `motion*`, `animEnabled`, `pageTransitionType` e `reducedMotion` | cartões, campos, painéis, troca de página, tabela e gráfico leem o mesmo ritmo; `transition: all 0.3s` fixo ignora o tema e o movimento reduzido |
+| camadas de empilhamento | tokens `zIndex*` | menus, busca, modais, gavetas, dicas e avisos derivam da mesma escada; um `z-index` fixo seu entra na disputa |
+| estado vazio, esqueleto de carga, motor de fluxo, matriz expansível | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria, desfoque e cores têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
 | navegação, cromo e slots | ⏳ `SarakAppChrome` (§2 e A.3) | ⏳ lote seguinte |
 | calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
 | idioma, preferências do usuário, persistência do tema | ⏳ | ⏳ lote seguinte |
@@ -759,6 +767,32 @@ de cartões visíveis com o traço aceso custam quadros: use em poucos cartões 
   velocidade da animação também vem do tema.
 - `SarakBadge` oferece variantes semânticas; os tokens de status e progresso controlam as cores e os limites visuais
   dos respectivos componentes.
+
+## 6.7 Fundo, atmosfera, movimento, camadas e especializados
+
+O que a medição em navegador mostrou, e que o schema sozinho não diz:
+
+- **Textura é a chave da atmosfera.** `textureOpacity`, `bgNoiseAnimation`, `vignetteOpacity`, `vignetteSoftness`,
+  `globalSaturation` e `globalContrast` só têm o que pintar quando `texture` não é `none`: com `none` o valor muda a
+  variável e nenhum pixel. `globalSaturation` e `globalContrast` filtram **só a camada da textura**, não a interface.
+- **Grão e textura `noise` são coisas diferentes.** `bgNoiseDensity` regula uma camada fixa de grão que cobre a tela em
+  qualquer textura; a opacidade do padrão `texture: noise` é `textureOpacity`.
+- **O gradiente depende do modo.** `bgGradientAngle` só gira o Linear; `colorBgLayer1` aparece em Linear, Radial e
+  Mesh; `colorBgLayer2` só no Mesh. Com `bgGradientMode: none` as duas camadas não pintam nada.
+- **Material, vidro e sombra.** `surfaceMaterial` e `surfaceIntensity` atuam nos cartões; `glass*` atuam na classe
+  `.sarak-glass`, e `glassOpacity` no gradiente de vidro dos cartões. `.shadow-theme` e a busca leem as duas camadas
+  de sombra (`shadowAmbientAlpha`, `shadowProjection*`, `layeredShadows`); a sombra dos cartões vem de `cardShadow*`.
+  `shadowIntensity` muda a **opacidade do elemento** `.shadow-theme` (conteúdo incluso), não a força da sombra.
+- **Movimento.** As durações e a curva `motionEaseMain` chegam por CSS a quase toda transição; `motionStaggerDelay`
+  escalona as linhas da `SarakTable` e as barras do `SarakChart`; `reducedMotion` zera tudo, inclusive o que roda em
+  JavaScript. `animEnabled` e `pageTransitionType` governam só a troca de página (`SarakPageTransition`).
+  `motionEaseOut` alcança só o pulso do alternador pulsante e o aperto de um botão HTML sem classe.
+- **Camadas.** `zIndexSidebar` desloca menus e busca por passos fixos; um modal seu com `z-index` fixo pode ficar sob a
+  barra ou sobre o aviso. `zIndexToast` é o topo da escada.
+- **Rolagem.** `scroll*` usam `::-webkit-scrollbar` (Chromium e Safari); o Firefox usa a barra do sistema.
+- **Tokens que o schema oferece e ainda não mudam a tela:** `motionEaseIn` (a saída de modal, busca e gaveta não toca a
+  curva: o componente é removido no mesmo quadro) e `matrixGap` (a variável é escrita e nenhuma regra a lê). Não os use
+  para identidade de tema enquanto não forem ligados.
 
 ---
 
@@ -931,7 +965,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**228** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**318** de 399 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
 
 #### Card Geral (`cards`)
 
@@ -1121,9 +1155,9 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
-| `actionGlowShadowBlur` | estético | não | Controla a suavidade da sombra de destaque usada nas ações do catálogo. | — |
-| `actionGlowShadowOffsetY` | estético | não | Desloca a sombra de destaque usada nas ações selecionadas do catálogo. | — |
-| `actionGlowShadowSpread` | estético | não | Expande ou contrai a área da sombra de destaque usada nas ações do catálogo. | — |
+| `actionGlowShadowBlur` | estético | não | Controla o desfoque da sombra no botão da categoria selecionada em `SarakCatalogGrid`. | — |
+| `actionGlowShadowOffsetY` | estético | não | Controla o deslocamento vertical da sombra no botão da categoria selecionada em `SarakCatalogGrid`. | — |
+| `actionGlowShadowSpread` | estético | não | Controla o espalhamento da sombra no botão da categoria selecionada em `SarakCatalogGrid`. | — |
 | `btnActiveScale` | estético | não | Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original. | — |
 | `btnBackdropBlur` | estético | não | Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque. | `btnStyleType` |
 | `btnBorderRadius` | estético | não | Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado. | — |
@@ -1164,7 +1198,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `inputShadow` | estético | não | Define a sombra dos campos; aceita CSS, neumorphism ou none. | — |
 | `inputTextColor` | estético | sim | Pinta o texto digitado nos campos. | — |
 | `multiSelectInputMinWidth` | funcional | não | Mantém largura mínima para o campo de texto do multiselect não ser comprimido pelas tags. | — |
-| `rangeActiveColor` | estético | sim | Pinta os polegares arrastáveis dos controles de faixa. | — |
+| `rangeActiveColor` | estético | sim | Pinta o trilho ativo, os polegares e as dicas dos controles de faixa. | — |
 | `searchBackdropBlur` | estético | não | Desfoca o conteúdo atrás da paleta de busca enquanto ela está aberta. | — |
 
 #### Alternadores (Toggles) (`switches`)
@@ -1186,8 +1220,8 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `cardBackgroundColor` | estético | sim | Pinta o fundo dos cartões e fornece a cor base às suas variantes. | — |
 | `cardBorderColor` | estético | sim | Pinta o contorno dos cartões do sistema. | — |
 | `colorBgModal` | estético | sim | Pinta o painel de conteúdo de modais e diálogos. | — |
-| `colorDepth` | estético | não | Controla a distância tonal entre as variantes de hover e active geradas para as cores. | — |
-| `colorVariation` | estético | não | Controla a variação de matiz e saturação entre as variantes de interação geradas. | — |
+| `colorDepth` | estético | não | Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões. | — |
+| `colorVariation` | estético | não | Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões. | — |
 | `primaryColor` | estético | sim | Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas. | — |
 | `secondaryColor` | estético | sim | Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos. | — |
 | `surfaceColor` | estético | sim | Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos. | — |
@@ -1206,6 +1240,51 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `chartThickness` | estético | não | Controla a espessura das linhas nos gráficos de linha e área. | `chartType` |
 | `chartTooltipBg` | estético | sim | Pinta o fundo das dicas que aparecem sobre os dados dos gráficos. | — |
 | `chartType` | estético | não | Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio. | — |
+
+#### Transições e Animações (`animations`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `animEnabled` | funcional | não | Liga e desliga a transição entre páginas (`SarakPageTransition`): desligada, a página troca no mesmo quadro. Não desliga as transições dos componentes. | `pageTransitionType` |
+| `cardHoverStyle` | estético | não | Resposta do cartão ao ponteiro: Elevar (sobe e ganha sombra), Apenas brilho (só o brilho, sem mover) ou Expandir (cresce 2%). | `cardHoverTranslate` |
+| `pageTransitionType` | estético | não | Efeito da troca de página: Fade, Deslizar para cima (20 px), Deslizar lateral (50 px), Zoom (±5%) ou Desativado; a duração vem de `motionDurationNormal`. | `animEnabled` · `motionDurationNormal` |
+
+#### Fundo e Atmosfera (`atmosphere`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `bgBaseColor` | estético | sim | Pinta a base das superfícies de vidro (`.sarak-glass`), o fundo da gaveta e a cor dos painéis do motor de fluxo; o corpo da página é `colorBgBody`. | — |
+| `bgGradientAngle` | estético | não | Gira o gradiente Linear do fundo, de 0° a 360°. Nos modos Radial e Mesh o ângulo não entra na pintura. | `bgGradientMode` |
+| `bgGradientMode` | estético | não | Escolhe o gradiente pintado sobre o fundo da página: Sólido não desenha; Linear e Radial misturam a camada 1 com a primária; Mesh espalha quatro manchas de cor. | `bgGradientAngle` · `colorBgLayer1` · `colorBgLayer2` |
+| `bgNoiseAnimation` | estético | não | Segundos por ciclo do deslocamento do padrão da textura `noise`; 0 o mantém parado. Só vale com `texture: noise`. | `texture` |
+| `bgNoiseDensity` | estético | sim | Opacidade do grão de filme, uma camada fixa que cobre a tela inteira acima do conteúdo em qualquer textura; 0 a apaga. Não altera o padrão da textura `noise` (esse é `textureOpacity`). | — |
+| `borderType` | estético | não | Estilo da borda dos cartões: Sólido, Cyber (tracejada na cor de textura), Dupla linha, Neon Glow (borda na cor de textura) ou Sem moldura (borda transparente). | `textureColor` |
+| `colorBgBody` | estético | sim | Pinta o fundo da página inteira e a base do gradiente de fundo; as outras camadas e superfícies se leem contra esta cor. | — |
+| `colorBgLayer1` | estético | sim | Segunda parada do gradiente de fundo nos modos Linear e Radial (e a mancha de camada 1 da malha); com fundo Sólido não aparece. | `bgGradientMode` |
+| `colorBgLayer2` | estético | sim | Terceira mancha da malha de fundo; só desenha com o gradiente Mesh. Nos outros modos o valor muda a variável e nenhum pixel. | `bgGradientMode` |
+| `glassBlur` | estético | não | Desfoque do que está atrás das superfícies `.sarak-glass`; é o parâmetro mais visível do vidro. 0 deixa a superfície nítida. | — |
+| `glassEdgeColor` | estético | sim | Cor da borda das superfícies `.sarak-glass`; o padrão é um branco translúcido que some sobre fundo claro. | — |
+| `glassEdgeWidth` | estético | não | Espessura da borda das superfícies `.sarak-glass`; 0 a remove e valores altos viram moldura. | — |
+| `glassOpacity` | estético | sim | Opacidade do gradiente de vidro das superfícies de cartão; 0 o deixa quase transparente e valores altos o tornam o brilho dominante. Não altera o `.sarak-glass`. | — |
+| `glassRoughness` | estético | não | Tira contraste do que passa por trás do vidro `.sarak-glass`: 0 deixa liso, 1 o funde num campo uniforme (contraste zero). | — |
+| `glassSaturation` | estético | não | Saturação das cores vistas através das superfícies `.sarak-glass`; acima de 1 as realça, abaixo de 1 as aproxima do cinza. | — |
+| `glassSpecularity` | estético | sim | Força do fio de luz interno no topo das superfícies `.sarak-glass`; 0 apaga o reflexo e 1 o torna branco puro. | — |
+| `globalContrast` | estético | não | Contraste aplicado somente à camada de textura do fundo (filtro da própria textura), não à interface. Sem textura escolhida não muda nada. | `texture` |
+| `globalSaturation` | estético | não | Satura ou dessatura somente a camada de textura do fundo (filtro da própria textura), não a interface. Sem textura escolhida não muda nada. | `texture` |
+| `layeredShadows` | estético | sim | Multiplica a opacidade das duas camadas de sombra (contato e projeção) de `.shadow-theme` e da busca; 0 as apaga e 2 as dobra. | — |
+| `shadowAmbientAlpha` | estético | sim | Opacidade da camada de contato (curta, rente ao elemento) da sombra de `.shadow-theme` e da busca; 0 a apaga. | — |
+| `shadowColorMode` | estético | não | Cor da sombra dos cartões: Neutro usa preto, Matizada a escurece na primária do tema e Ambiental usa um tom de baixa saturação derivado do fundo. | — |
+| `shadowIntensity` | estético | sim | Opacidade de todo elemento com a classe `.shadow-theme` (de 0,3 a 1,0), conteúdo incluso. Não escala a sombra dos cartões. | — |
+| `shadowOrientation` | estético | não | De onde vem a luz: muda a direção do deslocamento da sombra dos cartões e das sobreposições (Inferior, Centro, Superior, Diagonal ou dinâmica, que segue o ponteiro). | — |
+| `shadowProjectionAlpha` | estético | sim | Opacidade da camada de projeção (longa) da sombra de `.shadow-theme` e da busca; 0 a apaga e 1 a torna preta. | — |
+| `shadowProjectionBlur` | estético | não | Desfoque e alcance da camada de projeção (longa) da sombra de `.shadow-theme` e da busca; 0 a deixa dura e 200 a espalha. | — |
+| `surfaceIntensity` | estético | sim | Escala a força do material da superfície: realce interno branco, gradiente e, no vidro, o desfoque. 0 apaga o realce; 1 o torna o traço dominante dos cartões. | `surfaceMaterial` |
+| `surfaceMaterial` | estético | não | Troca o tratamento das superfícies de cartão: Vidro Fosco (desfoque 24 px com saturação), Polido (desfoque 12 px), Industrial (listras e sombra interna) ou Orgânico (sem desfoque, sombra interna suave). | `surfaceIntensity` |
+| `systemTone` | estético | não | Acrescenta ao fundo uma grade de HUD com brilho de horizonte: Cibernético na cor de textura (grade de 20 px), Tático em monocromo (grade de 24 px). Neutro não desenha nada. | — |
+| `texture` | estético | não | Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); é o principal traço de caráter da atmosfera. `none` não desenha camada e leva consigo a vinheta. | `textureOpacity` · `textureColor` |
+| `textureOpacity` | estético | sim | Opacidade da textura de fundo: 0 a apaga, valores altos a tornam um elemento gráfico. Sem textura escolhida não há camada para regular. | `texture` |
+| `vignetteOpacity` | estético | sim | Opacidade do escurecimento das bordas da tela. Só existe quando há textura de fundo escolhida; com `texture: none` não há camada de vinheta. | `texture` · `vignetteSoftness` |
+| `vignetteSoftness` | estético | não | Onde o escurecimento das bordas começa: 0 deixa só um aro fino na borda; 60 o espalha quase até o centro. Só vale com textura de fundo escolhida. | `texture` · `vignetteOpacity` |
 
 #### Interface de Chat (`chat`)
 
@@ -1230,6 +1309,96 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `statusInfoColor` | estético | sim | Pinta badges e mensagens de informação neutra. | — |
 | `statusSuccessColor` | estético | sim | Pinta badges e outros estados de confirmação e sucesso. | — |
 | `statusWarningColor` | estético | sim | Pinta avisos e estados que pedem atenção sem indicar falha. | — |
+
+#### Acessibilidade e Camadas (`engineering`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `focusRingWidth` | funcional | não | Espessura do contorno de foco de teclado em botões e links; abaixo de 2 px compromete a acessibilidade, por isso o sistema o mantém igual em todo tema. | — |
+| `reducedMotion` | funcional | não | Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo. | `animEnabled` |
+| `touchTargetMin` | funcional | não | Piso de altura e largura dos acionáveis quando o ponteiro é o dedo (`pointer: coarse`); com mouse o desenho não muda. | — |
+| `zIndexToast` | funcional | não | Camada das notificações; topo da escada de camadas, um passo acima do tooltip. | — |
+
+#### Ícones e Estética (`specialized`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `aiGlowColor` | estético | sim | Cor do indicador de "pensando" do `SarakChatEngine`: os três pontos e o avatar do assistente enquanto a resposta é gerada. | — |
+| `authHeroOrbBlur` | estético | não | Desfoque dos orbes de fundo da tela de autenticação (`AuthHero`); 10 px os mostra como discos e 250 px os dilui em atmosfera. | — |
+| `chartEngineMinHeight` | funcional | não | Altura mínima reservada ao gráfico Recharts antes de os dados chegarem, para a página não saltar; é um piso de layout, não de estilo. | — |
+| `chatBubbleGlassBlur` | estético | não | Desfoque do vidro da bolha de resposta do `SarakChatEngine`; só vale com `chatBubbleStyle: glass` (o padrão do motor). | `chatBubbleStyle` |
+| `designEngineSidebarMaxWidth` | funcional | não | Largura máxima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMinWidth` |
+| `designEngineSidebarMinWidth` | funcional | não | Largura mínima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMaxWidth` |
+| `dotGridDotOffset` | estético | não | Posição do ponto dentro de cada célula da grade de pontos do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
+| `dotGridDotSize` | estético | não | Raio de cada ponto da grade decorativa do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
+| `dotGridTileSize` | estético | não | Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos. | — |
+| `emptyStateCaptionMaxWidth` | estético | não | Largura máxima da legenda do `SarakEmptyState` abstrato; estreitar faz o texto quebrar em mais linhas e a cena crescer. | — |
+| `emptyStateOrbBlur` | estético | não | Desfoque do orbe do `SarakEmptyState` abstrato; valores altos o transformam em brilho ambiente. | — |
+| `emptyStateOrbInner` | estético | não | Diâmetro do orbe do `SarakEmptyState` abstrato e do anel interno do geométrico; maior que o anel externo quebra a proporção. | `emptyStateOrbOuter` |
+| `emptyStateOrbOuter` | estético | não | Diâmetro do anel externo tracejado do `SarakEmptyState` geométrico; aumenta a altura da cena inteira. | `emptyStateOrbInner` |
+| `emptyStateRingRadius` | estético | não | Arredondamento, em `rem`, do anel tracejado do `SarakEmptyState` abstrato. | — |
+| `emptyStateVoidLetterOffset` | estético | não | Margem lateral, em `em`, da palavra de destaque do `SarakEmptyState` geométrico. | — |
+| `engineMinHeightLg` | funcional | não | Altura mínima dos motores grandes (`SarakFlowEngine`, `SarakChatEngine`); piso de uso, igual em todo tema. | — |
+| `engineMinHeightSm` | funcional | não | Altura mínima do placeholder de carga dos motores (`LazyEngineWrapper`) enquanto o conteúdo carrega; piso de layout. | — |
+| `flowGridStyle` | estético | não | Padrão do grid de fundo do `SarakFlowEngine`: pontos ou linhas contínuas. | — |
+| `flowHandleSize` | funcional | não | Diâmetro dos pontos de conexão arrastáveis do `SarakFlowEngine`; é o alvo do dedo na conexão, por isso não é identidade do tema. | — |
+| `flowNodeBlur` | estético | não | Desfoque do fundo translúcido dos nós do `SarakFlowEngine`. | — |
+| `flowNodePadding` | estético | não | Respiro interno dos nós do `SarakFlowEngine`; também aumenta a altura do nó e o traçado das conexões. | — |
+| `flowNodeRadius` | estético | não | Arredondamento dos nós do `SarakFlowEngine` (vale por breakpoint). | — |
+| `layoutPreviewMaxH` | funcional | não | Altura máxima do bloco de JSON de cada tema na aba "Temas e JSON" do painel; acima dela o bloco rola. Só o painel a lê. | — |
+| `skeletonCircleSize` | funcional | não | Diâmetro padrão do `SarakSkeleton` circular; deve imitar o avatar real que substituem, por isso depende do host e não do tema. | — |
+| `skeletonRowHeight` | funcional | não | Altura padrão das linhas do `SarakSkeleton`; deve imitar o conteúdo real que substituem, por isso depende do host e não do tema. | — |
+| `skeletonRowRadius` | estético | não | Arredondamento das linhas e blocos do `SarakSkeleton`. | — |
+
+#### Movimento e Física (`motion`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `motionDurationFast` | estético | não | Duração das micro-interações de UI (hover, foco, campos e navegação) em CSS e a duração padrão das utilitárias `transition-*`. | — |
+| `motionDurationInstant` | estético | não | Duração do aperto (`:active`) de botões e botões de ícone; é a mais curta do sistema. | — |
+| `motionDurationNormal` | estético | não | Duração das transições de escopo médio: o corpo da página, o cartão, o acordeão, a troca de página e a classe `transition-sarak`. | — |
+| `motionDurationSlow` | estético | não | Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras do gráfico (`SarakChart`). | — |
+| `motionEaseMain` | estético | não | Curva padrão das transições de botão, campo, cartão, corpo da página, painel e gaveta; é a curva que quase toda interação do sistema usa. | — |
+| `motionEaseOut` | estético | não | Curva do aperto de um botão HTML sem classe e do pulso do alternador pulsante; o `SarakButton` mantém a própria curva no aperto. | — |
+| `motionStaggerDelay` | estético | não | Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` e cada barra do `SarakChart` espera índice × este valor. 0 entra tudo junto. | — |
+
+#### Barras de Rolagem (`scrollbars`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `scrollPadding` | estético | não | Folga transparente entre o cursor da barra de rolagem e a borda do trilho (vale por breakpoint); engorda a borda do cursor. | — |
+| `scrollRadius` | estético | não | Arredondamento do trilho e do cursor da barra de rolagem; valores altos formam uma pílula. | — |
+| `scrollThumbColor` | estético | sim | Cor do cursor da barra de rolagem; a opacidade final vem de `scrollThumbOpacity` e do hover. | `scrollThumbOpacity` · `scrollThumbHoverOpacity` |
+| `scrollThumbHoverOpacity` | estético | sim | Opacidade do cursor da barra de rolagem sob o ponteiro; deve superar a de repouso para dar retorno. | `scrollThumbColor` · `scrollThumbOpacity` |
+| `scrollThumbOpacity` | estético | sim | Opacidade do cursor da barra de rolagem em repouso; baixa para não competir com o conteúdo. | `scrollThumbColor` |
+| `scrollTrackOpacity` | estético | sim | Opacidade do trilho da barra de rolagem, branco sobre o fundo; valores baixos deixam só o cursor aparecer. | — |
+| `scrollWidth` | estético | não | Espessura da barra de rolagem de toda a interface (vale por breakpoint); valores finos são discretos e os grossos facilitam o arraste. | — |
+
+#### Camadas e Profundidade (`layers`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `zIndexBase` | funcional | não | Camada mínima do sistema; a lista do autocompletar abre nela, acima do conteúdo comum. | — |
+| `zIndexModal` | funcional | não | Camada de modais e do véu deles; as gavetas e o cartão expandido derivam dela por deslocamentos fixos. | — |
+| `zIndexSidebar` | funcional | não | Camada da barra de navegação; menus e busca derivam dela por deslocamentos fixos (a camada do grão de filme fica 50 acima). Deve ficar sobre o conteúdo e sob modais. | — |
+| `zIndexTooltip` | funcional | não | Camada dos tooltips e do menu de contexto, logo abaixo das notificações. | — |
+
+#### Componentes Avançados (`advanced`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `matrixBlur` | estético | não | Desfoque do vidro atrás dos itens da matriz expansível; 0 os deixa nítidos. | — |
+| `matrixBorderColor` | estético | sim | Cor da borda dos itens da matriz expansível; o padrão é um branco translúcido que some sobre fundo claro. | — |
+| `matrixItemBg` | estético | sim | Fundo dos itens da matriz expansível; o padrão é um branco quase transparente que não aparece sobre fundo claro. | — |
+| `matrixRadius` | estético | não | Arredondamento dos itens da matriz expansível (`SarakExpandableMatrix`); 0 os deixa em ângulo reto. | — |
+
+#### Mídia e Background (`media`)
+
+| Token | Natureza | Modo | O que muda | Depende de |
+| --- | --- | --- | --- | --- |
+| `globalBackgroundBlur` | estético | não | Desfoque da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. | `globalBackgroundImageUrl` |
+| `globalBackgroundImageUrl` | estético | sim | Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive. | `globalBackgroundOpacity` · `globalBackgroundBlur` |
+| `globalBackgroundOpacity` | estético | sim | Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`. | `globalBackgroundImageUrl` |
 
 ### A.5 Ícones (117 nomes válidos)
 

@@ -211,10 +211,10 @@ export const InputsSchema: ComponentSchema = {
             id: 'rangeActiveColor',
             kind: 'aesthetic',
             modeDependent: true,
-            usage: "Pinta os polegares arrastáveis dos controles de faixa.",
+            usage: "Pinta o trilho ativo, os polegares e as dicas dos controles de faixa.",
             label: 'Range Slider: Cor Ativa',
             type: 'color',
-            description: 'Cor do polegar (thumb) arrastável de um range slider — herda a cor primária do sistema por padrão, mas pode ser customizada independentemente para destacar o controle.',
+            description: 'Cor do trilho ativo entre os polegares, dos próprios polegares e das dicas de valor do range slider — herda a cor primária do sistema por padrão, mas pode ser customizada independentemente para destacar o controle.',
             axis: 'color',
             defaultValue: 'var(--theme-primary)',
             cssVars: ['--sarak-range-active-bg']

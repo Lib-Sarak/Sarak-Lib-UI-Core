@@ -353,15 +353,15 @@ export const ButtonsSchema: ComponentSchema = {
 
         // --- DROPDOWN DO THEME TOGGLE (Spec 27) ---
 
-        // --- SOMBRA DE AÇÃO (GLOW) COMPARTILHADA (Spec 27 — Catalog/Form/Management Grid) ---
+        // --- SOMBRA DE AÇÃO (GLOW) DO SARAKCATALOGGRID (Spec 27) ---
         {
             id: 'actionGlowShadowOffsetY',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Desloca a sombra de destaque usada nas ações selecionadas do catálogo.",
+            usage: "Controla o deslocamento vertical da sombra no botão da categoria selecionada em `SarakCatalogGrid`.",
             label: 'Sombra de Ação: Offset Y',
             type: 'slider',
-            description: 'Deslocamento vertical (em pixels) da sombra de destaque ("glow") compartilhada por botões de ação em Catalog Grid, Form e Management Grid — token transversal, não exclusivo de um único componente.',
+            description: 'Deslocamento vertical, em pixels, da sombra aplicada pelo estilo inline ao botão da categoria selecionada em `SarakCatalogGrid`. No estilo `matte`, `SarakButton` preserva essa sombra; estilos com sombra dinâmica própria podem substituí-la.',
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -372,10 +372,10 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'actionGlowShadowBlur',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Controla a suavidade da sombra de destaque usada nas ações do catálogo.",
+            usage: "Controla o desfoque da sombra no botão da categoria selecionada em `SarakCatalogGrid`.",
             label: 'Sombra de Ação: Desfoque',
             type: 'slider',
-            description: 'Raio de desfoque da sombra de destaque compartilhada por botões de ação — controla o quão suave/espalhado é o glow em Catalog Grid, Form e Management Grid.',
+            description: 'Raio de desfoque, em pixels, da sombra aplicada pelo estilo inline ao botão da categoria selecionada em `SarakCatalogGrid`. No estilo `matte`, `SarakButton` preserva essa sombra; estilos com sombra dinâmica própria podem substituí-la.',
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 60 },
@@ -386,10 +386,10 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'actionGlowShadowSpread',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Expande ou contrai a área da sombra de destaque usada nas ações do catálogo.",
+            usage: "Controla o espalhamento da sombra no botão da categoria selecionada em `SarakCatalogGrid`.",
             label: 'Sombra de Ação: Espalhamento',
             type: 'slider',
-            description: 'Espalhamento (spread) da sombra de destaque compartilhada por botões de ação — valores maiores aumentam a área ocupada pelo glow antes do desfoque, independente do offset/blur.',
+            description: 'Espalhamento, em pixels, da sombra aplicada pelo estilo inline ao botão da categoria selecionada em `SarakCatalogGrid`. No estilo `matte`, `SarakButton` preserva essa sombra; estilos com sombra dinâmica própria podem substituí-la.',
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 40 },

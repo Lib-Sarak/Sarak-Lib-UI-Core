@@ -869,3 +869,216 @@ o ECharts) e `rangeActiveColor` (o trilho ignora o token). Nenhum leitor foi toc
 `layers`, `advanced`, `media`) — com a medição no navegador desde o início (Chromium em `node_modules/.cache/ms-playwright`).
 
 **Status: 🔴 A executar (lote 3).**
+
+## Resumo da execução — lote 3 — 2026-10-17
+
+**Resultado:** Concluído com pendências (dois tokens sem efeito, entregues como achado; ver *Achados* e *Pendências*).
+
+**Estado do worktree ao iniciar**
+```
+M  .agents/skills/ui-criar-tema/SKILL.md
+M  .agents/skills/ui-integra-consumidor/SKILL.md
+M  .claude/skills/ui-criar-tema/SKILL.md
+M  .claude/skills/ui-integra-consumidor/SKILL.md
+M  docs/migracoes.md
+M  gates/allowlists/tokenDocumentationPending.json
+M  sarak-dev/GUIA-MANUTENCAO.md
+M  sarak-dev/START-HERE.md
+M  sarak-dev/state.json
+M  sarak-ui/GUIA-FRONTEND.md
+M  sarak-ui/START-HERE.md
+M  sarak-ui/VERSION
+M  sarak-ui/catalog.json
+M  sarak-ui/docs/migracoes.md
+M  sarak-ui/skill/SKILL.md
+M  specs/00-indice.md
+A  specs/adr/023-fontes-embarcadas-carregadas-sob-demanda.md
+M  specs/adr/README.md
+M  specs/arquitetura/02-design-engine.md
+M  specs/arquitetura/04-contrato-de-tokens-e-paridade.md
+M  specs/arquitetura/05-build-e-distribuicao.md
+M  specs/plan/anexos/plan-110-tokens-funcionais.md
+D  specs/plan/anexos/plan-118-catalogo-de-fontes.md
+M  specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+M  specs/plan/plan-117-pendencias-do-arsenal.md
+D  specs/plan/plan-118-fontes-embarcadas.md
+M  specs/specs/09-temas-e-presets.md
+M  specs/specs/10-seguranca-e-acessibilidade.md
+M  specs/specs/12-kit-do-consumidor.md
+M  src/core/Design/schema/{buttons,chat,colors,data,inputs,status,switches,typography}.ts
+M  src/core/Provider/generated/design-token-docs.json
+```
+(Tudo estagiado; nada não-estagiado ao iniciar. Durante a execução apareceram, sem que eu os tocasse, a execução paralela do plan-117 lote 4: `SarakRangeSlider.tsx` (+teste), `axisOptions.ts` (+teste), mudanças em `colors.ts`/`inputs.ts` e `browser-tests/arsenal-lote4-*`. Não são meus.)
+
+**O que foi feito**
+- Medi no Chromium 153 (Playwright 1.63, `PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright`, `chromium.launch()` sem `executablePath`) os **92 tokens** dos nove grupos. Cena montada de `src/` por alias (`@sarak/lib-ui-core` → `src/index.ts`), CSS gerado por Tailwind e bundle em pasta de scratchpad, **fora do repositório**. Método: diferença de estilo computado (todo elemento e `::before`/`::after`; `::-webkit-scrollbar*` na rolagem) entre cena-base e variante, em repouso, hover, foco e pressionado; movimento dirigido por JS (framer-motion) por amostragem quadro a quadro; painel de customização aberto para os 3 tokens do painel. Controle de ruído (base × base) rodado antes. 0 erro de página/console nas cenas.
+- Acrescentei `kind`, `modeDependent`, `usage` e `interactsWith` a **90 tokens** em `advanced.ts`, `animations.ts`, `atmosphere.ts`, `engineering.ts`, `layers.ts`, `media.ts`, `motion.ts`, `scrollbars.ts`, `specialized.ts`; removi esses 90 de `gates/allowlists/tokenDocumentationPending.json` e deixei `motionEaseIn` e `matrixGap` na exceção com o rótulo `achado-lote-3`.
+- Corrigi quatro `description` que diziam o contrário do medido: `globalSaturation`, `globalContrast`, `bgNoiseDensity` (`atmosphere.ts`) e `motionEaseOut` (`motion.ts`).
+- Regenerei `src/core/Provider/generated/design-token-docs.json` (`npm run token-types`).
+- Documentação: GUIA §6 (linhas do mapa) e novo §6.7; skill `ui-integra-consumidor` (linhas do mapa e armadilhas); `docs/migracoes.md` (subseção do lote 3 em `## 8.0.0`); anexo `plan-110-tokens-funcionais.md` §6.
+
+**Tabela da medição — token → propriedade, antes → depois** (valor candidato; cena `main` salvo se dito)
+| Token | Propriedade (elemento): antes → depois |
+|---|---|
+| `colorBgBody` | `#ff0000`: `background-color` (body) rgb(5,5,5) → rgb(255,0,0); piso do gradiente idem |
+| `colorBgLayer1` | `#ff0000`: `background-image` (body) linear/radial: parada da camada 1 passa a vermelho; com `bgGradientMode: none` só a variável muda |
+| `colorBgLayer2` | `#00ff00`, mesh: `background-image` (body), 3ª mancha muda; modo linear (padrão): só a variável |
+| `bgBaseColor` | `#ff0000`: `background-color` (`.sarak-glass`) rgba(10,10,12,.8) → rgba(255,0,0,.8); gaveta (overlays) rgb(10,10,12) → rgb(255,0,0); bordas dos painéis do fluxo idem |
+| `bgGradientMode` | `none`: `background-image` (body) linear-gradient(135deg…) → none; `radial` → radial-gradient(120% 90% at 50% 0%…); `mesh` → 4 camadas de radial-gradient |
+| `bgGradientAngle` | `0`/`90`/`270`: linear-gradient(135deg…) → (0deg/90deg/270deg…); modo radial: nada |
+| `surfaceMaterial` | `sleek`: `backdrop-filter` (cartão) blur(24px) saturate(1.6) → blur(12px); `industrial`: `background-image` → repeating-linear-gradient(90deg…); `organic`: `backdrop-filter` → none, `box-shadow` inset 0 2px 10px |
+| `surfaceIntensity` | `0`: `box-shadow` inset (cartão) rgba(255,255,255,.15) → alfa 0, gradiente .13 → .04; `1`: `backdrop-filter` blur(24px) → blur(36px) |
+| `borderType` | `cyber`: `border-*-style` (cartão) solid → dashed, cor → cor de textura .7; `glow`: cor → .5; `none`: cor → transparente; `double`: espessura +4 px (altura 2296,38 → 2300,38) |
+| `systemTone` | `cyber`: `background-image` (body) → radial + 2 linear de 20px (grade HUD); `tactical` → idem 24px monocromo |
+| `texture` | `dots`/`noise`/`waves`: `html`/`body` ganham `position: relative` e `::before`/`::after` com `content`; `none`: sem camada |
+| `textureOpacity` | `0`/`0.8` (texture grid): `opacity` (`html::before`) 0.1 → 0 / 0.8; com `texture: none`: só a variável |
+| `bgNoiseDensity` | `0`/`0.5`: `opacity` (camada fixa de grão, `body>div:0>div:0`) 0.05 → 0 / 0.5, em qualquer textura; o `html::before` da textura noise não muda (opacidade 0,1 com densidade 0,5) |
+| `bgNoiseAnimation` | `2` (texture noise): `animation-duration` (`html::before`/`body::before`) 1s → 2s (e `0` → 0s); com grid nada |
+| `glassBlur` | `0`/`60`: `backdrop-filter` (`.sarak-glass`) blur(10px) → blur(0px)/blur(60px) |
+| `glassOpacity` | `0`/`0.8`: `background-image` (cartão) alfa do gradiente .09 / .41 (padrão .13); `.sarak-glass` não muda |
+| `glassSpecularity` | `0`/`1`: `box-shadow` (`.sarak-glass`) inset rgba(255,255,255,.1) → alfa 0 / rgb(255,255,255) |
+| `glassRoughness` | `0`/`1`: `backdrop-filter` (`.sarak-glass`) contrast(.95) → contrast(1)/contrast(0) |
+| `glassSaturation` | `0.5`/`3`: `backdrop-filter` (`.sarak-glass`) saturate(1.2) → saturate(.5)/saturate(3) |
+| `glassEdgeWidth` | `0`/`6`: `border-*-width` (`.sarak-glass`) 1px → 0/6px |
+| `glassEdgeColor` | `#ff0000`: `border-*-color` (`.sarak-glass`) rgba(255,255,255,.1) → rgb(255,0,0) |
+| `shadowIntensity` | `0`/`2`: `opacity` (`.shadow-theme`) 0.65 → 0.3 / 1 (o elemento inteiro) |
+| `layeredShadows` | `0`/`2`: `box-shadow` (`.shadow-theme`) alfas .4/.2 → 0/0 e .8/.4 |
+| `shadowOrientation` | `top`: `--sarak-shadow-dir-y` 1 → -1 e `box-shadow` (cartão) desloca para cima; `dynamic`: em hover 0 30px 60px → 2.69px 12.07px 60px; `center`, `bottom-right` idem |
+| `shadowColorMode` | `colored`/`ambient` (primária vermelha, fundo claro): `box-shadow` (cartão) sombra preta → tom vermelho / tom de baixa saturação |
+| `shadowAmbientAlpha` | `0`/`1`: `box-shadow` (`.shadow-theme`) camada de contato .4 → 0 / 1 |
+| `shadowProjectionBlur` | `0`/`200`: `box-shadow` (`.shadow-theme`) camada de projeção 0 40px 60px → 0 0 0 / 0 …px 300px |
+| `shadowProjectionAlpha` | `0`/`1`: `box-shadow` (`.shadow-theme`) camada de projeção .2 → 0 / 1 |
+| `vignetteOpacity` | com `texture: grid`: `background-image` (`html::after`/`body::after`) radial rgba(0,0,0,.3) → alfa 0 / rgb(0,0,0); com `texture: none` não há `::after` |
+| `vignetteSoftness` | com `texture: grid`: parada transparente 20% → 95% (`0`) / 4% (`60`) |
+| `globalSaturation` | `0`/`2` (texture grid): `filter` (`html::before`) saturate(1) → saturate(0)/(2); sem textura só a variável |
+| `globalContrast` | `0.5`/`3`: `filter` (`html::before`) contrast(1) → contrast(.5)/(3) |
+| `animEnabled` | `false` (cena de troca de página): a página `b` aparece em 24 ms sem fade (antes: opacidade 1 → 0,02 → 0 → 0,99 em ~500 ms) |
+| `pageTransitionType` | `slide-up`: `transform` (página) translateY(0 → -20px) na saída; `slide-side`: translateX(-50px); `zoom`: scale(1,05); `none`: troca em 27 ms; `fade`: só opacidade |
+| `cardHoverStyle` | `glow-only`: hover `transform` (cartão) scale(1.01) translateY(-4px) → none, `::before` opacity .2 → 1; `expand`: scale(1.02) sem translateY |
+| `motionEaseMain` | `cubic-bezier(.1,.7,.1,1)`: `transition-timing-function` (sidebar, botões, campos, body) .4,0,.2,1 → .1,.7,.1,1 (406 elementos) |
+| `motionEaseOut` | `cubic-bezier(.9,0,.9,1)`: `animation-timing-function` (alternador pulsante) 0,0,.2,1 → .9,0,.9,1; o `transition` do `SarakButton` pressionado não muda (`all 0.1s cubic-bezier(.4,0,.2,1)` nos dois) |
+| `motionEaseIn` | **sem efeito** — ver Achados |
+| `motionDurationInstant` | `0`/`0.2`: `transition-duration` (botão pressionado) 0.1s → 0s / 0.2s |
+| `motionDurationFast` | `0.45`: `transition-duration` (nav, campos, botões) 0.2s → 0.45s (306 elementos) |
+| `motionDurationNormal` | `0.9`: `transition-duration` (body, cartão, acordeão, alternador, `main`) 0.3s → 0.9s; troca de página: fade-out de ~0,3 s → ~0,9 s |
+| `motionDurationSlow` | `1.5`: `transition-duration` (`body::before`, `::before` dos cartões) 0.6s → 1.5s; barras do `SarakChart` aos 1251 ms: 94 px (base: 101 px) |
+| `motionStaggerDelay` | `0.2`: linhas da `SarakTable` passam de 50% de opacidade em [257,414,414,414] ms → [252,547,698,844] ms; as barras do gráfico também escalonam |
+| `focusRingWidth` | `0`/`6`: `outline-width` (botão em foco) 2px → 0 / 6px |
+| `reducedMotion` | `true`: `transition-duration`/`animation-duration` (4.098 propriedades, todo o DOM) → 1e-05s; barras do gráfico completas em 778 ms (base 1444 ms) |
+| `touchTargetMin` | `56` com `pointer: coarse`: `height`/`min-height`/`width` (botões, nav) 44px → 56px; com mouse: só a variável |
+| `zIndexToast` | `9900`: `z-index` (aviso) 9100 → 9900 |
+| `zIndexBase` | `50`: `z-index` (lista do autocompletar) 1 → 50 |
+| `zIndexSidebar` | `900`: `z-index` (`aside`) 500 → 900; camada do grão 550 → 950; busca 700 → 1100 |
+| `zIndexModal` | `4000`: `z-index` (modal e véu) 2000 → 4000; gaveta 2001 → 4001 |
+| `zIndexTooltip` | `9500`: `z-index` (tooltip) 9000 → 9500 |
+| `matrixRadius` | `0`: `border-*-radius` (item da matriz) 12px → 0 |
+| `matrixItemBg` | `#ff0000`: `background-color` (item) rgba(255,255,255,.02) → rgb(255,0,0) |
+| `matrixBorderColor` | `#00ff00`: `border-*-color` (item) rgba(255,255,255,.05) → rgb(0,255,0) |
+| `matrixBlur` | `40`: `backdrop-filter` (item) blur(10px) → blur(40px) |
+| `matrixGap` | **sem efeito** — ver Achados |
+| `globalBackgroundImageUrl` | SVG `data:` (cena `bg`): surge um `div` do Provider com a imagem (captura: fundo vermelho com disco verde); `body::before` continua `none` |
+| `globalBackgroundBlur` | `20`: `filter` (camada da imagem e `body::before`) blur(0px) → blur(20px) |
+| `globalBackgroundOpacity` | `0.5`: `opacity` (camada da imagem e `body::before`) 1 → 0.5 |
+| `scrollWidth` | `12`: `width`/`height` (`::-webkit-scrollbar`) 6px → 12px (escalar e responsivo iguais) |
+| `scrollRadius` | `0`: `border-*-radius` (`::-webkit-scrollbar-thumb`/`-track`) 10px → 0 |
+| `scrollTrackOpacity` | `0.5`: `background-color` (`::-webkit-scrollbar-track`) rgba(255,255,255,.05) → .5 |
+| `scrollThumbColor` | `#ff0000`: `background-color` (`::-webkit-scrollbar-thumb`) branco .2 → vermelho .2 |
+| `scrollThumbOpacity` | `1`: `background-color` (thumb) branco .2 → 1 |
+| `scrollThumbHoverOpacity` | `1`: `background-color` (thumb em hover) .5 → 1 |
+| `scrollPadding` | `4`: `border-*-width` (thumb) 2px → 4px |
+| `aiGlowColor` | `#ff0000` (chat carregando): `background-color` (avatar) oklab(.87…/.2) → oklab(.63…/.2); `border-*-color` (ícone) rgb(0,242,255) → rgb(255,0,0); pontos idem |
+| `chatBubbleGlassBlur` | `30`: `backdrop-filter` (bolha do assistente) blur(12px) → blur(30px) |
+| `flowNodeRadius` | `30` e `{30,30,30}`: `border-*-radius` (nó) 12px → 30px |
+| `flowGridStyle` | `lines`: o `<circle>` do padrão de pontos deixa de existir (o grid vira linhas) |
+| `flowHandleSize` | `16`: `width` (handle) 8px → 16px; nó +16 px de altura; caminho da aresta muda |
+| `flowNodePadding` | `24`: `padding-*` (nó) 10px → 24px; altura 55,6 → 83,6 px |
+| `flowNodeBlur` | `20`: `backdrop-filter` (nó) blur(5px) → blur(20px) |
+| `dotGridDotOffset` | `8`: `background-image` (estado vazio geométrico e `AuthHero`) `circle at 2px 2px` → `at 8px 8px` |
+| `dotGridDotSize` | `5`: mesma camada: `1px` → `5px` |
+| `dotGridTileSize` | `90`: `background-size` 40px 40px → 90px 90px |
+| `emptyStateOrbOuter` | `800`: `width`/`height` (anel externo geométrico) 500px → 800px; altura da página +300 px |
+| `emptyStateOrbInner` | `500`: `height` (orbe abstrato) 300px → 500px |
+| `emptyStateOrbBlur` | `10`: `filter` (orbe abstrato) blur(100px) → blur(10px) |
+| `emptyStateVoidLetterOffset` | `2`: `margin-inline-start` (h2 geométrico) 16.8px → 42px |
+| `emptyStateRingRadius` | `4`: `border-*-radius` (anel abstrato) 28px → 56px |
+| `emptyStateCaptionMaxWidth` | `120`: altura da cena abstrata +60 px (a legenda quebra em mais linhas) |
+| `skeletonRowHeight` | `3`: altura da cena 2296 → 2408 px (linhas de 1rem → 3rem) |
+| `skeletonCircleSize` | `5`: `width` (esqueleto circular) 35px → 70px |
+| `skeletonRowRadius` | `20`: `border-*-radius` (linha) 4px → 20px |
+| `authHeroOrbBlur` | `10`: `filter` (orbe do `AuthHero`) blur(120px) → blur(10px) |
+| `chartEngineMinHeight` | `400`: `min-height` (gráfico Recharts) 180px → 400px |
+| `engineMinHeightLg` | `800`: `min-height` (`SarakFlowEngine`, `SarakChatEngine`) 500px → 800px |
+| `engineMinHeightSm` | `500`: `min-height` (placeholder do `LazyEngineWrapper`) 300px → 500px |
+| `designEngineSidebarMinWidth` | `400` (painel aberto): `min-width` (barra lateral) 280px → 400px, largura 320 → 400 |
+| `designEngineSidebarMaxWidth` | `400` com min 200: `max-width` 600px → 400px (a largura inicial de 320 px já cabe: não muda) |
+| `layoutPreviewMaxH` | `300`/`40` (aba "Temas e JSON"): `max-height` do bloco de JSON 120px → 300px / 40px |
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/{advanced,animations,atmosphere,engineering,layers,media,motion,scrollbars,specialized}.ts` | alterado | `kind`/`modeDependent`/`usage`/`interactsWith` em 90 tokens; 4 `description` corrigidas (nenhum `defaultValue`, opção ou leitor) |
+| `src/core/Provider/generated/design-token-docs.json` | regenerado | por `npm run token-types` (contém também o que o plan-117 mudou em `colors.ts`/`inputs.ts`) |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −90 exceções do lote 3; `motionEaseIn` e `matrixGap` → `achado-lote-3` |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | linhas do mapa §6, estado do mapa, novo §6.7 |
+| `.agents/skills/ui-integra-consumidor/SKILL.md` (= `.claude/skills/…`, symlink) | alterado | linhas do mapa e armadilhas |
+| `docs/migracoes.md` | alterado | subseção do lote 3 em `## 8.0.0` |
+| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | §6 (decisões e achados do lote 3) |
+| `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- Medição em navegador: ver tabela. Controle de ruído (base × base): as diferenças restantes eram movimento JS em andamento (resolvido com espera de 2,8 s); controle positivo `colorBgBody` mudou `background-color` do body e do `div` raiz.
+- `npm run token-types` → 399 tokens; `npm run token-types:check` → em dia; `npm run token-docs:check` → "318 de 399 tokens documentados; 81 em exceção" (79 do lote 4 + 2 achados).
+- `npx vitest run gates/scripts/contrato/__tests__/check-token-documentation.test.ts scripts/__tests__/generate-token-types.check.test.mjs` → 2 arquivos, 13 testes verdes.
+- `npm run catalog:check` → em dia. `npm run guide:check` → **falha esperada** (`sarak-ui/START-HERE.md` e `sarak-ui/skill/SKILL.md` defasados): não rodei `guide`, `dev-kit` nem `build`, como mandado.
+- Não rodei suíte completa, `tsc`, baseline, Anel 0/1 nem R36.
+
+**Critérios de aceite**
+- [x] Cada token dos 9 grupos aberto no leitor e medido no navegador — evidência: tabela acima.
+- [x] Token sem efeito tratado como achado, não como documentado — `motionEaseIn` e `matrixGap` em `achado-lote-3`.
+- [x] `kind`/`modeDependent`/`usage` (e `interactsWith`) para os tokens com efeito — `token-docs:check` verde, 90 documentados.
+- [x] Nenhum `defaultValue`, opção, leitor ou tema alterado; nenhum leitor corrigido.
+- [x] Kit, anexo e migração com o que o lote ensinou.
+- [ ] `schema-meta` verde — pendente: `guide:check` aponta `sarak-ui/START-HERE.md` e `sarak-ui/skill/SKILL.md` a regenerar (`guide`/`dev-kit`, que não rodei por instrução); `sarak-ui/catalog.json` não foi regenerado (`catalog:check` passa).
+
+**Decisões e suposições**
+- Classificação pelo critério do anexo (§1): camadas, alvo de toque, anel de foco, `reducedMotion`, `animEnabled`, pisos de altura e `flowHandleSize` → funcional; `skeletonRowHeight`/`skeletonCircleSize` também funcional, por dependerem do conteúdo do host e não do tema (decisão minha; o revisor pode reclassificar). Movimento (`motion*`, `pageTransitionType`) → estético, herdado do modo principal.
+- Corrigi quatro `description` de schema (não só `usage`) porque diziam o contrário do medido, no precedente do `headingFont` do lote 2.
+- `motionEaseOut` documentado como efeito parcial (pulso do alternador e botão HTML sem classe), não como achado: um valor muda a tela.
+- `bgGradientAngle`, `bgNoiseAnimation`, `textureOpacity`, `vignette*`, `globalSaturation/Contrast` e `colorBgLayer*` documentados com a dependência em `interactsWith`: sem o par o valor só muda a variável.
+- A classe `.sarak-vignette-layer` (`_theme.css`) não tem elemento na lib que a use; não a tratei como parte do token.
+
+**Achados fora do escopo (não corrigidos)**
+- **`motionEaseIn` sem efeito**: `SarakModal` (`SarakModal.tsx:186`) e `SarakSearch` (`SarakSearch.tsx:70`) retornam `null` ao fechar, desmontando o `AnimatePresence` antes do `exit`; medido: o overlay do modal some em 19–31 ms e a busca em ~11 ms, com a curva padrão e com `cubic-bezier(.8,0,1,.2)`. O véu da `SarakDrawer` (`SarakScrim` com `animate`) anima só `duration` (some em ~866 ms nos dois casos). Nenhum `exit` com `ease` roda.
+- **`matrixGap` sem efeito**: `SarakExpandableMatrix.tsx:125` escreve `--matrix-gap` e nada o lê; o `gap` vem de `--sarak-layout-gap-md` (`:126`). Medido com 3 papéis.
+- **Default de `bgNoiseAnimation` ≠ valor emitido**: o schema declara `defaultValue: 0`, mas sem o token no `config` a variável sai `1s` (`--sarak-noise-speed: 1s`; com `bgNoiseAnimation: 0` sai `0s`). Em `texture: noise` o grão anima por omissão.
+- **`bgNoiseDensity` não governa a textura `noise`**: o CSS (`_atmosphere.css:127-131`) manda `opacity: var(--sarak-noise-density)`, mas a regra base (`:17`) vence — medido `html::before` com opacidade 0,1 com densidade 0,5 (só `textureOpacity` mexe). Regra morta em `_atmosphere.css`.
+- **`globalSaturation`/`globalContrast`** (descrição original: "toda a interface") só filtram o `::before` da textura.
+- **`shadowIntensity` reduz a opacidade do elemento `.shadow-theme` inteiro** (conteúdo incluso), em vez de escalar a sombra (`_utilities.css:11-14`).
+- **`button:active` de `_elements.css:84-89` é morto para o `SarakButton`**: o `transition` computado do botão pressionado segue `all 0.1s cubic-bezier(.4,0,.2,1)` mesmo com `motionEaseOut` trocado (a regra só vale para `<button>` sem classe).
+
+**Pendências / riscos**
+- `schema-meta` não fica verde sem `npm run guide` (e `dev-kit`): duas cópias do kit defasadas, geradas, para o revisor regenerar.
+- `design-token-docs.json` agora mistura este lote e o plan-117 lote 4 (`colors.ts`/`inputs.ts` não-estagiados são dele); ao commitar, os dois caem no mesmo gerado.
+- `scroll*` medidos só em Chromium (`::-webkit-scrollbar`); o Firefox usa a barra do sistema (declarado no GUIA §6.7).
+- Contraste não textual (WCAG 1.4.11) por tema/modo: não se aplica a este lote (nenhum tema tocado).
+
+## Veredito — 2026-10-17 — lote 3 — 🟢 Aprovado
+
+**Conferido:** a tabela do resumo cobre os 92 tokens dos nove grupos (propriedade antes → depois, medida em Chromium 153
+com a cena fora do repositório, com controle de ruído base × base e controle positivo); 90 foram documentados e saíram da
+exceção, e **dois entraram como achado, como a plan manda** (`motionEaseIn`, `matrixGap` → `achado-lote-3`), sem leitor
+tocado. As quatro `description` que diziam o contrário do medido foram corrigidas. O diff é só metadado de schema
+(`kind`/`modeDependent`/`usage`/`interactsWith`), sem `defaultValue`, opção ou leitor. Regenerei `token-types`, `guide`,
+`dev-kit` e `plan-index`; **`schema-meta` verde** (`token-docs:check` 318 de 399 documentados, 81 em exceção — 79 do lote
+4 e os 2 achados; vitest de `Design`/`Provider/utils`/`contrato`/`scripts`; baseline; kits; Anel 0: 2.299 linhas, 0
+achados); `trail-citation` limpo.
+
+**Os dois achados, conferidos por mim:** `matrixGap` — `SarakExpandableMatrix.tsx:125` só define `--matrix-gap` a partir do
+token e **nenhum CSS ou componente lê `--matrix-gap`** (`git grep`); `motionEaseIn` — há leitor (`useMotionTokens.ts:48`,
+`SarakModal` e `SarakSearch` na saída), mas a medição não viu efeito: a causa precisa ser achada. Ambos vão ao registro da
+`plan-117` (P14 e P15, lote 5 dela), onde se corrigem antes de o tema seguinte ser ajustado.
+
+**Lote 3 fechado.** Próximo: lote 4 (`global`, `branding`, `system`, `navigation`, `structural`, `preferences`) — o último
+da análise de tokens; com ele os 399 tokens estarão classificados e medidos.
+
+**Status: 🔴 A executar (lote 4).**

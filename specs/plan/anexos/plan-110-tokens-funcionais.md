@@ -130,3 +130,51 @@ com entrada em `REMOVED_TOKEN_KEYS`; o `useCardLayoutStyles` passou a desenhar a
 | `chartType`, `chartThickness`, `chartSmoothing` | estético | descrevem a apresentação padrão; `SarakChartEngine` aceita `type` para o consumidor preservar a forma adequada aos dados. Espessura e suavização só valem para tipos compatíveis. |
 | `textGlowIntensity` | carrega modo | acompanha o halo do título, cuja força precisa ser calibrada para a luminosidade de cada contraparte. |
 | Tokens de halo, vidro, textura e grade | `interactsWith` | o halo neon e o desfoque dependem do estilo de botão, o vidro e o pulso dependem do estilo de alternador, as cores de textura dependem de uma textura ativa, e a opacidade da grade só aparece com a grade ligada. |
+
+# 6. Decisões não óbvias (lote 3: fundo, movimento, camadas, especializados, rolagem, avançados e mídia)
+
+Todos os tokens foram abertos no leitor e medidos em navegador por diferença de estilo computado (cena de `src/`,
+Chromium 153): o que cada valor mudou está no resumo do lote.
+
+| Token(s) | Decisão | Motivo |
+|---|---|---|
+| `zIndex*` (5), `touchTargetMin`, `focusRingWidth`, `reducedMotion`, `animEnabled` | funcional | escada de camadas, alvo de toque, anel de foco, movimento reduzido e liga/desliga da transição são segurança, acessibilidade ou comportamento: iguais em todo tema |
+| `chartEngineMinHeight`, `engineMinHeightLg/Sm`, `skeletonRowHeight`, `skeletonCircleSize`, `flowHandleSize` | funcional | pisos de layout e alvo de arraste; os dois do esqueleto devem imitar o conteúdo do host, não a identidade do tema |
+| `designEngineSidebarMin/MaxWidth`, `layoutPreviewMaxH` | funcional | só o painel de customização os lê (medidos no painel aberto: largura da barra e altura do bloco de JSON) |
+| `motion*`, `pageTransitionType`, `cardHoverStyle` | estético | o ritmo e o efeito são identidade do tema; a contraparte os herda do modo principal |
+| `textureOpacity`, `bgNoiseDensity`, `glassOpacity`, `glassSpecularity`, `shadow*Alpha`, `layeredShadows`, `shadowIntensity`, `vignetteOpacity`, `surfaceIntensity`, `globalBackgroundOpacity` | carrega modo | regra de opacidade (1.1): o mesmo número lê diferente sobre fundo claro e escuro |
+| `shadowColorMode`, `shadowOrientation`, `borderType`, `systemTone`, `texture` | não carrega | escolha de estilo, não de cor |
+| `globalBackgroundImageUrl` | carrega modo | a imagem certa muda com a luminosidade do fundo |
+
+## 6.1 Medido e diferente do que o schema dizia
+
+| Token | O que o navegador mostrou |
+|---|---|
+| `globalSaturation`, `globalContrast` | filtram só o pseudoelemento da textura (`html::before`), não a interface; sem textura nada muda |
+| `bgNoiseDensity` | regula só a camada fixa de grão (`NoiseOverlay`); a opacidade do padrão `texture: noise` continua `textureOpacity` |
+| `motionEaseOut` | alcança o pulso do alternador pulsante e o aperto de um botão HTML sem classe; o `SarakButton` mantém a própria curva |
+| `vignette*` | só existem com textura diferente de `none` (a vinheta é o `::after` do elemento com textura) |
+
+## 6.2 Tokens sem efeito visível (achados, não documentados)
+
+Ficam na lista de exceção do gate com o rótulo `achado-lote-3`.
+
+| Token | O que se mediu |
+|---|---|
+| `motionEaseIn` | a saída de `SarakModal`, `SarakSearch` e do véu da `SarakDrawer` nunca toca a curva: modal e busca retornam `null` ao fechar (o `AnimatePresence` é desmontado junto) e somem em ~10–30 ms com qualquer curva; o véu da gaveta anima só `duration` |
+| `matrixGap` | `SarakExpandableMatrix` escreve `--matrix-gap`, mas nenhuma regra lê `--matrix-gap`; o espaçamento da matriz vem de `--sarak-layout-gap-md` (medido com 3 papéis: `gap` não muda com 12 → 32) |
+
+## 7. Desfecho (plan-117, lote 4 — 2026-10-17)
+
+Os sete tokens foram medidos em cena montada de `src/`, com Chromium e comparação de estilo computado; os quatro tipos
+de gráfico foram conferidos com `canvas` e sem erros de console:
+
+| Token | O que a tela mostra agora | Medido |
+|---|---|---|
+| `actionGlowShadowOffsetY` | desloca a sombra do botão da categoria selecionada no `SarakCatalogGrid`; o inline sobrevive ao estilo `matte` do `SarakButton`, e o alfa de 5% deixa o efeito discreto | `arsenal-lote4-source.spec.ts` |
+| `actionGlowShadowBlur` | altera o desfoque da mesma sombra selecionada | idem |
+| `actionGlowShadowSpread` | altera o espalhamento da mesma sombra selecionada | idem |
+| `colorDepth` | altera o hover e o pressionado global de `button` via `--theme-primary-hover`/`--theme-primary-active` | idem |
+| `colorVariation` | altera a matiz das variantes de hover/pressionado consumidas pelos estados globais de `button` | idem |
+| `chartType` | os tipos `area`, `bar`, `pie`, `scatter`, `gauge`, `radar` e `heatmap` renderizam; radar usa tooltip por item e heatmap tem dois eixos categoria | idem |
+| `rangeActiveColor` | pinta o trilho ativo, os dois polegares e as dicas de valor do `SarakRangeSlider` | idem |

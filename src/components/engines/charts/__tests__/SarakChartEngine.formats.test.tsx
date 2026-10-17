@@ -158,6 +158,34 @@ describe('sankey', () => {
     });
 });
 
+describe('radar e heatmap cartesiano', () => {
+    const data = [
+        { name: 'Alpha', value: 12 },
+        { name: 'Beta', value: 24 },
+        { name: 'Gamma', value: 36 },
+    ];
+
+    it('usa tooltip por item no radar, sem eixos cartesianos', () => {
+        const option = readOption({ type: 'radar', data });
+
+        expect(option.xAxis).toBeUndefined();
+        expect(option.yAxis).toBeUndefined();
+        expect((option.tooltip as Record<string, unknown>).trigger).toBe('item');
+    });
+
+    it('usa eixos categoria/categoria e tooltip por item no heatmap', () => {
+        const option = readOption({ type: 'heatmap', data });
+        const xAxis = option.xAxis as Record<string, unknown>;
+        const yAxis = option.yAxis as Record<string, unknown>;
+
+        expect(xAxis.type).toBe('category');
+        expect(xAxis.data).toEqual([0, 1, 2, 3, 4]);
+        expect(yAxis.type).toBe('category');
+        expect(yAxis.data).toEqual([0]);
+        expect((option.tooltip as Record<string, unknown>).trigger).toBe('item');
+    });
+});
+
 describe('calendar', () => {
     const data = [
         { date: '2026-03-01', value: CALENDAR_QUIET_DAY },

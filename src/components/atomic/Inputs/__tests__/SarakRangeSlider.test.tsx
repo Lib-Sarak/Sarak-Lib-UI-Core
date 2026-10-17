@@ -33,6 +33,18 @@ describe('SarakRangeSlider', () => {
         expect(thumbs[1]).toHaveValue('60');
     });
 
+    it('usa rangeActiveColor no trilho, nos thumbs e nas dicas de valor', () => {
+        renderSlider({ label: 'Faixa', value: [20, 60] });
+        const range = screen.getByTestId('sarak-range');
+        const activeTrack = range.children[1] as HTMLElement;
+        const thumbs = screen.getAllByRole('slider');
+        const tooltips = range.querySelectorAll('span');
+
+        expect(activeTrack.style.backgroundColor).toBe('var(--sarak-range-active-bg, var(--color-theme-primary, #00f2ff))');
+        expect(thumbs[0].style.accentColor).toBe('var(--sarak-range-active-bg, var(--color-theme-primary, #00f2ff))');
+        expect(tooltips[0].style.color).toBe('var(--sarak-range-active-bg, var(--color-theme-primary, #00f2ff))');
+    });
+
     it('deve emitir o par ordenado e clampado ao mover um thumb', () => {
         const onChange = vi.fn();
         renderSlider({ value: [20, 60], onChange });

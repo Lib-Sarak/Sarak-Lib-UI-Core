@@ -10,6 +10,9 @@ export const EngineeringSchema: ComponentSchema = {
     tokens: [
         {
             id: 'focusRingWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Espessura do contorno de foco de teclado em botões e links; abaixo de 2 px compromete a acessibilidade, por isso o sistema o mantém igual em todo tema.",
             label: 'Largura do Anel de Foco',
             type: 'slider',
             description: 'Espessura, em pixels, do anel de contorno exibido ao redor de um elemento focado via teclado (Tab). Valores maiores melhoram a visibilidade para usuários de navegação por teclado/leitores de tela — não reduza abaixo de 2px sem motivo de acessibilidade validado.',
@@ -21,6 +24,10 @@ export const EngineeringSchema: ComponentSchema = {
         },
         {
             id: 'reducedMotion',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo.",
+            interactsWith: ['animEnabled'],
             label: 'Reduzir Movimento',
             type: 'boolean',
             description: 'Quando ativo, suprime/reduz animações e transições em toda a aplicação — atende usuários sensíveis a movimento (`prefers-reduced-motion`) e é um requisito de acessibilidade, não só preferência estética.',
@@ -30,6 +37,9 @@ export const EngineeringSchema: ComponentSchema = {
         },
         {
             id: 'touchTargetMin',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Piso de altura e largura dos acionáveis quando o ponteiro é o dedo (`pointer: coarse`); com mouse o desenho não muda.",
             label: 'Alvo Mínimo de Toque',
             type: 'slider',
             description: 'Altura e largura mínimas, em pixels, da área tocável de todo acionável da lib (botão, botão-ícone, item de menu, aba, campo de seleção, barra do Gantt) quando o ponteiro é o dedo (`pointer: coarse`). Com mouse o desenho não muda. 44px é o alvo de toque recomendado pelo WCAG 2.5.5; 24px é o piso do WCAG 2.5.8 (AA).',
@@ -41,6 +51,9 @@ export const EngineeringSchema: ComponentSchema = {
         },
         {
             id: 'zIndexToast',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Camada das notificações; topo da escada de camadas, um passo acima do tooltip.",
             label: 'Camada: Notificações',
             type: 'number',
             description: 'Índice de empilhamento (z-index) usado por notificações toast — o topo da escada de camadas (um passo acima do tooltip), para a notificação aparecer acima de qualquer modal ou sobreposição já aberta.',

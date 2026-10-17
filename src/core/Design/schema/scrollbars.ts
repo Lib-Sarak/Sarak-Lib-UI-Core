@@ -12,6 +12,9 @@ export const ScrollbarsSchema: ComponentSchema = {
         // --- DIMENSÕES ---
         {
             id: 'scrollWidth',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Espessura da barra de rolagem de toda a interface (vale por breakpoint); valores finos são discretos e os grossos facilitam o arraste.",
             label: 'Largura da Barra',
             type: 'slider',
             description: 'Espessura da barra de rolagem customizada, em pixels, com valores independentes por breakpoint. Valores finos (2-4px) são mais discretos; valores maiores (8-12px) facilitam o clique em telas touch/desktop com mouse impreciso.',
@@ -24,6 +27,9 @@ export const ScrollbarsSchema: ComponentSchema = {
         },
         {
             id: 'scrollRadius',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Arredondamento do trilho e do cursor da barra de rolagem; valores altos formam uma pílula.",
             label: 'Arredondamento (Thumb)',
             type: 'slider',
             description: 'Raio de borda do cursor (thumb) da barra de rolagem, em pixels, com valores independentes por breakpoint. Valores altos dão o formato de "pílula" comum em barras de rolagem modernas.',
@@ -38,6 +44,9 @@ export const ScrollbarsSchema: ComponentSchema = {
         // --- CORES & OPACIDADE ---
         {
             id: 'scrollTrackOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade do trilho da barra de rolagem, branco sobre o fundo; valores baixos deixam só o cursor aparecer.",
             label: 'Opacidade do Trilho',
             type: 'slider',
             description: 'Opacidade do trilho (fundo) da barra de rolagem — valores baixos deixam o trilho quase invisível (só o cursor aparece), valores altos tornam o trilho inteiro visível como uma faixa de fundo.',
@@ -48,6 +57,10 @@ export const ScrollbarsSchema: ComponentSchema = {
         },
         {
             id: 'scrollThumbColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Cor do cursor da barra de rolagem; a opacidade final vem de `scrollThumbOpacity` e do hover.",
+            interactsWith: ['scrollThumbOpacity', 'scrollThumbHoverOpacity'],
             label: 'Cor do Cursor (Thumb)',
             type: 'color',
             description: 'Cor base do cursor (thumb) da barra de rolagem — a opacidade final é controlada separadamente por `scrollThumbOpacity`/`scrollThumbHoverOpacity`.',
@@ -57,6 +70,10 @@ export const ScrollbarsSchema: ComponentSchema = {
         },
         {
             id: 'scrollThumbOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade do cursor da barra de rolagem em repouso; baixa para não competir com o conteúdo.",
+            interactsWith: ['scrollThumbColor'],
             label: 'Opacidade (Thumb)',
             type: 'slider',
             description: 'Opacidade do cursor da barra de rolagem em repouso — mantenha um valor baixo o suficiente para não competir visualmente com o conteúdo, mas visível o bastante para indicar que há scroll.',
@@ -67,6 +84,10 @@ export const ScrollbarsSchema: ComponentSchema = {
         },
         {
             id: 'scrollThumbHoverOpacity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Opacidade do cursor da barra de rolagem sob o ponteiro; deve superar a de repouso para dar retorno.",
+            interactsWith: ['scrollThumbColor', 'scrollThumbOpacity'],
             label: 'Opacidade ao Hover',
             type: 'slider',
             description: 'Opacidade do cursor da barra de rolagem ao passar o mouse sobre ele — deve ser maior que `scrollThumbOpacity` para dar feedback claro de que o elemento é interativo/arrastável.',
@@ -79,6 +100,9 @@ export const ScrollbarsSchema: ComponentSchema = {
         // --- COMPORTAMENTO ---
         {
             id: 'scrollPadding',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Folga transparente entre o cursor da barra de rolagem e a borda do trilho (vale por breakpoint); engorda a borda do cursor.",
             label: 'Espaçamento (Padding)',
             type: 'slider',
             description: 'Espaço, em pixels, entre a barra de rolagem e a borda do container, com valores independentes por breakpoint — evita que o cursor da barra encoste diretamente na borda da tela/painel.',

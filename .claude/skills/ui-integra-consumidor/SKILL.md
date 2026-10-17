@@ -463,12 +463,20 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 | gráfico de dados | `SarakChartEngine` | paleta, grade, dicas e acabamento das séries vêm dos tokens; `type` escolhe a forma adequada aos dados |
 | conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e larguras têm tokens |
 | estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
+| fundo (gradiente, textura, grão, vinheta, imagem) | tokens `bgGradient*`, `texture*`, `bgNoise*`, `vignette*`, `globalBackground*` | camadas atrás do conteúdo que seguem o modo; textura `none` apaga vinheta e filtros |
+| vidro, material e sombra | `SarakCard`, classes `.sarak-glass` e `.shadow-theme` | `glass*`, `surfaceMaterial` e `shadow*` trocam com o tema; CSS escrito à mão não |
+| rolagem, movimento, camadas | CSS da lib · `motion*`, `animEnabled`, `reducedMotion` · `zIndex*` | um ritmo e uma escada de camadas para tudo; `transition` e `z-index` fixos ficam fora |
+| estado vazio, esqueleto, fluxo, matriz | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria e desfoque têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
 | navegação e cromo · i18n e preferências · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido nos próximos lotes da análise de tokens | procure em `catalog.json` antes de construir |
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
 a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção
 e alinhamento não alcançam o `SarakCard` composto. Os efeitos de cartão (spotlight, traço luminoso, zoom da capa,
 aperto do botão de ação) desenham e o que cada um faz está em `GUIA-FRONTEND.md` §6.4.
+
+**Armadilhas medidas (fundo, movimento, camadas):** `textureOpacity`, `vignette*`, `bgNoiseAnimation`, `globalSaturation`
+e `globalContrast` dependem de `texture` diferente de `none`; `bgGradientAngle` só gira o Linear; `shadowIntensity` muda
+a opacidade do elemento `.shadow-theme`; `motionEaseIn` e `matrixGap` ainda não mudam a tela (`GUIA-FRONTEND.md` §6.7).
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -62,6 +62,12 @@ nenhum `defaultValue`.
 - **Documentar:** o `usage`/`kind`/`modeDependent`/`interactsWith` dos cinco ligados no schema, e a saída deles da
   exceção `achado-lote-1` (`gates/allowlists/tokenDocumentationPending.json`); `sarak-ui/GUIA-FRONTEND.md` (§6.4 e o
   mapa) e `.agents/skills/ui-integra-consumidor/`; `docs/migracoes.md` (`## 8.0.0`).
+- **Lote 4 (P10–P13):** `src/components/atomic/Templates/SarakCatalogGrid.tsx` e `src/components/atomic/Buttons/SarakButton.tsx`
+  (P10); `src/core/Design/hooks/useDesignVariables.ts`, `src/core/Design/schema/colors.ts` e, se retirar, as mesmas portas
+  da retirada do lote 3 (P11); `src/components/engines/charts/SubEngines/builders/{advancedCharts,types}.ts`, os
+  `optionBuilders.ts`/`axisOptions.ts` ao lado e `src/core/Design/schema/data.ts` (P12);
+  `src/components/atomic/Inputs/SarakRangeSlider.tsx`, `src/styles/_utilities.css` e `src/core/Design/schema/inputs.ts`
+  (P13); `src/core/Design/schema/buttons.ts` (P10).
 - **Provar:** testes de componente, o caso de navegador (`browser-tests/`, cena nova no harness) e o gate de leitor.
 - `specs/plan/anexos/plan-110-tokens-funcionais.md` — acrescentar o desfecho dos sete (o executor).
 
@@ -84,6 +90,9 @@ nenhum `defaultValue`.
 | **Skill** | `ui-arquitetura-design` · `ui-refatorar-componente` · `ui-novo-componente` | CSS do motor, remoção de token sem quebrar paridade |
 | **Skill** | `padrao-escrita` + `padrao-typescript` · `test-unitario` | sempre |
 | Código | `src/components/atomic/Cards/SarakActionCard.tsx` · `src/components/atomic/Cards/SarakSearchCard.tsx` · `src/components/atomic/Cards/SarakTitleCard.tsx` · `src/components/atomic/Templates/SarakImageCard.tsx` · `src/components/atomic/Templates/components/SarakCoreCard.tsx` · `src/styles/_animations.css` · `src/core/Provider/manifest.ts` | os leitores e as variáveis emitidas |
+| Código (lote 4) | `src/components/atomic/Templates/SarakCatalogGrid.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/core/Design/schema/buttons.ts` (P10) · `src/core/Design/hooks/useDesignVariables.ts` · `src/core/Design/schema/colors.ts` · `src/core/Provider/utils/removedTokenKeys.ts` (P11) · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` · `src/components/engines/charts/SubEngines/axisOptions.ts` · `src/core/Design/schema/data.ts` (P12) · `src/components/atomic/Inputs/SarakRangeSlider.tsx` · `src/styles/_utilities.css` · `src/core/Design/schema/inputs.ts` (P13) | os leitores e os schemas dos quatro achados; a medição que os originou está no resumo do lote 2 da `plan-110` (tabela por token) |
+| Navegador | `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` (o molde de caso e cena) · `PLAYWRIGHT_BROWSERS_PATH` = caminho absoluto de `node_modules/.cache/ms-playwright` do repositório, `chromium.launch()` sem `executablePath` | provar cada token por diferença de estilo computado |
+| Skill (se existir na sessão) | `dataviz` | só para P12; nenhuma paleta de gráfico muda — sem a skill, siga sem ela e diga no resumo |
 | Código | `gates/allowlists/tokenDocumentationPending.json` · `gates/scripts/contrato/check-token-documentation.ts` · `gates/scripts/contrato/check-token-reader.mjs` | a exceção que esvazia e o gate de leitor |
 
 # 5. Instruções de execução
@@ -110,6 +119,8 @@ nenhum `defaultValue`.
 | P11 | `colorDepth`/`colorVariation` — moldam `--sarak-primary-color-hover`/`-active` (`useDesignVariables.ts:67-70`), que **nenhum CSS ou componente lê** (`git grep`) | plan-110 lote 2 | **retirar** (regra "muda a tela ou sai"; o hover já tem tokens próprios) — o dono pode preferir **ligar** ao hover/pressionado | 4 | aberta, decisão do dono |
 | P12 | `chartType`: `radar` quebra o ECharts (`axisPointer` lê `type` de eixo que não existe) e `heatmap` (`Heatmap on cartesian must have two category axes`) — `advancedCharts.ts:21,107`; opções que o painel oferece e derrubam o gráfico | plan-110 lote 2 | **corrigir** os builders para o dado padrão do gráfico; se uma opção não for viável com dado genérico, retirar a opção (valor salvo cai no padrão, com aviso) | 4 | aberta |
 | P13 | `rangeActiveColor` — pinta só o polegar; o trilho ativo usa a constante `ACTIVE` (`SarakRangeSlider.tsx:27`), então "cor ativa" não colore o que o nome promete | plan-110 lote 2 | **ligar** o trilho ativo ao token (e ajustar o `usage`) | 4 | aberta |
+| P14 | `motionEaseIn` — a curva de saída das sobreposições tem leitor (`useMotionTokens.ts:48`, `SarakModal`, `SarakSearch`), mas a medição no navegador não viu efeito (plan-110 lote 3) | plan-110 lote 3 | achar a causa (a saída não usa a curva? o `AnimatePresence` a ignora?) e **ligar** de fato, ou **retirar** | 5 | aberta |
+| P15 | `matrixGap` — `SarakExpandableMatrix.tsx:125` define `--matrix-gap` a partir do token e **nada lê `--matrix-gap`** (`git grep`) | plan-110 lote 3 | **ligar** o espaçamento entre os itens da matriz ao token, ou **retirar** | 5 | aberta |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -688,3 +699,71 @@ ela segue como o **registro vivo** da §5.1 durante a aplicação dos temas. Pen
 **entra na tabela da §5.1 como linha nova e é corrigida aqui, em lote, antes de o tema seguinte ser ajustado** (não vai
 ao backlog). Hoje a tabela não tem linha aberta. A retenção expira sozinha: quando a `plan-110` for sintetizada, esta
 sai junto, no mesmo ato.
+
+## Resumo da execução — 2026-10-17
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+
+```text
+ M specs/00-indice.md
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- P10: medi `box-shadow` no botão selecionado real do `SarakCatalogGrid`; o estilo `matte` preserva o `style` inline que `SarakButton` recebe, e Offset Y/Blur/Spread alteram a sombra quando variados individualmente. A opacidade de 5% deixa o efeito discreto. Atualizei o uso e a descrição dos três tokens e as linhas da GUIA.
+- P11: mantive `colorDepth` e `colorVariation` conforme a decisão do dono. A medição confirmou que ambos alteram os estados globais de hover/pressionado; atualizei schema e GUIA para registrar `--theme-primary-hover`/`--theme-primary-active` e seus consumidores em `_elements.css`.
+- P12: `radar` agora usa tooltip por item; `heatmap` recebe eixos categoria/categoria alinhados às coordenadas da série. A medição renderizou os sete tipos padrão em canvas sem erro de console.
+- P13: conectei o trilho ativo ao `--sarak-range-active-bg`; trilho, polegares e dicas usam o mesmo token. Atualizei schema, GUIA e o anexo de medição.
+- Registrei o resultado dos sete tokens no anexo da `plan-110` e acrescentei este resumo. GUIA foi atualizada manualmente; não executei geradores.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/engines/charts/SubEngines/axisOptions.ts` | alterado | Tooltip por item em radar/heatmap; eixos categoria/categoria para heatmap. |
+| `src/components/atomic/Inputs/SarakRangeSlider.tsx` | alterado | A cor ativa passa a ler `--sarak-range-active-bg`. |
+| `src/core/Design/schema/buttons.ts` | alterado | Uso e descrição dos tokens de sombra limitados ao consumidor real. |
+| `src/core/Design/schema/colors.ts` | alterado | Uso e descrição de profundidade/variação registram as variantes consumidas pelos estados globais do botão. |
+| `src/core/Design/schema/inputs.ts` | alterado | Uso e descrição de `rangeActiveColor` incluem trilho, polegares e dicas. |
+| `src/components/engines/charts/__tests__/SarakChartEngine.formats.test.tsx` | alterado | Casos unitários para eixos e tooltip de radar/heatmap. |
+| `src/components/atomic/Inputs/__tests__/SarakRangeSlider.test.tsx` | alterado | Caso unitário para o token no trilho, polegar e dica. |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | Corrigi as linhas dos tokens P10, P11 e P13. |
+| `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | Acrescentei o desfecho medido dos sete tokens. |
+| `specs/plan/plan-117-pendencias-do-arsenal.md` | alterado | Acrescentei este resumo e movi `status` para `🟠 Em revisão`. |
+| `browser-tests/arsenal-lote4-source.spec.ts` | criado | Quatro medições de navegador para P10–P13. |
+| `browser-tests/playwright-source.config.ts` | criado | Configuração isolada do caso de navegador direto da fonte. |
+| `browser-tests/fixtures/arsenal-lote4-source-entry.tsx` | criado | Cena que importa condicionalmente os componentes reais do projeto. |
+| `browser-tests/fixtures/arsenal-lote4-source.html` | criado | Página de medição e estilos mínimos para dimensões do gráfico. |
+| `browser-tests/fixtures/arsenal-lote4-icon-stub.tsx` | criado | Substitui ícones decorativos na cena de medição. |
+| `browser-tests/fixtures/arsenal-lote4-input-stub.tsx` | criado | Substitui o input de busca do catálogo, fora do alvo medido. |
+| `browser-tests/fixtures/arsenal-lote4-provider-stub.tsx` | criado | Fornece contexto mínimo e aplica variáveis reais de `useDesignVariables`. |
+| `browser-tests/fixtures/arsenal-lote4-echarts-wrapper.tsx` | criado | Adapta a API React a uma instância ECharts real no navegador. |
+| `browser-tests/fixtures/arsenal-lote4-echarts-global.ts` | criado | Expõe a API gráfica do ECharts local aos builders da fonte. |
+| `browser-tests/fixtures/arsenal-lote4-echarts-core-stub.ts` | criado | Evita registro duplicado dos componentes já presentes no bundle ECharts local. |
+| `browser-tests/fixtures/arsenal-lote4-echarts-components-stub.ts` | criado | Stubs dos registradores de acessibilidade/legenda já presentes no bundle ECharts local. |
+| `browser-tests/fixtures/arsenal-lote4-recharts-stub.tsx` | criado | Substitui o motor alternativo não selecionado na cena de P12. |
+
+**Verificações executadas**
+- `node_modules/.bin/vitest.cmd run src/components/engines/charts/__tests__/SarakChartEngine.formats.test.tsx src/components/atomic/Inputs/__tests__/SarakRangeSlider.test.tsx` → 2 arquivos, 26/26 testes passaram; houve avisos ambientais de GLib e parse de CSS, sem falhas de teste.
+- `$env:PLAYWRIGHT_BROWSERS_PATH = (Resolve-Path 'node_modules/.cache/ms-playwright').Path; node_modules/.bin/playwright.cmd test --config=browser-tests/playwright-source.config.ts browser-tests/arsenal-lote4-source.spec.ts --grep 'P1[0-3]:' --timeout=180000` → 4/4 casos passaram; P12 verificou os sete formatos.
+- Não rodei `guide`, `dev-kit`, `build`, suíte completa ou gates, conforme o escopo de verificação definido pelo dono.
+
+**Critérios de aceite**
+- [x] P10: cada valor extremo, isoladamente, muda a sombra computada no botão selecionado; o caso usa `btnStyleType: matte` e confirma a precedência real.
+- [x] P11: profundidade e variação mudam o hover computado; os tokens permanecem no schema conforme decisão do dono.
+- [x] P12: os sete tipos declarados renderizam canvas sem erro de console.
+- [x] P13: `rangeActiveColor` muda o estilo computado do trilho, dos polegares e das dicas.
+
+**Decisões e suposições**
+- Mantive P11 e corrigi sua documentação, conforme a decisão explícita do dono. Não alterei `removedTokenKeys`, partições nem tipos.
+- O harness importa componentes e builders da fonte. Para contornar dependências decorativas/CommonJS, substitui ícones, input de busca, provider, wrapper React do ECharts e motor Recharts; as variáveis vêm do `useDesignVariables` real e P12 usa o bundle ECharts local real com as opções produzidas pelo `SarakChartEngine`.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- A suíte completa, os gates e a medição contra o build não foram executados, conforme instrução do dono; a verificação de integração do revisor continua pendente.

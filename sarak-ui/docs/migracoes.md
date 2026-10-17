@@ -947,6 +947,15 @@ Os tokens de tipografia, botões, campos, alternadores, cores, gráficos, chat e
 uso, classificação, dependência de modo e interações relevantes. O lote não alterou valores padrão, opções nem
 leitores; temas existentes mantêm o mesmo comportamento.
 
+### Lote 3 da documentação dos tokens
+
+Os tokens de fundo e atmosfera, animações, movimento, acessibilidade, especializados, rolagem, camadas,
+componentes avançados e mídia informam no schema o uso, a classificação, a dependência de modo e as interações,
+conferidos em navegador. Três descrições foram corrigidas para o que a tela faz: `globalSaturation` e `globalContrast`
+filtram só a camada de textura; `bgNoiseDensity` regula só o grão de filme; `motionEaseOut` alcança o pulso do
+alternador e o botão HTML sem classe. Valores padrão, opções e leitores não mudaram; temas existentes mantêm o
+comportamento.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.
