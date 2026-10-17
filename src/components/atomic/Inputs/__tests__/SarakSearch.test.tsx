@@ -141,3 +141,21 @@ describe('SarakSearch — teclado de busca no celular', () => {
         expect(input).toHaveAttribute('enterkeyhint', 'search');
     });
 });
+
+describe('SarakSearch — a saída anima antes de a paleta sair da página (motionEaseIn)', () => {
+    it('fechar não remove a paleta no mesmo quadro: ela sai ao fim da saída', async () => {
+        const ui = (isOpen: boolean) => (
+            <SarakUIProvider>
+                <SarakSearch isOpen={isOpen} onClose={() => undefined} items={[]} />
+            </SarakUIProvider>
+        );
+        const { rerender } = render(ui(true));
+        const placeholder = 'Buscar ferramenta, registro ou configuração…';
+        expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument();
+
+        rerender(ui(false));
+        expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument();
+
+        await waitFor(() => expect(screen.queryByPlaceholderText(placeholder)).not.toBeInTheDocument());
+    });
+});

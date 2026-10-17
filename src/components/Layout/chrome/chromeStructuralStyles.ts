@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { ChromeContentAlignment, ChromeLayoutDensity, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
+import type { ChromeLayoutDensity, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
 
 /**
  * Converte os tokens estruturais de cromo em classes para `SarakAppChrome`.
@@ -30,13 +30,6 @@ const NAVBAR_LAYOUT_CLASS: Record<ChromeNavbarLayout, string> = {
     hidden: 'hidden',
 };
 
-// `@min-[…]:` literais de propósito (07-responsividade-e-multidispositivo.md
-// §6.1 regra 2) — o scanner do Tailwind lê o arquivo como texto.
-const CONTENT_ALIGNMENT_CLASS: Record<ChromeContentAlignment, string> = {
-    stretch: '',
-    center: 'max-w-7xl mx-auto w-full px-4 @min-[640px]:px-6 @min-[1024px]:px-8',
-};
-
 const CONTENT_DENSITY_SCALE: Record<ChromeLayoutDensity, string> = {
     compact: '0.75',
     comfortable: '1',
@@ -55,9 +48,6 @@ export const resolveChromeAsidePositionClass = (position: ChromeSidebarPosition)
 
 export const resolveChromeNavbarLayoutClass = (layout: ChromeNavbarLayout): string =>
     NAVBAR_LAYOUT_CLASS[layout] ?? NAVBAR_LAYOUT_CLASS.sticky;
-
-export const resolveChromeContentAlignmentClass = (alignment: ChromeContentAlignment): string =>
-    CONTENT_ALIGNMENT_CLASS[alignment] ?? CONTENT_ALIGNMENT_CLASS.stretch;
 
 // @sarak-token-reader maxContentWidth direto
 // As opções de `maxContentWidth` já são larguras CSS: vão direto para `max-width`.

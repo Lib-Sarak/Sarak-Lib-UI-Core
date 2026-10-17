@@ -478,11 +478,11 @@ aperto do botão de ação) desenham e o que cada um faz está em `GUIA-FRONTEND
 
 **Armadilhas medidas (fundo, movimento, camadas):** `textureOpacity`, `vignette*`, `bgNoiseAnimation`, `globalSaturation`
 e `globalContrast` dependem de `texture` diferente de `none`; `bgGradientAngle` só gira o Linear; `shadowIntensity` muda
-a opacidade do elemento `.shadow-theme`; `motionEaseIn` e `matrixGap` ainda não mudam a tela (`GUIA-FRONTEND.md` §6.7).
+a opacidade do elemento `.shadow-theme`; `motionEaseIn` governa a saída do modal e da paleta de busca, e `matrixGap` o espaço entre os sub-itens da matriz (`GUIA-FRONTEND.md` §6.7).
 
 **Armadilhas medidas (cromo e preferências):** a paleta só inverte pela preferência de modo do usuário (`mode` no tema
 declara o nativo); a preferência vence o tema em `navigationStyle` e `bodySize`; `sidebar*` só valem com navegação
-lateral e `topbar*` com a do topo; `contentAlignment` e `sidebarCollapsedWidth` ainda não mudam a tela
+lateral e `topbar*` com a do topo; `searchPositionTopbar: center` centra a busca no espaço livre entre a navegação e o fim da barra
 (`GUIA-FRONTEND.md` §6.8).
 
 ## Regras (SRP - Responsabilidade Única)

@@ -27,6 +27,7 @@ describe('chaves retiradas por não terem leitor', () => {
         { key: 'cardContentAlignment', saved: 'space-between', sibling: 'cardTextAlign', siblingValue: 'center' },
         { key: 'tableActionPosition', saved: 'left', sibling: 'tableDensity', siblingValue: 'compact' },
         { key: 'cardImagePosition', saved: 'right', sibling: 'cardLayoutDirection', siblingValue: 'row' },
+        { key: 'contentAlignment', saved: 'center', sibling: 'maxContentWidth', siblingValue: '1200px' },
     ];
 
     it.each(cases)('$key salvo é descartado com aviso que o nomeia, e o resto do tema vale', async ({ key, saved, sibling, siblingValue }) => {

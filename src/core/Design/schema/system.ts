@@ -83,7 +83,7 @@ export const SystemSchema: ComponentSchema = {
             id: 'borderRadius',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros. O acordeão ignora o valor 0 e volta ao raio do cartão.",
+            usage: "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros; 0 deixa os cantos retos, inclusive no acordeão; vale escalar ou por breakpoint.",
             interactsWith: ['cardBorderRadius'],
             label: 'Arredondamento Padrão',
             type: 'slider',

@@ -55,6 +55,7 @@ export const REMOVED_TOKEN_KEYS = new Set<string>([
     // Oferecidos pelo painel e sem leitor (ver docs/migracoes.md, `## 8.0.0`): o valor salvo cai no padrão, com aviso.
     'cardContentAlignment', // redundante: `cardTextAlign` já distribui o conteúdo do cartão
     'tableActionPosition', // a `SarakTable` não tem coluna de ações
+    'contentAlignment', // `maxContentWidth` já limita e centraliza a região; a classe de centralização perdia para o estilo em linha
     'cardImagePosition', // só `right` com direção em linha mudava algo; a ordem dos blocos é do `className` do importador
 ]);
 

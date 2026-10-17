@@ -74,7 +74,8 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
     const { durations } = useMotionTokens();
     const { getContainerStyles, getFlexStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
-    const subItemsStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
+    // `matrixGap` (`--sarak-matrix-gap`, padrão 12) é o espaço entre os sub-itens de uma linha aberta.
+    const subItemsStack = getFlexStyles('column', undefined, undefined, 'var(--sarak-matrix-gap, 12px)');
     const emptyStateStack = getFlexStyles('column', 'center', 'center', '0px');
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -122,7 +123,6 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
             className={`w-full ${containerLayout.className}`}
             style={{ 
                 ...containerLayout.style,
-                '--matrix-gap': 'var(--sarak-matrix-gap, 12px)',
                 gap: 'var(--sarak-layout-gap-md, 16px)'
             } as React.CSSProperties}
         >

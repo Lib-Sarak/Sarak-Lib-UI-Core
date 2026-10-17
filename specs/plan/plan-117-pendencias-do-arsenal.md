@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -68,6 +68,16 @@ nenhum `defaultValue`.
   `optionBuilders.ts`/`axisOptions.ts` ao lado e `src/core/Design/schema/data.ts` (P12);
   `src/components/atomic/Inputs/SarakRangeSlider.tsx`, `src/styles/_utilities.css` e `src/core/Design/schema/inputs.ts`
   (P13); `src/core/Design/schema/buttons.ts` (P10).
+- **Lote 5 (P14–P21):** `src/components/atomic/hooks/useMotionTokens.ts`, `src/components/atomic/Modals/SarakModal.tsx`,
+  `src/components/atomic/Inputs/SarakSearch.tsx` e `src/core/Design/schema/motion.ts` (P14);
+  `src/components/atomic/Templates/SarakExpandableMatrix.tsx` e `src/core/Design/schema/advanced.ts` (P15);
+  `src/components/Layout/chrome/chromeStructuralStyles.ts`, `src/components/Layout/chrome/ChromeSidebarBody.tsx`,
+  `src/components/Layout/chrome/ChromeTopbarBody.tsx` e `src/core/Design/schema/navigation.ts` (P16, P17, P20);
+  `src/components/atomic/Layouts/SarakAccordion.tsx` e `src/core/Design/schema/system.ts` (P18);
+  `src/components/atomic/hooks/useStructuralStyles.ts`, `src/components/atomic/Inputs/SarakSwitch.tsx`,
+  `src/components/atomic/Inputs/SarakCheckbox.tsx`, `src/components/atomic/Inputs/SarakRadio.tsx` e
+  `src/core/Design/schema/structural.ts` (P19); `src/components/atomic/Layouts/SarakSplitPane.tsx` (candidato de P21).
+- **Lote 6 (P16, P20, P22):** `src/components/Layout/chrome/chromeStructuralStyles.ts`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Provider/utils/removedTokenKeys.ts`, `src/core/Provider/types.ts`, `src/core/Provider/payloadExtraKeys.ts` e `src/components/atomic/Layouts/SarakAccordion.tsx`.
 - **Provar:** testes de componente, o caso de navegador (`browser-tests/`, cena nova no harness) e o gate de leitor.
 - `specs/plan/anexos/plan-110-tokens-funcionais.md` — acrescentar o desfecho dos sete (o executor).
 
@@ -91,6 +101,8 @@ nenhum `defaultValue`.
 | **Skill** | `padrao-escrita` + `padrao-typescript` · `test-unitario` | sempre |
 | Código | `src/components/atomic/Cards/SarakActionCard.tsx` · `src/components/atomic/Cards/SarakSearchCard.tsx` · `src/components/atomic/Cards/SarakTitleCard.tsx` · `src/components/atomic/Templates/SarakImageCard.tsx` · `src/components/atomic/Templates/components/SarakCoreCard.tsx` · `src/styles/_animations.css` · `src/core/Provider/manifest.ts` | os leitores e as variáveis emitidas |
 | Código (lote 4) | `src/components/atomic/Templates/SarakCatalogGrid.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/core/Design/schema/buttons.ts` (P10) · `src/core/Design/hooks/useDesignVariables.ts` · `src/core/Design/schema/colors.ts` · `src/core/Provider/utils/removedTokenKeys.ts` (P11) · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` · `src/components/engines/charts/SubEngines/axisOptions.ts` · `src/core/Design/schema/data.ts` (P12) · `src/components/atomic/Inputs/SarakRangeSlider.tsx` · `src/styles/_utilities.css` · `src/core/Design/schema/inputs.ts` (P13) | os leitores e os schemas dos quatro achados; a medição que os originou está no resumo do lote 2 da `plan-110` (tabela por token) |
+| Código (lote 5) | `src/components/atomic/hooks/useMotionTokens.ts` · `src/components/atomic/Modals/SarakModal.tsx` · `src/components/atomic/Inputs/SarakSearch.tsx` · `src/core/Design/schema/motion.ts` (P14) · `src/components/atomic/Templates/SarakExpandableMatrix.tsx` · `src/core/Design/schema/advanced.ts` (P15) · `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` (P16, P17, P20) · `src/components/atomic/Layouts/SarakAccordion.tsx` · `src/core/Design/schema/system.ts` (P18) · `src/components/atomic/hooks/useStructuralStyles.ts` · `src/components/atomic/Inputs/SarakSwitch.tsx` · `src/components/atomic/Inputs/SarakCheckbox.tsx` · `src/components/atomic/Inputs/SarakRadio.tsx` · `src/core/Design/schema/structural.ts` (P19) · `src/components/atomic/Layouts/SarakSplitPane.tsx` (P21) | os leitores e os schemas dos oito achados; a medição que os originou está nos resumos dos lotes 3 e 4 da `plan-110` (tabela por token, no histórico do Git) e nos achados dela |
+| Código (lote 6) | `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Provider/utils/removedTokenKeys.ts` · `src/core/Provider/types.ts` · `src/core/Provider/payloadExtraKeys.ts` · `src/components/atomic/Layouts/SarakAccordion.tsx` (P16, P20, P22) | os leitores, o schema e as portas da retirada |
 | Navegador | `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` (o molde de caso e cena) · `PLAYWRIGHT_BROWSERS_PATH` = caminho absoluto de `node_modules/.cache/ms-playwright` do repositório, `chromium.launch()` sem `executablePath` | provar cada token por diferença de estilo computado |
 | Skill (se existir na sessão) | `dataviz` | só para P12; nenhuma paleta de gráfico muda — sem a skill, siga sem ela e diga no resumo |
 | Código | `gates/allowlists/tokenDocumentationPending.json` · `gates/scripts/contrato/check-token-documentation.ts` · `gates/scripts/contrato/check-token-reader.mjs` | a exceção que esvazia e o gate de leitor |
@@ -115,18 +127,19 @@ nenhum `defaultValue`.
 | P7 | `tableActionPosition` — a tabela não tem coluna de ações | plan-110 lote 1 | retirar | 3 | fechada |
 | P8 | `getCardStyles` morto e `structuralConsumer` de `cardImagePosition`/`cardContentAlignment` o citando; `cardVariant` com `axis: 'texture'` | plan-110 lote 1 (backlog 34) | retirar/corrigir | 3 | fechada |
 | P9 | `cardImagePosition` — a opção `top` (o padrão) não tem leitor; o código morto escondia isso (`token-reader:check` vermelho; R40 exige `ALLOWLIST` vazia) | plan-117 lote 3 | retirar | 3 (correção) | fechada |
-| P10 | `actionGlowShadowOffsetY`/`Blur`/`Spread` — o único leitor é o `style` inline do botão da categoria selecionada em `SarakCatalogGrid.tsx:110`, com cor a 5% de opacidade; variar os três não muda `box-shadow` computado nem pixel (plan-110 lote 2, medido no navegador) | plan-110 lote 2 | investigar a causa; **ligar** se o efeito for alcançável (a sombra de destaque dos botões de ação desenha de verdade) ou **retirar** os três | 4 | aberta |
-| P11 | `colorDepth`/`colorVariation` — moldam `--sarak-primary-color-hover`/`-active` (`useDesignVariables.ts:67-70`), que **nenhum CSS ou componente lê** (`git grep`) | plan-110 lote 2 | **retirar** (regra "muda a tela ou sai"; o hover já tem tokens próprios) — o dono pode preferir **ligar** ao hover/pressionado | 4 | aberta, decisão do dono |
-| P12 | `chartType`: `radar` quebra o ECharts (`axisPointer` lê `type` de eixo que não existe) e `heatmap` (`Heatmap on cartesian must have two category axes`) — `advancedCharts.ts:21,107`; opções que o painel oferece e derrubam o gráfico | plan-110 lote 2 | **corrigir** os builders para o dado padrão do gráfico; se uma opção não for viável com dado genérico, retirar a opção (valor salvo cai no padrão, com aviso) | 4 | aberta |
-| P13 | `rangeActiveColor` — pinta só o polegar; o trilho ativo usa a constante `ACTIVE` (`SarakRangeSlider.tsx:27`), então "cor ativa" não colore o que o nome promete | plan-110 lote 2 | **ligar** o trilho ativo ao token (e ajustar o `usage`) | 4 | aberta |
-| P14 | `motionEaseIn` — a curva de saída das sobreposições tem leitor (`useMotionTokens.ts:48`, `SarakModal`, `SarakSearch`), mas a medição no navegador não viu efeito (plan-110 lote 3) | plan-110 lote 3 | achar a causa (a saída não usa a curva? o `AnimatePresence` a ignora?) e **ligar** de fato, ou **retirar** | 5 | aberta |
-| P15 | `matrixGap` — `SarakExpandableMatrix.tsx:125` define `--matrix-gap` a partir do token e **nada lê `--matrix-gap`** (`git grep`) | plan-110 lote 3 | **ligar** o espaçamento entre os itens da matriz ao token, ou **retirar** | 5 | aberta |
-| P16 | `contentAlignment` — o estilo em linha de `resolveChromeContentStyle` (`maxWidth`, `marginInline`, `width`, `padding`) vence a classe `max-w-7xl mx-auto w-full px-*` que `chromeStructuralStyles.ts:37` põe no mesmo elemento; o token não muda nada (plan-110 lote 4) | plan-110 lote 4 | **ligar** (a classe e o estilo deixam de disputar o mesmo elemento) ou **retirar** | 5 | aberta |
-| P17 | `sidebarCollapsedWidth` — `ChromeSidebarBody.tsx:107` lê o token, mas `min-width: var(--sidebar-min-width, 150px)` (`:111`) vence: o recolhido mede 200 px; o piso do `sidebarMinWidth` (150) é maior que o teto do token (100) | plan-110 lote 4 | **ligar** (o recolhido ignora o piso da largura aberta) ou **retirar** | 5 | aberta |
-| P18 | `borderRadius`: `SarakAccordion.tsx` usa `(design?.borderRadius) \|\| 'var(--sarak-card-radius,12px)'`; `0` é falso e o raio fica em 12 px | plan-110 lote 4 | **corrigir** (`??`/checagem de ausência) | 5 | aberta |
-| P19 | `switchLabelPosition` não chega a `SarakCheckbox` nem `SarakRadio`, que leem `useStructuralStyles` (`getCheckboxLayoutStyles`, `getRadioLayoutStyles`): nenhuma propriedade mudou nos dois | plan-110 lote 4 | **ligar** nos dois ou **declarar** o alcance só do alternador (renomear o `usage`) | 5 | aberta |
-| P20 | `searchPositionTopbar: center` — `mx-auto` (`ChromeTopbarBody.tsx:112`) não se distingue de `left` quando a navegação tem `flex-1` (o caso com itens) | plan-110 lote 4 | **ligar** o centro de fato ou **retirar** a opção | 5 | aberta |
-| P21 | aviso de console "Function components cannot be given refs" em todas as variantes da cena estrutural (componente não identificado: `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` ou outro) | plan-110 lote 4 | **identificar e corrigir** (`forwardRef` ou remover a `ref`) | 5 | aberta |
+| P10 | `actionGlowShadowOffsetY`/`Blur`/`Spread` — o único leitor é o `style` inline do botão da categoria selecionada em `SarakCatalogGrid.tsx:110`, com cor a 5% de opacidade; variar os três não muda `box-shadow` computado nem pixel (plan-110 lote 2, medido no navegador) | plan-110 lote 2 | investigar a causa; **ligar** se o efeito for alcançável (a sombra de destaque dos botões de ação desenha de verdade) ou **retirar** os três | 4 | fechada |
+| P11 | `colorDepth`/`colorVariation` — moldam `--sarak-primary-color-hover`/`-active` (`useDesignVariables.ts:67-70`), que **nenhum CSS ou componente lê** (`git grep`) | plan-110 lote 2 | **retirar** (regra "muda a tela ou sai"; o hover já tem tokens próprios) — o dono pode preferir **ligar** ao hover/pressionado | 4 | fechada |
+| P12 | `chartType`: `radar` quebra o ECharts (`axisPointer` lê `type` de eixo que não existe) e `heatmap` (`Heatmap on cartesian must have two category axes`) — `advancedCharts.ts:21,107`; opções que o painel oferece e derrubam o gráfico | plan-110 lote 2 | **corrigir** os builders para o dado padrão do gráfico; se uma opção não for viável com dado genérico, retirar a opção (valor salvo cai no padrão, com aviso) | 4 | fechada |
+| P13 | `rangeActiveColor` — pinta só o polegar; o trilho ativo usa a constante `ACTIVE` (`SarakRangeSlider.tsx:27`), então "cor ativa" não colore o que o nome promete | plan-110 lote 2 | **ligar** o trilho ativo ao token (e ajustar o `usage`) | 4 | fechada |
+| P14 | `motionEaseIn` — a curva de saída das sobreposições tem leitor (`useMotionTokens.ts:48`, `SarakModal`, `SarakSearch`), mas a medição no navegador não viu efeito (plan-110 lote 3) | plan-110 lote 3 | achar a causa (a saída não usa a curva? o `AnimatePresence` a ignora?) e **ligar** de fato, ou **retirar** | 5 | fechada |
+| P15 | `matrixGap` — `SarakExpandableMatrix.tsx:125` define `--matrix-gap` a partir do token e **nada lê `--matrix-gap`** (`git grep`) | plan-110 lote 3 | **ligar** o espaçamento entre os itens da matriz ao token, ou **retirar** | 5 | fechada |
+| P16 | `contentAlignment` — o estilo em linha de `resolveChromeContentStyle` (`maxWidth`, `marginInline`, `width`, `padding`) vence a classe `max-w-7xl mx-auto w-full px-*` que `chromeStructuralStyles.ts:37` põe no mesmo elemento; o token não muda nada (plan-110 lote 4) | plan-110 lote 4 | **ligar** (a classe e o estilo deixam de disputar o mesmo elemento) ou **retirar** | 5 | fechada |
+| P17 | `sidebarCollapsedWidth` — `ChromeSidebarBody.tsx:107` lê o token, mas `min-width: var(--sidebar-min-width, 150px)` (`:111`) vence: o recolhido mede 200 px; o piso do `sidebarMinWidth` (150) é maior que o teto do token (100) | plan-110 lote 4 | **ligar** (o recolhido ignora o piso da largura aberta) ou **retirar** | 5 | fechada |
+| P18 | `borderRadius`: `SarakAccordion.tsx` usa `(design?.borderRadius) \|\| 'var(--sarak-card-radius,12px)'`; `0` é falso e o raio fica em 12 px | plan-110 lote 4 | **corrigir** (`??`/checagem de ausência) | 5 | fechada |
+| P19 | `switchLabelPosition` não chega a `SarakCheckbox` nem `SarakRadio`, que leem `useStructuralStyles` (`getCheckboxLayoutStyles`, `getRadioLayoutStyles`): nenhuma propriedade mudou nos dois | plan-110 lote 4 | **ligar** nos dois ou **declarar** o alcance só do alternador (renomear o `usage`) | 5 | fechada |
+| P20 | `searchPositionTopbar: center` — `mx-auto` (`ChromeTopbarBody.tsx:112`) não se distingue de `left` quando a navegação tem `flex-1` (o caso com itens) | plan-110 lote 4 | **ligar** o centro de fato ou **retirar** a opção | 5 | fechada |
+| P21 | aviso de console "Function components cannot be given refs" em todas as variantes da cena estrutural (componente não identificado: `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` ou outro) | plan-110 lote 4 | **identificar e corrigir** (`forwardRef` ou remover a `ref`) | 5 | fechada |
+| P22 | `SarakAccordion.tsx:35` — com `design.borderRadius` na forma responsiva `{ mob, tab, desk }` (o que o schema permite) o raio chega como objeto e o React descarta a declaração: o acordeão fica **sem raio nenhum** (jsdom: `{mob:7,tab:7,desk:7}` sem `border-radius`; escalar 7 → `7px`) | plan-117 lote 5 | **corrigir** (resolver o responsivo como os outros componentes) | 6 | fechada |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -179,6 +192,37 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
     ativo do `SarakRangeSlider` usa o token.
 13. Nenhum `defaultValue` muda por conta própria; nota MAJOR para o que for retirado; metadados do schema e o GUIA
     (§6.4) atualizados; `usage` fiel ao que o código faz.
+
+**Lote 5 — P14 a P21 (achados da medição dos lotes 3 e 4 da `plan-110`).**
+14. Cada token é aberto no leitor e **conferido no navegador por diferença de estilo computado**, antes e depois, com a
+    mesma disciplina do lote 4. Para cada um, a decisão é a da tabela da §5.1: **ligar** (o efeito de fato alcançável),
+    **corrigir** (bug) ou **retirar** (mesmo caminho dos lotes 3: schema, partições, mapeamento, tipos,
+    `REMOVED_TOKEN_KEYS` e nota MAJOR). Em dúvida entre ligar e retirar, **pare e leve ao revisor**; não escolha.
+15. P14: achar **por que** a saída de `SarakModal`/`SarakSearch` não muda com `motionEaseIn` (a curva não chega ao
+    `tween`? o `AnimatePresence` a ignora? a saída não é observável?) — o caso de navegador mede a **saída**, não a
+    entrada. P15: a variável `--matrix-gap` que o `SarakExpandableMatrix` define passa a ser **lida** pelo espaçamento dos
+    itens. P16: a classe de alinhamento e o estilo em linha deixam de disputar o mesmo elemento (um só dono do
+    `max-width`/`margin`/`padding`). P17: o recolhido da lateral respeita `sidebarCollapsedWidth` sem o piso da largura
+    aberta. P18: `borderRadius` `0` vale no acordeão. P19: o alcance de `switchLabelPosition` fica **verdadeiro** — liga
+    em `SarakCheckbox`/`SarakRadio` ou o `usage` passa a dizer que é só do alternador. P20: o centro da busca do topo se
+    distingue de `left`, ou a opção sai. P21: achar o componente que recebe `ref` sem `forwardRef` na cena estrutural e
+    corrigir; o caso de navegador passa a falhar com erro de console.
+16. Nenhum `defaultValue` muda por conta própria; nota MAJOR para o que for retirado ou mudar de efeito padrão; metadados
+    do schema e o GUIA atualizados; `usage` fiel ao que o código faz. Teste de componente por correção.
+
+**Lote 6 — P16, P20, P22 (decisões do revisor, 2026-10-17, e o achado do lote 5).**
+17. **P16 — retirar `contentAlignment`** (a tela não muda: `maxContentWidth` já limita e centraliza, nenhum tema o declara):
+    schema (`navigation.ts`), partições, mapeamento, tipos, `REMOVED_TOKEN_KEYS` com teste, `CONTENT_ALIGNMENT_CLASS` e o
+    tipo `ChromeContentAlignment` em `chromeStructuralStyles.ts`, os testes que o citam, a entrada que sobra em
+    `gates/allowlists/tokenDocumentationPending.json` e a nota MAJOR. Pela `ui-refatorar-componente`.
+18. **P20 — ligar `searchPositionTopbar: center`:** com `center` e itens, a navegação perde o `flex-1` e a busca ocupa o meio
+    do espaço livre entre a navegação e o grupo final (o centro **não** é o geométrico da barra; o `usage` diz isso).
+    Caso de navegador por diferença de posição `left` × `center`, com mutação.
+19. **P22 — o raio responsivo do acordeão:** o raio chega como objeto quando o token é responsivo; resolver pelo mesmo
+    caminho dos outros componentes que leem token responsivo (não escrever uma segunda forma). Caso de componente com
+    `{ mob, tab, desk }` e caso de navegador se o raio responsivo for medível.
+20. Nenhum `defaultValue` muda; nota MAJOR para o que for retirado; metadados do schema e o GUIA atualizados.
+    **A mutação de prova roda só num build à parte, nunca nas fontes do repositório.**
 
 **Verificação otimizada (decisão do dono, 2026-10-17):** o executor roda só os testes dos arquivos que tocou. O revisor
 roda `verify --tier=quick` (`tsc`, baseline, Anel 1, R36), o vitest **só dos arquivos tocados e dos que os importam**
@@ -773,3 +817,296 @@ sai junto, no mesmo ato.
 
 **Pendências / riscos**
 - A suíte completa, os gates e a medição contra o build não foram executados, conforme instrução do dono; a verificação de integração do revisor continua pendente.
+
+## Veredito — 2026-10-17 — lote 4 (P10 a P13) — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido):**
+- **Código e testes de unidade.** `SarakRangeSlider` lê `--sarak-range-active-bg` (`ACTIVE`, linha 27); `axisOptions.ts`
+  dá ao radar tooltip por item e ao heatmap eixos categoria × categoria; os `usage`/`description` dos três
+  `actionGlowShadow*` passam a descrever o consumidor real. Vitest da área (`engines/charts`, `Inputs`, `Design/hooks`):
+  **40 arquivos, 354/354**. `verify --tier=quick`: `tsc`, baseline com `tsc`, Anel 1 (28 checks), `trail-citation`,
+  Anel 0 — tudo verde.
+- **P10** — o botão selecionado do `SarakCatalogGrid` só mostra os três tokens porque o estilo padrão
+  (`btnStyleType: 'matte'`, `SarakButton.tsx:48`) preserva o `style` inline: o efeito é **alcançável no padrão**, e o que
+  a medição do lote 2 da `plan-110` não viu era a cena, não o código. Fica como **ligado, com condição declarada**.
+- **P11** — `colorDepth`/`colorVariation` ficam: **a premissa da linha P11 estava errada, e foi minha** (o `git grep` usou
+  o nome errado da variável): os consumidores existem (`--theme-primary-hover`/`-active`, `_elements.css:79,86`). Manter
+  é o certo; o executor corrigiu a documentação.
+- **P12** — os sete tipos de `chartType` renderizam sem erro de console. **P13** — o trilho, os polegares e a dica leem o
+  token.
+
+**Achado 1 — o caso de navegador é intermitente, e fugiu do desenho da plan.** `browser-tests/arsenal-lote4-source.spec.ts`
+sobe um **servidor Vite de desenvolvimento** com 13 arquivos novos (provider, ícones, campo de busca, wrapper do ECharts
+e Recharts **trocados por stubs**) e um segundo config (`playwright-source.config.ts`). A plan §3.1/§4 manda **uma cena
+no harness existente** (`browser-tests/fixtures/harness-entry.tsx`, o molde `cartao-que-se-move.spec.ts`), que importa o
+Provider e os componentes reais. Medido por mim, com a spec nos dois configs: config padrão 4/4 (uma execução); config
+próprio **2 falhas em 4 execuções, em casos diferentes** (P12 uma vez, P10 outra), sempre `Failed to fetch dynamically
+imported module` do servidor Vite (a terceira rodada levou 4,7 min por isso). Um caso que falha ao acaso derruba a bateria
+do navegador (`testMatch: '**/*.spec.ts'` o inclui) e não prova nada quando passa por estar medindo o stub. Também falta
+o cabeçalho de **limites declarados (R18)** que as outras 29 specs têm — e aqui seria onde dizer o que os stubs **não**
+medem. **Correção:** mover os quatro casos para o harness existente (cenas novas em `harness-entry.tsx`, spec no molde
+`cartao-que-se-move`), medindo contra o `dist/` com o Provider real; **apagar** os 13 arquivos de `fixtures/arsenal-lote4-*`
+e o `playwright-source.config.ts`; cabeçalho com os limites (só Chromium, o que a cena mede e o que não); **mutação**
+por token (reverter a leitura do trilho em `SarakRangeSlider`, o tooltip do radar e o eixo do heatmap deve derrubar o
+caso correspondente) e estabilidade provada: **três execuções seguidas verdes**. Se algum componente real não monta no
+harness existente, **pare e diga qual** em vez de criar outro harness.
+
+**Achado 2 — os três `actionGlowShadow*` não declaram a condição no schema.** `src/core/Design/schema/buttons.ts`
+(linhas 358–395): o efeito só existe com o botão preservando o `style` inline, e o `interactsWith` dos três está vazio.
+A doutrina da `plan-110` (o schema é o mapa) manda declarar a interação: `interactsWith: ['btnStyleType']` e o `usage`
+dizendo que a sombra só aparece no estilo que preserva o `style` do botão (`matte`, o padrão). Conferir com a medição.
+
+**Decisão do dono a registrar:** o resumo diz que mantê-los foi decisão do dono para P11. Eu não a tinha; a evidência
+(os consumidores existem) a sustenta. Se foi decisão sua, ok; se não, confirme.
+
+**Status do lote 4:** reprovado. **O plan-117 fica em 🟡** porque o lote 5 (P14 a P21) está em execução; a correção do
+lote 4 vai depois dele (os dois mexem em `browser-tests/fixtures/harness-entry.tsx`) e a revisão dos dois sai junta.
+
+## Resumo da execução (lote 5: P14, P15, P17, P18, P19, P21; P16 e P20 levadas ao revisor) — 2026-10-17
+
+**Resultado:** Concluído com pendências (P16 e P20 não foram feitas: a regra da execução manda parar e levar ao revisor; ver *Pendências*).
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+```
+
+**O que foi feito**
+- **P14 (`motionEaseIn`) — ligado.** Causa medida: `SarakModal` e `SarakSearch` faziam `if (!isOpen) return null` **antes** do `AnimatePresence`, então o `exit` com a curva nunca rodava (o painel saía da página no mesmo quadro). O `AnimatePresence` foi para fora do `isOpen` nos dois (`SarakModal.tsx`, `SarakSearch.tsx`); a duração da saída deixou de ser a constante 0,2 e passou a ser `durations.fast` (`motionDurationFast`; mesmo 0,2 de fábrica, 0 sob movimento reduzido); durante a saída a moldura vira `pointer-events-none` (`useIsPresent`) para não segurar o ponteiro.
+- **P15 (`matrixGap`) — ligado.** `SarakExpandableMatrix.tsx` passa a usar `var(--sarak-matrix-gap, 12px)` no `gap` do contêiner dos sub-itens de cada linha aberta (12 px é o `defaultValue` e o que já se via: `calc(var(--sarak-layout-gap-md,16px) * 0.75)`). A variável privada `--matrix-gap` foi **removida** (ver *Decisões*).
+- **P17 (`sidebarCollapsedWidth`) — ligado.** `ChromeSidebarBody.tsx`: `minWidth: isNavHidden ? 0 : 'var(--sidebar-min-width, 150px)'` e `transition-[width,min-width]`; recolhida, quem manda é o token.
+- **P18 (`borderRadius` 0 no acordeão) — corrigido.** `SarakAccordion.tsx`: `||` → `??`.
+- **P19 (`switchLabelPosition`) — declarado, não ligado.** O `usage` já dizia "só o `SarakSwitch`"; o que ainda mentia era a `description` do schema ("switch/checkbox") e a descrição/tag da partição do catálogo; corrigidas.
+- **P21 (aviso "Function components cannot be given refs") — corrigido.** Componente identificado (nenhum dos candidatos da plan): `SarakTableGridRow`, filho direto de `AnimatePresence mode="popLayout"` em `SarakTableViewParts.tsx`, que injeta `ref` no filho. Virou `forwardRef` repassando a `ref` ao `motion.tr`. Sonda descartável em jsdom (já apagada) mostrou o aviso só na tabela; `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio`, `SarakSwitch`, `SarakAccordion` e a matriz não o emitem.
+- **Documentação:** `kind`/`modeDependent`/`usage`/`interactsWith` de `motionEaseIn`, `matrixGap`, `sidebarCollapsedWidth`; `usage` de `sidebarMinWidth` e `borderRadius` corrigidos (diziam o oposto do que o código passou a fazer); `tokenDocumentationPending.json` perdeu os 3 (sobra `contentAlignment`); `npm run token-types` regenerou `design-token-docs.json`; GUIA §6.7/§6.8 (texto-fonte), `docs/migracoes.md` (`## 8.0.0`, nova subseção MAJOR), `ui-integra-consumidor/SKILL.md`, anexo `plan-110-tokens-funcionais.md` §8.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Modals/SarakModal.tsx` | alterado | `AnimatePresence` fora do `isOpen`; saída por `durations.fast`; `pointer-events-none` na saída |
+| `src/components/atomic/Inputs/SarakSearch.tsx` | alterado | idem; `SearchFrame` novo (moldura com `useIsPresent`) |
+| `src/components/atomic/Templates/SarakExpandableMatrix.tsx` | alterado | `gap` dos sub-itens = `--sarak-matrix-gap`; `--matrix-gap` removida |
+| `src/components/Layout/chrome/ChromeSidebarBody.tsx` | alterado | sem piso de largura quando recolhida |
+| `src/components/atomic/Layouts/SarakAccordion.tsx` | alterado | `??` no raio |
+| `src/components/atomic/Templates/SarakTableViewParts.tsx` | alterado | `SarakTableGridRow` com `forwardRef` (**fora da lista da §3.1**, ver *Decisões*) |
+| `src/core/Design/schema/{motion,advanced,navigation,system,structural}.ts` | alterado | metadados e textos dos tokens |
+| `src/core/Design/catalog/partitions/structural.json` | alterado | descrição e tag de `switchLabelPosition` |
+| `src/core/Provider/generated/design-token-docs.json` | alterado (gerado) | `token-types` |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | −3 entradas |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | cena `saida-sobreposicao` (`?alvo=`) e 8 recortes `?tema=` (`saida-*`, `lateral-recolhida*`, `raio-sistema-*`, `matriz-gap-largo`) |
+| `browser-tests/arsenal-lote5.spec.ts` | criado | 11 casos de navegador |
+| `src/components/atomic/Modals/__tests__/SarakModal.behavior.test.tsx` · `Inputs/__tests__/SarakSearch.test.tsx` | alterado | +1 caso cada (a saída permanece e termina) |
+| `src/components/atomic/Modals/__tests__/keyboardJourney.test.tsx` | alterado | `waitFor` na remoção do diálogo (supunha a remoção instantânea) |
+| `src/components/atomic/Layouts/__tests__/SarakAccordion.test.tsx` · `Templates/__tests__/SarakTableViewParts.test.tsx` · `SarakExpandableMatrix.test.tsx` · `Layout/chrome/__tests__/ChromeSidebarBody.test.tsx` | alterado | +1 caso cada (matriz: o stub com `// TODO` virou montagem real) |
+| `docs/migracoes.md` · `sarak-ui/GUIA-FRONTEND.md` · `.agents/skills/ui-integra-consumidor/SKILL.md` · `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | notas |
+
+**Verificações executadas**
+- Testes dos arquivos que toquei: `SarakTableViewParts` 3/3 · `SarakAccordion` 4/4 · `ChromeSidebarBody` 18/18 · `Modals/` 9 arquivos, 37/37 · `SarakModal.behavior` + `SarakSearch` 22/22 · `SarakExpandableMatrix` 2/2.
+- 36 arquivos de teste que montam modal, busca, cromo, acordeão, matriz ou tabela (`grep` dos nomes) → 36/36, 369/369 (rodado **antes** de eu trocar `--matrix-gap` por `--sarak-matrix-gap`; depois disso só reexecutei o teste da matriz, 2/2). O `vitest related` que tentei antes morreu quando o computador suspendeu e não deu resultado.
+- Navegador, build **fora do repositório** (esbuild com alias para `src/index.ts` + Tailwind CLI, em pasta do scratchpad; `dist/` intocado), `PLAYWRIGHT_BROWSERS_PATH` do repositório, `chromium.launch()` sem `executablePath`: `arsenal-lote5.spec.ts` → **11/11**. Medido: opacidade a 250 ms de uma saída de 500 ms, curva de fábrica × `cubic-bezier(0, 1, 0, 1)` = 0,84 × 0,09 (modal) e 0,82 × 0,04 (paleta); painel presente em 250 ms e ausente ao fim; `pointer-events: none` na moldura durante a saída; movimento reduzido: ausente em 250 ms; `aside` recolhido 74 px (e 96 px com o token) com `min-width: 0px`, aberto ≥ 200 px com piso; acordeão `border-top-left-radius` 0 px (token 0) e 5 px (token 5); `row-gap` dos sub-itens 12 px × 28 px; 0 avisos `cannot be given refs` na tabela.
+- **Mutação:** as seis fontes (`SarakModal`, `SarakSearch`, `ChromeSidebarBody`, `SarakAccordion`, `SarakExpandableMatrix`, `SarakTableViewParts`) trocadas pela versão do `HEAD` num build à parte → **10 dos 11 casos caem**; o que passa é a contraprova "lateral aberta mantém o piso". Fontes restauradas e conferidas com `cmp`. Mutação em jsdom: `||` de volta no acordeão derruba o caso; `forwardRef` tirado derruba o caso da tabela.
+- `npm run verify -- --tier=quick` → `tsc` OK; `audit:baseline --with-tsc` **FALHOU na 1ª vez** (`auditor_ghostvars.consumos` 0→1: a `--matrix-gap`, declarada só inline no TSX, passou a ser lida) — corrigido removendo a variável privada; **repetido: "igual ao baseline de 2026-10-12 — nenhuma regressão"**. Anel 1 inteiro OK (`token-docs` 398 de 399 documentados, 1 em exceção; `token-reader`, `token-types`, `variable-contract`, `css-important`, `fixed-translucent`, `barrel`, `catalog`, `plan-index`, `trail-citation`…); Anel 0 simulado 539 linhas, 0 achados. **`guide:check` FALHA** (6 arquivos de `sarak-ui/` defasados) — esperado, é gerado e não rodei `guide`. Não repeti o `quick` inteiro depois da troca de `--matrix-gap`.
+- Não rodei: `guide`, `dev-kit`, `build`, suíte completa, `cromo-css-real`, o spec contra o `dist/`.
+
+**Gerados defasados (o revisor regenera):** `sarak-ui/catalog.json`, `sarak-ui/VERSION`, `sarak-ui/docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` (apêndice gerado), `sarak-ui/START-HERE.md`, `sarak-ui/skill/SKILL.md` (apontados pelo `guide:check`); `sarak-dev/` por `dev-kit` (o `dev-kit:check` estava verde na hora, mas conta testes e pode mudar); `dist/` (o spec novo roda contra ele).
+
+**Critérios de aceite (lote 5)**
+- [x] P14 — a saída permanece e a curva do token governa a opacidade; caso de navegador mede a **saída** — evidência: `arsenal-lote5.spec.ts` casos 1–6, mutação.
+- [x] P15 — `--sarak-matrix-gap` lida pelo espaçamento dos sub-itens — caso `P15` (12 × 28 px).
+- [x] P17 — recolhida respeita `sidebarCollapsedWidth` sem o piso — casos `P17` (74 e 96 px; aberta mantém o piso).
+- [x] P18 — `borderRadius` 0 vale no acordeão — caso `P18` + teste de componente com mutação.
+- [x] P19 — alcance verdadeiro: o texto agora diz "só o `SarakSwitch`" em `usage`, `description` e partição.
+- [x] P21 — componente achado e corrigido; caso de navegador **falha com o erro de console** (mutação) — caso `P21`.
+- [ ] P16 e P20 — **não executadas**, aguardam decisão do revisor (ver *Pendências*).
+- [x] Nenhum `defaultValue`, tema ou token alterados; sem cor fixa nova; sem `!important`.
+- [x] Teste de componente por correção; nota MAJOR e GUIA atualizados.
+
+**Decisões e suposições**
+- **P14 ligar, não retirar:** o efeito é alcançável e foi provado (acima). Trocar a constante de 0,2 s por `motionDurationFast` não muda o padrão e faz o movimento reduzido valer na saída; a moldura sem ponteiro na saída é consequência de o painel passar a existir ~200 ms depois do fechamento.
+- **P15, o que "itens" significa:** apliquei ao contêiner dos sub-itens de cada linha aberta (é o único cuja distância o `Matrix` controla e o que o `defaultValue` 12 já reproduz); os filhos aninhados (`RecursiveMatrixNode`, `gap` de 8 px) e a lista de linhas (4 px) têm espaçamento próprio e ficaram como estavam. O `usage` diz isso.
+- **P15, `--matrix-gap` removida em vez de lida:** a plan pedia que a variável passasse a ser lida, mas lê-la acende o `ghostvars` (0→1, medido): ela só existia inline. Ler `--sarak-matrix-gap` (que o motor emite) com a reserva 12 = `defaultValue` (R42) cumpre o mesmo efeito sem variável privada.
+- **P17, efeito padrão visível:** a lateral recolhida passa de 150–200 px para 74 px em todo tema que não declara o token; nota MAJOR escrita.
+- **P19 declarar:** ligar no `SarakCheckbox`/`SarakRadio` mudaria o alinhamento padrão deles (`items-start` → `items-center`, e `space-between` pede `w-full`), efeito padrão novo que a plan não autoriza; o `usage` já tinha a restrição.
+- **P21, arquivo fora da §3.1:** `SarakTableViewParts.tsx` não está na lista; a plan manda "identificar e corrigir" o componente, e o culpado é esse. Registrei aqui para o revisor julgar.
+- `keyboardJourney.test.tsx` mudou (`await waitFor`) porque supunha a remoção instantânea do diálogo — exatamente o defeito de P14.
+- O stub de `SarakExpandableMatrix.test.tsx` tinha um `// TODO` ("injetar testes de montagem profunda"); ao acrescentar a montagem real o `TODO` saiu.
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakScrim.tsx:59,76` lê `motionEaseIn` num `exit`, mas a `SarakDrawer` anima o véu por `animate` e `shouldRender`, não por `AnimatePresence`: o véu da gaveta segue sem tocar a curva (o anexo da `plan-110` já registrava "o véu da gaveta anima só `duration`").
+- `SarakAccordion.tsx:35`: com `design.borderRadius` na forma responsiva `{ mob, tab, desk }` (o que o schema permite, `isResponsive`), o raio chega como objeto e o React descarta a declaração — o acordeão fica **sem raio algum**. Medido em jsdom (`{mob:7,tab:7,desk:7}` → sem `border-radius` no `style`; escalar 7 → `7px`). Os temas embarcados declaram escalar, por isso não aparece neles.
+- `SarakExpandableMatrix`/`RecursiveMatrixNode`: os filhos aninhados e a lista de linhas têm `gap` fixo próprio, fora de `matrixGap`.
+
+**Pendências / riscos**
+- **P16 (`contentAlignment`) — decisão do revisor.** Hoje a região de conteúdo recebe, no mesmo elemento, a classe `max-w-7xl mx-auto w-full px-*` (só com `center`) e o estilo em linha `width:100%; max-width:<maxContentWidth>; margin-inline:auto; padding`. O estilo vence; `maxContentWidth` já limita **e** centraliza. Nenhum tema embarcado declara `contentAlignment` (grep em `presets/themes`: 0), então retirar não toca tema. Opções: **(a) retirar** — fora do schema, partições, mapeamento, tipos, `REMOVED_TOKEN_KEYS`, `CONTENT_ALIGNMENT_CLASS`, o tipo `ChromeContentAlignment`, 2 testes e a nota MAJOR; a tela não muda (continua como está). **(b) ligar com `center` ⇒ centralizado e `stretch` ⇒ ancorado ao início**: muda o padrão visível (`stretch` é o padrão e hoje centraliza em telas acima de `maxContentWidth`). **(c) ligar com `stretch` ⇒ ignora `maxContentWidth`**: muda o padrão visível e esvazia o `maxContentWidth` salvo com `center`. **Recomendo (a)**: é o único que não muda a tela por padrão e a regra do dono é "muda a tela ou sai".
+- **P20 (`searchPositionTopbar: center`) — decisão do revisor.** `mx-auto` não se distingue de `left` porque a navegação tem `flex-1` (`ChromeTopbarBody.tsx:112,117`). Opções: **(a) ligar**: com `center` e itens, a navegação perde o `flex-1` e a busca ocupa o meio do espaço livre (`mx-auto` e o `ml-auto` do grupo final repartem o vão); alcançável e mensurável (a busca deixa de colar na marca); o centro não é o geométrico da barra, é o do espaço entre a navegação e o grupo final. **(b) retirar a opção `center`** do `select` (valor salvo cai no padrão `left`; o mecanismo de retirada de **opção** — ao contrário do de token — precisa ser confirmado). **Recomendo (a)**, com o `usage` dizendo qual centro é.
+- `tokenDocumentationPending.json` fica com `contentAlignment` até P16.
+- O spec novo foi medido contra um build à parte; o revisor precisa de `npm run build` para rodá-lo contra o `dist/`.
+- Mudança de comportamento visível a consumidores: a saída do modal/paleta passa a existir por ~200 ms (teste de consumidor que esperava remoção instantânea precisa de `waitFor`) e a lateral recolhida muda de largura — ambas na nota MAJOR.
+
+## Resumo da execução (correção do lote 4, P10 a P13) — 2026-10-17
+
+**Resultado:** Concluído
+
+**Achado 1 — caso de navegador intermitente, com stubs e segundo harness**
+- Os quatro casos foram para o harness existente: `browser-tests/fixtures/harness-entry.tsx` ganhou a cena `?cena=arsenal-lote4` (`SarakCatalogGrid` com duas categorias, `SarakRangeSlider`, um `<button>` nativo para o hover global e, com `?tipo=`, um `SarakChartEngine`) e os recortes `acao-brilho-y|desfoque|espalhamento`, `faixa-ativa` e `cor-hover-base` (reaproveitei `cor-profunda`/`cor-variada`). Só acrescentei; o resto do arquivo (inclusive as cenas do lote 5) não foi tocado. Tudo com o Provider e os componentes reais, sem stub.
+- Novo `browser-tests/arsenal-lote4.spec.ts` (10 casos: P10, P13, P11 e os sete formatos de P12), no molde de `cartao-que-se-move.spec.ts`, com cabeçalho de limites declarados (R18).
+- Apagados: `browser-tests/arsenal-lote4-source.spec.ts`, `browser-tests/playwright-source.config.ts` e os 11 arquivos `browser-tests/fixtures/arsenal-lote4-*` (o achado falava em 13 com o config; eram 11 fixtures + spec + config). `grep` de `arsenal-lote4-` e `playwright-source` no repositório: só a plan e o anexo da `plan-110`; o anexo foi atualizado para `arsenal-lote4.spec.ts`.
+- **Estabilidade:** build temporário fora do repositório (esbuild com alias para `src/index.ts` + Tailwind CLI, scratchpad; `dist/` intocado), `PLAYWRIGHT_BROWSERS_PATH` do repositório, `chromium.launch()` sem `executablePath`: **3 execuções seguidas, 10/10 em cada** (28–40 s cada).
+- **Mutação, por token, num build à parte** (fontes restauradas e conferidas com `cmp`): trilho/polegar/dica da faixa trocados pela cor da primária → cai o caso P13; `radar` fora da lista de tooltip por item → cai o caso `radar`; eixo categoria × categoria do heatmap desligado → cai o caso `heatmap`. Os outros sete casos passam, como devem. A primeira versão do caso do radar **não** caía (o ECharts não lança erro; com disparo por eixo o radar simplesmente não abre tooltip), então o caso passou a varrer o canvas em grade e exigir o tooltip por item (`Alpha`) no radar; foi o que tornou a mutação do radar detectável.
+
+**Achado 2 — condição da sombra de ação no schema**
+- `src/core/Design/schema/buttons.ts`: os três `actionGlowShadow*` ganharam `interactsWith: ['btnStyleType']` e o `usage` diz que a sombra só aparece com um estilo de botão que preserva o `style` (`matte`, o padrão). `npm run token-types` regenerou `design-token-docs.json`. A medição (P10 do spec) confere: com o padrão `matte`, cada um dos três tokens muda o `box-shadow` computado da categoria selecionada.
+
+**Verificações executadas**
+- `arsenal-lote4.spec.ts` contra o build temporário: 3 × 10/10; mutado: 3 casos caem (P13, radar, heatmap).
+- `check-token-documentation` → 398 de 399 documentados (1 em exceção); `check-token-reader` OK; `npm run token-types` OK (399 tokens).
+- `npm run verify -- --tier=quick` → `tsc` OK, `audit:baseline --with-tsc` OK, Anel 0 simulado 905 linhas, 0 achados; nenhuma linha `FAIL` na saída.
+- Não rodei: guide, dev-kit, build, suíte completa, o spec contra o `dist/`.
+
+**Decisão do dono (P11)**
+- O veredito pede que o dono confirme que manter `colorDepth`/`colorVariation` foi decisão dele. Não tenho esse registro nesta conversa e não a afirmo; fica para o dono confirmar. Esta correção só toca a prova e a documentação.
+
+**Arquivos alterados nesta rodada:** `browser-tests/fixtures/harness-entry.tsx`, `browser-tests/arsenal-lote4.spec.ts` (novo), os 13 apagados acima, `src/core/Design/schema/buttons.ts`, `src/core/Provider/generated/design-token-docs.json`, `specs/plan/anexos/plan-110-tokens-funcionais.md` (nome do spec), e este resumo.
+
+**Pendências / riscos**
+- O spec novo foi medido contra um build à parte; o revisor precisa do `npm run build` para rodá-lo contra o `dist/`.
+- O hover/pressionado (P11) espera 250 ms depois de cada ação; num computador muito lento a transição pode não ter assentado. Não observei isso nas 3 execuções.
+
+## Veredito — 2026-10-17 — correção do lote 4 e lote 5 (P14 a P21) — 🔴 Reprovado só pelo que falta (P16, P20) e um achado novo (P22)
+
+**Correção do lote 4 — 🟢 aprovada (P10 a P13 fechados).** Os 4 casos foram para o harness existente
+(`harness-entry.tsx`, cena `arsenal-lote4`, spec `arsenal-lote4.spec.ts` no molde de `cartao-que-se-move`), com o
+Provider e os componentes reais, cabeçalho de limites (R18) e mutação por token; os 11 arquivos de stub e o segundo
+config saíram (`grep` confirma). Os três `actionGlowShadow*` ganharam `interactsWith: ['btnStyleType']` e o `usage`
+com a condição (`matte`, o padrão). **Medido por mim contra o `dist/` reconstruído: 3 execuções seguidas, 21/21 cada**
+(as duas specs novas, `arsenal-lote4` + `arsenal-lote5`). Nota: uma primeira bateria contra um `dist/` que saiu
+**enquanto o executor mutava as fontes** falhou em P13, radar e heatmap; reconstruí depois da restauração e passou. O
+executor roda a mutação **só num build à parte**, nunca no repositório.
+
+**Lote 5 — P14, P15, P17, P18, P19, P21 aprovados:**
+- **P14** — `AnimatePresence` fora do `isOpen` em `SarakModal` e `SarakSearch`: a saída agora existe e a curva do token
+  governa a opacidade; duração por `motionDurationFast`; moldura sem ponteiro na saída (`useIsPresent`). Medido: 0,84 ×
+  0,09 (modal) e 0,82 × 0,04 (paleta), curva de fábrica × `cubic-bezier(0,1,0,1)`.
+- **P15** — o `gap` dos sub-itens lê `--sarak-matrix-gap` (reserva 12 = `defaultValue`); a variável privada
+  `--matrix-gap` saiu (lê-la acendia o `ghostvars`). **P17** — recolhida, `min-width: 0` e o token manda. **P18** — `??`
+  no raio. **P19** — alcance declarado ("só o `SarakSwitch`") no `usage`, na `description` e na partição. **P21** —
+  componente achado (`SarakTableGridRow`, filho de `AnimatePresence mode="popLayout"`) e corrigido com `forwardRef`.
+- **Evidência:** navegador do lote 5 11/11 com mutação (10 dos 11 caem com as fontes do `HEAD`); `verify --tier=quick`
+  verde; vitest da área (`Modals`, `Inputs`, `Layouts`, `Templates`, `Layout`, `Design`): **140 arquivos, 821/821**;
+  navegador da área (`arsenal-lote5`, `cromo-css-real`, `navegacao-na-base`, `toque-no-celular`, `schema-que-desenha`,
+  `componente-le-o-token`, `leitores-que-faltavam`, `token-que-desenha`): **153/153**.
+- **Mudança visível de comportamento (já na nota MAJOR):** a saída do modal e da paleta passa a existir por ~200 ms; a
+  lateral recolhida passa de 150–200 px para 74 px nos temas que não declaram o token.
+
+**Decisões do revisor para o que o executor levou a mim:** **P16 — retirar `contentAlignment`** (nenhum tema o declara, a
+tela não muda; é a única opção que não altera o padrão e a regra do dono é "muda a tela ou sai"). **P20 — ligar
+`center`**, com o `usage` dizendo que o centro é o do espaço livre entre a navegação e o grupo final.
+
+**Achado novo (P22):** `SarakAccordion.tsx:35` — o raio responsivo `{ mob, tab, desk }` chega como objeto e o acordeão
+fica **sem raio** (medido em jsdom). Os temas embarcados declaram escalar, por isso não aparecia. Entra no **lote 6**.
+
+**Achados do lote 5 fora do escopo → backlog (37 e 38):** o véu da gaveta (`SarakScrim` `exit`) não toca `motionEaseIn`;
+os filhos aninhados e a lista de linhas da matriz têm `gap` fixo fora de `matrixGap`.
+
+**A verificação completa (suíte inteira, `tsc`, baseline, bateria completa do navegador) roda uma vez, no fim do lote 6.**
+
+**Status: 🔴 A executar (lote 6: P16, P20, P22).**
+
+## Resumo da execução (lote 6: P16, P20, P22) — 2026-10-17
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ D browser-tests/arsenal-lote4-source.spec.ts   (e os 11 fixtures arsenal-lote4-* e playwright-source.config.ts: apagados na correção do lote 4)
+ M browser-tests/fixtures/harness-entry.tsx
+ M dist/* (build do revisor)
+ M docs/migracoes.md · gates/allowlists/tokenDocumentationPending.json
+ M sarak-ui/{GUIA-FRONTEND.md,START-HERE.md,VERSION,catalog.json,docs/migracoes.md,skill/SKILL.md}
+ M specs/{00-backlog,00-indice}.md · specs/plan/anexos/plan-110-tokens-funcionais.md · specs/plan/plan-117-pendencias-do-arsenal.md
+ M src/** dos lotes 3 a 5 e da correção do lote 4 · ?? browser-tests/arsenal-lote4.spec.ts · arsenal-lote5.spec.ts · dist/ (chunks novos)
+```
+(Fotografia resumida: o worktree já trazia os lotes anteriores, o build do revisor e os gerados; nada disso foi relido nem revertido.)
+
+**O que foi feito**
+- **P16 — `contentAlignment` retirado** (pela `ui-refatorar-componente`): fora de `schema/navigation.ts`, da partição `layout_and_navigation.json` e do `theme_table_mapping.json`; `npm run token-types` → 398 tokens (eram 399); `REMOVED_TOKEN_KEYS` ganhou a chave, com caso novo em `removedTokenKeys.test.ts`. Saíram `CONTENT_ALIGNMENT_CLASS`, `resolveChromeContentAlignmentClass` e o tipo `ChromeContentAlignment`, e o campo de `useChromeDesignTokens`; as três regiões de conteúdo (`ChromeSidebarBody`, `ChromeTopbarBody`, `SarakAppChromeMobile`) deixaram de chamar o resolvedor. `tokenDocumentationPending.json` ficou `{}` (exceção vazia). `types.ts` e `payloadExtraKeys.ts` não citavam a chave: não tocados.
+- **P20 — `searchPositionTopbar: center` ligado** (`ChromeTopbarBody.tsx`): com `center` e busca oferecida, a navegação perde o `flex-1` e a busca vem **depois** dela, num contêiner `flex flex-1 shrink-0 justify-center` (`data-sarak-slot="search-center"`) que toma o espaço livre; `left` e `right` ficaram como eram. `shrink-0` para que, com a navegação transbordando, a busca não seja espremida a largura 0. `usage` diz que o centro é o do espaço entre a navegação e o grupo final.
+- **P22 — raio responsivo do acordeão** (`SarakAccordion.tsx`): `sarakResolveResponsiveValue(design?.borderRadius, useSarakDevice())`, o mesmo caminho de `SarakFlex`/`SarakGrid`; ausência continua caindo em `var(--sarak-card-radius,12px)`.
+- **Documentação:** `usage` de `searchPositionTopbar` e `borderRadius`; GUIA §6.8 (texto-fonte); `ui-integra-consumidor/SKILL.md`; `docs/migracoes.md` (`## 8.0.0`, subseção MAJOR nova: chave sai, centro da busca, raio responsivo); anexo `plan-110-tokens-funcionais.md` §9.
+- **Provas:** cena/recortes no harness existente (`?itens=N` no `App`; temas `busca-topo-esquerda|centro`, `alinhamento-removido`, `raio-responsivo`) e `browser-tests/arsenal-lote6.spec.ts` (3 casos, cabeçalho R18).
+
+**Arquivos alterados (deste lote)**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/navigation.ts` · `system.ts` | alterado | −`contentAlignment`; `usage` de `searchPositionTopbar` e `borderRadius` |
+| `src/core/Design/catalog/partitions/layout_and_navigation.json` · `theme_table_mapping.json` | alterado | −1 entrada / −1 id |
+| `src/core/Provider/generated/design-token-ids.ts` · `design-token-docs.json` | alterado (gerado) | `token-types` |
+| `src/core/Provider/utils/removedTokenKeys.ts` · `__tests__/removedTokenKeys.test.ts` | alterado | chave + caso |
+| `src/components/Layout/chrome/{chromeStructuralStyles,useChromeDesignTokens,ChromeSidebarBody,ChromeTopbarBody}.ts(x)` · `Layout/SarakAppChromeMobile.tsx` | alterado | retirada; busca centrada |
+| `src/components/Layout/chrome/__tests__/{ChromeSidebarBody,ChromeTopbarBody,useChromeDesignTokens}.test.ts(x)` | alterado | −2 testes de `contentAlignment`, −1 campo; `center` reescrito + caso `left` |
+| `src/components/atomic/Layouts/SarakAccordion.tsx` · `__tests__/SarakAccordion.test.tsx` | alterado | raio responsivo + caso |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` · `components/__tests__/__snapshots__/PresetCard.test.tsx.snap` | alterado | ver *Decisões* |
+| `gates/allowlists/tokenDocumentationPending.json` | alterado | `{}` |
+| `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/arsenal-lote6.spec.ts` | alterado · criado | cena/recortes; 3 casos |
+| `docs/migracoes.md` · `sarak-ui/GUIA-FRONTEND.md` · `.agents/skills/ui-integra-consumidor/SKILL.md` · `specs/plan/anexos/plan-110-tokens-funcionais.md` | alterado | notas |
+
+**Verificações executadas**
+- `npx vitest run src/features/DesignEngine/Canvas src/components/Layout src/components/atomic/Layouts src/core/Provider/utils` → 79 arquivos, 615/615 (e 81/83 antes de atualizar os 2 snapshots, abaixo).
+- Navegador, build fora do repositório (esbuild com alias para `src/index.ts` + Tailwind CLI, scratchpad), `PLAYWRIGHT_BROWSERS_PATH` do repositório, `chromium.launch()` sem `executablePath`: `arsenal-lote6.spec.ts` → **3/3**. Medido: P20 `left` × `center` desloca a busca em mais de 100 px, a busca fica depois da navegação e seu ponto médio coincide com o do vão (±3 px); P22 `{mob:3,tab:7,desk:11}` → 3 px (390), 7 px (900), 11 px (1280); P16 `contentAlignment: center` salvo → sem `max-w-7xl`, mesma largura máxima do `main`, aviso no console.
+- **Mutação, só numa cópia da árvore no scratchpad** (`src` + fixtures, junção para `node_modules`; as fontes do repositório não foram tocadas; cópia e junção apagadas, `node_modules` conferido): `isSearchCentered = false` derruba P20; raio sem resolver o responsivo derruba P22; sem a chave em `REMOVED_TOKEN_KEYS` o caso de unidade `contentAlignment` cai (o caso de navegador de P16 **não** cai: o aviso de chave desconhecida também nomeia a chave — a prova da retirada é o teste de unidade).
+- `check-token-documentation` 398 de 398, 0 em exceção; `check-token-reader` OK; `npm run token-types` OK.
+- `npm run verify -- --tier=quick` → `tsc` OK; `audit:baseline --with-tsc` OK; Anel 0 simulado 1293 linhas, 0 achados; **FAIL só em `guide:check` e `dev-kit:check`** (gerados defasados).
+- Não rodei: guide, dev-kit, build, suíte completa, o spec contra o `dist/`.
+
+**Gerados defasados (o revisor regenera):** `sarak-ui/` (`catalog.json`, `GUIA-FRONTEND.md` apêndice, `docs/migracoes.md`, `START-HERE.md`, `skill/SKILL.md`, `VERSION`) e `sarak-dev/`.
+
+**Critérios de aceite (lote 6)**
+- [x] P16 — fora do schema, partições, mapeamento, tipos, `REMOVED_TOKEN_KEYS` com teste, classe/tipo/testes; exceção vazia; nota MAJOR.
+- [x] P20 — posição de `left` × `center` difere e o centro é o do vão; mutação cai.
+- [x] P22 — caso de componente com `{mob,tab,desk}` e caso de navegador por breakpoint; mutação cai.
+- [x] Nenhum `defaultValue` alterado; sem cor fixa nova.
+
+**Decisões e suposições**
+- **Snapshots (`-u`), conferidos por script no `git diff`:** `PresetCard`: 1 linha ↔ 1 linha, só a variável de `contentAlignment` a menos. `PreviewCanvas`: 16 linhas perdem só a variável; 2 perdem o atributo `data-sx-content-alignment`; 1 perde o espaço final da classe do `main` (`overflow-auto ` → `overflow-auto`, efeito de P16); 1 linha também troca `transition-[width]` por `transition-[width,min-width]` — isso é do lote 5 (P17), que deixou o snapshot defasado; foi atualizado junto.
+- **P20, `shrink-0`:** sem ele o contêiner (base 0) ficava com largura 0 quando a navegação não cabe.
+- O `-u` com arquivo de teste neste repositório dispara a suíte inteira; interrompi essa execução em segundo plano antes de ela terminar e conferi que só os dois `.snap` acima mudaram.
+- `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts` aparecem modificados: são do build do revisor, não meus.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo.
+
+**Pendências / riscos**
+- O spec novo foi medido contra um build à parte; o revisor precisa do `build` para rodá-lo contra o `dist/`.
+- Com muitos destinos a navegação ocupa a barra e a busca centrada fica com a própria largura, junto da navegação (não há espaço livre a dividir); o caso usa 3 destinos de propósito (limite 2 do cabeçalho).
+- Efeito visível por padrão para quem usava `center`: a busca sai de junto da marca para o meio da barra (na nota MAJOR).
+
+## Veredito — 2026-10-17 — lote 6 (P16, P20, P22) e fechamento da plan — 🟢 Aprovado
+
+**Conferido no diff:** P16 — `contentAlignment` saiu do schema, da partição `layout_and_navigation.json`, do mapeamento,
+dos tipos (398 tokens), de `chromeStructuralStyles`/`useChromeDesignTokens`/as três regiões de conteúdo e dos testes;
+entrou em `REMOVED_TOKEN_KEYS` com caso de unidade (`git grep` em `src/`: só a chave retirada e os testes); a exceção do
+gate de documentação ficou **vazia**. P20 — com `center` e busca oferecida, a navegação perde o `flex-1` e a busca ocupa o
+vão num contêiner `flex-1 shrink-0 justify-center` (`left` e `right` não mudaram). P22 — `SarakAccordion` resolve o raio
+responsivo por `sarakResolveResponsiveValue` + `useSarakDevice`, o mesmo caminho de `SarakFlex`/`SarakGrid`. Mutação
+provada pelo executor **só numa cópia da árvore fora do repositório**, como pedido.
+
+**Verificação do fechamento — uma vez, sobre a plan inteira (lotes 1 a 6):** regenerei `token-types` (398), `guide`,
+`dev-kit` e `plan-index`; `npm run build` real **verde**; `verify --tier=full` **verde** — `tsc`, **suíte completa
+(`vitest run`, 1.663 s)**, baseline com `tsc`, Anel 1, R36, Anel 0 (1.397 linhas, 0 achados); bateria completa do
+navegador contra o `dist/`: **375 de 376**. A única falha, `tema-sob-demanda.spec.ts:86` ("o fallback fica na tela até o
+tema chegar…"), é a intermitência do backlog 36 e **não é desta plan**: isolada, falhou 1 vez em 4 execuções (as outras
+3 passaram), e a plan não toca o caminho dela (carga de tema sob demanda).
+
+**Tabela §5.1:** nenhuma linha aberta (P1 a P22 fechadas; C1 fechou com o embarque de fontes; C2 e C3 já estavam
+desatualizadas). **Plan aprovada.**
+
+**Síntese ainda devida (lotes 4 a 6), a fazer junto com a da `plan-110`:** `02` §10 — a saída de modal e paleta pela
+curva do token (`motionEaseIn`/`motionDurationFast`), o recolhido da lateral por `sidebarCollapsedWidth`, a busca centrada
+da barra, o `gap` da matriz, a sombra de ação do catálogo (condição `matte`), os sete formatos de gráfico e o trilho da
+faixa; `04` §4.1 — `contentAlignment` junto dos outros tokens retirados e o total de 398; `09` §4.4.4 — a mesma lista.
+A plan segue **retida pela `plan-110`** e sai com ela.
+
+**Status: 🟢 Aprovada.** Libera o lote 5 da `plan-110`.

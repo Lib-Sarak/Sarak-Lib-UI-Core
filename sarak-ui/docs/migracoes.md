@@ -624,6 +624,38 @@ aviso). Para não ver o aviso, apague as três chaves do tema; para distribuir o
 `design.cardContentAlignment`, `design.tableActionPosition` ou `design.cardImagePosition` deixa de compilar: apague a
 leitura.
 
+### A saída do modal e da paleta de busca anima, a lateral recolhida mede o que o token diz, o acordeão aceita raio 0 e a matriz lê o espaçamento
+
+**Classificação: MAJOR (visível por padrão, sem mudança de assinatura).** Quatro tokens eram oferecidos pelo painel e a
+tela não os obedecia; passam a obedecer, e a lateral recolhida muda de largura **para todo tema**:
+
+| Token | Antes | Depois |
+|---|---|---|
+| `motionEaseIn` | `SarakModal` e `SarakSearch` saíam da página no mesmo quadro em que `isOpen` virava `false`: a saída com a curva nunca rodava | o modal e a paleta permanecem na página durante a saída (duração `motionDurationFast`, 0 sob movimento reduzido), acelerando pela curva, e só então saem; nesse instante não seguram o ponteiro |
+| `sidebarCollapsedWidth` | a lateral recolhida media o piso de `sidebarMinWidth` (150 a 400 px; 200 no desktop), nunca os 48 a 100 px do token | recolhida, mede `sidebarCollapsedWidth` (74 px por padrão); o piso de `sidebarMinWidth` vale só aberta |
+| `borderRadius` | `0` no acordeão voltava ao raio do cartão (12 px) | `0` deixa os cantos retos |
+| `matrixGap` | a variável era escrita e nada a lia | é o espaço entre os sub-itens da `SarakExpandableMatrix` dentro de cada linha aberta (12 px por padrão, o que já se via) |
+
+**O que fazer:** nada é obrigatório. Teste de consumidor que esperava o `SarakModal` ou a `SarakSearch` fora do DOM
+logo após fechar passa a esperar a saída (`await waitFor(() => expect(…).not.toBeInTheDocument())`). Quem media a
+lateral recolhida em 150 a 200 px passa a ver 74 px, ou o valor de `sidebarCollapsedWidth` que o tema declarar.
+
+### `contentAlignment` sai do schema, `searchPositionTopbar: center` passa a centrar a busca e o acordeão lê o raio responsivo
+
+**Classificação: MAJOR (chave sai do payload de tema; dois efeitos mudam).** `contentAlignment` era oferecido pelo painel e não mudava a
+tela: a classe de centralização que `center` acrescentava perdia para o estilo em linha da região de conteúdo, que já
+limita e centraliza por `maxContentWidth`. O tipo `SarakDesignTokens` perde a chave (de 399 para 398) e o painel deixa de mostrá-la.
+
+| Antes | Depois |
+|---|---|
+| `{ contentAlignment: 'center' }` aceito e sem efeito | descartado ao carregar o tema, com um aviso no console que nomeia a chave; a região segue limitada e centralizada por `maxContentWidth` |
+| `searchPositionTopbar: 'center'` desenhava como `left` quando há itens de navegação | a navegação deixa de tomar o espaço livre e a busca vai para depois dela, centrada no meio do espaço entre a navegação e o grupo final (**não** no centro geométrico da barra) |
+| `borderRadius: { mob, tab, desk }` deixava o acordeão sem raio (o objeto era descartado) | o acordeão usa a camada do dispositivo, como `SarakFlex` e `SarakGrid`; o escalar segue como era |
+
+**O que fazer:** nada é obrigatório. Apague `contentAlignment` do tema para não ver o aviso; código que tipava
+`design.contentAlignment` deixa de compilar. Quem usava `searchPositionTopbar: 'center'` vê a busca sair de junto da marca
+para o meio da barra.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

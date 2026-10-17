@@ -171,7 +171,7 @@ de gráfico foram conferidos com `canvas` e sem erros de console:
 
 | Token | O que a tela mostra agora | Medido |
 |---|---|---|
-| `actionGlowShadowOffsetY` | desloca a sombra do botão da categoria selecionada no `SarakCatalogGrid`; o inline sobrevive ao estilo `matte` do `SarakButton`, e o alfa de 5% deixa o efeito discreto | `arsenal-lote4-source.spec.ts` |
+| `actionGlowShadowOffsetY` | desloca a sombra do botão da categoria selecionada no `SarakCatalogGrid`; o inline sobrevive ao estilo `matte` do `SarakButton`, e o alfa de 5% deixa o efeito discreto | `arsenal-lote4.spec.ts` |
 | `actionGlowShadowBlur` | altera o desfoque da mesma sombra selecionada | idem |
 | `actionGlowShadowSpread` | altera o espalhamento da mesma sombra selecionada | idem |
 | `colorDepth` | altera o hover e o pressionado global de `button` via `--theme-primary-hover`/`--theme-primary-active` | idem |
@@ -215,3 +215,25 @@ Ficam na lista de exceção do gate com o rótulo `achado-lote-4`.
 |---|---|
 | `contentAlignment` | `center` acrescenta `max-w-7xl mx-auto w-full px-*` (`chromeStructuralStyles.ts:37`) ao mesmo elemento que recebe, em linha, `max-width`, `margin-inline: auto`, `width: 100%` e `padding` (`resolveChromeContentStyle`); o estilo em linha vence: nenhuma propriedade muda, na lateral e no topo, com `maxContentWidth` de 1000 px |
 | `sidebarCollapsedWidth` | a lateral recolhida mede 200 px (`sidebarMinWidth`) com 74 e com 100; com `sidebarMinWidth: 150` mede 150. O token aceita 48 a 100 px e o piso (150 a 400 px, `ChromeSidebarBody.tsx:111`) sempre vence |
+
+## 8. Desfecho (plan-117, lote 5 — 2026-10-17)
+
+Medido em Chromium, por estilo computado, num build de `src/` feito fora do repositório (`browser-tests/arsenal-lote5.spec.ts`):
+
+| Token | O que a tela mostra agora | Medido |
+|---|---|---|
+| `motionEaseIn` | a causa era o `AnimatePresence` dentro do `if (isOpen)`: o `SarakModal` e a `SarakSearch` saíam da página no mesmo quadro. Agora permanecem durante a saída (`motionDurationFast`; 0 sob movimento reduzido), a curva do token governa a opacidade e o painel não segura o ponteiro. O véu da gaveta (`SarakScrim`) também lê o token, mas a `SarakDrawer` anima por `animate` e não por `exit`: segue sem tocar a curva (achado, fora do lote) | opacidade a 250 ms de uma saída de 500 ms, curva de fábrica × `cubic-bezier(0, 1, 0, 1)`: 0,84 × 0,09 no modal e 0,82 × 0,04 na paleta |
+| `matrixGap` | é o espaço entre os sub-itens da matriz dentro de cada linha aberta (`row-gap` 12 → 28 px); os filhos aninhados de um sub-item têm o espaçamento próprio | `row-gap` do contêiner dos sub-itens |
+| `sidebarCollapsedWidth` | a lateral recolhida mede o token (74 e 96 px); o piso de `sidebarMinWidth` vale só aberta | largura do `aside` |
+| `borderRadius` | `0` escalar deixa os cantos do acordeão retos (a forma responsiva `{mob,tab,desk}` segue sem raio algum no acordeão: achado, fora do lote) | `border-top-left-radius` |
+| `switchLabelPosition` | declarado só do `SarakSwitch` (descrição do schema e partição do catálogo corrigidas); ligar no `SarakCheckbox`/`SarakRadio` mudaria o alinhamento padrão deles (`items-start` → `items-center`) | — |
+
+## 9. Desfecho (plan-117, lote 6 — 2026-10-17)
+
+Medido em Chromium, por geometria e estilo computados, num build de `src/` feito fora do repositório (`browser-tests/arsenal-lote6.spec.ts`):
+
+| Token | O que a tela mostra agora | Medido |
+|---|---|---|
+| `contentAlignment` | retirado do schema: nunca mudou a tela (a classe perdia para o estilo em linha, e `maxContentWidth` já limita e centraliza); a chave salva cai no padrão com aviso | `main` sem `max-w-7xl`, mesma largura máxima, aviso no console |
+| `searchPositionTopbar: center` | a busca vem depois da navegação, no meio do espaço livre entre ela e o grupo final (não no centro geométrico da barra) | ponto médio da busca = ponto médio do vão (±3 px); `left` × `center` deslocam a busca em mais de 100 px |
+| `borderRadius` (forma responsiva) | o acordeão resolve a camada do dispositivo | 3 px (390), 7 px (900) e 11 px (1280) com `{ mob: 3, tab: 7, desk: 11 }` |

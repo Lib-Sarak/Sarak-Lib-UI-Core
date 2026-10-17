@@ -37,11 +37,6 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(container.querySelector('aside')!.className).toContain('border-r');
     });
 
-    it('contentAlignment="center": o conteúdo ganha largura máxima centralizada', () => {
-        const { container } = renderBody({ contentAlignment: 'center' });
-        expect(container.querySelector('main')!.className).toContain('max-w-7xl');
-    });
-
     it('isNavHidden: a sidebar usa a largura RECOLHIDA em vez da largura cheia', () => {
         const { container } = renderBody({ isNavHidden: true });
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
@@ -95,6 +90,14 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('var(--sidebar-min-width, 150px)');
         expect(style).toContain('var(--sidebar-max-width, 450px)');
+    });
+
+    it('sidebar recolhida: o piso da largura aberta (sidebarMinWidth) não vale — a largura é a do token recolhido', () => {
+        const { container } = renderBody({ isNavHidden: true });
+        const aside = container.querySelector('aside') as HTMLElement;
+        expect(aside.style.minWidth).toBe('0px');
+        expect(aside.style.width).toBe('var(--sarak-sidebar-collapsed-width, 74px)');
+        expect(aside.getAttribute('style') ?? '').not.toContain('--sidebar-min-width');
     });
 
     it('navActiveMarkerColor/navActiveMarkerGlow: o item ativo tem marcador próprio, com o brilho por token', () => {

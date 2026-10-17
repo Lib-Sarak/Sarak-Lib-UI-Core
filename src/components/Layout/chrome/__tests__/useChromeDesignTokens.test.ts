@@ -17,7 +17,6 @@ describe('useChromeDesignTokens', () => {
         expect(result.current).toEqual({
             sidebarPosition: 'left',
             navbarLayout: 'sticky',
-            contentAlignment: 'stretch',
             layoutDensity: 'comfortable',
             maxContentWidth: '1440px',
             isSplitViewEnabled: false,
@@ -43,7 +42,6 @@ describe('useChromeDesignTokens', () => {
             wrapper: wrapperWithDesign({
                 sidebarPosition: 'right',
                 navbarLayout: 'hidden',
-                contentAlignment: 'center',
                 layoutDensity: 'spacious',
                 maxContentWidth: '1200px',
                 isSplitViewEnabled: true,
@@ -57,7 +55,6 @@ describe('useChromeDesignTokens', () => {
         expect(result.current).toEqual({
             sidebarPosition: 'right',
             navbarLayout: 'hidden',
-            contentAlignment: 'center',
             layoutDensity: 'spacious',
             maxContentWidth: '1200px',
             isSplitViewEnabled: true,

@@ -221,7 +221,7 @@ export const StructuralSchema: ComponentSchema = {
             usage: "Posição do texto do `SarakSwitch` em relação ao controle: à direita, à esquerda ou nas pontas. O `SarakCheckbox` e o `SarakRadio` não seguem este token.",
             label: 'Posição do Rótulo (Switch)',
             type: 'select',
-            description: 'Posição do texto de rótulo em relação ao controle de switch/checkbox — À Direita é o padrão mais comum; Espaçado (Between) empurra o switch para a extremidade oposta do rótulo (útil em listas de configurações).',
+            description: 'Posição do texto de rótulo em relação ao `SarakSwitch` (o `SarakCheckbox` e o `SarakRadio` não seguem este token) — À Direita é o padrão mais comum; Espaçado (Between) empurra o switch para a extremidade oposta do rótulo (útil em listas de configurações).',
             axis: 'geometry',
             constraints: {
                 options: [

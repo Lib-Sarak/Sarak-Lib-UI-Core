@@ -347,7 +347,7 @@
   {
     "tokenId": "switchLabelPosition",
     "name": "Posição do Rótulo (Switch)",
-    "description": "Posição do texto em relação ao controle nos switches e checkboxes.",
+    "description": "Posição do texto em relação ao controle do SarakSwitch (checkbox e radio não seguem este token).",
     "type": "select",
     "importance": 65,
     "categories": [
@@ -356,7 +356,6 @@
     ],
     "tags": [
       "switch",
-      "checkbox",
       "label"
     ],
     "databaseColumn": "structural",

@@ -3,7 +3,6 @@ import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from '
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
-export type ChromeContentAlignment = 'stretch' | 'center';
 export type ChromeLayoutDensity = 'compact' | 'comfortable' | 'spacious';
 export type ChromeSearchPositionSidebar = 'top' | 'bottom';
 export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
@@ -11,7 +10,6 @@ export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
 export interface ChromeDesignTokens {
     sidebarPosition: ChromeSidebarPosition;
     navbarLayout: ChromeNavbarLayout;
-    contentAlignment: ChromeContentAlignment;
     layoutDensity: ChromeLayoutDensity;
     maxContentWidth: string;
     isSplitViewEnabled: boolean;
@@ -40,7 +38,6 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
     return {
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
-        contentAlignment: (design?.contentAlignment as ChromeContentAlignment) || 'stretch',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),
         maxContentWidth: (design?.maxContentWidth as string) || '1440px',
         isSplitViewEnabled: design?.isSplitViewEnabled ?? false,

@@ -5746,7 +5746,6 @@
       "--sarak-color-tertiary-light",
       "--sarak-color-tertiary-rgb",
       "--sarak-color-variation",
-      "--sarak-content-alignment",
       "--sarak-context-menu-min-width",
       "--sarak-contrast",
       "--sarak-control-height-toggle",
@@ -6330,7 +6329,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 399,
+    "count": 398,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -6420,7 +6419,10 @@
         "label": "Sombra de Ação: Desfoque",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Controla o desfoque da sombra no botão da categoria selecionada em `SarakCatalogGrid`."
+        "usage": "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "actionGlowShadowOffsetY",
@@ -6430,7 +6432,10 @@
         "label": "Sombra de Ação: Offset Y",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Controla o deslocamento vertical da sombra no botão da categoria selecionada em `SarakCatalogGrid`."
+        "usage": "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "actionGlowShadowSpread",
@@ -6440,7 +6445,10 @@
         "label": "Sombra de Ação: Espalhamento",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Controla o espalhamento da sombra no botão da categoria selecionada em `SarakCatalogGrid`."
+        "usage": "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "interactsWith": [
+          "btnStyleType"
+        ]
       },
       {
         "id": "aiGlowColor",
@@ -6609,7 +6617,7 @@
         "label": "Arredondamento Padrão",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros. O acordeão ignora o valor 0 e volta ao raio do cartão.",
+        "usage": "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros; 0 deixa os cantos retos, inclusive no acordeão; vale escalar ou por breakpoint.",
         "interactsWith": [
           "cardBorderRadius"
         ]
@@ -7858,13 +7866,6 @@
         "usage": "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões."
       },
       {
-        "id": "contentAlignment",
-        "type": "string",
-        "responsive": false,
-        "group": "navigation",
-        "label": "Alinhamento do Conteúdo"
-      },
-      {
         "id": "contextMenuMinWidth",
         "type": "number",
         "responsive": false,
@@ -9018,7 +9019,10 @@
         "type": "number",
         "responsive": false,
         "group": "advanced",
-        "label": "Espaçamento da Matriz"
+        "label": "Espaçamento da Matriz",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Espaço entre os sub-itens da matriz expansível (`SarakExpandableMatrix`) dentro de cada linha aberta; os filhos aninhados de um sub-item têm o espaçamento próprio."
       },
       {
         "id": "matrixItemBg",
@@ -9247,7 +9251,13 @@
         "type": "string",
         "responsive": false,
         "group": "motion",
-        "label": "Curva de Entrada (Acceleration)"
+        "label": "Curva de Entrada (Acceleration)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Curva da saída do modal e da paleta de busca: o painel e o fundo permanecem na página durante a saída (duração `motionDurationFast`) e somem acelerando por esta curva.",
+        "interactsWith": [
+          "motionDurationFast"
+        ]
       },
       {
         "id": "motionEaseMain",
@@ -9778,7 +9788,7 @@
         "label": "Posição Pesquisa (Topbar)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Onde a busca fica na barra do topo: esquerda, direita (no grupo final) ou oculta; centro só se distingue da esquerda quando não há itens de navegação para ocupar o espaço.",
+        "usage": "Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
         "interactsWith": [
           "navigationStyle",
           "chromeSearchPosition"
@@ -9899,7 +9909,13 @@
         "type": "number",
         "responsive": false,
         "group": "navigation",
-        "label": "Largura da Sidebar (Recolhida)"
+        "label": "Largura da Sidebar (Recolhida)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Largura da navegação lateral recolhida (só ícones); vale sem o piso de `sidebarMinWidth`, que é da lateral aberta.",
+        "interactsWith": [
+          "isNavHidden"
+        ]
       },
       {
         "id": "sidebarColor",
@@ -9961,9 +9977,10 @@
         "label": "Largura Mínima da Sidebar",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Piso de largura da navegação lateral, inclusive recolhida; o valor também limita `sidebarWidth` e `sidebarCollapsedWidth`.",
+        "usage": "Piso de largura da navegação lateral aberta; o valor também limita `sidebarWidth`. Recolhida, a largura é a de `sidebarCollapsedWidth`, sem este piso.",
         "interactsWith": [
-          "sidebarWidth"
+          "sidebarWidth",
+          "sidebarCollapsedWidth"
         ]
       },
       {
@@ -10851,6 +10868,7 @@
       "BREAKPOINT_DESKTOP": 1024
     },
     "autoAdapting": [
+      "SarakAccordion",
       "SarakAnalyticalPage",
       "SarakAppChrome",
       "SarakDataTable",
@@ -10947,6 +10965,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "2baaeec4d381"
+    "kitHash": "2df11ae361dd"
   }
 }

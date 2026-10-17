@@ -1,5 +1,5 @@
 import React, { useId } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useIsPresent } from 'framer-motion';
 import { clsx } from 'clsx';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -86,8 +86,6 @@ const MODAL_ENTER_SCALE = 0.95;
 const MODAL_ENTER_OFFSET_Y = 20;
 const MODAL_TRANSITION_DAMPING = 25;
 const MODAL_TRANSITION_STIFFNESS = 300;
-/** A saída é um tween (a mola não aceita curva): `motionEaseIn` governa a aceleração. */
-const MODAL_EXIT_SECONDS = 0.2;
 const WIZARD_BUTTON_STYLE: React.CSSProperties = {
     paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
     paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
@@ -129,7 +127,7 @@ const ModalPanel = ({
     size, maxWidth, className, dialogRef, handleTrap, title, titleId, children, header, footer,
 }: ModalPanelProps): React.ReactElement => {
     const text = useLibraryText();
-    const { easeIn } = useMotionTokens();
+    const { easeIn, durations } = useMotionTokens();
     return (
         <motion.div
             ref={dialogRef}
@@ -137,7 +135,7 @@ const ModalPanel = ({
             onKeyDown={handleTrap}
             initial={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y, transition: { type: 'tween', ease: easeIn, duration: MODAL_EXIT_SECONDS } }}
+            exit={{ opacity: 0, scale: MODAL_ENTER_SCALE, y: MODAL_ENTER_OFFSET_Y, transition: { type: 'tween', ease: easeIn, duration: durations.fast } }}
             transition={{ type: 'spring', damping: MODAL_TRANSITION_DAMPING, stiffness: MODAL_TRANSITION_STIFFNESS }}
             role="dialog"
             aria-modal="true"
@@ -165,14 +163,14 @@ const ModalFrame = ({ disableOverlayClick, onClose, children }: {
     onClose: () => void;
     children: React.ReactNode;
 }): React.ReactElement => {
-    const { easeIn } = useMotionTokens();
+    const { easeIn, durations } = useMotionTokens();
+    // Na saída (`motionEaseIn`) o modal ainda está na página por um instante: não pode segurar o ponteiro.
+    const isPresent = useIsPresent();
     return (
-    <AnimatePresence>
-        <div className="fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center" style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: MODAL_EXIT_SECONDS } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
+        <div className={clsx('fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center', !isPresent && 'pointer-events-none')} style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
             {children}
         </div>
-    </AnimatePresence>
     );
 };
 
@@ -183,7 +181,6 @@ export const SarakModal = (props: SarakModalProps): React.ReactElement | null =>
     const behavior = useModalBehavior(isOpen, onClose);
     const titleId = useId();
     const lastStep = steps?.length ? steps.length - 1 : 0;
-    if (!isOpen) return null;
 
     const handleAdvance = (): void => {
         if (behavior.stepIndex >= lastStep) { onComplete?.(); return; }
@@ -197,11 +194,16 @@ export const SarakModal = (props: SarakModalProps): React.ReactElement | null =>
     const modalHeader = <ModalHeader title={title} titleId={titleId} hideCloseButton={hideCloseButton} onClose={onClose} headerClass={layout.headerClass} closeButtonClass={layout.closeButtonClass} />;
     const modalFooter = footerContent ? <ModalFooter className={layout.footerClass}>{footerContent}</ModalFooter> : null;
 
+    // O `AnimatePresence` fica fora do `isOpen`: só assim o modal permanece até a saída (`exit`) terminar.
     return (
-        <ModalFrame disableOverlayClick={disableOverlayClick} onClose={onClose}>
-            <ModalPanel size={size} maxWidth={design ? MODAL_WIDTH_VARIABLES[size] : undefined} className={className} dialogRef={behavior.dialogRef} handleTrap={behavior.handleTrap} title={title} titleId={titleId} header={modalHeader} footer={modalFooter}>
-                {body}
-            </ModalPanel>
-        </ModalFrame>
+        <AnimatePresence>
+            {isOpen && (
+                <ModalFrame key="modal" disableOverlayClick={disableOverlayClick} onClose={onClose}>
+                    <ModalPanel size={size} maxWidth={design ? MODAL_WIDTH_VARIABLES[size] : undefined} className={className} dialogRef={behavior.dialogRef} handleTrap={behavior.handleTrap} title={title} titleId={titleId} header={modalHeader} footer={modalFooter}>
+                        {body}
+                    </ModalPanel>
+                </ModalFrame>
+            )}
+        </AnimatePresence>
     );
 };

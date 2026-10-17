@@ -38,11 +38,6 @@ describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
         expect(container.querySelector('header')!.className).toContain('relative');
     });
 
-    it('contentAlignment="center": o conteúdo ganha largura máxima centralizada', () => {
-        const { container } = renderBody({ contentAlignment: 'center' });
-        expect(container.querySelector('main')!.className).toContain('max-w-7xl');
-    });
-
     it('isNavHidden: a topbar usa a altura RECOLHIDA em vez da altura cheia', () => {
         const { container } = renderBody({ isNavHidden: true });
         const style = container.querySelector('header')!.getAttribute('style') ?? '';
@@ -63,11 +58,22 @@ describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
 });
 
 describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
-    it('"center": a busca aparece centralizada na topbar', () => {
+    it('"center": a busca vem depois da navegação, num contêiner que toma o espaço livre e a centra; a navegação não o toma', () => {
         const { container } = renderBody({ searchPositionTopbar: 'center' }, { search: <div>buscar</div> });
-        const slot = container.querySelector('[data-sarak-slot="search"]');
-        expect(slot).not.toBeNull();
-        expect(slot?.className).toContain('mx-auto');
+        const centered = container.querySelector('[data-sarak-slot="search-center"]') as HTMLElement;
+        expect(centered).not.toBeNull();
+        expect(centered.className).toContain('flex-1');
+        expect(centered.className).toContain('justify-center');
+        expect(centered.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        const nav = container.querySelector('nav') as HTMLElement;
+        expect(nav.className).not.toContain('flex-1');
+        expect(nav.compareDocumentPosition(centered) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('"left" (padrão): a navegação toma o espaço livre e não há contêiner de centro', () => {
+        const { container } = renderBody({ searchPositionTopbar: 'left' }, { search: <div>buscar</div> });
+        expect(container.querySelector('[data-sarak-slot="search-center"]')).toBeNull();
+        expect((container.querySelector('nav') as HTMLElement).className).toContain('flex-1');
     });
 
     it('"right": a busca aparece agrupada com o topbarEnd', () => {

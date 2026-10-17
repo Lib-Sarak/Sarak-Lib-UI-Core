@@ -74,6 +74,10 @@ export const NavigationSchema: ComponentSchema = {
         },
         {
             id: 'sidebarCollapsedWidth',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Largura da navegação lateral recolhida (só ícones); vale sem o piso de `sidebarMinWidth`, que é da lateral aberta.",
+            interactsWith: ['isNavHidden'],
             label: 'Largura da Sidebar (Recolhida)',
             type: 'slider',
             description: 'Largura, em pixels, da sidebar quando está no modo recolhido (só ícones, sem rótulo de texto) — independente de `sidebarWidth`, que só vale no modo expandido.',
@@ -102,8 +106,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarMinWidth',
             kind: 'functional',
             modeDependent: false,
-            usage: "Piso de largura da navegação lateral, inclusive recolhida; o valor também limita `sidebarWidth` e `sidebarCollapsedWidth`.",
-            interactsWith: ['sidebarWidth'],
+            usage: "Piso de largura da navegação lateral aberta; o valor também limita `sidebarWidth`. Recolhida, a largura é a de `sidebarCollapsedWidth`, sem este piso.",
+            interactsWith: ['sidebarWidth', 'sidebarCollapsedWidth'],
             label: 'Largura Mínima da Sidebar',
             type: 'slider',
             description: 'Largura mínima, em pixels, que a sidebar pode atingir quando redimensionável pelo usuário — evita que ela colapse a ponto de truncar o conteúdo de forma ilegível.',
@@ -332,20 +336,6 @@ export const NavigationSchema: ComponentSchema = {
         },
         // --- SEÇÕES E TABS ---
         {
-            id: 'contentAlignment',
-            label: 'Alinhamento do Conteúdo',
-            type: 'select',
-            description: 'Alinhamento horizontal do conteúdo principal em relação à largura da tela — Largura Total ocupa todo o espaço disponível; Centralizado limita e centraliza o conteúdo (útil com `maxContentWidth`).',
-            axis: 'geometry',
-            constraints: {
-                options: [
-                    { id: 'stretch', value: 'stretch', label: 'Largura Total' },
-                    { id: 'center', value: 'center', label: 'Centralizado' }
-                ]
-            },
-            defaultValue: 'stretch'
-        },
-        {
             id: 'tabGap',
             kind: 'aesthetic',
             modeDependent: false,
@@ -452,7 +442,7 @@ export const NavigationSchema: ComponentSchema = {
             id: 'searchPositionTopbar',
             kind: 'functional',
             modeDependent: false,
-            usage: "Onde a busca fica na barra do topo: esquerda, direita (no grupo final) ou oculta; centro só se distingue da esquerda quando não há itens de navegação para ocupar o espaço.",
+            usage: "Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
             interactsWith: ['navigationStyle', 'chromeSearchPosition'],
             label: 'Posição Pesquisa (Topbar)',
             type: 'select',

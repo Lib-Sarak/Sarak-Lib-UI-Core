@@ -16,7 +16,7 @@ import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { ChromeBottomNav } from './chrome/ChromeBottomNav';
 import { resolveMobileNavigationMode } from './chrome/mobileNavigation';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
-import { resolveChromeContentAlignmentClass, resolveChromeContentStyle } from './chrome/chromeStructuralStyles';
+import { resolveChromeContentStyle } from './chrome/chromeStructuralStyles';
 import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
@@ -110,7 +110,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
-    const { contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar, mobileNavigationStyle } = useChromeDesignTokens();
+    const { layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar, mobileNavigationStyle } = useChromeDesignTokens();
     const navOnBottom = resolveMobileNavigationMode(mobileNavigationStyle, nav.length) === 'bottom';
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, {
@@ -222,7 +222,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             <ChromeContentRegion
                 secondaryContent={secondaryContent}
                 isSplitViewEnabled={isSplitViewEnabled}
-                className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
+                className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
                 style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}

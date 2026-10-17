@@ -36,9 +36,13 @@ export const MotionSchema: ComponentSchema = {
         },
         {
             id: 'motionEaseIn',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Curva da saída do modal e da paleta de busca: o painel e o fundo permanecem na página durante a saída (duração `motionDurationFast`) e somem acelerando por esta curva.",
+            interactsWith: ['motionDurationFast'],
             label: 'Curva de Entrada (Acceleration)',
             type: 'text',
-            description: 'Curva de aceleração da SAÍDA de sobreposições (modal, paleta de busca, avisos): o elemento parte devagar e acelera até sumir. Aceita só `cubic-bezier(x1, y1, x2, y2)`; outra forma volta à curva de fábrica.',
+            description: 'Curva de aceleração da SAÍDA do modal e da paleta de busca: o elemento parte devagar e acelera até sumir. Aceita só `cubic-bezier(x1, y1, x2, y2)`; outra forma volta à curva de fábrica.',
             axis: 'motion',
             defaultValue: 'cubic-bezier(0.4, 0, 1, 1)',
             cssVars: ['--sarak-motion-ease-in']

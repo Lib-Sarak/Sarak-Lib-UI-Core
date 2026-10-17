@@ -13,7 +13,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeContentAlignmentClass, resolveChromeContentStyle, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
+import { resolveChromeContentStyle, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -54,7 +54,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { navbarLayout, contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
+    const { navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -82,6 +82,9 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
         </>
     );
     const hasMenuWidgets = w.widgetPlacement.menu.length > 0;
+    // `center`: a busca ocupa o meio do espaço livre entre a navegação e o grupo final (não o centro geométrico da barra);
+    // por isso a navegação deixa de tomar o espaço (`flex-1`) e a busca vem depois dela, num contêiner que o toma.
+    const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
         || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 
@@ -108,13 +111,16 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                     )}
                     <ChromeBrand brand={brand} logo={logo} horizontal compact={isNavHidden} />
                     <ChromeTopbarSlot region="start">{topbarStart}</ChromeTopbarSlot>
-                    {searchPositionTopbar !== 'right' && (
-                        <ChromeSearchSlot position={searchPositionTopbar} className={searchPositionTopbar === 'center' ? 'mx-auto' : ''}>
-                            {effectiveSearch}
-                        </ChromeSearchSlot>
+                    {searchPositionTopbar !== 'right' && !isSearchCentered && (
+                        <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
                     )}
                     {nav.length > 0 && (
-                        <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className="flex-1 min-w-0" />
+                        <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className={isSearchCentered ? 'min-w-0' : 'flex-1 min-w-0'} />
+                    )}
+                    {isSearchCentered && (
+                        <div data-sarak-slot="search-center" className="flex flex-1 shrink-0 justify-center">
+                            <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
+                        </div>
                     )}
                     {/* Um único `ml-auto` no agrupador — dois irmãos com `ml-auto` dividiriam o
                         espaço livre entre si (regra de auto-margin do flexbox) e abririam um
@@ -152,7 +158,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             <ChromeContentRegion
                 secondaryContent={secondaryContent}
                 isSplitViewEnabled={isSplitViewEnabled}
-                className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
+                className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
                 style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}

@@ -91,34 +91,6 @@
     ]
   },
   {
-    "tokenId": "contentAlignment",
-    "name": "Alinhamento do Conteúdo",
-    "description": "Comportamento da área útil da página, definindo se o conteúdo estica para 100% da tela ou fica em um container centralizado.",
-    "type": "select",
-    "importance": 95,
-    "categories": [
-      "layout",
-      "navegação",
-      "layout_and_navigation"
-    ],
-    "tags": [
-      "content",
-      "layout",
-      "alignment"
-    ],
-    "databaseColumn": "layout_and_navigation",
-    "schemaOrigin": "navigation.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "stretch",
-      "center"
-    ],
-    "relatedTokens": []
-  },
-  {
     "tokenId": "sidebarWidth",
     "name": "Largura da Sidebar",
     "description": "Largura atual (ou padrão) da barra de navegação lateral.",

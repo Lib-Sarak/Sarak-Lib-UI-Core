@@ -210,7 +210,6 @@ interface SarakDesignTokens {
     colorBgModal: string;
     colorDepth: number;
     colorVariation: number;
-    contentAlignment: string;
     contextMenuMinWidth: number;
     controlHeightToggle: number;
     designEngineSidebarMaxWidth: number;
@@ -949,8 +948,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "da46a80";
-    readonly builtAt: "2026-10-16T23:36:26.817Z";
+    readonly baseCommitShort: "ee42ccc";
+    readonly builtAt: "2026-10-17T17:40:05.962Z";
 };
 
 interface SarakDesignScopeProps {

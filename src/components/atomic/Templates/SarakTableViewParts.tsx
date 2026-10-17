@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import type { CSSProperties, ReactElement, KeyboardEvent, MouseEvent } from 'react';
+import { forwardRef } from 'react';
+import type { CSSProperties, ReactElement, KeyboardEvent, MouseEvent, Ref } from 'react';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { LibraryTextFn } from '../../../core/i18n/useLibraryText';
 import { SarakIcon } from '../Icon/SarakIcon';
@@ -126,16 +127,24 @@ const handleTableRowKeyDown = <TData,>(event: KeyboardEvent<HTMLTableRowElement>
     onRowClick?.(row);
 };
 
-const SarakTableGridRow = <TData extends Record<string, unknown>>({ row, rowKey, index, columns, density, interactions, selectable, cellDensityClass, zebra, onRowClick }: SarakTableGridRowProps<TData>): ReactElement => {
+/**
+ * A linha recebe a `ref` do `AnimatePresence mode="popLayout"` (que a mede ao sair) e a repassa ao
+ * `motion.tr`; sem o `forwardRef` o React avisa "Function components cannot be given refs".
+ */
+const SarakTableGridRowBase = <TData extends Record<string, unknown>>({ row, rowKey, index, columns, density, interactions, selectable, cellDensityClass, zebra, onRowClick }: SarakTableGridRowProps<TData>, ref: Ref<HTMLTableRowElement>): ReactElement => {
     const text = useLibraryText();
     const { staggerDelay } = useMotionTokens();
     return (
-        <motion.tr key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * staggerDelay }} className={['border-b border-[var(--sarak-table-border,rgba(255,255,255,0.05))] hover:bg-[var(--sarak-table-row-hover,rgba(255,255,255,0.02))] transition-colors group', zebra && index % 2 === 1 ? ZEBRA_ROW_CLASS : ''].join(' ')} tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
+        <motion.tr ref={ref} key={rowKey} initial={{ opacity: 0, y: ROW_ENTRY_OFFSET }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * staggerDelay }} className={['border-b border-[var(--sarak-table-border,rgba(255,255,255,0.05))] hover:bg-[var(--sarak-table-row-hover,rgba(255,255,255,0.02))] transition-colors group', zebra && index % 2 === 1 ? ZEBRA_ROW_CLASS : ''].join(' ')} tabIndex={onRowClick ? 0 : undefined} onClick={(event) => handleTableRowClick(event, row, onRowClick)} onKeyDown={(event) => handleTableRowKeyDown(event, row, onRowClick)}>
             {selectable && <td className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectRow', { row: String(rowKey) })} checked={interactions.selectedKeys.has(rowKey)} onChange={(checked) => interactions.toggleRow(rowKey, checked)} /></td>}
             {columns.map((column) => <td key={column.key} className={['font-medium', 'text-theme-text', density === 'compact' ? 'text-xs' : 'text-sm', cellDensityClass].join(' ')} style={{ textAlign: column.align ?? 'left' }}>{column.render ? column.render(row) : String(row[column.key] ?? '')}</td>)}
         </motion.tr>
     );
 };
+
+const SarakTableGridRow = forwardRef(SarakTableGridRowBase) as <TData extends Record<string, unknown>>(
+    props: SarakTableGridRowProps<TData> & { ref?: Ref<HTMLTableRowElement> },
+) => ReactElement;
 
 /** Fundo da linha par: a cor do texto a 4% sobre o que há atrás, legível nos dois modos. */
 const ZEBRA_ROW_CLASS = 'bg-[color-mix(in_srgb,currentColor_4%,transparent)]';

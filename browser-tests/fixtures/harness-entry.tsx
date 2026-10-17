@@ -35,6 +35,7 @@ import {
     SarakButton,
     SarakCalendar,
     SarakCatalogGrid,
+    SarakChartEngine,
     SarakGantt,
     SarakKanban,
     SarakCustomizationPanel,
@@ -69,6 +70,8 @@ const NAV_ITEMS = [
 ];
 
 const searchParams = new URLSearchParams(window.location.search);
+/** `?itens=N`: o cromo com só os N primeiros destinos (a busca centrada só se vê com folga entre a navegação e o fim da barra). */
+const navItemCount = Number(searchParams.get('itens')) || undefined;
 const hasGlobalBackground = searchParams.get('bg') === '1';
 const navigationStyle = searchParams.get('chrome') === 'topbar' ? 'topbar' : 'sidebar';
 const embeddedStyle = searchParams.get('embedded') === '1' ? { height: '320px' } : undefined;
@@ -125,6 +128,16 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `componente-sombra`: `cardShadow` declarada (a sombra dura vermelha); `componente-superficie`: `cardSurfaceOpacity` 0,5.
  *   - `componente-brilho`: `cardHoverStyle` = `glow-only`; `componente-tabela`: os três tokens de cor da tabela em cores
  *     conhecidas; `componente-duracao`: `motionDurationNormal` = 0,9 s.
+ *   - `saida-curva-lenta` / `saida-curva-rapida` / `saida-reduzida`: `motionEaseIn` na curva de fábrica e numa curva que parte rápido
+ *     (a saída dura `motionDurationFast`, 0,5 s aqui para a amostra cair no meio), e a mesma duração sob `reducedMotion`.
+ *   - `lateral-recolhida` / `lateral-recolhida-larga`: `isNavHidden` com a largura recolhida de fábrica e com `sidebarCollapsedWidth` = 96.
+ *   - `raio-sistema-zero` / `raio-sistema-cinco`: `borderRadius` escalar 0 (o acordeão não pode voltar ao raio do cartão) e 5.
+ *   - `matriz-gap-largo`: `matrixGap` = 28 (o padrão é 12).
+ *   - `busca-topo-esquerda` / `busca-topo-centro`: `searchPositionTopbar` (com `?chrome=topbar&itens=3`); `alinhamento-removido`: a chave
+ *     `contentAlignment`, que saiu do schema, num tema salvo; `raio-responsivo`: `borderRadius` = `{ mob: 3, tab: 7, desk: 11 }`.
+ *   - `acao-brilho-y` / `-desfoque` / `-espalhamento`: um dos três `actionGlowShadow*` num extremo, sobre o `btnStyleType` padrão (`matte`).
+ *   - `faixa-ativa`: `rangeActiveColor` = `#e11d48`. `cor-hover-base` / `cor-profunda` / `cor-variada`: a primária de matiz médio com
+ *     `colorDepth`/`colorVariation` no mínimo e num extremo.
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
@@ -270,6 +283,23 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'cartao-beam-reduzido': { borderBeamEnabled: true, reducedMotion: true },
     'cartao-beam-raio': { borderBeamEnabled: true, cardBorderRadius: { mob: 30, tab: 30, desk: 30 } },
     'schema-sem-suavizacao': { textSmoothing: false },
+    'saida-curva-lenta': { motionEaseIn: 'cubic-bezier(0.4, 0, 1, 1)', motionDurationFast: 0.5 },
+    'saida-curva-rapida': { motionEaseIn: 'cubic-bezier(0, 1, 0, 1)', motionDurationFast: 0.5 },
+    'saida-reduzida': { motionDurationFast: 0.5, reducedMotion: true },
+    'lateral-recolhida': { isNavHidden: true },
+    'lateral-recolhida-larga': { isNavHidden: true, sidebarCollapsedWidth: 96 },
+    'raio-sistema-zero': { borderRadius: 0 },
+    'raio-sistema-cinco': { borderRadius: 5 },
+    'matriz-gap-largo': { matrixGap: 28 },
+    'busca-topo-esquerda': { searchPositionTopbar: 'left' },
+    'busca-topo-centro': { searchPositionTopbar: 'center' },
+    'alinhamento-removido': { contentAlignment: 'center' },
+    'raio-responsivo': { borderRadius: { mob: 3, tab: 7, desk: 11 } },
+    'acao-brilho-y': { actionGlowShadowOffsetY: 31 },
+    'acao-brilho-desfoque': { actionGlowShadowBlur: 45 },
+    'acao-brilho-espalhamento': { actionGlowShadowSpread: 2 },
+    'faixa-ativa': { rangeActiveColor: '#e11d48' },
+    'cor-hover-base': { primaryColor: '#808040', colorDepth: 1, colorVariation: 1 },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {
@@ -310,7 +340,7 @@ const ElementDefaultProbes: React.FC = () => (
 const App: React.FC = () => {
     const chrome = (
         <SarakAppChrome
-            navItems={NAV_ITEMS}
+            navItems={navItemCount ? NAV_ITEMS.slice(0, navItemCount) : NAV_ITEMS}
             brand={{ name: 'Harness' }}
             className="sarak-chrome-root"
             navigationStyle={navigationStyle}
@@ -400,6 +430,10 @@ const App: React.FC = () => {
  *   - `lightbox`: o `SarakLightbox` aberto e um elemento do HOSPEDEIRO com `text-white` — a cena do sequestro do modo claro.
  *   - `transicao`: elementos com `transition-colors` (sem duração) e com `duration-[var(--sarak-motion-dur-normal,0.3s)]` (duração própria) — a cena em que o padrão
  *     das transições do Tailwind vem do token de movimento.
+ *   - `saida-sobreposicao`: o `SarakModal` e a `SarakSearch` (`?alvo=modal|busca` abre só um) fechados por botão (`data-probe` `fechar-*`) — a cena em que
+ *     se mede a saída, que só existe se o componente permanece na página enquanto ela roda.
+ *   - `arsenal-lote4`: o `SarakCatalogGrid` com duas categorias, o `SarakRangeSlider` e um `<button>` nativo (o hover global); `?tipo=<formato>`
+ *     acrescenta um `SarakChartEngine` desse formato — a cena em que se mede a sombra de ação, o trilho ativo, o hover do tema e os gráficos.
  *   - `cascata`: o que o motor entrega por padrão e o que o componente decide — `SarakCatalogGrid` (a seção é `.card`
  *     com `rounded-[var(--sarak-catalog-section-radius)]`), um `.sarak-card` nativo (puro, com `rounded-full`) e um
  *     contêiner `.card` sem classe, o `SarakKanban` (fundo por `style` inline em `<section>`/`<article>`) e
@@ -651,6 +685,47 @@ const SearchScene: React.FC = () => (
         <SarakSearch isOpen onClose={NOOP} items={[{ id: 'inicio', label: 'Início' }]} />
     </div>
 );
+
+/** O modal e a paleta de busca abertos e fechados por botão: a saída (`motionEaseIn`) só é mensurável se o painel ainda existe depois do clique. */
+const OverlayExitScene: React.FC = () => {
+    // `?alvo=modal|busca`: só um dos dois abre — dois desfoques de fundo juntos derrubam a taxa de quadros que a amostra precisa.
+    const target = searchParams.get('alvo');
+    const [modalOpen, setModalOpen] = React.useState(target !== 'busca');
+    const [searchOpen, setSearchOpen] = React.useState(target !== 'modal');
+    return (
+        <div>
+            <button type="button" data-probe="fechar-modal" onClick={() => setModalOpen(false)}>Fechar o modal</button>
+            <button type="button" data-probe="fechar-busca" onClick={() => setSearchOpen(false)}>Fechar a busca</button>
+            <SarakModal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Diálogo de saída">Conteúdo</SarakModal>
+            <SarakSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} items={[{ id: 'inicio', label: 'Início' }]} />
+        </div>
+    );
+};
+
+const CHART_PROBE_DATA = [
+    { name: 'Alpha', value: 12 },
+    { name: 'Beta', value: 24 },
+    { name: 'Gamma', value: 36 },
+];
+
+/** Os componentes reais do lote 4 do arsenal, com o Provider real; o gráfico só entra com `?tipo=`. */
+const ArsenalLote4Scene: React.FC = () => {
+    const chartType = searchParams.get('tipo');
+    return (
+        <div style={{ padding: '16px' }}>
+            <div data-probe="catalogo-acao">
+                <SarakCatalogGrid title="Catálogo de prova" items={[]} categories={{ all: 'Todos', apps: 'Aplicativos' }} />
+            </div>
+            <div data-probe="faixa"><SarakRangeSlider label="Faixa de prova" defaultValue={[20, 80]} /></div>
+            <button type="button" data-probe="hover-tema">Hover do tema</button>
+            {chartType ? (
+                <div data-probe="grafico" data-chart-type={chartType} style={{ width: '640px', height: '360px' }}>
+                    <SarakChartEngine type={chartType as 'area'} data={CHART_PROBE_DATA} ariaLabel={`Gráfico ${chartType}`} />
+                </div>
+            ) : null}
+        </div>
+    );
+};
 
 const PIXEL_GIF = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
@@ -930,6 +1005,8 @@ const SCENES: Record<string, React.FC> = {
     'schema-modal': SchemaModalScene,
     'cartao-movimento': CardMotionScene,
     'cartao-beam-grade': CardBeamGridScene,
+    'saida-sobreposicao': OverlayExitScene,
+    'arsenal-lote4': ArsenalLote4Scene,
 };
 
 /**

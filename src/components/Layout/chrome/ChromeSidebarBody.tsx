@@ -13,7 +13,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } fr
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass, resolveChromeContentStyle } from './chromeStructuralStyles';
+import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -57,7 +57,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { sidebarPosition, contentAlignment, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const { sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -100,15 +100,16 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 {isVisible && (
                     <aside
                         {...surfaceProps}
-                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
+                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width,min-width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
                             // `zIndexSidebar`: o empilhamento da sidebar sobre o conteúdo (os popovers do cromo nascem dela).
                             zIndex: 'var(--sarak-z-sidebar, 500)',
                             width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
                             // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a
                             // largura efetiva mesmo sem redimensionamento por arraste (que o
-                            // cromo apresentacional não tem).
-                            minWidth: 'var(--sidebar-min-width, 150px)',
+                            // cromo apresentacional não tem). O piso é da lateral aberta: recolhida,
+                            // quem manda é `sidebarCollapsedWidth` (um piso de 150 a manteria em 150+).
+                            minWidth: isNavHidden ? 0 : 'var(--sidebar-min-width, 150px)',
                             maxWidth: 'var(--sidebar-max-width, 450px)',
                             margin: 'var(--sarak-tab-section-margin, 8px)',
                             height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
@@ -173,7 +174,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 <ChromeContentRegion
                     secondaryContent={secondaryContent}
                     isSplitViewEnabled={isSplitViewEnabled}
-                    className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
+                    className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
                     style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >
                     {children}

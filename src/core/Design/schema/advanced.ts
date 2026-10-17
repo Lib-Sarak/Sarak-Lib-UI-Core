@@ -10,9 +10,12 @@ export const AdvancedSchema: ComponentSchema = {
     tokens: [
         {
             id: 'matrixGap',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Espaço entre os sub-itens da matriz expansível (`SarakExpandableMatrix`) dentro de cada linha aberta; os filhos aninhados de um sub-item têm o espaçamento próprio.",
             label: 'Espaçamento da Matriz',
             type: 'slider',
-            description: 'Espaçamento, em pixels, entre os itens da matriz expansível (`SarakExpandableMatrix`). Valores maiores separam melhor nós irmãos em estruturas com muitos filhos; valores menores favorecem densidade em matrizes grandes.',
+            description: 'Espaçamento, em pixels, entre os sub-itens da matriz expansível (`SarakExpandableMatrix`) dentro de cada linha aberta. Valores maiores separam melhor nós irmãos em estruturas com muitos filhos; valores menores favorecem densidade em matrizes grandes.',
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 4, max: 32 },

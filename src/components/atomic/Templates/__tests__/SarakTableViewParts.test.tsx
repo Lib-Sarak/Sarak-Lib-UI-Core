@@ -55,6 +55,18 @@ describe('SarakTableToolbar', () => {
 });
 
 describe('SarakTableGrid', () => {
+    it('a linha aceita `ref` do popLayout sem o aviso do React', () => {
+        // O React avisa uma vez por componente: este tem de ser o primeiro caso do arquivo que monta a tabela.
+        const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        try {
+            render(<SarakUIProvider><SarakTableGrid props={createViewProps(vi.fn())} /></SarakUIProvider>);
+            const refWarnings = errors.mock.calls.filter((call) => String(call[0]).includes('cannot be given refs'));
+            expect(refWarnings).toHaveLength(0);
+        } finally {
+            errors.mockRestore();
+        }
+    });
+
     it('renderiza célula customizada alinhada e encaminha o clique da linha', () => {
         const onRowClick = vi.fn();
         const props = createViewProps(onRowClick);
