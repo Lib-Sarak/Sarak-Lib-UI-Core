@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
@@ -244,13 +244,32 @@ pilar (não a perda de tokens).
 novos**, um por lote, registrados pela regra da `09` §2 obs. 3.
 7.1. Cada tema parte do esqueleto completo (`getScaffold`), nunca de `{}`, segue a sua ficha do anexo (revista pelo
 que o código já entrega, §2) e declara todo token estético; a `contraparte` preserva a identidade (só o que carrega
-modo muda); fundo por atmosfera do motor ou SVG próprio embutido; paleta de gráfico validada pela skill `dataviz`;
-fontes pelo valor exato da lista; o tema sai da lista de exceção da trava.
+modo muda); fundo por atmosfera do motor ou SVG próprio embutido; paleta de gráfico validada pelas regras do anexo
+(A8: as cores de status são reservadas e não entram como série; cada série distinta das vizinhas; 3:1 não textual) —
+a skill `dataviz` não existe neste repositório e, se existir na sessão, vale como apoio, não como exigência; fontes pelo
+valor exato da lista; o tema sai da lista de exceção da trava.
 7.2. O arquivo do tema é a ficha: comentários curtos nos valores não óbvios, e a **nota de conceito** (arquétipo de
 identidade, que tokens carregam a personalidade, o que o tema demonstra da lib) no anexo de direção.
 7.3. O que o tema ensinou entra no schema (metadados), no mapa "o que a lib já faz" e no guia do importador
 (receita, armadilha, padrão) — **no mesmo lote**.
 7.4. Capturas da vitrine → conferência do revisor.
+7.5. **Insights do tema (todo lote de tema).** O procedimento que o executor segue é o da skill `ui-criar-tema`
+(gabarito, preenchimento, registro, completude e contraste, contraparte): ele o **segue e o corrige onde a prática o
+desmentir**. O resumo traz a tabela **"o que o tema ensinou"**: cada decisão não óbvia (por que esse valor), cada
+armadilha (o que quebrou e como foi achado: medição, gate ou captura) e cada medida (contraste por par, peso gzip) com a
+coluna **onde foi gravada** (a skill `ui-criar-tema`, o GUIA do importador, o `usage` de um token ou a nota de conceito).
+Item sem destino não foi ensinado. Mínimo por tema: uma receita ou armadilha **nova** na skill, ou a frase "nada novo,
+porque …" com o motivo; não repetir o que a skill já diz (R17). O revisor confere a tabela contra o diff.
+7.0. **Só no lote 7, antes do tema — o procedimento precisa funcionar e conhecer o `sarak-sovereign`.** (a) O
+solucionador de contraste da skill (`scripts/solve_theme_contrast.ts`) importa `getDefaultDesignState`, que não existe
+(achado do lote 6, que ajustou o contraste à mão): conserte o import, prove com o teste da skill e diga no resumo
+o que ele resolve e o que não resolve. (b) Registre na `ui-criar-tema` as lições do lote 6, que o próximo tema já
+precisa: o medidor de contraste não atravessa cadeias `var()` (valor concreto no tema onde o contraste é medido);
+derivados que o tema repete (`rangeActiveColor`, `tooltip*`, `inputIconColor`, `aiGlowColor`…) para quem troca só a
+primária; token responsivo mantém `{ mob, tab, desk }`; `identityFontFamily` é valor de `THEME_FONTS`; ordem de trabalho
+(modo principal, contraparte, contraste por modo, captura); e que a leitura de contraste na tela só vale depois das
+transições de hidratação terminarem. (c) Confira o que a skill ainda diz do padrão antigo (`#00f2ff`, `matte`, `grid`,
+`none` de textura): o padrão do sistema agora é o do `sarak-sovereign`.
 
 **Lote 25 — conjunto, documentação consolidada e roteiro de validação.**
 25.1. Cobertura do **conjunto**: os 19 usam juntos pelo menos 15 texturas de cartão, 10 fontes, as 3 famílias de
