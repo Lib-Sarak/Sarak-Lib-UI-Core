@@ -54,6 +54,7 @@ export const sarakSovereignTheme: SarakThemePreset = {
         navItemActiveColor: '#19e3f0',
         navActiveMarkerColor: '#19e3f0',
         navActiveMarkerGlow: 8,
+        navItemRadius: 12,
         sidebarBlur: 10,
         sidebarShadow: '10px 0 30px rgba(0,0,0,0.5)',
 

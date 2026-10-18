@@ -347,6 +347,7 @@ interface SarakDesignTokens {
     navbarLayout: string;
     navigationStyle: string;
     navItemActiveColor: string;
+    navItemRadius: number;
     pageTransitionType: string;
     preferenceFontSizePosition: string;
     preferenceLanguagePosition: string;
@@ -948,8 +949,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "d4ae0a5";
-    readonly builtAt: "2026-10-18T16:13:56.739Z";
+    readonly baseCommitShort: "50938a4";
+    readonly builtAt: "2026-10-18T18:24:58.086Z";
 };
 
 interface SarakDesignScopeProps {

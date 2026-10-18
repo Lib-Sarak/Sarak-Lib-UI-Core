@@ -669,6 +669,25 @@ a barra (2,5 px acima e 1,5 px abaixo, medido em 1024 px com toque). Com 48 px t
 **O que fazer:** nada é obrigatório. Tema salvo que declara `topbarCollapsedHeight` mantém o valor dele; quem quer os 40 px de
 antes declara `topbarCollapsedHeight: 40`. A faixa do token (24 a 56) não mudou.
 
+### A atmosfera da página aparece atrás do conteúdo, e o raio do item de menu ganha token: `navItemRadius`
+
+**Classificação: MAJOR (dois efeitos visíveis por padrão; o token novo só acrescenta).** Em Modo App, a raiz do `SarakAppChrome`
+pintava `--bg-body` opaco por cima do `body`, e o gradiente, o `systemTone` e a textura (`texture`) que o motor emite no `body`
+ficavam escondidos: a página era sempre uma cor lisa. A raiz agora é transparente quando há `SarakUIProvider` em Modo App
+(como já era com mídia de fundo global). O raio do item de navegação era fixo no átomo (`rounded-xl` na lateral,
+`rounded-full` no topo, `rounded-lg` recolhido); passa a vir de um token só, `navItemRadius` (`--sarak-nav-item-radius`, 0 a 24 px,
+padrão 12), que vale nas três formas. O tipo `SarakDesignTokens` ganha a chave (de 398 para 399) e o painel passa a mostrá-la.
+
+| Antes | Depois |
+|---|---|
+| a página tinha sempre a cor lisa do tema, com qualquer `texture`, `systemTone` e `bgGradientMode` | gradiente, tom e textura aparecem atrás do conteúdo, em Modo App; no Modo Embarcado e fora de um `SarakUIProvider` a raiz segue opaca, como era |
+| item de navegação da lateral com raio 12, do topo em cápsula (`rounded-full`) e recolhido do topo com 8 | os três usam `navItemRadius`, padrão 12: o item do topo deixa de ser cápsula e o recolhido do topo passa de 8 a 12 |
+
+**O que fazer:** nada é obrigatório. Quem quer o item do topo em cápsula declara `navItemRadius: 16` ou mais; quem quer o item reto,
+`navItemRadius: 0`. Quem tinha tema com gradiente ou textura declarados passa a vê-los de verdade; para a página lisa de antes,
+tire a `texture` e o `systemTone` do tema (ou declare `none`) e use `bgGradientMode: 'none'`. Quem pintava o fundo do app por conta
+própria por baixo do cromo passa a ver essa pintura onde antes via a cor do tema.
+
 ### O tema padrão `sarak-sovereign` é refeito e o padrão de todo token estético passa a ser o dele
 
 **Classificação: MAJOR (muda o padrão de 94 tokens estéticos e o que o `sarak-sovereign` desenha).** O tema padrão ganhou direção de arte

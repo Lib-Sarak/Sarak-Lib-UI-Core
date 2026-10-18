@@ -9,6 +9,8 @@ import type { SarakTokenValue } from '../../../../core/Design/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
 
+const RAIO_DO_ITEM = 'rounded-[var(--sarak-nav-item-radius,12px)]';
+
 describe('SarakMenuItem', () => {
     it('monta sem SarakUIProvider (é átomo)', () => {
         expect(() => render(<SarakMenuItem label="Módulo" />)).not.toThrow();
@@ -71,10 +73,10 @@ describe('SarakMenuItem', () => {
         expect(classes).toContain('shrink-0');
     });
 
-    it('orientação horizontal: caixa normal e corpo legível — pílula continua, caixa alta sai', () => {
+    it('orientação horizontal: caixa normal e corpo legível — raio pelo token, caixa alta sai', () => {
         render(<SarakMenuItem label="Aba" orientation="horizontal" />);
         const classes = screen.getByRole('button', { name: 'Aba' }).className.split(' ');
-        expect(classes).toContain('rounded-full');
+        expect(classes).toContain(RAIO_DO_ITEM);
         expect(classes).toContain('normal-case');
         expect(classes).toContain('tracking-normal');
         expect(classes).not.toContain('uppercase');
@@ -468,5 +470,33 @@ describe('SarakMenuItem — a régua não mede cor não-conversível contra pret
         }
 
         warnSpy.mockRestore();
+    });
+});
+
+describe('SarakMenuItem — raio do item pelo token `navItemRadius`', () => {
+    const FORMAS: Array<[string, Pick<React.ComponentProps<typeof SarakMenuItem>, 'orientation' | 'collapsed'>]> = [
+        ['lateral', { orientation: 'vertical' }],
+        ['topo', { orientation: 'horizontal' }],
+        ['recolhido no topo', { orientation: 'horizontal', collapsed: true }],
+    ];
+
+    it.each(FORMAS)('%s: o raio vem da variável do token, sem raio fixo no átomo', (_forma, props) => {
+        render(<SarakMenuItem label="Item" icon={<span />} {...props} />);
+        const classes = screen.getByRole('button', { name: 'Item' }).className.split(' ');
+        expect(classes).toContain(RAIO_DO_ITEM);
+        expect(classes.filter((name) => /^rounded-(?!\[)/.test(name))).toEqual([]);
+    });
+
+    it('o motor emite a variável com o padrão (12px) e com o valor que o tema declara', () => {
+        const emitted = (design: Record<string, unknown>) =>
+            renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), ...design })).result.current.variables['--sarak-nav-item-radius'];
+        expect(emitted({})).toBe('12px');
+        expect(emitted({ navItemRadius: 0 })).toBe('0px');
+        expect(emitted({ navItemRadius: 20 })).toBe('20px');
+    });
+
+    it.each(['sarak-sovereign', 'cyberpunk-neon'])('o tema "%s" declara o raio do item', (id) => {
+        const theme = SARAK_ALL_THEMES.find((entry) => entry.id === id);
+        expect((theme?.design as Record<string, unknown>).navItemRadius).toBeTypeOf('number');
     });
 });

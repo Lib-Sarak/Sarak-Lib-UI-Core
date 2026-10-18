@@ -78,6 +78,7 @@ nenhum `defaultValue`.
   `src/components/atomic/Inputs/SarakCheckbox.tsx`, `src/components/atomic/Inputs/SarakRadio.tsx` e
   `src/core/Design/schema/structural.ts` (P19); `src/components/atomic/Layouts/SarakSplitPane.tsx` (candidato de P21).
 - **Lote 6 (P16, P20, P22):** `src/components/Layout/chrome/chromeStructuralStyles.ts`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Provider/utils/removedTokenKeys.ts`, `src/core/Provider/types.ts`, `src/core/Provider/payloadExtraKeys.ts` e `src/components/atomic/Layouts/SarakAccordion.tsx`.
+- **Lote 8 (P24, P25):** `src/components/Layout/SarakAppChrome.tsx`, `src/components/Layout/chrome/ChromeSidebarBody.tsx`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/components/atomic/Navigation/SarakMenuItem.tsx`, `src/components/atomic/Navigation/SarakShellNav.tsx`, `src/styles/_background.css`, `src/styles/_atmosphere.css`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Design/presets/themes/sarak-sovereign.ts` e `src/core/Design/presets/themes/cyberpunk-neon.ts`.
 - **Lote 7 (P23):** `src/components/atomic/Buttons/SarakIconButton.tsx`, `src/components/atomic/Buttons/SarakButton.tsx` e `src/components/atomic/hooks/useAtomicStyles.ts`.
 - **Provar:** testes de componente, o caso de navegador (`browser-tests/`, cena nova no harness) e o gate de leitor.
 - `specs/plan/anexos/plan-110-tokens-funcionais.md` — acrescentar o desfecho dos sete (o executor).
@@ -104,6 +105,7 @@ nenhum `defaultValue`.
 | Código (lote 4) | `src/components/atomic/Templates/SarakCatalogGrid.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/core/Design/schema/buttons.ts` (P10) · `src/core/Design/hooks/useDesignVariables.ts` · `src/core/Design/schema/colors.ts` · `src/core/Provider/utils/removedTokenKeys.ts` (P11) · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` · `src/components/engines/charts/SubEngines/axisOptions.ts` · `src/core/Design/schema/data.ts` (P12) · `src/components/atomic/Inputs/SarakRangeSlider.tsx` · `src/styles/_utilities.css` · `src/core/Design/schema/inputs.ts` (P13) | os leitores e os schemas dos quatro achados; a medição que os originou está no resumo do lote 2 da `plan-110` (tabela por token) |
 | Código (lote 5) | `src/components/atomic/hooks/useMotionTokens.ts` · `src/components/atomic/Modals/SarakModal.tsx` · `src/components/atomic/Inputs/SarakSearch.tsx` · `src/core/Design/schema/motion.ts` (P14) · `src/components/atomic/Templates/SarakExpandableMatrix.tsx` · `src/core/Design/schema/advanced.ts` (P15) · `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` (P16, P17, P20) · `src/components/atomic/Layouts/SarakAccordion.tsx` · `src/core/Design/schema/system.ts` (P18) · `src/components/atomic/hooks/useStructuralStyles.ts` · `src/components/atomic/Inputs/SarakSwitch.tsx` · `src/components/atomic/Inputs/SarakCheckbox.tsx` · `src/components/atomic/Inputs/SarakRadio.tsx` · `src/core/Design/schema/structural.ts` (P19) · `src/components/atomic/Layouts/SarakSplitPane.tsx` (P21) | os leitores e os schemas dos oito achados; a medição que os originou está nos resumos dos lotes 3 e 4 da `plan-110` (tabela por token, no histórico do Git) e nos achados dela |
 | Código (lote 6) | `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Provider/utils/removedTokenKeys.ts` · `src/core/Provider/types.ts` · `src/core/Provider/payloadExtraKeys.ts` · `src/components/atomic/Layouts/SarakAccordion.tsx` (P16, P20, P22) | os leitores, o schema e as portas da retirada |
+| Código (lote 8) | `src/components/Layout/SarakAppChrome.tsx` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/components/atomic/Navigation/SarakMenuItem.tsx` · `src/components/atomic/Navigation/SarakShellNav.tsx` · `src/styles/_background.css` · `src/styles/_atmosphere.css` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Design/presets/themes/sarak-sovereign.ts` · `src/core/Design/presets/themes/cyberpunk-neon.ts` (P24, P25) | a camada que cobre a atmosfera e o raio do item de navegação |
 | Código (lote 7) | `src/components/atomic/Buttons/SarakIconButton.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/components/atomic/hooks/useAtomicStyles.ts` (P23) | o botão de ícone e a fonte de cor do estilo `cyberpunk` |
 | Navegador | `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` (o molde de caso e cena) · `PLAYWRIGHT_BROWSERS_PATH` = caminho absoluto de `node_modules/.cache/ms-playwright` do repositório, `chromium.launch()` sem `executablePath` | provar cada token por diferença de estilo computado |
 | Skill (se existir na sessão) | `dataviz` | só para P12; nenhuma paleta de gráfico muda — sem a skill, siga sem ela e diga no resumo |
@@ -143,8 +145,8 @@ nenhum `defaultValue`.
 | P21 | aviso de console "Function components cannot be given refs" em todas as variantes da cena estrutural (componente não identificado: `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` ou outro) | plan-110 lote 4 | **identificar e corrigir** (`forwardRef` ou remover a `ref`) | 5 | fechada |
 | P22 | `SarakAccordion.tsx:35` — com `design.borderRadius` na forma responsiva `{ mob, tab, desk }` (o que o schema permite) o raio chega como objeto e o React descarta a declaração: o acordeão fica **sem raio nenhum** (jsdom: `{mob:7,tab:7,desk:7}` sem `border-radius`; escalar 7 → `7px`) | plan-117 lote 5 | **corrigir** (resolver o responsivo como os outros componentes) | 6 | fechada |
 | P23 | `SarakIconButton.tsx:137` — no estilo `cyberpunk` o fundo vira transparente, mas o texto da variante primária fica `btnPrimaryText`: **o ícone some** (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts:16`). Visto na vitrine do `cyberpunk-neon`, nos dois modos | plan-110 lote 7 | **corrigir** (a mesma fonte de cor do `SarakButton`, não uma segunda) | 7 | aberta |
-| P24 | *(candidata)* o `main` e o cromo pintam camadas opacas por cima do fundo da página, então a textura de página (`texture`) e o `systemTone` quase não aparecem (vitrine do `sarak-sovereign` e do `cyberpunk-neon`); `circuit-pro`, `constellation` e afins só se veem nas margens | plan-110 lotes 6 e 7 | **a decidir pelo dono**: tornar as camadas translúcidas por padrão ou documentar onde a atmosfera de página aparece | — | candidata |
-| P25 | *(candidata)* o item ativo e o hover da lateral mantêm cantos arredondados com todos os raios do tema em 0; nenhum token controla o raio do item | plan-110 lote 7 | **a decidir pelo dono**: aceitar o canto arredondado como parte do arsenal ou criar o token (fora do escopo desta plan) | — | candidata |
+| P24 | o `main` e o cromo pintam camadas opacas por cima do fundo da página (o contêiner de `SarakAppChrome.tsx:199` pinta `var(--bg-body, …)` por cima do corpo), então a textura de página (`texture`) e o `systemTone` quase não aparecem (vitrine do `sarak-sovereign` e do `cyberpunk-neon`) | plan-110 lotes 6 e 7 | **corrigir** (decisão do dono, 2026-10-18: o essencial se corrige quando achado): em modo app a atmosfera de página aparece atrás do conteúdo, sem quebrar o modo embarcado nem a mídia de fundo global | 8 | fechada |
+| P25 | o item ativo e o hover da navegação (`SarakMenuItem.tsx:69-72`) têm o raio fixo no código (`rounded-xl` na vertical, `rounded-full` na horizontal, `rounded-lg` recolhida) e nenhum token o controla | plan-110 lote 7 | **corrigir** (decisão do dono, 2026-10-18): um token de raio do item de navegação, no schema, com paridade | 8 | fechada |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -237,6 +239,19 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
     com mutação (reverter a correção derruba o caso; só em cópia da árvore fora do repositório). Nenhum `defaultValue`
     muda; nota MAJOR (o botão de ícone passa a aparecer no estilo `cyberpunk`).
 22. **P24 e P25 são candidatas do dono: não toque nelas.**
+
+**Lote 8 — P24 e P25 (essenciais: a aplicação dos temas é o refinamento final).**
+23. **P24 — atmosfera de página atrás do conteúdo:** medir qual camada cobre `html::before`/`body::before` (o contêiner de
+    `SarakAppChrome.tsx:199`, o `main`, o cromo) e corrigir para que, em modo app, `texture` e `systemTone` apareçam; o modo
+    embarcado e a mídia de fundo global (`useHasGlobalBackgroundMedia`) continuam como estão. Caso de navegador por diferença
+    de pixel ou de camada no harness existente, com mutação (só em cópia da árvore fora do repositório) e a captura da vitrine
+    do `cyberpunk-neon` antes e depois, aberta e descrita.
+24. **P25 — token do raio do item de navegação:** criar **um** token (nome `navItemRadius`, em `schema/navigation.ts`), estético,
+    que governa o raio do item ativo/hover nas três orientações (vertical, horizontal e recolhida). O `defaultValue` reproduz o
+    que se vê hoje por padrão na lateral (12); a horizontal e a recolhida passam a ler o mesmo token. Paridade completa (partição,
+    mapeamento de tema, `token-types`, `usage`/`kind`/`modeDependent`, leitor com `@sarak-token-reader`), os temas já completos
+    (`sarak-sovereign` e `cyberpunk-neon`) declaram o token, a trava de completude e o `token-reader:check` verdes, nota MAJOR.
+    **Decida e registre** o que muda no padrão da horizontal (hoje `rounded-full`).
 
 **Verificação otimizada (decisão do dono, 2026-10-17):** o executor roda só os testes dos arquivos que tocou. O revisor
 roda `verify --tier=quick` (`tsc`, baseline, Anel 1, R36), o vitest **só dos arquivos tocados e dos que os importam**
@@ -1124,3 +1139,150 @@ faixa; `04` §4.1 — `contentAlignment` junto dos outros tokens retirados e o t
 A plan segue **retida pela `plan-110`** e sai com ela.
 
 **Status: 🟢 Aprovada.** Libera o lote 5 da `plan-110`.
+
+## Resumo da execução (lote 8: P24, P25) — 2026-10-18
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+```
+(Nada do lote 7 estava no worktree no momento da fotografia: `SarakIconButton.tsx` e `useAtomicStyles.ts` não apareciam. Não li nem toquei nada dele.)
+
+**O que foi feito**
+- **P24, a medição antes de corrigir.** Na vitrine do `cyberpunk-neon` (`showcase-entry`, 1440×960, escuro), a cadeia de ancestrais do conteúdo tem, de dentro para fora: `main` e o contêiner interno **transparentes**; a **raiz do cromo** (`div.flex.flex-col.w-full`, a de `SarakAppChrome.tsx:199`) com `rgb(3, 6, 4)` **opaco**; e o `body` com `radial-gradient` (tom `cyber`) mais o `::before` da textura `circuit-pro` (opacidade 0,6, `z-index: -1`). Quem cobre a atmosfera é só a raiz do cromo: nem o `main` nem a lateral e o topo (que têm fundo próprio, por token) a escondem. A mídia global e o Modo Embarcado não entram na causa.
+- **P24, a correção.** `src/components/Layout/chrome/useChromeRootBackground.ts` (novo) decide o fundo da raiz: `transparent` com mídia global **ou** com `SarakUIProvider` em Modo App; o `var(--bg-body, …)` de antes continua sem Provider e no Modo Embarcado. `SarakAppChrome.tsx:199` passa a chamar o hook (o arquivo ficou em 249 linhas; a regra e o porquê moram no hook). O `body` já pintava o fundo de token (`_base.css`), então a cor do tema continua por baixo.
+- **P25, o token.** `navItemRadius` em `src/core/Design/schema/navigation.ts:413` (slider, `kind: aesthetic`, `modeDependent: false`, eixo `geometry`, 0 a 24 px, padrão 12, `cssVars: ['--sarak-nav-item-radius']`, `usage` e `interactsWith` preenchidos); partição `layout_and_navigation.json:856`; mapeamento `theme_table_mapping.json:152`; `npm run token-types` (399 tokens); e os dois temas completos o declaram: `sarak-sovereign.ts:57` = 12 e `cyberpunk-neon.ts:54` = 0 (o tema é de raio 0 em tudo, quina cortada).
+- **P25, o leitor.** `SarakMenuItem.tsx:72-73`: as duas orientações usam `rounded-[var(--sarak-nav-item-radius,12px)]`; o `rounded-lg` do recolhido horizontal saiu. O leitor é a variável literal no componente, que o `token-reader:check` já enxerga; **não precisou de `@sarak-token-reader`** (a declaração é só para token `select` lido por tabela ou passagem direta).
+- **Notas e provas.** `docs/migracoes.md:672` ganhou a subseção MAJOR; `cromo-css-real.spec.ts:782` foi reescrito (ver *Decisões*); `harness-entry.tsx` ganhou três recortes (`raio-item-zero`, `raio-item-vinte`, `raio-item-recolhido`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/Layout/chrome/useChromeRootBackground.ts` | criado | fundo da raiz do cromo (transparente em Modo App com Provider, ou com mídia global) |
+| `src/components/Layout/chrome/__tests__/useChromeRootBackground.test.tsx` | criado | 4 casos: sem Provider, App, Embarcado, mídia |
+| `src/components/Layout/SarakAppChrome.tsx` | alterado | `:199` lê o hook; import trocado |
+| `src/components/atomic/Navigation/SarakMenuItem.tsx` | alterado | raio pelo token nas duas orientações; recolhido sem raio fixo |
+| `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` | alterado | o caso da "pílula" virou o do token; bloco novo (3 formas, emissão 12/0/20, temas) |
+| `src/core/Design/schema/navigation.ts` | alterado | token `navItemRadius` |
+| `src/core/Design/catalog/partitions/layout_and_navigation.json` · `theme_table_mapping.json` | alterado | +1 entrada / +1 id |
+| `src/core/Provider/generated/design-token-ids.ts` · `design-token-docs.json` | alterado (gerado) | `npm run token-types` |
+| `src/core/Design/presets/themes/sarak-sovereign.ts` · `cyberpunk-neon.ts` | alterado | `navItemRadius: 12` e `: 0` |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap` | alterado | 1 linha: só a variável nova (conferido por script) |
+| `browser-tests/pagina-com-atmosfera.spec.ts` | criado | P24: camada e pixel, com o embarcado e a mídia como contraprova (3 casos) |
+| `browser-tests/raio-do-item-de-menu.spec.ts` | criado | P25: raio computado do item nas três formas (3 casos) |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | 3 recortes `raio-item-*` e a linha do doc |
+| `browser-tests/cromo-css-real.spec.ts` | alterado | `:782`: a expectativa antiga ("a raiz não pode virar transparente") contradizia o P24 |
+| `docs/migracoes.md` | alterado | nota MAJOR do lote |
+
+**Verificações executadas**
+- `npx vitest run src/components/Layout/__tests__ src/components/Layout/chrome/__tests__/useChromeRootBackground.test.tsx` → 8 arquivos, 115/115. `… src/components/atomic/Navigation src/core/Design/presets src/core/Provider/utils` → 42 arquivos, 458/458. Depois de acertar a tipagem do `it.each`: `SarakMenuItem.test.tsx` + `useChromeRootBackground.test.tsx` → 68/68. `PresetCard.test.tsx --update` → 4/4.
+- **Navegador**, build à parte no scratchpad (esbuild com alias para `src/index.ts` + Tailwind CLI; `PLAYWRIGHT_BROWSERS_PATH` absoluto do repositório; `chromium.launch()` sem `executablePath`): `pagina-com-atmosfera.spec.ts` **3/3**; `raio-do-item-de-menu.spec.ts` **3/3** (padrão 12 px; 0 e 20 nas três formas, ativo e inativo); `cromo-css-real.spec.ts` inteiro: 31/32 antes de reescrever o caso `:782` (a falha era a expectativa antiga); o caso reescrito passa sozinho (1/1). **Não repeti o arquivo inteiro depois da reescrita.**
+- **Mutação, só numa cópia da árvore fora do repositório** (junção para `node_modules`; cópia apagada, `node_modules` do repositório conferido): (1) `bodyPaintsPage = false` → o caso de navegador do P24 cai (`Expected: 0 / Received: 1`; os outros dois seguem verdes) e o teste de unidade "em Modo App…" cai; (2) `rounded-full` e `rounded-lg` de volta no topo e no recolhido → caem os dois casos de navegador dessas formas (a lateral segue verde, como esperado) e 3 testes de unidade; (3) sem a variável no `SarakMenuItem` → `token-reader:check` acusa `variável navItemRadius: --sarak-nav-item-radius`.
+- **Gates:** `token-reader:check` OK · `theme-completeness:check` "2 de 14 completos; 12 em exceção" (os dois continuam completos) · `check-token-documentation` 399/399, 0 em exceção · `token-types:check` OK (depois de regenerar) · `auditor_ghostvars` OK · `npx tsc --noEmit` exit 0.
+- `npm run verify -- --tier=quick`: na 1ª rodada falharam `tsc` (2 erros de tipo no meu `it.each`) e `audit:baseline` (`ghostvars` 0→1, mais os 2 de `tsc`); corrigidos. Na 2ª: tudo OK, exceto `token-types:check` (regenerado depois e verde) e **`guide:check` e `dev-kit:check`** (gerados defasados, abaixo) · Anel 0 simulado: 481 linhas, 0 achados.
+- **Controle em `HEAD` limpo** (`git archive` + junção, removida antes de apagar): `PreviewCanvas.test.tsx` já **falha** no `HEAD` (1 caso, snapshot) — ver *Achados*.
+- Não rodei: guide, dev-kit, build, suíte completa, a bateria inteira do navegador contra o `dist/`.
+
+**Captura da vitrine do `cyberpunk-neon` (1440×960, lateral, `showcase-entry`, build à parte), abertas e conferidas**
+- Antes, escuro: `C:\Users\Igor\AppData\Local\Temp\claude\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\f16dc005-0687-40e3-8797-6347780b2d38\scratchpad\antes-cyberpunk-neon-dark.png` — a página é um preto esverdeado **liso**: nem a grade de HUD, nem o brilho de horizonte do tom `cyber`, nem o circuito da textura aparecem. A cor lisa vem da raiz do cromo.
+- Depois, escuro: `C:\Users\Igor\AppData\Local\Temp\claude\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\f16dc005-0687-40e3-8797-6347780b2d38\scratchpad\depois-cyberpunk-neon-dark.png` — a grade de 20 px do HUD, o horizonte verde na base e o circuito aparecem atrás do conteúdo e dos cartões; o item ativo da lateral ("Início") está reto (raio 0 do tema).
+- Antes, claro: `C:\Users\Igor\AppData\Local\Temp\claude\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\f16dc005-0687-40e3-8797-6347780b2d38\scratchpad\antes-cyberpunk-neon-light.png` — fundo `#eef5ef` liso. Depois, claro: `C:\Users\Igor\AppData\Local\Temp\claude\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\f16dc005-0687-40e3-8797-6347780b2d38\scratchpad\depois-cyberpunk-neon-light.png` — gradiente verde-claro, grade e circuito visíveis.
+- (`antes-cyberpunk-neon.png`, na mesma pasta, é uma tentativa descartada: usei o harness em vez da vitrine e o tema não foi aplicado.)
+
+**Critérios de aceite**
+- [x] P24 — a camada que cobre foi medida (a raiz do cromo, alfa 1) e a atmosfera aparece em Modo App — evidência: cadeia de ancestrais acima, captura antes/depois, `pagina-com-atmosfera.spec.ts` (camada e pixel).
+- [x] Modo embarcado e mídia global como estavam — evidência: casos 2 e 3 do mesmo spec; teste de unidade; `cromo-css-real` "COM mídia global".
+- [x] P24 com mutação em cópia fora do repositório — evidência: mutação (1).
+- [x] P25 — um token governa o raio nas três formas; paridade completa; temas completos declaram; trava de completude e `token-reader:check` verdes; nota MAJOR — evidência: arquivos e gates acima; mutações (2) e (3).
+- [x] Nenhum `defaultValue` de token existente alterado; nenhuma cor fixa nova.
+- [ ] Gerados em dia — motivo: `guide` e `dev-kit` não rodam por instrução; o revisor regenera.
+
+**Decisões e suposições**
+- **P25 — o que muda na horizontal (pedido pela instrução).** Escolhi **um token para as três formas**, com padrão 12: a horizontal deixa de ser cápsula (`rounded-full`) e passa a 12 px; o recolhido horizontal vai de 8 (`rounded-lg`) a 12. Motivo: o motor emite um valor por token, então "um padrão por forma" exigiria três tokens; e 12 é o que a lateral já mostrava. Quem quer cápsula declara 16 ou mais (o item do topo mede ~32 px de altura; o teto 24 cobre). O custo é uma mudança visível no topo por padrão, registrada na nota MAJOR. Se o dono preferir manter a cápsula por padrão, basta subir o padrão do token (efeito: a lateral também ficaria mais redonda).
+- **P24 — onde corrigir.** No hook da raiz do cromo, e não no CSS do `body` nem em `_atmosphere.css`/`_background.css`: a causa medida é a pintura opaca da raiz, e a atmosfera já estava correta no `body`. Nenhum `!important`, nenhum CSS novo; `ChromeSidebarBody` e `ChromeTopbarBody` não precisaram de edição (a raiz é compartilhada pelos três modos, inclusive o celular).
+- **O `PreviewCanvas` também é afetado.** Ele monta um `SarakAppChrome` dentro do próprio `SarakDesignScope` (que tem seu `bg-[var(--color-theme-bg)]`): a raiz transparente deixa aparecer o fundo desse escopo. Não medi no navegador o painel de customização.
+- **`cromo-css-real.spec.ts:782` reescrito.** O caso antigo afirmava que, sem mídia, "a raiz não pode virar transparente"; isso é o P24 desfeito. Troquei por: raiz transparente + `body` com fundo de token (esperando a hidratação com `expect.poll`, porque as variáveis do tema chegam depois do 1º quadro).
+- **Snapshots.** Atualizei só o `PresetCard` (`--update` no arquivo; 1 linha, só a variável nova). **Não atualizei o `PreviewCanvas`**: no `HEAD` limpo ele já falha, e o `-u` gravaria junto cores de tema que não são deste lote (conferi o diff por script e restaurei o arquivo ao `HEAD`).
+- **Fim de linha.** Meus rewrites via Python no Windows converteram 11 arquivos de LF para CRLF (o `HEAD` é LF); isso fez o `auditor_ghostvars` acusar o comentário `var(--x, literal)` do `SarakMenuItem` (a regex que tira comentário não casa com `\r`). Normalizei de volta para LF só os arquivos que eu reescrevi e regenerei `token-types`.
+- O caso de navegador do P24 usa a cena `navegacao-celular` (a que passa pelo `renderScene` do harness e honra `?modo=embarcado` e `?bg=1`); o `App` padrão do harness ignora `?modo=embarcado`.
+- Movi o `status` da plan para `🟠 Em revisão` ao entregar este lote; o lote 7 corre em outro executor e pode reescrever o campo.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` (caso "deve usar propriedades de estilo reais (width/height)…"): **vermelho no `HEAD` limpo** (snapshot defasado, cores de tema). Meu lote acrescenta ao desvio: a raiz do cromo `transparent`, `--sarak-nav-item-radius` e as classes do item; quem atualizar o snapshot leva tudo junto.
+- `browser-tests/cromo-css-real.spec.ts:645-667`: o caso "o raio do item de navegação é o da PÍLULA" e o comentário que cita `05-cromo-e-slots.md §2.1.1` seguem verdes (12 px ≠ raio do botão), mas **nome e comentário passaram a mentir**: o item do topo não é mais cápsula por padrão.
+- `specs/05-cromo-e-slots.md` (§2.1.1 "o ramo horizontal é pílula" e §3, "o cromo deixa de pintar fundo próprio quando há mídia global") fica defasada; é da síntese do revisor.
+- `cyberpunk-neon`, claro: o circuito (opacidade 0,5) agora aparece **atrás do título e dos campos** na captura clara; a intensidade é decisão de refinamento do tema (plan-110), não do motor.
+
+**Pendências / riscos**
+- **Gerados defasados (o revisor regenera; `guide` e `dev-kit` por último):** `sarak-ui/` (`catalog.json`, `GUIA-FRONTEND.md` apêndice, `docs/migracoes.md`, `START-HERE.md`, `skill/SKILL.md`, `VERSION`) e `sarak-dev/` (`state.json`, `GUIA-MANUTENCAO.md`, `START-HERE.md`). O `dist/` não foi reconstruído: os specs novos só rodam contra o `dist/` depois do `build` (medi contra um build à parte).
+- Efeito visível por padrão em todo consumidor em Modo App: a página deixa de ser lisa quando o tema declara textura, tom ou gradiente (na nota MAJOR). Consumidor que pintava o fundo do app por baixo do cromo passa a ver essa pintura.
+- A tabela da §5.1 (P24 e P25 "aberta") é do revisor; não a editei.
+
+## Veredito — 2026-10-18 — lote 8 (P24, P25) — 🔴 Reprovado (1 achado, mecânico)
+
+**O que está certo (conferido):**
+- **P24** — a causa foi medida (a raiz do cromo, `SarakAppChrome.tsx:199`, com fundo opaco por cima do `body` e do `::before` da
+  textura) e corrigida num hook novo (`useChromeRootBackground.ts`): `transparent` em Modo App com Provider ou com mídia global; o
+  `var(--bg-body, …)` de antes sem Provider e no Modo Embarcado. **Abri a vitrine do `cyberpunk-neon` contra o `dist/` real:** a grade
+  de HUD de 20 px, o brilho de horizonte do tom `cyber` e o circuito aparecem atrás do conteúdo (antes: preto liso).
+- **P25** — `navItemRadius` (slider, estético, 0–24 px, padrão 12, `--sarak-nav-item-radius`) em `schema/navigation.ts`, partição,
+  mapeamento, tipos (399 tokens), `usage`/`interactsWith`; `SarakMenuItem` lê o token nas duas orientações e no recolhido; os
+  dois temas completos o declaram (12 e 0); decisão registrada e justificada (um token para as três formas; a horizontal deixa de
+  ser cápsula por padrão; nota MAJOR). A vitrine mostra o item ativo reto no `cyberpunk-neon`.
+- **Medido por mim:** regenerei kits e `token-types`; `npm run build` verde; `verify --tier=quick` verde (Anel 1 inteiro, `tsc`,
+  baseline, R36, Anel 0: 624 linhas, 0 achados); navegador da área contra o `dist/` (`pagina-com-atmosfera`, `raio-do-item-de-menu`,
+  `cromo-css-real`, `navegacao-na-base`, `toque-no-celular`, `painel-segue-o-modo`, `schema-que-desenha`, `token-que-desenha`):
+  **116/116**. O executor provou mutação (cópia da árvore fora do repositório) nos dois e o `cromo-css-real:782` reescrito é
+  coerente (a expectativa antiga desfazia o P24).
+
+**Achado 1 — o vitest da área está vermelho: 2 snapshots (1.540 de 1.542).** `PreviewCanvas.test.tsx` (caso "deve usar propriedades
+de estilo reais…") e `PresetsCatalog.test.tsx` (caso "renderiza a aba Temas por padrão…"). O executor atualizou só o `PresetCard` e
+deixou os dois por serem vermelhos também no `HEAD`; a causa é de **dois lotes**: o lote 7 (o `cyberpunk-neon`, que agora não
+declara token funcional, muda a miniatura de tema do `PresetsCatalog`; o `themes` não roda esses testes, a falha do `HEAD` é
+dele) e este lote (raiz do cromo transparente, `--sarak-nav-item-radius`, classes do item). **Correção:** atualizar os dois snapshots
+(`-u` só nesses dois arquivos) e entregar o diff **dividido por causa**: o que veio do lote 7, o que veio deste lote e qualquer outra
+linha. **Nada fora dessas duas causas pode entrar**; se houver, parar e devolver. Prova: os dois arquivos verdes e
+`npx vitest run src/features/DesignEngine/Canvas` verde.
+
+**Fora do escopo → decidido pelo revisor:** (a) `cromo-css-real.spec.ts:645-667` (nome e comentário do caso "o raio do item é o da
+PÍLULA") passaram a mentir: o executor corrige o nome e o comentário junto do achado 1 (é a mesma entrega: o item do topo é raio 12 por padrão);
+(b) `specs/05-cromo-e-slots.md` §2.1.1 e §3 ficam para a síntese; (c) o `PreviewCanvas` mostra o preview com a raiz transparente
+(medido no vitest, não no painel): confira na captura de customização se der, senão a síntese registra.
+
+**Nota para o revisor (meu):** o nível `themes` do `verify` precisa rodar o vitest de `src/features/DesignEngine/Canvas` (o
+`PresetsCatalog` depende do conteúdo dos temas). Entra no prompt direto do `themes` (Anel 1), que já está em curso.
+
+**Lote 7 (P23)** continua sem retorno. **Status: 🟡 Em execução** (lote 7 em curso; o lote 8 volta para correção).
+
+## Resumo da execução (correção 1 do lote 8) — 2026-10-18
+
+**Achado 1 — os dois snapshots vermelhos: corrigido.**
+- `-u` (`--update`) só em `PreviewCanvas.test.tsx` e `PresetsCatalog.test.tsx` → `Snapshots 2 updated`, 2/2 arquivos. `npx vitest run src/features/DesignEngine/Canvas` → **32 arquivos, 103/103** (inclui o `PresetCard`, atualizado na 1ª rodada).
+- **Diff dividido por causa**, medido regenerando os mesmos dois snapshots num `HEAD` limpo (cópia fora do repositório, junção para `node_modules` removida antes de apagar; `node_modules` do repositório conferido) e comparando as três versões linha a linha:
+  | Arquivo | Lote 7 (`HEAD` → `HEAD` regenerado) | Este lote (`HEAD` regenerado → worktree) | Outras |
+  |---|---|---|---|
+  | `PresetsCatalog.test.tsx.snap` | 28 linhas (miniatura do `cyberpunk-neon`: paleta e estrutura) | 0 | 0 |
+  | `PreviewCanvas.test.tsx.snap` | 28 linhas (a mesma miniatura de tema, modo claro) | 25 linhas: 24 do raio do item (`--sarak-nav-item-radius` e `rounded-[var(--sarak-nav-item-radius,12px)]` no lugar de `rounded-*`) e 1 da raiz do cromo (`background: var(--bg-body, …)` → `transparent`) | 0 (todo par de linhas trocadas foi classificado por script; nenhum ficou sem causa) |
+  | `PresetCard.test.tsx.snap` (já entregue) | 0 | 1 (a variável nova) | 0 |
+- Nada fora das duas causas entrou. O "lote 7" aqui é a causa que o veredito atribuiu (tema `cyberpunk-neon` já em `HEAD`); os arquivos do `SarakIconButton`/`useAtomicStyles` não estão no worktree e não foram tocados.
+
+**Ajuste do `cromo-css-real.spec.ts`:** o caso de `:656` passou a se chamar "o raio do item de navegação vem do token `navItemRadius` (12 px), distinto do botão de ação"; o comentário agora diz que o ramo horizontal lê `navItemRadius` (não mais `rounded-full`) e remete a `raio-do-item-de-menu.spec.ts` para o valor. A asserção não mudou; o caso passa (1/1, build à parte).
+
+**Não rodei:** guide, dev-kit, token-types, build, a suíte completa. Nada commitado.
+
+## Veredito — 2026-10-18 — correção 1 (lote 8: P24, P25) — 🟢 Aprovado; lote 8 fechado
+
+**Conferido:** os dois snapshots (`PreviewCanvas` e `PresetsCatalog`) foram atualizados só neles e o executor dividiu o diff por
+causa, medindo contra um `HEAD` limpo regenerado: `PresetsCatalog` — 28 linhas do lote 7 (miniatura do `cyberpunk-neon`) e 0 deste
+lote; `PreviewCanvas` — 28 do lote 7, 25 deste lote (24 do raio do item e 1 da raiz do cromo transparente), 0 de outra causa;
+`PresetCard` — 1 (a variável nova). O nome e o comentário do caso de `cromo-css-real.spec.ts` agora dizem a verdade.
+**Medido por mim:** `npx vitest run src/features/DesignEngine/Canvas` **32 arquivos, 103/103**; `cromo-css-real` **32/32** contra o
+`dist/`. O resto da verificação do lote (build, `quick`, vitest da área, navegador da área 116/116, vitrine do `cyberpunk-neon`)
+já constava do veredito anterior e o diff de código não mudou.
+
+**P24 e P25 fechadas.** Resta o lote 7 (P23, o botão de ícone no estilo `cyberpunk`), ainda sem retorno do executor.
+
+**Status: 🟡 Em execução (lote 7).**

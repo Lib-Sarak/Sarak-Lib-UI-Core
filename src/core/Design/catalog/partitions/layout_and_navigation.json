@@ -853,6 +853,40 @@
     ]
   },
   {
+    "tokenId": "navItemRadius",
+    "name": "Raio do Item de Menu",
+    "description": "Raio dos cantos do item de navegação: a forma do fundo do item ativo e do item sob o ponteiro.",
+    "type": "slider",
+    "importance": 55,
+    "categories": [
+      "geometria",
+      "bordas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "item",
+      "radius",
+      "border"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-item-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24
+    },
+    "relatedTokens": [
+      "sidebarActiveColor",
+      "topbarActiveColor"
+    ]
+  },
+  {
     "tokenId": "sidebarBlur",
     "name": "Backdrop Blur (Sidebar)",
     "description": "Quantidade de desfoque de fundo (backdrop-filter) aplicada à barra de navegação lateral.",

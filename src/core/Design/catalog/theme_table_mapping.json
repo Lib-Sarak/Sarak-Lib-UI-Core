@@ -149,6 +149,7 @@
     "navItemActiveColor",
     "navActiveMarkerColor",
     "navActiveMarkerGlow",
+    "navItemRadius",
     "sidebarBlur",
     "sidebarShadow",
     "searchPositionTopbar",

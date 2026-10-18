@@ -138,6 +138,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `acao-brilho-base` / `-y` / `-desfoque` / `-espalhamento`: um dos três `actionGlowShadow*` num extremo, com `btnStyleType: 'matte'` fixado (o único estilo que preserva o `style`; não é mais o padrão).
  *   - `faixa-ativa`: `rangeActiveColor` = `#e11d48`. `cor-hover-base` / `cor-profunda` / `cor-variada`: a primária de matiz médio com
  *     `colorDepth`/`colorVariation` no mínimo e num extremo.
+ *   - `raio-item-zero` / `raio-item-vinte`: `navItemRadius` 0 e 20 (o padrão é 12); `raio-item-recolhido`: 20 com `isNavHidden` (o item recolhido da barra do topo).
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
@@ -307,6 +308,9 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'acao-brilho-espalhamento': { btnStyleType: 'matte', actionGlowShadowSpread: 2 },
     'faixa-ativa': { rangeActiveColor: '#e11d48' },
     'cor-hover-base': { primaryColor: '#808040', colorDepth: 1, colorVariation: 1 },
+    'raio-item-zero': { navItemRadius: 0 },
+    'raio-item-vinte': { navItemRadius: 20 },
+    'raio-item-recolhido': { navItemRadius: 20, isNavHidden: true },
 };
 
 function resolveHarnessConfig(): Record<string, unknown> {

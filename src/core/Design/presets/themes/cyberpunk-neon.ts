@@ -51,6 +51,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         navItemActiveColor: '#00ff6a',
         navActiveMarkerColor: '#00ff6a',
         navActiveMarkerGlow: 14,
+        navItemRadius: 0,
         sidebarBlur: 0,
         sidebarShadow: '0 0 28px rgba(0, 255, 106, 0.12)',
         // --- Card Geral ---

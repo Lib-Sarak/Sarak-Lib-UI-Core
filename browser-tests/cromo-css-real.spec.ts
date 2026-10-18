@@ -653,15 +653,16 @@ test('tablet (768-1023): item de navegação usa métrica de PÍLULA em caixa no
     await page.close();
 });
 
-test('tablet (768-1023): o raio do item de navegação é o da PÍLULA, distinto do botão de ação', async () => {
-    // `05-cromo-e-slots.md` §2.1.1: o ramo horizontal é pílula (`rounded-full`). O padrão
-    // de raio de `<button>` da lib mora numa camada que cede à classe utilitária — é isso
-    // que deixa a pílula chegar à tela.
+test('tablet (768-1023): o raio do item de navegação vem do token `navItemRadius` (12 px), distinto do botão de ação', async () => {
+    // O ramo horizontal lê `navItemRadius` (`rounded-[var(--sarak-nav-item-radius,12px)]`), e não mais
+    // `rounded-full`: com o padrão 12 o item NÃO é cápsula. O padrão de raio de `<button>` da lib mora
+    // numa camada que cede à classe utilitária — é isso que deixa o raio do item chegar à tela, e o
+    // valor do token é medido em `raio-do-item-de-menu.spec.ts`.
     const page = await openHarness(BREAKPOINTS.tablet);
     const item = await readComputedMetric(page, NAV_ITEM_NAME, 'link');
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
-    expect(item.borderRadius, 'o raio do item de navegação (pílula) tem de ser diferente do raio do botão de ação').not.toBe(reference.borderRadius);
+    expect(item.borderRadius, 'o raio do item de navegação (token navItemRadius) tem de ser diferente do raio do botão de ação').not.toBe(reference.borderRadius);
 
     await page.close();
 });
@@ -779,11 +780,15 @@ test('NÃO MUDA NADA: elemento com border, sob o token borderStyle dashed, compu
     await page.close();
 });
 
-test('SEM mídia global: a raiz do cromo continua emitindo o fundo de token de hoje', async () => {
+test('SEM mídia global, em Modo App: a raiz do cromo é transparente e o `body` pinta o fundo de token por baixo', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
     const backgroundColor = await readRootBackgroundColor(page);
 
-    expect(backgroundColor, 'sem globalBackgroundImageUrl, a raiz continua pintando o token de fundo — não pode virar transparente').not.toBe('rgba(0, 0, 0, 0)');
+    expect(backgroundColor, 'em Modo App a raiz não cobre a atmosfera da página (gradiente, tom e textura do `body`)').toBe('rgba(0, 0, 0, 0)');
+    // As variáveis do tema chegam depois da hidratação: o `body` pinta o fundo de token assim que elas existem.
+    await expect
+        .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor), { message: 'o fundo de token continua pintado — pelo `body`, não pela raiz do cromo' })
+        .not.toBe('rgba(0, 0, 0, 0)');
 
     await page.close();
 });

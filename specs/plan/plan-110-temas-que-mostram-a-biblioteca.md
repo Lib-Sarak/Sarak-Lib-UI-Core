@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
@@ -141,9 +141,11 @@ revista para usá-la.
 - `browser-tests/` — a vitrine (`generate-showcase.mts`, `fixtures/showcase-entry.tsx`) estendida e usada em todo lote.
 - **Documentação do importador:** `sarak-ui/GUIA-FRONTEND.md` (autoria; o apêndice é gerado), `.agents/skills/ui-criar-tema/`
   e `.agents/skills/ui-integra-consumidor/` (fonte do kit). A §7 da `09` e a `12` são do revisor, na síntese.
-- `specs/plan/anexos/plan-110-direcao-de-arte.md` (o executor acrescenta a nota de conceito de cada tema) e
+- `specs/plan/anexos/plan-110-tema-<id>.md` (**um anexo por tema**, dos lotes 8 a 24: nota de conceito, medições, o que o tema
+  ensinou e achados; ver "Modelo de execução dos lotes 8 a 24" na §5), `specs/plan/anexos/plan-110-direcao-de-arte.md` (só o revisor) e
   `specs/plan/anexos/plan-110-tokens-funcionais.md` (lote 1).
-- `docs/migracoes.md` — subseção dentro de `## 8.0.0` a cada lote; artefatos regenerados.
+- `docs/migracoes.md` — subseção dentro de `## 8.0.0` nos lotes 1 a 7 e no lote 25; **nos lotes 8 a 24 não se toca**
+  (a nota dos temas é uma só, no lote 25); artefatos regenerados pelo revisor.
 
 ## 3.2 Fora
 - Componentes e CSS do motor: esta plan **usa** o arsenal. Defeito achado no caminho vai para o resumo, como achado.
@@ -271,11 +273,45 @@ primária; token responsivo mantém `{ mob, tab, desk }`; `identityFontFamily` �
 transições de hidratação terminarem. (c) Confira o que a skill ainda diz do padrão antigo (`#00f2ff`, `matte`, `grid`,
 `none` de textura): o padrão do sistema agora é o do `sarak-sovereign`.
 
+**Modelo de execução dos lotes 8 a 24 (decisão do dono, 2026-10-18).** Lote de tema é **só o tema**: os temas são independentes e
+se agrupam **quatro por execução**: **um executor faz quatro temas em sequência** (A: 8–11 · B: 12–15 · C: 16–19 · D: 20–24), e
+duas execuções de lotes diferentes podem correr em paralelo se os arquivos forem disjuntos (cada uma só toca o que a lista abaixo
+permite). As regras 7.1 a 7.5 acima valem, **menos** onde esta seção disser o contrário:
+- **O que o executor toca:** o arquivo do tema (`src/core/Design/presets/themes/<id>.ts`), o anexo dele
+  (`specs/plan/anexos/plan-110-tema-<id>.md`) e **a própria linha** do tema em `gates/allowlists/themeCompletenessPending.json`
+  (a trava bloqueia tema completo que continua na lista) **e o snapshot** `PresetsCatalog.test.tsx.snap` (e o de `PreviewCanvas` se
+  mudar), porque a miniatura de tema depende do conteúdo do tema: `-u` restrito a esses arquivos, conferindo que só mudaram
+  linhas do próprio tema. **Nada mais.**
+- **O que o executor não faz:** não toca a skill `ui-criar-tema`, o GUIA, o mapa "o que a lib já faz", `docs/migracoes.md`, o anexo de
+  direção de arte nem o bloco de resumo da plan; não roda `themes:catalog` (o revisor regenera o catálogo uma vez por lote de temas),
+  `build`, `guide`, `dev-kit` nem `token-types`; não corrige defeito do arsenal ou do fluxo de criação de tema — **registra** no anexo.
+- **O anexo do tema** (uma só estrutura, em português): (1) nota de conceito; (2) medições: contraste por par e por modo, contraste
+  não textual, peso gzip; (3) descrição das capturas (as 10 imagens geradas a partir de `src/` fora do repositório, com as fontes
+  reais lidas de `dist/fonts`, abertas e descritas contra a nota de conceito); (4) tabela **"o que o tema ensinou"** (decisão,
+  armadilha, medida) com a coluna **destino proposto** (skill `ui-criar-tema`, GUIA, `usage` de token, mapa) — a consolidação é
+  do lote 25; (5) **achados do arsenal ou do fluxo**, cada um com `arquivo:linha` e a medição, para o revisor transcrever.
+- **O resumo do executor** vai nos anexos dos temas e no chat (não na plan); o revisor mantém a tabela "Estado dos temas" na §9.
+- **Defeito essencial: o executor PARA e devolve.** O que torne o tema errado ou bloqueie os seguintes (ferramenta quebrada, token que
+  não desenha, bug de componente, token que falta para a ficha) faz o executor **parar no tema em que o achou**, entregar o que já
+  está pronto (os temas anteriores do lote, com anexo) e descrever o defeito com `arquivo:linha` e a medição. O revisor corrige
+  (prompt direto ou lote da `plan-117`) e despacha a continuação. O que não for essencial, o executor **registra no anexo e
+  segue**; espera o lote 25 ou o `00-backlog`. Em dúvida, é essencial: a aplicação dos temas é o refinamento final.
+- **Pragmatismo:** nada de rodar gate completo por tema. O executor roda **só** o que prova o tema: `theme-completeness:check`,
+  `variable-contract:check`, o contraste (R31), o `themes:diversity` e o peso, e o vitest dos arquivos de tema. O Anel 1 inteiro e o
+  nível `themes` são do revisor, **uma vez por execução** de quatro temas.
+- **Verificação por execução de quatro temas, não por tema:** o revisor regenera o catálogo uma vez, roda `verify --tier=themes` (com o
+  Anel 1 inteiro) e abre as capturas que o executor entregou. **Um** `build`, a bateria completa do navegador e a vitrine contra o `dist/`
+  só no fim do último lote de temas e no lote 25. O registro dos temas novos (`index.ts`, `all.ts`, `loaders.ts`, `catalog`) é do
+  revisor, por prompt direto, antes do lote D.
+
 **Lote 25 — conjunto, documentação consolidada e roteiro de validação.**
 25.1. Cobertura do **conjunto**: os 19 usam juntos pelo menos 15 texturas de cartão, 10 fontes, as 3 famílias de
 ícone com pelo menos 4 pesos, e nenhum par repete a mesma combinação de textura + estilo de botão + fonte de título
 (teste, com mutação); `themes:diversity` verde. (O critério "4 modos de gradiente" volta, porque o gradiente agora
 desenha — D6 do lote 0 está superada.)
+25.1b. **Consolidação das lições dos temas:** ler os 18 anexos `plan-110-tema-<id>.md` e aplicar **uma vez**, e sem repetir, na skill
+`ui-criar-tema`, no GUIA do importador, no mapa "o que a lib já faz" e na nota de `docs/migracoes.md`; reescrever ou aposentar
+o `generate_theme_template.ts` (backlog) e fechar o anexo de direção com as notas de conceito.
 25.2. **Guia do importador consolidado** (kit e skills), com exemplos tirados dos temas reais:
 - **Do cliente ao tema:** da identidade visual (marca, tipografia, cantos, densidade, tom, movimento) aos pilares e
   tokens que a carregam, com a ordem de decisão recomendada;
@@ -319,7 +355,7 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 - Lotes 1–4: **amostra** de tokens por grupo contra o leitor no código e o efeito na vitrine (o `usage` diz a
   verdade?); o gate de documentação com mutação; o apêndice do kit gerado; nenhum token novo.
 - Lote 5: cada padrão funcional mudado e o motivo; a trava de completude com mutação; a vitrine estendida.
-- Lotes de tema: o tema contra a ficha; completude (a trava); contraste nos dois modos; peso; **as capturas (o revisor
+- Lotes de tema (8 a 24, por lote de 4): o tema contra a ficha e o anexo dele; completude (a trava); contraste nos dois modos; peso; **as capturas (o revisor
   abre as imagens)** nos dois modos, desktop e celular, contra a nota de conceito — registra no veredito o que viu;
   o que foi ensinado ao schema e ao kit.
 - Lote 25: o guia lido de ponta a ponta como se fosse um importador (alguém consegue ir do cliente ao tema e evitar
@@ -344,6 +380,17 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 ---
 
 # 9. Resumo da execução
+
+## Estado dos temas (mantido pelo revisor)
+
+| Lote | Tema | Estado | Peso gzip | Menor contraste (escuro / claro) | Revisão |
+|---|---|---|---|---|---|
+| 6 | `sarak-sovereign` | 🟢 | 3.4 KB | — | aprovado |
+| 7 | `cyberpunk-neon` | 🟢 | 3.472 B | 5,52 / 4,61 | aprovado |
+| 8 | `industrial-terminal` | ⚪ | | | |
+| 9 | `neo-brutalism` | ⚪ | | | |
+| 10 | `synthwave-retro` | ⚪ | | | |
+| 11 | `nebula-space` | ⚪ | | | |
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 

@@ -5924,6 +5924,7 @@
       "--sarak-nav-active-marker-color",
       "--sarak-nav-active-marker-glow",
       "--sarak-nav-item-active-color",
+      "--sarak-nav-item-radius",
       "--sarak-nav-marker-color",
       "--sarak-nav-marker-glow",
       "--sarak-nav-style",
@@ -6329,7 +6330,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 398,
+    "count": 399,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -9363,6 +9364,22 @@
         "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo."
       },
       {
+        "id": "navItemRadius",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Raio do Item de Menu",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula.",
+        "interactsWith": [
+          "sidebarActiveColor",
+          "topbarActiveColor",
+          "sidebarHoverColor",
+          "topbarHoverColor"
+        ]
+      },
+      {
         "id": "pageTransitionType",
         "type": "string",
         "responsive": false,
@@ -10965,6 +10982,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "abb9cd0723e7"
+    "kitHash": "70e899f869f1"
   }
 }

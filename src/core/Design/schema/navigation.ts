@@ -409,6 +409,21 @@ export const NavigationSchema: ComponentSchema = {
             defaultValue: 8,
             cssVars: ['--sarak-nav-marker-glow']
         },
+        {
+            id: 'navItemRadius',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula.",
+            interactsWith: ['sidebarActiveColor', 'topbarActiveColor', 'sidebarHoverColor', 'topbarHoverColor'],
+            label: 'Raio do Item de Menu',
+            type: 'slider',
+            description: 'Raio, em pixels, dos cantos de cada item de navegação — é a forma do fundo que marca o item ativo e o item sob o ponteiro, igual nas barras lateral e do topo. 0 deixa o item reto; valores altos o arredondam até a forma de cápsula.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 12,
+            cssVars: ['--sarak-nav-item-radius']
+        },
         // --- ESTÉTICA AVANÇADA DO SHELL ---
         {
             id: 'sidebarBlur',

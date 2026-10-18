@@ -1,7 +1,7 @@
 import React from 'react';
 import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
-import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
+import { useChromeRootBackground } from './chrome/useChromeRootBackground';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
 import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
@@ -196,7 +196,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     const rootStyle: React.CSSProperties = {
         height: '100dvh',
         overflow: 'hidden',
-        background: useHasGlobalBackgroundMedia() ? 'transparent' : 'var(--bg-body, var(--theme-body, transparent))',
+        background: useChromeRootBackground(),
         ...style,
     };
 

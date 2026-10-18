@@ -2466,6 +2466,20 @@
    "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo."
   },
   {
+   "id": "navItemRadius",
+   "group": "navigation",
+   "label": "Raio do Item de Menu",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula.",
+   "interactsWith": [
+    "sidebarActiveColor",
+    "topbarActiveColor",
+    "sidebarHoverColor",
+    "topbarHoverColor"
+   ]
+  },
+  {
    "id": "pageTransitionType",
    "group": "animations",
    "label": "Transição de Página",
