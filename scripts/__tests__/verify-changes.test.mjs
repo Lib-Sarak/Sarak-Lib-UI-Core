@@ -52,4 +52,11 @@ describe('verify-changes — o nível mínimo que cobre a mudança', () => {
         expect(flat('quick').some((c) => c.includes('token-reader:check'))).toBe(true);
         expect(flat('full').length).toBe(flat('quick').length + 1);
     });
+
+    it('inclui o gate de completude dos temas em quick, full e themes', () => {
+        for (const tier of ['quick', 'full', 'themes']) {
+            const scheduledCommands = commandsFor(tier).map(([cmd, args]) => `${cmd} ${args.join(' ')}`);
+            expect(scheduledCommands, `tier ${tier}`).toContain('npm run -s theme-completeness:check');
+        }
+    });
 });

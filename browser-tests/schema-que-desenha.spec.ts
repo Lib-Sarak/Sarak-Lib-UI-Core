@@ -48,6 +48,9 @@ async function withScene<T>(cena: string | undefined, tema: string | undefined, 
     try {
         await page.goto(`${harnessUrl}?${searchParams.toString()}`);
         await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
+        // As transições da hidratação (fundo, cor, entrada dos cartões) terminam antes de medir o hover: com a espera fixa depois do
+        // ponteiro, medir no meio delas lê o estado de repouso.
+        await page.evaluate(() => Promise.all(document.getAnimations().filter((animation) => animation instanceof CSSTransition).map((animation) => animation.finished.catch(() => undefined))));
         return await measure(page);
     } finally {
         await page.close();
@@ -115,7 +118,9 @@ test.describe('cartão: hover — só o cartão interativo se move ou brilha', (
     };
 
     test('cardHoverTranslate: o cartão interativo sobe o que o token manda', async () => {
-        const { padrao, alterado } = await padraoEAlterado('schema-cartao', hoverTransform('cartao-interativo'));
+        // O padrão do tema padrão é `glow-only` (o cartão não se move): o caso mede o deslocamento no `lift`, com o padrão do token e com -10.
+        const padrao = await withScene('schema', 'schema-hover-lift', hoverTransform('cartao-interativo'));
+        const alterado = await withScene('schema', 'schema-cartao', hoverTransform('cartao-interativo'));
         expect(padrao).toMatch(/^matrix\(1, 0, 0, 1, 0, -?\d+(\.\d+)?\)$/);
         expect(padrao).not.toBe('matrix(1, 0, 0, 1, 0, -10)');
         expect(alterado).toBe('matrix(1, 0, 0, 1, 0, -10)');
@@ -141,8 +146,10 @@ test.describe('cartão: hover — só o cartão interativo se move ou brilha', (
             await page.waitForTimeout(700);
             return Number(await computed(card, 'opacity', '::before'));
         };
-        expect(await withScene('schema', 'schema-cartao', glow('cartao-interativo'))).toBeCloseTo(0.5, 1);
-        expect(await withScene('schema', 'schema-cartao', glow('cartao'))).toBe(0);
+        // Intensidade base do tema padrão (`cardGlowIntensity` 0,25) + o aumento do token (0,5), em `lift`.
+        expect(await withScene('schema', 'schema-cartao', glow('cartao-interativo'))).toBeCloseTo(0.75, 1);
+        // O contêiner fica na intensidade base: o aumento de hover não o alcança.
+        expect(await withScene('schema', 'schema-cartao', glow('cartao'))).toBeCloseTo(0.25, 1);
     });
 });
 
@@ -236,7 +243,7 @@ test.describe('campos e sobreposições', () => {
         const { padrao, alterado } = await padraoEAlterado('schema-campos', measure);
         expect(padrao.zebra).toBe('rgba(0, 0, 0, 0)');
         expect(alterado.zebra).not.toBe('rgba(0, 0, 0, 0)');
-        expect(padrao.radius).toBe('12px');
+        expect(padrao.radius).toBe('14px');
         expect(alterado.radius).toBe('0px');
     });
 
@@ -292,7 +299,7 @@ test.describe('marca do cromo', () => {
         };
         const padrao = await withScene(undefined, undefined, measure);
         const alterado = await withScene(undefined, 'schema-campos', measure);
-        expect(padrao.weight).toBe('700');
+        expect(padrao.weight).toBe('800');
         expect(alterado.weight).toBe('300');
         expect(alterado.tracking).not.toBe(padrao.tracking);
         expect(alterado.family).toContain('Georgia');

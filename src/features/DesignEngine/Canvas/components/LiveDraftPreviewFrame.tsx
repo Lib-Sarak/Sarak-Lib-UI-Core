@@ -44,22 +44,22 @@ export const LiveDraftPreviewFrame: React.FC<LiveDraftPreviewFrameProps> = ({
         >
             {/* Hardware Mockup Extras (Notch, Camera) */}
             {previewDevice === 'smartphone' && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,rgba(15,23,42,0.6))] rounded-b-[var(--sarak-device-phone-notch-radius,1rem)] z-[1000] flex items-center justify-center gap-2">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,#101622)] rounded-b-[var(--sarak-device-phone-notch-radius,1rem)] z-[1000] flex items-center justify-center gap-2">
                     <div className="w-12 h-1.5 rounded-full bg-theme-body/50"></div>
-                    <div className="w-2 h-2 rounded-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] shadow-inner border border-theme-text/5"></div>
+                    <div className="w-2 h-2 rounded-full bg-[var(--color-theme-card,#101622)] shadow-inner border border-theme-text/5"></div>
                 </div>
             )}
             {previewDevice === 'tablet' && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-32 flex items-center justify-center z-[1000]">
                     {/* Camera na borda esquerda simulando modo paisagem/retrato dependendo do frame */}
-                    <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] shadow-inner border border-theme-text/5"></div>
+                    <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[var(--color-theme-card,#101622)] shadow-inner border border-theme-text/5"></div>
                 </div>
             )}
 
             <button
                 onClick={() => setIsInspecting(!isInspecting)}
                 className={`absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ${isInspecting ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110' : 'bg-theme-body/40 border-theme-text/10 text-theme-text/50 hover:text-theme-on-primary hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'}`}
-                style={isInspecting ? { backgroundColor: 'var(--theme-primary, #00f2ff)', borderColor: 'var(--theme-primary, #00f2ff)' } : {}}
+                style={isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
                 title="Modo de Inspeção (Selecionar elemento)"
             >
                 <Monitor size={16} />

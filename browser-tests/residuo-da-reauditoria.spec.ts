@@ -99,9 +99,9 @@ test.describe('mídia de fundo, título e cartão', () => {
         });
     });
 
-    test('L4.8 — sem Provider, o cartão é a cor do token (translúcida), não a da superfície', async () => {
+    test('L4.8 — sem Provider, o cartão é a cor do token (`--theme-card`, sem a opacidade da superfície)', async () => {
         await withScene({ cena: 'sem-provider' }, async (page) => {
-            expect(await computed(probe(page, 'cartao-sem-provider'), 'background-color')).toBe('rgba(15, 23, 42, 0.6)');
+            expect(await computed(probe(page, 'cartao-sem-provider'), 'background-color')).toBe('rgb(16, 22, 34)');
         }, '[data-probe="cartao-sem-provider"]');
     });
 });

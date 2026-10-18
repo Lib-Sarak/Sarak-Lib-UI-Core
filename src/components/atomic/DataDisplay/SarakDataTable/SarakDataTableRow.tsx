@@ -44,7 +44,7 @@ const SarakDataTableCell = <T,>({ column, row, props, selectionWidth }: SarakDat
         overflow: props.automaticHeight ? 'visible' : 'hidden',
         textOverflow: props.automaticHeight ? undefined : 'ellipsis',
         whiteSpace: props.automaticHeight ? 'normal' : 'nowrap',
-        color: 'var(--sarak-text-main,#ffffff)',
+        color: 'var(--sarak-text-main,#f2f6fb)',
         ...pinnedStyle(column, props.offsets, props.cellBackground, selectionWidth),
     };
     const value = column.render
@@ -59,7 +59,7 @@ export function SarakDataTableRow<T>({ row, props }: SarakDataTableRowProps<T>):
     const style: CSSProperties = {
         position: 'absolute', top: props.headerHeight + start, left: 0, display: 'flex', width: props.containerWidth,
         height: props.automaticHeight ? undefined : size,
-        borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.1)))',
+        borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)))',
         ...(props.zebra && virtualIndex % 2 === 1 ? { backgroundColor: ZEBRA_BACKGROUND } : null),
     };
     return (

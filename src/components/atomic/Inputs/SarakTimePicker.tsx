@@ -23,7 +23,7 @@ const range = (count: number, step: number = 1): number[] =>
 
 const SELECT =
     // sarak-allow-hardcode: piso absoluto de 16px do campo com ponteiro de dedo — abaixo disso o Safari do iPhone dá zoom ao focar.
-    'rounded-input py-2 px-2 text-sm [@media(pointer:coarse)]:text-[length:max(16px,1em)] tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.1)))] text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+    'rounded-input py-2 px-2 text-sm [@media(pointer:coarse)]:text-[length:max(16px,1em)] tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.09)))] text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
 /**
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)
@@ -66,7 +66,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
 
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
-            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">{label}</span>}
+            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
 
             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-labelledby={label ? labelId : undefined} aria-label={!label ? t('timeGroupAriaLabel') : undefined}>
                 <select
@@ -84,7 +84,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                     ))}
                 </select>
 
-                <span className="font-bold text-[var(--text-muted,rgba(255,255,255,0.4))]">:</span>
+                <span className="font-bold text-[var(--text-muted,rgba(242,246,251,0.55))]">:</span>
 
                 <select
                     aria-label={t('timeMinuteAriaLabel')}

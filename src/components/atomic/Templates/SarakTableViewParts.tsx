@@ -57,7 +57,7 @@ const TableHeading = <TData extends Record<string, unknown>>({ label, role, dens
     const headingClass = ['font-black', 'text-theme-title', 'tracking-tight', density === 'spacious' ? 'text-2xl' : 'text-xl'].join(' ');
     return (
         <div>
-            {label && <h3 className={headingClass} style={{ fontWeight: 'var(--sarak-h1-weight,900)', color: role === 'primary' ? 'var(--sarak-primary-color,#00f2ff)' : 'var(--color-theme-title,currentColor)' }}>{label}</h3>}
+            {label && <h3 className={headingClass} style={{ fontWeight: 'var(--sarak-h1-weight,800)', color: role === 'primary' ? 'var(--sarak-primary-color,#19e3f0)' : 'var(--color-theme-title,currentColor)' }}>{label}</h3>}
             <p className="text-theme-muted text-xs">{text('tableRowsFound', { count: filteredData.length })}</p>
         </div>
     );
@@ -94,7 +94,7 @@ interface SarakTableGridHeaderProps<TData extends Record<string, unknown>> {
 const SarakTableGridHeader = <TData extends Record<string, unknown>>({ columns, interactions, selectable, cellDensityClass }: SarakTableGridHeaderProps<TData>): ReactElement => {
     const text = useLibraryText();
     return (
-        <thead><tr className="bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] border-b border-[var(--border-color,rgba(255,255,255,0.1))]">
+        <thead><tr className="bg-[var(--sarak-table-header-bg,rgba(255,255,255,0.03))] border-b border-[var(--border-color,rgba(255,255,255,0.09))]">
             {selectable && <th className={cellDensityClass}><SarakTableSelectionCheckbox label={text('selectAllVisibleRows')} checked={interactions.allVisibleSelected} indeterminate={interactions.partiallySelected} onChange={interactions.toggleAll} /></th>}
             {columns.map((column) => <th key={column.key} className={'text-2xs font-black text-theme-muted uppercase ' + cellDensityClass} style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)', textAlign: column.align ?? 'left' }}><SarakTableSortButton columnId={column.key} label={column.label} sort={interactions.sort} onSort={interactions.changeSort} /></th>)}
         </tr></thead>

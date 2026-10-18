@@ -98,10 +98,10 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                 ) : viewMode === 'preview' ? (
                     <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2">
 
-                        <section className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,12px)] border border-[var(--theme-border,rgba(255,255,255,0.1))] bg-[var(--theme-card,rgba(15,23,42,0.6))] p-[var(--sarak-layout-gap-sm,12px)]">
+                        <section className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border,rgba(255,255,255,0.09))] bg-[var(--theme-card,#101622)] p-[var(--sarak-layout-gap-sm,12px)]">
                             <div>
-                                <h2 className="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#ffffff)]">Começar de um tema</h2>
-                                <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(255,255,255,0.4))]">
+                                <h2 className="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#f2f6fb)]">Começar de um tema</h2>
+                                <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">
                                     Escolha um estilo e ajuste os detalhes abaixo.
                                 </p>
                             </div>

@@ -69,7 +69,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                             <div className="p-2 bg-[var(--theme-primary)]/10 rounded-lg">
                                 <FileJson size={18} className="text-[var(--theme-primary)]" />
                             </div>
-                            <h2 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]">Exportar Tema (JSON)</h2>
+                            <h2 className="text-sm font-bold text-[var(--color-theme-title,#f2f6fb)]">Exportar Tema (JSON)</h2>
                         </div>
                         <button
                             onClick={!isSaving ? onClose : undefined}
@@ -93,7 +93,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                             </p>
                         )}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-widest">Nome do Tema</label>
+                            <label className="text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--color-theme-title,#f2f6fb)] uppercase tracking-widest">Nome do Tema</label>
                             <SarakInput
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}

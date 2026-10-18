@@ -45,8 +45,8 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
     // `glow-only` não move o cartão: o brilho é o efeito, então acende na cor primária em vez do
     // tom quase transparente do brilho de repouso (`cardGlowColor`).
     const hoverGlowColor = hoverStyle === 'glow-only'
-        ? 'color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent)'
-        : 'var(--sarak-card-glow-color, rgba(0, 242, 255, 0.05))';
+        ? 'color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 40%, transparent)'
+        : 'var(--sarak-card-glow-color, rgba(25,227,240,0.18))';
     const contentStack = getFlexStyles('column', undefined, undefined, '0px');
 
     return (
@@ -59,10 +59,10 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
             data-sx-card-interactive="true"
             className={`relative overflow-hidden group cursor-pointer ${className}`}
             style={{
-                borderRadius: 'var(--sarak-card-radius, 12px)',
+                borderRadius: 'var(--sarak-card-radius, 10px)',
                 borderWidth: 'var(--sarak-card-border-width, 1px)',
                 borderStyle: 'solid',
-                borderColor: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))',
+                borderColor: 'var(--sarak-card-border-color, rgba(255,255,255,0.09))',
                 backgroundColor: 'var(--sarak-card-bg)',
                 boxShadow: hoverStyle === 'glow-only' ? 'none' : '0 var(--sarak-image-card-shadow-offset-y, 10px) var(--sarak-image-card-shadow-blur, 30px) calc(var(--sarak-image-card-shadow-spread, 10px) * -1) color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 50%, transparent)',
             }}
@@ -94,8 +94,8 @@ export const SarakImageCard: React.FC<SarakImageCardProps> = ({
                 className={`relative z-10 ${contentStack.className} h-full justify-end`}
                 style={{ ...contentStack.style, padding: 'var(--sarak-layout-gap-lg, 24px)' }}
             >
-                {title && <h3 className="text-xl font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h3>}
-                {subtitle && <p className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{subtitle}</p>}
+                {title && <h3 className="text-xl font-bold text-[var(--color-theme-title,#f2f6fb)]">{title}</h3>}
+                {subtitle && <p className="text-sm text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{subtitle}</p>}
 
                 {children && <div style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>{children}</div>}
             </div>

@@ -93,7 +93,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-input-border-radius)' }}>
                         {/* Fake image preview with grid pattern */}
-                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg, var(--color-theme-title,#ffffff) 25%, transparent 25%), linear-gradient(-45deg, var(--color-theme-title,#ffffff) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--color-theme-title,#ffffff) 75%), linear-gradient(-45deg, transparent 75%, var(--color-theme-title,#ffffff) 75%)', backgroundSize: '10px 10px' }} />
+                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg, var(--color-theme-title,#f2f6fb) 25%, transparent 25%), linear-gradient(-45deg, var(--color-theme-title,#f2f6fb) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--color-theme-title,#f2f6fb) 75%), linear-gradient(-45deg, transparent 75%, var(--color-theme-title,#f2f6fb) 75%)', backgroundSize: '10px 10px' }} />
                         <SarakIcon name="Image" size={40} className="text-[var(--sarak-status-success-color,#10b981)]/80 relative z-10" />
                         <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)] text-[10px] font-bold rounded z-10">PNG</div>
                     </div>

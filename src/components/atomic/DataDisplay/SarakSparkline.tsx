@@ -33,7 +33,7 @@ export interface SarakSparklineProps {
 /** Espaço de coordenadas horizontal fixo; o SVG escala para a largura real do pai. */
 const VIEW_W = 100;
 /** Cor da série: token de gráfico → primária global → fallback de segurança. */
-const SERIES_COLOR = 'var(--sarak-chart-primary, var(--sarak-primary-color,#00f2ff))';
+const SERIES_COLOR = 'var(--sarak-chart-primary, var(--sarak-primary-color,#19e3f0))';
 
 /** Normaliza cada valor para a coordenada Y (invertida) dentro da janela útil. */
 const toPoints = (data: number[], height: number, pad: number): Array<[number, number]> => {

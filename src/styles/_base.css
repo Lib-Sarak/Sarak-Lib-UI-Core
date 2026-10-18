@@ -13,7 +13,7 @@ body {
   /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v9.1 */
   --theme-body: var(--bg-body);
   --theme-sidebar: var(--bg-sidebar);
-  --theme-card: var(--sarak-card-bg, rgba(15, 23, 42, 0.6));
+  --theme-card: var(--sarak-card-bg, #101622);
   --theme-border: var(--sarak-card-border-color, var(--border-color));
   --theme-muted: var(--text-muted);
   
@@ -27,17 +27,17 @@ body {
      no `body` vence esta regra. Cada reserva cai numa cor que existe SEM o engine —
      `--primary-color` e irmãs só nascem com ele — e nunca na própria variável, que seria
      um ciclo (inválido) e deixaria o hover de botão sem fundo. */
-  --theme-primary-hover: color-mix(in srgb, var(--primary-color, #00f2ff), #000 10%);
-  --theme-primary-active: color-mix(in srgb, var(--primary-color, #00f2ff), #000 20%);
+  --theme-primary-hover: color-mix(in srgb, var(--primary-color, #19e3f0), #000 10%);
+  --theme-primary-active: color-mix(in srgb, var(--primary-color, #19e3f0), #000 20%);
   /* O anel de foco é da PRIMÁRIA. Lia a cor de textura, e só acertava porque a variável `-rgb` dela
      nunca existia: emitida, o foco do campo e do botão passaria a ser branco no tema padrão. */
-  --theme-primary-focus: rgba(var(--theme-primary-rgb, 0, 242, 255), 0.4);
+  --theme-primary-focus: rgba(var(--theme-primary-rgb, 25, 227, 240), 0.4);
 
-  --theme-secondary-hover: color-mix(in srgb, var(--secondary-color, #7000ff), #000 10%);
-  --theme-secondary-active: color-mix(in srgb, var(--secondary-color, #7000ff), #000 20%);
+  --theme-secondary-hover: color-mix(in srgb, var(--secondary-color, #7c5cff), #000 10%);
+  --theme-secondary-active: color-mix(in srgb, var(--secondary-color, #7c5cff), #000 20%);
 
-  --theme-accent-hover: color-mix(in srgb, var(--accent-color, #ff00d4), #000 10%);
-  --theme-accent-active: color-mix(in srgb, var(--accent-color, #ff00d4), #000 20%);
+  --theme-accent-hover: color-mix(in srgb, var(--accent-color, #ff4fd8), #000 10%);
+  --theme-accent-active: color-mix(in srgb, var(--accent-color, #ff4fd8), #000 20%);
 
   /* Engine de Geometria Escalonada (v8.5) — piso para quem usa a lib SEM o Design
      Engine montado. Com engine: a variável real do mesmo conceito vence (é ela que
@@ -110,29 +110,29 @@ body::before {
 }
 
 .custom-scrollbar-sidebar::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent);
 }
 
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 40%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 40%, transparent);
     border-radius: 10px;
     border: 2px solid transparent;
     background-clip: content-box;
 }
 
 .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 60%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 60%, transparent);
 }
 
 /* Force scrollbar track visibility */
 .custom-scrollbar-sidebar::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent);
 }
 
 /* Force scrollbar to stay visible on Firefox */
 .custom-scrollbar-sidebar {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent) color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
+    scrollbar-color: color-mix(in srgb, var(--text-main, #f2f6fb) 20%, transparent) color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent);
 }
 
 /* Horizontal Industrial Scrollbar */
@@ -141,17 +141,17 @@ body::before {
 }
 
 .custom-scrollbar-horizontal::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 2%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 2%, transparent);
     border-radius: 10px;
 }
 
 .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text-main, #ffffff) 30%, transparent);
+    background: color-mix(in srgb, var(--text-main, #f2f6fb) 30%, transparent);
     border-radius: 10px;
 }
 
 .custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-primary, #00f2ff);
+    background: var(--theme-primary, #19e3f0);
 }
 
 /* Theme Mode Transitions (Removido - Sendo gerenciado pelo color-engine.ts) */

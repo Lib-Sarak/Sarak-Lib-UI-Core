@@ -18,7 +18,7 @@ const ALPHA_STEPS = 100;
  * canal opaco e **preserva o alfa** que a cor já tinha; o alfa tem controle próprio.
  */
 export const ColorControl: React.FC<ColorControlProps> = ({ label, description, value, onChange }) => {
-    const DISPLAY_DEFAULT = 'var(--sarak-text-main,#ffffff)';
+    const DISPLAY_DEFAULT = 'var(--sarak-text-main,#f2f6fb)';
     const [text, setText] = React.useState(value || DISPLAY_DEFAULT);
     const [invalid, setInvalid] = React.useState(false);
 
@@ -46,7 +46,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
     };
 
     return (
-        <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
+        <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[var(--color-theme-card,#101622)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
             <div className="flex flex-col gap-1 min-w-0 flex-1">
                 <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
@@ -75,7 +75,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                     />
                 )}
             </div>
-            <div className="relative w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,rgba(15,23,42,0.6))]">
+            <div className="relative w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,#101622)]">
                 <input
                     type="color"
                     value={pickerHex(value || DISPLAY_DEFAULT)}

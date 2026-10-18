@@ -29,13 +29,13 @@
 /* Typography Personalities */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading, 'Outfit', sans-serif);
-    color: var(--text-title, var(--theme-title, #ffffff));
+    color: var(--text-title, var(--theme-title, #f2f6fb));
     transition: all var(--duration-normal, 0.3s) ease;
 }
 
 h1 {
     font-size: var(--sarak-h1-size, 48px);
-    font-weight: var(--sarak-h1-weight, 900);
+    font-weight: var(--sarak-h1-weight, 800);
     line-height: var(--sarak-h1-lh, 1.1);
     letter-spacing: var(--sarak-h1-ls, -1px);
     text-transform: var(--sarak-h-transform, none);
@@ -67,12 +67,12 @@ button:not(.p-0) {
                    var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px))
                    var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px))
                    var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
-    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 input, select, textarea {
     border-radius: var(--sarak-input-border-radius, 8px);
-    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 button:hover:not(.p-0) {
@@ -85,7 +85,7 @@ button:hover:not(.p-0) {
 button:active:not(.p-0) {
     background-color: var(--theme-primary-active);
     transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98));
-    transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 /* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,
@@ -113,7 +113,7 @@ button:focus-visible {
 [data-sx-identity-hover-effect="opacity"] .sarak-chrome-brand:hover { opacity: 0.7; }
 [data-sx-identity-hover-effect="scale"] .sarak-chrome-brand:hover { transform: scale(1.04); }
 [data-sx-identity-hover-effect="glow"] .sarak-chrome-brand:hover {
-    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--theme-primary, #00f2ff) 60%, transparent));
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--theme-primary, #19e3f0) 60%, transparent));
 }
 
 /* Padrões do `body`: cedem a qualquer classe utilitária posta nele (`leading-*`, `text-*`,
@@ -149,5 +149,5 @@ body {
 /* Transição de escopo médio, escolhida por classe (`transition-sarak`): sem `!important`, na camada que cede — o
    `transition`/`duration-*` do consumidor e a transição do cartão (`_card-defaults.css`) a vencem. */
 .transition-sarak {
-    transition: all var(--sarak-motion-dur-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: all var(--sarak-motion-dur-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }

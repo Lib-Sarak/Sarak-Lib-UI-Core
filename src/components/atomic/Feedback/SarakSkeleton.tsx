@@ -25,7 +25,7 @@ export interface SarakSkeletonProps {
 }
 
 const PULSE_BG =
-    'var(--border-color, rgba(255,255,255,0.1))';
+    'var(--border-color, rgba(255,255,255,0.09))';
 
 export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
     shape = 'text',
@@ -61,7 +61,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
                 style={{
                     width: width ?? '100%',
                     height: rowHeight,
-                    borderRadius: 'var(--sarak-card-radius,12px)',
+                    borderRadius: 'var(--sarak-card-radius,10px)',
                     background: PULSE_BG,
                 }}
             />

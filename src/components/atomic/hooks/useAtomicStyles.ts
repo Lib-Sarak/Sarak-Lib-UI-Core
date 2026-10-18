@@ -5,7 +5,7 @@ import { resolveSwitchStyles } from './switchStyles';
 
 /** Relevo do campo neumórfico: a sombra e a luz derivam da cor de sombra e da cor de texto do tema. */
 const NEUMORPH_DARK = 'color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 20%, transparent)';
-const NEUMORPH_LIGHT = 'color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent)';
+const NEUMORPH_LIGHT = 'color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent)';
 
 /** O relevo do botão `neumorphism`: sai da superfície em repouso e afunda (sombra interna) sob o ponteiro. */
 export const neumorphismButtonShadow = (isHovered: boolean): string => isHovered
@@ -14,7 +14,7 @@ export const neumorphismButtonShadow = (isHovered: boolean): string => isHovered
 
 /** O texto das variantes sólidas no estilo `cyberpunk` (fundo transparente): a cor da própria variante. */
 const CYBERPUNK_TEXT_COLORS: Readonly<Record<string, string>> = {
-    primary: 'var(--sarak-primary-color, #00f2ff)',
+    primary: 'var(--sarak-primary-color, #19e3f0)',
     danger: 'var(--sarak-status-error-color, #ef4444)',
     success: 'var(--sarak-status-success-color, #10b981)',
 };
@@ -47,7 +47,7 @@ export const useAtomicStyles = () => {
         isHovered: boolean
     ): React.CSSProperties => {
         const styleType = design?.btnStyleType || 'matte';
-        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(0,242,255,0.05))';
+        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(25,227,240,0.18))';
         const blurAmount = design?.btnBackdropBlur || 0;
 
         const dynamicStyle: React.CSSProperties = {};
@@ -109,7 +109,7 @@ export const useAtomicStyles = () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             }
-            dynamicStyle.border = '1px solid var(--color-theme-border, rgba(255,255,255,0.1))';
+            dynamicStyle.border = '1px solid var(--color-theme-border, rgba(255,255,255,0.09))';
             
             if (variant === 'primary' || variant === 'danger') {
                 dynamicStyle.boxShadow = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1))';
@@ -132,8 +132,8 @@ export const useAtomicStyles = () => {
         const shadowType = design?.inputShadow || 'none';
         const blurAmount = design?.inputBackdropBlur || 0;
         
-        const borderColor = 'var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)))';
-        const focusColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color,#00f2ff))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)))';
+        const focusColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color,#19e3f0))';
 
         const dynamicStyle: React.CSSProperties = {};
         
@@ -156,14 +156,14 @@ export const useAtomicStyles = () => {
         executeBorder();
 
         if (isFocused && borderType !== 'underline' && borderType !== 'none') {
-            dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #00f2ff)`;
+            dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #19e3f0)`;
         }
 
         if (shadowType === 'neumorphism') {
             if (!isFocused) {
                 dynamicStyle.boxShadow = `inset 2px 2px 5px ${NEUMORPH_DARK}, inset -5px -5px 10px ${NEUMORPH_LIGHT}`;
             } else {
-                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #00f2ff), inset -2px -2px 5px ${NEUMORPH_LIGHT}`;
+                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #19e3f0), inset -2px -2px 5px ${NEUMORPH_LIGHT}`;
             }
         } 
         
@@ -190,7 +190,7 @@ export const useAtomicStyles = () => {
     // Anel de foco dos controles de escolha: cor do foco de input, largura do token de foco.
     const getChoiceFocusRing = (focused: boolean): string =>
         focused
-            ? '0 0 0 var(--sarak-focus-width, 2px) var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))'
+            ? '0 0 0 var(--sarak-focus-width, 2px) var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))'
             : 'none';
 
     const getCheckboxStyles = (
@@ -199,9 +199,9 @@ export const useAtomicStyles = () => {
         indeterminate: boolean = false,
         focused: boolean = false
     ): React.CSSProperties => {
-        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #00f2ff))';
-        const borderColor = 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.1)))';
-        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))';
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #19e3f0))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09)))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))';
 
         const dynamicStyle: React.CSSProperties = {
             backgroundColor: checked || indeterminate ? activeBg : 'transparent',
@@ -219,9 +219,9 @@ export const useAtomicStyles = () => {
         checked: boolean,
         focused: boolean = false
     ): React.CSSProperties => {
-        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #00f2ff))';
-        const borderColor = 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.1)))';
-        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #00f2ff))';
+        const activeBg = 'var(--sarak-checkbox-active, var(--sarak-primary-color, #19e3f0))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09)))';
+        const activeBorderColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))';
 
         const dynamicStyle: React.CSSProperties = {
             backgroundColor: checked ? activeBg : 'transparent',

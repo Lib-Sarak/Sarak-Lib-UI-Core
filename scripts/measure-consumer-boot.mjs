@@ -9,7 +9,7 @@
 //      + 3 KB de folga. O teto acompanha o resto da lib: nenhum número congelado.
 //   2. ESTRUTURAL — nenhum módulo de tema ≠ padrão (nem `all.ts`) entre os inputs
 //      dos pedaços do fecho estático, lidos do `metafile` do bundler do consumidor.
-//   3. POR TEMA — cada tema, empacotado sozinho e gzipado, ≤ 3 KB.
+//   3. POR TEMA — cada tema, empacotado sozinho e gzipado, ≤ 4,5 KB.
 //
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este script NÃO vê
@@ -35,7 +35,7 @@ import { fileURLToPath } from 'url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const THEMES_DIR = 'src/core/Design/presets/themes';
 export const SLACK_BYTES = 3 * 1024;
-export const PER_THEME_CEILING_BYTES = 3 * 1024;
+export const PER_THEME_CEILING_BYTES = 4.5 * 1024;
 
 const gzipSize = (content) => zlib.gzipSync(content, { level: 9 }).length;
 const toPosix = (file) => file.split(path.sep).join('/');

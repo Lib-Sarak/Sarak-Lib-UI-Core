@@ -148,7 +148,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewLayoutId={draft.layout || sarak.layout || 'glass'}
                     selectPreviewApp={selectPreviewApp}
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
-                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #00f2ff)'}
+                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #19e3f0)'}
                     draftTokens={draft}
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview' && isGalleryOpen}

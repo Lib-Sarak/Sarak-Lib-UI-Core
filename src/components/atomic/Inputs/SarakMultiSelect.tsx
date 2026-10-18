@@ -26,7 +26,7 @@ export interface SarakMultiSelectProps {
 }
 
 const FIELD =
-    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.1)))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))] transition-colors';
+    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.09)))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))] transition-colors';
 
 /**
  * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
@@ -97,7 +97,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && (
-                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(255,255,255,0.4))]">{label}</span>
+                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>
             )}
 
             <div className="relative w-full">
@@ -132,7 +132,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         onFocus={() => setOpen(true)}
                         onBlur={() => setTimeout(() => setOpen(false), 120)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 min-w-[var(--sarak-multi-select-input-min-width,6rem)] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]"
+                        className="flex-1 min-w-[var(--sarak-multi-select-input-min-width,6rem)] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]"
                     />
                 </div>
 
@@ -140,7 +140,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                     <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[var(--dynamic-shadow)]"
+                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))] shadow-[var(--dynamic-shadow)]"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
                     >
                         {filtered.map((opt) => (
@@ -150,7 +150,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                                 aria-selected={false}
                                 // onMouseDown (não onClick) para selecionar antes do blur do input.
                                 onMouseDown={(e) => { e.preventDefault(); add(opt.value); }}
-                                className="cursor-pointer text-sm text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-primary-color,#00f2ff)]/10"
+                                className="cursor-pointer text-sm text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-primary-color,#19e3f0)]/10"
                                 style={{ padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                             >
                                 {opt.label}
@@ -176,7 +176,7 @@ const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }: ChipProps): Re
 
     return (
         <span
-            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#00f2ff)]/15 text-[var(--sarak-primary-color,#00f2ff)]"
+            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#19e3f0)]/15 text-[var(--sarak-primary-color,#19e3f0)]"
             style={{
                 gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
                 paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',

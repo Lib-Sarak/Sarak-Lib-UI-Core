@@ -27,7 +27,7 @@ export const ShellNavigationStyleControl: React.FC = () => {
         <div
             role="group"
             aria-label={t('navigationStyleGroupAriaLabel')}
-            className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] p-[var(--sarak-layout-gap-sm,8px)] bg-[var(--theme-muted,rgba(255,255,255,0.4))]/10"
+            className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,10px)] p-[var(--sarak-layout-gap-sm,8px)] bg-[var(--theme-muted,rgba(242,246,251,0.55))]/10"
         >
             {OPTIONS.map((opt) => (
                 <button
@@ -35,10 +35,10 @@ export const ShellNavigationStyleControl: React.FC = () => {
                     type="button"
                     aria-pressed={current === opt.value}
                     onClick={() => sarak?.updatePreferences({ navigationStyle: opt.value })}
-                    className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,8px)] text-xs font-black transition-colors ${
+                    className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,10px)] text-xs font-black transition-colors ${
                         current === opt.value
-                            ? 'bg-[var(--sarak-nav-active-color,#00f2ff)] text-[var(--color-theme-on-primary,#020617)]'
-                            : 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#fff)]'
+                            ? 'bg-[var(--sarak-nav-active-color,#19e3f0)] text-[var(--color-theme-on-primary,#020617)]'
+                            : 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)]'
                     }`}
                 >
                     {opt.label}

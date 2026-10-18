@@ -41,7 +41,7 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
 
     const gap = (design?.layoutGapSm as string | number) || 'var(--sarak-layout-gap-sm,8px)';
-    const accentColor = design?.primaryColor || 'var(--sarak-primary-color,#00f2ff)';
+    const accentColor = design?.primaryColor || 'var(--sarak-primary-color,#19e3f0)';
 
     const handleMouseDown = useCallback(() => {
         isDragging.current = true;
@@ -99,7 +99,7 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
             >
                 <div 
                     className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[length:var(--sarak-border-width,1px)] transition-colors"
-                    style={{ backgroundColor: 'var(--border-color, rgba(255,255,255,0.1))' }}
+                    style={{ backgroundColor: 'var(--border-color, rgba(255,255,255,0.09))' }}
                 />
                 <div 
                     className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[length:var(--sarak-border-width,1px)] opacity-0 group-hover:opacity-100 transition-opacity"

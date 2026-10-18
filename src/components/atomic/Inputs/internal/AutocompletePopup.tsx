@@ -44,10 +44,10 @@ const AutocompleteOptionRow = <TOption extends AutocompleteOption,>(
             onMouseMove={onActivate}
             onMouseDown={(event) => event.preventDefault()}
             onClick={onSelect}
-            className="cursor-pointer text-sm text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]"
+            className="cursor-pointer text-sm text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]"
             style={{
                 padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md, 16px)',
-                backgroundColor: isActive ? 'var(--sarak-primary-color, #00f2ff)' : 'transparent',
+                backgroundColor: isActive ? 'var(--sarak-primary-color, #19e3f0)' : 'transparent',
             }}
         >
             {option.label}
@@ -113,8 +113,8 @@ export const AutocompletePopup = <TOption extends AutocompleteOption,>(
                 maxHeight: 'calc(var(--sarak-layout-gap-lg, 24px) * 12)',
                 overflowY: 'auto',
                 marginTop: 'var(--sarak-layout-gap-sm, 8px)',
-                borderColor: 'var(--sarak-input-border-color, var(--theme-border, rgba(255,255,255,0.1)))',
-                backgroundColor: 'var(--sarak-input-bg, var(--theme-card, rgba(15,23,42,0.6)))',
+                borderColor: 'var(--sarak-input-border-color, var(--theme-border, rgba(255,255,255,0.09)))',
+                backgroundColor: 'var(--sarak-input-bg, var(--theme-card, #101622))',
             }}
         >
             <AutocompleteOptionsList

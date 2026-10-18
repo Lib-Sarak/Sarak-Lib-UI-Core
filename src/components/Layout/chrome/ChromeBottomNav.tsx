@@ -30,7 +30,7 @@ export const ChromeBottomNav: React.FC<ChromeBottomNavProps> = ({ items, activeR
             className="flex items-stretch shrink-0 w-full min-w-0 overflow-x-auto border-t"
             style={{
                 background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingTop: 'var(--sarak-layout-gap-sm, 8px)',
@@ -61,7 +61,7 @@ export const ChromeBottomNav: React.FC<ChromeBottomNavProps> = ({ items, activeR
                             <span
                                 aria-hidden="true"
                                 className="absolute left-1/2 -translate-x-1/2 top-0 h-0.5 w-4 rounded-full"
-                                style={{ background: 'var(--sarak-nav-marker-color, #00f2ff)' }}
+                                style={{ background: 'var(--sarak-nav-marker-color, #19e3f0)' }}
                             />
                         )}
                     </SarakMenuItem>

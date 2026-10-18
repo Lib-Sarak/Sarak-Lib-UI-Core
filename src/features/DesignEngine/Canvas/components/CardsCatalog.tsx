@@ -55,7 +55,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
             onClick={onApply}
             className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
-            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#050505)] overflow-hidden">
+            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]" />
 
                 {/*

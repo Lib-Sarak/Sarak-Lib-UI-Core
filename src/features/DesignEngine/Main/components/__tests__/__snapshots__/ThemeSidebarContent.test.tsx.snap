@@ -10,23 +10,23 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
       style="opacity: 0; transform: translateX(-10px);"
     >
       <section
-        class="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,12px)] border border-[var(--theme-border,rgba(255,255,255,0.1))] bg-[var(--theme-card,rgba(15,23,42,0.6))] p-[var(--sarak-layout-gap-sm,12px)]"
+        class="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border,rgba(255,255,255,0.09))] bg-[var(--theme-card,#101622)] p-[var(--sarak-layout-gap-sm,12px)]"
       >
         <div>
           <h2
-            class="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#ffffff)]"
+            class="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#f2f6fb)]"
           >
             Começar de um tema
           </h2>
           <p
-            class="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(255,255,255,0.4))]"
+            class="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]"
           >
             Escolha um estilo e ajuste os detalhes abaixo.
           </p>
         </div>
         <button
           aria-expanded="false"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98]"
           type="button"
         >
           <span>
@@ -38,10 +38,10 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
         class="border-b border-[var(--theme-border)] last:border-0"
       >
         <div
-          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
+          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,#101622)]"
         >
           <div
-            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,rgba(15,23,42,0.6))]"
+            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#101622)]"
             role="button"
             tabindex="0"
           >
@@ -79,7 +79,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   />
                 </svg>
                 <span
-                  class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#ffffff)]"
+                  class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#f2f6fb)]"
                 >
                   Configurações globais (3)
                 </span>
@@ -155,7 +155,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#ffffff)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#f2f6fb)]"
                   >
                     Preferências Globais (0)
                   </span>
@@ -178,7 +178,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                 </svg>
               </button>
               <div
-                class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] overflow-visible"
+                class="bg-[var(--color-theme-card,#101622)] overflow-visible"
                 style="height: 0px; opacity: 0;"
               >
                 <div
@@ -200,7 +200,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#101622)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
                   >
                     <svg
                       class="lucide lucide-sliders-horizontal"
@@ -271,7 +271,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
                   >
                     Barra de Preferências do Usuário (5)
                   </span>
@@ -304,7 +304,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#101622)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
                   >
                     <svg
                       class="lucide lucide-shield"
@@ -324,7 +324,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
                   >
                     Identidade da Empresa (4)
                   </span>

@@ -82,7 +82,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(0,242,255,0.05))]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -91,7 +91,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
-                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] animate-pulse" />
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#19e3f0)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
@@ -100,21 +100,21 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                 {/* Header Info */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
-                        <h4 className="text-lg font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#00f2ff)] transition-colors truncate">
+                        <h4 className="text-lg font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate">
                             {String(title ?? '')}
                         </h4>
                     </div>
-                    <div className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] shrink-0 rounded-lg" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <SarakIcon name={mapping?.icon || 'Box'} size={16} className="text-[var(--text-muted,rgba(255,255,255,0.4))]" />
+                    <div className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] shrink-0 rounded-lg" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                        <SarakIcon name={mapping?.icon || 'Box'} size={16} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                     </div>
                 </div>
 
                 {/* Micro-Details */}
                 {!!description && (
-                    <p className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-60 leading-relaxed line-clamp-2" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }}>
+                    <p className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 leading-relaxed line-clamp-2" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }}>
                         {String(description)}
                     </p>
                 )}
@@ -135,14 +135,14 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-primary-color,#00f2ff)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
+                        className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-primary-color,#19e3f0)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,10px)] transition-all cursor-pointer flex items-center justify-center"
                         style={{
                             padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                             transitionDuration: 'var(--duration-normal, 0.3s)',
-                            borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-card-radius,12px)'
+                            borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-card-radius,10px)'
                         }}
                     >
-                        <SarakIcon name="ChevronDown" className={`w-3.5 h-3.5 transition-transform duration-[var(--duration-normal,0.3s)] ${isExpanded ? 'rotate-180 text-[var(--sarak-primary-color,#00f2ff)]' : ''}`} />
+                        <SarakIcon name="ChevronDown" className={`w-3.5 h-3.5 transition-transform duration-[var(--duration-normal,0.3s)] ${isExpanded ? 'rotate-180 text-[var(--sarak-primary-color,#19e3f0)]' : ''}`} />
                     </motion.button>
                 </div>
 
@@ -157,13 +157,13 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                             style={{ marginTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
                         >
                             <div
-                                className="flex border-t border-[var(--border-color,rgba(255,255,255,0.1))]/30"
+                                className="flex border-t border-[var(--border-color,rgba(255,255,255,0.09))]/30"
                                 style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
                             >
                                 {details.length > 0 && (
                                     <div
-                                        className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').className} bg-theme-body/30 border border-[var(--border-color,rgba(255,255,255,0.1))]/20`}
-                                        style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').style, padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)' }}
+                                        className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').className} bg-theme-body/30 border border-[var(--border-color,rgba(255,255,255,0.09))]/20`}
+                                        style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').style, padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,10px)' }}
                                     >
                                         {details.map((detail, index) => {
                                             const isLastOdd = details.length % 2 === 1 && index === details.length - 1;
@@ -176,8 +176,8 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                                                         gridColumn: isLastOdd ? 'span 2 / span 2' : undefined,
                                                     }}
                                                 >
-                                                    <span className="font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>{detail.label}</span>
-                                                    <span className="text-2xs font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] font-bold truncate">
+                                                    <span className="font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>{detail.label}</span>
+                                                    <span className="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold truncate">
                                                         {String(detail.value)}
                                                     </span>
                                                 </div>

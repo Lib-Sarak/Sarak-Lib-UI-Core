@@ -5,7 +5,7 @@ export const PremiumSwitch: React.FC<{ checked: boolean; onChange: () => void }>
     <div 
         onClick={(e) => { e.stopPropagation(); onChange(); }}
         className={`w-9 h-5 rounded-full transition-all cursor-pointer flex items-center ${
-            checked ? 'bg-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)]' : 'bg-[var(--text-muted,rgba(255,255,255,0.4))]/10'
+            checked ? 'bg-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_30%,transparent)]' : 'bg-[var(--text-muted,rgba(242,246,251,0.55))]/10'
         }`}
         style={{ padding: 'calc(calc(var(--sarak-layout-gap-md,16px)*0.25) / 2)' }}
     >

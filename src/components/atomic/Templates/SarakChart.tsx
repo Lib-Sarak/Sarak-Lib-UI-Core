@@ -58,10 +58,10 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                             duration: durations.slow,
                             ease: 'circOut',
                         }}
-                        className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+                        className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))] to-[var(--sarak-primary-color,#19e3f0)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,rgba(15,23,42,0.6))] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
                             {value.toLocaleString()}
                         </div>
                     </motion.div>
@@ -91,8 +91,8 @@ function ChartHeading({ label }: { label?: string }): ReactElement | null {
     if (!label) return null;
     return (
         <div className="flex items-center relative z-10" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-            <SarakIcon name="TrendingUp" size={16} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-            <h3 className="text-xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>
+            <SarakIcon name="TrendingUp" size={16} className="text-[var(--sarak-primary-color,#19e3f0)]" />
+            <h3 className="text-xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}>
                 {label}
             </h3>
         </div>
@@ -118,7 +118,7 @@ export const SarakChart = <TData extends Record<string, unknown> = Record<string
     const dateKey = mapping?.date ?? 'date';
     const maximum = Math.max(...records.map((item) => numericValue(item, valueKey)), 1);
 
-    return <div className={mergeSarakClasses('card relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]', containerLayout.className)} style={containerLayout.style}>
+    return <div className={mergeSarakClasses('card relative overflow-hidden group rounded-[var(--sarak-card-radius,10px)]', containerLayout.className)} style={containerLayout.style}>
         <ChartHeading label={label} />
         {loading && hasData && <span className="sr-only" role="status" aria-live="polite">{text('spinnerLoading')}</span>}
         {error && hasData && <SarakDataErrorNotice error={error} onRetry={retry} />}

@@ -4,7 +4,7 @@
     /* Placeholder de campo: o texto do campo a 30% — o mesmo que `placeholder:…/30` dos campos desenha.
        Mora aqui para o padrão de `cardSearchPlaceholderColor` poder ser um `var()` (cor de token aceita
        `var(--x, …)`, não `color-mix` cru). */
-    --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(255, 255, 255, 0.4))) 30%, transparent);
+    --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent);
 }
 
 /* `surfaceMaterial` (`data-sx-surface-material`), `surfaceIntensity` e a moldura do CARTÃO
@@ -59,10 +59,10 @@
 }
 /* Tingida pela primária: a sombra de um cartão ganha a cor da marca. */
 [data-sx-shadow-color-mode="colored"] {
-    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 88%, #000);
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 88%, #000);
 }
 /* Ambiente: derivada do fundo — o fundo do tema escurecido, sem virar preto puro nem
    marca. Em tema claro vira um cinza suave; em tema escuro, quase preto. */
 [data-sx-shadow-color-mode="ambient"] {
-    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #050505)) 45%, #000);
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #06080d)) 45%, #000);
 }

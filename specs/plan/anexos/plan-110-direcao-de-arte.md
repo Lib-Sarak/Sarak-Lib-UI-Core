@@ -607,3 +607,25 @@ Formato das cores: **nativo → contraparte**. "Primária / 2.ª / destaque" sã
 - **Contraste do `high-contrast`:** o gate cobra 4,5. O lote 1 relata a razão de cada par desse tema, nos dois modos,
   contra 7:1.
 - **Peso:** o lote 1 remede pelo método 4.1 depois de cada tema e para no teto aprovado.
+
+---
+
+# 11. Notas de conceito (uma por tema, acrescentada no lote do tema)
+
+## `sarak-sovereign` (lote 6, 2026-10-17)
+
+- **Arquétipo de identidade:** sala de comando. Superfície de vidro escuro com a constelação por trás, ciano contido (H184 S88, fora do S100 dos
+  neons) e linguagem de produto, não de efeito. É o tema que carrega sem ninguém escolher, e o padrão de todo token estético do schema.
+- **Tokens que carregam a personalidade:** `primaryColor` (o ciano que passa 4,5:1 como texto nos dois modos) · `iconWeight: fill` (Phosphor
+  preenchido) · `cardSurfaceOpacity` 0,7 com `cardBackdropBlur` 12 (o vidro) · `cardTextureType: micro-dots` · `cardHoverStyle: glow-only` ·
+  `btnStyleType: frosted` · `chartType: area` · `bgGradientMode: radial` · `texture: constellation` · `motionEaseMain` (`Expo Glide`).
+- **O que o tema demonstra da lib:** a referência escura completa e a contraparte clara (`#f3f6fa` / `#ffffff`, mesmo matiz, primária `#087782`)
+  que troca só cor, opacidade e sombra; geometria, tipografia e movimento vêm do modo escuro.
+- **Decisões que a medição forçou:** (1) `cardTitleFontWeight` fica `900` (a opção `800` não existe no token); (2) `cardSurfaceOpacity` em
+  múltiplo de 0,05; (3) `colorBgLayer2`, `cardActionBtnHoverBg` e `cardSearchTextFocusColor` são valores concretos, porque o contraste só mede
+  cadeia que termina numa cor (cadeia de `var()` faz o par ser pulado); (4) `identityFontFamily` do tema é `Outfit` e o padrão do schema continua
+  a herança da fonte de títulos; (5) os tokens cujo padrão é derivado (`rangeActiveColor`, `tooltip*`, `inputIconColor`,
+  `cardActionBtnPrimaryBg`, `aiGlowColor`, `colorBgModal`, `cardSearch*`) repetem a cadeia, para o consumidor que troca só a primária levar o derivado.
+- **Contraste não textual (1.4.11, 3:1, apoio):** escuro: foco do campo 12,7, interruptor ativo 11,5, marcador do item ativo 12,8, séries 4,2 a 11,5;
+  claro: foco 4,9, interruptor 5,3, séries 5,3 a 6,5. Borda do cartão contra o corpo (1,2:1) é deliberadamente sutil (vidro); borda do campo em
+  repouso 1,9:1 (escuro) e 2,1:1 (claro), abaixo de 3:1.

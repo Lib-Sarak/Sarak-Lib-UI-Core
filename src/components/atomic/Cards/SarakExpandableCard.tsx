@@ -85,7 +85,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 16px))' }}
+                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 14px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: durations.normal }}
                             // `@container` plantado aqui, não na raiz do card — o
@@ -118,7 +118,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                                             onClick={() => setIsExpanded(false)}
                                             variant="secondary"
                                             size="lg"
-                                            className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,rgba(255,255,255,0.1))]-border rounded-sarak shadow-lg shrink-0"
+                                            className="bg-[var(--color-theme-card,#101622)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,rgba(255,255,255,0.09))]-border rounded-sarak shadow-lg shrink-0"
                                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
                                             icon={<SarakIcon name="X" className="w-5 h-5 sm:w-6 sm:h-6" />}

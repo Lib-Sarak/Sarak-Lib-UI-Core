@@ -47,6 +47,9 @@ async function withScene<T>(cena: string, tema: string | undefined, measure: (pa
         if (tema) searchParams.set('tema', tema);
         await page.goto(`${harnessUrl}?${searchParams.toString()}`);
         await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
+        // As transições da hidratação (fundo, cor, entrada dos cartões) terminam antes de medir o hover: com a espera fixa depois do
+        // ponteiro, medir no meio delas lê o estado de repouso.
+        await page.evaluate(() => Promise.all(document.getAnimations().filter((animation) => animation instanceof CSSTransition).map((animation) => animation.finished.catch(() => undefined))));
         return await measure(page);
     } finally {
         await page.close();
@@ -130,7 +133,7 @@ test.describe('cartão', () => {
         await withScene('componente', undefined, async (page) => {
             const withClass = probe(page, 'cartao-classe-fundo').locator('.sarak-card');
             const container = probe(page, 'conteiner-classe-fundo').locator('.card');
-            const fromClass = await resolveExpression(withClass, 'background-color', 'var(--color-theme-card, rgba(15,23,42,0.6))');
+            const fromClass = await resolveExpression(withClass, 'background-color', 'var(--color-theme-card, #101622)');
             const surface = await resolveExpression(withClass, 'background-color', CARD_SURFACE);
             expect(fromClass, 'o fundo da classe precisa diferir da superfície do tema, ou o caso não distingue nada').not.toBe(surface);
 
@@ -151,7 +154,7 @@ test.describe('cartão', () => {
     test('hover:bg-* do componente vence a superfície do tema no hover', async () => {
         await withScene('componente', undefined, async (page) => {
             const card = probe(page, 'cartao-classe-hover').locator('.sarak-card');
-            const hover = await resolveExpression(card, 'background-color', 'var(--sarak-btn-primary-bg, #00f2ff)');
+            const hover = await resolveExpression(card, 'background-color', 'var(--sarak-btn-primary-bg, #19e3f0)');
             expect(hover, 'o fundo do hover precisa diferir do repouso, ou o caso não distingue nada').not.toBe(await readComputed(card, 'background-color'));
 
             await card.hover();
@@ -162,7 +165,7 @@ test.describe('cartão', () => {
     test('hover:border-* do componente vence a borda de hover do cartão', async () => {
         await withScene('componente', undefined, async (page) => {
             const card = probe(page, 'cartao-borda-hover').locator('.sarak-card');
-            const fromClass = await resolveExpression(card, 'border-top-color', 'color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 30%, transparent)');
+            const fromClass = await resolveExpression(card, 'border-top-color', 'color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 30%, transparent)');
             const themeHover = await resolveExpression(card, 'border-top-color', 'rgba(var(--theme-primary-rgb), 0.4)');
             expect(fromClass, 'a borda da classe precisa diferir da de hover do tema, ou o caso não distingue nada').not.toBe(themeHover);
 
@@ -212,7 +215,7 @@ test.describe('cartão', () => {
             }), rest);
         };
         const glowOnly = await withScene('componente', 'componente-brilho', measure);
-        const lift = await withScene('componente', undefined, measure);
+        const lift = await withScene('componente', 'componente-lift', measure);
 
         expect(glowOnly.glow, 'glow-only leva a camada de brilho à opacidade plena').toBe('1');
         expect(glowOnly.changed, 'o cartão ganha o halo no hover').toBe(true);

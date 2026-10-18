@@ -91,7 +91,7 @@ export const OverlaysSchema: ComponentSchema = {
             interactsWith: ['modalOverlayBlur'],
             description: 'Cor da camada escura (scrim) exibida atrás de um modal aberto, cobrindo o resto da tela — normalmente preto translúcido, para focar a atenção no conteúdo do modal.',
             axis: 'color',
-            defaultValue: 'rgba(0, 0, 0, 0.4)',
+            defaultValue: 'rgba(2, 4, 8, 0.6)',
             cssVars: ['--sarak-modal-overlay']
         },
         {
@@ -235,7 +235,7 @@ export const OverlaysSchema: ComponentSchema = {
             interactsWith: ['tooltipBg'],
             description: 'Cor do texto exibido dentro da caixa de tooltip — deve manter contraste alto contra `tooltipBg`.',
             axis: 'color',
-            defaultValue: 'var(--color-theme-title, #ffffff)',
+            defaultValue: 'var(--color-theme-title, #f2f6fb)',
             cssVars: ['--sarak-tooltip-text']
         },
         {

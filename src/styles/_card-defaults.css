@@ -33,8 +33,8 @@
    o cartão sem tema montado. */
 .sarak-card,
 .card {
-    background-color: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6))), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
-    border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
+    background-color: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, #101622)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.7))));
+    border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
 }
 
 /* Borda do cartão sob o ponteiro: padrão, vence a cor da superfície; `hover:border-*` do componente e do
@@ -58,7 +58,7 @@
 
     backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
 
-    transition: transform var(--duration-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1)),
+    transition: transform var(--duration-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1)),
                 box-shadow var(--duration-normal, 0.3s) ease,
                 border-color var(--duration-fast, 0.2s) ease,
                 background-color var(--duration-normal, 0.3s) ease;
@@ -121,7 +121,7 @@
 .sarak-design-scope :is(.card, .sarak-card) {
     backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px));
 
-    border-radius: var(--sarak-card-radius-tl, 12px) var(--sarak-card-radius-tr, 12px) var(--sarak-card-radius-br, 12px) var(--sarak-card-radius-bl, 12px);
+    border-radius: var(--sarak-card-radius-tl, 10px) var(--sarak-card-radius-tr, 10px) var(--sarak-card-radius-br, 10px) var(--sarak-card-radius-bl, 10px);
 
     /* O traço é o de `borderStyle` (sólido por padrão). */
     border-style: var(--border-style, solid);

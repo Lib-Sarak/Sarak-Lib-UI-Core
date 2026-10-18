@@ -72,7 +72,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
             return [
                 '/* Sarak Sovereign Bridge - Light Mode Hijack */',
                 '/* Textos Ofensivos (Brancos e Cinzas Claros que somem no modo Claro) */',
-                rule('light', LIGHT_HIJACKED_TEXT, 'color: var(--color-theme-title,#ffffff);'),
+                rule('light', LIGHT_HIJACKED_TEXT, 'color: var(--color-theme-title,#f2f6fb);'),
                 rule('light', LIGHT_HIJACKED_MUTED_TEXT, 'color: var(--theme-muted);'),
                 '/* Fundos Ofensivos (Cartões e Camadas) */',
                 rule('light', LIGHT_HIJACKED_SURFACES, 'background-color: var(--theme-card);'),

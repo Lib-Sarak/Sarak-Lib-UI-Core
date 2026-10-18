@@ -59,14 +59,14 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     role="menu"
                     aria-label={t('preferencesLabel')}
                     onKeyDown={handleTrap}
-                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,10rem)] rounded-[var(--sarak-card-radius,12px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-[var(--dynamic-shadow)] ${
+                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,10rem)] rounded-[var(--sarak-card-radius,10px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-[var(--dynamic-shadow)] ${
                         align === 'end' ? 'right-0' : 'left-0'
                     }`}
                     style={{
                         flexDirection: 'column',
                         gap: 'var(--sarak-layout-gap-sm, 8px)',
-                        background: 'var(--color-theme-card,rgba(15,23,42,0.6))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                        background: 'var(--color-theme-card,#101622)',
+                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                     }}
                 >
                     {menuIds.map((id) => renderShellPreferenceRow(id, { isNavHidden, onToggleNavCollapsed, t }))}

@@ -66,9 +66,11 @@ const resolveIconSlots = (
     return [];
 };
 
-const ICON_SIDE_CLASS = { left: 'absolute left-3', right: 'absolute right-3' } as const;
-const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
-const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]';
+// `z-10`: o ícone vem antes do `<input>` no DOM; com `inputBackdropBlur` o campo desfoca o que está atrás dele, e sem
+// camada própria acima do campo o ícone seria o primeiro a virar mancha.
+const ICON_SIDE_CLASS = { left: 'absolute left-3 z-10', right: 'absolute right-3 z-10' } as const;
+const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
+const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
 /**
  * Componente Atômico: SarakInput
@@ -101,7 +103,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const inputId = props.id ?? reactId;
     const errorId = `${inputId}-error`;
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))]';
     const shapeClasses = 'rounded-input py-[var(--sarak-input-padding,16px)]';
     
     const widthClass = fullWidth ? 'w-full' : '';

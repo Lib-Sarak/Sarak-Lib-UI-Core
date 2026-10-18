@@ -19,12 +19,12 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     const glowColor = String(d.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)');
     const blurAmount = Number(d.btnBackdropBlur || 0);
     const primaryBg = String(d.btnPrimaryBg || 'var(--theme-primary)');
-    const primaryText = String(d.btnPrimaryText || 'var(--color-theme-title,#ffffff)');
+    const primaryText = String(d.btnPrimaryText || 'var(--color-theme-title,#f2f6fb)');
 
     // Construir estilo dinâmico como o SarakButton
     const dynamicStyle: React.CSSProperties = {
         padding: 'var(--sarak-preset-preview-padding-y, 12px) var(--sarak-layout-gap-lg, 24px)',
-        fontSize: 'var(--color-theme-text, #ffffff)',
+        fontSize: 'var(--color-theme-text, #f2f6fb)',
         fontWeight: '900',
         textTransform: 'uppercase',
         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)',
@@ -55,7 +55,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
             dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${primaryBg}`;
-            dynamicStyle.color = isHovered ? 'var(--color-theme-primary, #00f2ff)' : primaryText;
+            dynamicStyle.color = isHovered ? 'var(--color-theme-primary, #19e3f0)' : primaryText;
         },
         'matte': () => {
             dynamicStyle.backgroundColor = primaryBg;
@@ -78,7 +78,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
-            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[color-mix(in_srgb,var(--color-theme-body,#050505)_50%,transparent)] hover:border-theme-primary transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[color-mix(in_srgb,var(--color-theme-body,#06080d)_50%,transparent)] hover:border-theme-primary transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
             style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)] opacity-50"></div>

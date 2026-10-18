@@ -17,7 +17,7 @@ export const DataSchema: ComponentSchema = {
             type: 'color', // Futuramente pode ser um array, por enquanto cor base
             description: 'Cor base da primeira série de dados nos gráficos (linhas, barras, setores). É o ponto de partida da paleta usada pelo motor de gráficos para colorir séries — normalmente espelha a cor primária do sistema.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             cssVars: ['--sarak-chart-primary']
         },
         {
@@ -31,7 +31,7 @@ export const DataSchema: ComponentSchema = {
             description: 'Opacidade das linhas de grade de fundo dos gráficos (eixos de referência horizontal/vertical). Valores baixos mantêm a grade discreta, só como guia visual; valores mais altos a tornam mais proeminente.',
             axis: 'color',
             constraints: { min: 0, max: 0.5, step: 0.01 },
-            defaultValue: 0.05,
+            defaultValue: 0.06,
             cssVars: ['--sarak-chart-grid-opacity']
         },
         {
@@ -43,7 +43,7 @@ export const DataSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do tooltip exibido ao passar o mouse sobre um ponto de dado no gráfico — deve ter contraste alto contra o texto do tooltip e se destacar do fundo do gráfico.',
             axis: 'color',
-            defaultValue: 'rgba(15, 23, 42, 0.9)',
+            defaultValue: 'rgba(11, 15, 23, 0.92)',
             cssVars: ['--sarak-chart-tooltip-bg']
         },
         {
@@ -54,7 +54,7 @@ export const DataSchema: ComponentSchema = {
             label: 'Tipo de Gráfico',
             type: 'select',
             description: 'Tipo de visualização usado para renderizar os dados (linhas, barras, pizza/donut, radar, dispersão, mapa de calor ou gauge). Cada tipo comunica um tipo de informação diferente — ex. linhas para tendência ao longo do tempo, pizza para proporção de um todo.',
-            defaultValue: 'line',
+            defaultValue: 'area',
             options: [
                 { value: 'line', label: 'Lines' },
                 { value: 'area', label: 'Area/Preenchido' },

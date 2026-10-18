@@ -57,7 +57,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
     if (loading) {
         return (
             <div className={mergeSarakClasses(
-                'flex items-center justify-center animate-pulse rounded-[var(--sarak-card-radius,12px)]',
+                'flex items-center justify-center animate-pulse rounded-[var(--sarak-card-radius,10px)]',
                 containerLayout.className,
             )} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 3)' }}>
                 <SarakSpinner />
@@ -69,13 +69,13 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
 
     return (
         <div className={mergeSarakClasses(
-            'relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]',
+            'relative overflow-hidden group rounded-[var(--sarak-card-radius,10px)]',
             containerLayout.className,
         )} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
             {label && (
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
-                    <SarakIcon name="Settings" size={20} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-                    <h3 className="text-2xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>
+                    <SarakIcon name="Settings" size={20} className="text-[var(--sarak-primary-color,#19e3f0)]" />
+                    <h3 className="text-2xl font-black text-theme-title tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}>
                         {label}
                     </h3>
                 </div>
@@ -104,7 +104,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     role={status.type === 'error' ? 'alert' : 'status'}
-                    className="flex items-center border rounded-[var(--sarak-card-radius,12px)]"
+                    className="flex items-center border rounded-[var(--sarak-card-radius,10px)]"
                     style={{
                         marginBottom: 'var(--sarak-layout-gap-md,16px)',
                         padding: 'var(--sarak-layout-gap-md,16px)',
@@ -120,7 +120,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
             )}
 
             {onSubmit && (
-                <div className="flex justify-end border-t border-[var(--border-color,rgba(255,255,255,0.1))]" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
+                <div className="flex justify-end border-t border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                     <SarakButton onClick={() => void handleSave()} disabled={saving} className="shadow-xl">
                         {saving ? <SarakSpinner size="sm" /> : <SarakIcon name="Save" size={16} />}
                         {saving ? text('formSaving') : text('formSave')}

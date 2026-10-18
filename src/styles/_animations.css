@@ -53,8 +53,8 @@
    animação vence o `box-shadow` inline, por isso o pulso cede no hover: aí vale o halo
    reforçado de `useAtomicStyles`. Cor do halo = `btnNeonGlowColor`. */
 @keyframes sarak-btn-neon-pulse {
-    0%, 100% { box-shadow: 0 0 10px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4)); }
-    50% { box-shadow: 0 0 20px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4)); }
+    0%, 100% { box-shadow: 0 0 10px var(--sarak-btn-neon-glow-color, rgba(25, 227, 240, 0.4)); }
+    50% { box-shadow: 0 0 20px var(--sarak-btn-neon-glow-color, rgba(25, 227, 240, 0.4)); }
 }
 
 .sarak-btn-neon-pulse {

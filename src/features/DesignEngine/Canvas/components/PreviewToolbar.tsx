@@ -61,7 +61,7 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
                 className="sr-only"
             />
             <span aria-hidden="true" title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle} className={'relative h-3 w-6 rounded-full transition-colors ' + (isGalleryOpen && isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]')}>
-                <span className={'absolute top-0.5 h-2 w-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ' + (isGalleryOpen && isPreviewStacked ? 'left-3.5' : 'left-0.5')} />
+                <span className={'absolute top-0.5 h-2 w-2 rounded-full bg-[var(--color-theme-title,#f2f6fb)] transition-all ' + (isGalleryOpen && isPreviewStacked ? 'left-3.5' : 'left-0.5')} />
             </span>
             <span title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle}>{PREVIEW_TOOLBAR_LABELS.stack}</span>
         </label>

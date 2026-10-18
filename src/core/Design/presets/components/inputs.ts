@@ -132,8 +132,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 8,
-            inputBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
-            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
+            inputBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
+            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
         }
     }
 ];

@@ -120,13 +120,13 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *     declarado no outro formato (2/4/6 e 1/3/5 responsivos; 3 e 4 escalares) — o canto é de formato diferente do mestre.
  *   - `dono-superficie`: `surfaceColor` e `cardBackgroundColor` diferentes — cada um com a própria variável.
  *   - `dono-raio-sistema`: `borderRadius` (5) e `cardBorderRadius` (20) diferentes — cada um com a própria variável.
- *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 1rem (o padrão é 3rem), a seção do catálogo que o componente leu.
+ *   - `cascata-raio-catalogo`: `catalogSectionRadius` = 2rem (o padrão é 3rem; 1rem coincidiria com os 14 px do raio do cartão), a seção do catálogo que o componente leu.
  *   - `legivel-claro` / `legivel-escuro`: modo claro (corpo e cartão brancos) com primária e status CLAROS, e modo escuro com
  *     primária e status ESCUROS — o texto sobre a cor sólida tem de inverter (escuro sobre o claro, claro sobre o escuro).
  *   - `componente-botao`: `btnPrimaryBg`/`btnPrimaryText`/`btnSecondaryBg` em três cores distintas e distintas da primária;
  *     `componente-botao-neon`: o secundário sob o estilo neon (que escreve o fundo por `style`).
  *   - `componente-sombra`: `cardShadow` declarada (a sombra dura vermelha); `componente-superficie`: `cardSurfaceOpacity` 0,5.
- *   - `componente-brilho`: `cardHoverStyle` = `glow-only`; `componente-tabela`: os três tokens de cor da tabela em cores
+ *   - `componente-brilho`: `cardHoverStyle` = `glow-only`; `componente-lift`: `lift` (o padrão do tema padrão já é `glow-only`); `componente-tabela`: os três tokens de cor da tabela em cores
  *     conhecidas; `componente-duracao`: `motionDurationNormal` = 0,9 s.
  *   - `saida-curva-lenta` / `saida-curva-rapida` / `saida-reduzida`: `motionEaseIn` na curva de fábrica e numa curva que parte rápido
  *     (a saída dura `motionDurationFast`, 0,5 s aqui para a amostra cair no meio), e a mesma duração sob `reducedMotion`.
@@ -135,7 +135,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `matriz-gap-largo`: `matrixGap` = 28 (o padrão é 12).
  *   - `busca-topo-esquerda` / `busca-topo-centro`: `searchPositionTopbar` (com `?chrome=topbar&itens=3`); `alinhamento-removido`: a chave
  *     `contentAlignment`, que saiu do schema, num tema salvo; `raio-responsivo`: `borderRadius` = `{ mob: 3, tab: 7, desk: 11 }`.
- *   - `acao-brilho-y` / `-desfoque` / `-espalhamento`: um dos três `actionGlowShadow*` num extremo, sobre o `btnStyleType` padrão (`matte`).
+ *   - `acao-brilho-base` / `-y` / `-desfoque` / `-espalhamento`: um dos três `actionGlowShadow*` num extremo, com `btnStyleType: 'matte'` fixado (o único estilo que preserva o `style`; não é mais o padrão).
  *   - `faixa-ativa`: `rangeActiveColor` = `#e11d48`. `cor-hover-base` / `cor-profunda` / `cor-variada`: a primária de matiz médio com
  *     `colorDepth`/`colorVariation` no mínimo e num extremo.
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
@@ -194,6 +194,10 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'cor-profunda': { primaryColor: '#808040', colorDepth: 3 },
     'cor-variada': { primaryColor: '#808040', colorVariation: 5 },
     'cor-base': { primaryColor: '#808040' },
+    // As cenas de textura medem a cor de CADA textura sob o atributo do invólucro; o padrão do tema padrão (`micro-dots` no
+    // cartão) vira disputa de ancestral e vence as que o CSS declara antes dele. Estes dois temas zeram o padrão da cena.
+    'textura-limpa': { cardTextureType: 'none' },
+    'tema-claro-textura-limpa': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textureColor: '#1f2937', cardTextureType: 'none' },
     'tema-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textureColor: '#1f2937' },
     'toque-alvo-largo': { touchTargetMin: 56 },
     'corpo-pequeno': { bodySize: '12px' },
@@ -203,7 +207,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'schema-cartao': {
         cardHeaderBg: '#ff0000', cardHeaderBorder: '#00ff00', cardHeaderPadding: 20,
         cardFooterBg: '#0000ff', cardFooterBorder: '#ffff00',
-        cardHoverTranslate: -10, cardHoverGlowIncrease: 0.5,
+        cardHoverStyle: 'lift', cardHoverTranslate: -10, cardHoverGlowIncrease: 0.5,
         cardActionBtnPrimaryBg: '#ff0000', cardActionBtnText: '#00ff00', cardActionBtnBorderRadius: 20, cardActionBtnPadding: 24,
         cardSearchBgFocus: '#ff0000', cardSearchTextFocusColor: '#00ff00', cardSearchPlaceholderColor: '#0000ff',
     },
@@ -213,11 +217,12 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
         identityPadding: 24, identityFontWeight: 300, identityTracking: 0.2, identityFontFamily: 'Georgia, serif',
     },
     'schema-tokens-cor': { tooltipBg: '#ff0000', tooltipTextColor: '#00ff00', tooltipBorderColor: '#0000ff', modalOverlayColor: 'rgba(255, 0, 0, 0.5)' },
+    'schema-hover-lift': { cardHoverStyle: 'lift' },
     'schema-hover-expand': { cardHoverStyle: 'expand' },
     'schema-hover-brilho': { cardHoverStyle: 'glow-only' },
     'schema-atmosfera': { bgGradientMode: 'mesh', colorBgLayer2: '#ff0000' },
     'schema-movimento': { motionDurationNormal: 0.7, motionDurationInstant: 0.2 },
-    'cascata-raio-catalogo': { catalogSectionRadius: 1 },
+    'cascata-raio-catalogo': { catalogSectionRadius: 2 },
     'legivel-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', primaryColor: '#ffeb3b', secondaryColor: '#fff176', statusErrorColor: '#fde047', statusSuccessColor: '#10b981' },
     'legivel-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#1a237e', secondaryColor: '#311b92', statusErrorColor: '#101830', statusSuccessColor: '#10b981' },
     'componente-botao': { btnPrimaryBg: 'rgb(255, 0, 0)', btnPrimaryText: 'rgb(0, 255, 0)', btnSecondaryBg: 'rgb(0, 0, 255)' },
@@ -225,6 +230,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'componente-sombra': { cardShadow: '10px 10px 0px 0px rgb(255, 0, 0)' },
     'componente-superficie': { cardSurfaceOpacity: 0.5 },
     'componente-brilho': { cardHoverStyle: 'glow-only' },
+    'componente-lift': { cardHoverStyle: 'lift' },
     'componente-tabela': { tableHeaderBg: 'rgb(1, 2, 3)', tableRowHoverBg: 'rgb(4, 5, 6)', tableBorderColor: 'rgb(7, 8, 9)' },
     'componente-duracao': { motionDurationNormal: 0.9 },
     'dono-raio-mestre': { cardBorderRadius: { mob: 20, tab: 20, desk: 20 }, btnBorderRadius: { mob: 30, tab: 30, desk: 30 } },
@@ -295,9 +301,10 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'busca-topo-centro': { searchPositionTopbar: 'center' },
     'alinhamento-removido': { contentAlignment: 'center' },
     'raio-responsivo': { borderRadius: { mob: 3, tab: 7, desk: 11 } },
-    'acao-brilho-y': { actionGlowShadowOffsetY: 31 },
-    'acao-brilho-desfoque': { actionGlowShadowBlur: 45 },
-    'acao-brilho-espalhamento': { actionGlowShadowSpread: 2 },
+    'acao-brilho-base': { btnStyleType: 'matte' },
+    'acao-brilho-y': { btnStyleType: 'matte', actionGlowShadowOffsetY: 31 },
+    'acao-brilho-desfoque': { btnStyleType: 'matte', actionGlowShadowBlur: 45 },
+    'acao-brilho-espalhamento': { btnStyleType: 'matte', actionGlowShadowSpread: 2 },
     'faixa-ativa': { rangeActiveColor: '#e11d48' },
     'cor-hover-base': { primaryColor: '#808040', colorDepth: 1, colorVariation: 1 },
 };
@@ -803,10 +810,10 @@ const ComponentScene: React.FC = () => (
         <div data-probe="botao-primario"><SarakButton>Primário</SarakButton></div>
         <div data-probe="botao-secundario"><SarakButton variant="secondary">Secundário</SarakButton></div>
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
-        <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">Cartão com fundo por classe</div></div>
-        <div data-probe="cartao-classe-hover"><div className="sarak-card hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]">Cartão com fundo no hover</div></div>
-        <div data-probe="cartao-borda-hover"><div className="sarak-card hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)]">Cartão com borda no hover</div></div>
-        <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">Contêiner com fundo por classe</div></div>
+        <div data-probe="cartao-classe-fundo"><div className="sarak-card bg-[var(--color-theme-card,#101622)]">Cartão com fundo por classe</div></div>
+        <div data-probe="cartao-classe-hover"><div className="sarak-card hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)]">Cartão com fundo no hover</div></div>
+        <div data-probe="cartao-borda-hover"><div className="sarak-card hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_30%,transparent)]">Cartão com borda no hover</div></div>
+        <div data-probe="conteiner-classe-fundo"><div className="card bg-[var(--color-theme-card,#101622)]">Contêiner com fundo por classe</div></div>
         <div data-probe="cartao-interativo"><SarakCard interactive>Cartão interativo</SarakCard></div>
         <div data-probe="tabela"><SarakTable data={SCHEMA_ROWS} columns={[{ key: 'nome', label: 'Nome' }]} responsive={false} /></div>
         <div data-probe="alternador"><SarakSwitch aria-label="Alternador de prova" /></div>
@@ -1098,7 +1105,7 @@ const OnDemandThemeScene: React.FC = () => {
             activeThemeId={activeThemeId}
             loadingFallback={<div data-probe="fallback">carregando tema</div>}
         >
-            <div data-probe="cor-do-tema" style={{ width: 40, height: 40, backgroundColor: 'var(--color-theme-primary, #00f2ff)' }} />
+            <div data-probe="cor-do-tema" style={{ width: 40, height: 40, backgroundColor: 'var(--color-theme-primary, #19e3f0)' }} />
             {target ? <button type="button" data-probe="escolher" onClick={() => setActiveThemeId(target)}>Escolher</button> : null}
         </SarakUIProvider>
     );

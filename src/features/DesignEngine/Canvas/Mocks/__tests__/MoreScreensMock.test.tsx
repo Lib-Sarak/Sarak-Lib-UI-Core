@@ -35,14 +35,14 @@ describe('MoreScreensMock', () => {
 
         expect(main.className).toContain('--sarak-layout-gap-md');
         expect(getSchemaDefaultValue('--sarak-layout-gap-md')).toEqual({ mob: 16, tab: 20, desk: 24 });
-        expect(main.className).toContain('--theme-bg,#050505');
-        expect(getSchemaDefaultValue('--theme-bg')).toBe('#050505');
+        expect(main.className).toContain('--theme-bg,#06080d');
+        expect(getSchemaDefaultValue('--theme-bg')).toBe('#06080d');
         expect(title.className).toContain('--sarak-type-scale-xl');
         expect(getSchemaDefaultValue('--sarak-type-scale-xl')).toBe(20);
         expect(supportingText.className).toContain('--sarak-type-scale-caption');
         expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
         expect(supportingText.className).toContain('--theme-muted');
-        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(255, 255, 255, 0.4)');
+        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(242, 246, 251, 0.55)');
     });
 
     it.each(ADDITIONAL_PREVIEW_SCREENS)('seleciona $label ao escolher a tela', ({ id, label }) => {

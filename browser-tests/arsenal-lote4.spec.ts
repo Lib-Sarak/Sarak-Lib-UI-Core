@@ -10,13 +10,13 @@
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
  * 1. Só valores COMPUTADOS de propriedades nomeadas (`box-shadow`, `background-color`, `accent-color`, `color`); nenhum
- *    pixel. "A sombra fica bonita" não é provado — só que ela muda com cada token e que o estilo `matte` a preserva.
+ *    pixel. "A sombra fica bonita" não é provado — só que ela muda com cada token e que o estilo `matte` a preserva (o caso o fixa: `frosted`, o padrão do tema padrão, não a preserva).
  * 2. O gráfico: prova que cada formato monta um `<canvas>` de área não nula e que o navegador não registra erro de console
  *    nem exceção, inclusive com o ponteiro varrendo o canvas (no radar o tooltip tem de abrir por item). NÃO prova
  *    o desenho dentro do canvas (barras, fatias, células), nem o conteúdo do tooltip além do nome do primeiro ponto.
  * 3. O hover e o pressionado são lidos depois de 250 ms, quando a transição já assentou; o quadro intermediário não.
- * 4. A sombra de ação só existe com um estilo de botão que preserva o `style` (o `matte`, padrão); outros estilos não são
- *    medidos aqui.
+ * 4. A sombra de ação só existe com um estilo de botão que preserva o `style` (o `matte`, que o caso fixa; não é mais o padrão); outros
+ *    estilos não são medidos aqui.
  * 5. Só Chromium headless. Lê o `dist/` — sem `npm run build` recente, mede o build anterior.
  * -------------------------------------------------------------------------
  */
@@ -55,6 +55,9 @@ async function openScene(theme?: string, chartType?: string): Promise<Opened> {
     if (chartType) searchParams.set('tipo', chartType);
     await page.goto(`${harnessUrl}?${searchParams.toString()}`);
     await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
+    // As transições da hidratação (fundo, cor, entrada) terminam antes de medir o hover e o pressionado: com a espera fixa depois do
+    // ponteiro, medir no meio delas lê o fundo ainda transparente.
+    await page.evaluate(() => Promise.all(document.getAnimations().filter((animation) => animation instanceof CSSTransition).map((animation) => animation.finished.catch(() => undefined))));
     return { page, errors };
 }
 
@@ -73,8 +76,8 @@ const selectedCategoryShadow = (page: Page): Promise<string> =>
     page.locator('[data-probe="catalogo-acao"]').getByRole('button', { name: 'Todos' })
         .evaluate((button) => getComputedStyle(button).boxShadow);
 
-test('P10: a sombra da categoria selecionada acompanha cada um dos três tokens (botão matte, o padrão)', async () => {
-    const base = await measure(undefined, selectedCategoryShadow);
+test('P10: a sombra da categoria selecionada acompanha cada um dos três tokens (botão matte, fixado pelo caso)', async () => {
+    const base = await measure('acao-brilho-base', selectedCategoryShadow);
     expect(base).not.toBe('none');
     for (const theme of ['acao-brilho-y', 'acao-brilho-desfoque', 'acao-brilho-espalhamento']) {
         const shadow = await measure(theme, selectedCategoryShadow);

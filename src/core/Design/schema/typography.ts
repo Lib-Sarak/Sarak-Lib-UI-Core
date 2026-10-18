@@ -119,7 +119,7 @@ export const TypographySchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de texto padrão do conteúdo — parágrafos, rótulos e a maior parte do que se lê; deve ter o maior contraste possível contra o fundo. Os títulos e cabeçalhos usam `titleColor`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
         },
         {
@@ -131,7 +131,7 @@ export const TypographySchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de texto de menor ênfase (ex. descrições, metadados) — contraste reduzido em relação a `textColorMaster` para criar hierarquia visual sem sacrificar legibilidade.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.7)',
+            defaultValue: 'rgba(242, 246, 251, 0.72)',
             cssVars: ['--sarak-text-sec']
         },
         {
@@ -143,7 +143,7 @@ export const TypographySchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de texto para dicas/placeholders/informação de menor importância — o nível mais baixo de contraste da escala de texto. Use com moderação para não comprometer acessibilidade (WCAG).',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.4)',
+            defaultValue: 'rgba(242, 246, 251, 0.55)',
             cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
         },
 
@@ -183,7 +183,7 @@ export const TypographySchema: ComponentSchema = {
                     { id: '900', label: 'Black' }
                 ]
             },
-            defaultValue: '900',
+            defaultValue: '800',
             cssVars: ['--sarak-h1-weight']
         },
         {

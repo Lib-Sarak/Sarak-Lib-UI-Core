@@ -96,15 +96,15 @@ describe('ThemeSidebarContent', () => {
         expect(block.className).toContain('--sarak-layout-gap-sm');
         expect(getSchemaDefaultValue('--sarak-layout-gap-sm')).toEqual({ mob: 8, tab: 10, desk: 12 });
         expect(block.className).toContain('--sarak-card-radius');
-        expect(getSchemaDefaultValue('--sarak-card-radius')).toEqual({ mob: 8, tab: 12, desk: 12 });
+        expect(getSchemaDefaultValue('--sarak-card-radius')).toEqual({ mob: 10, tab: 14, desk: 14 });
         expect(block.className).toContain('--theme-card');
-        expect(getSchemaDefaultValue('--theme-card')).toBe('rgba(15, 23, 42, 0.6)');
+        expect(getSchemaDefaultValue('--theme-card')).toBe('#101622');
         expect(block.className).toContain('--theme-border');
-        expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.1)');
+        expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.09)');
         expect(subtitle.className).toContain('--sarak-type-scale-caption');
         expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
-        expect(getSchemaDefaultValue('--theme-title')).toBe('#ffffff');
-        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(255, 255, 255, 0.4)');
+        expect(getSchemaDefaultValue('--theme-title')).toBe('#f2f6fb');
+        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(242, 246, 251, 0.55)');
     });
 
     it('no modo Impacto mostra os cinco blocos abertos e só os controles marcados, sem pilares', () => {

@@ -158,7 +158,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 style={{
                     height: 'var(--sarak-topbar-height, 64px)',
                     background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                    borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                    borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                 }}
             >
                 <SarakIconButton
@@ -168,7 +168,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     aria-expanded={open}
                     aria-controls={DRAWER_ID}
                     aria-label={open ? t('mobileMenuCloseAriaLabel') : t('mobileMenuOpenAriaLabel')}
-                    className="shrink-0 rounded-[var(--sarak-card-radius,8px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,rgba(15,23,42,0.6))]"
+                    className="shrink-0 rounded-[var(--sarak-card-radius,10px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,#101622)]"
                     style={{ width: 'var(--sarak-topbar-height, 56px)', height: 'var(--sarak-topbar-height, 56px)' }}
                     icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
                 />
@@ -187,8 +187,8 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                         className="fixed inset-y-0 left-0 z-50 flex flex-col shrink-0 border-r overflow-y-auto max-w-[85vw]"
                         style={{
                             width: 'var(--sarak-sidebar-width, 240px)',
-                            background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, var(--bg-body, #050505)))',
-                            borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                            background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, var(--bg-body, #06080d)))',
+                            borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                         }}
                     >
                         {brand && <div className="px-2 py-3">{brandNode}</div>}

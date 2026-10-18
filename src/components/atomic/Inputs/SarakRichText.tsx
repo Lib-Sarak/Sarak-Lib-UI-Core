@@ -112,11 +112,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     display: 'flex',
                     gap: 2,
                     padding: 4,
-                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,rgba(255,255,255,0.1))',
+                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,rgba(255,255,255,0.09))',
                     borderBottom: 'none',
-                    borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
-                    borderTopRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,rgba(15,23,42,0.6)))',
+                    borderTopLeftRadius: 'var(--sarak-card-radius,10px)',
+                    borderTopRightRadius: 'var(--sarak-card-radius,10px)',
+                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#101622))',
                 }}
             >
                 {TOOLS.map((tool) => (
@@ -159,11 +159,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 style={{
                     minHeight: 120,
                     padding: 'var(--sarak-layout-gap-md,16px)',
-                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,rgba(255,255,255,0.1))'}`,
-                    borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
-                    borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-input-bg, var(--color-theme-card,rgba(15,23,42,0.6)))',
-                    color: 'var(--sarak-input-text-color, var(--text-muted,rgba(255,255,255,0.4)))',
+                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff6b6b)' : 'var(--border-color,rgba(255,255,255,0.09))'}`,
+                    borderBottomLeftRadius: 'var(--sarak-card-radius,10px)',
+                    borderBottomRightRadius: 'var(--sarak-card-radius,10px)',
+                    background: 'var(--sarak-input-bg, var(--color-theme-card,#101622))',
+                    color: 'var(--sarak-input-text-color, var(--text-muted,rgba(242,246,251,0.55)))',
                     outline: 'none',
                     opacity: disabled ? 0.5 : 1,
                     cursor: disabled ? 'not-allowed' : 'text',

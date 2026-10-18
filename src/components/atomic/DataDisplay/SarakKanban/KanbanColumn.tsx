@@ -87,7 +87,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
                 flexDirection: 'column',
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
                 padding: 'var(--sarak-layout-gap-sm, 8px)',
-                borderRadius: 'var(--sarak-card-radius, 12px)',
+                borderRadius: 'var(--sarak-card-radius, 10px)',
                 background: 'var(--color-theme-card, var(--sarak-surface-color, transparent))',
                 border: `var(--sarak-border-width, 1px) solid ${isOver ? 'var(--sarak-primary-color, currentColor)' : 'var(--border-color, currentColor)'}`,
                 transition: 'border-color var(--duration-fast, 0.2s)',

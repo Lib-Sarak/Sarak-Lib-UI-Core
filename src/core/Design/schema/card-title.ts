@@ -32,7 +32,7 @@ export const CardTitleSchema: ComponentSchema = {
             usage: 'Cor do título do `SarakTitleCard`; precisa de contraste com o fundo do cartão nos dois modos.',
             description: 'Cor do texto do título exibido no card — deve manter contraste alto contra o fundo do card (`cardBackgroundColor`).',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-card-title-color']
         },
         {
@@ -81,7 +81,7 @@ export const CardTitleSchema: ComponentSchema = {
             interactsWith: ['cardTitleIconGlowBlur'],
             description: 'Cor do brilho/glow ao redor do ícone que acompanha o título do card. Normalmente uma versão translúcida da cor primária, para reforçar o ícone sem sobrecarregar o layout.',
             axis: 'elevation',
-            defaultValue: 'rgba(0, 242, 255, 0.2)',
+            defaultValue: 'rgba(25, 227, 240, 0.22)',
             cssVars: ['--sarak-card-title-icon-glow']
         },
         {

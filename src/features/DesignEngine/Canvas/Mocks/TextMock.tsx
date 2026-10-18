@@ -89,7 +89,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     <div 
                         className="flex-1 flex flex-col relative rounded-2xl border border-theme-text/5 overflow-hidden"
                         style={{
-                            backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.03))',
+                            backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.04))',
                             borderRadius: 'var(--sarak-input-border-radius, 8px)'
                         }}
                     >
@@ -114,24 +114,24 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
-                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
+                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
                             <select 
                                 className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
                                 style={{
-                                    backgroundColor: 'var(--sarak-input-bg, rgba(255, 255, 255, 0.03))',
+                                    backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.04))',
                                     borderRadius: 'var(--sarak-input-border-radius, 8px)'
                                 }}
                             >
-                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">MÁXIMO SIGILO // LOCAL ONLY</option>
-                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">USO INTERNO // RESTRITO</option>
-                                <option className="bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">PÚBLICO // DOCUMENTAÇÃO</option>
+                                <option className="bg-[var(--color-theme-card,#101622)]">MÁXIMO SIGILO // LOCAL ONLY</option>
+                                <option className="bg-[var(--color-theme-card,#101622)]">USO INTERNO // RESTRITO</option>
+                                <option className="bg-[var(--color-theme-card,#101622)]">PÚBLICO // DOCUMENTAÇÃO</option>
                             </select>
                         </div>
                         <div 
                             className="p-5 border border-theme-text/5 bg-theme-body/20"
                             style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
-                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
+                            <label className="text-[10px] font-black text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
                             <SarakInput 
                                 type="text"
                                 defaultValue="#relatorio-perf-v13"
@@ -172,7 +172,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                                 return (
                                     <p 
                                         key={index} 
-                                        className="text-xs text-[var(--color-theme-title,#ffffff)] leading-relaxed text-justify"
+                                        className="text-xs text-[var(--color-theme-title,#f2f6fb)] leading-relaxed text-justify"
                                         style={{
                                             fontFamily: 'var(--font-main, inherit)'
                                         }}

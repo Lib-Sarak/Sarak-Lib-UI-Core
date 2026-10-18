@@ -35,8 +35,8 @@ describe('botão: o primário lê btnPrimaryBg e btnPrimaryText (e não o texto 
         render(<SarakButton>Salvar</SarakButton>);
         const classes = screen.getByRole('button', { name: 'Salvar' }).className;
 
-        expect(classes).toContain('bg-[var(--sarak-btn-primary-bg,#00f2ff)]');
-        expect(classes).toContain('text-[var(--sarak-btn-primary-text,#000000)]');
+        expect(classes).toContain('bg-[var(--sarak-btn-primary-bg,#19e3f0)]');
+        expect(classes).toContain('text-[var(--sarak-btn-primary-text,#04121a)]');
         expect(classes).not.toContain('text-[var(--text-muted');
     });
 
@@ -44,8 +44,8 @@ describe('botão: o primário lê btnPrimaryBg e btnPrimaryText (e não o texto 
         render(<SarakUIProvider config={{ btnStyleType: 'borderline' }}><SarakButton>Salvar</SarakButton></SarakUIProvider>);
         const classes = screen.getByRole('button', { name: 'Salvar' }).className;
 
-        expect(classes).toContain('hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]');
-        expect(classes).toContain('hover:text-[var(--sarak-btn-primary-text,#000000)]');
+        expect(classes).toContain('hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)]');
+        expect(classes).toContain('hover:text-[var(--sarak-btn-primary-text,#04121a)]');
     });
 
     it('SarakButton secondary: o fundo é btnSecondaryBg e o hover usa o par primário legível', () => {
@@ -54,7 +54,7 @@ describe('botão: o primário lê btnPrimaryBg e btnPrimaryText (e não o texto 
 
         expect(classes).toContain('bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))]');
         expect(classes).not.toContain('--color-theme-card');
-        expect(classes).toContain('hover:text-[var(--sarak-btn-primary-text,#000000)]');
+        expect(classes).toContain('hover:text-[var(--sarak-btn-primary-text,#04121a)]');
     });
 
     it.each(['neon', 'frosted'])('SarakButton secondary em estilo %s: o fundo inline é btnSecondaryBg', (btnStyleType) => {
@@ -71,8 +71,8 @@ describe('botão: o primário lê btnPrimaryBg e btnPrimaryText (e não o texto 
 
         const primary = screen.getByRole('button', { name: 'p' }).className;
         const secondary = screen.getByRole('button', { name: 's' }).className;
-        expect(primary).toContain('bg-[var(--sarak-btn-primary-bg,#00f2ff)]');
-        expect(primary).toContain('text-[var(--sarak-btn-primary-text,#000000)]');
+        expect(primary).toContain('bg-[var(--sarak-btn-primary-bg,#19e3f0)]');
+        expect(primary).toContain('text-[var(--sarak-btn-primary-text,#04121a)]');
         expect(secondary).toContain('bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))]');
     });
 

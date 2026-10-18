@@ -21,7 +21,7 @@ const BODY_DIRECTION_CLASS: Record<ChromeSidebarPosition, string> = {
 const ASIDE_POSITION_CLASS: Record<ChromeSidebarPosition, string> = {
     left: 'border-r',
     right: 'border-l',
-    floating: 'border rounded-[var(--sarak-card-radius,12px)] m-3',
+    floating: 'border rounded-[var(--sarak-card-radius,10px)] m-3',
 };
 
 const NAVBAR_LAYOUT_CLASS: Record<ChromeNavbarLayout, string> = {

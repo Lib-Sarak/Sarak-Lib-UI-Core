@@ -17,7 +17,7 @@ export const CardActionSchema: ComponentSchema = {
             usage: 'Fundo do botão de ação do `SarakActionCard`; por padrão segue a cor primária do tema.',
             description: 'Cor de fundo do botão de ação principal (ex. "Executar") dentro do Card de Ação. Por padrão segue a cor primária do tema, como o botão primário do sistema.',
             axis: 'color',
-            defaultValue: 'var(--sarak-primary-color, #00f2ff)',
+            defaultValue: 'var(--sarak-primary-color, #19e3f0)',
             cssVars: ['--sarak-card-action-btn-bg']
         },
         {
@@ -30,7 +30,7 @@ export const CardActionSchema: ComponentSchema = {
             interactsWith: ['cardActionBtnPrimaryBg'],
             description: 'Cor de fundo do botão de ação do card ao passar o mouse — sinaliza que o botão é clicável e reage à interação. Por padrão repete o fundo normal (o botão só clareia no hover).',
             axis: 'color',
-            defaultValue: 'var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #00f2ff))',
+            defaultValue: 'rgba(25, 227, 240, 0.8)',
             cssVars: ['--sarak-card-action-btn-hover-bg']
         },
         {
@@ -43,7 +43,7 @@ export const CardActionSchema: ComponentSchema = {
             interactsWith: ['cardActionBtnPrimaryBg'],
             description: 'Cor do texto/ícone dentro do botão de ação do card — deve manter contraste alto contra `cardActionBtnPrimaryBg`.',
             axis: 'color',
-            defaultValue: 'var(--text-muted, rgba(255,255,255,0.4))',
+            defaultValue: '#04121a',
             cssVars: ['--sarak-card-action-btn-text']
         },
         {

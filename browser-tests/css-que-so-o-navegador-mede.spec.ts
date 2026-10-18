@@ -270,7 +270,7 @@ test('item 4: trilho do switch glass computa a cor de borda do tema', async () =
     });
 });
 
-const THEME_PRIMARY_RANGE_EXPRESSION = 'var(--color-theme-primary, #00f2ff)';
+const THEME_PRIMARY_RANGE_EXPRESSION = 'var(--color-theme-primary, #19e3f0)';
 
 test('item 4: trilho do SarakRangeSlider computa a cor de borda do tema', async () => {
     await withScene('atomos', undefined, async (page) => {

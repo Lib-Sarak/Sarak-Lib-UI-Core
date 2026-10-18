@@ -13,7 +13,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
             <SarakSearchCard item={items.search} mapping={mappings.search} design={tokens} className="@md:col-span-3" label="Card de Interação (Busca)" />
             
             <SmartCard variables={variables} textureType={textureType} className="@md:col-span-3 p-5 @md:p-6 !gap-4" label="Card de Métricas (Latency)">
-                <div className="flex justify-between items-center text-[var(--text-muted,rgba(255,255,255,0.4))]">
+                <div className="flex justify-between items-center text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     <span className="text-[11px] uppercase font-bold tracking-wider">Latency</span>
                     <SarakIcon name="Activity" size={14} />
                 </div>
@@ -34,8 +34,8 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
             <SmartCard variables={variables} textureType={textureType} className="@md:col-span-12 h-[420px] p-5 @md:p-6 @lg:p-8" label="Card de Gráficos (Data Flow)">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">Data Flow Engine</h3>
-                        <p className="text-[10px] text-[var(--text-muted,rgba(255,255,255,0.4))] font-mono">PACKET PROCESSING REAL-TIME</p>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">Data Flow Engine</h3>
+                        <p className="text-[10px] text-[var(--text-muted,rgba(242,246,251,0.55))] font-mono">PACKET PROCESSING REAL-TIME</p>
                     </div>
                     <div className="flex gap-2">
                         <span className="px-2 py-0.5 rounded-full bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] text-[9px] font-bold border border-[var(--theme-primary-border)] uppercase tracking-tighter">Channel-08-X</span>
@@ -61,7 +61,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 <div className="space-y-6">
                     <div>
                         <div className="flex justify-between text-[11px] mb-2 font-bold tracking-tight">
-                            <span className="text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase">Primary Stock</span>
+                            <span className="text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase">Primary Stock</span>
                             <span className="text-[var(--theme-primary)]">85% - SAFE</span>
                         </div>
                         <div className="h-2 bg-theme-text/5 rounded-full overflow-hidden">
@@ -70,7 +70,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                     </div>
                     <div>
                         <div className="flex justify-between text-[11px] mb-2 font-bold tracking-tight">
-                            <span className="text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase">Critical Parts</span>
+                            <span className="text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase">Critical Parts</span>
                             <span style={{ color: 'var(--theme-error, var(--theme-primary))' }}>12% - ALERT</span>
                         </div>
                         <div className="h-2 bg-theme-text/5 rounded-full overflow-hidden">
@@ -79,11 +79,11 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                     </div>
                     <div className="pt-2 grid grid-cols-2 gap-4">
                         <div className="bg-theme-text/5 p-4 rounded border border-theme-text/5">
-                            <p className="text-[10px] text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase font-bold mb-1">In Transit</p>
+                            <p className="text-[10px] text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase font-bold mb-1">In Transit</p>
                             <p className="text-xl font-mono text-theme-text tracking-tighter">24</p>
                         </div>
                         <div className="bg-theme-text/5 p-4 rounded border border-theme-text/5">
-                            <p className="text-[10px] text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase font-bold mb-1">Pending</p>
+                            <p className="text-[10px] text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase font-bold mb-1">Pending</p>
                             <p className="text-xl font-mono text-theme-text tracking-tighter">08</p>
                         </div>
                     </div>
@@ -96,10 +96,10 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                         <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />
                         <h3 className="text-sm font-bold text-theme-text uppercase italic tracking-wider">Access Control</h3>
                     </div>
-                    <SarakIcon name="Search" size={16} className="text-[var(--text-muted,rgba(255,255,255,0.4))]" />
+                    <SarakIcon name="Search" size={16} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                 </div>
                 <div className="px-5 pb-5 @md:px-8 @md:pb-8">
-                    <table className="w-full text-[11px] font-mono text-[var(--text-muted,rgba(255,255,255,0.4))]">
+                    <table className="w-full text-[11px] font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]">
                         <thead>
                             <tr className="text-left border-b border-theme-text/5">
                                 <th className="pb-3 font-bold uppercase tracking-wider">Identity</th>
@@ -130,14 +130,14 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
             {/* ROW 4 */}
             <SmartCard variables={variables} textureType={textureType} className="@md:col-span-3 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Ambiente)">
                 <div className="flex justify-between mb-6">
-                    <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(255,255,255,0.4))] tracking-widest">Environment</span>
+                    <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Environment</span>
                     <SarakIcon name="Thermometer" size={16} style={{ color: 'var(--theme-error, var(--theme-primary))' }} />
                 </div>
                 <div className="flex flex-col gap-8">
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-3xl font-mono text-theme-text italic tracking-tighter">24.2°C</p>
-                            <p className="text-[10px] text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase font-bold tracking-widest">Ambient Temp</p>
+                            <p className="text-[10px] text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase font-bold tracking-widest">Ambient Temp</p>
                         </div>
                         <div className="w-16 h-1.5 bg-theme-text/5 rounded-full overflow-hidden">
                             <div className="h-full w-[60%]" style={{ backgroundColor: 'rgba(var(--theme-error-rgb, 239, 68, 68), 0.5)' }} />
@@ -148,13 +148,13 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
             
             <SmartCard variables={variables} textureType={textureType} className="@md:col-span-4 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Energia)">
                 <div className="flex justify-between mb-6">
-                    <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(255,255,255,0.4))] tracking-widest">Energy Grid</span>
+                    <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Energy Grid</span>
                     <SarakIcon name="Zap" size={16} style={{ color: 'var(--theme-warning, var(--theme-primary))' }} />
                 </div>
                 <div className="flex items-center gap-8">
                     <div className="flex-1 space-y-5">
                         <div>
-                            <div className="flex justify-between text-[10px] font-bold uppercase text-[var(--text-muted,rgba(255,255,255,0.4))] mb-2">
+                            <div className="flex justify-between text-[10px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] mb-2">
                                 <span>Consumption</span>
                                 <span className="text-theme-text font-mono">1.2kW</span>
                             </div>
@@ -168,7 +168,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
 
             <SmartCard variables={variables} textureType={textureType} className="@md:col-span-5 p-5 @md:p-6 @lg:p-8 overflow-visible" label="Card de Interação (Terminal)">
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(255,255,255,0.4))] tracking-widest">Operational Commands</h3>
+                    <h3 className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Operational Commands</h3>
                     <SarakIcon name="Terminal" size={16} className="text-[var(--theme-primary)]" />
                 </div>
                 <div className="flex flex-col @xl:flex-row gap-4">

@@ -12,38 +12,38 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                 onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
                 icon={<SarakIcon name="HelpCircle" size={14} />}
                 variant="ghost"
-                className="w-5 h-5 rounded-full z-20 relative border border-[var(--border-color,rgba(255,255,255,0.1))]"
+                className="w-5 h-5 rounded-full z-20 relative border border-[var(--border-color,rgba(255,255,255,0.09))]"
             />
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_100)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-sm"
+                    className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_100)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))] backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
                     style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}
                 >
                     <div
-                        className="card border rounded-[var(--sarak-card-radius,12px)] shadow-[var(--dynamic-shadow)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
+                        className="card border rounded-[var(--sarak-card-radius,10px)] shadow-[var(--dynamic-shadow)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
                         onClick={(e) => e.stopPropagation()}
                         style={{ animationDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <div className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                            <h3 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)] flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
-                                <div className="w-6 h-6 rounded-full bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#00f2ff)] font-black">?</div>
+                        <div className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-theme-tint" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+                            <h3 className="text-sm font-bold text-[var(--color-theme-title,#f2f6fb)] flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
+                                <div className="w-6 h-6 rounded-full bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#19e3f0)] font-black">?</div>
                                 Indicator Information
                             </h3>
                             <SarakIconButton
                                 onClick={() => setIsOpen(false)}
                                 icon={<SarakIcon name="X" size={20} />}
                                 variant="ghost"
-                                className="text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--color-theme-title,#ffffff)]"
+                                className="text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--color-theme-title,#f2f6fb)]"
                             />
                         </div>
                         <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
-                            <p className="text-sm text-[var(--color-theme-title,#ffffff)] leading-relaxed font-medium">
+                            <p className="text-sm text-[var(--color-theme-title,#f2f6fb)] leading-relaxed font-medium">
                                 {text}
                             </p>
                         </div>
-                        <div className="border-t border-[var(--border-color,rgba(255,255,255,0.1))] flex justify-end" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                        <div className="border-t border-[var(--border-color,rgba(255,255,255,0.09))] flex justify-end" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                             <SarakButton
                                 onClick={() => setIsOpen(false)}
                                 variant="primary"

@@ -61,7 +61,6 @@ export const AnimationSchema: ComponentSchema = {
                     { id: 'expand', value: 'expand', label: 'Expandir' }
                 ]
             },
-            defaultValue: 'lift'
-        }
+            defaultValue: 'glow-only'}
     ]
 };

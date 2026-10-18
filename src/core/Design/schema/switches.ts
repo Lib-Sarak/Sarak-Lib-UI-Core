@@ -17,7 +17,7 @@ export const SwitchesSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do trilho do switch quando ligado (estado "true"). Deve ser facilmente distinguível do estado desligado — costuma usar a cor primária do sistema. Gera variantes automáticas.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--sarak-switch-active-bg']
         },
@@ -42,7 +42,7 @@ export const SwitchesSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de preenchimento/marca de um checkbox quando selecionado — normalmente espelha a cor primária do sistema para consistência com outros controles ativos (switch, radio). Gera variantes automáticas.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--sarak-checkbox-active']
         },
@@ -91,7 +91,7 @@ export const SwitchesSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do pulso de destaque ao redor do switch — só tem efeito visível quando `switchStyleType` é \'pulsing\'. Normalmente a mesma cor de `switchTrackActiveBg` em tom translúcido.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             cssVars: ['--sarak-switch-pulse-color']
         }
     ]

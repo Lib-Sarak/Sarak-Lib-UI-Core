@@ -17,7 +17,7 @@ export const CardSearchSchema: ComponentSchema = {
             usage: 'Fundo do campo do `SarakSearchCard` enquanto ele tem o foco.',
             description: 'Cor de fundo do input de busca quando está em foco (usuário digitando) — normalmente uma versão translúcida da cor primária, para sinalizar o estado ativo sem competir com o texto digitado.',
             axis: 'color',
-            defaultValue: 'var(--sarak-input-bg, var(--color-theme-card, rgba(15,23,42,0.6)))',
+            defaultValue: 'rgba(25, 227, 240, 0.08)',
             cssVars: ['--sarak-card-search-bg-focus']
         },
         {
@@ -41,7 +41,7 @@ export const CardSearchSchema: ComponentSchema = {
             usage: 'Cor do texto de exemplo do campo do `SarakSearchCard`, antes de digitar.',
             description: 'Cor do texto de exemplo (placeholder) exibido no input de busca antes do usuário digitar — deve ter contraste reduzido em relação ao texto real digitado, para diferenciar visualmente as duas coisas.',
             axis: 'color',
-            defaultValue: 'var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(255,255,255,0.4))) 30%, transparent))',
+            defaultValue: 'var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242,246,251,0.55))) 30%, transparent))',
             cssVars: ['--sarak-card-search-placeholder']
         },
         {
@@ -54,7 +54,7 @@ export const CardSearchSchema: ComponentSchema = {
             interactsWith: ['cardSearchBgFocus'],
             description: 'Cor do texto digitado pelo usuário dentro do input de busca quando ele está em foco — deve manter contraste alto contra `cardSearchBgFocus`.',
             axis: 'color',
-            defaultValue: 'var(--sarak-input-text-color, var(--text-muted, rgba(255,255,255,0.4)))',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-card-search-text-focus']
         }
     ]

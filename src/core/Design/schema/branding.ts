@@ -43,7 +43,7 @@ export const BrandingSchema: ComponentSchema = {
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 0, max: 64 },
-            defaultValue: 0,
+            defaultValue: 16,
             cssVars: ['--sarak-identity-padding']
         },
 
@@ -73,7 +73,7 @@ export const BrandingSchema: ComponentSchema = {
             description: 'Peso (espessura) da fonte do nome da marca. Pesos altos (700-900) dão presença/impacto de logotipo; pesos baixos (100-400) produzem um clima mais discreto/editorial.',
             axis: 'density',
             constraints: { min: 100, max: 900, step: 100 },
-            defaultValue: 700,
+            defaultValue: 800,
             cssVars: ['--sarak-identity-weight']
         },
         {
@@ -87,7 +87,7 @@ export const BrandingSchema: ComponentSchema = {
             axis: 'density',
             unit: 'px',
             constraints: { min: -2, max: 8, step: 0.5 },
-            defaultValue: -0.5,
+            defaultValue: 0,
             cssVars: ['--sarak-identity-tracking']
         },
 

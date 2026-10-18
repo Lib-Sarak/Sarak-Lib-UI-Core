@@ -29,7 +29,7 @@ describe('SarakIconButton', () => {
         expect(button.className).not.toContain('shadow-xl');
         // 'matte' (default sem Provider) não toca `border`; só neon/frosted tocam — a
         // borda com a cor real de glow prova que o valor REAL do tema chegou.
-        expect(button.style.border).toContain('rgba(0, 242, 255, 0.4)');
+        expect(button.style.border).toContain('rgba(25,227,240,0.4)');
     });
 
     it('a className do chamador VENCE o rounded-btn default do átomo — merge, não concatenação', () => {

@@ -97,8 +97,8 @@ const NavEntry: React.FC<{
                     ? 'absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 w-4 rounded-full'
                     : 'absolute left-0 w-1 h-4 rounded-full'}
                 style={{
-                    background: 'var(--sarak-nav-marker-color, #00f2ff)',
-                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff)', // sarak-allow-hardcode: 1px converte slider unitless
+                    background: 'var(--sarak-nav-marker-color, #19e3f0)',
+                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 8) * 1px) var(--sarak-nav-marker-color, #19e3f0)', // sarak-allow-hardcode: 1px converte slider unitless
                 }}
             />
         )}
@@ -162,10 +162,10 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     ) : null}
                     {brand.name ? (
                         <span
-                            className="text-[var(--sarak-text-main,#ffffff)] truncate"
+                            className="text-[var(--sarak-text-main,#f2f6fb)] truncate"
                             style={{
-                                fontWeight: 'var(--sarak-identity-weight, 700)',
-                                letterSpacing: 'var(--sarak-identity-tracking, -0.5px)',
+                                fontWeight: 'var(--sarak-identity-weight, 800)',
+                                letterSpacing: 'var(--sarak-identity-tracking, 0px)',
                             }}
                         >
                             {brand.name}
@@ -181,7 +181,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         <span
                             aria-hidden="true"
                             className="self-stretch shrink-0"
-                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))' }}
+                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.09))' }}
                         />
                     ) : null}
                     <div
@@ -200,7 +200,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     >
                         {category && !horizontal && !collapsed ? (
                             <div
-                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-70 select-none"
+                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-70 select-none"
                                 style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                             >
                                 {category}

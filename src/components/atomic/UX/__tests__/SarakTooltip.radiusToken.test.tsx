@@ -19,7 +19,7 @@ describe('tooltipRadius — o raio da caixa do tooltip lê --sarak-tooltip-radiu
         fireEvent.focus(screen.getByRole('button', { name: 'alvo' }));
         const classes = (await screen.findByRole('tooltip')).className;
         expect(classes).toContain('bg-[var(--sarak-tooltip-bg,var(--theme-surface))]');
-        expect(classes).toContain('text-[var(--sarak-tooltip-text,var(--color-theme-title,#ffffff))]');
+        expect(classes).toContain('text-[var(--sarak-tooltip-text,var(--color-theme-title,#f2f6fb))]');
         expect(classes).toContain('border-[var(--sarak-tooltip-border,var(--theme-border))]');
     });
 
@@ -29,7 +29,7 @@ describe('tooltipRadius — o raio da caixa do tooltip lê --sarak-tooltip-radiu
         );
         expect(defaults).toEqual({
             tooltipBg: 'var(--theme-surface)',
-            tooltipTextColor: 'var(--color-theme-title, #ffffff)',
+            tooltipTextColor: 'var(--color-theme-title, #f2f6fb)',
             tooltipBorderColor: 'var(--theme-border)',
         });
     });

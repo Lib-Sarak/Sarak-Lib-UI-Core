@@ -144,7 +144,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo da sidebar — costuma diferenciar-se levemente do fundo geral da aplicação para demarcar a área de navegação.',
             axis: 'color',
-            defaultValue: '#000000',
+            defaultValue: '#04060a',
             cssVars: ['--theme-sidebar-bg', '--sarak-sidebar-bg']
         },
         {
@@ -157,7 +157,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo de um item de menu da sidebar ao passar o mouse — sinaliza que o item é clicável antes de ser selecionado.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(255, 255, 255, 0.06)',
             cssVars: ['--sarak-sidebar-hover-color']
         },
         {
@@ -170,7 +170,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do item de menu atualmente selecionado na sidebar — deve ter contraste claro em relação a `sidebarHoverColor` e ao restante dos itens, para indicar a localização atual do usuário.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(25, 227, 240, 0.08)',
             cssVars: ['--sarak-sidebar-active-color']
         },
         {
@@ -263,7 +263,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo da barra de navegação superior — costuma diferenciar-se levemente do fundo geral da aplicação.',
             axis: 'color',
-            defaultValue: '#000000',
+            defaultValue: '#04060a',
             cssVars: ['--theme-topbar-bg', '--sarak-topbar-bg']
         },
         {
@@ -276,7 +276,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo de um item de menu da topbar ao passar o mouse.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(255, 255, 255, 0.06)',
             cssVars: ['--sarak-topbar-hover-color']
         },
         {
@@ -289,7 +289,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do item de menu atualmente selecionado na topbar — deve ter contraste claro em relação a `topbarHoverColor`.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(25, 227, 240, 0.08)',
             cssVars: ['--sarak-topbar-active-color']
         },
         {
@@ -316,7 +316,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto de título/breadcrumb exibido na topbar — deve manter contraste alto contra `topbarColor`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-topbar-title-color']
         },
         {
@@ -375,7 +375,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de texto/ícone do item de menu atualmente selecionado — normalmente espelha a cor primária do sistema para reforçar onde o usuário está.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             // `--theme-primary` é variável de `primaryColor` (schema `colors.ts`), não deste
             // token: duas fontes escrevendo a mesma variável faria o vencedor depender da
             // ordem de iteração do mapa de tokens, não do autor do tema. `--sarak-nav-active-color`
@@ -392,7 +392,7 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do indicador visual (barra/ponto) que marca qual item de menu está ativo — separado da cor do texto do item para permitir combinações independentes.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             cssVars: ['--sarak-nav-marker-color']
         },
         {
@@ -406,7 +406,7 @@ export const NavigationSchema: ComponentSchema = {
             description: 'Intensidade do brilho (glow) ao redor do marcador de item ativo — 0 remove o efeito; valores altos dão mais destaque ao indicador de seleção.',
             axis: 'elevation',
             constraints: { min: 0, max: 40 },
-            defaultValue: 10,
+            defaultValue: 8,
             cssVars: ['--sarak-nav-marker-glow']
         },
         // --- ESTÉTICA AVANÇADA DO SHELL ---

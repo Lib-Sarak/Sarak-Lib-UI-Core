@@ -38,7 +38,7 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
     h1: {
         fontFamily: 'var(--font-heading, var(--sarak-font-h, "Outfit", sans-serif))',
         fontSize: 'var(--sarak-h1-size, 48px)',
-        fontWeight: 'var(--sarak-h1-weight, 900)',
+        fontWeight: 'var(--sarak-h1-weight, 800)',
         lineHeight: 'var(--sarak-h1-lh, 1.1)',
         letterSpacing: 'var(--sarak-h1-ls, -1px)',
     },
@@ -75,9 +75,9 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
 };
 
 const colorVar: Record<SarakTypographyColor, string> = {
-    main: 'var(--sarak-text-main, var(--theme-title, #ffffff))',
-    secondary: 'var(--sarak-text-sec, rgba(255, 255, 255, 0.7))',
-    muted: 'var(--sarak-text-muted, var(--theme-muted, rgba(255, 255, 255, 0.4)))',
+    main: 'var(--sarak-text-main, var(--theme-title, #f2f6fb))',
+    secondary: 'var(--sarak-text-sec, rgba(242,246,251,0.72))',
+    muted: 'var(--sarak-text-muted, var(--theme-muted, rgba(242,246,251,0.55)))',
 };
 
 /**

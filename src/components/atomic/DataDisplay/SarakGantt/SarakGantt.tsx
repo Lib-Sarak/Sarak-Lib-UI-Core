@@ -101,7 +101,7 @@ export function SarakGantt({ tasks, scale = 'week', onTaskClick, rangeStart, ran
                 <span style={{ fontSize: CAPTION, color: MUTED }}>{text('ganttEmpty')}</span>
             ) : (
                 // Focável para a rolagem por teclado; é ela que leva o nome do cronograma.
-                <div role="region" aria-label={label ?? text('ganttLabel')} data-gantt-scroll="true" tabIndex={0} style={{ ...GANTT_SCROLL_HEIGHT, overflow: 'auto', border: HAIRLINE, borderRadius: 'var(--sarak-card-radius, 8px)' }}>
+                <div role="region" aria-label={label ?? text('ganttLabel')} data-gantt-scroll="true" tabIndex={0} style={{ ...GANTT_SCROLL_HEIGHT, overflow: 'auto', border: HAIRLINE, borderRadius: 'var(--sarak-card-radius, 10px)' }}>
                     <div style={{ display: 'flex', width: 'max-content', minWidth: '100%' }}>
                         <GanttTaskList rows={rows} formats={formats} />
                         <GanttTimeline rows={rows} edges={edges} range={range} scale={scale} formats={formats} onTaskClick={onTaskClick} />

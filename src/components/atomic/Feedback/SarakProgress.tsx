@@ -61,7 +61,7 @@ const ProgressTrack = ({ accessibleLabel, max, value, indeterminate, color }: {
         style={{
             height: 'var(--sarak-progress-bar-height, 8px)',
             borderRadius: 'var(--sarak-progress-bar-radius, 8px)',
-            backgroundColor: 'var(--theme-border, rgba(255,255,255,0.1))',
+            backgroundColor: 'var(--theme-border, rgba(255,255,255,0.09))',
         }}
     >
         {indeterminate ? (
@@ -98,7 +98,7 @@ export const SarakProgress = ({
 
     return (
         <div className={mergeSarakClasses('w-full', className)}>
-            {label && <div className="text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{label}</div>}
+            {label && <div className="text-sm text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{label}</div>}
             <ProgressTrack accessibleLabel={accessibleLabel} max={safeMax} value={safeValue} indeterminate={indeterminate} color={color} />
         </div>
     );

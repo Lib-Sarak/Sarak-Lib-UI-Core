@@ -47,7 +47,7 @@ export const AdvancedTab: React.FC = () => {
                 {/* ENGINE STATUS */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]">
+                        <div className="p-2 bg-[var(--sarak-secondary-color,#7c5cff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7c5cff)]">
                             <Settings className="w-4 h-4" />
                         </div>
                         <h3 className="text-sm font-black uppercase tracking-widest italic text-theme-text/90">Sovereign Engine Status</h3>
@@ -65,8 +65,8 @@ export const AdvancedTab: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/5 border border-[var(--sarak-secondary-color,#7000ff)]/10 flex items-start gap-4">
-                        <HelpCircle className="w-5 h-5 text-[var(--sarak-secondary-color,#7000ff)] shrink-0 mt-1" />
+                    <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/5 border border-[var(--sarak-secondary-color,#7c5cff)]/10 flex items-start gap-4">
+                        <HelpCircle className="w-5 h-5 text-[var(--sarak-secondary-color,#7c5cff)] shrink-0 mt-1" />
                         <div className="space-y-2">
                             <h4 className="text-2xs font-bold text-theme-text/80 uppercase">Sobre a Sarak Matrix v5.0</h4>
                             <p className="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium">

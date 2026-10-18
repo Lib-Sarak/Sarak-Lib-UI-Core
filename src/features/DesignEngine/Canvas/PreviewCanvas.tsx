@@ -97,7 +97,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const { targetWidth, getDeviceFrameStyles } = useDeviceStyles(previewDevice);
 
     return (
-        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg,#050505)] p-0 custom-scrollbar">
+        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg,#06080d)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
                 {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
                     (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não
@@ -162,7 +162,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     background-clip: padding-box;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: var(--theme-primary, #00f2ff);
+                    background: var(--theme-primary, #19e3f0);
                     background-clip: padding-box;
                     opacity: var(--sarak-scroll-thumb-hover-opacity, 0.5);
                 }

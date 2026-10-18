@@ -25,7 +25,7 @@
 import { test, expect, chromium, type Browser, type Locator, type Page } from '@playwright/test';
 
 const DESKTOP = { width: 1280, height: 900 } as const;
-const DEFAULT_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+const DEFAULT_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const THEME_EASE = 'cubic-bezier(0.1, 0.7, 0.1, 1)';
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;

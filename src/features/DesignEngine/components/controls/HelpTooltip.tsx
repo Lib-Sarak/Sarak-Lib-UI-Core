@@ -11,7 +11,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
+                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
             >
                 <HelpCircle size={10} />
             </button>
@@ -26,7 +26,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                         <div className="flex flex-col gap-2 relative z-10">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] shadow-[0_0_8px_var(--theme-primary)]" />
-                                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--color-theme-title,#ffffff)]">{label}</span>
+                                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--color-theme-title,#f2f6fb)]">{label}</span>
                             </div>
                             <div className="h-[length:var(--sarak-border-width,1px)] w-full bg-[var(--theme-border)]" />
                             <p className="text-[var(--sarak-type-scale2xs,10px)] text-[var(--theme-muted)] leading-relaxed uppercase font-medium">

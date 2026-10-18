@@ -135,7 +135,7 @@ const ThemePillarItem: React.FC<PillarItemProps> = (props) => {
             />
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--color-theme-card,#101622)]">
                         <div className="px-2 py-2 flex flex-col gap-1">
                             {sections.map((section) => (
                                 <PillarSectionControls

@@ -20,7 +20,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
     class="mock-container sarak-card sarak-search-card relative overflow-hidden group transition-all h-fit "
     data-border-beam="0"
     data-spotlight="1"
-    data-sx-card-texture-type="none"
+    data-sx-card-texture-type="micro-dots"
     style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
     <div
@@ -40,13 +40,13 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column;"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase"
+            class="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             Painel de Filtros
           </span>
           <h4
-            class="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight"
+            class="text-sm font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight"
           >
             Busca de Capacidades
           </h4>
@@ -64,7 +64,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
             class="relative w-full flex items-center"
           >
             <div
-              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(255,255,255,0.4)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#00f2ff))]"
+              class="absolute left-3 z-10 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"
             >
               <svg
                 class="w-3.5 h-3.5"
@@ -80,10 +80,10 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
               </svg>
             </div>
             <input
-              class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(255,255,255,0.4)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,rgba(15,23,42,0.6)))] rounded-input py-[var(--sarak-input-padding,16px)] pl-11 pr-4 w-full "
+              class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] pl-11 pr-4 w-full "
               id=":r0:"
               placeholder="Buscar modelo ou tech..."
-              style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.1)));"
+              style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09))); backdrop-filter: blur(8px);"
               value=""
             />
           </div>
@@ -93,7 +93,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         class="mock-footer"
       >
         <div
-          class="flex border-t border-[var(--border-color,rgba(255,255,255,0.1))]/20 w-full"
+          class="flex border-t border-[var(--border-color,rgba(255,255,255,0.09))]/20 w-full"
           style="flex-direction: column; gap: var(--sarak-layout-gap-sm, 8px); padding-top: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
@@ -111,7 +111,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
               style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sarak-primary-color,#00f2ff)]"
+                class="text-[var(--sarak-primary-color,#19e3f0)]"
                 fill="currentColor"
                 height="12"
                 viewBox="0 0 256 256"
@@ -123,7 +123,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]"
               >
                 Visão Computacional
               </span>
@@ -144,7 +144,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"
@@ -162,7 +162,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
               style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]"
+                class="text-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]"
                 fill="currentColor"
                 height="12"
                 viewBox="0 0 256 256"
@@ -174,7 +174,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]"
               >
                 Navegação Web
               </span>
@@ -194,7 +194,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
-                  style="background-color: var(--color-theme-card, rgba(15,23,42,0.6));"
+                  style="background-color: var(--color-theme-card, #101622);"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"
@@ -212,7 +212,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
               style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sarak-primary-color,#00f2ff)]"
+                class="text-[var(--sarak-primary-color,#19e3f0)]"
                 fill="currentColor"
                 height="12"
                 viewBox="0 0 256 256"
@@ -224,7 +224,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]"
               >
                 Modo Conversacional
               </span>
@@ -245,7 +245,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"

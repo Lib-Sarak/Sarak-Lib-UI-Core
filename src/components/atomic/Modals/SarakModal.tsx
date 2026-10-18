@@ -115,9 +115,9 @@ const ModalHeader = ({
     if (!title && hideCloseButton) return null;
     return (
         <div className={clsx('border-b border-[var(--theme-border)] bg-theme-tint', headerClass)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
-            {title && <h2 id={titleId} className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h2>}
+            {title && <h2 id={titleId} className="text-lg font-bold text-[var(--color-theme-title,#f2f6fb)]">{title}</h2>}
             {!hideCloseButton && (
-                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-theme-tint-hover', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
+                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)] hover:bg-theme-tint-hover', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
             )}
         </div>
     );
@@ -168,7 +168,7 @@ const ModalFrame = ({ disableOverlayClick, onClose, children }: {
     const isPresent = useIsPresent();
     return (
         <div className={clsx('fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center', !isPresent && 'pointer-events-none')} style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
             {children}
         </div>
     );

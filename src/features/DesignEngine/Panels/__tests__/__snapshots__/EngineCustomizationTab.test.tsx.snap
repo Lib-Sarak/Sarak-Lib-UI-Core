@@ -51,7 +51,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -118,10 +118,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
             >
               <div
-                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]"
               >
                 <span
-                  style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                  style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 >
                   0.05s
                 </span>
@@ -132,7 +132,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 max="0.5"
                 min="0"
                 step="0.01"
-                style="background-color: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                style="background-color: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 type="range"
                 value="0.05"
               />
@@ -211,7 +211,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -270,10 +270,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             <div
-              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]"
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]"
             >
               <span
-                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               >
                 12px
               </span>
@@ -284,7 +284,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               max="40"
               min="0"
               step="1"
-              style="background-color: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+              style="background-color: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               type="range"
               value="12"
             />
@@ -353,7 +353,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -436,7 +436,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 class="relative inline-flex items-center"
               >
                 <button
-                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,rgba(15,23,42,0.6))] cursor-help"
+                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
                 >
                   <svg
                     class="lucide lucide-help-circle"
@@ -487,7 +487,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               />
               <div
                 class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
-                style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff));"
+                style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               />
               <div
                 class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"
@@ -539,10 +539,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
       class="p-8 mt-auto"
     >
       <div
-        class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/10 border border-[var(--sarak-secondary-color,#7000ff)]/20 text-center"
+        class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/10 border border-[var(--sarak-secondary-color,#7c5cff)]/20 text-center"
       >
         <span
-          class="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7000ff)]/60"
+          class="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7c5cff)]/60"
         >
           Sovereign Engine v7.0
         </span>

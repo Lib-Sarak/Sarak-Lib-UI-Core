@@ -7,10 +7,10 @@ interface MoreScreensMockProps {
 }
 
 export const MoreScreensMock: React.FC<MoreScreensMockProps> = ({ selectPreviewApp }) => (
-    <main className="@container flex h-full min-h-0 flex-col gap-[var(--sarak-layout-gap-md,16px)] overflow-y-auto bg-[var(--theme-bg,#050505)] p-[var(--sarak-layout-gap-md,16px)] text-[var(--theme-title,#ffffff)]">
+    <main className="@container flex h-full min-h-0 flex-col gap-[var(--sarak-layout-gap-md,16px)] overflow-y-auto bg-[var(--theme-bg,#06080d)] p-[var(--sarak-layout-gap-md,16px)] text-[var(--theme-title,#f2f6fb)]">
         <header className="flex flex-col gap-[var(--sarak-layout-gap-sm,12px)]">
             <h1 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold">Mais telas</h1>
-            <p className="text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(255,255,255,0.4))]">
+            <p className="text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">
                 Escolha outra tela para continuar a prévia.
             </p>
         </header>

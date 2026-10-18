@@ -31,7 +31,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
                     <div className="space-y-8">
                         <h1 style={{ 
                             fontSize: 'var(--sarak-h1-size, 32px)', 
-                            fontWeight: 'var(--sarak-h1-weight, 900)', 
+                            fontWeight: 'var(--sarak-h1-weight, 800)', 
                             fontFamily: 'var(--font-heading)', 
                             lineHeight: 'var(--sarak-h1-lh, 1.1)',
                             letterSpacing: 'var(--sarak-h1-ls, -1px)',

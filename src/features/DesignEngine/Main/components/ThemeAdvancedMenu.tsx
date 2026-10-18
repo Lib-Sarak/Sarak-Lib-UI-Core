@@ -16,7 +16,7 @@ const ADVANCED_ENTRIES: Array<{ mode: ThemeViewMode; label: string }> = [
     { mode: 'preview', label: ADVANCED_MENU_LABELS.backToNormal }
 ];
 
-const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none';
+const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--color-theme-title,#f2f6fb)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none';
 
 interface ThemeAdvancedMenuProps {
     viewMode: ThemeViewMode;
@@ -84,8 +84,8 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                 className={[
                     'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]',
                     isAdvancedActive
-                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#ffffff)]'
-                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]'
+                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#f2f6fb)]'
+                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)]'
                 ].join(' ')}
             >
                 {ADVANCED_MENU_LABELS.trigger}
@@ -95,7 +95,7 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                 <div
                     role="menu"
                     aria-label={ADVANCED_MENU_LABELS.menu}
-                    className="absolute right-0 z-50 mt-1 min-w-48 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] p-1 shadow-lg"
+                    className="absolute right-0 z-50 mt-1 min-w-48 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,#101622)] p-1 shadow-lg"
                 >
                     {ADVANCED_ENTRIES.map((entry, index) => (
                         <button

@@ -11,8 +11,8 @@ interface SarakDataTableViewProps<T> {
     model: SarakDataTableViewModel<T>;
 }
 
-const HEADER_BACKGROUND = 'var(--sarak-table-header-bg, var(--color-theme-card,rgba(15,23,42,0.6)))';
-const CELL_BACKGROUND = 'var(--color-theme-card,rgba(15,23,42,0.6))';
+const HEADER_BACKGROUND = 'var(--sarak-table-header-bg, var(--color-theme-card,#101622))';
+const CELL_BACKGROUND = 'var(--color-theme-card,#101622)';
 
 const getTableState = <T,>(model: SarakDataTableViewModel<T>, text: ReturnType<typeof useLibraryText>): ReactElement | null => {
     if (model.props.error) {

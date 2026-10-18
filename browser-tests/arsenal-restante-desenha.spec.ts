@@ -133,7 +133,7 @@ function channelsOf(color: string): [number, number, number] {
 }
 
 const TEXTURE_RGB = '31, 41, 55';
-const PRIMARY_RGB = '0, 242, 255';
+const PRIMARY_RGB = '25, 227, 240';
 
 // ── borderType ────────────────────────────────────────────────────────────────────────────────────
 
@@ -346,7 +346,7 @@ test('colorVariation: um valor alto abre o matiz entre hover e active', async ()
 // ── cor de textura nas famílias de leitor ─────────────────────────────────────────────────────────
 
 test('cor de textura: o canal --theme-texture-color-rgb é emitido e difere da primária', async () => {
-    await withScene('texturas-cor', 'tema-claro', async (page) => {
+    await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const texture = (await readComputed(page.locator('body'), '--theme-texture-color-rgb')).trim();
         const primary = (await readComputed(page.locator('body'), '--theme-primary-rgb')).trim();
 
@@ -356,7 +356,7 @@ test('cor de textura: o canal --theme-texture-color-rgb é emitido e difere da p
 });
 
 test('cor de textura (_atmosphere, gradiente): stripes pinta na cor de textura, não na primária', async () => {
-    await withScene('texturas-cor', 'tema-claro', async (page) => {
+    await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const image = await readComputed(page.locator('[data-probe="textura-stripes"] .sarak-card'), 'background-image', '::after');
 
         expect(image).toContain(`rgba(${TEXTURE_RGB}`);
@@ -365,7 +365,7 @@ test('cor de textura (_atmosphere, gradiente): stripes pinta na cor de textura, 
 });
 
 test('cor de textura (_atmosphere, SVG): waves é uma máscara preenchida com a cor de textura', async () => {
-    await withScene('texturas-cor', 'tema-claro', async (page) => {
+    await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const card = page.locator('[data-probe="textura-waves"] .sarak-card');
         const color = await readComputed(card, 'background-color', '::after');
         const mask = await readComputed(card, 'mask-image', '::after');
@@ -377,9 +377,9 @@ test('cor de textura (_atmosphere, SVG): waves é uma máscara preenchida com a 
 
 test('cor de textura (_atmosphere, tecido): carbon acompanha a cor de textura e mantém tons distintos', async () => {
     const [light, dark] = await Promise.all([
-        withScene('texturas-cor', 'tema-claro', (page) =>
+        withScene('texturas-cor', 'tema-claro-textura-limpa', (page) =>
             readComputed(page.locator('[data-probe="textura-carbon"] .sarak-card'), 'background-image', '::after')),
-        withScene('texturas-cor', undefined, (page) =>
+        withScene('texturas-cor', 'textura-limpa', (page) =>
             readComputed(page.locator('[data-probe="textura-carbon"] .sarak-card'), 'background-image', '::after')),
     ]);
 
@@ -389,7 +389,7 @@ test('cor de textura (_atmosphere, tecido): carbon acompanha a cor de textura e 
 });
 
 test('cor de textura (_animations): o brilho animado usa a cor de textura no quadro do meio', async () => {
-    await withScene('texturas-cor', 'tema-claro', async (page) => {
+    await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const glow = page.locator('[data-probe="brilho-animado"]');
         const frame = await glow.evaluate((el) => {
             const animation = el.getAnimations()[0];
@@ -411,7 +411,7 @@ test('cor de textura (_surfaces): a moldura glow nasce da cor de textura, não d
 });
 
 test('cor de textura (_base): o anel de foco continua da primária, não vira a cor de textura', async () => {
-    await withScene('texturas-cor', 'tema-claro', async (page) => {
+    await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const focus = (await readComputed(page.locator('body'), '--theme-primary-focus')).replace(/\s+/g, ' ');
 
         expect(focus).toContain(PRIMARY_RGB);

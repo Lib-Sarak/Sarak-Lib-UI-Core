@@ -73,7 +73,7 @@ async function resolveExpression(target: Locator, property: string, expression: 
     }, { property, expression });
 }
 
-const CARD_RADIUS_TL = 'var(--sarak-card-radius-tl, 12px)';
+const CARD_RADIUS_TL = 'var(--sarak-card-radius-tl, 10px)';
 
 // ── Raio: o que o componente lê por token vence o raio do cartão ─────────────────────────────────
 

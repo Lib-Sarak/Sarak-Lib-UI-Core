@@ -15,7 +15,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           class="flex items-center gap-3"
         >
           <div
-            class="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]"
+            class="p-2 bg-[var(--sarak-secondary-color,#7c5cff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7c5cff)]"
           >
             <svg
               class="w-4 h-4"
@@ -152,10 +152,10 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
           </div>
         </div>
         <div
-          class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/5 border border-[var(--sarak-secondary-color,#7000ff)]/10 flex items-start gap-4"
+          class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/5 border border-[var(--sarak-secondary-color,#7c5cff)]/10 flex items-start gap-4"
         >
           <svg
-            class="w-5 h-5 text-[var(--sarak-secondary-color,#7000ff)] shrink-0 mt-1"
+            class="w-5 h-5 text-[var(--sarak-secondary-color,#7c5cff)] shrink-0 mt-1"
             fill="none"
             height="24"
             stroke="currentColor"

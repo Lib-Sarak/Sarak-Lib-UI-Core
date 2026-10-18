@@ -24,8 +24,8 @@ describe('colorBgLayer2 — a terceira mancha da malha lê a camada 2', () => {
         expect(read('_background.css')).toMatch(/at 82% 92%, color-mix\(in srgb, var\(--sarak-bg-layer-2,/);
     });
 
-    it('o padrão do token é a primária: a malha de hoje não muda', () => {
-        expect(tokenOf(AtmosphereSchema, 'colorBgLayer2')?.defaultValue).toBe('var(--sarak-primary-color, #00f2ff)');
+    it('o padrão do token é a camada 2 do tema padrão (concreta: o contraste de texto sobre ela é medido)', () => {
+        expect(tokenOf(AtmosphereSchema, 'colorBgLayer2')?.defaultValue).toBe('#101622');
     });
 });
 

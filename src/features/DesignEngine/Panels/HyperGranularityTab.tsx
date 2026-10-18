@@ -68,7 +68,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
     const { pillarsWithDrafts, filteredComponents } = useSovereignSearch(draft, searchQuery, activePillar);
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden bg-[var(--color-theme-card,rgba(15,23,42,0.6))]">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden bg-[var(--color-theme-card,#101622)]">
             
             {/* HEADER: SEARCH & PILLARS */}
             <div className="pt-6 px-6 pb-2 border-b border-theme-text/5 bg-theme-body/40 backdrop-blur-md z-10 space-y-4">

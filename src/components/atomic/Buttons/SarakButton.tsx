@@ -59,15 +59,15 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {
             'primary': () => {
-                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#00f2ff)] bg-transparent hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] active:scale-[0.98] text-[var(--sarak-primary-color,#00f2ff)]';
-                const base = 'bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.98]';
-                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20` : base;
+                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#19e3f0)] bg-transparent hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] active:scale-[0.98] text-[var(--sarak-primary-color,#19e3f0)]';
+                const base = 'bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98]';
+                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20` : base;
             },
-            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98]',
-            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]',
+            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]',
             'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#020617)] hover:brightness-110 shadow-xl shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.98]',
             'success': () => 'bg-[var(--theme-success,#10b981)] text-[var(--sarak-on-success,#020617)] hover:brightness-110 shadow-xl shadow-[var(--theme-success,#10b981)]/20 active:scale-[0.98]',
-            'outline': () => 'bg-transparent text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--sarak-primary-color,#00f2ff)] hover:bg-[var(--sarak-primary-color,#00f2ff)]/10 hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]'
+            'outline': () => 'bg-transparent text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-primary-color,#19e3f0)]/10 hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]'
         };
         return strats[v] ? strats[v]() : '';
     };

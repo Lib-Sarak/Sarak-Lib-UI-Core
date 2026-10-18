@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🟡 Em execução"
+status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
@@ -632,3 +632,256 @@ mudança de todos os `defaultValue` estéticos para os do `sarak-sovereign`.
 **Lote 5 fechado.** Próximo: lote 6 (o `sarak-sovereign` refeito, os padrões estéticos e o teto de peso por tema).
 
 **Status: 🟡 Em execução (lote 6 despachado).**
+
+## Resumo da execução — lote 6 — 2026-10-17
+
+**Resultado:** Concluído com pendências (gerados defasados para o revisor regenerar; teto de peso por tema só proposto, como mandou o prompt; a skill `dataviz` não existe em `.agents/skills`).
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- **6.1** `sarak-sovereign.ts` reescrito pela ficha (§7.1 do anexo), do esqueleto completo: **os 300 tokens estéticos** no modo principal e **os 104 que carregam modo, mais `mode`** na `contraparte` (clara: corpo `#f3f6fa`, camadas `#ffffff`, primária `#087782`); nenhum funcional (saíram `navigationStyle`, larguras do cromo, `zIndex*`, `focusRingWidth`, `reducedMotion`, `cardVariant` etc.). `enabledLanguages` com os seis idiomas. Comentários curtos nos valores não óbvios. Removi só `sarak-sovereign` de `gates/allowlists/themeCompletenessPending.json`; `theme-completeness:check`: "1 de 14 temas completos; 13 em exceção".
+- **6.2** `defaultValue` de **94 tokens estéticos** passou a ser o do `sarak-sovereign` (`src/core/Design/schema/`; conferido por script que `defaultValue === design[id]` nos 300, com a exceção `identityFontFamily` abaixo). Reservas `var(--x, F)` reescritas por `fix-fallbacks.ts --write` até convergir; `variable-contract:check` verde. Comentário de `SarakMenuItem.tsx` que citava `#00f2ff` atualizado.
+- **6.3** peso medido (abaixo); `PER_THEME_CEILING_BYTES` **não** editado.
+- **6.4** vitrine do `sarak-sovereign` capturada (10 imagens) e aberta.
+- 20 arquivos de teste e 16 snapshots mudaram só no valor de padrão (diff conferido); `docs/migracoes.md` ganhou a nota MAJOR em `## 8.0.0`; o anexo `plan-110-direcao-de-arte.md` ganhou a §11 (nota de conceito).
+
+**Arquivos alterados** (a lista completa é o `git diff --stat`)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/sarak-sovereign.ts`, `catalog.generated.ts` | alterado | tema refeito; swatch regenerado (`npm run themes:catalog`) |
+| `src/core/Design/schema/*.ts` (23 arquivos) | alterado | só `defaultValue` (94 linhas) |
+| `src/**` (componentes, `src/styles/*.css`, `SovereignThemeInjector.tsx`, `presets/components/inputs.ts`) | alterado | só a reserva `var(--x, F)` |
+| 20 testes + 16 `.snap` | alterado | valor esperado de padrão |
+| `gates/allowlists/themeCompletenessPending.json` | alterado | −`sarak-sovereign` |
+| `docs/migracoes.md`, `specs/plan/anexos/plan-110-direcao-de-arte.md`, esta plan | alterado | nota MAJOR, nota de conceito, resumo e `status` |
+
+**Verificações executadas**
+- `npm run verify -- --tier=quick` → tudo `[OK]` (`tsc`, `audit:baseline --with-tsc`, 25 `*:check`, Anel 0 simulado: 2044 linhas, 0 achado) **exceto `guide:check`** (`sarak-ui/docs/migracoes.md` defasado: gerado, do revisor).
+- `npx vitest run src gates --reporter=dot -u` → **476 arquivos, 3380 testes verdes** (rodei `-u` só depois de ler cada falha; antes eram 47 falhas de valor de padrão e 3 reais, abaixo).
+- `node gates/scripts/audit/auditor_contraste.mjs` → R31: 0 abaixo de AA no nativo e no oposto; `auditor_presets` sem chave órfã; `verify_contrast.test.ts` 49/49.
+- **Falhas reais que a medição achou e corrigi:** `cardTitleFontWeight: '800'` fora das opções (padrão e tema; ficou `'900'`); `cardSurfaceOpacity` 0,72 fora do passo 0,05 (ficou 0,7; clara 0,9); `identityFontFamily` do tema precisa ser valor de `THEME_FONTS`; `colorBgLayer2`, `cardActionBtnHoverBg` e `cardSearchTextFocusColor` são concretos porque o contraste pula cadeia de `var()`; `cardActionBtnHoverBg` claro teve de escurecer (3,99:1 → acima de 4,5:1).
+- **Peso** (método do §4.1 do anexo: `esbuild` minify + `gzip -9` por arquivo): `sarak-sovereign` **2.510 → 3.535 B gzip** (raw 7.129 → 12.115 B); os 13 outros hoje 2.248–2.709 B. `node scripts/measure-consumer-boot.mjs`: boot 342,4 KB gzip contra teto relativo 345,3 KB (ok); **"tema sarak-sovereign pesa 3,5 KB gzip, acima de 3,0 KB"**, a falha esperada do teto por tema. O boot cresce cerca de +1,0 KB (só o `sarak-sovereign` está no fecho).
+- **Contraste não textual** (apoio, 3:1): escuro — foco do campo 12,7, interruptor 11,5, marcador 12,8, séries 4,2 a 11,5; claro — foco 4,9, interruptor 5,3, séries 5,3 a 6,5. Abaixo de 3:1, deliberado: borda do cartão × corpo 1,2:1 (vidro) e borda do campo em repouso 1,9:1 (escuro) e 2,1:1 (claro).
+- **Vitrine:** Chromium headless (`PLAYWRIGHT_BROWSERS_PATH` absoluto em `node_modules/.cache/ms-playwright`, `chromium.launch()` sem `executablePath`), `generate-showcase.mts` copiado para o scratchpad com o harness trocado por um build de `src/` e o CSS por Tailwind (fora do repositório): 10 capturas, 0 falha. **Abri** `dark/sidebar/desktop/telas`, `light/sidebar/desktop/telas`, `dark/sidebar/mobile/modal`, `light/sidebar/mobile/telas` e recortes do topo de claro e escuro. Escuro: fundo quase preto azulado, sidebar mais funda, botão primário ciano com texto escuro, secundário e contorno de vidro, selos legíveis, cartões de vidro com brilho ciano, tabela com cabeçalho ciano, gráfico de área ciano→violeta, calendário com hoje em ciano, estado vazio e chat legíveis. Claro: corpo `#f3f6fa`, cartões brancos com borda fina e sombra suave, primária verde-azulada escura, perigo e sucesso com texto branco, gráfico de área, tabela e chat legíveis. Celular: navegação de base, tabela em cartões, modal escuro com véu desfocado e botão de fechar com anel. Na primeira captura clara o interruptor desligado sumia (polegar branco sobre trilho claro): `switchThumbBg` claro virou `#334155`.
+
+**Critérios de aceite**
+- [x] `sarak-sovereign` completo nos dois modos e fora da exceção — `theme-completeness:check`.
+- [x] Padrões estéticos = valores do `sarak-sovereign`; reservas acompanham — script de conferência e `variable-contract:check`.
+- [x] Contraste R31 verde nos dois modos; `tokenContractParity`, `shippedThemesConsoleClean` e `googleFontsUrl` verdes na suíte.
+- [x] Nota MAJOR em `## 8.0.0`, dizendo que os outros 13 temas herdam os padrões novos.
+- [x] Peso medido e teto por tema proposto (abaixo); `PER_THEME_CEILING_BYTES` intacto.
+- [ ] `guide:check` — pendente: gerado, do revisor. Vitrine contra o `dist/` — do revisor.
+
+**Decisões e suposições**
+- **Proposta de teto por tema: 4,5 KB gzip** (o valor D5 aprovado no lote 0). O `sarak-sovereign` completo pesa 3,45 KB (77% do teto); os 13 outros, ao ficarem completos, devem andar de 3,3 a 4 KB (estimativa, não medida); os dois temas com arte SVG embutida (≤1,5 KB de base64 por arquivo, cerca de +1,1 KB gzip cada) cabem justos. Os 3,0 KB atuais não comportam nem o tema padrão. Boot: +1,0 KB já medido.
+- Primária e item ativo claros `#087782` em vez do `#0a7f8a` da ficha (este dava 4,20:1 contra o corpo). O solucionador `solve_theme_contrast.ts` está quebrado, então ajustei à mão pelo `auditor_contraste`.
+- Tokens responsivos mantêm a forma `{mob,tab,desk}` no tema (`cardBorderRadius` 10/14/14, `btnBorderRadius` 8/10/10 etc.), para não perder o ajuste ao celular.
+- Tokens cujo padrão é derivado (`rangeActiveColor`, `tooltip*`, `inputIconColor`, `cardActionBtnPrimaryBg`, `aiGlowColor`, `colorBgModal`, `cardSearchPlaceholderColor`) repetem a cadeia no tema, para o consumidor que troca só a primária levar o derivado.
+- **Exceção à regra "padrão = tema":** `identityFontFamily` — o teste exige valor de `THEME_FONTS` no tema e a herança da fonte de títulos é o padrão documentado (`09` §4.4.4); o resultado visual é o mesmo (`Outfit`).
+- `colorBgLayer2` deixa de ter a primária como padrão (o teste `atmosferaEBotoesQueDesenham` foi atualizado): a terceira mancha da malha `mesh` de quem não declara o token muda.
+- `textureOpacity` 0,3 (em vez de 0,12) para a constelação aparecer; mesmo assim aparece pouco (achado abaixo).
+- `scripts/verify-changes.mjs` e `scripts/__tests__/verify-changes.test.mjs` aparecem modificados: são do prompt direto paralelo, não toquei neles.
+
+**Achados fora do escopo (não corrigidos)**
+- A textura `constellation` e o gradiente radial quase não se veem em tela cheia: `_atmosphere.css:468-478` desenha estrelas só dentro de uma máscara de traço de 0,5 px, e o cromo e o `main` pintam camadas opacas por cima; só aparecem listras na borda esquerda.
+- A fonte `Outfit` não carrega no harness a partir de `src/` (as fontes embarcadas são geradas no build): as capturas mostram os títulos em reserva. A vitrine contra o `dist/` (revisor) mostra a tipografia real.
+- `DEFAULT_INDUSTRIAL_SEED` (`src/core/Provider/constants.ts:19`) tem `#00f2ff` e nenhum uso.
+- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts:22` importa `getDefaultDesignState`, que não existe.
+- Aviso "`searchPositionSidebar` fora do contrato — hidden" em testes de cromo (pré-existente).
+
+**Pendências / riscos**
+- **Gerados defasados (revisor regenera):** `sarak-ui/docs/migracoes.md` e o que o `guide` carimba (apêndice do GUIA, `sarak-ui/catalog.json`, `SKILL.md`); `sarak-dev/*` pode carimbar contagens (`dev-kit`). `token-types:check` passou sem regenerar. Não rodei `guide`, `dev-kit`, `token-types` nem build.
+- `boot:measure` e `gates:full` falham no teto por tema (3,0 KB) até o revisor editar `PER_THEME_CEILING_BYTES`.
+- Os 13 temas ainda na exceção mudam de aparência (herdam os padrões novos) até o lote de cada um; mudança de padrão classifica o diff como `full` no `verify-changes`.
+- Legibilidade da tipografia real e do texto sobre o gráfico só se confirmam na vitrine sobre o `dist/`.
+
+## Veredito — 2026-10-17 — lote 6 — 🔴 Reprovado (6 achados)
+
+**O que está certo (conferido):** `sarak-sovereign` completo no modo principal e na contraparte (`theme-completeness:check`: 1 de
+14, 13 em exceção); 94 `defaultValue` estéticos passam a ser os dele (script do executor + diff dos schemas: só
+`defaultValue`); as reservas `var(--x, F)` convergiram (`variable-contract:check` verde); os testes de unidade mudaram só no
+valor esperado (li `componenteQueLeOToken`, `atmosferaEBotoesQueDesenham`, `cartaoQueCedeAClasse`: nenhuma asserção
+afrouxada). Nível **`full` verde**: `tsc`, suíte completa, baseline, Anel 1, R36, Anel 0 (2.136 linhas, 0 achados);
+`npm run build` real verde; vitrine contra o `dist/` real: 10 capturas, 0 falha. `boot:measure`: boot 342,3 KB contra o teto
+relativo 345,3; a única falha é a esperada, o teto por tema (`sarak-sovereign` 3,4 KB contra 3,0).
+
+**O que reprova — a bateria do navegador contra o `dist/`: 348 de 376, 28 falhas.** O resumo diz que não rodou o navegador
+contra o `dist/`, e o prompt só dispensava a **vitrine**; a bateria inteira era o que provaria uma troca de 94 padrões em
+150 arquivos. Descontadas as duas intermitências conhecidas (`gantt-altura-e-contraste:159` e `tema-sob-demanda:86`, backlog
+36), as 26 restantes são:
+
+1. **Legibilidade medida na tela, não no tema (R31 por renderização) — 5 falhas reais.** `contraste-do-que-faltava`:
+   "botão de sair do usuário" 1,69:1 (mín. 4,5); estilo `cyberpunk` com texto do botão primário 1,81:1, perigo 2,77:1,
+   sucesso 1,92:1; `modo-claro-legivel`: badge suave de sucesso sobre o corpo claro 2,17:1. O `auditor_contraste` do executor mede
+   o **tema**; estas medem o componente com os padrões novos (`btnPrimaryText` `#04121a`, cores de status, `btnStyleType`).
+   Corrija os **valores** (padrões, derivações ou o tema), nunca o limiar do caso.
+2. **`btnStyleType` do padrão passou de `matte` para `frosted` e quebra o que a `plan-117` fechou.** `arsenal-lote4:76` (P10: a
+   sombra da categoria não muda com os três tokens): `SarakButton` só preserva o `style` inline no `matte`. Os `usage` dos
+   três `actionGlowShadow*` em `schema/buttons.ts`, o GUIA e o cabeçalho do spec dizem "`matte`, o padrão" — agora é falso.
+   Decida e registre: o caso fixa `btnStyleType: 'matte'` e a documentação passa a dizer "só com `matte` (não é mais o padrão)",
+   ou o padrão volta a um estilo que preserve o `style`. Em qualquer caso a doc fica fiel.
+3. **Texturas — 4 falhas reais.** `arsenal-restante-desenha:358` (stripes na cor de textura), `:378` (carbon),
+   `token-que-desenha:349` (brushed e frosted): o recorte pede a textura X e o elemento mede
+   `radial-gradient(rgb(31, 41, 55) 0.5px …)`, ou seja, o padrão novo (`cardTextureType: micro-dots`, `texture:
+   constellation`) está **vencendo ou se somando** ao que o caso escolheu. Descobrir a causa (o caso não zera o padrão
+   novo? o CSS soma camadas?) e corrigir o que for defeito; só trocar o valor esperado se o caso estiver medindo o
+   elemento errado.
+4. **Vitrine: o ícone da busca aparece borrado.** Em `sarak-sovereign__dark__sidebar__desktop__telas.png` o ícone do campo
+   "Busca inteligente" e o dos campos "Buscar ferramenta…" saem como uma mancha, não como lupa (no lote 5 saíam nítidos).
+   É efeito do padrão novo de campo/vidro (`inputBackdropBlur`, `btnBackdropBlur` ou o estilo `frosted`) borrando o que está
+   atrás do campo, inclusive o ícone. Achar a causa e corrigir o padrão ou o `z-index` do ícone.
+5. **Casos que fixam o padrão antigo — 14 falhas de valor esperado** (atualizar o **valor** para o do `sarak-sovereign`, ou
+   fazer o caso fixar o token que quer provar; não afrouxar): `arsenal-restante-desenha:348` e `:413` (`0, 242, 255` →
+   `25, 227, 240`); `cascata-que-cede:80` e `schema-que-desenha:228` (raio do cartão 12 → 14 px); `schema-que-desenha:284`
+   (peso da marca 700 → 800); `transicao-padrao-do-tema` (curva de fábrica `cubic-bezier(0.4,0,0.2,1)` →
+   `(0.16,1,0.3,1)`, as duas); `componente-le-o-token:129, 151, 162, 202` e `residuo-da-reauditoria:102` (o cartão deixou de ser
+   translúcido: `cardBackgroundColor` `#101622` opaco); `schema-que-desenha:117, 137` (`cardHoverTranslate` -4 → -2 e
+   brilho no hover); `schema-que-desenha:303` (`btnGhostHoverBg`); `arsenal-lote5:120` (P14, 0,322 contra < 0,3: reconferir
+   depois da troca da curva padrão, pode ser só o valor esperado). **Cada caso mostrado, entrada e valor, no resumo.**
+6. **Teto de peso por tema** — decisão do revisor: **4,5 KB gzip** (o D5 aprovado no lote 0; o `sarak-sovereign` completo tem
+   3,4 KB e os outros devem ficar entre 3,3 e 4). Vai por prompt direto separado (é o `PER_THEME_CEILING_BYTES`); o lote 7
+   só começa depois dele.
+
+**Verificação do conserto, para não repetir a falha:** o executor roda a **bateria inteira do navegador num build à parte**
+(fora do repositório) e entrega a contagem; o revisor confirma uma vez contra o `dist/`. Para o achado 4, entregar a captura
+nova da vitrine, aberta e descrita.
+
+**Status: 🔵 Em correção.**
+
+## Resumo da execução (correção 1) — lote 6 — 2026-10-17
+
+**Resultado:** Concluído com pendências (gerados defasados; uma intermitência conhecida). Escopo: só os achados 1 a 5.
+
+**Bateria do navegador** (`npx playwright test --config=browser-tests/playwright.config.ts`, 376 casos), num **build temporário fora do repositório**: cópia da árvore no scratchpad (`node_modules` por junção), `esbuild` com alias para `src/index.ts` e o CSS injetado no bundle como o `inject-css` faz, CSS por Tailwind (`sarak.css` e `sarak-scoped.css`), Chromium headless de `node_modules/.cache/ms-playwright` por caminho absoluto, `chromium.launch()` sem `executablePath`. Não rodei guide, dev-kit, token-types nem build do repositório.
+- **Antes** (estado do lote 6): **346 passaram, 30 falharam.** Cinco dessas 30 (`cartao-cede-a-classe:151` e `leitores-que-faltavam:79, 91, 141, 162`, só no modo embarcado) eram defeito do meu harness: o build de `src/` não tinha o CSS injetado no JS (o `inject-css` do build real) e as duas leituras de folha falham em `file://`. Corrigi o harness e as cinco passam (30/30 nos dois arquivos). As 25 restantes batem com as do veredito (28 contra o `dist/`, menos as duas intermitências e três que só aparecem lá).
+- **Depois** (bateria inteira): **372 passaram, 4 falharam**: `gantt-altura-e-contraste:159` (intermitência conhecida, não é minha) e três de medição de hover (`componente-le-o-token:202`, `schema-que-desenha:139` e `:307`), que **corrigi em seguida** (abaixo) e **reexecutei só esses dois arquivos: 42 de 42.** Não reexecutei a bateria inteira depois dessa última correção: a contagem final completa é do revisor contra o `dist/`.
+
+**O que foi feito, por achado**
+1. **Legibilidade na tela (5 falhas).** Causa medida: o `body` tem `background-color: var(--bg-body) !important` e, na hidratação, ele entra por **transição CSS** (`getAnimations()` mostrou 4 `CSSTransition` em curso); o caso lê o `background-color` do corpo no meio dela (transparente) e compõe o texto sobre o branco do navegador. Amostrei o mesmo corpo em 0, 300 e 1.500 ms: `rgba(0,0,0,0)` → `rgb(5,5,5)` → `rgb(5,5,5)`. **Os valores (`btnPrimaryText`, status, `btnStyleType`) não eram o defeito**; nenhum limiar mudou. Em `contraste-do-que-faltava.spec.ts` e `modo-claro-legivel.spec.ts` o `withScene` passou a esperar as `CSSTransition` terminarem antes de medir. Resultado: 25/25 dos dois arquivos (botão de sair, `cyberpunk` primário/perigo/sucesso e badge suave de sucesso, que eram as 5 falhas).
+2. **`frosted` × `matte`.** Decisão: **o padrão fica `frosted`** (é a ficha do tema padrão) e a doc passa a dizer a verdade. `schema/buttons.ts`: o `usage` dos três `actionGlowShadow*` agora diz "`matte`, que não é o padrão do tema padrão: o `frosted` o apaga". `arsenal-lote4.spec.ts` e `fixtures/harness-entry.tsx`: o caso P10 fixa `btnStyleType: 'matte'` nos temas `acao-brilho-base/-y/-desfoque/-espalhamento`, e o cabeçalho do spec diz o mesmo. P10 passa.
+3. **Texturas (4 falhas).** Causa: o padrão novo `cardTextureType: 'micro-dots'` está no ancestral raiz, e o caso põe a textura X num invólucro (`[data-sx-card-texture-type="X"] .sarak-card::after`); as duas regras de ancestral têm a mesma especificidade e a que vem **depois no `_atmosphere.css`** vence, então `micro-dots` ganha de `stripes`, `carbon`, `brushed` e `frosted` (declaradas antes) e perde das demais. O CSS não soma camadas; o caso media com o padrão do tema por baixo. Correção no caso: dois temas de cena, `textura-limpa` e `tema-claro-textura-limpa` (`cardTextureType: 'none'`), usados em `texturas-cor` (`arsenal-restante-desenha.spec.ts`) e `texturas-claras` (`token-que-desenha.spec.ts`). Nenhum CSS alterado; ver achado abaixo.
+4. **Ícone da busca borrado.** Causa medida no código: em `SarakInput.tsx` o `div` do ícone vem **antes** do `<input>` no DOM e é `absolute` sem camada; o padrão novo `inputBackdropBlur: 8` põe `backdrop-filter: blur(8px)` no campo, que desfoca tudo atrás dele, o ícone inclusive. Correção: `ICON_SIDE_CLASS` ganhou `z-10` (`SarakInput.tsx:69-71`, com comentário). Captura nova `sarak-sovereign__dark__sidebar__desktop__telas.png` (vitrine contra `src/`), aberta e recortada em dois pontos: na busca da sidebar ("Busca inteligente", lupa pequena e nítida, ao lado do atalho CTRL K) e no campo "Buscar ferramenta, registro ou config…" dos cartões, a lupa nítida à esquerda do texto. Dois snapshots (`SarakSearchCard`, `PreviewCanvas`) mudaram só a classe `z-10` do ícone.
+5. **Casos que fixavam o padrão antigo.** Cada caso, entrada e valor:
+   - `arsenal-restante-desenha:348, 413`: `PRIMARY_RGB` `0, 242, 255` → `25, 227, 240` (a primária do `sarak-sovereign`).
+   - `cascata-que-cede:80`: o caso media `catalogSectionRadius: 1` (1rem); `bodySize` padrão é 14px, então 1rem = 14px = o raio novo do cartão e o caso deixou de distinguir. O tema da cena passou a `catalogSectionRadius: 2` (28px; o padrão é 3rem); a reserva de referência do caso virou `10px`.
+   - `schema-que-desenha:228` (`tableBorderRadius`): `12px` → `14px`; `:284` (peso da marca): `700` → `800`.
+   - `transicao-padrao-do-tema:87` (as duas): `DEFAULT_EASE` `cubic-bezier(0.4, 0, 0.2, 1)` → `cubic-bezier(0.16, 1, 0.3, 1)`.
+   - `componente-le-o-token:129, 151, 162` e `residuo-da-reauditoria:102`: **a causa não era só o valor**: os `className` das sondas (`bg-[var(--color-theme-card,rgba(15,23,42,0.6))]`, `hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)]`, `hover:border-[color-mix(…#00f2ff…)]`) são classes que o Tailwind só gera se algum arquivo de `src/` citar o texto exato, e o `fix-fallbacks` trocou essas reservas em `src/`; a classe antiga deixou de existir no CSS e a sonda ficou sem estilo. As sondas e as expressões do caso agora usam `#101622` e `#19e3f0` (e `1106`, `css-que-so-o-navegador-mede:273`). `residuo-da-reauditoria:102` ("sem Provider, o cartão é a cor do token"): `rgba(15, 23, 42, 0.6)` → `rgb(16, 22, 34)` (o token é opaco, a "translúcida" saiu do título).
+   - `componente-le-o-token:202` (`glow-only`): o padrão do tema agora **já é** `glow-only`, então a contraprova "lift" medida com `undefined` media `glow-only`. Criei o tema de cena `componente-lift` e a contraprova o usa.
+   - `schema-que-desenha:117, 137` (`cardHoverTranslate`, `cardHoverGlowIncrease`): o padrão `glow-only` não move o cartão, e o caso media o deslocamento no padrão. `schema-cartao` passou a fixar `cardHoverStyle: 'lift'`; criei `schema-hover-lift` para o "padrão" do deslocamento (−2 do token); o brilho esperado virou `0,75` (intensidade base 0,25 do tema padrão + 0,5 do caso) e o do contêiner `0,25` (a base; o aumento não o alcança).
+   - `arsenal-lote5:120` (P14) e `schema-que-desenha:303` (`btnGhostHoverBg`): não falharam no meu build; a medição de hover dos dois depende de espera fixa (ver abaixo).
+   - **Medição de hover com espera fixa** (`componente-le-o-token:202`, `schema-que-desenha:139` e `:307`): na bateria "depois" mediram 0,9876 em vez de 1, 0,687 em vez de 0,75 e o fundo do ghost ainda transparente. Em página assentada o brilho chega a 0,99 em 547 ms e o ghost aplica o fundo em 300 ms; as falhas eram a transição de hidratação ainda em curso. O `withScene` desses dois arquivos passou a esperar as `CSSTransition` terminarem. Reexecutados: 42/42.
+
+**Arquivos alterados nesta correção**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Inputs/SarakInput.tsx` | alterado | `z-10` no ícone do campo (achado 4) |
+| `src/core/Design/schema/buttons.ts` | alterado | `usage` dos três `actionGlowShadow*` (achado 2) |
+| `src/components/atomic/Cards/__tests__/__snapshots__/SarakSearchCard.test.tsx.snap`, `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | só a classe `z-10` |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | temas de cena novos (`acao-brilho-base`, `textura-limpa`, `tema-claro-textura-limpa`, `componente-lift`, `schema-hover-lift`), `schema-cartao` com `lift`, `catalogSectionRadius` 2, classes das sondas, comentários |
+| `browser-tests/{arsenal-lote4,arsenal-restante-desenha,token-que-desenha,cascata-que-cede,componente-le-o-token,residuo-da-reauditoria,schema-que-desenha,transicao-padrao-do-tema,css-que-so-o-navegador-mede,contraste-do-que-faltava,modo-claro-legivel}.spec.ts` | alterado | valores esperados e espera de transição, conforme acima |
+| esta plan | alterado | este bloco e o `status` |
+
+**Verificações executadas**
+- Bateria do navegador, antes e depois (acima); reexecução de `componente-le-o-token` + `schema-que-desenha` (42/42), `contraste-do-que-faltava` + `modo-claro-legivel` (25/25), `cartao-cede-a-classe` + `leitores-que-faltavam` (30/30).
+- `npx vitest run src gates --reporter=dot` → 476 arquivos; 2 falharam só por snapshot do `z-10`, atualizados com `-u` e conferidos no diff (só a classe) e relidos: 8/8 nos dois arquivos.
+- `npm run verify -- --tier=quick` → tudo `[OK]` (`tsc`, baseline com `tsc`, Anel 1, Anel 0: 2.260 linhas, 0 achado) **exceto `token-types:check`**: o texto novo do `usage` de `buttons.ts` defasou `src/core/Provider/generated/design-token-docs.json` (gerado, do revisor).
+
+**Critérios de aceite**
+- [x] Achados 1 a 5 tratados, cada caso com entrada e valor acima.
+- [x] Bateria do navegador entregue, antes (346/376) e depois (372/376; os 3 de hover corrigidos e reexecutados).
+- [x] Captura nova da vitrine, aberta e descrita (achado 4).
+- [ ] `token-types:check` (e o que o `guide` carimba de `usage`): pendente, gerado.
+
+**Decisões e suposições**
+- Achado 1: tratei como defeito de medição (transição em curso), porque a medição pós-assentamento mostra o corpo opaco e os valores passam. Se o revisor preferir que a lib **não** faça a transição de entrada do fundo do corpo, é outra decisão (fora do escopo).
+- Achado 2: o padrão não volta a `matte`; a ficha pede `frosted`.
+- Achado 3: preferi não mexer na ordem do CSS das 41 texturas; a disputa só ocorre com ancestrais com texturas diferentes e o cartão real carrega o próprio atributo.
+- O harness temporário injeta o CSS no bundle como o `inject-css` (sem isso o modo embarcado e a leitura de camadas falham em `file://`); é só do build temporário.
+
+**Achados fora do escopo (não corrigidos)**
+- Disputa de textura entre ancestrais (`_atmosphere.css`): com mais de um `data-sx-card-texture-type` no caminho, vence a regra declarada por último, não a do ancestral mais próximo; hoje o padrão `micro-dots` expõe isso ao painel de customização (pré-visualização aninhada de um tema com outra textura).
+- A transição do `background-color` do corpo na hidratação faz o fundo sair de transparente (`getComputedStyle` lê `rgba(0,0,0,0)` por alguns quadros): é o que causou a leitura errada nos casos de contraste.
+
+**Pendências / riscos**
+- Gerados defasados: `src/core/Provider/generated/design-token-docs.json` (`npm run token-types`) e o que o `guide` carimba (`sarak-ui/*`, apêndice do GUIA); `dev-kit` pode carimbar contagens.
+- A bateria inteira depois da última correção só foi reexecutada nos arquivos tocados; o revisor confirma uma vez contra o `dist/`.
+- `gantt-altura-e-contraste:159` segue intermitente (conhecida).
+
+## Veredito — 2026-10-18 — correção 1 (lote 6) — 🔴 Reprovado (1 achado, pequeno)
+
+**O que está certo (conferido contra o `dist/` reconstruído):** `verify --tier=full` verde (`tsc`, suíte completa, baseline,
+Anel 1, R36, Anel 0: 2.331 linhas, 0 achados); `npm run build` verde; `boot:measure` **`[OK]`** — boot 342,3 KB e
+`sarak-sovereign` 3,4 KB contra o teto por tema de 4,5 KB; bateria do navegador: **374 de 376**. Das 28 falhas do veredito
+anterior, 26 fecharam: legibilidade (as medições liam o corpo no meio da transição de hidratação; os valores estavam
+certos), textura (os casos agora usam um tema de cena com `cardTextureType: 'none'`), os casos que fixavam o padrão antigo e
+o P10 (que passou a fixar `btnStyleType: 'matte'`, com o `usage` dizendo a verdade). **Achado 4 conferido:** abri a captura
+nova da vitrine gerada contra o `dist/` — a lupa do campo "Busca inteligente" e a dos campos "Buscar ferramenta…" saem
+**nítidas** (o `z-10` no ícone de `SarakInput` resolveu o desfoque).
+
+**Achado 1 — `arsenal-lote4.spec.ts:124` (P11: `colorDepth`/`colorVariation` alteram o hover e o pressionado) falha 3 vezes em 3**
+contra o `dist/` (`Expected: not "rgba(0, 0, 0, 0)"`: o fundo do botão em hover e pressionado ainda é transparente aos 250
+ms, tanto na base quanto nos extremos, então a comparação não distingue nada). É a mesma causa que o executor achou e
+corrigiu em `componente-le-o-token`, `schema-que-desenha` e nos casos de contraste — o `hover()` logo depois da
+hidratação, com as `CSSTransition` do corpo e do botão ainda em curso — mas **o `arsenal-lote4.spec.ts` ficou de fora** (no
+build temporário do executor passou por folga de tempo; no `dist/`, não). **Correção:** o `measure`/`openScene` desse spec
+espera as `CSSTransition` terminarem antes de medir, como nos outros specs (mesma forma, sem nova espera fixa), e prova
+**três execuções seguidas verdes** do arquivo. Revisar no mesmo gesto os outros specs que fazem `hover()`/`mouse.down()` e
+lêem `background-color` com espera fixa (`arsenal-lote5.spec.ts`, `toque-no-celular.spec.ts`, `cromo-css-real.spec.ts`) e
+aplicar a mesma espera onde faltar.
+
+**Para o `00-backlog` (feito):** (40) a transição de entrada do `background-color` do corpo na hidratação faz o fundo sair de
+transparente (`getComputedStyle` lê `rgba(0,0,0,0)` por alguns quadros): é a raiz das leituras erradas de contraste e
+convém decidir se a lib deve fazer essa transição; (41) disputa de textura entre ancestrais em `_atmosphere.css`: com mais de
+um `data-sx-card-texture-type` no caminho vence a regra declarada por último, e o padrão `micro-dots` expõe isso à
+pré-visualização aninhada do painel.
+
+**Já resolvido na rodada (para constar):** o teto de peso por tema (4,5 KB) foi por prompt direto e está aprovado.
+
+**Status: 🔵 Em correção.**
+
+## Resumo da execução (correção 2) — lote 6 — 2026-10-18
+
+**Resultado:** Concluído. Escopo: só o achado único (P11 de `arsenal-lote4.spec.ts` falhando contra o `dist/`).
+
+**Reprodução (build temporário fora do repositório:** cópia da árvore no scratchpad, `esbuild` com alias para `src/index.ts` e CSS injetado no bundle, CSS por Tailwind, Chromium de `node_modules/.cache/ms-playwright` por caminho absoluto, `chromium.launch()` sem `executablePath`; nada de guide, dev-kit, token-types nem build do repositório). Sem carga, P11 passa 3 em 3 (o que o executor viu). Com 8 processos ocupando a CPU, **falhou 1 de 3** com o mesmo erro do veredito (`Expected: not "rgba(0, 0, 0, 0)"`): é a corrida da hidratação, o `hover()` e a espera fixa de 250 ms contra as `CSSTransition` do botão e do corpo ainda em curso. Era a única das duas formas de `openScene`/`withScene` desses specs sem a espera.
+
+**O que foi feito**
+- `browser-tests/arsenal-lote4.spec.ts` (`openScene`) e `browser-tests/arsenal-lote5.spec.ts` (`withScene`): depois do `waitForFunction` do atributo, esperam as `CSSTransition` terminarem (`document.getAnimations().filter(CSSTransition).map(finished)`), a mesma forma dos outros specs, sem espera fixa nova.
+- Revisão dos outros specs com `hover()`/`mouse.down()`: `cromo-css-real.spec.ts` (`:702`, `:714`) lê com `toHaveCSS`, que repete até 5 s, e a leitura em repouso vem antes do `hover()`: não precisa; `toque-no-celular.spec.ts` não faz `hover()` nem lê `background-color` com espera fixa: não precisa; `arsenal-lote5.spec.ts` recebeu a espera (a leitura de opacidade da saída já esperava `opacity === '1'`).
+
+**Verificações executadas** (build temporário, 6 arquivos: `arsenal-lote4`, `arsenal-lote5`, `componente-le-o-token`, `schema-que-desenha`, `contraste-do-que-faltava`, `modo-claro-legivel`, 88 casos)
+- **Três execuções seguidas sem carga: 88/88, 88/88, 88/88.**
+- **Três execuções seguidas sob carga (8 processos de CPU):** P11 e os casos de hover/contraste verdes nas três; em duas delas falhou **um** caso de `arsenal-lote5.spec.ts:123` ("P14: … motionEaseIn muda a opacidade no meio da saída"), que amostra a opacidade quadro a quadro com `requestAnimationFrame` e perde precisão quando a CPU segura os quadros. Não é o achado nem mexe em hover; não alterei.
+
+**Arquivos alterados:** `browser-tests/arsenal-lote4.spec.ts`, `browser-tests/arsenal-lote5.spec.ts`, esta plan.
+
+**Decisões e suposições:** a carga sintética (8 laços de CPU) foi o jeito de reproduzir no build temporário a folga de tempo que o `dist/` não tem; a mutação é a própria versão anterior do spec (3 execuções com carga: 1 falha).
+
+**Achados fora do escopo (não corrigidos)**
+- `arsenal-lote5.spec.ts:123` (P14, `motionEaseIn` no meio da saída) é sensível à carga da máquina (falhou 2 de 3 execuções sob 8 processos); amostragem por `requestAnimationFrame` com meta de 250 ms.
+
+**Pendências / riscos:** a confirmação contra o `dist/` é do revisor; os gerados defasados da correção 1 (`token-types`, o que o `guide` carimba) seguem como estavam.
+
+## Veredito — 2026-10-18 — correção 2 (lote 6) — 🟢 Aprovado; lote 6 fechado
+
+**Conferido:** `arsenal-lote4.spec.ts` (`openScene`) e `arsenal-lote5.spec.ts` (`withScene`) passaram a esperar as
+`CSSTransition` terminarem antes de medir, na mesma forma dos outros specs, sem espera fixa nova; o executor revisou
+`cromo-css-real` e `toque-no-celular` e justificou que não precisam (leitura por `toHaveCSS`, que repete, e sem `hover()`).
+**Medido por mim contra o `dist/` reconstruído:** os seis arquivos do achado (`arsenal-lote4`, `arsenal-lote5`,
+`componente-le-o-token`, `schema-que-desenha`, `contraste-do-que-faltava`, `modo-claro-legivel`) rodados **três vezes
+seguidas: 88/88, 88/88, 88/88**, incluindo o P11 que falhava 3 em 3. O diff de `src/` não mudou desde a verificação
+completa da correção 1 (`full` verde, build verde, `boot:measure` `[OK]` com o `sarak-sovereign` em 3,4 KB contra 4,5 KB), então
+essa verificação segue valendo.
+
+**Fora do escopo → backlog 42:** `arsenal-lote5.spec.ts:123` (P14, curva `motionEaseIn` no meio da saída) amostra a opacidade
+quadro a quadro e falhou 2 de 3 sob uma carga sintética de 8 processos; passou nas minhas rodadas com a máquina em uso
+normal. Endurecer pela Web Animations API se voltar a aparecer.
+
+**Lote 6 fechado.** O `sarak-sovereign` está refeito nos dois modos; os padrões estéticos são os dele; teto por tema de
+4,5 KB; a trava de completude acusa 13 temas em exceção. **Próximo: lote 7** (`cyberpunk-neon`, o primeiro dos 13 temas
+atuais), nível `themes` na verificação.
+
+**Status: 🔴 A executar (lote 7).**

@@ -50,7 +50,7 @@ interface SarakStatsGridProps<TData extends Record<string, unknown>> {
 
 const SarakStatsGrid = <TData extends Record<string, unknown>>({ stats, keys, loading, mapping, metrics }: SarakStatsGridProps<TData>): ReactElement => {
     if (loading && keys.length === 0) {
-        return <>{Array.from({ length: STAT_SKELETON_COUNT }, (_, index) => <div key={'skeleton-' + index} className="card animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />)}</>;
+        return <>{Array.from({ length: STAT_SKELETON_COUNT }, (_, index) => <div key={'skeleton-' + index} className="card animate-pulse rounded-[var(--sarak-card-radius,10px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />)}</>;
     }
     if (keys.length === 0) return <div role="status" className="col-span-full"><SarakDataEmpty /></div>;
     return <>{keys.map((key) => <SarakStatsMetric key={key} metricKey={key} value={stats[key]} label={metrics?.[key]?.label ?? mapping?.[key] ?? key.replace(/_/g, ' ')} config={metrics?.[key]} />)}</>;
@@ -102,7 +102,7 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
 
     return (
         <div
-            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,12px)]"
+            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,10px)]"
             style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
         >
             {config?.icon && <div className="text-theme-muted" aria-hidden="true">{config.icon}</div>}
@@ -113,7 +113,7 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
                 key={metricKey + '-' + String(value ?? '')}
                 initial={{ opacity: STAT_VALUE_INITIAL_OPACITY, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}
+                style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}
             >
                 <SarakValue value={displayValue} format={config?.format} size="md" />
             </motion.div>

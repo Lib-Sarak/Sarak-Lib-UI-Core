@@ -51,6 +51,9 @@ async function withScene<T>(options: SceneOptions, measure: (page: Page) => Prom
         if (options.target) searchParams.set('alvo', options.target);
         await page.goto(`${harnessUrl}?${searchParams.toString()}`);
         await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
+        // As transições da hidratação (fundo, cor, entrada) terminam antes de medir o hover e o pressionado: com a espera fixa depois do
+        // ponteiro, medir no meio delas lê o fundo ainda transparente.
+        await page.evaluate(() => Promise.all(document.getAnimations().filter((animation) => animation instanceof CSSTransition).map((animation) => animation.finished.catch(() => undefined))));
         return await measure(page);
     } finally {
         await page.close();

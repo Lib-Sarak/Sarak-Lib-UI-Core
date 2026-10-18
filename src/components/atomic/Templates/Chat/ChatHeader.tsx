@@ -11,14 +11,14 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
-  <header className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--text-muted,rgba(255,255,255,0.4))]/5" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 1.5) var(--sarak-layout-gap-md,16px)' }}>
+  <header className="flex items-center justify-between border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--text-muted,rgba(242,246,251,0.55))]/5" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 1.5) var(--sarak-layout-gap-md,16px)' }}>
     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-      <div className="bg-gradient-to-br from-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] to-[var(--sarak-primary-color,#00f2ff)] rounded-lg shadow-lg shadow-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-        <SarakIcon name="Bot" size={20} className="text-[var(--sarak-primary-color,#00f2ff)]" />
+      <div className="bg-gradient-to-br from-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))] to-[var(--sarak-primary-color,#19e3f0)] rounded-lg shadow-lg shadow-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
+        <SarakIcon name="Bot" size={20} className="text-[var(--sarak-primary-color,#19e3f0)]" />
       </div>
       <div>
-        <h2 className="text-sm font-bold tracking-tight text-[var(--color-theme-title,#ffffff)] uppercase" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>{label}</h2>
-        <p className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] font-medium tracking-widest">Agnostic Interface • Chat Engine</p>
+        <h2 className="text-sm font-bold tracking-tight text-[var(--color-theme-title,#f2f6fb)] uppercase" style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}>{label}</h2>
+        <p className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] font-medium tracking-widest">Agnostic Interface • Chat Engine</p>
       </div>
     </div>
 

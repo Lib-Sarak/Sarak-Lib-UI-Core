@@ -18,10 +18,10 @@ const SarakFilterSelect: React.FC<SarakFilterSelectProps> = ({ col, placeholder,
     <SarakSelect
         value={filters[col] || ''}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(col, e.target.value)}
-        className="w-full text-2xs text-[var(--color-theme-title,#ffffff)] transition-all"
+        className="w-full text-2xs text-[var(--color-theme-title,#f2f6fb)] transition-all"
         style={{ 
             padding: 'var(--sarak-layout-gap-sm,8px)', 
-            borderRadius: 'var(--sarak-card-radius,12px)' 
+            borderRadius: 'var(--sarak-card-radius,10px)' 
         }}
     >
         <option value="">(All)</option>

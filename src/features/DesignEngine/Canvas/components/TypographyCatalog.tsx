@@ -32,7 +32,7 @@ const TypographyPresetPreview = ({ preset, index, onApply }: { preset: Component
             className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
             <div 
-                className="h-48 w-full relative p-8 flex flex-col bg-[var(--color-theme-bg,#050505)] text-theme-text overflow-hidden" 
+                className="h-48 w-full relative p-8 flex flex-col bg-[var(--color-theme-bg,#06080d)] text-theme-text overflow-hidden" 
                 style={{ fontFamily: preset.design.fontFamily }}
             >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_50%)] pointer-events-none" />

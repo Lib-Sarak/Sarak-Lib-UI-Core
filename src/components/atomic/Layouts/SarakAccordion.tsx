@@ -39,8 +39,8 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     // `??`: o raio 0 é um valor do tema (cantos retos), não ausência — `||` o trocaria pelo raio do cartão.
     // O token é responsivo (`{ mob, tab, desk }` ou escalar): resolve a camada do dispositivo, como `SarakFlex`/`SarakGrid`.
     const tokenRadius = sarakResolveResponsiveValue(design?.borderRadius as string | number | SarakResponsiveValue<number> | undefined, device);
-    const borderRadius = tokenRadius ?? 'var(--sarak-card-radius,12px)';
-    const borderColor = 'var(--border-color,rgba(255,255,255,0.1))';
+    const borderRadius = tokenRadius ?? 'var(--sarak-card-radius,10px)';
+    const borderColor = 'var(--border-color,rgba(255,255,255,0.09))';
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);

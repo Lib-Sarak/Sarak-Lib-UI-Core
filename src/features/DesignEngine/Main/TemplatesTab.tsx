@@ -46,7 +46,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--color-theme-card,rgba(15,23,42,0.6))] text-theme-text/90 p-5 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full bg-[var(--color-theme-card,#101622)] text-theme-text/90 p-5 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="mb-8">
                 <div className="text-xs font-black tracking-widest uppercase mb-1">

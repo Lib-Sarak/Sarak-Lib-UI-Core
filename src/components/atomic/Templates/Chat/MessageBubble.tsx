@@ -22,8 +22,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
   // Cantos arredondados dinâmicos e cores data-driven
   if (isUser) {
     bubbleStyle.borderRadius = 'var(--sarak-chat-radius, 12px) 0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
-    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#00f2ff))';
-    bubbleStyle.borderColor = 'var(--theme-primary-border, rgba(0,242,255,0.25))';
+    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#19e3f0))';
+    bubbleStyle.borderColor = 'var(--theme-primary-border, rgba(25,227,240,0.25))';
     bubbleStyle.color = 'var(--sarak-on-chat-user, #ffffff)';
   } else {
     bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
@@ -35,13 +35,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         bubbleStyle.padding = '0';
       },
       'solid': () => {
-        bubbleStyle.backgroundColor = 'var(--sarak-primary-color,#00f2ff)';
+        bubbleStyle.backgroundColor = 'var(--sarak-primary-color,#19e3f0)';
         bubbleStyle.borderColor = 'transparent';
         bubbleStyle.color = 'var(--theme-on-primary, #020617)';
       },
       'glass': () => {
-        bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,rgba(15,23,42,0.6)))';
-        bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--border-color,rgba(255,255,255,0.1)))';
+        bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,#101622))';
+        bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--border-color,rgba(255,255,255,0.09)))';
         bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 12px))';
       }
     };
@@ -60,18 +60,18 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingLeft: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
           {msg.role === 'assistant' ? (
             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-              <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] flex items-center justify-center">
-                 <SarakIcon name="Bot" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
+              <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#19e3f0)] flex items-center justify-center">
+                 <SarakIcon name="Bot" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
               </div>
-              <span className="text-2xs font-bold text-[var(--text-muted,rgba(255,255,255,0.4))] uppercase tracking-widest">Sarak Assistant</span>
+              <span className="text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">Sarak Assistant</span>
             </div>
           ) : (
-            <span className="text-2xs font-bold text-[var(--sarak-primary-color,#00f2ff)] uppercase tracking-widest">Requisitante</span>
+            <span className="text-2xs font-bold text-[var(--sarak-primary-color,#19e3f0)] uppercase tracking-widest">Requisitante</span>
           )}
         </div>
 
         <div 
-          className={`shadow-[var(--dynamic-shadow)] border text-[var(--color-theme-title,#ffffff)] transition-all`}
+          className={`shadow-[var(--dynamic-shadow)] border text-[var(--color-theme-title,#f2f6fb)] transition-all`}
           style={bubbleStyle}
         >
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
@@ -80,13 +80,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         {msg.metadata && (
           <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {msg.metadata.model && (
-              <div className="flex items-center bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 border border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-mono text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                <SarakIcon name="Cpu" size={10} className="text-[var(--sarak-primary-color,#00f2ff)]" />
+              <div className="flex items-center bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+                <SarakIcon name="Cpu" size={10} className="text-[var(--sarak-primary-color,#19e3f0)]" />
                 {msg.metadata.model}
               </div>
             )}
             {msg.metadata.reasoning && (
-              <div className="flex items-center bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 border border-[var(--border-color,rgba(255,255,255,0.1))] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-medium text-[var(--text-muted,rgba(255,255,255,0.4))] italic" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+              <div className="flex items-center bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--sarak-chat-radius,12px)] text-2xs font-medium text-[var(--text-muted,rgba(242,246,251,0.55))] italic" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <SarakIcon name="Search" size={10} />
                 {msg.metadata.reasoning}
               </div>

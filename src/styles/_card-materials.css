@@ -106,5 +106,5 @@
 [data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
     box-shadow:
         var(--sarak-card-shadow-full),
-        0 0 calc(var(--sarak-card-shadow-blur, 50px) * 0.5) color-mix(in srgb, var(--sarak-primary-color, #00f2ff) 40%, transparent);
+        0 0 calc(var(--sarak-card-shadow-blur, 50px) * 0.5) color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 40%, transparent);
 }

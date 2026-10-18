@@ -32,13 +32,13 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
 }) => {
     const { design } = useSarakUI();
 
-    const activeColor = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#00f2ff))';
-    const trackColor = 'color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent)';
+    const activeColor = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0))';
+    const trackColor = 'color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent)';
 
     return (
         <SarakFormGroup className={`${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
             {(label || valueLabel) && (
-                <div className="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">
+                <div className="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     {label && <span>{label}</span>}
                     {valueLabel !== undefined && <span style={{ color: activeColor }}>{valueLabel}</span>}
                 </div>

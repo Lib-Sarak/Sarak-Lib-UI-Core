@@ -107,12 +107,12 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             {error && <SarakAlert variant="error" title={text('dataLoadErrorTitle')} message={error} />}
             <AnimatePresence>
                 {activeModal && onCreate && (
-                    <div className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_0)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                    <div className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_0)] flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="card w-full max-w-lg shadow-[var(--dynamic-shadow)] relative rounded-[var(--sarak-card-radius,12px)]"
+                            className="card w-full max-w-lg shadow-[var(--dynamic-shadow)] relative rounded-[var(--sarak-card-radius,10px)]"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}
                         >
                             <SarakIconButton
@@ -139,7 +139,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             </AnimatePresence>
 
             {(label || description || headerActions.some(canShowAction)) && (
-                <div className={`${headerLayout.className} card border rounded-[var(--sarak-card-radius,12px)]`} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: headerLayout.style.gap }}>
+                <div className={`${headerLayout.className} card border rounded-[var(--sarak-card-radius,10px)]`} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: headerLayout.style.gap }}>
                     <div>
                         {label && <h2 className="text-xl font-bold text-theme-title">{label}</h2>}
                         {description && <p className="text-sm text-theme-muted">{description}</p>}
@@ -158,7 +158,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
             <div className={gridLayout.className} style={gridLayout.style}>
                 {loading ? (
                     [...Array(6)].map((_, index) => (
-                        <div key={`skeleton-${index}`} className="card animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
+                        <div key={`skeleton-${index}`} className="card animate-pulse rounded-[var(--sarak-card-radius,10px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 16)' }} />
                     ))
                 ) : (
                     (Object.entries(groups) as [string, TItem[]][]).map(([groupName, items]) => (

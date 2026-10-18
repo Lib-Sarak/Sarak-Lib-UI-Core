@@ -71,7 +71,7 @@ const node = (...args) => ['node', args];
 const vitest = (...paths) => ['npx', ['vitest', 'run', ...paths]];
 
 const ANEL1 = ['barrel:check', 'catalog:check', 'zero-brand:check', 'deep-import:check', 'gate-limits:check',
-  'token-types:check', 'token-docs:check', 'themes:catalog:check', 'container-query:check', 'container-query-boundary:check',
+  'token-types:check', 'token-docs:check', 'theme-completeness:check', 'themes:catalog:check', 'container-query:check', 'container-query-boundary:check',
   'persistence-doc:check', 'class-merge:check', 'icon-port:check', 'chrome-token-parity:check', 'token-reader:check',
   'css-important:check', 'fixed-translucent:check', 'variable-contract:check', 'channel-dispute:check', 'panel-contract:check',
   'kit-names:check', 'section-pointers:check', 'plan-index:check'];
@@ -87,7 +87,7 @@ export function commandsFor(tier) {
   switch (tier) {
     case 'docs': return [npm('plan-index:check'), npm('section-pointers:check'), ...kits];
     case 'themes': return [
-      npm('themes:catalog:check'), node('gates/scripts/contrato/check-theme-boot-closure.mjs', '--src'),
+      npm('themes:catalog:check'), npm('theme-completeness:check'), node('gates/scripts/contrato/check-theme-boot-closure.mjs', '--src'),
       vitest(`${THEMES}__tests__`, 'src/core/Provider/utils/__tests__', 'src/core/Design/utils', 'gates/scripts/audit', ...themeTests()),
       npm('themes:diversity'), npm('boot:measure'), npm('audit:baseline'), npm('plan-index:check'), ...kits,
     ];

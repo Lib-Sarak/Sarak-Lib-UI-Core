@@ -64,9 +64,9 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border flex w-max items-center gap-1.5 ${
                                                 row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/20' :
                                                 row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 text-[var(--sarak-status-warning-color,#f59e0b)] border-[var(--sarak-status-warning-color,#f59e0b)]/20' :
-                                                'bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 text-[var(--text-muted,rgba(255,255,255,0.4))] border-[var(--border-color,rgba(255,255,255,0.1))]/20'
+                                                'bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 text-[var(--text-muted,rgba(242,246,251,0.55))] border-[var(--border-color,rgba(255,255,255,0.09))]/20'
                                             }`}>
-                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)] animate-pulse' : row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]' : 'bg-[var(--text-muted,rgba(255,255,255,0.4))]'}`} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)] animate-pulse' : row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]' : 'bg-[var(--text-muted,rgba(242,246,251,0.55))]'}`} />
                                                 {row.status}
                                             </span>
                                         </td>

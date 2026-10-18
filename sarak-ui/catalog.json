@@ -6419,7 +6419,7 @@
         "label": "Sombra de Ação: Desfoque",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "usage": "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
         "interactsWith": [
           "btnStyleType"
         ]
@@ -6432,7 +6432,7 @@
         "label": "Sombra de Ação: Offset Y",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "usage": "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
         "interactsWith": [
           "btnStyleType"
         ]
@@ -6445,7 +6445,7 @@
         "label": "Sombra de Ação: Espalhamento",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+        "usage": "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
         "interactsWith": [
           "btnStyleType"
         ]
@@ -10965,6 +10965,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "9a1b76aefa11"
+    "kitHash": "abb9cd0723e7"
   }
 }

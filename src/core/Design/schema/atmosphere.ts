@@ -61,7 +61,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo base de toda a aplicação.',
             axis: 'color',
-            defaultValue: '#050505',
+            defaultValue: '#06080d',
             // Os 3 últimos vieram da declaração homônima de `colors.ts`, desduplicada
             // pela plan-07. Sem herdá-los, `--theme-body` deixava de ser emitida — a
             // duplicata não era redundante, era uma UNIÃO de aliases.
@@ -77,7 +77,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo da primeira camada de profundidade acima do body. Variável própria: `--sarak-bg-layer-1`.',
             axis: 'color',
-            defaultValue: '#0f0f0f',
+            defaultValue: '#0b0f17',
             cssVars: ['--sarak-bg-layer-1', '--theme-surface-1']
         },
         {
@@ -90,7 +90,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor da segunda camada de profundidade do fundo: a terceira mancha da malha (`bgGradientMode: mesh`), ao lado da camada 1. O padrão é a própria cor primária — a malha de hoje; troque por um tom de superfície para dar uma segunda camada de profundidade. Variável própria: `--sarak-bg-layer-2`.',
             axis: 'color',
-            defaultValue: 'var(--sarak-primary-color, #00f2ff)',
+            defaultValue: '#101622',
             cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
         },
         // --- BACKGROUND GLOBAL ---
@@ -103,7 +103,7 @@ export const AtmosphereSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo base do sistema de atmosfera — a base das superfícies de vidro e dos painéis sobrepostos (`--sarak-bg-base`, de que este token é o único dono). `colorBgBody` pinta o corpo da página.',
             axis: 'color',
-            defaultValue: '#0a0a0c',
+            defaultValue: '#06080d',
             cssVars: ['--sarak-bg-base']
         },
         {
@@ -122,7 +122,7 @@ export const AtmosphereSchema: ComponentSchema = {
                 { value: 'radial', label: 'Radial' },
                 { value: 'mesh', label: 'Mesh (Orgânico)' }
             ],
-            defaultValue: 'linear',
+            defaultValue: 'radial',
             cssVars: ['--sarak-bg-gradient-mode']
         },
         {
@@ -224,7 +224,7 @@ export const AtmosphereSchema: ComponentSchema = {
             description: 'Padrão visual sobreposto ao fundo global (grid, pontos, ruído, ondas etc. — mais de 40 opções). É o principal token de caráter/atmosfera do tema; combine com `textureOpacity` para controlar o quão perceptível ele é.',
             axis: 'texture',
             options: TEXTURE_OPTIONS,
-            defaultValue: 'grid',
+            defaultValue: 'constellation',
             cssVars: ['--sarak-bg-pattern-id', '--theme-texture']
         },
         {
@@ -238,7 +238,7 @@ export const AtmosphereSchema: ComponentSchema = {
             description: 'Opacidade do padrão de textura de fundo (`texture`) — valores baixos deixam o padrão quase subliminar; valores altos o tornam um elemento gráfico proeminente.',
             axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.01 },
-            defaultValue: 0.1,
+            defaultValue: 0.3,
             cssVars: ['--sarak-bg-pattern-opacity', '--theme-texture-opacity']
         },
         {
@@ -282,7 +282,7 @@ export const AtmosphereSchema: ComponentSchema = {
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 200, step: 1 },
-            defaultValue: 16,
+            defaultValue: 14,
             cssVars: ['--sarak-glass-blur']
         },
         {

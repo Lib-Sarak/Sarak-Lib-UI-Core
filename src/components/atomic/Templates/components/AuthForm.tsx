@@ -70,7 +70,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const authText = (key: AuthLabelKey): string => labels?.[key] ?? text(key);
     
     return (
-        <div className="w-full lg:w-2/5 flex items-center justify-center bg-theme-body border-l border-[var(--border-color,rgba(255,255,255,0.1))] shadow-[-20px_0_50px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_50%,transparent)] relative" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*2.5)' }}>
+        <div className="w-full lg:w-2/5 flex items-center justify-center bg-theme-body border-l border-[var(--border-color,rgba(255,255,255,0.09))] shadow-[-20px_0_50px_color-mix(in_srgb,var(--sarak-card-shadow-color,#000000)_50%,transparent)] relative" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*2.5)' }}>
             {/* Floating Elements in Background */}
             <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-theme-primary/10 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-[color-mix(in_srgb,var(--sarak-status-success-color,#10b981)_5%,transparent)] rounded-full blur-3xl animate-pulse [animation-delay:calc(var(--sarak-motion-dur-slow,0.6s)*5)]"></div>
@@ -142,7 +142,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                 {/* Social Login Section */}
                 <AuthSocialLogin socialConfig={socialConfig} onSocialLogin={onSocialLogin} />
 
-                {allowRegistration && <div className="border-t border-[var(--border-color,rgba(255,255,255,0.1))] text-center" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2.5)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
+                {allowRegistration && <div className="border-t border-[var(--border-color,rgba(255,255,255,0.09))] text-center" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2.5)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
                     <p className="text-theme-muted text-sm font-medium">
                         {authText(isRegistering ? 'authHasAccount' : 'authNoAccount')}
                         <SarakButton 

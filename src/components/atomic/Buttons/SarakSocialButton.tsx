@@ -38,12 +38,12 @@ function getButtonClasses(
 ): string {
     return cn(
         'flex items-center transition-sarak group/soc active:scale-[0.97] normal-case tracking-normal font-normal',
-        'bg-[var(--color-theme-card,rgba(15,23,42,0.6))]',
-        'text-[var(--color-theme-text,#ffffff)]',
+        'bg-[var(--color-theme-card,#101622)]',
+        'text-[var(--color-theme-text,#f2f6fb)]',
         'border border-theme-tint hover:border-theme-tint-hover',
         hideLabel ? 'w-12 h-12 justify-center' : 'w-full justify-start',
         variant === 'solid' || designVariant === 'solid'
-            ? 'shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20 hover:shadow-[var(--sarak-primary-color,#00f2ff)]/40 hover:-translate-y-0.5'
+            ? 'shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20 hover:shadow-[var(--sarak-primary-color,#19e3f0)]/40 hover:-translate-y-0.5'
             : 'hover:bg-theme-tint-hover hover:text-theme-title',
         className,
     );

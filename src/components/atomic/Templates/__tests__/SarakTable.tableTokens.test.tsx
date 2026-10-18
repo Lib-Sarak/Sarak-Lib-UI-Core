@@ -17,7 +17,7 @@ const people: Person[] = [
 ];
 const columns = [{ key: 'name', label: 'Nome' }];
 const ZEBRA = 'bg-[color-mix(in_srgb,currentColor_4%,transparent)]';
-const CARD_DEFAULT_RADIUS_PX = 12;
+const CARD_DEFAULT_RADIUS_PX = 14;
 
 const renderTable = (config: Record<string, unknown>): void => {
     render(
@@ -47,12 +47,12 @@ describe('tableBorderRadius — o raio do contêiner da tabela', () => {
     it('o contêiner lê --sarak-table-border-radius e cai no raio do cartão', () => {
         renderTable({});
         const container = screen.getByRole('table').closest('.card');
-        expect(container?.className).toContain('rounded-[var(--sarak-table-border-radius,var(--sarak-card-radius,12px))]');
+        expect(container?.className).toContain('rounded-[var(--sarak-table-border-radius,var(--sarak-card-radius,10px))]');
     });
 
     it('o padrão do schema é o raio padrão do cartão que o contêiner desenhava (8 no celular, 12 acima)', () => {
         const token = sarakGetAllDesignTokens().find((item) => item.id === 'tableBorderRadius');
-        expect(token?.defaultValue).toEqual({ mob: 8, tab: CARD_DEFAULT_RADIUS_PX, desk: CARD_DEFAULT_RADIUS_PX });
+        expect(token?.defaultValue).toEqual({ mob: 10, tab: CARD_DEFAULT_RADIUS_PX, desk: CARD_DEFAULT_RADIUS_PX });
     });
 });
 
@@ -62,7 +62,7 @@ describe('tableBorderRadius — o raio chega pelos cantos que a regra importante
         const container = screen.getByRole('table').closest('.card') as HTMLElement;
         for (const corner of ['tl', 'tr', 'br', 'bl']) {
             expect(container.style.getPropertyValue(`--sarak-card-radius-${corner}`))
-                .toBe('var(--sarak-table-border-radius, var(--sarak-card-radius, 12px))');
+                .toBe('var(--sarak-table-border-radius, var(--sarak-card-radius, 10px))');
         }
     });
 });

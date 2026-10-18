@@ -669,6 +669,32 @@ a barra (2,5 px acima e 1,5 px abaixo, medido em 1024 px com toque). Com 48 px t
 **O que fazer:** nada é obrigatório. Tema salvo que declara `topbarCollapsedHeight` mantém o valor dele; quem quer os 40 px de
 antes declara `topbarCollapsedHeight: 40`. A faixa do token (24 a 56) não mudou.
 
+### O tema padrão `sarak-sovereign` é refeito e o padrão de todo token estético passa a ser o dele
+
+**Classificação: MAJOR (muda o padrão de 94 tokens estéticos e o que o `sarak-sovereign` desenha).** O tema padrão ganhou direção de arte
+própria (vidro escuro sobre constelação, ciano contido, Phosphor preenchido, `Outfit` nos títulos, gráfico de área, botão de vidro,
+movimento `Expo Glide`) e declara **todo** token estético, nos dois modos. O padrão do schema de cada token estético é agora o valor do
+`sarak-sovereign` no modo escuro: o primeiro quadro, o componente sem `SarakUIProvider` e o tema parcial do consumidor mostram esse tema.
+As reservas `var(--x, F)` dos componentes acompanham (`variable-contract:check`).
+
+| Família | Antes | Depois |
+|---|---|---|
+| Primária / secundária / destaque | `#00f2ff` / `#7000ff` / `#ff00d4` | `#19e3f0` / `#7c5cff` / `#ff4fd8` |
+| Fundos (corpo, camada 1, camada 2) | `#050505` / `#0f0f0f` / a primária | `#06080d` / `#0b0f17` / `#101622` |
+| Texto (principal, mudo) | `#ffffff`, branco a 40% | `#f2f6fb`, `#f2f6fb` a 55% |
+| Ícone | Lucide regular | Phosphor `fill` |
+| Cartão | raio 8/12/12, sem textura, `lift` | raio 10/14/14, textura `micro-dots`, `glow-only`, superfície a 70% |
+| Botão, campo | `matte`, raio 6/8/8, sem desfoque no campo | `frosted`, raio 8/10/10, desfoque 8 no campo |
+| Gráfico, fundo, movimento | `line`, grade, curva padrão | `area`, `constellation` radial, curva `cubic-bezier(0.16, 1, 0.3, 1)` |
+
+**Os outros 13 temas embarcados ainda não foram refeitos** (saem da exceção de `theme-completeness:check` um por lote): como não declaram
+esses tokens, **herdam os padrões novos e mudam de aparência** até o lote de cada um. `identityFontFamily` continua herdando a fonte de títulos
+(o `sarak-sovereign` declara `Outfit`, que dá o mesmo resultado). `colorBgLayer2` deixa de ser a primária.
+
+**O que fazer:** nada é obrigatório. Tema salvo ou `config` que declara o token mantém o valor; quem quer o visual de antes declara os
+valores antigos no `config` do `SarakUIProvider`. Quem comparava a cor do botão primário, o fundo ou o raio do cartão em teste deve trocar o
+valor esperado (os snapshots da própria lib mudaram só nesses valores).
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

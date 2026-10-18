@@ -8,7 +8,7 @@ import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { Layout, ArrowRight } from 'lucide-react';
 
 const TOKEN_DEFAULTS = sarakGetDefaultDesignState();
-const FALLBACK_RADIUS = 'var(--sarak-card-radius, 12px)';
+const FALLBACK_RADIUS = 'var(--sarak-card-radius, 10px)';
 
 /** Valor de token em CSS para a miniatura: o ponto `desk` de um token responsivo, e `px` num número. */
 const toCssLength = (value: SarakTokenValue | undefined, fallback: string): string => {
@@ -40,9 +40,9 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
     );
     const { variables } = useDesignVariables(design);
 
-    const primary = String(design.primaryColor || 'var(--color-theme-primary, #00f2ff)');
-    const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7000ff)');
-    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #050505)');
+    const primary = String(design.primaryColor || 'var(--color-theme-primary, #19e3f0)');
+    const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7c5cff)');
+    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #06080d)');
     const isLight = design.mode === 'light';
 
     const borderWidth = toCssLength(design.cardBorderWidth, 'var(--sarak-border-width, 1px)');
@@ -73,7 +73,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
                 backgroundImage: design.cardTextureType === 'grid'
-                    ? 'linear-gradient(to right, var(--border-color,rgba(255,255,255,0.1)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.1)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px))'
+                    ? 'linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px))'
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
@@ -160,7 +160,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
                                 <div className="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10" />
                                 <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
                                     {[40, 70, 30, 90, 50, 80, 60, 45].map((h, i) => (
-                                        <div key={i} className="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.1))]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
+                                        <div key={i} className="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
                                     ))}
                                 </div>
                             </div>

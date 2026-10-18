@@ -347,7 +347,7 @@ const GRADIENT_TEXTURES: Record<string, string> = {
 
 for (const texture of FIXED_WHITE_TEXTURES) {
     test(`A7: a textura ${texture} pinta com a cor de textura do tema, não em branco fixo nem na primária, no tema claro`, async () => {
-        await withScene('texturas-claras', 'tema-claro', async (page) => {
+        await withScene('texturas-claras', 'tema-claro-textura-limpa', async (page) => {
             const card = page.locator(`[data-probe="textura-${texture}"] .sarak-card`);
             const image = await readComputed(card, 'background-image', '::after');
             const color = await readComputed(card, 'background-color', '::after');

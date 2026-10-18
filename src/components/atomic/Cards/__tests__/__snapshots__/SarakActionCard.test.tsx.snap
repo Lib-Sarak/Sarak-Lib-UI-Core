@@ -20,7 +20,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
     class="@container mock-container sarak-card group transition-all relative overflow-hidden h-fit "
     data-border-beam="0"
     data-spotlight="1"
-    data-sx-card-texture-type="none"
+    data-sx-card-texture-type="micro-dots"
     style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
     <div
@@ -40,23 +40,23 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column;"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase"
+            class="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             123
           </span>
           <h4
-            class="text-lg font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#00f2ff)] transition-colors truncate"
+            class="text-lg font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
           >
             Contrato #123
           </h4>
         </div>
         <div
-          class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] shrink-0 rounded-lg"
+          class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] shrink-0 rounded-lg"
           style="padding: var(--sarak-layout-gap-sm, 8px);"
         >
           <svg
-            class="text-[var(--text-muted,rgba(255,255,255,0.4))]"
+            class="text-[var(--text-muted,rgba(242,246,251,0.55))]"
             fill="currentColor"
             height="16"
             viewBox="0 0 256 256"
@@ -70,7 +70,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         </div>
       </div>
       <p
-        class="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-60 leading-relaxed line-clamp-2"
+        class="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 leading-relaxed line-clamp-2"
         style="margin-bottom: var(--sarak-layout-gap-md, 16px);"
       >
         Contrato em fase de revisão jurídica.
@@ -79,7 +79,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         class="mock-footer"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#00f2ff)]/20 flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn sarak-card-action-btn--filled"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn sarak-card-action-btn--filled"
+          style="backdrop-filter: blur(8px); border: 1px solid var(--color-theme-border, rgba(255,255,255,0.09)); box-shadow: var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1));"
         >
           <span>
             Executar
@@ -98,8 +99,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           </svg>
         </button>
         <button
-          class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-primary-color,#00f2ff)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
-          style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); transition-duration: var(--duration-normal, 0.3s); border-radius: 8px;"
+          class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-primary-color,#19e3f0)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,10px)] transition-all cursor-pointer flex items-center justify-center"
+          style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); transition-duration: var(--duration-normal, 0.3s);"
           tabindex="0"
         >
           <svg

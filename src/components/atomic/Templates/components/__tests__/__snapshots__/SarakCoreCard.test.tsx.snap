@@ -20,7 +20,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
     class="@container flex w-full sarak-card group transition-all h-fit relative overflow-hidden"
     data-border-beam="0"
     data-spotlight="1"
-    data-sx-card-texture-type="none"
+    data-sx-card-texture-type="micro-dots"
     style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md); opacity: 0; transform: translateY(20px);"
   >
     <div
@@ -42,23 +42,23 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-2xs font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase"
+            class="text-2xs font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             Prefeitura de Salvador
           </span>
           <h4
-            class="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#00f2ff)] transition-colors"
+            class="text-xl font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors"
           >
             Contrato #4471
           </h4>
         </div>
         <div
-          class="bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))]"
-          style="padding: calc(var(--sarak-layout-gap-md,16px) / 2); border-radius: var(--sarak-card-radius,12px);"
+          class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))]"
+          style="padding: calc(var(--sarak-layout-gap-md,16px) / 2); border-radius: var(--sarak-card-radius,10px);"
         >
           <svg
-            class="text-[var(--text-muted,rgba(255,255,255,0.4))]"
+            class="text-[var(--text-muted,rgba(242,246,251,0.55))]"
             fill="currentColor"
             height="20"
             viewBox="0 0 256 256"
@@ -80,8 +80,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="gap: var(--sarak-layout-gap-sm,8px);"
         >
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,rgba(255,255,255,0.1))] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -98,8 +98,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
              digitalizado
           </div>
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,rgba(255,255,255,0.1))] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -121,8 +121,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="gap: var(--sarak-layout-gap-sm,8px);"
         >
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,rgba(255,255,255,0.1))] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -141,7 +141,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         </div>
       </div>
       <div
-        class="grid w-full border-t border-[var(--border-color,rgba(255,255,255,0.1))]"
+        class="grid w-full border-t border-[var(--border-color,rgba(255,255,255,0.09))]"
         style="gap: var(--sarak-layout-gap-md,16px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: var(--sarak-layout-gap-md,16px); padding-top: calc(var(--sarak-layout-gap-md,16px) * 1.5);"
       >
         <div
@@ -149,13 +149,13 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Valor mensal
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             R$ 18.500,00
           </span>
@@ -165,13 +165,13 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Vigência
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             24 meses
           </span>
@@ -181,13 +181,13 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; grid-column: span 2 / span 2;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Responsável
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             Diretoria Jurídica
           </span>
@@ -198,7 +198,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         style="gap: calc(var(--sarak-layout-gap-md,16px) / 2.5);"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(255,255,255,0.4))] hover:bg-[var(--sarak-btn-primary-bg,#00f2ff)] hover:text-[var(--sarak-btn-primary-text,#000000)] border border-[var(--sarak-primary-color,#00f2ff)]/20 active:scale-[0.98] flex-1"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98] flex-1"
+          style="backdrop-filter: blur(8px); border: 1px solid var(--color-theme-border, rgba(255,255,255,0.09)); background-color: var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05));"
         >
           <span>
             <svg
@@ -217,7 +218,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           </span>
         </button>
         <button
-          class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-btn-primary-bg,#00f2ff)] text-[var(--sarak-btn-primary-text,#000000)] hover:brightness-110 active:scale-[0.95] shadow-[var(--sarak-primary-color,#00f2ff)]/20 shadow-lg"
+          class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.95] shadow-lg"
+          style="backdrop-filter: blur(8px); border: var(--sarak-border-width, 1px) solid color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); box-shadow: 0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 30%, transparent);"
         >
           <svg
             class=""

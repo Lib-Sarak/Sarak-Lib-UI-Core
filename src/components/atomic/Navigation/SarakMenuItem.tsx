@@ -84,17 +84,17 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     // Engine hidratar ou fora de um `SarakUIProvider` (SSR, Storybook, teste isolado):
     // com o Provider montado, o Design Engine sempre declara cada token — quem garante
     // o sinal visível na tela real é o DEFAULT DO SCHEMA de `navItemActiveColor`
-    // (`#00f2ff`, sempre emitido), não o literal do JSX.
+    // (`#19e3f0`, sempre emitido), não o literal do JSX.
     const tone = active
         ? isVertical
-            ? 'font-bold bg-[var(--sarak-sidebar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
-            : 'font-bold bg-[var(--sarak-topbar-active-color,transparent)] text-[var(--sarak-nav-active-color,#00f2ff)]'
+            ? 'font-bold bg-[var(--sarak-sidebar-active-color,transparent)] text-[var(--sarak-nav-active-color,#19e3f0)]'
+            : 'font-bold bg-[var(--sarak-topbar-active-color,transparent)] text-[var(--sarak-nav-active-color,#19e3f0)]'
         : isVertical
-            ? 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
-            : 'text-[var(--text-muted,rgba(255,255,255,0.4))] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
+            ? 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
+            : 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
 
     const disabledClass = disabled
-        ? 'text-[var(--text-muted,rgba(255,255,255,0.4))] cursor-not-allowed pointer-events-none'
+        ? 'text-[var(--text-muted,rgba(242,246,251,0.55))] cursor-not-allowed pointer-events-none'
         : 'cursor-pointer';
     const hasHref = href !== undefined;
     const isSafeHref = typeof href === 'string' && sarakIsSafeLinkHref(href);
@@ -110,7 +110,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
             {collapsed ? null : <span className={isVertical ? 'flex-1 min-w-0 truncate text-left' : 'truncate'}>{label}</span>}
             {badge !== undefined && (
                 <span
-                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,rgba(242,246,251,0.55))]"
                     style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)' }}
                 >
                     {badge}

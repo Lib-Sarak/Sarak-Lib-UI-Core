@@ -47,9 +47,9 @@ function createAlertStyle(color: string): React.CSSProperties {
         gap: 'var(--sarak-layout-gap-sm, 8px)',
         padding: 'var(--sarak-layout-gap-md, 16px)',
         borderLeft: `var(--sarak-border-width, 1px) solid ${color}`,
-        borderRadius: 'var(--sarak-card-radius, 12px)',
-        backgroundColor: 'var(--color-theme-card, rgba(15,23,42,0.6))',
-        color: 'var(--sarak-text-main, #ffffff)',
+        borderRadius: 'var(--sarak-card-radius, 10px)',
+        backgroundColor: 'var(--color-theme-card, #101622)',
+        color: 'var(--sarak-text-main, #f2f6fb)',
         fontSize: 'var(--sarak-body-size, 14px)',
     };
 }
@@ -94,7 +94,7 @@ function renderAlertCloseButton(onClose: SarakAlertProps['onClose'], closeLabel:
             size="xs"
             aria-label={closeLabel}
             onClick={onClose}
-            style={{ color: 'var(--sarak-text-main, #ffffff)', lineHeight: 1, borderRadius: 0 }}
+            style={{ color: 'var(--sarak-text-main, #f2f6fb)', lineHeight: 1, borderRadius: 0 }}
             icon={<SarakIcon name="X" size="var(--sarak-body-size, 14px)" />}
         />
     );

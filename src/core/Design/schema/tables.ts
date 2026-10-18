@@ -75,7 +75,7 @@ export const TablesSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-table-border-radius']
         },
         {

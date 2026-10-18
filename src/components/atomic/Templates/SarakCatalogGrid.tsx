@@ -51,7 +51,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
         return (
             <div className={`${loadingStack.className} min-h-[40vh]`} style={loadingStack.style}>
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-[var(--border-color,rgba(255,255,255,0.1))]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-[var(--border-color,rgba(255,255,255,0.09))]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
                     <SarakIcon name="Database" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
                 </div>
                 <p className="text-theme-muted font-black uppercase animate-pulse" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>
@@ -107,7 +107,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         onClick={() => setSelectedCategory(key)}
                                         variant={selectedCategory === key ? 'primary' : 'secondary'}
                                         className={selectedCategory === key ? "shadow-xl" : ""}
-                                        style={selectedCategory === key ? { boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(0,242,255,0.05))' } : {}}
+                                        style={selectedCategory === key ? { boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(25,227,240,0.18))' } : {}}
                                     >
                                         {label}
                                     </SarakButton>
@@ -115,7 +115,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between border-t border-[var(--border-color,rgba(255,255,255,0.1))]-border" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
+                        <div className="flex items-center justify-between border-t border-[var(--border-color,rgba(255,255,255,0.09))]-border" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                             <div className="text-theme-muted font-bold uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
                                 {filteredItems.length} Itens encontrados
                             </div>
@@ -145,7 +145,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        className="card border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#00f2ff)_30%,transparent)] transition-all"
+                                        className="card border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_30%,transparent)] transition-all"
                                         style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}
                                     >
                                         <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>
@@ -157,7 +157,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     </AnimatePresence>
                 </div>
             ) : (
-                <div className="text-center border border-dashed border-[var(--border-color,rgba(255,255,255,0.1))]-border rounded-[var(--sarak-catalog-section-radius,3rem)]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                <div className="text-center border border-dashed border-[var(--border-color,rgba(255,255,255,0.09))]-border rounded-[var(--sarak-catalog-section-radius,3rem)]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
                     <p className="text-theme-muted font-black uppercase tracking-widest">{emptyMessage}</p>
                 </div>
             )}

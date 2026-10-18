@@ -32,7 +32,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--theme-primary)]">
                     <Zap className="h-3.5 w-3.5 text-theme-text" />
                 </div>
-                <span className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--color-theme-title,#ffffff)]">
+                <span className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--color-theme-title,#f2f6fb)]">
                     Design
                 </span>
             </div>
@@ -46,7 +46,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                     placeholder="Buscar token..."
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50 focus:outline-none"
+                    className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--color-theme-title,#f2f6fb)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50 focus:outline-none"
                 />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -69,8 +69,8 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                                 className={[
                                     'flex min-w-0 items-center justify-center rounded-lg border px-1 py-2 text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--theme-primary)]',
                                     editMode === mode.value
-                                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#ffffff)]'
-                                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]'
+                                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#f2f6fb)]'
+                                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)]'
                                 ].join(' ')}
                             >
                                 {mode.label}

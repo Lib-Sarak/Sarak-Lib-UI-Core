@@ -92,7 +92,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border border-[var(--sarak-primary-color,#00f2ff)]/20 font-black uppercase text-[var(--sarak-primary-color,#00f2ff)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(0,242,255,0.05))]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -101,7 +101,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
-                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#00f2ff)] animate-pulse" />
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#19e3f0)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
@@ -110,10 +110,10 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Section Header */}
                 <div className={layout.headerClass}>
                     <div className="flex" style={{ flexDirection: 'column' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#00f2ff)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                         Painel de Filtros
                     </span>
-                    <h4 className="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight">
+                    <h4 className="text-sm font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight">
                         Busca de Capacidades
                     </h4>
                     </div>
@@ -134,7 +134,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Tactile toggles / Switch selector grid */}
                 <div className={layout.footerClass}>
                     <div
-                        className="flex border-t border-[var(--border-color,rgba(255,255,255,0.1))]/20 w-full"
+                        className="flex border-t border-[var(--border-color,rgba(255,255,255,0.09))]/20 w-full"
                         style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <span className="font-black text-theme-tint-strong uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
@@ -146,8 +146,8 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Visão Computacional</span>
+                            <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Visão Computacional</span>
                         </div>
                         <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
                     </div>
@@ -159,8 +159,8 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Navegação Web</span>
+                            <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]" />
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Navegação Web</span>
                         </div>
                         <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />
                     </div>
@@ -172,8 +172,8 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                            <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#00f2ff)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(255,255,255,0.4))]">Modo Conversacional</span>
+                            <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Modo Conversacional</span>
                         </div>
                             <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
                         </div>

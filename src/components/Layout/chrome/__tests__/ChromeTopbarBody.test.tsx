@@ -122,6 +122,6 @@ describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
         const { container } = renderBody({}, { activeRoute: '/propostas' });
         const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
         expect(marker).not.toBeNull();
-        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 8)');
     });
 });

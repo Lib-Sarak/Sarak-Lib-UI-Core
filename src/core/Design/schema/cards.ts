@@ -22,7 +22,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
         },
         {
@@ -38,7 +38,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-card-radius-tl'],
             exceptionOf: 'cardBorderRadius'
         },
@@ -55,7 +55,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-card-radius-tr'],
             exceptionOf: 'cardBorderRadius'
         },
@@ -72,7 +72,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-card-radius-bl'],
             exceptionOf: 'cardBorderRadius'
         },
@@ -89,7 +89,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 8, tab: 12, desk: 12 },
+            defaultValue: { mob: 10, tab: 14, desk: 14 },
             cssVars: ['--sarak-card-radius-br'],
             exceptionOf: 'cardBorderRadius'
         },
@@ -134,7 +134,7 @@ export const CardSchema: ComponentSchema = {
             description: 'Opacidade geral da superfície do card — valores baixos deixam o card mais transparente (mostra bastante do fundo atrás); valores altos o aproximam de uma superfície opaca comum.',
             axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.8,
+            defaultValue: 0.7,
             cssVars: ['--sarak-card-surface-opacity', '--sarak-card-opacity']
         },
 
@@ -241,7 +241,7 @@ export const CardSchema: ComponentSchema = {
             interactsWith: ['cardInnerGlowWidth'],
             description: 'Cor de um brilho projetado para dentro da borda do card (inner glow) — cria uma sensação sutil de profundidade/luz interna, diferente do glow externo (`cardGlowColor`).',
             axis: 'elevation',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            defaultValue: 'rgba(25, 227, 240, 0.07)',
             cssVars: ['--sarak-card-inner-glow-color']
         },
         {
@@ -274,7 +274,7 @@ export const CardSchema: ComponentSchema = {
             constraints: {
                 options: TEXTURE_OPTIONS
             },
-            defaultValue: 'none',
+            defaultValue: 'micro-dots',
             cssVars: ['--sarak-card-texture-type']
         },
         {
@@ -288,7 +288,7 @@ export const CardSchema: ComponentSchema = {
             description: 'Opacidade da textura de superfície do card — só relevante quando `cardTextureType` é diferente de \'none\'. Valores baixos mantêm a textura discreta.',
             axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.01 },
-            defaultValue: 0.03,
+            defaultValue: 0.06,
             cssVars: ['--sarak-card-texture-opacity']
         },
 
@@ -302,7 +302,7 @@ export const CardSchema: ComponentSchema = {
             usage: 'Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão.',
             description: 'Cor de fundo da seção de cabeçalho do card — transparente por padrão, deixando o cabeçalho se misturar ao corpo; um tom sutilmente diferente separa visualmente o título das demais informações. Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(255, 255, 255, 0.03)',
             cssVars: ['--sarak-card-header-bg']
         },
         {
@@ -315,7 +315,7 @@ export const CardSchema: ComponentSchema = {
             interactsWith: ['cardBorderWidth'],
             description: 'Cor da linha divisória na base do cabeçalho do card, separando-o do corpo — transparente por padrão (sem linha). Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(255, 255, 255, 0.06)',
             cssVars: ['--sarak-card-header-border']
         },
         {
@@ -330,7 +330,7 @@ export const CardSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 0, tab: 0, desk: 0 },
+            defaultValue: { mob: 12, tab: 16, desk: 16 },
             cssVars: ['--sarak-card-header-padding']
         },
 
@@ -357,7 +357,7 @@ export const CardSchema: ComponentSchema = {
             interactsWith: ['cardBorderWidth'],
             description: 'Cor da linha divisória no topo do rodapé do card, separando-o do corpo — transparente por padrão (sem linha). Vale para a peça `SarakCard.Footer`.',
             axis: 'color',
-            defaultValue: 'transparent',
+            defaultValue: 'rgba(255, 255, 255, 0.06)',
             cssVars: ['--sarak-card-footer-border']
         },
 
@@ -444,7 +444,7 @@ export const CardSchema: ComponentSchema = {
             interactsWith: ['cardGlowIntensity'],
             description: 'Cor do brilho externo ao redor do card — normalmente uma versão translúcida da cor primária, usada para dar destaque neon/tech ao card. Combine com `cardGlowIntensity`.',
             axis: 'elevation',
-            defaultValue: 'rgba(0, 242, 255, 0.05)',
+            defaultValue: 'rgba(25, 227, 240, 0.18)',
             cssVars: ['--sarak-card-glow-color']
         },
         {
@@ -458,7 +458,7 @@ export const CardSchema: ComponentSchema = {
             description: 'Intensidade do brilho externo do card — 0 desativa o efeito completamente; valores altos tornam o glow o traço visual dominante do card.',
             axis: 'elevation',
             constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0,
+            defaultValue: 0.25,
             cssVars: ['--sarak-card-glow-intensity']
         },
 
@@ -475,7 +475,7 @@ export const CardSchema: ComponentSchema = {
             axis: 'motion',
             unit: 'px',
             constraints: { min: -50, max: 10 },
-            defaultValue: -4,
+            defaultValue: -2,
             cssVars: ['--sarak-card-hover-y']
         },
         {
@@ -489,7 +489,7 @@ export const CardSchema: ComponentSchema = {
             description: 'Quanto o brilho do card (`cardGlowIntensity`) aumenta adicionalmente no hover — reforça o feedback de interatividade combinado com `cardHoverTranslate`. 0 por padrão (o hover não ganha brilho).',
             axis: 'elevation',
             constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0,
+            defaultValue: 0.2,
             cssVars: ['--sarak-card-hover-glow']
         },
         {

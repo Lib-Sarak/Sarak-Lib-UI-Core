@@ -24,8 +24,8 @@ export interface SarakRangeSliderProps
     onChange?: (value: SarakRangeValue) => void;
 }
 
-const ACTIVE = 'var(--sarak-range-active-bg, var(--color-theme-primary, #00f2ff))';
-const TRACK = 'var(--color-theme-border, rgba(255,255,255,0.1))';
+const ACTIVE = 'var(--sarak-range-active-bg, var(--color-theme-primary, #19e3f0))';
+const TRACK = 'var(--color-theme-border, rgba(255,255,255,0.09))';
 
 const clamp = (n: number, lo: number, hi: number): number => Math.min(Math.max(n, lo), hi);
 const percent = (n: number, min: number, max: number): number =>
@@ -89,7 +89,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
             aria-labelledby={label ? labelId : undefined}
         >
             {label && (
-                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">
+                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     {label}
                 </span>
             )}

@@ -140,17 +140,17 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                 {data.map((item) => (
                     <div 
                         key={item.id}
-                        className="sarak-card relative overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.1))] transition-all"
+                        className="sarak-card relative overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.09))] transition-all"
                         style={{
                             backgroundColor: 'var(--sarak-matrix-item-bg, rgba(255,255,255,0.02))',
                             borderRadius: 'var(--sarak-matrix-radius, 12px)',
-                            borderColor: expandedId === item.id ? 'var(--sarak-primary-color,#00f2ff)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
+                            borderColor: expandedId === item.id ? 'var(--sarak-primary-color,#19e3f0)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
                             backdropFilter: 'blur(var(--sarak-matrix-blur, 10px))'
                         }}
                     >
                         <div
                             onClick={() => toggleExpand(item.id)}
-                            className="flex items-center justify-between cursor-pointer hover:bg-[var(--text-muted,rgba(255,255,255,0.4))]/5 transition-colors select-none"
+                            className="flex items-center justify-between cursor-pointer hover:bg-[var(--text-muted,rgba(242,246,251,0.55))]/5 transition-colors select-none"
                             style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}
                         >
                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
@@ -158,12 +158,12 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                     renderItemHeader(item)
                                 ) : (
                                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
-                                        <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(0,242,255,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#00f2ff)] border border-[var(--border-color,rgba(255,255,255,0.1))]">
+                                        <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] flex items-center justify-center text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))]">
                                             <SarakIcon name="Shield" size={20} />
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-tight">{item.name || item.id}</h4>
-                                            <p className="text-2xs text-[var(--text-muted,rgba(255,255,255,0.4))]">{item.description || 'Configurações de acesso'}</p>
+                                            <h4 className="text-sm font-bold text-[var(--color-theme-title,#f2f6fb)] uppercase tracking-tight">{item.name || item.id}</h4>
+                                            <p className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))]">{item.description || 'Configurações de acesso'}</p>
                                         </div>
                                     </div>
                                 )}
@@ -171,7 +171,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                                 <motion.div
                                     animate={{ rotate: expandedId === item.id ? 180 : 0 }}
-                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--text-muted,rgba(255,255,255,0.4))]/10 text-[var(--text-muted,rgba(255,255,255,0.4))]"
+                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 text-[var(--text-muted,rgba(242,246,251,0.55))]"
                                 >
                                     <SarakIcon name="ChevronDown" size={16} />
                                 </motion.div>
@@ -188,7 +188,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                     className="overflow-hidden"
                                 >
                                     <div
-                                        className="border-t border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))]/50"
+                                        className="border-t border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--color-theme-card,#101622)]/50"
                                         style={{ padding: '0 var(--sarak-layout-gap-md,16px) var(--sarak-layout-gap-md,16px) var(--sarak-layout-gap-md,16px)' }}
                                     >
                                         <div className={subItemsStack.className} style={{ ...subItemsStack.style, marginTop: 'var(--sarak-layout-gap-md,16px)' }}>
@@ -206,7 +206,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                                             ))}
                                         </div>
                                         {filteredSubItems.length === 0 && (
-                                            <div className={`${emptyStateStack.className} text-[var(--text-muted,rgba(255,255,255,0.4))] italic`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 2)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
+                                            <div className={`${emptyStateStack.className} text-[var(--text-muted,rgba(242,246,251,0.55))] italic`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 2)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
                                                 <SarakIcon name="Info" size={24} className="opacity-50" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
                                                 <span className="text-xs">Nenhum item encontrado para o filtro aplicado.</span>
                                             </div>

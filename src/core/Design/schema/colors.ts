@@ -17,7 +17,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de marca principal do sistema — links, anel de foco, estados ativos e elementos de destaque, e a base das variantes automáticas (`generateVariants: true`). O fundo do botão primário é `btnPrimaryBg` (que costuma repetir esta cor), não este token. É a cor mais impactante na identidade visual.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--primary-color', '--theme-primary', '--sarak-primary-color', '--sarak-color-primary']
         },
@@ -30,7 +30,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Segunda cor de marca, usada para complementar a primária em elementos de menor ênfase ou para criar contraste em gradientes/composições multicoloridas.',
             axis: 'color',
-            defaultValue: '#7000ff',
+            defaultValue: '#7c5cff',
             generateVariants: true,
             cssVars: ['--secondary-color', '--theme-secondary', '--sarak-secondary-color', '--sarak-color-secondary']
         },
@@ -43,7 +43,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Terceira cor de marca, usada para variar ainda mais paletas de gráficos, ilustrações ou composições que precisam de mais de duas cores de destaque.',
             axis: 'color',
-            defaultValue: '#10b981',
+            defaultValue: '#34d399',
             generateVariants: true,
             cssVars: ['--tertiary-color', '--theme-tertiary', '--sarak-tertiary-color', '--sarak-color-tertiary']
         },
@@ -56,7 +56,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de acento: a terceira cor das séries dos gráficos e uma das manchas da malha de fundo (`bgGradientMode: mesh`), além das variantes `--theme-accent-*` que o consumidor pode ler. Nenhum componente da lib a usa sozinha — um badge "novo" lê o status, não este token.',
             axis: 'color',
-            defaultValue: '#ff00d4',
+            defaultValue: '#ff4fd8',
             cssVars: ['--theme-accent', '--sarak-accent-color']
         },
         {
@@ -68,7 +68,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor base das superfícies elevadas do sistema (cards, painéis, modais) — geralmente um tom intermediário entre o fundo geral (`colorBgBody`) e o texto, para criar hierarquia de profundidade.',
             axis: 'color',
-            defaultValue: '#1e293b',
+            defaultValue: '#101622',
             cssVars: ['--theme-surface', '--sarak-surface-color']
         },
         {
@@ -81,7 +81,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor usada em overlays de textura/ruído de fundo (ex. grão, padrões sutis) — normalmente aplicada com opacidade baixa, para não competir com o conteúdo principal.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#cfe9ff',
             // Os 24 leitores de CSS pedem o canal (`--theme-texture-color-rgb`) para compor o alfa
             // de cada textura; sem a variante, a variável nunca existia e toda textura caía na primária.
             generateVariants: true,
@@ -96,7 +96,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor padrão de títulos e cabeçalhos de texto em todo o sistema — deve manter contraste alto contra `colorBgBody`/`surfaceColor`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--theme-title-color', '--sarak-title-color']
         },
         {
@@ -148,7 +148,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo padrão de todos os cards do sistema.',
             axis: 'color',
-            defaultValue: 'rgba(15, 23, 42, 0.6)',
+            defaultValue: '#101622',
             // `generateVariants` veio da declaração homônima de `cards.ts`, desduplicada
             // pela plan-07: era ELA que emitia as 51 variantes cromáticas (`-rgb`, `-bg`,
             // `-10`…`-50`, `-hover`, `-active`, `-light`). Remover a duplicata sem herdar
@@ -165,7 +165,7 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            defaultValue: 'rgba(255, 255, 255, 0.09)',
             cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         }
     ]

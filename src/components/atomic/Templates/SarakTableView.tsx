@@ -13,7 +13,7 @@ import { SarakDataFreshness } from './SarakDataFreshness';
  * cantos `--sarak-card-radius-*` e cede à classe `rounded-[…]` do contêiner; o token entra também pelos
  * cantos, como variável do próprio elemento, para os descendentes que herdam o raio da tabela.
  */
-const TABLE_CORNER_RADIUS = 'var(--sarak-table-border-radius, var(--sarak-card-radius, 12px))';
+const TABLE_CORNER_RADIUS = 'var(--sarak-table-border-radius, var(--sarak-card-radius, 10px))';
 const TABLE_RADIUS_STYLE = {
     '--sarak-card-radius-tl': TABLE_CORNER_RADIUS,
     '--sarak-card-radius-tr': TABLE_CORNER_RADIUS,
@@ -38,7 +38,7 @@ export const SarakTableView = <TData extends Record<string, unknown>>(
             {(props.label || props.showSearch || props.canRefresh) && <SarakTableToolbar {...props} headerClassName={headerStyles.className} headerStyle={headerStyles.style} />}
             {props.error && <SarakDataErrorNotice error={props.error} onRetry={props.onRetry} />}
             <SarakDataFreshness updatedAt={props.updatedAt} stale={Boolean(props.error && hasData)} />
-            <div className="card relative overflow-hidden rounded-[var(--sarak-table-border-radius,var(--sarak-card-radius,12px))]" style={TABLE_RADIUS_STYLE}>
+            <div className="card relative overflow-hidden rounded-[var(--sarak-table-border-radius,var(--sarak-card-radius,10px))]" style={TABLE_RADIUS_STYLE}>
                 {props.collapseToCards ? <SarakTableCards rows={props.interactions.entries.map(({ row }) => row)} rowKeys={props.interactions.entries.map(({ key }) => key)} columns={props.columns} columnLabels={props.columnLabels} loading={props.loading} sort={props.interactions.sort} onSort={props.interactions.changeSort} sortableColumns={props.columnKeys} selectable={props.selectable} selectedKeys={props.interactions.selectedKeys} allVisibleSelected={props.interactions.allVisibleSelected} partiallySelected={props.interactions.partiallySelected} onToggleRow={props.interactions.toggleRow} onToggleAll={props.interactions.toggleAll} onRowClick={props.onRowClick} /> : <SarakTableGrid props={props} />}
                 {props.filteredData.length === 0 && !props.loading && <div role="status" className="flex items-center justify-center text-center" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>{props.emptyMessage ?? <SarakDataEmpty />}</div>}
             </div>

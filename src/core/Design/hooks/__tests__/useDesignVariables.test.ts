@@ -38,7 +38,7 @@ describe('useDesignVariables — breakpoints como dado (F5)', () => {
  * Decisão D (plan-24-1 §2.8, veredito §11.2 da plan-24) — critério de aceite:
  * no modo NATIVO do tema, o hook não chama mais `syncThemeWithMode`. Medido
  * antes de D: 1299/1316 valores de cor alterados mesmo com o tema no seu
- * PRÓPRIO modo. `btnPrimaryText: '#000000'` sobre `btnPrimaryBg: '#00f2ff'`
+ * PRÓPRIO modo. `btnPrimaryText: '#04121a'` sobre `btnPrimaryBg: '#19e3f0'`
  * (`sarak-sovereign`, modo `dark` nativo) é o caso que o veredito citou.
  */
 describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito', () => {
@@ -48,9 +48,9 @@ describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito',
         const { variables } = result.current;
 
         expect(merged.mode).toBe('dark');
-        expect(sarakSovereignTheme.design.btnPrimaryText).toBe('#000000');
-        expect(variables['--sarak-btn-primary-text']).toBe('#000000');
-        expect(variables['--sarak-btn-primary-bg']).toBe('#00f2ff');
+        expect(sarakSovereignTheme.design.btnPrimaryText).toBe('#04121a');
+        expect(variables['--sarak-btn-primary-text']).toBe('#04121a');
+        expect(variables['--sarak-btn-primary-bg']).toBe('#19e3f0');
     });
 
     it('não muda nenhum outro valor de cor do tema no modo nativo (nada de shift de luminância)', () => {

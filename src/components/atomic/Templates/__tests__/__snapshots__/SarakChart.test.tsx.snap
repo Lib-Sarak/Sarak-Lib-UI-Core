@@ -3,14 +3,14 @@
 exports[`SarakChart > matches snapshot to ensure no layout regressions during type fixes 1`] = `
 <DocumentFragment>
   <div
-    class="card relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)] mocked-container"
+    class="card relative overflow-hidden group rounded-[var(--sarak-card-radius,10px)] mocked-container"
   >
     <div
       class="flex items-center relative z-10"
       style="gap: calc(var(--sarak-layout-gap-md,16px) / 2);"
     >
       <svg
-        class="text-[var(--sarak-primary-color,#00f2ff)]"
+        class="text-[var(--sarak-primary-color,#19e3f0)]"
         fill="none"
         height="16"
         stroke="currentColor"
@@ -30,7 +30,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
       </svg>
       <h3
         class="text-xl font-black text-theme-title tracking-tight"
-        style="font-weight: var(--sarak-h1-weight,900);"
+        style="font-weight: var(--sarak-h1-weight,800);"
       >
         Test Chart
       </h3>
@@ -44,11 +44,11 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
         style="flex-direction: column; gap: 0px;"
       >
         <div
-          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))] to-[var(--sarak-primary-color,#19e3f0)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div
-            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,rgba(15,23,42,0.6))] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
           >
             50
           </div>
@@ -65,11 +65,11 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
         style="flex-direction: column; gap: 0px;"
       >
         <div
-          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))] to-[var(--sarak-primary-color,#00f2ff)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          class="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))] to-[var(--sarak-primary-color,#19e3f0)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div
-            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,rgba(15,23,42,0.6))] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
           >
             80
           </div>

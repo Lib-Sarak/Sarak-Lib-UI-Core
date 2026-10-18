@@ -103,6 +103,8 @@ async function withScene<T>(scene: string, params: Record<string, string>, measu
     try {
         await page.goto(`${harnessUrl}?${new URLSearchParams({ cena: scene, ...params }).toString()}`);
         await page.waitForFunction(() => document.body.hasAttribute('data-sx-texture'));
+        // O fundo e a cor do corpo entram por transição na hidratação: medir o contraste no meio dela lê o corpo transparente.
+        await page.evaluate(() => Promise.all(document.getAnimations().filter((animation) => animation instanceof CSSTransition).map((animation) => animation.finished.catch(() => undefined))));
         return await measure(page);
     } finally {
         await page.close();

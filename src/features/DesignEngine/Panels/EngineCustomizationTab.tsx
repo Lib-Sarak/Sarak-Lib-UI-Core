@@ -158,8 +158,8 @@ export const EngineCustomizationTab: React.FC = () => {
             </Section>
 
             <div className="p-8 mt-auto">
-                <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7000ff)]/10 border border-[var(--sarak-secondary-color,#7000ff)]/20 text-center">
-                    <span className="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7000ff)]/60">Sovereign Engine v7.0</span>
+                <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/10 border border-[var(--sarak-secondary-color,#7c5cff)]/20 text-center">
+                    <span className="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7c5cff)]/60">Sovereign Engine v7.0</span>
                 </div>
             </div>
         </div>

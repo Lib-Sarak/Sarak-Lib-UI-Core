@@ -18,7 +18,7 @@ export interface KanbanCardProps<C extends SarakKanbanCard> {
 
 const shellStyle = (clickable: boolean, isDragging: boolean): React.CSSProperties => ({
     padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md, 16px)',
-    borderRadius: 'var(--sarak-kanban-card-radius, var(--sarak-card-radius, 8px))',
+    borderRadius: 'var(--sarak-kanban-card-radius, var(--sarak-card-radius, 10px))',
     background: 'var(--color-theme-card, var(--sarak-surface-color, transparent))',
     border: 'var(--sarak-border-width, 1px) solid var(--border-color, currentColor)',
     cursor: clickable ? 'pointer' : 'grab',

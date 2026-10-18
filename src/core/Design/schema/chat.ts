@@ -32,7 +32,7 @@ export const ChatSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo das bolhas de mensagem enviadas pelo usuário — costuma ter contraste maior que as mensagens do assistente/IA para facilitar a distinção rápida de quem falou.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            defaultValue: 'rgba(25, 227, 240, 0.08)',
             cssVars: ['--sarak-chat-user-bg']
         },
         {

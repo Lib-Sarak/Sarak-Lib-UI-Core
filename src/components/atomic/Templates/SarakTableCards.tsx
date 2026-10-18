@@ -69,10 +69,10 @@ const cardStyle: React.CSSProperties = {
     flexDirection: 'column',
     gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
     padding: 'var(--sarak-card-padding-md, var(--sarak-layout-gap-md, 16px))',
-    background: 'var(--color-theme-card, rgba(15,23,42,0.6))',
-    border: 'var(--sarak-border-width, 1px) solid var(--border-color, rgba(255,255,255,0.1))',
-    borderRadius: 'var(--sarak-card-radius, 12px)',
-    color: 'var(--sarak-text-main, #ffffff)',
+    background: 'var(--color-theme-card, #101622)',
+    border: 'var(--sarak-border-width, 1px) solid var(--border-color, rgba(255,255,255,0.09))',
+    borderRadius: 'var(--sarak-card-radius, 10px)',
+    color: 'var(--sarak-text-main, #f2f6fb)',
     boxSizing: 'border-box',
 };
 

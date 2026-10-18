@@ -15,7 +15,7 @@ export interface SarakCardHeaderProps {
  */
 const HEADER_TOKEN_CLASSES = [
     'bg-[var(--sarak-card-header-bg,transparent)]',
-    'py-[var(--sarak-card-header-padding,0px)]',
+    'py-[var(--sarak-card-header-padding,12px)]',
     'shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)]',
 ].join(' ');
 

@@ -136,13 +136,13 @@ const SarakToast = ({ entry, onDismiss }: { entry: ToastEntry; onDismiss: (id: s
         <div role="alert" data-sarak-toast="true" data-variant={entry.variant} className="flex items-center text-sm shadow-[var(--dynamic-shadow)] pointer-events-auto" style={{
             minWidth: 'var(--sarak-toast-min-width, 15rem)', maxWidth: 'var(--sarak-toast-max-width, 22.5rem)',
             gap: 'var(--sarak-layout-gap-sm, 8px)', paddingInline: 'var(--sarak-layout-gap-md, 16px)',
-            paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)',
-            background: 'var(--color-theme-card,rgba(15,23,42,0.6))', color: 'var(--sarak-text-main,#ffffff)',
+            paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,10px)',
+            background: 'var(--color-theme-card,#101622)', color: 'var(--sarak-text-main,#f2f6fb)',
             borderLeft: `var(--sarak-toast-accent-width, 4px) solid ${VARIANT_COLORS[entry.variant]}`,
         }}>
             <ToastMessage title={entry.title} message={entry.message} />
             {entry.action && <SarakButton type="button" variant="ghost" size="xs" onClick={handleAction}>{entry.action.label}</SarakButton>}
-            <SarakIconButton variant="ghost" size="xs" aria-label={text('toastClose')} onClick={() => onDismiss(entry.id)} style={{ color: 'var(--text-muted,rgba(255,255,255,0.4))', lineHeight: 1, borderRadius: 0 }} icon="×" />
+            <SarakIconButton variant="ghost" size="xs" aria-label={text('toastClose')} onClick={() => onDismiss(entry.id)} style={{ color: 'var(--text-muted,rgba(242,246,251,0.55))', lineHeight: 1, borderRadius: 0 }} icon="×" />
         </div>
     );
 };

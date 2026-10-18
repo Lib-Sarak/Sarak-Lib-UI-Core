@@ -37,7 +37,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     <button className="p-2 bg-theme-text/5 rounded-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors border-theme">
                         <Bell size={18} />
                     </button>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-[var(--sarak-secondary-color,#7000ff)] border-2 border-theme shadow-theme" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-[var(--sarak-secondary-color,#7c5cff)] border-2 border-theme shadow-theme" />
                 </div>
             </header>
 
@@ -213,7 +213,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="sarak-card rounded-theme border-theme p-6 group hover:translate-y-[var(--sarak-card-hover-y,-4px)] transition-all relative overflow-hidden shadow-theme">
+                        <div className="sarak-card rounded-theme border-theme p-6 group hover:translate-y-[var(--sarak-card-hover-y,-2px)] transition-all relative overflow-hidden shadow-theme">
                             <div className="spotlight-effect" />
                             {/* Spotlight effect placeholder */}
 

@@ -26,7 +26,7 @@ describe('cabeçalho e rodapé do cartão', () => {
         const header = screen.getByText('Título').closest('header');
         expect(header?.className).toContain('var(--sarak-card-header-bg,transparent)');
         expect(header?.className).toContain('var(--sarak-card-header-border,transparent)');
-        expect(header?.className).toContain('var(--sarak-card-header-padding,0px)');
+        expect(header?.className).toContain('var(--sarak-card-header-padding,12px)');
     });
 
     it('o rodapé lê fundo e linha divisória dos tokens', () => {

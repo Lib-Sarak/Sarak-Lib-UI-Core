@@ -7,25 +7,25 @@
    Um teste (`themeNamesScope.test.ts`) confere que os dois corpos são idênticos. */
 @theme inline {
   /* --- 1. PALETA CORE (Sincronizada com Atomic Sync) --- */
-  --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, #00f2ff));
-  --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7000ff));
+  --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, #19e3f0));
+  --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7c5cff));
   
-  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #050505));
-  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #050505));
-  --color-theme-card: var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6)));
-  --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, #000000));
-  --color-theme-topbar: var(--sarak-topbar-bg, #000000);
+  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #06080d));
+  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #06080d));
+  --color-theme-card: var(--sarak-card-bg, var(--theme-card, #101622));
+  --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, #04060a));
+  --color-theme-topbar: var(--sarak-topbar-bg, #04060a);
   
-  --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1)));
-  --color-theme-text: var(--text-main, #ffffff);
+  --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09)));
+  --color-theme-text: var(--text-main, #f2f6fb);
   --color-theme-on-primary: var(--theme-on-primary, #020617);
-  --color-theme-title: var(--sarak-title-color, #ffffff);
-  --color-theme-muted: var(--theme-muted, rgba(255, 255, 255, 0.4));
+  --color-theme-title: var(--sarak-title-color, #f2f6fb);
+  --color-theme-muted: var(--theme-muted, rgba(242, 246, 251, 0.55));
   /* Véus de realce derivados da cor de texto do tema: nos dois modos aparecem sobre a superfície
      (branco translúcido no escuro, escuro translúcido no claro). `bg-theme-tint*`, `border-theme-tint*`. */
-  --color-theme-tint: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
-  --color-theme-tint-hover: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent);
-  --color-theme-tint-strong: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent);
+  --color-theme-tint: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent);
+  --color-theme-tint-hover: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent);
+  --color-theme-tint-strong: color-mix(in srgb, var(--text-main, #f2f6fb) 20%, transparent);
   
   /* --- 2. GEOMETRIA & ESCALAS --- */
   --radius-sarak: var(--sarak-card-border-radius, var(--radius-theme, 12px));
@@ -45,7 +45,7 @@
   --z-index-tooltip: var(--sarak-z-tooltip, 9000);
   
   /* --- 4. MOVIMENTO (Motion) --- */
-  --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+  --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
   --duration-fast: var(--sarak-motion-dur-fast, 0.2s);
   --duration-normal: var(--sarak-motion-dur-normal, 0.3s);
   --duration-slow: var(--sarak-motion-dur-slow, 0.6s);
@@ -54,7 +54,7 @@
      (`motionDurationFast`) e a curva mestre (`motionEaseMain`) —, para a velocidade do tema chegar a
      toda transição, e não só às de elemento. Reserva = padrão do token. */
   --default-transition-duration: var(--sarak-motion-dur-fast, 0.2s);
-  --default-transition-timing-function: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+  --default-transition-timing-function: var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
   
   /* --- 5. STATUS SEMÂNTICOS --- */
   --color-status-success: var(--sarak-status-success-color, #10b981);
@@ -80,8 +80,8 @@
   --scroll-thumb-hover: var(--sarak-scroll-thumb-hover-opacity, 0.5);
   
   /* --- 8. EFEITOS ESPECIAIS --- */
-  --sarak-blur-master: var(--sarak-glass-blur, 16px);
-  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.05));
+  --sarak-blur-master: var(--sarak-glass-blur, 14px);
+  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(25, 227, 240, 0.18));
   
   /* Motor de Sombras Multi-Camada (Física Real) — contato + projeção. A direção vem de
      `shadowOrientation` (`--sarak-shadow-dir-x/y`), a cor de `shadowColorMode`, e
@@ -102,25 +102,25 @@
 :root,
 .sarak-design-scope {
   /* --- 1. PALETA CORE (Sincronizada com Atomic Sync) --- */
-  --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, #00f2ff));
-  --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7000ff));
+  --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, #19e3f0));
+  --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7c5cff));
   
-  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #050505));
-  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #050505));
-  --color-theme-card: var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6)));
-  --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, #000000));
-  --color-theme-topbar: var(--sarak-topbar-bg, #000000);
+  --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #06080d));
+  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #06080d));
+  --color-theme-card: var(--sarak-card-bg, var(--theme-card, #101622));
+  --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, #04060a));
+  --color-theme-topbar: var(--sarak-topbar-bg, #04060a);
   
-  --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1)));
-  --color-theme-text: var(--text-main, #ffffff);
+  --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09)));
+  --color-theme-text: var(--text-main, #f2f6fb);
   --color-theme-on-primary: var(--theme-on-primary, #020617);
-  --color-theme-title: var(--sarak-title-color, #ffffff);
-  --color-theme-muted: var(--theme-muted, rgba(255, 255, 255, 0.4));
+  --color-theme-title: var(--sarak-title-color, #f2f6fb);
+  --color-theme-muted: var(--theme-muted, rgba(242, 246, 251, 0.55));
   /* Véus de realce derivados da cor de texto do tema: nos dois modos aparecem sobre a superfície
      (branco translúcido no escuro, escuro translúcido no claro). `bg-theme-tint*`, `border-theme-tint*`. */
-  --color-theme-tint: color-mix(in srgb, var(--text-main, #ffffff) 5%, transparent);
-  --color-theme-tint-hover: color-mix(in srgb, var(--text-main, #ffffff) 10%, transparent);
-  --color-theme-tint-strong: color-mix(in srgb, var(--text-main, #ffffff) 20%, transparent);
+  --color-theme-tint: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent);
+  --color-theme-tint-hover: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent);
+  --color-theme-tint-strong: color-mix(in srgb, var(--text-main, #f2f6fb) 20%, transparent);
   
   /* --- 2. GEOMETRIA & ESCALAS --- */
   --radius-sarak: var(--sarak-card-border-radius, var(--radius-theme, 12px));
@@ -140,7 +140,7 @@
   --z-index-tooltip: var(--sarak-z-tooltip, 9000);
   
   /* --- 4. MOVIMENTO (Motion) --- */
-  --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+  --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
   --duration-fast: var(--sarak-motion-dur-fast, 0.2s);
   --duration-normal: var(--sarak-motion-dur-normal, 0.3s);
   --duration-slow: var(--sarak-motion-dur-slow, 0.6s);
@@ -149,7 +149,7 @@
      (`motionDurationFast`) e a curva mestre (`motionEaseMain`) —, para a velocidade do tema chegar a
      toda transição, e não só às de elemento. Reserva = padrão do token. */
   --default-transition-duration: var(--sarak-motion-dur-fast, 0.2s);
-  --default-transition-timing-function: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+  --default-transition-timing-function: var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
   
   /* --- 5. STATUS SEMÂNTICOS --- */
   --color-status-success: var(--sarak-status-success-color, #10b981);
@@ -175,8 +175,8 @@
   --scroll-thumb-hover: var(--sarak-scroll-thumb-hover-opacity, 0.5);
   
   /* --- 8. EFEITOS ESPECIAIS --- */
-  --sarak-blur-master: var(--sarak-glass-blur, 16px);
-  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.05));
+  --sarak-blur-master: var(--sarak-glass-blur, 14px);
+  --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(25, 227, 240, 0.18));
   
   /* Motor de Sombras Multi-Camada (Física Real) — contato + projeção. A direção vem de
      `shadowOrientation` (`--sarak-shadow-dir-x/y`), a cor de `shadowColorMode`, e

@@ -1267,9 +1267,9 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
-| `actionGlowShadowBlur` | estético | não | Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão). | `btnStyleType` |
-| `actionGlowShadowOffsetY` | estético | não | Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão). | `btnStyleType` |
-| `actionGlowShadowSpread` | estético | não | Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão). | `btnStyleType` |
+| `actionGlowShadowBlur` | estético | não | Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga). | `btnStyleType` |
+| `actionGlowShadowOffsetY` | estético | não | Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga). | `btnStyleType` |
+| `actionGlowShadowSpread` | estético | não | Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga). | `btnStyleType` |
 | `btnActiveScale` | estético | não | Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original. | — |
 | `btnBackdropBlur` | estético | não | Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque. | `btnStyleType` |
 | `btnBorderRadius` | estético | não | Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado. | — |

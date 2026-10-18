@@ -101,7 +101,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 48px)' : 'var(--sarak-topbar-height, 64px)',
                         margin: 'var(--sarak-tab-section-margin, 8px)',
                         background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}

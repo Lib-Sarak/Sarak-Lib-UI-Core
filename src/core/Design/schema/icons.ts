@@ -13,7 +13,7 @@ export const ICON_TOKENS: SarakDesignToken[] = [
         type: 'select',
         description: 'Família de ícones usada pelos componentes da biblioteca por meio de SarakIcon. Lucide é o padrão; Phosphor e Tabler têm caráter visual próprio.',
         axis: 'texture',
-        defaultValue: 'lucide',
+        defaultValue: 'phosphor',
         options: [
             { value: 'lucide', label: 'Lucide (Padrão)' },
             { value: 'phosphor', label: 'Phosphor' },
@@ -30,7 +30,7 @@ export const ICON_TOKENS: SarakDesignToken[] = [
         type: 'select',
         description: 'Peso visual aplicado pelos componentes que usam SarakIcon. Phosphor oferece pesos nativos; Lucide e Tabler aproximam o peso por espessura de traço.',
         axis: 'density',
-        defaultValue: 'regular',
+        defaultValue: 'fill',
         options: [
             { value: 'thin', label: 'Thin' },
             { value: 'light', label: 'Light' },

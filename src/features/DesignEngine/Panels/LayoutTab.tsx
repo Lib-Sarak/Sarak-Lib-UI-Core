@@ -69,7 +69,7 @@ export const LayoutTab: React.FC = () => {
                 {/* ESCALA & TIPOGRAFIA */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-[var(--sarak-secondary-color,#7000ff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7000ff)]">
+                        <div className="p-2 bg-[var(--sarak-secondary-color,#7c5cff)]/10 rounded-lg text-[var(--sarak-secondary-color,#7c5cff)]">
                             <Type className="w-4 h-4" />
                         </div>
                         <h3 className="text-sm font-black uppercase tracking-widest italic text-theme-text/90">Escala Visual (Fator S)</h3>
@@ -83,7 +83,7 @@ export const LayoutTab: React.FC = () => {
                                     onClick={() => setFontScale(s.id)}
                                     className="flex flex-col items-center gap-2 group"
                                 >
-                                    <div className={`w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full ${fontScale === s.id ? 'h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'h-4 opacity-20'}`} />
+                                    <div className={`w-1 bg-gradient-to-t from-[var(--sarak-secondary-color,#7c5cff)] to-[var(--sarak-status-info-color,#3b82f6)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] rounded-full ${fontScale === s.id ? 'h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'h-4 opacity-20'}`} />
                                     <span className={`text-2xs font-black transition-all ${fontScale === s.id ? 'text-theme-text' : 'text-theme-text/20'}`}>{s.label}</span>
                                 </button>
                             ))}

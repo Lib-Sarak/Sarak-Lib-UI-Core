@@ -119,7 +119,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_300)] flex items-start justify-center pt-[12vh] bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.4))] backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]"
+            className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_300)] flex items-start justify-center pt-[12vh] bg-[var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))] backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]"
             style={{ paddingLeft: 'var(--sarak-layout-gap-md, 16px)', paddingRight: 'var(--sarak-layout-gap-md, 16px)', paddingBottom: 'var(--sarak-layout-gap-md, 16px)' }}
             role="presentation"
             onClick={() => setOpen(false)}
@@ -128,7 +128,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                 role="dialog"
                 aria-modal="true"
                 aria-label={t('spotlightAriaLabel')}
-                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.1))] bg-[var(--color-theme-card,rgba(15,23,42,0.6))] shadow-[var(--dynamic-shadow)]"
+                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--color-theme-card,#101622)] shadow-[var(--dynamic-shadow)]"
                 onClick={(event) => event.stopPropagation()}
             >
                 {/* Composição atômica (R10 — lote 10): SarakInput renderiza <input> nativo por
@@ -154,7 +154,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     onKeyDown={onKeyDown}
                     aria-label={t('searchFieldAriaLabel')}
                     fullWidth
-                    className="text-[var(--sarak-text-main,#ffffff)]"
+                    className="text-[var(--sarak-text-main,#f2f6fb)]"
                     style={{
                         background: 'transparent',
                         paddingInline: 'var(--sarak-layout-gap-md, 16px)',
@@ -171,8 +171,8 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                             onClick={() => choose(item)}
                             className={`flex items-center cursor-pointer text-sm ${
                                 index === active
-                                    ? 'bg-[var(--sarak-primary-color,#00f2ff)] text-[var(--color-theme-card,rgba(15,23,42,0.6))]'
-                                    : 'text-[var(--sarak-text-main,#ffffff)]'
+                                    ? 'bg-[var(--sarak-primary-color,#19e3f0)] text-[var(--color-theme-card,#101622)]'
+                                    : 'text-[var(--sarak-text-main,#f2f6fb)]'
                             }`}
                             style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}
                         >
@@ -181,7 +181,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                         </li>
                     ))}
                     {results.length === 0 && (
-                        <li className="text-center text-sm text-[var(--text-muted,rgba(255,255,255,0.4))]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}>
+                        <li className="text-center text-sm text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}>
                             {t('spotlightNoResults')}
                         </li>
                     )}

@@ -76,7 +76,7 @@ function CardGridTabFilter<TData extends Record<string, unknown>>({ mainFilter, 
     const options = mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(records, mainFilter.field) : []);
     return <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
         {['all', ...options.map((option) => typeof option === 'string' ? option : option.value)].map((option) => (
-            <SarakButton key={option} onClick={() => setActiveFilters((current) => ({ ...current, [mainFilter.id]: option }))} variant={(activeFilters[mainFilter.id] || 'all') === option ? 'primary' : 'secondary'} className={(activeFilters[mainFilter.id] || 'all') === option ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(0,242,255,0.05))]' : ''}>
+            <SarakButton key={option} onClick={() => setActiveFilters((current) => ({ ...current, [mainFilter.id]: option }))} variant={(activeFilters[mainFilter.id] || 'all') === option ? 'primary' : 'secondary'} className={(activeFilters[mainFilter.id] || 'all') === option ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]' : ''}>
                 {option === 'all' ? text('filterShowAll', { label: mainFilter.label }) : option}
             </SarakButton>
         ))}
@@ -90,7 +90,7 @@ function CardGridSelectFilters<TData extends Record<string, unknown>>({ sideFilt
         {sideFilters.map((filter) => {
             const options = filter.options || (filter.dynamic ? getDynamicOptions(records, filter.field) : []);
             return <div key={filter.id} className="relative group min-w-[var(--sarak-catalog-filter-min-width,160px)]">
-                <SarakSelect value={activeFilters[filter.id] || 'all'} onChange={(event) => setActiveFilters((current) => ({ ...current, [filter.id]: event.target.value }))} className="w-full text-2xs font-black text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-60 uppercase tracking-widest cursor-pointer">
+                <SarakSelect value={activeFilters[filter.id] || 'all'} onChange={(event) => setActiveFilters((current) => ({ ...current, [filter.id]: event.target.value }))} className="w-full text-2xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 uppercase tracking-widest cursor-pointer">
                     <option value="all">{text('filterShowAll', { label: filter.label })}</option>
                     {options.map((option) => {
                         const value = typeof option === 'string' ? option : option.value;
@@ -107,7 +107,7 @@ function CardGridFilters<TData extends Record<string, unknown>>(props: CardGridF
     const { getFlexStyles } = useStructuralStyles();
     const stack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
     if (!props.mainFilter && props.sideFilters.length === 0) return null;
-    return <div className={`${stack.className} border-t border-[var(--border-color,rgba(255,255,255,0.1))]`} style={{ ...stack.style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
+    return <div className={`${stack.className} border-t border-[var(--border-color,rgba(255,255,255,0.09))]`} style={{ ...stack.style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
         <CardGridTabFilter {...props} />
         <CardGridSelectFilters {...props} />
     </div>;
@@ -129,8 +129,8 @@ export function CardGridHeader<TData extends Record<string, unknown>>(props: Car
     return <div className={`${block.className} @container`} style={block.style}>
         <div className={`${row.className} md:items-center justify-between`} style={row.style}>
             <div>
-                {props.label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,900)' }}>{props.label}</h3>}
-                <p className="text-[var(--text-muted,rgba(255,255,255,0.4))] opacity-60 text-xs" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{text('tableRowsFound', { count: props.rowCount })}</p>
+                {props.label && <h3 className="text-3xl font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}>{props.label}</h3>}
+                <p className="text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 text-xs" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{text('tableRowsFound', { count: props.rowCount })}</p>
             </div>
             <CardGridSearch search={props.search} setSearch={props.setSearch} />
         </div>
@@ -154,7 +154,7 @@ export function CardGridResults<TData extends Record<string, unknown>>({ filtere
     const emptyStyle = { ...emptyState.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' };
     return <div className="@container">
         <div className={grid.className} style={grid.style}>
-            {loading && !hasData ? [...Array(6)].map((_, index) => <div key={index} className="h-80 bg-[var(--color-theme-card,rgba(15,23,42,0.6))] border-[var(--border-color,rgba(255,255,255,0.1))] animate-pulse" />)
+            {loading && !hasData ? [...Array(6)].map((_, index) => <div key={index} className="h-80 bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] animate-pulse" />)
                 : error && !hasData ? <div className={`col-span-full ${emptyState.className}`} style={emptyStyle}><SarakDataErrorNotice error={error} /></div>
                     : filteredData.length === 0 ? <div className={`col-span-full ${emptyState.className} text-center`} style={emptyStyle}><SarakDataEmpty /></div>
                         : filteredData.map((item, index) => <SarakCoreCard key={index} item={item} mapping={mapping} variant={variant} />)}

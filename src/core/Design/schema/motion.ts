@@ -19,7 +19,7 @@ export const MotionSchema: ComponentSchema = {
             type: 'text',
             description: 'Curva de aceleração (cubic-bezier) master de toda a interface: as transições de botão, campo, cartão e do corpo da página, e a abertura/fechamento de painel e gaveta. É a única curva "padrão" do sistema.',
             axis: 'motion',
-            defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            defaultValue: 'cubic-bezier(0.16, 1, 0.3, 1)',
             cssVars: ['--sarak-motion-ease-main']
         },
         {
@@ -31,7 +31,7 @@ export const MotionSchema: ComponentSchema = {
             type: 'text',
             description: 'Curva de desaceleração do aperto de um botão HTML sem classe e do pulso do alternador pulsante: o movimento começa rápido e desacelera suavemente no final. O `SarakButton` mantém a própria curva no aperto.',
             axis: 'motion',
-            defaultValue: 'cubic-bezier(0, 0, 0.2, 1)',
+            defaultValue: 'cubic-bezier(0.16, 1, 0.3, 1)',
             cssVars: ['--sarak-motion-ease-out']
         },
         {
@@ -44,7 +44,7 @@ export const MotionSchema: ComponentSchema = {
             type: 'text',
             description: 'Curva de aceleração da SAÍDA do modal e da paleta de busca: o elemento parte devagar e acelera até sumir. Aceita só `cubic-bezier(x1, y1, x2, y2)`; outra forma volta à curva de fábrica.',
             axis: 'motion',
-            defaultValue: 'cubic-bezier(0.4, 0, 1, 1)',
+            defaultValue: 'cubic-bezier(0.7, 0, 0.84, 0)',
             cssVars: ['--sarak-motion-ease-in']
         },
 

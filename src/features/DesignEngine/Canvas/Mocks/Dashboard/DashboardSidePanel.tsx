@@ -7,8 +7,8 @@ export const DashboardSidePanel = ({ variables, textureType }: any) => {
     return (
         <SmartCard variables={variables} textureType={textureType} className="h-[420px] @lg:h-full w-full !p-5 @md:!p-6" label="Card de Texto (Logs)">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(255,255,255,0.4))]">Live Activity</h3>
-                <SarakIcon name="Clock" size={14} className="text-[var(--text-muted,rgba(255,255,255,0.4))]" />
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">Live Activity</h3>
+                <SarakIcon name="Clock" size={14} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
             </div>
             <div className="flex-1 flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar">
                 {[
@@ -22,8 +22,8 @@ export const DashboardSidePanel = ({ variables, textureType }: any) => {
                         <div className="w-1 h-8 rounded-full opacity-40 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: item.color }} />
                         <div className="flex-1">
                             <div className="flex justify-between mb-0.5">
-                                <span className="text-[10px] font-bold uppercase text-[var(--text-muted,rgba(255,255,255,0.4))] tracking-tighter">{item.type}</span>
-                                <span className="text-[9px] font-mono text-[var(--text-muted,rgba(255,255,255,0.4))] italic">{item.time}</span>
+                                <span className="text-[10px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-tighter">{item.type}</span>
+                                <span className="text-[9px] font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] italic">{item.time}</span>
                             </div>
                             <p className="text-xs text-theme-text/80 leading-snug tracking-tight">{item.msg}</p>
                         </div>

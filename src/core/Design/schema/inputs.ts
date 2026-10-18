@@ -38,7 +38,7 @@ export const InputsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-input-border-radius']
         },
         {
@@ -82,7 +82,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo padrão dos campos de entrada — normalmente sutil/translúcida para diferenciar do fundo da página sem criar contraste forte. Gera variantes automáticas de foco/hover.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.03)',
+            defaultValue: 'rgba(255, 255, 255, 0.04)',
             generateVariants: true,
             cssVars: ['--sarak-input-bg']
         },
@@ -98,7 +98,7 @@ export const InputsSchema: ComponentSchema = {
             axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 50 },
-            defaultValue: 0,
+            defaultValue: 8,
             cssVars: ['--sarak-input-backdrop-blur']
         },
         {
@@ -122,7 +122,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor da borda do campo de entrada em repouso (sem foco) — costuma ser sutil, só o suficiente para demarcar os limites do campo.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            defaultValue: 'rgba(255, 255, 255, 0.22)',
             cssVars: ['--sarak-input-border-color']
         },
         {
@@ -134,7 +134,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor da borda do campo de entrada quando está em foco (usuário digitando/selecionado) — deve ter contraste alto contra `inputBorderColor`, para o usuário identificar rapidamente qual campo está ativo.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             cssVars: ['--sarak-input-focus-border-color']
         },
         {
@@ -146,7 +146,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto digitado dentro do campo de entrada — deve manter contraste alto contra `inputBg`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-input-text-color']
         },
         {
@@ -158,7 +158,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor dos ícones exibidos dentro/ao lado do campo de entrada (ex. lupa de busca, olho de senha). O padrão é a cor de texto suave do tema (`textColorMuted`), que muda com o modo — um branco fixo sumia sobre o campo de um tema claro. O par com o fundo do campo é medido pelo verificador de contraste.',
             axis: 'color',
-            defaultValue: 'var(--text-muted, rgba(255,255,255,0.4))',
+            defaultValue: 'var(--text-muted, rgba(242,246,251,0.55))',
             cssVars: ['--sarak-input-icon-color']
         },
         {
@@ -170,7 +170,7 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de borda/texto aplicada ao campo de entrada quando a validação falha — convencionalmente vermelho, deve se manter coerente com `statusErrorColor` do resto do sistema.',
             axis: 'color',
-            defaultValue: '#ff4d4f',
+            defaultValue: '#ff6b6b',
             cssVars: ['--sarak-input-error-color']
         },
 

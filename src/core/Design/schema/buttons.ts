@@ -64,7 +64,7 @@ export const ButtonsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-btn-border-radius', '--sarak-btn-radius-tl', '--sarak-btn-radius-tr', '--sarak-btn-radius-bl', '--sarak-btn-radius-br']
         },
         {
@@ -80,7 +80,7 @@ export const ButtonsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-btn-radius-tl'],
             exceptionOf: 'btnBorderRadius'
         },
@@ -97,7 +97,7 @@ export const ButtonsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-btn-radius-tr'],
             exceptionOf: 'btnBorderRadius'
         },
@@ -114,7 +114,7 @@ export const ButtonsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-btn-radius-bl'],
             exceptionOf: 'btnBorderRadius'
         },
@@ -131,7 +131,7 @@ export const ButtonsSchema: ComponentSchema = {
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: { mob: 6, tab: 8, desk: 8 },
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-btn-radius-br'],
             exceptionOf: 'btnBorderRadius'
         },
@@ -172,7 +172,7 @@ export const ButtonsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor de fundo do botão de maior ênfase (ação principal da tela, ex. "Confirmar", "Salvar"). É a cor mais visível do sistema depois da cor de marca — costuma ser a mesma ou derivada de `primaryColor`. Gera variantes automáticas de hover/active (`generateVariants: true`).',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--sarak-btn-primary-bg']
         },
@@ -185,7 +185,7 @@ export const ButtonsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do texto/ícone dentro do botão primário. Deve manter contraste alto contra `btnPrimaryBg` (ex. texto escuro sobre fundo primário claro/neon) — não é gerado automaticamente, ajuste manual sempre que `btnPrimaryBg` mudar de luminosidade.',
             axis: 'color',
-            defaultValue: '#000000',
+            defaultValue: '#04121a',
             cssVars: ['--sarak-btn-primary-text']
         },
         {
@@ -227,7 +227,7 @@ export const ButtonsSchema: ComponentSchema = {
             constraints: {
                 options: BUTTON_STYLE_OPTIONS
             },
-            defaultValue: 'matte',
+            defaultValue: 'frosted',
             cssVars: ['--sarak-btn-style-type']
         },
         {
@@ -240,7 +240,7 @@ export const ButtonsSchema: ComponentSchema = {
             type: 'color',
             description: 'Cor do brilho/glow ao redor do botão — só tem efeito visível quando `btnStyleType` é \'neon\' ou \'cyberpunk\'. Normalmente usa a mesma cor de `btnPrimaryBg` em formato rgba com transparência, pra o brilho combinar com o botão.',
             axis: 'elevation',
-            defaultValue: 'rgba(0, 242, 255, 0.4)',
+            defaultValue: 'rgba(25, 227, 240, 0.4)',
             cssVars: ['--sarak-btn-neon-glow-color']
         },
         {
@@ -358,7 +358,7 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'actionGlowShadowOffsetY',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+            usage: "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
             interactsWith: ['btnStyleType'],
             label: 'Sombra de Ação: Offset Y',
             type: 'slider',
@@ -373,7 +373,7 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'actionGlowShadowBlur',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+            usage: "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
             interactsWith: ['btnStyleType'],
             label: 'Sombra de Ação: Desfoque',
             type: 'slider',
@@ -388,7 +388,7 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'actionGlowShadowSpread',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, o padrão).",
+            usage: "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
             interactsWith: ['btnStyleType'],
             label: 'Sombra de Ação: Espalhamento',
             type: 'slider',
