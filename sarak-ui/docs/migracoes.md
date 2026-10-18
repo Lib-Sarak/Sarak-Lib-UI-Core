@@ -695,6 +695,24 @@ esses tokens, **herdam os padrões novos e mudam de aparência** até o lote de 
 valores antigos no `config` do `SarakUIProvider`. Quem comparava a cor do botão primário, o fundo ou o raio do cartão em teste deve trocar o
 valor esperado (os snapshots da própria lib mudaram só nesses valores).
 
+### O tema `cyberpunk-neon` é refeito: verde ácido, quina cortada e botão wireframe
+
+**Classificação: MAJOR (muda tudo o que o tema embarcado `cyberpunk-neon` desenha; o id continua).** O tema ganhou direção de arte
+própria e declara **todo** token estético, nos dois modos: verde ácido `#00ff6a` sobre preto esverdeado, cartão com quina cortada
+(`cardGeometricCut` 14, raio 0 em tudo), botão `cyberpunk` (wireframe), `JetBrains Mono` maiúsculo nos títulos com brilho no H1, `Space Grotesk`
+no corpo, Phosphor `duotone`, textura de cartão `scanlines`, fundo `circuit-pro` com `systemTone: cyber`, gráfico de linha sem suavização e
+movimento acelerado e curto, sem transição de página. A contraparte clara troca só cor, opacidade e sombra (corpo `#eef5ef`, primária `#007a33`).
+
+| Família | Antes | Depois |
+|---|---|---|
+| Primária / secundária / destaque | `#00ff41` / `#ff00ff` / `#00ffff` | `#00ff6a` / `#ff2bd6` / `#f9f871` |
+| Fonte (títulos / corpo) | `JetBrains Mono` / `JetBrains Mono` | `JetBrains Mono` maiúsculo / `Space Grotesk` |
+| Cartão | raio 0 com corte 16, textura `grid` | raio 0 com corte 14, textura `scanlines`, `glow-only` |
+| Botão | `borderline` | `cyberpunk` |
+| Movimento | curva padrão, transição padrão | curva acelerada, 100-150 ms, `none` |
+
+**O que fazer:** nada é obrigatório. Tema salvo ou `config` que declara o token mantém o valor; quem quer o visual de antes declara os valores antigos.
+
 ### Exports removidos do barril público
 
 **Classificação: MAJOR (sai na 8.0.0).**

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { solveThemeContrast } from '../solve_theme_contrast.ts';
+import { solveThemeContrast, loadMergedDesign } from '../solve_theme_contrast.ts';
 import { sarakGetDefaultDesignState } from '../../../../../src/core/Design/master-map.ts';
 import { rgbToHsl, parseToRgba } from '../../../../../src/core/Provider/utils/color-engine.ts';
 import { SARAK_ALL_THEMES } from '../../../../../src/core/Design/presets/themes/all.ts';
@@ -124,5 +124,21 @@ describe('solveThemeContrast — NÃO é um gerador (prova de não-homogeneizaç
             expect(resultado.pulado).toBe(false);
             if (!resultado.pulado) expect(resultado.pass).toBe(true);
         }
+    });
+});
+
+describe('loadMergedDesign (o caminho da CLI)', () => {
+    // O import quebrado (`getDefaultDesignState`, que não existe) só estourava aqui, na chamada: o resto do arquivo carregava.
+    it('junta os padrões do dicionário ao tema, e a contraparte por cima no modo oposto', () => {
+        const nativo = loadMergedDesign('cyberpunk-neon');
+        const oposto = loadMergedDesign('cyberpunk-neon', true);
+        expect(nativo.sidebarWidth).toBeDefined();
+        expect(nativo.mode).toBe('dark');
+        expect(oposto.mode).toBe('light');
+        expect(oposto.colorBgBody).not.toBe(nativo.colorBgBody);
+    });
+
+    it('recusa um id que não existe', () => {
+        expect(() => loadMergedDesign('nao-existe')).toThrow(/não encontrado/);
     });
 });

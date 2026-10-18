@@ -755,7 +755,8 @@ de cartões visíveis com o traço aceso custam quadros: use em poucos cartões 
   sujeitas ao carregamento de fontes do Provider (§3.14).
 - Os tokens de `SarakButton` e `SarakIconButton` incluem geometria e efeitos condicionais: halo e pulso dependem do
   estilo neon; desfoque e sombras de vidro dependem do estilo frosted. O estilo escolhido determina quais desses
-  ajustes aparecem.
+  ajustes aparecem. No estilo `cyberpunk` (wireframe, fundo transparente) o pulso não desenha, e o `SarakIconButton`
+  primário herda `btnPrimaryText`, que some sobre o vazio: confira o ícone do botão antes de adotar o estilo.
 - `inputBackdropBlur` só desfoca o que está atrás do campo quando `inputBg` é translúcido. No `SarakSwitch`, os ajustes
   de vidro e pulso dependem dos estilos que os usam.
 - As cores de marca e superfície têm valores por modo. O motor usa a contraparte ao trocar entre claro e escuro, em

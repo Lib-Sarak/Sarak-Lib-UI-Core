@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🟢 Aprovada"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -78,6 +78,7 @@ nenhum `defaultValue`.
   `src/components/atomic/Inputs/SarakCheckbox.tsx`, `src/components/atomic/Inputs/SarakRadio.tsx` e
   `src/core/Design/schema/structural.ts` (P19); `src/components/atomic/Layouts/SarakSplitPane.tsx` (candidato de P21).
 - **Lote 6 (P16, P20, P22):** `src/components/Layout/chrome/chromeStructuralStyles.ts`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Provider/utils/removedTokenKeys.ts`, `src/core/Provider/types.ts`, `src/core/Provider/payloadExtraKeys.ts` e `src/components/atomic/Layouts/SarakAccordion.tsx`.
+- **Lote 7 (P23):** `src/components/atomic/Buttons/SarakIconButton.tsx`, `src/components/atomic/Buttons/SarakButton.tsx` e `src/components/atomic/hooks/useAtomicStyles.ts`.
 - **Provar:** testes de componente, o caso de navegador (`browser-tests/`, cena nova no harness) e o gate de leitor.
 - `specs/plan/anexos/plan-110-tokens-funcionais.md` — acrescentar o desfecho dos sete (o executor).
 
@@ -103,6 +104,7 @@ nenhum `defaultValue`.
 | Código (lote 4) | `src/components/atomic/Templates/SarakCatalogGrid.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/core/Design/schema/buttons.ts` (P10) · `src/core/Design/hooks/useDesignVariables.ts` · `src/core/Design/schema/colors.ts` · `src/core/Provider/utils/removedTokenKeys.ts` (P11) · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` · `src/components/engines/charts/SubEngines/axisOptions.ts` · `src/core/Design/schema/data.ts` (P12) · `src/components/atomic/Inputs/SarakRangeSlider.tsx` · `src/styles/_utilities.css` · `src/core/Design/schema/inputs.ts` (P13) | os leitores e os schemas dos quatro achados; a medição que os originou está no resumo do lote 2 da `plan-110` (tabela por token) |
 | Código (lote 5) | `src/components/atomic/hooks/useMotionTokens.ts` · `src/components/atomic/Modals/SarakModal.tsx` · `src/components/atomic/Inputs/SarakSearch.tsx` · `src/core/Design/schema/motion.ts` (P14) · `src/components/atomic/Templates/SarakExpandableMatrix.tsx` · `src/core/Design/schema/advanced.ts` (P15) · `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` (P16, P17, P20) · `src/components/atomic/Layouts/SarakAccordion.tsx` · `src/core/Design/schema/system.ts` (P18) · `src/components/atomic/hooks/useStructuralStyles.ts` · `src/components/atomic/Inputs/SarakSwitch.tsx` · `src/components/atomic/Inputs/SarakCheckbox.tsx` · `src/components/atomic/Inputs/SarakRadio.tsx` · `src/core/Design/schema/structural.ts` (P19) · `src/components/atomic/Layouts/SarakSplitPane.tsx` (P21) | os leitores e os schemas dos oito achados; a medição que os originou está nos resumos dos lotes 3 e 4 da `plan-110` (tabela por token, no histórico do Git) e nos achados dela |
 | Código (lote 6) | `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Provider/utils/removedTokenKeys.ts` · `src/core/Provider/types.ts` · `src/core/Provider/payloadExtraKeys.ts` · `src/components/atomic/Layouts/SarakAccordion.tsx` (P16, P20, P22) | os leitores, o schema e as portas da retirada |
+| Código (lote 7) | `src/components/atomic/Buttons/SarakIconButton.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/components/atomic/hooks/useAtomicStyles.ts` (P23) | o botão de ícone e a fonte de cor do estilo `cyberpunk` |
 | Navegador | `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` (o molde de caso e cena) · `PLAYWRIGHT_BROWSERS_PATH` = caminho absoluto de `node_modules/.cache/ms-playwright` do repositório, `chromium.launch()` sem `executablePath` | provar cada token por diferença de estilo computado |
 | Skill (se existir na sessão) | `dataviz` | só para P12; nenhuma paleta de gráfico muda — sem a skill, siga sem ela e diga no resumo |
 | Código | `gates/allowlists/tokenDocumentationPending.json` · `gates/scripts/contrato/check-token-documentation.ts` · `gates/scripts/contrato/check-token-reader.mjs` | a exceção que esvazia e o gate de leitor |
@@ -140,6 +142,9 @@ nenhum `defaultValue`.
 | P20 | `searchPositionTopbar: center` — `mx-auto` (`ChromeTopbarBody.tsx:112`) não se distingue de `left` quando a navegação tem `flex-1` (o caso com itens) | plan-110 lote 4 | **ligar** o centro de fato ou **retirar** a opção | 5 | fechada |
 | P21 | aviso de console "Function components cannot be given refs" em todas as variantes da cena estrutural (componente não identificado: `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` ou outro) | plan-110 lote 4 | **identificar e corrigir** (`forwardRef` ou remover a `ref`) | 5 | fechada |
 | P22 | `SarakAccordion.tsx:35` — com `design.borderRadius` na forma responsiva `{ mob, tab, desk }` (o que o schema permite) o raio chega como objeto e o React descarta a declaração: o acordeão fica **sem raio nenhum** (jsdom: `{mob:7,tab:7,desk:7}` sem `border-radius`; escalar 7 → `7px`) | plan-117 lote 5 | **corrigir** (resolver o responsivo como os outros componentes) | 6 | fechada |
+| P23 | `SarakIconButton.tsx:137` — no estilo `cyberpunk` o fundo vira transparente, mas o texto da variante primária fica `btnPrimaryText`: **o ícone some** (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts:16`). Visto na vitrine do `cyberpunk-neon`, nos dois modos | plan-110 lote 7 | **corrigir** (a mesma fonte de cor do `SarakButton`, não uma segunda) | 7 | aberta |
+| P24 | *(candidata)* o `main` e o cromo pintam camadas opacas por cima do fundo da página, então a textura de página (`texture`) e o `systemTone` quase não aparecem (vitrine do `sarak-sovereign` e do `cyberpunk-neon`); `circuit-pro`, `constellation` e afins só se veem nas margens | plan-110 lotes 6 e 7 | **a decidir pelo dono**: tornar as camadas translúcidas por padrão ou documentar onde a atmosfera de página aparece | — | candidata |
+| P25 | *(candidata)* o item ativo e o hover da lateral mantêm cantos arredondados com todos os raios do tema em 0; nenhum token controla o raio do item | plan-110 lote 7 | **a decidir pelo dono**: aceitar o canto arredondado como parte do arsenal ou criar o token (fora do escopo desta plan) | — | candidata |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -223,6 +228,15 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
     `{ mob, tab, desk }` e caso de navegador se o raio responsivo for medível.
 20. Nenhum `defaultValue` muda; nota MAJOR para o que for retirado; metadados do schema e o GUIA atualizados.
     **A mutação de prova roda só num build à parte, nunca nas fontes do repositório.**
+
+**Lote 7 — P23 (achado do lote 7 da `plan-110`).**
+21. **P23 — o ícone do `SarakIconButton` no estilo `cyberpunk`:** o texto/ícone das variantes primária, perigo e sucesso
+    usa a **mesma** fonte de cor do `SarakButton` (`CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts`), sem criar um segundo mapa;
+    se o mapa não for exportável, exporte-o e use-o nos dois. Teste de componente por variante e **caso de navegador** no
+    harness existente: a cor do ícone tem ≥ 3:1 contra o fundo nas três variantes no estilo `cyberpunk`, nos dois modos,
+    com mutação (reverter a correção derruba o caso; só em cópia da árvore fora do repositório). Nenhum `defaultValue`
+    muda; nota MAJOR (o botão de ícone passa a aparecer no estilo `cyberpunk`).
+22. **P24 e P25 são candidatas do dono: não toque nelas.**
 
 **Verificação otimizada (decisão do dono, 2026-10-17):** o executor roda só os testes dos arquivos que tocou. O revisor
 roda `verify --tier=quick` (`tsc`, baseline, Anel 1, R36), o vitest **só dos arquivos tocados e dos que os importam**

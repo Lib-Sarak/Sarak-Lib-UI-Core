@@ -629,3 +629,22 @@ Formato das cores: **nativo → contraparte**. "Primária / 2.ª / destaque" sã
 - **Contraste não textual (1.4.11, 3:1, apoio):** escuro: foco do campo 12,7, interruptor ativo 11,5, marcador do item ativo 12,8, séries 4,2 a 11,5;
   claro: foco 4,9, interruptor 5,3, séries 5,3 a 6,5. Borda do cartão contra o corpo (1,2:1) é deliberadamente sutil (vidro); borda do campo em
   repouso 1,9:1 (escuro) e 2,1:1 (claro), abaixo de 3:1.
+
+## `cyberpunk-neon` (lote 7, 2026-10-18)
+
+- **Arquétipo de identidade:** o néon do conjunto. Terminal de invasão: verde ácido (H144 S100, o único neon S100 que sobra) sobre preto esverdeado,
+  quina cortada, mono maiúsculo e movimento seco. Linguagem de efeito, ao contrário do `sarak-sovereign` (linguagem de produto).
+- **Tokens que carregam a personalidade:** `primaryColor` · `cardGeometricCut: 14` com raio 0 em todo token de raio · `btnStyleType: cyberpunk` ·
+  `headingFont` JetBrains Mono + `headingTransform: uppercase` + `textGlowIntensity: 0.35` · `iconWeight: duotone` · `cardTextureType: scanlines` ·
+  `systemTone: cyber` · `chartSmoothing: false` · `pageTransitionType: none` com `motionEase*` acelerado e durações de 0,05 a 0,3 s · `switchStyleType: asymmetric`.
+- **O que o tema demonstra da lib:** o botão wireframe, o corte geométrico, o brilho de texto e o marcador de item ativo com halo (`navActiveMarkerGlow` 14);
+  a contraparte clara (`#eef5ef` / `#ffffff`, primária `#007a33`) mostra que o mesmo tema funciona como papel quadriculado verde sem perder o corte e o mono.
+- **Onde a ficha foi revista pelo código:** (1) `cyber-binary` pinta com a primária e opacidade fixa de 0,05, não em branco fixo: a ficha trocava a textura
+  na contraparte, mas `texture` não carrega modo, então o fundo é `circuit-pro` (currentColor) nos dois; (2) o "pulso de néon lento" não existe no botão
+  `cyberpunk` (só o `neon` pulsa), então `btnNeonPulseSpeed` é 0; (3) `systemTone: cyber` entra, porque o tom desenha grade de HUD e horizonte.
+- **Contraste textual (4,5:1, 76 pares por modo):** escuro, menor 5,52 (`statusErrorColor` sobre o cartão); claro, menor 4,61 (`navItemActiveColor` sobre o item ativo).
+  O solucionador não achou o que corrigir nos dois modos.
+- **Contraste não textual (1.4.11, 3:1, apoio):** escuro: foco do campo 6,4, marcador 15,3, interruptor 15,0, borda do campo 4,2, borda do cartão 3,5,
+  séries 6,0 a 17,1; claro: foco 5,7, marcador 5,5, interruptor 4,9, borda do campo 3,6, séries 5,4 a 6,3. Abaixo de 3:1: borda do cartão no claro (2,9).
+  Séries vizinhas se distinguem por matiz, não por luminosidade (razão 1,06 a 2,85).
+

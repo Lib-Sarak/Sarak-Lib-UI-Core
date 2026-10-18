@@ -19,7 +19,7 @@
 //    transparent + a cadeia de composição de alfa). Par pulado pelo gate
 //    (fundo não-determinístico) é pulado aqui também, com o mesmo motivo.
 // -------------------------------------------------------------------------
-import { getDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
+import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
 import { PAIRS, evaluatePair, resolveChain, contrastRatio, compositeOverOpaque } from '../../../../gates/scripts/audit/verify_contrast.ts';
 import { rgbToHsl, hslToRgb, rgbToHex, parseToRgba } from '../../../../src/core/Provider/utils/color-engine.ts';
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
@@ -255,20 +255,27 @@ function printReport(themeId: string, relatorio: SolverReportEntry[]): void {
     console.log(`\n${resolvidos}/${relatorio.length} pares corrigidos.`);
 }
 
+/**
+ * O design que o gate mede para um tema embarcado: os padrões do dicionário sob o `design` do tema e, no modo
+ * oposto, a `contraparte` por cima — o mesmo empilhamento de `resolveThemeForMode`. Sem isto a CLI media só o
+ * modo nativo e o par que reprova na contraparte passava sem relatório.
+ */
+export function loadMergedDesign(themeId: string, opposite = false): Record<string, unknown> {
+    const theme = SARAK_ALL_THEMES.find((t) => t.id === themeId);
+    if (!theme) throw new Error(`Tema "${themeId}" não encontrado em SARAK_ALL_THEMES (themes/all.ts).`);
+    const overlay = opposite ? (theme.contraparte ?? {}) : {};
+    return { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>), ...(overlay as Record<string, unknown>) };
+}
+
 function main(): void {
     const themeId = process.argv[2];
+    const opposite = process.argv.includes('--contraparte');
     if (!themeId) {
-        console.error('Uso: npx tsx solve_theme_contrast.ts <theme-id>');
+        console.error('Uso: npx tsx solve_theme_contrast.ts <theme-id> [--contraparte]');
         process.exit(1);
     }
-    const theme = SARAK_ALL_THEMES.find((t) => t.id === themeId);
-    if (!theme) {
-        console.error(`Tema "${themeId}" não encontrado em SARAK_ALL_THEMES (themes/all.ts).`);
-        process.exit(1);
-    }
-    const merged = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
-    const { relatorio } = solveThemeContrast(merged);
-    printReport(themeId, relatorio);
+    const { relatorio } = solveThemeContrast(loadMergedDesign(themeId, opposite));
+    printReport(opposite ? `${themeId} (contraparte)` : themeId, relatorio);
 }
 
 const isMain = /solve_theme_contrast\.ts$/.test(process.argv[1] ?? '');

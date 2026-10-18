@@ -33,6 +33,11 @@ O script escreve `src/core/Design/presets/themes/<id-do-tema>.ts` já pré-popul
 `MASTER_DESIGN_MAP` vivo. ⚠️ **Ele cria o arquivo no `src/`** — não o rode para "experimentar";
 se rodar por engano, apague o arquivo gerado.
 
+⚠️ **O gabarito escreve TODO token, funcional inclusive, sem `contraparte`, e importa o tipo `ThemePreset`, que não
+existe (o tipo é `SarakThemePreset`).** Tema embarcado declara só os tokens `kind: aesthetic` (a trava
+`theme-completeness:check` acusa `declares-functional` no resto) e traz a `contraparte`. Na prática, o ponto de partida é
+copiar o `sarak-sovereign.ts` — tema completo nos dois modos — e trocar valores; os padrões do sistema **são** os dele.
+
 **A regra que mais economiza tempo:** parta de um **tema de referência completo** e customize
 poucos valores. Um consumidor real montou um tema só com COR e concluiu que "fonte e cromo não
 mudam" — os eixos de completude existem para pegar isso.
@@ -80,7 +85,7 @@ Para medir **contraste** — o `npm run audit` acima já cobra, mas para saber *
 antes de rodar a auditoria completa, use o solucionador:
 
 ```bash
-npx tsx .agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts <id-do-tema>
+npx tsx .agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts <id-do-tema> [--contraparte]
 ```
 
 Ele mede os pares reais com o mesmo gate (`gates/scripts/audit/verify_contrast.ts`), e onde reprovar,
@@ -88,6 +93,10 @@ ajusta **só a luminosidade** do token de texto — matiz e saturação saem int
 (par, valor antes/depois, razão, delta): **cole esse relatório** ao registrar o tema — é o que transforma
 a correção numa proposta revisável, não um fato consumado. Um par que o relatório marcar como "não
 resolvido" exige uma decisão sua (ver `references/liberdade-e-restricao.md` §1).
+
+**O que o solucionador resolve e o que não:** mede o design do tema sobre os padrões do dicionário (com `--contraparte`, o
+modo oposto) e só desloca a luminosidade do texto que reprova; fundo, matiz e saturação ficam. **Não** atravessa cadeia
+`var()` (par pulado) nem mede contraste não textual (borda, foco, interruptor), que se calcula à parte, com valor concreto.
 
 Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md`, nunca com zero.
 
@@ -130,6 +139,41 @@ com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o de
   fábrica** — mantenha. Quem decide o que a barra oferece é o administrador de cada instalação, no painel;
   mudar isso num tema shippado muda a barra dos usuários de todo consumidor.
 
+### 5.7. Ordem de trabalho e lições medidas (temas refeitos, plan-110)
+
+**Ordem:** (1) modo principal completo; (2) `contraparte` só com o que carrega modo (`kind: aesthetic` e `modeDependent`;
+`mode` entra, geometria, tipografia e movimento não — a trava acusa `contraparte-declares-fixed-aesthetic`);
+(3) `theme-completeness:check` e `auditor_contraste` nos dois modos; (4) captura da vitrine nos dois modos, desktop e
+celular; (5) só então comentários e nota de conceito. Tirar o tema de `gates/allowlists/themeCompletenessPending.json` é o
+último passo, e a trava reclama da exceção obsoleta se esquecer.
+
+- **Valor concreto onde o contraste é medido.** O medidor não atravessa `var()`: `colorBgModal`, `colorBgLayer2` e
+  afins vão como cor. Os derivados (`rangeActiveColor`, `tooltip*`, `inputIconColor`, `aiGlowColor`,
+  `cardActionBtnPrimaryBg`, `cardSearchPlaceholderColor`) repetem a cadeia, para quem troca só a primária levar o derivado. A reserva de
+  uma cadeia repetida (`var(--x, F)`) é o **padrão do token `x`** no schema, nunca o valor do tema: o `variable-contract:check`
+  (Anel 1, fora do nível `themes` do `verify`) acusa a reserva que difere, e `fix-fallbacks.ts` a reescreve.
+- **Token responsivo mantém `{ mob, tab, desk }`** (raios, espaços, tamanhos), mesmo quando os três valem o mesmo.
+- **`identityFontFamily` é valor de `THEME_FONTS`**, como as outras fontes; escolha o peso entre os que a família tem.
+- **A grade do `step` vale no tema:** `sidebarNoiseOpacity`, `topbarNoiseOpacity`, `cardSpotlightOpacity` andam de 0,05
+  em 0,05; `tokenContractParity` reprova 0,04 e 0,14.
+- **Leia contraste na tela só depois das transições de hidratação:** o corpo entra por `CSSTransition` e, no meio dela,
+  `background-color` lê transparente.
+- **Estilo de botão decide quais tokens desenham.** `cyberpunk` é wireframe (fundo transparente, texto na cor da
+  variante): `btnNeonPulseSpeed` não desenha (só o `neon` pulsa) e `SarakIconButton` primário fica com `btnPrimaryText`
+  escuro sobre o vazio, ou seja, ícone invisível; `SarakButton` já corrige isso, o botão de ícone não.
+- **`cardGeometricCut` recorta a borda diagonal e a sombra** (clip-path): o cartão cortado perde o traço na quina; o
+  brilho vem de `cardInnerGlow*` e do halo no hover, não da sombra.
+- **`texture` e `cardTextureType` não carregam modo:** a contraparte não troca a textura, então escolha uma que pinte com
+  `currentColor` ou `--theme-texture-color` (`circuit-pro`, `scanlines`, `micro-dots`). `cyber-binary` pinta com a
+  primária, não em branco fixo, e a opacidade é fixa (0,05): não responde a `textureOpacity`.
+- **O fundo do cromo e do `main` é opaco e cobre a textura da página:** textura de `texture` quase não aparece em tela
+  cheia; o que carrega a identidade é a de cartão.
+- **Opção que o token não tem:** `cardTitleFontWeight` não tem `800` (use `900`); `h1Weight` tem.
+- **Cor de sucesso vizinha da primária** (tema verde): desloque o matiz (menta-azulado) para o selo não se confundir
+  com a marca; o selo tem forma, mas a cor ainda comunica primeiro.
+- **Contraste não textual** (apoio, 3:1): calcule borda de campo e de cartão **compostas sobre o corpo**; borda
+  translúcida não passa por `resolveChain`.
+
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do
 `auditor_presets`.
@@ -156,6 +200,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] Hover do item de navegação preenchido nas duas orientações, e a varredura de hover verde nos dois
       modos? Nenhuma mídia de terceiro? Posições de preferência no padrão de fábrica? `enabledLanguages` com
       os seis idiomas?
+- [ ] `npm run theme-completeness:check` verde e o tema fora da lista de exceção?
 - [ ] A vitrine (`npm run build && npm run themes:showcase`) foi gerada e o tema foi olhado nos dois modos e
       nas duas orientações, badge `muted` inclusive?
 - [ ] Tema NOVO: `npm run themes:diversity -- --new <id,...>` passa nos nove critérios contra o catálogo?

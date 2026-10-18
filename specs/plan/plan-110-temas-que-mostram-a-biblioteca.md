@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🟡 Em execução"
+status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
@@ -904,3 +904,194 @@ normal. Endurecer pela Web Animations API se voltar a aparecer.
 atuais), nível `themes` na verificação.
 
 **Status: 🔴 A executar (lote 7).**
+
+## Resumo da execução — lote 7 — 2026-10-18
+
+**Resultado:** Concluído com pendências (gerados defasados para o revisor; quatro achados de arsenal e de documentação; a skill `dataviz` não existe neste repositório).
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+```
+(Os dois são do revisor e já não aparecem no `git status` de agora; não os toquei, só acrescentei este bloco.)
+
+**O que foi feito**
+- **7.0 (a)** `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts`: o import `getDefaultDesignState` (inexistente) virou `sarakGetDefaultDesignState`. A leitura do tema saiu de `main()` para `loadMergedDesign(id, opposite)` (exportada) e a CLI ganhou `--contraparte`. Teste novo em `solve_theme_contrast.test.ts` (2 casos). Mutação: trocando a chamada por `getDefaultDesignState`, o teste falha com `getDefaultDesignState is not a function`; antes o teste da skill passava mesmo com o import quebrado, porque o erro só estoura na chamada. **Resolve:** o design do tema sobre os padrões do dicionário (e a contraparte por cima), deslocando só a luminosidade do texto que reprova. **Não resolve:** cadeia `var()` (par pulado), fundo, matiz, saturação, contraste não textual.
+- **7.0 (b)** `SKILL.md` §5.7 nova: ordem de trabalho; medidor não atravessa `var()`; derivados repetidos; `{mob,tab,desk}`; `identityFontFamily` de `THEME_FONTS`; grade do `step`; leitura de contraste só depois da hidratação. **7.0 (c)** a skill não citava `#00f2ff`, `matte`, `grid` nem `none` de textura (conferido por grep); o que estava desatualizado era o gabarito: acrescentei que ele escreve todo token (funcional inclusive), não traz contraparte, importa o tipo inexistente `ThemePreset`, e que o ponto de partida real é o `sarak-sovereign.ts`.
+- **7.1/7.2** `cyberpunk-neon.ts` refeito do `sarak-sovereign.ts` pela ficha §7.2: 300 estéticos no modo principal e 104 + `mode` na contraparte, nenhum funcional; comentários nos valores não óbvios. Fontes `JetBrains Mono` / `Space Grotesk` (valor exato). Removida a entrada `cyberpunk-neon` de `themeCompletenessPending.json`. `themes:catalog` regenerado.
+- **Nota de conceito** no anexo (§11), nota MAJOR em `docs/migracoes.md` (`## 8.0.0`), uma frase no GUIA §6.5.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/cyberpunk-neon.ts` | alterado | tema completo nos dois modos |
+| `src/core/Design/presets/themes/catalog.generated.ts` | alterado | amostra de cor do tema |
+| `gates/allowlists/themeCompletenessPending.json` | alterado | −`cyberpunk-neon` |
+| `.agents/skills/ui-criar-tema/SKILL.md`, `scripts/solve_theme_contrast.ts`, `scripts/__tests__/solve_theme_contrast.test.ts` | alterado | 7.0 e 7.5 (`.claude/skills` é o mesmo conteúdo, symlink) |
+| `sarak-ui/GUIA-FRONTEND.md`, `docs/migracoes.md`, `specs/plan/anexos/plan-110-direcao-de-arte.md` | alterado | armadilha do `cyberpunk`, nota MAJOR, nota de conceito |
+| esta plan | alterado | este bloco e o `status` |
+
+**Verificações executadas**
+- `npm run verify -- --tier=themes` → `themes:catalog:check`, `theme-completeness:check` ("2 de 14 completos; 12 em exceção"), `theme-boot`, vitest de `presets/themes/__tests__`, `Provider/utils/__tests__` e `Design/util` (tokenContractParity e shippedThemesConsoleClean inclusos), `themes:diversity`, `boot:measure` ("maior tema: sarak-sovereign 3,4 KB, teto 4,5"), `audit:baseline`, `plan-index:check`, `dev-kit:check` e Anel 0 (640 linhas, 0 achado) **[OK]**; **`guide:check` [FAIL]**: gerado defasado (`sarak-ui/docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md`), é do revisor.
+- A 1ª rodada de `tokenContractParity` reprovou 3 valores (`sidebarNoiseOpacity` e `topbarNoiseOpacity` 0,04; `cardSpotlightOpacity` 0,14: fora da grade de 0,05); corrigidos para 0,05/0,05/0,15 e a suíte passou.
+- `npx vitest run src/components/Layout` (inclui a varredura de hover do `SarakMenuItem`) → verde; `.agents/skills/ui-criar-tema` → 8/8.
+- `auditor_contraste` (R31): 0 par reprovado, 0 pulado, nativo e oposto. `auditor_presets`: 0 órfã.
+- Não rodei guide, dev-kit, token-types, build, nem a suíte completa.
+
+**Contraste textual por modo** (valor concreto, `verify_contrast.PAIRS`, 76 pares por modo, nenhum pulado)
+| Modo | Menor razão | Os mais baixos |
+|---|---|---|
+| escuro | 5,52 | `statusErrorColor`/cartão 5,52 · `on:statusErrorColor` 5,79 · `statusErrorColor`/corpo 5,85 · `textColorMuted`/`tableHeaderBg` 6,06 |
+| claro | 4,61 | `navItemActiveColor`/item ativo 4,61 (sidebar e topbar) · `statusSuccessColor`/corpo 4,79 · `textColorMuted`/`btnSecondaryBg` 4,79 · `primaryColor`/corpo 4,94 |
+
+**Contraste não textual (3:1, apoio, não gate):** escuro: foco do campo 6,4; marcador do item ativo 15,3; trilho do interruptor 15,0; borda do campo 4,2; borda do cartão 3,5; séries 6,0 a 17,1. Claro: foco 5,7; marcador 5,5; trilho 4,9; borda do campo 3,6; séries 5,4 a 6,3; **borda do cartão 2,9 (abaixo de 3, deliberado: contorno fino de papel)**. Séries vizinhas (1–2, 2–3, 3–4) se distinguem por matiz; razão de luminosidade 2,36/2,85/2,85 no escuro e 1,16/1,17/1,06 no claro. Paleta validada pelas regras do anexo (A8: as cores de status não entram como série no código atual; 3:1 não textual), **não pela skill `dataviz`, que não existe aqui**.
+
+**Peso** (método §4.1, `esbuild` minify + `gzip -9` do arquivo): `cyberpunk-neon` **3.472 B gzip** (raw 11.652 B), 77% do teto de 4,5 KB.
+
+**Capturas** (Chromium headless, `PLAYWRIGHT_BROWSERS_PATH` absoluto, `chromium.launch()` sem `executablePath`, bundle de `src/` e CSS por Tailwind em scratchpad fora do repositório, fontes lidas de `dist/fonts` só para leitura; 10 imagens, 0 falha; a vitrine contra o `dist/` é do revisor). **Abri** as do escuro desktop (telas), claro desktop (telas), topo escuro desktop, celular escuro (telas) e modal claro no celular, mais recortes. Contra a nota de conceito:
+- *Escuro, desktop:* fundo quase preto esverdeado; barra lateral ainda mais escura com borda verde fina; H1 "TÍTULO DE VITRINE" em mono maiúsculo com brilho verde; botões wireframe quadrados (primário, contorno e fantasma verdes, perigo em vermelho-rosa, sucesso em menta); campos quadrados com borda verde e fundo verde-escuro; selos com forma legíveis; cartões com **quina cortada**, borda verde e linhas de scanline discretas; tabela com cabeçalho em botões quadrados; gráfico de linha verde sem suavização; calendário com "hoje" em bloco verde; bolha do chat em verde sólido com texto escuro. Coerente com a nota: néon ácido, quina, mono, wireframe.
+- *Claro, desktop:* corpo `#eef5ef`, cartões brancos com a mesma quina cortada e borda verde-papel, botões wireframe em verde escuro, mono maiúsculo nos títulos sem brilho; selos sólidos legíveis; mantém a identidade (corte, mono, wireframe).
+- *Topo:* cromo horizontal com marca mono, busca, itens com realce verde, seletores P/M/G e Lateral/Topo com o ativo em verde sólido.
+- *Celular:* menu hambúrguer quadrado, botões e campos em largura total, cartões com corte empilhados, modal claro com cabeçalho mono maiúsculo e botão "Confirmar" wireframe.
+- **O que a captura mostra e não é como a ficha pede:** o ícone do botão de ícone do cartão (canto do "Ver mais") sai **invisível** nos dois modos (achado 1); o fundo da página não mostra o `circuit-pro` nem o `systemTone` (o `main` e o cromo pintam camadas opacas por cima); o item ativo da lateral tem cantos arredondados que nenhum token de raio que declarei remove.
+
+**O que o tema ensinou** (7.5)
+| Item | Tipo | Onde foi gravado |
+|---|---|---|
+| Import do solucionador quebrado passava no teste, que só chamava outra função; `loadMergedDesign` + teste com mutação; `--contraparte` | armadilha | skill (§5 e teste) |
+| O solucionador não atravessa `var()` nem mede 3:1; o que resolve | decisão | skill §5 |
+| Gabarito escreve funcionais, sem contraparte, e importa `ThemePreset` (inexistente) | armadilha | skill §2 |
+| Ordem de trabalho; contraparte só com `modeDependent`; `texture`/`cardTextureType` não carregam modo | receita | skill §5.7 |
+| Derivados repetidos, `{mob,tab,desk}`, `identityFontFamily`, grade do `step` (0,05), hidratação | receita/armadilha | skill §5.7 |
+| `cyberpunk` é wireframe: `btnNeonPulseSpeed` não desenha; o ícone do botão de ícone some | armadilha | skill §5.7, GUIA §6.5, nota MAJOR, nota de conceito |
+| `cardGeometricCut` recorta borda diagonal e sombra | armadilha | skill §5.7 |
+| `cyber-binary` pinta com a primária, opacidade fixa 0,05 (a ficha dizia "branco fixo") | armadilha | skill §5.7, nota de conceito |
+| Fundo opaco do cromo/`main` cobre a textura da página | armadilha | skill §5.7, nota de conceito |
+| `cardTitleFontWeight` sem `800` | armadilha | skill §5.7 |
+| Sucesso em matiz vizinho da primária verde | decisão | skill §5.7, comentário no tema |
+| Borda translúcida compõe sobre o corpo para o 3:1 | receita | skill §5.7 |
+| Contraste textual (mín. 5,52 escuro, 4,61 claro), não textual e peso 3.472 B | medida | esta tabela e a nota de conceito |
+
+**Critérios de aceite**
+- [x] Tema completo nos dois modos e fora da exceção — `theme-completeness:check` verde, "2 de 14 completos".
+- [x] Contraparte troca só o que carrega modo — a trava (`contraparte-declares-fixed-aesthetic`) não acusa.
+- [x] Fontes pelo valor exato; seis idiomas; posições de preferência e funcionais não declarados — completude e `tokenContractParity`.
+- [x] Contraste R31 nos dois modos; hover de navegação — `auditor_contraste`, varredura do `SarakMenuItem`.
+- [x] Peso 3.472 B gzip, abaixo de 4,5 KB.
+- [x] 7.0 e 7.5 — skill, teste e tabela acima.
+- [ ] `guide:check` — pendente: gerado, do revisor. Vitrine contra o `dist/` — do revisor.
+
+**Decisões e suposições**
+- Ficha revista pelo código: `texture: circuit-pro` nos dois modos (a ficha trocava `cyber-binary` por `circuit-pro` na contraparte, que `texture` não permite); `btnNeonPulseSpeed: 0`; `systemTone: cyber` (a ficha não o dava a este tema).
+- Terciária `#4d8dff` e sucesso `#1de9b6` são escolhas minhas (a ficha só dá três cores). `switchStyleType: asymmetric` por distinção; o polegar oval fica pouco visível com o interruptor desligado no escuro.
+- `colorBgModal` concreto (não `var(--theme-surface)`) para o par ser medido.
+- Borda do campo e do cartão no claro foram escurecidas (`#5a8a6b` e `#6f9a7e`) depois de medir 2,87:1 e 1,73:1.
+
+**Achados fora do escopo (não corrigidos)**
+1. `src/components/atomic/Buttons/SarakIconButton.tsx:137`: no estilo `cyberpunk` o fundo vira transparente mas o texto da variante primária fica `btnPrimaryText`, então o ícone some (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS` em `useAtomicStyles.ts:16`). Candidato à tabela da §5.1 da `plan-117`.
+2. `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts`: escreve todo token (funcional inclusive), sem contraparte, e importa `ThemePreset`, que não existe (`SarakThemePreset`).
+3. O item ativo/hover da lateral mantém cantos arredondados com todos os raios do tema em 0; `texture` e `systemTone` mal aparecem por causa das camadas opacas do cromo e do `main` (visto no lote 6 com `constellation`).
+4. `cyber-binary` (`_atmosphere.css`): opacidade fixa 0,05 e uma linha de 28 caracteres, praticamente invisível. A ficha e o §3.3 do anexo estão errados ao chamá-la de "branco fixo".
+
+**Pendências / riscos**
+- **Gerados defasados (revisor regenera):** `sarak-ui/docs/migracoes.md`, o apêndice do GUIA e o que o `guide` carimba (`npm run guide`); `dev-kit:check` passou.
+- Os outros 12 temas na exceção seguem herdando os padrões do `sarak-sovereign` até o lote de cada um.
+- A tipografia real e as capturas contra o `dist/` são do revisor.
+
+## Veredito — 2026-10-18 — lote 7 (`cyberpunk-neon`) — 🟢 Aprovado
+
+**Conferido:** `cyberpunk-neon.ts` refeito do `sarak-sovereign.ts` pela ficha: 300 estéticos no modo principal e 104 + `mode`
+na contraparte, nenhum funcional, fontes pelo valor exato (`JetBrains Mono`/`Space Grotesk`); saiu da exceção da trava
+(`theme-completeness:check`: 2 de 14 completos). Regenerei `token-types`, `guide`, `dev-kit` e `plan-index`; `npm run
+build` real verde; **nível `themes` verde**: catálogo, completude, fecho do boot, vitest de `presets/themes`, `Provider/utils`
+e `Design/util` (`tokenContractParity` e `shippedThemesConsoleClean` inclusos), `themes:diversity`, `boot:measure`, baseline,
+kits e Anel 0 (754 linhas, 0 achados). Contraste: o executor mediu os 76 pares por modo com valor concreto (mín. 5,52:1 no
+escuro e 4,61:1 no claro) e `auditor_contraste` fecha com 0 reprovado e 0 pulado. Peso: 3.472 B gzip (77% do teto de
+4,5 KB). Passo 7.0: o solucionador de contraste da skill voltou a funcionar (o import quebrado passava no teste antigo
+porque ele só chamava outra função; agora há teste com mutação) e a `ui-criar-tema` ganhou a §5.7 com as lições do
+`sarak-sovereign`. A tabela "o que o tema ensinou" (7.5) traz 13 itens, cada um com destino gravado.
+
+**Capturas — abri as geradas contra o `dist/` real** (`cyberpunk-neon__dark__sidebar__desktop__telas.png` e
+`__light__`): escuro — fundo quase preto esverdeado, barra lateral mais funda com borda verde, título em mono maiúsculo com
+brilho verde, botões e campos quadrados wireframe, selos legíveis, **cartões com a quina cortada** e borda verde, tabela com
+cabeçalho em botões quadrados, gráfico de linha verde sem suavização, "hoje" no calendário em bloco verde, bolha do chat em
+verde sólido; claro — corpo `#eef5ef`, cartões brancos com o mesmo corte, botões wireframe em verde escuro, mantendo
+corte, mono e wireframe. Distinto do `sarak-sovereign` e fiel à nota de conceito. **O que as capturas mostram e a ficha
+não pede:** o botão de ícone do cartão (canto de "Ver mais") sai **vazio nos dois modos** — é o achado 1 do executor,
+confirmado (P23 abaixo); o fundo da página quase não mostra `circuit-pro` nem `systemTone` (candidata P24); o item ativo da
+lateral mantém cantos arredondados (candidata P25).
+
+**Achados do lote levados ao registro da `plan-117` (§5.1):** **P23** (corrigir: o botão de ícone some no estilo
+`cyberpunk`), **P24** e **P25** (candidatas, decisão do dono). O `generate_theme_template.ts` da skill (escreve todo token,
+sem contraparte, importa tipo inexistente) vai ao `00-backlog` (43) para o lote 25, onde a `ui-criar-tema` se consolida.
+
+**Lote 7 fechado.** O lote 8 (`industrial-terminal`) espera o lote 7 da `plan-117` (P23): corrige-se antes de o tema
+seguinte ser ajustado.
+
+**Status: 🔴 A executar (lote 8, depois da `plan-117`).**
+
+## Veredito — 2026-10-18 — lote 7 reaberto pelo pre-commit — 🔴 Reprovado (1 achado)
+
+O commit foi bloqueado pelo Anel 1: **`variable-contract:check` acusa 10 reservas em `cyberpunk-neon.ts`** cuja reserva difere do
+padrão do token (linhas 117, 127, 137, 225, 324, 412, 417, 421, 441 e 484): `var(--sarak-primary-color, #00ff6a)` (padrão
+`#19e3f0`), `var(--text-muted, rgba(214,255,224,0.58))` (padrão `rgba(242, 246, 251, 0.55)`) e `var(--color-theme-title,
+#eafff1)` (padrão `#f2f6fb`). **A falha é minha também:** aprovei o lote 7 com o nível `themes` do `verify`, que **não inclui o
+`variable-contract:check`** (ele está no Anel 1, que só o `quick` e o `full` rodam); o gate lê os arquivos de tema e o
+executor, que seguiu o prompt (`--tier=themes`), não tinha como vê-lo. O furo do `verify` vai por prompt direto separado.
+
+**Achado 1 — reservas de cadeia `var()` no tema com a reserva errada.** O tema repete a cadeia derivada
+(`var(--sarak-primary-color, …)`, `var(--text-muted, …)`, `var(--color-theme-title, …)`) para quem troca só a primária — a
+lição certa do lote 6 —, mas escreveu como reserva o valor **do próprio tema** (`#00ff6a`, `rgba(214,255,224,0.58)`,
+`#eafff1`). A regra do contrato (`02` §4 e §9.1) é que a reserva de `var(--x, F)` é o **padrão do token `x`** no schema, em
+qualquer arquivo. **Correção:** nas dez linhas, a reserva passa a ser o padrão atual do token (`#19e3f0`, `rgba(242, 246, 251,
+0.55)`, `#f2f6fb`; confirme em `variable-contract:check` ou com a ferramenta `fix-fallbacks.ts`, que reescreve a reserva
+sem tocar no valor concreto do tema); a cor visível do tema continua a do próprio `primaryColor`, `textColorMuted` e
+`titleColor` declarados nele, pois a cadeia só cai na reserva se a variável faltar. **Registre a lição na `ui-criar-tema`**
+(§5.7, a linha dos "derivados repetidos"): a reserva de uma cadeia repetida no tema é o padrão do token, nunca o valor do
+tema — e o `variable-contract:check` é o gate que a acusa. **Prova:** `npm run variable-contract:check` verde, `npm run verify
+-- --tier=quick` verde, e a vitrine do tema sem mudança visível (descreva em duas frases).
+
+**Status: 🔵 Em correção.**
+
+## Resumo da execução (correção 1) — lote 7 — 2026-10-18
+
+**Resultado:** Concluído. Escopo: só o achado 1 (reservas de cadeia `var()` com o valor do tema em vez do padrão do token).
+
+**Achado 1 — reservas.** `variable-contract:check` antes: `[ERROR] 10 reserva(s) diferente(s) do padrão do token` (linhas 117, 127, 137, 225, 324, 412, 417, 421, 441, 484 de `cyberpunk-neon.ts`). Troquei, por substituição exata e só dentro das cadeias: `var(--sarak-primary-color, #00ff6a)` → `…, #19e3f0)` (3 ocorrências: `cardActionBtnPrimaryBg` e `aiGlowColor`, principal e contraparte); `var(--text-muted, rgba(214,255,224,0.58))` → `…, rgba(242, 246, 251, 0.55))` (4: `cardSearchPlaceholderColor` e `inputIconColor`, nos dois blocos); `var(--color-theme-title, #eafff1)` → `…, #f2f6fb)` (2: `tooltipTextColor`, nos dois blocos). O diff do arquivo é 10 linhas trocadas por 10, nenhum valor concreto tocado. Não usei `fix-fallbacks.ts` (reescreve em `src/` inteiro; as dez linhas eram exatas).
+
+**Skill:** `.agents/skills/ui-criar-tema/SKILL.md` §5.7, linha dos derivados repetidos: a reserva de uma cadeia repetida é o padrão do token `x`, nunca o valor do tema; `variable-contract:check` (Anel 1, fora do nível `themes`) a acusa e `fix-fallbacks.ts` a reescreve.
+
+**Verificações executadas**
+- `npm run variable-contract:check` → `[OK] um dono por variável; 3949 leituras com dono; 2920 reservas conferidas contra o padrão.`
+- `npm run verify -- --tier=quick` → **tudo `[OK]`** (`tsc`, `audit:baseline --with-tsc`, 25 `*:check` do Anel 1, `guide:check` e `dev-kit:check` inclusos, Anel 0: 830 linhas, 0 achado). Nada de guide, dev-kit, token-types ou build foi rodado por mim.
+
+**Vitrine:** sem mudança visual, por construção e não por nova captura: a cadeia `var(--x, F)` só cai em `F` se `--x` não existir, e `--sarak-primary-color`, `--text-muted` e `--color-theme-title` são emitidos pelo motor com o `primaryColor`, o `textColorMuted` e o `titleColor` do próprio tema (concretos, intactos). Não gerei captura nova.
+
+**Critérios de aceite**
+- [x] Dez reservas = padrão do token — `variable-contract:check` verde.
+- [x] Lição na `ui-criar-tema` §5.7.
+- [x] `verify --tier=quick` verde.
+
+**Decisões e suposições:** a falha de processo (o nível `themes` não inclui `variable-contract:check`) é do revisor, já registrada por ele; a skill agora diz que o gate existe e onde roda.
+
+**Achados fora do escopo:** nenhum novo.
+
+**Pendências / riscos:** o worktree está com o lote 7 staged (índice do usuário); só alterei o arquivo de trabalho, não o índice. O `SKILL.md` precisará do `git add` para entrar no commit.
+
+## Veredito — 2026-10-18 — correção 1 (lote 7) — 🟢 Aprovado; lote 7 fechado
+
+**Conferido:** o diff do tema nas dez linhas acusadas troca só a reserva das cadeias `var()` pelo padrão do token
+(`var(--sarak-primary-color, #19e3f0)`, `var(--text-muted, rgba(242, 246, 251, 0.55))`, `var(--color-theme-title, #f2f6fb)`), sem
+tocar no valor concreto do tema; a linha dos "derivados repetidos" na `ui-criar-tema` §5.7 passou a dizer que a reserva é o
+padrão do token e que o `variable-contract:check` a acusa. **Medido por mim:** `variable-contract:check` verde ("2.920
+reservas conferidas contra o padrão"); `verify --tier=quick` e `--tier=themes` verdes em tudo (Anel 1, `tsc`, baseline,
+completude, diversidade, fecho do boot, contrato de valor, Anel 0 com 855 linhas e 0 achados), com a única falha
+`plan-index:check` por status divergente, que é desta atualização de veredito (o executor moveu a plan para 🟠) e fecha
+ao regenerar o índice. Sem mudança visual: a cadeia só cai na reserva se a variável faltar, e o motor emite as três com os
+valores do próprio tema.
+
+**Lote 7 fechado.** O lote 8 (`industrial-terminal`) segue o novo modelo de execução dos lotes de tema (um anexo por tema, sem
+`build` nem documentação compartilhada por tema, verificação por lote de temas) assim que o dono confirmar a proposta.
+
+**Status: 🔴 A executar (lote 8).**
