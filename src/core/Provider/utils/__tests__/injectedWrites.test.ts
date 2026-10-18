@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { releaseInjectedWrites, syncInjectedWrites } from '../injectedWrites';
+import { releaseInjectedWrites, syncInjectedWrites, type InjectionHost } from '../injectedWrites';
 
 const makeHost = (): HTMLElement => document.createElement('div');
 
@@ -38,6 +38,47 @@ describe('syncInjectedWrites', () => {
         syncInjectedWrites(first, {}, {});
         expect(first.style.getPropertyValue('--a')).toBe('');
         expect(second.style.getPropertyValue('--a')).toBe('1px');
+    });
+
+    describe('valor vazio (o tema novo não declara a imagem de fundo)', () => {
+        /** Host que guarda `''` como valor, o oposto do `setProperty` do navegador (que o trata como remoção). */
+        const makeLiteralHost = (): { host: InjectionHost; props: Map<string, string> } => {
+            const props = new Map<string, string>();
+            const host: InjectionHost = {
+                style: {
+                    getPropertyValue: (name) => props.get(name) ?? '',
+                    setProperty: (name, value) => void props.set(name, value),
+                    removeProperty: (name) => props.delete(name),
+                },
+                getAttribute: () => null,
+                setAttribute: () => undefined,
+                removeAttribute: () => undefined,
+            };
+            return { host, props };
+        };
+        const ART = { '--sarak-global-bg-image': 'https://exemplo.test/arte.png', '--sarak-global-background-image-url': 'https://exemplo.test/arte.png' };
+        const NO_ART = { '--sarak-global-bg-image': '', '--sarak-global-background-image-url': '' };
+
+        it('a troca para um tema sem imagem tira as duas variáveis do tema anterior', () => {
+            const { host, props } = makeLiteralHost();
+            syncInjectedWrites(host, ART, {});
+            syncInjectedWrites(host, NO_ART, {});
+            expect([...props.keys()]).toEqual([]);
+        });
+
+        it('CONTRAPROVA: o tema sem imagem desde o começo não escreve a variável vazia', () => {
+            const { host, props } = makeLiteralHost();
+            syncInjectedWrites(host, NO_ART, {});
+            expect(props.size).toBe(0);
+        });
+
+        it('CONTRAPROVA: o valor não vazio continua sendo gravado e trocado', () => {
+            const { host, props } = makeLiteralHost();
+            syncInjectedWrites(host, ART, {});
+            expect(props.get('--sarak-global-bg-image')).toBe('https://exemplo.test/arte.png');
+            syncInjectedWrites(host, { ...ART, '--sarak-global-bg-image': 'https://exemplo.test/outra.png' }, {});
+            expect(props.get('--sarak-global-bg-image')).toBe('https://exemplo.test/outra.png');
+        });
     });
 
     it('releaseInjectedWrites tira tudo o que o injetor escreveu, e só isso, e esquece o registro', () => {

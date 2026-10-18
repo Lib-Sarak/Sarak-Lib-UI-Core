@@ -189,6 +189,12 @@ describe('texto sobre cor sólida: o motor escolhe o de maior contraste', () => 
         expect(on({ primaryColor: '#1a237e' })['--theme-on-primary']).toBe('#ffffff');
     });
 
+    it('o item ativo da navegação, que também é fundo do botão selecionado dos seletores, recebe o texto de maior contraste: --sarak-on-nav-active', () => {
+        expect(on({ navItemActiveColor: '#111111' })['--sarak-on-nav-active']).toBe('#ffffff');
+        expect(on({ navItemActiveColor: '#ffd400' })['--sarak-on-nav-active']).toBe('#020617');
+        expect(on({ navItemActiveColor: 'var(--theme-primary)' })['--sarak-on-nav-active']).toBeUndefined();
+    });
+
     it('a bolha do usuário translúcida compõe sobre o corpo antes de escolher', () => {
         const dark = on({ mode: 'dark', colorBgBody: '#050505', chatUserBg: 'rgba(255, 255, 255, 0.05)' });
         const light = on({ mode: 'light', colorBgBody: '#ffffff', chatUserBg: 'rgba(0, 0, 0, 0.05)' });

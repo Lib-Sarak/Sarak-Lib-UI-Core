@@ -688,6 +688,30 @@ padrão 12), que vale nas três formas. O tipo `SarakDesignTokens` ganha a chave
 tire a `texture` e o `systemTone` do tema (ou declare `none`) e use `bgGradientMode: 'none'`. Quem pintava o fundo do app por conta
 própria por baixo do cromo passa a ver essa pintura onde antes via a cor do tema.
 
+### A barra de topo não esmaga a navegação, a textura animada de página não amplia o documento e o seletor da barra é legível
+
+**Classificação: MAJOR (quatro efeitos visíveis por padrão; nenhum token novo, nenhum padrão de token alterado).**
+
+- **Barra de topo.** Com a busca e os seletores na barra, a lista de navegação ficava com o que sobrava: a 1440 px, 246 de 341 px
+  ("Configurações" virava "Conf"), a 1280 px, 86 px, e a 1024 px, 32 px, enquanto a busca e o grupo final ficavam inteiros. Agora
+  a lista pede o tamanho do conteúdo e cede por último: **a busca encolhe primeiro e some abaixo de 10rem**; os rótulos dos widgets
+  indisponíveis (usuário e notificações sem dado) **somem abaixo do breakpoint `2xl` (1536 px)** e ficam os ícones (o `aria-label` mantém o nome); o que
+  ainda faltar a lista absorve e rola, com cada item inteiro. O grupo final nunca passa da borda da barra e a página não ganha largura.
+- **Textura animada de página.** `nebula` animava `transform: scale(1.2) rotate(5deg)` e `stars` `scale(1.05)` no `::before` do `html`/`body`,
+  e o `scrollWidth` do documento crescia sem parar (1440 → 1599 px em 35 s com `nebula`): barra de rolagem horizontal. A deriva da
+  `nebula` anda agora por `background-position` (as duas nuvens passam a medir 120% da caixa) e a `stars` pisca só a opacidade.
+  O cartão com essas texturas muda do mesmo jeito (as regras são as mesmas).
+- **Seletores da barra** (tamanho da fonte e navegação lateral/topo). O botão selecionado usa a cor do item ativo como fundo e o
+  texto saía da cor sobre a primária; com item ativo de cor diferente da primária o texto ficava ilegível. O texto passa a ser
+  `--sarak-on-nav-active`, que o motor escolhe pelo contraste contra a cor do item ativo (emitida como as outras `--sarak-on-*`).
+- **Troca de tema sem imagem de fundo.** O injetor remove do `html`/`body` a variável de valor vazio em vez de gravá-la vazia
+  (`--sarak-global-bg-image` e `--sarak-global-background-image-url`). No navegador o resultado já era o mesmo; a diferença é que a
+  remoção deixou de depender de o host interpretar `''` como remoção.
+
+**O que fazer:** nada é obrigatório. Os widgets reais (com `user` e `notifications`) não mudam; só o
+rótulo do widget "indisponível" cede. Quem quer a deriva da `nebula` ou o piscar da `stars` de antes não tem como
+voltar ao `transform`: ele estourava o documento.
+
 ### O tema padrão `sarak-sovereign` é refeito e o padrão de todo token estético passa a ser o dele
 
 **Classificação: MAJOR (muda o padrão de 94 tokens estéticos e o que o `sarak-sovereign` desenha).** O tema padrão ganhou direção de arte

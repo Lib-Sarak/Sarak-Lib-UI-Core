@@ -151,5 +151,35 @@ for (const mode of MODES) {
                 expect(await inlineValue('--sarak-card-border-radius'), 'tema B: o mestre é responsivo, fora do inline').toBe('');
             });
         });
+
+        test('trocar para um tema sem imagem de fundo tira a arte do tema anterior (as duas variáveis e o atributo de mídia)', async () => {
+            const page = await browser.newPage({ viewport: { width: WIDTHS.desk, height: 900 } });
+            try {
+                const search = new URLSearchParams({ cena: 'troca-de-tema', imagem: '1' });
+                if (mode === 'embarcado') search.set('modo', 'embarcado');
+                await page.goto(`${harnessUrl}?${search.toString()}`);
+                await page.locator('[data-probe="cartao-puro"] .sarak-card').waitFor();
+                const read = (): Promise<{ bg: string; url: string; media: string | null }> => page.evaluate((embedded) => {
+                    const holder = embedded ? document.querySelector<HTMLElement>('.sarak-scope') : document.documentElement;
+                    const mediaHolder = embedded ? holder : document.body;
+                    return {
+                        bg: holder?.style.getPropertyValue('--sarak-global-bg-image') ?? 'sem-elemento',
+                        url: holder?.style.getPropertyValue('--sarak-global-background-image-url') ?? 'sem-elemento',
+                        media: mediaHolder?.getAttribute('data-sarak-has-media') ?? null,
+                    };
+                }, mode === 'embarcado');
+
+                const before = await read();
+                expect(before.bg, 'tema A: a imagem está na variável').toContain('arte-do-tema-a.png');
+                expect(before.url, 'tema A: a imagem está na variável de URL').toContain('arte-do-tema-a.png');
+                expect(before.media, 'tema A: o atributo de mídia está ligado').toBe('true');
+
+                await page.locator('[data-probe="trocar"]').click();
+                await expect(card(page)).toHaveCSS('border-bottom-right-radius', `${CARD_MASTER.desk}px`);
+                expect(await read(), 'tema B (sem imagem): nada da arte do A fica no elemento').toEqual({ bg: '', url: '', media: null });
+            } finally {
+                await page.close();
+            }
+        });
     });
 }

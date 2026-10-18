@@ -85,6 +85,11 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     // `center`: a busca ocupa o meio do espaço livre entre a navegação e o grupo final (não o centro geométrico da barra);
     // por isso a navegação deixa de tomar o espaço (`flex-1`) e a busca vem depois dela, num contêiner que o toma.
     const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
+    // A busca é a primeira a ceder (fator de encolhimento 40). A barra padrão pede a largura de `w-64` para o contêiner medir a si
+    // mesmo e some quando o contêiner fica abaixo do mínimo útil do campo, em vez de se desenhar quebrada por cima da marca;
+    // busca do consumidor e ícone só encolhem.
+    // sarak-allow-hardcode: o menor contêiner de container query nomeado do Tailwind (16rem) já é a largura inteira da barra; o mínimo útil do campo não tem nome nem token.
+    const searchSlotClass = search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] @max-[10rem]:[&>*]:hidden';
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
         || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 
@@ -112,10 +117,16 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                     <ChromeBrand brand={brand} logo={logo} horizontal compact={isNavHidden} />
                     <ChromeTopbarSlot region="start">{topbarStart}</ChromeTopbarSlot>
                     {searchPositionTopbar !== 'right' && !isSearchCentered && (
-                        <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
+                        <ChromeSearchSlot position={searchPositionTopbar} className={searchSlotClass}>{effectiveSearch}</ChromeSearchSlot>
                     )}
                     {nav.length > 0 && (
-                        <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className={isSearchCentered ? 'min-w-0' : 'flex-1 min-w-0'} />
+                        // O item de navegação nunca fica menor que o texto: a lista pede o tamanho do conteúdo (`auto`) e cede depois da
+                        // busca. Quando a barra aperta, cede primeiro a busca (fator de encolhimento 40; o grupo final é rígido e os rótulos
+                        // dos widgets indisponíveis somem abaixo do breakpoint `2xl`); o que ainda faltar a lista absorve (fator 1) e rola, com cada
+                        // item inteiro, e o grupo final nunca passa da borda da barra.
+                        <div data-sarak-slot="nav" className={`flex min-w-0 ${isSearchCentered ? 'flex-[0_1_auto]' : 'flex-[1_1_auto]'}`}>
+                            <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className={isSearchCentered ? 'w-full min-w-0' : 'flex-1 min-w-0'} />
+                        </div>
                     )}
                     {isSearchCentered && (
                         <div data-sarak-slot="search-center" className="flex flex-1 shrink-0 justify-center">

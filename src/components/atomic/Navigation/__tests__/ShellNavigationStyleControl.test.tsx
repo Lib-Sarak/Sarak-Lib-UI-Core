@@ -26,6 +26,15 @@ describe('ShellNavigationStyleControl', () => {
         expect(screen.getByRole('button', { name: 'Topo' })).toHaveAttribute('aria-pressed', 'false');
     });
 
+
+    it('o botão selecionado lê o texto de --sarak-on-nav-active (o contraste contra o fundo que ele mesmo usa), não o da primária', () => {
+        render(<ShellNavigationStyleControl />);
+        const selected = screen.getAllByRole('button').find((button) => button.getAttribute('aria-pressed') === 'true') as HTMLElement;
+        expect(selected.className).toContain('bg-[var(--sarak-nav-active-color,#19e3f0)]');
+        expect(selected.className).toContain('text-[var(--sarak-on-nav-active,');
+        expect(selected.className).not.toMatch(/text-[var(--color-theme-on-primary,#020617)]/);
+    });
+
     it('clicar grava a PREFERÊNCIA de navigationStyle, nunca o tema', () => {
         render(<ShellNavigationStyleControl />);
         fireEvent.click(screen.getByRole('button', { name: 'Topo' }));

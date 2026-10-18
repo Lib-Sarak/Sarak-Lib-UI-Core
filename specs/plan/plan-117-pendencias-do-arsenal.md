@@ -78,6 +78,7 @@ nenhum `defaultValue`.
   `src/components/atomic/Inputs/SarakCheckbox.tsx`, `src/components/atomic/Inputs/SarakRadio.tsx` e
   `src/core/Design/schema/structural.ts` (P19); `src/components/atomic/Layouts/SarakSplitPane.tsx` (candidato de P21).
 - **Lote 6 (P16, P20, P22):** `src/components/Layout/chrome/chromeStructuralStyles.ts`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Provider/utils/removedTokenKeys.ts`, `src/core/Provider/types.ts`, `src/core/Provider/payloadExtraKeys.ts` e `src/components/atomic/Layouts/SarakAccordion.tsx`.
+- **Lote 9 (P26 a P29):** `src/core/Provider/components/SovereignThemeInjector.tsx`, `src/core/Design/components/SarakBackgroundRenderer.tsx`, `gates/scripts/contrato/check-channel-dispute.ts` (só ler), `src/styles/_atmosphere.css`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/components/atomic/Navigation/SarakShellNav.tsx`, `src/components/atomic/Navigation/SarakMenuItem.tsx`, `src/components/atomic/Navigation/ShellFontSizeControl.tsx`, `src/components/atomic/Navigation/ShellNavigationStyleControl.tsx` e `src/core/Design/presets/themes/nebula-space.ts`.
 - **Lote 8 (P24, P25):** `src/components/Layout/SarakAppChrome.tsx`, `src/components/Layout/chrome/ChromeSidebarBody.tsx`, `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `src/components/atomic/Navigation/SarakMenuItem.tsx`, `src/components/atomic/Navigation/SarakShellNav.tsx`, `src/styles/_background.css`, `src/styles/_atmosphere.css`, `src/core/Design/schema/navigation.ts`, `src/core/Design/catalog/partitions/`, `src/core/Design/catalog/theme_table_mapping.json`, `src/core/Design/presets/themes/sarak-sovereign.ts` e `src/core/Design/presets/themes/cyberpunk-neon.ts`.
 - **Lote 7 (P23):** `src/components/atomic/Buttons/SarakIconButton.tsx`, `src/components/atomic/Buttons/SarakButton.tsx` e `src/components/atomic/hooks/useAtomicStyles.ts`.
 - **Provar:** testes de componente, o caso de navegador (`browser-tests/`, cena nova no harness) e o gate de leitor.
@@ -105,6 +106,7 @@ nenhum `defaultValue`.
 | Código (lote 4) | `src/components/atomic/Templates/SarakCatalogGrid.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/core/Design/schema/buttons.ts` (P10) · `src/core/Design/hooks/useDesignVariables.ts` · `src/core/Design/schema/colors.ts` · `src/core/Provider/utils/removedTokenKeys.ts` (P11) · `src/components/engines/charts/SubEngines/builders/advancedCharts.ts` · `src/components/engines/charts/SubEngines/builders/types.ts` · `src/components/engines/charts/SubEngines/optionBuilders.ts` · `src/components/engines/charts/SubEngines/axisOptions.ts` · `src/core/Design/schema/data.ts` (P12) · `src/components/atomic/Inputs/SarakRangeSlider.tsx` · `src/styles/_utilities.css` · `src/core/Design/schema/inputs.ts` (P13) | os leitores e os schemas dos quatro achados; a medição que os originou está no resumo do lote 2 da `plan-110` (tabela por token) |
 | Código (lote 5) | `src/components/atomic/hooks/useMotionTokens.ts` · `src/components/atomic/Modals/SarakModal.tsx` · `src/components/atomic/Inputs/SarakSearch.tsx` · `src/core/Design/schema/motion.ts` (P14) · `src/components/atomic/Templates/SarakExpandableMatrix.tsx` · `src/core/Design/schema/advanced.ts` (P15) · `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` (P16, P17, P20) · `src/components/atomic/Layouts/SarakAccordion.tsx` · `src/core/Design/schema/system.ts` (P18) · `src/components/atomic/hooks/useStructuralStyles.ts` · `src/components/atomic/Inputs/SarakSwitch.tsx` · `src/components/atomic/Inputs/SarakCheckbox.tsx` · `src/components/atomic/Inputs/SarakRadio.tsx` · `src/core/Design/schema/structural.ts` (P19) · `src/components/atomic/Layouts/SarakSplitPane.tsx` (P21) | os leitores e os schemas dos oito achados; a medição que os originou está nos resumos dos lotes 3 e 4 da `plan-110` (tabela por token, no histórico do Git) e nos achados dela |
 | Código (lote 6) | `src/components/Layout/chrome/chromeStructuralStyles.ts` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Provider/utils/removedTokenKeys.ts` · `src/core/Provider/types.ts` · `src/core/Provider/payloadExtraKeys.ts` · `src/components/atomic/Layouts/SarakAccordion.tsx` (P16, P20, P22) | os leitores, o schema e as portas da retirada |
+| Código (lote 9) | `src/core/Provider/components/SovereignThemeInjector.tsx` · `src/core/Design/components/SarakBackgroundRenderer.tsx` · `gates/scripts/contrato/check-channel-dispute.ts` · `src/styles/_atmosphere.css` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/components/atomic/Navigation/SarakShellNav.tsx` · `src/components/atomic/Navigation/SarakMenuItem.tsx` · `src/components/atomic/Navigation/ShellFontSizeControl.tsx` · `src/components/atomic/Navigation/ShellNavigationStyleControl.tsx` · `src/core/Design/presets/themes/nebula-space.ts` (P26 a P29) | a variável da arte de fundo, a textura que estoura o documento, a barra de topo e o seletor de fonte |
 | Código (lote 8) | `src/components/Layout/SarakAppChrome.tsx` · `src/components/Layout/chrome/ChromeSidebarBody.tsx` · `src/components/Layout/chrome/ChromeTopbarBody.tsx` · `src/components/atomic/Navigation/SarakMenuItem.tsx` · `src/components/atomic/Navigation/SarakShellNav.tsx` · `src/styles/_background.css` · `src/styles/_atmosphere.css` · `src/core/Design/schema/navigation.ts` · `src/core/Design/catalog/theme_table_mapping.json` · `src/core/Design/presets/themes/sarak-sovereign.ts` · `src/core/Design/presets/themes/cyberpunk-neon.ts` (P24, P25) | a camada que cobre a atmosfera e o raio do item de navegação |
 | Código (lote 7) | `src/components/atomic/Buttons/SarakIconButton.tsx` · `src/components/atomic/Buttons/SarakButton.tsx` · `src/components/atomic/hooks/useAtomicStyles.ts` (P23) | o botão de ícone e a fonte de cor do estilo `cyberpunk` |
 | Navegador | `browser-tests/fixtures/harness-entry.tsx` · `browser-tests/cartao-que-se-move.spec.ts` (o molde de caso e cena) · `PLAYWRIGHT_BROWSERS_PATH` = caminho absoluto de `node_modules/.cache/ms-playwright` do repositório, `chromium.launch()` sem `executablePath` | provar cada token por diferença de estilo computado |
@@ -147,6 +149,10 @@ nenhum `defaultValue`.
 | P23 | `SarakIconButton.tsx:137` — no estilo `cyberpunk` o fundo vira transparente, mas o texto da variante primária fica `btnPrimaryText`: **o ícone some** (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts:16`). Visto na vitrine do `cyberpunk-neon`, nos dois modos | plan-110 lote 7 | **corrigir** (a mesma fonte de cor do `SarakButton`, não uma segunda) | 7 | aberta |
 | P24 | o `main` e o cromo pintam camadas opacas por cima do fundo da página (o contêiner de `SarakAppChrome.tsx:199` pinta `var(--bg-body, …)` por cima do corpo), então a textura de página (`texture`) e o `systemTone` quase não aparecem (vitrine do `sarak-sovereign` e do `cyberpunk-neon`) | plan-110 lotes 6 e 7 | **corrigir** (decisão do dono, 2026-10-18: o essencial se corrige quando achado): em modo app a atmosfera de página aparece atrás do conteúdo, sem quebrar o modo embarcado nem a mídia de fundo global | 8 | fechada |
 | P25 | o item ativo e o hover da navegação (`SarakMenuItem.tsx:69-72`) têm o raio fixo no código (`rounded-xl` na vertical, `rounded-full` na horizontal, `rounded-lg` recolhida) e nenhum token o controla | plan-110 lote 7 | **corrigir** (decisão do dono, 2026-10-18): um token de raio do item de navegação, no schema, com paridade | 8 | fechada |
+| P26 | a troca de tema deixa `--sarak-global-background-image-url` e `--sarak-global-bg-image` do tema anterior no html/body quando o novo declara a imagem vazia (`channel-dispute:check`: `synthwave-retro` → `nebula-space`); o usuário final que troca de tema leva a arte do anterior | plan-110 lotes 10 e 11 | **corrigir** (a variável some quando o tema novo não declara imagem; o motor limpa o que o anterior escreveu) | 9 | fechada |
+| P27 | as texturas de página que animam `transform` (`nebula` com `scale(1.2) rotate(5deg)`; `stars`; `aurora-flow` a medir) fazem o `scrollWidth` do documento crescer sem parar (`html` com `overflow-x: visible`): 1440 → 1456 em 5 s → 1599 em 35 s, medido no `nebula-space`; `_atmosphere.css:610-628` e `:372-385` | plan-110 lote 11 | **corrigir** o motor (a camada da textura clipa o próprio transform, sem barra de rolagem horizontal); depois o tema `nebula-space` volta a `texture: nebula` | 9 | fechada |
+| P28 | a barra de topo estreita os itens de navegação: com busca e seletores na barra a 1440 px, "Início" vira um filete e "Configurações" vira "Conf" (`ChromeTopbarBody.tsx`, `SarakShellNav`: itens com `shrink-0 min-w-0`); visto em `industrial-terminal`, `neo-brutalism` e `synthwave-retro` | plan-110 lotes 8 a 10 | **corrigir** (o item de navegação não encolhe abaixo do próprio texto; quem cede é a busca ou a barra rola/colapsa em menu) | 9 | fechada |
+| P29 | `ShellFontSizeControl.tsx:42`: o botão selecionado usa `--sarak-nav-active-color` como fundo e a cor sobre a primária (`--color-theme-on-primary`, reserva `#020617`) como texto; com o item ativo diferente da primária o seletor fica ilegível (medido: `rgb(17,17,17)` sobre `rgb(2,6,23)`) | plan-110 lote 9 | **corrigir** (o texto sai do contraste contra o fundo que o próprio botão usa) | 9 | fechada |
 | C1 | *(candidata)* fontes só pelo Google Fonts: offline cai na fonte de reserva (achado A11 do anexo de direção) | plan-110 lote 0 | embarcar fontes (decisão do dono, 2026-10-15) | plan-118 | fechada |
 | C2 | *(candidata)* 7 `tokenId` duplicados e 28 entradas sem leitor nas partições do catálogo (backlog 7) | plan-88 | a triar | — | candidata |
 | C3 | *(candidata)* `--sarak-font-size` emitida em runtime e fora de `tokens.cssVars` (backlog 6) | plan-88 | a triar | — | candidata |
@@ -252,6 +258,22 @@ beam. Nada carrega informação só pelo efeito. Nota na `## 8.0.0`; gerados reg
     mapeamento de tema, `token-types`, `usage`/`kind`/`modeDependent`, leitor com `@sarak-token-reader`), os temas já completos
     (`sarak-sovereign` e `cyberpunk-neon`) declaram o token, a trava de completude e o `token-reader:check` verdes, nota MAJOR.
     **Decida e registre** o que muda no padrão da horizontal (hoje `rounded-full`).
+
+**Lote 9 — P26 a P29 (essenciais achados nos lotes 8 a 11 da `plan-110`).**
+25. **P26:** medir a escrita da variável (`SovereignThemeInjector.tsx` e o injetor de design) e corrigir para que a troca de tema
+    sem imagem de fundo remova `--sarak-global-background-image-url` e `--sarak-global-bg-image`; `check-channel-dispute.test.ts` e
+    `channel-dispute:check` verdes sem mexer em tema; caso de unidade e de navegador com mutação.
+26. **P27:** medir `scrollWidth` do documento ao longo de 40 s com `nebula`, `stars` e `aurora-flow` (e as outras texturas de
+    página animadas) e corrigir o motor para o documento não crescer (a camada da textura clipa o próprio transform), sem
+    `!important` e sem quebrar o aspecto da textura; caso de navegador (scrollWidth constante) com mutação. **Depois**, em
+    `src/core/Design/presets/themes/nebula-space.ts`, trocar `texture` de `constellation` para `nebula` nos dois modos e
+    reconferir o contraste do tema (o executor deste lote mede e registra).
+27. **P28:** meça a barra de topo a 1440, 1280 e 1024 px com os quatro temas (`industrial-terminal`, `neo-brutalism`,
+    `synthwave-retro`, `cyberpunk-neon`) e corrija para o item de navegação nunca ficar menor que o texto; decida e registre o que
+    cede (busca encolhe, seletores vão para o menu ou a lista rola); caso de navegador por largura com mutação.
+28. **P29:** o texto do botão selecionado do `ShellFontSizeControl` (e de `ShellNavigationStyleControl` se tiver o mesmo vício) tem
+    contraste ≥ 4,5:1 contra o fundo que o botão usa, qualquer que seja a cor do item ativo; caso de unidade e de navegador.
+29. Nenhum `defaultValue` muda; nota MAJOR para o que mudar de aspecto por padrão; `usage` fiel.
 
 **Verificação otimizada (decisão do dono, 2026-10-17):** o executor roda só os testes dos arquivos que tocou. O revisor
 roda `verify --tier=quick` (`tsc`, baseline, Anel 1, R36), o vitest **só dos arquivos tocados e dos que os importam**
@@ -1284,5 +1306,138 @@ lote; `PreviewCanvas` — 28 do lote 7, 25 deste lote (24 do raio do item e 1 da
 já constava do veredito anterior e o diff de código não mudou.
 
 **P24 e P25 fechadas.** Resta o lote 7 (P23, o botão de ícone no estilo `cyberpunk`), ainda sem retorno do executor.
+
+**Status: 🟡 Em execução (lote 7).**
+
+## Resumo da execução (lote 9: P26 a P29) — 2026-10-18
+
+**Resultado:** Concluído com pendências (gerados defasados: `guide:check` vermelho, é do revisor; um caso do navegador que só vale contra o `dist/` real, ver *Verificações*).
+
+**Estado do worktree ao iniciar** (`git status --short`, sem as linhas `dist/`, que são do revisor)
+```
+ M gates/allowlists/themeCompletenessPending.json
+ M specs/00-backlog.md
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+ M specs/plan/plan-117-pendencias-do-arsenal.md
+ M src/buildInfo.ts
+ M src/core/Design/presets/themes/catalog.generated.ts
+ M src/core/Design/presets/themes/industrial-terminal.ts
+ M src/core/Design/presets/themes/nebula-space.ts
+ M src/core/Design/presets/themes/neo-brutalism.ts
+ M src/core/Design/presets/themes/synthwave-retro.ts
+ M src/core/Provider/buildInfo.ts
+ M src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap
+ M src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap
+?? specs/plan/anexos/plan-110-tema-industrial-terminal.md
+?? specs/plan/anexos/plan-110-tema-nebula-space.md
+?? specs/plan/anexos/plan-110-tema-neo-brutalism.md
+?? specs/plan/anexos/plan-110-tema-synthwave-retro.md
+```
+Nada do lote 7 (P23) estava no worktree; não o li nem toquei. Dos quatro temas e do `PresetsCatalog` do lote A só toquei a linha `texture` (e o comentário imediatamente acima) do `nebula-space.ts`.
+
+**O que foi feito**
+- **P26.** Medi a escrita antes de mexer. `SovereignThemeInjector.tsx` não escreve a variável (só emite a folha `#sarak-sovereign-bridge`); quem escreve é o `DesignInjector` por `syncInjectedWrites` (`injectedWrites.ts`). Num Chromium real (troca `synthwave-retro` → `nebula-space` pelo `activeThemeId`, Modo App) as duas variáveis têm comprimento 0 no `html`/`body` antes e depois (o valor `data:image/svg+xml;base64,…` não chega ao estilo inline; a arte é desenhada pelo `SarakBackgroundRenderer`), e `data-sarak-has-media` vai de `true` a ausente. Com um tema de URL `https`, o `HEAD` já passa no navegador: `setProperty(nome, '')` do navegador remove a propriedade. O que falha no `HEAD` é o gate: o elemento de mentira dele guarda `''` e deixa o nome para trás. Correção executada como decidida: `injectedWrites.ts:48-54`, valor vazio **remove** a variável em vez de gravá-la vazia (vale em qualquer host). Os dois testes do gate e `npm run channel-dispute:check` ficam verdes sem alterar tema.
+- **P27.** Medi o `scrollWidth` do documento em 40 s (janela de 1280 px, uma página por textura, as cinco ao mesmo tempo): `nebula` 1291 → 1402 (cresce sem parar), `stars` oscila entre 1280 e 1310, `aurora` 1280, `noise` com `bgNoiseAnimation: 2` 1280 e `constellation` 1280. `aurora-flow` e `sarak-noise-shift` animam só `background-position`; o `transform` é o defeito. Correção em `_atmosphere.css` (`:380-387` e `:610-634`): `nebula-drift` passa a derivar por `background-position` (as duas nuvens com 120% da caixa; sem `transform`, então sem rotação nem escala) e `stars-twinkle` fica só na opacidade. Sem `!important`. `nebula-space.ts` volta a `texture: 'nebula'` (a ficha original); contraste conferido (ver abaixo).
+- **P28.** Medi a barra de topo a 1440, 1280 e 1024 px com os quatro temas. O item nunca encolheu (`shrink-0`): quem encolhia era a área da lista (`flex-1` com base 0, `overflow-x: auto`), que levava só o que sobrava. **Decisão (o que cede, nesta ordem):** (1) a busca em barra encolhe e some abaixo de 10rem do próprio contêiner; (2) os rótulos dos widgets indisponíveis (usuário e notificações sem dado) somem abaixo do breakpoint `2xl` e ficam os ícones, com o `aria-label`; (3) a lista de navegação absorve o resto e rola, com cada item inteiro. O grupo final (seletores, idioma, tema, usuário, notificações) é rígido e nunca passa da borda da barra.
+- **P29.** `ShellFontSizeControl` e `ShellNavigationStyleControl` (os dois tinham o mesmo vício) usam `text-[var(--sarak-on-nav-active,var(--color-theme-on-primary,#020617))]` sobre o fundo `--sarak-nav-active-color`. A variável nova sai do motor no mesmo mapa das outras `--sarak-on-*` (`designVariableHelpers.ts`, `ON_COLOR_SOURCES`), pelo contraste contra a cor do item ativo; cor não literal cai na reserva antiga. Não é token novo.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/injectedWrites.ts` | alterado | valor vazio remove a variável (P26) |
+| `src/core/Provider/utils/__tests__/injectedWrites.test.ts` | alterado | 3 casos com host que não trata `''` como remoção (P26) |
+| `src/styles/_atmosphere.css` | alterado | `nebula-drift` e `stars-twinkle` sem `transform` (P27) |
+| `src/core/Design/presets/themes/nebula-space.ts` | alterado | só `texture: 'nebula'` e o comentário acima dela (P27) |
+| `src/components/Layout/chrome/ChromeTopbarBody.tsx` | alterado | lista num invólucro `flex-[1_1_auto]`, busca com fator 40 e contêiner, grupo final `shrink-0` (P28) |
+| `src/components/Layout/chrome/ChromeUnavailableWidget.tsx` | alterado | rótulo `hidden 2xl:inline` na barra de topo (P28) |
+| `src/components/atomic/Navigation/SarakShellSearchWidget.tsx` | alterado | barra com `min-w-0 max-w-full` (P28; o arquivo é CRLF no disco, mantido) |
+| `src/components/atomic/Navigation/ShellFontSizeControl.tsx`, `ShellNavigationStyleControl.tsx` | alterado | texto do botão selecionado por `--sarak-on-nav-active` (P29) |
+| `src/core/Design/hooks/designVariableHelpers.ts` | alterado | `--sarak-on-nav-active` em `ON_COLOR_SOURCES` (P29) |
+| testes: `ChromeTopbarBody`, `ChromeUnavailableWidget`, `ShellFontSizeControl`, `ShellNavigationStyleControl`, `useDesignVariablesDonoUnico` | alterado | casos dos quatro itens |
+| `browser-tests/barra-de-topo-estreita.spec.ts`, `seletor-da-barra-legivel.spec.ts`, `textura-de-pagina.spec.ts` | criado | P28, P29 e P27 |
+| `browser-tests/injecao-sem-disputa.spec.ts` | alterado | caso novo da troca para tema sem imagem, nos dois modos (P26) |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | `?tema-ativo`, `?rotulos=longos`, `?imagem=1` e variantes `pagina-*` e `nav-ativo-*` |
+| `docs/migracoes.md` | alterado | subseção MAJOR dentro de `## 8.0.0` |
+| `…/PreviewCanvas.test.tsx.snap`, `…/PresetCard.test.tsx.snap` | alterado | só as causas deste lote (abaixo) |
+
+**Verificações executadas**
+- **Navegador**, build temporário fora do repositório (esbuild com alias para `src/index.ts` + Tailwind CLI, servidor local; `PLAYWRIGHT_BROWSERS_PATH` absoluto do repositório, `chromium.launch()` sem `executablePath`): `barra-de-topo-estreita` 12/12, `seletor-da-barra-legivel` 6/6, `textura-de-pagina` 1/1 (43 s), `injecao-sem-disputa` 12/12, mais `pagina-com-atmosfera`, `raio-do-item-de-menu`, `painel-segue-o-modo`, `navegacao-na-base`, `toque-no-celular`, `token-que-desenha` e `cromo-css-real` inteiro: **126 de 127**. O que falha, `tema-sob-demanda.spec.ts:86` ("houve um quadro só com o fallback"), exige o chunk assíncrono do tema do `dist/` real; no meu bundle único o tema vem inline e nunca há quadro só com o fallback. É do meu build, não do código; rode contra o `dist/`. Uma rodada anterior (com o vitest rodando junto) teve 3 vermelhos por `ERR_CONNECTION_RESET` e tempo esgotado do meu servidor local; sozinhos, os três passaram.
+- **Mutação, só numa cópia da árvore fora do repositório** (junção para `node_modules`, removida antes de apagar a cópia; `node_modules` do repositório conferido): (1) `injectedWrites.ts` ignorando o valor vazio → caem o caso novo do navegador (app e embarcado), o teste de unidade e o do gate, e `channel-dispute:check` volta a acusar a troca; (2) `_atmosphere.css` do `HEAD` → `textura-de-pagina` cai (`nebula` 1398 contra 1280); (3) a barra de topo do `HEAD` → 9 dos 12 casos caem (todos a 1440 e 1280, e `neo-brutalism` a 1024); (4) os seletores do `HEAD` → caem os dois casos sintéticos (1,07:1 e 1,24:1) e os dois testes de unidade. Com o código do `HEAD`, o caso novo de P26 **passa** no Chromium (o defeito é do modelo do gate, não do navegador).
+- `npx vitest run src/components/Layout src/components/atomic/Navigation src/core/Design src/core/Provider src/styles src/features/DesignEngine/Canvas gates/scripts/contrato/__tests__` → 190 arquivos, 1755 verdes e 2 vermelhos (os dois snapshots, depois atualizados). Rodei também `vitest run -u <arquivo>` e ele **rodou a suíte inteira em modo de atualização** (508 arquivos, 3639 testes, 0 falha, "1 snapshot updated"); conferi `git status`: só os três `.snap` esperados mudaram.
+- `npm run verify -- --tier=quick`: tudo `[OK]` (`tsc`, `audit:baseline --with-tsc`, o Anel 1 inteiro, Anel 0: 2885 linhas, 0 achado), exceto `guide:check` (gerado defasado). Na 1ª rodada `audit:baseline` acusou `auditor_hardcoded` 0 → 2 (`10rem` e `1440px` em classes novas); troquei `min-[1440px]` por `2xl:` e marquei o `10rem` com `sarak-allow-hardcode` e o motivo.
+- Não rodei guide, dev-kit, token-types, build nem `cromo-css-real:check`.
+
+**Medição da barra de topo** (largura da área visível da lista; "precisa" é a largura do conteúdo; modo escuro, harness com os widgets de fábrica)
+| Tema | 1440 antes → depois | 1280 antes → depois | 1024 antes → depois | precisa |
+|---|---|---|---|---|
+| `industrial-terminal` | 246 → 550 | 86 → 390 | 32 → 334 | 341 |
+| `neo-brutalism` | 113 → 398 | 48 → 359 | 48 → 255 | 363 |
+| `synthwave-retro` | 166 → 432 | 48 → 341 | 48 → 262 | 343 |
+| `cyberpunk-neon` | 213 → 461 | 53 → 325 | 48 → 279 | 326 |
+A 1440 a lista inteira aparece com folga e a busca fica de 224 a 256 px; a 1280 a lista aparece inteira (falta no máximo 4 px do respiro do último item, nunca texto); a 1024 ela rola (o último item aparece cortado até rolar) e o grupo final fica dentro da barra (`kidsOver` ≤ −14 em todas as 12 combinações). O documento não ganha largura em nenhum caso.
+
+**Contraste do `nebula-space` com `texture: nebula`** (nativo escuro e oposto claro; textureOpacity 0,6 e 0,4 como o tema declara)
+- Gate R31, `auditor_contraste`: 0 reprovado e 0 pulado; menor razão 5,06 (escuro) e 4,84 (claro), iguais aos de antes (a textura não entra na medição).
+- Medição na tela (captura do `showcase-entry` com o texto transparente, pior 5% dos pixels atrás de cada texto): corpo 9,39:1 (escuro) e 8,01:1 (claro); o título de 64 px, **3,25:1 no escuro** (média 9,99:1; com a textura a 0,3, 9,00:1), acima de 3:1 para texto grande, abaixo de 4,5:1.
+
+**Critérios de aceite**
+- [x] P26 — `check-channel-dispute.test.ts` e `channel-dispute:check` verdes sem alterar tema; caso de unidade e de navegador, com mutação — evidência: acima.
+- [x] P27 — `scrollWidth` medido antes e depois com `nebula`, `stars`, `aurora`, `noise` e a estática; motor corrigido sem `!important`; caso de navegador (constante) com mutação; `nebula-space` volta a `nebula` — evidência: acima e `textura-de-pagina.spec.ts`.
+- [x] P28 — barra medida a 1440, 1280 e 1024 com os quatro temas; decisão do que cede registrada; caso de navegador por largura com mutação — evidência: tabela e `barra-de-topo-estreita.spec.ts`.
+- [x] P29 — contraste ≥ 4,5:1 do texto do botão selecionado contra o próprio fundo, nos dois seletores; caso de unidade e de navegador — evidência: `seletor-da-barra-legivel.spec.ts` (6 casos, todos ≥ 4,5) e os testes de unidade.
+- [x] Nenhum `defaultValue` mudou; nota MAJOR em `## 8.0.0` — evidência: `docs/migracoes.md`.
+- [ ] Gerados em dia — motivo: `guide` e `dev-kit` não rodam por instrução; `guide:check` está vermelho (`sarak-ui/docs/migracoes.md` e o apêndice do GUIA).
+
+**Decisões e suposições**
+- **P26 — onde corrigir.** No `syncInjectedWrites`, que a plan não listava, mas é quem escreve; `SovereignThemeInjector.tsx` e `SarakBackgroundRenderer.tsx` não precisaram de edição, e `check-channel-dispute.ts` só foi lido. Escolhi remover o valor vazio, e não fazer o motor deixar de emitir o vazio: o motor emite `--x:` vazio também no CSS do Modo Embarcado, e isso não é o defeito.
+- **P27 — como.** Preferi o `background-position` (precedente: `aurora-flow`) a clipar o `html`, que cortaria a rolagem horizontal legítima do conteúdo do consumidor. O custo é perder a escala e a rotação da deriva e o "respirar" de 5% da `stars`; a opacidade da `stars` e a deriva da `nebula` seguem. Não tem teste de unidade, porque o `jsdom` não calcula área rolável.
+- **P28 — como.** Os fatores de encolhimento do flex (busca 40, lista 1, grupo final rígido) são o que garante a ordem; com a lista a 0,02 ou 0,25 e o grupo final encolhível, o grupo final passava da borda a 1024 (soma de fatores menor que 1 deixa parte do déficit sem absorver). A decisão de que a lista rola (e não que o grupo final vire menu) é minha, dentro das três que a plan citava; o grupo final é composto por preferências fixas e levá-lo a um menu seria tema da composição do cromo, não deste lote. O limiar `2xl` (1536 px) para o rótulo é o breakpoint nomeado do Tailwind mais próximo (a 1440 a lista já cabe com o rótulo, mas com os rótulos escondidos a busca fica inteira).
+- **P29 — fallback.** Cor do item ativo que não é literal (`var()`, `color-mix`) continua com a cor sobre a primária (a reserva); não medi esse caso.
+- **`nebula-space.ts`:** além da linha `texture`, troquei o comentário imediatamente acima dela (dizia que a ficha pedia `nebula` e que ela estourava o documento: passou a mentir). Não toquei `textureOpacity` (pelo contraste acima, 0,4 ou menos seria mais seguro; é decisão do revisor).
+- A plan e a tabela da §5.1 (P26 a P29 "aberta") são do revisor; não as editei. Movi o `status` para `🟠 Em revisão`; o lote 7 corre em outro executor e pode reescrevê-lo.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/styles/_base.css:67` lê `--sarak-global-bg-image`, que não chega ao `style` inline quando a imagem é `data:…;base64,…` (medido: comprimento 0 com o `synthwave-retro`); a arte só aparece pelo `SarakBackgroundRenderer`. Leitura morta para `data:` (`https` funciona).
+- `src/styles/_atmosphere.css` (`.texture-aurora-classic`, `aurora-classic-drift`, `rotate(360deg) scale(1.2)`): nenhuma opção de `texture` aplica a classe na página, mas tem o mesmo desenho de `transform`; não medi.
+- `ChromeUnavailableWidget`: nos widgets reais (com `user` e `notifications`) não medi a largura; a barra de 1024 px foi medida com os placeholders de fábrica.
+- A 1024 px nada na lista indica que ela rola (o último item aparece cortado). Candidato a refinamento.
+- `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx`: o snapshot guarda o DOM do cromo e da barra; todo lote que mexe nele o invalida.
+
+**Pendências / riscos**
+- **Gerados defasados (o revisor regenera):** `sarak-ui/docs/migracoes.md`, o apêndice de `sarak-ui/GUIA-FRONTEND.md` (o `guide:check` acusa). `dev-kit:check`, `token-types:check` e `catalog:check` passaram. O `dist/` não foi reconstruído: os três specs novos só rodam contra o `dist/` depois do `build` (medi contra um build à parte).
+- Mudança visível por padrão em todo consumidor com cromo de topo: a busca some em barras estreitas, o rótulo dos widgets "indisponível" some abaixo de 1536 px e a lista vira a prioridade (na nota MAJOR).
+- `PreviewCanvas.test.tsx.snap`: 38 linhas diferentes, todas deste lote: 32 em atributos `style` (`--sarak-on-nav-active` e a troca `constellation` → `nebula` de `--sarak-texture`, `--sarak-bg-pattern-id` e `--theme-texture`, do tema `nebula-space`), 4 de classe dos seletores (P29) e 1 de classe da barra de busca (P28). `PresetCard.test.tsx.snap`: 1 variável (`--sarak-on-nav-active`).
+
+## Veredito — 2026-10-18 — lote 9 (P26 a P29) — 🟢 Aprovado; lote 9 fechado
+
+**Conferido no diff e no navegador:**
+- **P26** — o `syncInjectedWrites` (`injectedWrites.ts`) passa a remover a variável quando o valor é vazio; o `SovereignThemeInjector` e o
+  `SarakBackgroundRenderer` não precisaram de edição. `check-channel-dispute.test.ts` e `channel-dispute:check` **verdes sem mexer em
+  tema**, que era o que bloqueava o commit dos quatro temas; mutação provada (cópia da árvore fora do repositório).
+- **P27** — `nebula-drift` passa a derivar por `background-position` e `stars-twinkle` fica só na opacidade, sem `transform`: o
+  `scrollWidth` do documento fica constante (o executor mediu 40 s: antes `nebula` 1291 → 1402 e `stars` oscilando, depois 1280 fixo
+  nas cinco texturas). O `nebula-space` voltou a `texture: 'nebula'` nos dois modos (só a linha e o comentário dela).
+- **P28** — a barra de topo cede na ordem busca, rótulo dos widgets indisponíveis e lista rolável; o item não encolhe abaixo do
+  próprio texto e o grupo final fica dentro da barra (tabela do executor a 1440, 1280 e 1024 px com os quatro temas).
+- **P29** — `--sarak-on-nav-active` (no mapa `ON_COLOR_SOURCES`) dá o texto do botão selecionado dos dois seletores pelo contraste
+  contra a cor do item ativo; sem token novo.
+- **Medido por mim:** regenerei catálogo, kits e `token-types`; `npm run build` verde; **`verify --tier=full` verde** (`tsc`, suíte
+  completa, baseline com `tsc`, Anel 1 inteiro, R36, Anel 0: 3.031 linhas, 0 achados); navegador da área contra o `dist/` (barra de
+  topo, seletor, textura de página, injeção sem disputa, `cromo-css-real`, navegação, toque, painel, atmosfera, raio do item,
+  `tema-sob-demanda`, `token-que-desenha`, `schema-que-desenha`, lotes 4 e 5): **171 de 172**; a falha, `arsenal-lote5:123` (P14 do
+  modal), é o intermitente do backlog 42 e **passa isolado 3 de 3** (11/11 em cada).
+- **Capturas contra o `dist/` do `nebula-space`, abertas:** a nebulosa violeta e verde-azulada volta ao fundo (a textura da ficha), com
+  estrelas nos cartões; no claro, gradiente lavanda → azul-céu; a barra de topo mostra "Início", "Relatórios" e "Configurações"
+  inteiros e os seletores P/M/G e Lateral/Topo legíveis com o selecionado em violeta; no celular, barra de base e tabela em cartões.
+
+**P26 a P29 fechadas.** O lote A de temas (lotes 8 a 11) fica liberado para o commit: o gate que o bloqueava passa.
+
+**Achados do executor fora do escopo → backlog (49 e 50):** `_base.css:67` lê `--sarak-global-bg-image`, que não chega ao
+`style` inline quando a imagem é `data:` (a arte só aparece pelo `SarakBackgroundRenderer`); `aurora-classic-drift` mantém um
+`transform: rotate(360deg) scale(1.2)` que nenhuma `texture` aplica na página, sem medição. O `textureOpacity` do `nebula-space`
+(0,6 escuro) deixa o título de 64 px em 3,25:1 no pior pixel, acima de 3:1 para texto grande: decisão de refinamento do tema,
+anotada no lote B/C se houver sobra.
+
+**Resta no plan-117:** o lote 7 (P23, botão de ícone no estilo `cyberpunk`), sem retorno do executor.
 
 **Status: 🟡 Em execução (lote 7).**

@@ -76,6 +76,8 @@ const ON_COLOR_SOURCES: Record<string, string> = {
     '--sarak-on-chat-user': '--sarak-chat-user-bg',
     '--sarak-on-overlay': '--sarak-modal-overlay',
     '--sarak-on-muted': '--sarak-text-muted',
+    // O botão selecionado dos seletores da barra (`ShellFontSizeControl`, `ShellNavigationStyleControl`) usa a cor do item ativo como FUNDO.
+    '--sarak-on-nav-active': '--sarak-nav-active-color',
 };
 
 /**

@@ -297,7 +297,8 @@ permite). As regras 7.1 a 7.5 acima valem, **menos** onde esta seção disser o 
   (prompt direto ou lote da `plan-117`) e despacha a continuação. O que não for essencial, o executor **registra no anexo e
   segue**; espera o lote 25 ou o `00-backlog`. Em dúvida, é essencial: a aplicação dos temas é o refinamento final.
 - **Pragmatismo:** nada de rodar gate completo por tema. O executor roda **só** o que prova o tema: `theme-completeness:check`,
-  `variable-contract:check`, o contraste (R31), o `themes:diversity` e o peso, e o vitest dos arquivos de tema. O Anel 1 inteiro e o
+  `variable-contract:check`, o contraste (R31), o `themes:diversity` e o peso, e o vitest dos arquivos de tema **e do
+  `gates/scripts/contrato/__tests__/check-channel-dispute.test.ts`** (a troca de um tema pelo outro deixa variável do anterior?). O Anel 1 inteiro e o
   nível `themes` são do revisor, **uma vez por execução** de quatro temas.
 - **Verificação por execução de quatro temas, não por tema:** o revisor regenera o catálogo uma vez, roda `verify --tier=themes` (com o
   Anel 1 inteiro) e abre as capturas que o executor entregou. **Um** `build`, a bateria completa do navegador e a vitrine contra o `dist/`
@@ -387,10 +388,10 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 |---|---|---|---|---|---|
 | 6 | `sarak-sovereign` | 🟢 | 3.4 KB | — | aprovado |
 | 7 | `cyberpunk-neon` | 🟢 | 3.472 B | 5,52 / 4,61 | aprovado |
-| 8 | `industrial-terminal` | ⚪ | | | |
-| 9 | `neo-brutalism` | ⚪ | | | |
-| 10 | `synthwave-retro` | ⚪ | | | |
-| 11 | `nebula-space` | ⚪ | | | |
+| 8 | `industrial-terminal` | 🟢 | 3.421 B | 4,84 / 4,76 | aprovado (commit após o lote 9 da `plan-117`) |
+| 9 | `neo-brutalism` | 🟢 | 3.346 B | 6,20 / 4,79 | aprovado (idem) |
+| 10 | `synthwave-retro` | 🟢 | 4.199 B (93%) | 4,51 / 4,67 | aprovado (idem) |
+| 11 | `nebula-space` | 🟢 | 3.569 B | 5,06 / 4,84 | aprovado (idem); volta a `texture: nebula` quando o P27 fechar |
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
@@ -1142,3 +1143,42 @@ valores do próprio tema.
 `build` nem documentação compartilhada por tema, verificação por lote de temas) assim que o dono confirmar a proposta.
 
 **Status: 🔴 A executar (lote 8).**
+
+## Veredito — 2026-10-18 — lotes 8 a 11 (lote A: `industrial-terminal`, `neo-brutalism`, `synthwave-retro`, `nebula-space`) — 🟢 Aprovado; commit após o lote 9 da `plan-117`
+
+**Conferido:** os quatro temas completos nos dois modos, nenhum funcional, fora da trava (`theme-completeness:check` verde com 6 de 14
+completos); anexo de cada tema no formato do modelo (nota de conceito, medições, capturas, o que ensinou, achados). Regenerei o
+catálogo (`themes:catalog`) e os kits; `npm run build` verde; `verify --tier=quick` e `--tier=themes` com **uma única falha, a
+mesma nos dois**: `channel-dispute:check` (e seu teste): **"synthwave-retro → nebula-space deixa
+`--sarak-global-background-image-url` e `--sarak-global-bg-image` no html/body"** — o `synthwave-retro` declara a arte de fundo
+embutida e o `nebula-space` declara `globalBackgroundImageUrl: ''`; o motor não limpa a variável do tema anterior na troca.
+É **defeito do arsenal** (P26, essencial: o usuário final que troca de tema leva a arte do anterior), não do tema. Vitest de
+`Canvas` verde (32 arquivos, 103/103). Contraste textual medido pelo executor (valor concreto, 76 pares por modo, 0 pulado, 0
+reprovado): menores razões 4,84/4,76 (`industrial-terminal`), 6,20/4,79 (`neo-brutalism`), 4,51/4,67 (`synthwave-retro`) e
+5,06/4,84 (`nebula-space`), escuro/claro; pesos 3.421, 3.346, 4.199 (93% do teto) e 3.569 B gzip.
+
+**Capturas — abri as geradas contra o `dist/`:** `industrial-terminal` escuro desktop (âmbar sobre quase preto, chapa e quina,
+cartão de listra, botões só contorno) e claro no topo (papel quente, âmbar-escuro); `neo-brutalism` claro no topo (papel creme, borda
+preta grossa, sombra dura deslocada, amarelo e rosa chapados) e escuro; `synthwave-retro` escuro (rosa sobre roxo-noite, a
+arte do sol listrado e do horizonte atrás do conteúdo, brilho nos cartões); `nebula-space` escuro (azul-noite com vinheta,
+violeta, vidro espesso e raio 24, estrelas nos cartões). Os quatro se distinguem entre si e do `sarak-sovereign` e do
+`cyberpunk-neon`. **Limite da captura:** a vitrine contra o `dist/` não carrega as fontes embutidas (o harness não passa `baseUrl`;
+os títulos aparecem em reserva), então a tipografia real é a das capturas do executor, que as lê de `dist/fonts` (anexo §3).
+
+**Decisões do revisor sobre os achados (nenhum fica sem dono):**
+- **Essenciais, corrigidos agora no lote 9 da `plan-117`:** **P26** (a troca de tema deixa variável da arte de fundo do anterior),
+  **P27** (as texturas de página animadas — `nebula`, `stars`, `aurora-flow` — fazem o `scrollWidth` do documento crescer sem parar:
+  1440 → 1599 em 35 s; é a decisão pedida do achado 1 do `nebula-space`: **corrigir o motor** e o tema volta à `texture: nebula` da
+  ficha), **P28** (a barra de topo estreita os itens de navegação: "Início" vira um filete, "Configurações" vira "Conf" — visto nos
+  quatro temas), **P29** (`ShellFontSizeControl` usa a cor do item ativo como fundo e a cor sobre a primária como texto, e fica
+  ilegível quando as duas divergem — o `neo-brutalism` teve de contornar).
+- **Não essenciais → `00-backlog`:** a textura `carbon` não acompanha o modo e o `usage` de `texture` não avisa (44); o modal
+  desenha borda fina e sombra suave, sem token de borda/sombra de modal (45); a arte de fundo se ajusta à altura do conteúdo e
+  rola com ele, sem token para fixá-la (46); a vitrine contra o `dist/` não carrega as fontes (47); as fichas do anexo de direção
+  tratam como escolha do tema o que a decisão do dono tornou funcional (`mobileNavigationStyle`, `touchTargetMin`,
+  `navigationStyle`, `sidebarPosition`) e pedem `3d-tilt`, que não existe: o anexo de direção se reescreve no lote 25 (48).
+
+**Lotes 8 a 11 fechados.** O commit deles espera o P26: o `channel-dispute` bloqueia o pre-commit com os quatro juntos. Os lotes B,
+C e D podem seguir em paralelo, porque os temas são independentes do motor.
+
+**Status: 🟡 Em execução (lotes 12 a 24).**

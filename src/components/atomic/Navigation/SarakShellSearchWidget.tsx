@@ -77,7 +77,7 @@ export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
 
     // Bar / Topbar Variant
     return (
-        <div className="hidden md:flex items-center w-64 group relative" ref={containerRef}>
+        <div className="hidden md:flex items-center w-64 min-w-0 max-w-full group relative" ref={containerRef}>
             <SarakInput
                 type="search"
                 enterKeyHint="search"

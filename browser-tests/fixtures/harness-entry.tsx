@@ -72,6 +72,12 @@ const NAV_ITEMS = [
 const searchParams = new URLSearchParams(window.location.search);
 /** `?itens=N`: o cromo com só os N primeiros destinos (a busca centrada só se vê com folga entre a navegação e o fim da barra). */
 const navItemCount = Number(searchParams.get('itens')) || undefined;
+/** `?rotulos=longos`: três itens com os rótulos mais compridos de um cromo real (a barra de topo estreita medida por `barra-de-topo-estreita.spec.ts`). */
+const LONG_LABEL_NAV_ITEMS = [
+    { id: 'inicio', label: 'Início', href: '/inicio', active: true },
+    { id: 'relatorios', label: 'Relatórios', href: '/relatorios' },
+    { id: 'configuracoes', label: 'Configurações', href: '/configuracoes' },
+];
 const hasGlobalBackground = searchParams.get('bg') === '1';
 const navigationStyle = searchParams.get('chrome') === 'topbar' ? 'topbar' : 'sidebar';
 const embeddedStyle = searchParams.get('embedded') === '1' ? { height: '320px' } : undefined;
@@ -143,6 +149,15 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
  */
 const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
+    // Texturas de PÁGINA (`texture`, não a do cartão) a medir pelo `scrollWidth` do documento (`textura-de-pagina.spec.ts`).
+    // Item ativo de cor diferente da primária (`seletor-da-barra-legivel.spec.ts`): o botão selecionado dos seletores usa a cor do item ativo como fundo.
+    'nav-ativo-escuro': { mode: 'dark', navItemActiveColor: '#111111', primaryColor: '#ffd400' },
+    'nav-ativo-claro': { mode: 'light', navItemActiveColor: '#ffe680', primaryColor: '#2f5bff' },
+    'pagina-nebula': { texture: 'nebula', textureOpacity: 0.6 },
+    'pagina-stars': { texture: 'stars', textureOpacity: 0.6 },
+    'pagina-aurora': { texture: 'aurora', textureOpacity: 0.6 },
+    'pagina-constellation': { texture: 'constellation', textureOpacity: 0.6 },
+    'pagina-noise': { texture: 'noise', textureOpacity: 0.6, bgNoiseAnimation: 2 },
     'borda-tracejada': { borderStyle: 'dashed' },
     'botao-cantos': { btnBorderRadius: 0, btnRadiusTL: 9999, btnRadiusTR: 9999, btnRadiusBR: 9999, btnRadiusBL: 9999 },
     'respiro-responsivo': { layoutPadding: { mob: 16, tab: 24, desk: 32 } },
@@ -351,7 +366,7 @@ const ElementDefaultProbes: React.FC = () => (
 const App: React.FC = () => {
     const chrome = (
         <SarakAppChrome
-            navItems={navItemCount ? NAV_ITEMS.slice(0, navItemCount) : NAV_ITEMS}
+            navItems={searchParams.get('rotulos') === 'longos' ? LONG_LABEL_NAV_ITEMS : navItemCount ? NAV_ITEMS.slice(0, navItemCount) : NAV_ITEMS}
             brand={{ name: 'Harness' }}
             className="sarak-chrome-root"
             navigationStyle={navigationStyle}
@@ -368,8 +383,9 @@ const App: React.FC = () => {
         </SarakAppChrome>
     );
 
+    // `?tema-ativo=<id>` liga um tema embarcado inteiro (a barra de topo medida com o tema real: `barra-de-topo-estreita.spec.ts`).
     return (
-        <SarakUIProvider config={resolveHarnessConfig()}>
+        <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={searchParams.get('tema-ativo') ?? undefined}>
             {hostWidth ? (
                 <div data-harness-host style={{ width: hostWidth, height: '100dvh' }}>
                     {chrome}
@@ -1062,11 +1078,17 @@ const SWITCH_THEMES = [
     },
 ];
 
+/** `?imagem=1`: o tema A declara a imagem de fundo global e o B a deixa vazia (a troca não pode levar a arte do A). */
+const SWITCH_ART_URL = 'https://exemplo.test/arte-do-tema-a.png';
+const withArt = (themes: typeof SWITCH_THEMES) =>
+    themes.map((theme) => ({ ...theme, design: { ...theme.design, globalBackgroundImageUrl: theme.id === 'tema-a' ? SWITCH_ART_URL : '' } }));
+
 const ThemeSwitchScene: React.FC = () => {
     const [activeThemeId, setActiveThemeId] = React.useState('tema-a');
     const options = searchParams.get('modo') === 'embarcado' ? { mode: 'embedded' as const } : undefined;
+    const themes = searchParams.get('imagem') === '1' ? withArt(SWITCH_THEMES) : SWITCH_THEMES;
     return (
-        <SarakUIProvider config={{ mode: 'dark' }} customThemes={SWITCH_THEMES} activeThemeId={activeThemeId} options={options}>
+        <SarakUIProvider config={{ mode: 'dark' }} customThemes={themes} activeThemeId={activeThemeId} options={options}>
             <button type="button" data-probe="trocar" onClick={() => setActiveThemeId('tema-b')}>Trocar de tema</button>
             <CascadeScene />
         </SarakUIProvider>

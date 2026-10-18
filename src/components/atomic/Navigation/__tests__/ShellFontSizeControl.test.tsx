@@ -22,6 +22,15 @@ describe('ShellFontSizeControl', () => {
         expect(screen.getByRole('button', { name: 'P' })).toHaveAttribute('aria-pressed', 'false');
     });
 
+
+    it('o botão selecionado lê o texto de --sarak-on-nav-active (o contraste contra o fundo que ele mesmo usa), não o da primária', () => {
+        render(<ShellFontSizeControl />);
+        const selected = screen.getAllByRole('button').find((button) => button.getAttribute('aria-pressed') === 'true') as HTMLElement;
+        expect(selected.className).toContain('bg-[var(--sarak-nav-active-color,#19e3f0)]');
+        expect(selected.className).toContain('text-[var(--sarak-on-nav-active,');
+        expect(selected.className).not.toMatch(/text-[var(--color-theme-on-primary,#020617)]/);
+    });
+
     it('clicar em outro degrau grava a PREFERÊNCIA de fontSize, nunca o tema', () => {
         render(<ShellFontSizeControl />);
         fireEvent.click(screen.getByRole('button', { name: 'G' }));

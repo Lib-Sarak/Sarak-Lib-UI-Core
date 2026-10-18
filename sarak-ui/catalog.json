@@ -5936,6 +5936,7 @@
       "--sarak-on-error",
       "--sarak-on-info",
       "--sarak-on-muted",
+      "--sarak-on-nav-active",
       "--sarak-on-overlay",
       "--sarak-on-secondary",
       "--sarak-on-success",
@@ -10982,6 +10983,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "70e899f869f1"
+    "kitHash": "7326964e7f23"
   }
 }

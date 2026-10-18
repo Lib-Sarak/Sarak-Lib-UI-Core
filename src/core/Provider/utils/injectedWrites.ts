@@ -44,6 +44,13 @@ export const syncInjectedWrites = (
     previous?.attributes.filter((name) => !(name in attributes)).forEach((name) => host.removeAttribute(name));
 
     Object.entries(variables).forEach(([name, value]) => {
+        // Valor vazio é "o tema não declara nada" (a imagem de fundo ausente): a variável sai do elemento. Escrever `''`
+        // dependeria de o `setProperty` do navegador interpretá-lo como remoção, e deixaria a do tema anterior em quem não
+        // o faz (o elemento de mentira do gate `channel-dispute:check`); remover é explícito e vale em qualquer host.
+        if (value === '') {
+            if (host.style.getPropertyValue(name) !== '') host.style.removeProperty(name);
+            return;
+        }
         if (host.style.getPropertyValue(name) !== value) host.style.setProperty(name, value);
     });
     Object.entries(attributes).forEach(([name, value]) => {

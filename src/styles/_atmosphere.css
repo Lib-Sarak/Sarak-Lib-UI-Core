@@ -380,9 +380,10 @@
     animation: stars-twinkle 4s ease-in-out infinite alternate;
 }
 
+/* Só a opacidade: um `transform: scale` no pseudoelemento de PÁGINA estoura a área rolável do documento. */
 @keyframes stars-twinkle {
-    from { opacity: 0.2; transform: scale(1); }
-    to { opacity: 0.6; transform: scale(1.05); }
+    from { opacity: 0.2; }
+    to { opacity: 0.6; }
 }
 
 .texture-aurora-classic::before {
@@ -617,15 +618,18 @@
                 radial-gradient(circle at 70% 80%, rgba(var(--theme-secondary-rgb), 0.3) 0%, transparent 50%),
                 radial-gradient(1px 1px at 50px 50px, var(--theme-texture-color, white), transparent),
                 radial-gradient(2px 2px at 150px 150px, var(--theme-texture-color, white), transparent);
-    background-size: 100% 100%, 100% 100%, 200px 200px, 300px 300px;
+    /* As duas nuvens são maiores que a caixa (120%) e andam por `background-position`: a deriva não usa `transform`, que
+       na textura de PÁGINA (`html`/`body`) estoura a área rolável do documento e cria barra de rolagem horizontal. */
+    background-size: 120% 120%, 120% 120%, 200px 200px, 300px 300px;
+    background-position: 50% 50%, 50% 50%, 0 0, 0 0;
     filter: blur(40px) contrast(150%);
     opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.3)));
     animation: nebula-drift 60s linear infinite alternate;
 }
 
 @keyframes nebula-drift {
-    from { transform: scale(1); }
-    to { transform: scale(1.2) rotate(5deg); }
+    from { background-position: 50% 50%, 50% 50%, 0 0, 0 0; }
+    to { background-position: 0% 0%, 100% 100%, 0 0, 0 0; }
 }
 
 
