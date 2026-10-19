@@ -232,8 +232,8 @@ describe('validateDesign — predicado de mídia embutida em tokens `image`/`fil
         expect(result.globalBackgroundImageUrl).toBeUndefined();
     });
 
-    it('mantém aceito, sem warn, o formato legado `url("https://...")` do tema shippado `nebula-space`', () => {
-        const legacy = 'url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop")';
+    it('mantém aceito, sem warn, o invólucro CSS legado `url()` ao validar uma imagem de fundo', () => {
+        const legacy = 'url("https://images.unsplash.com/photo-x?a=1")';
         const result = validateDesign({ globalBackgroundImageUrl: legacy });
         expect(result.globalBackgroundImageUrl).toBe(legacy);
         expect(warnSpy).not.toHaveBeenCalled();

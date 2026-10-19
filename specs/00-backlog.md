@@ -108,6 +108,7 @@ via normal.
 | 48 | O anexo de direção de arte trata como escolha do tema o que a decisão do dono (2026-10-13) tornou funcional (`mobileNavigationStyle`, `touchTargetMin`, `navigationStyle`, `sidebarPosition`) e pede `3d-tilt`, que não existe (`cardHoverStyle`: `lift`, `glow-only`, `expand`): reescrever as fichas no lote 25 | revisão da `plan-110` (lote A) | 2026-10-18 | baixo |
 | 49 | `src/styles/_base.css:67` lê `--sarak-global-bg-image`, que não chega ao `style` inline quando a imagem de fundo é `data:image/…;base64,…` (a arte só aparece pelo `SarakBackgroundRenderer`); com `https` funciona. Leitura morta para `data:` | revisão da `plan-117` (lote 9) | 2026-10-18 | baixo |
 | 50 | `src/styles/_atmosphere.css` (`.texture-aurora-classic`, `aurora-classic-drift`) mantém `transform: rotate(360deg) scale(1.2)`; nenhuma opção de `texture` aplica a classe na página hoje, mas o desenho é o mesmo que estourava o `scrollWidth` na `nebula`. Medir ou aposentar | revisão da `plan-117` (lote 9) | 2026-10-18 | baixo |
+| 51 | `texture` não carrega modo (`schema/atmosphere.ts:217-219`): a ficha do `kinetic-flow` (`waves` no claro) e a do `blueprint-protocol` (textura diferente no claro) não se realizam, e a `blueprint-pro` fica sem contraste sobre papel branco. Decidir se `texture` passa a carregar modo ou se as fichas mudam no lote 25 | revisão da `plan-110` (lote B) | 2026-10-18 | baixo |
 
 ---
 

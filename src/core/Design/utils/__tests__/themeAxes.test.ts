@@ -35,7 +35,7 @@ describe('Cobertura de eixos de tema (Spec 40.1 — L6)', () => {
     it('o par de referência difere em modo, cromo e fonte (prova ampla do R5)', async () => {
         const [light, dark] = (await sarakLoadReferenceThemes()).map((t) => t.design as Record<string, unknown>);
         expect(light.mode).not.toBe(dark.mode);
-        expect(light.navigationStyle).not.toBe(dark.navigationStyle);
+        expect(light.sidebarColor).not.toBe(dark.sidebarColor);
         expect(light.headingFont).not.toBe(dark.headingFont);
     });
 

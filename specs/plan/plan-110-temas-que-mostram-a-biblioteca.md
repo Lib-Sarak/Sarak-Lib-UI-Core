@@ -297,7 +297,8 @@ permite). As regras 7.1 a 7.5 acima valem, **menos** onde esta seção disser o 
   (prompt direto ou lote da `plan-117`) e despacha a continuação. O que não for essencial, o executor **registra no anexo e
   segue**; espera o lote 25 ou o `00-backlog`. Em dúvida, é essencial: a aplicação dos temas é o refinamento final.
 - **Pragmatismo:** nada de rodar gate completo por tema. O executor roda **só** o que prova o tema: `theme-completeness:check`,
-  `variable-contract:check`, o contraste (R31), o `themes:diversity` e o peso, e o vitest dos arquivos de tema **e do
+  `variable-contract:check`, **`panel-contract:check`** (valor de tema na grade e na faixa do token), o contraste (R31), o
+  `themes:diversity` e o peso, e o vitest dos arquivos de tema, **`tokenContractParity.test.ts`**, **um `grep` do id do tema em `src/**/__tests__` (teste que fixa valor do tema se atualiza)** **e do
   `gates/scripts/contrato/__tests__/check-channel-dispute.test.ts`** (a troca de um tema pelo outro deixa variável do anterior?). O Anel 1 inteiro e o
   nível `themes` são do revisor, **uma vez por execução** de quatro temas.
 - **Verificação por execução de quatro temas, não por tema:** o revisor regenera o catálogo uma vez, roda `verify --tier=themes` (com o
@@ -388,10 +389,14 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 |---|---|---|---|---|---|
 | 6 | `sarak-sovereign` | 🟢 | 3.4 KB | — | aprovado |
 | 7 | `cyberpunk-neon` | 🟢 | 3.472 B | 5,52 / 4,61 | aprovado |
-| 8 | `industrial-terminal` | 🟢 | 3.421 B | 4,84 / 4,76 | aprovado (commit após o lote 9 da `plan-117`) |
-| 9 | `neo-brutalism` | 🟢 | 3.346 B | 6,20 / 4,79 | aprovado (idem) |
-| 10 | `synthwave-retro` | 🟢 | 4.199 B (93%) | 4,51 / 4,67 | aprovado (idem) |
-| 11 | `nebula-space` | 🟢 | 3.569 B | 5,06 / 4,84 | aprovado (idem); volta a `texture: nebula` quando o P27 fechar |
+| 8 | `industrial-terminal` | 🟢 | 3.421 B | 4,84 / 4,76 | aprovado (commitado) |
+| 9 | `neo-brutalism` | 🟢 | 3.346 B | 6,20 / 4,79 | aprovado |
+| 10 | `synthwave-retro` | 🟢 | 4.199 B (93%) | 4,51 / 4,67 | aprovado |
+| 11 | `nebula-space` | 🟢 | 3.569 B | 5,06 / 4,84 | aprovado; `texture: nebula` restaurada (P27 fechado) |
+| 12 | `kinetic-flow` | 🟢 | 3.528 B | 4,53 / 4,63 | aprovado |
+| 13 | `cyber-retro-wave` | 🟢 | 3.586 B | 4,53 / 4,67 | aprovado |
+| 14 | `blueprint-protocol` | 🟢 | 3.561 B | 4,70 / 4,67 | aprovado |
+| 15 | `minimalist-airy` | 🟢 | 3.534 B | 4,89 / 4,98 | aprovado |
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
@@ -1182,3 +1187,90 @@ os títulos aparecem em reserva), então a tipografia real é a das capturas do 
 C e D podem seguir em paralelo, porque os temas são independentes do motor.
 
 **Status: 🟡 Em execução (lotes 12 a 24).**
+
+## Veredito — 2026-10-18 — lotes 12 a 15 (lote B: `kinetic-flow`, `cyber-retro-wave`, `blueprint-protocol`, `minimalist-airy`) — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido):** os quatro temas completos nos dois modos, nenhum funcional (18 a 20 valores funcionais legados
+removidos em cada um), fora da trava (`theme-completeness:check` verde, 10 de 14 completos); anexos no formato do modelo com as
+capturas salvas em `node_modules/.cache/capturas-dos-temas/<id>/` (copiei as 40 imagens para a pasta do Desktop e atualizei a
+galeria); regenerei catálogo e kits. **Abri uma captura de cada tema:** `kinetic-flow` escuro (coral sobre grafite, grade coral de
+fundo, títulos pesados, gráfico coral suavizado), `cyber-retro-wave` claro (vidro iridescente prata, azul e verde, botão ciano
+elétrico, raios generosos), `blueprint-protocol` claro no topo (papel azul-claro, traço tracejado, mono, azul técnico) e
+`minimalist-airy` claro (branco e tinta, primário preto, respiro). Os quatro se distinguem entre si e dos seis anteriores. Contraste
+textual (escuro/claro): 4,53/4,63, 4,53/4,67, 4,70/4,67 e 4,89/4,98; pesos 3.528, 3.586, 3.561 e 3.534 B gzip (78 a 80% do
+teto). `quick` e `themes` verdes exceto **uma falha, a mesma nos dois: o contrato de valor de tema** (`panel-contract:check` e
+`tokenContractParity.test.ts`).
+
+**Achado 1 — 13 valores de tema fora do contrato numérico do token** (o painel regravaria ou a validação cortaria em silêncio):
+- `cyber-retro-wave`: `cardGlowIntensity` 0,18 · `cardSpotlightOpacity` 0,12 · `textureOpacity` 0,055 · `vignetteOpacity` 0,12 (fora da
+  grade do passo); `btnBorderRadius`, `btnRadiusTL/TR/BL/BR` e `inputBorderRadius` = `{999,999,999}` (fora de min/max: **a faixa
+  do token é 0 a 120**, a validação cortaria para a borda).
+- `minimalist-airy`: `cardGlowIntensity` 0,18 · `vignetteOpacity` 0,12 (fora da grade).
+- `blueprint-protocol`: `motionDurationSlow` 0,32 (fora da grade).
+- `kinetic-flow`: sem valor fora do contrato.
+O executor deste lote não rodou esses dois checks (a lista de pragmatismo do modelo só os tinha no nível `themes`, que é meu): a
+lição já estava nos anexos do lote A ("faixas do contrato que a pílula e os raios esbarram": raio ≤ 120, passos de 0,05) e na
+`ui-criar-tema` §5.7. **Correção:** ajustar só os 13 valores para a grade e a faixa do token (múltiplos do passo; raio de pílula
+120), sem mudar a intenção do tema; rodar `panel-contract:check` e `tokenContractParity.test.ts` e entregar a saída verde;
+reconferir o contraste dos pares afetados se um valor de opacidade subir ou descer. **O modelo da plan agora inclui os dois checks
+no ciclo do executor** (§5).
+
+**Achados dos anexos, sem dono ainda:** todos não essenciais. As divergências de ficha (`navigationStyle`, `mobileNavigationStyle`,
+`touchTargetMin`, `sidebarPosition`, textura diferente na contraparte, o branco fixo de `wave-pulse`) já estão no backlog 48; o
+fato de a `texture` não carregar modo (a ficha do `kinetic-flow` e do `blueprint-protocol` pede outra textura no claro e a
+`blueprint-pro` fica sem contraste no papel branco) vai ao backlog 51.
+
+**Status: 🔵 Em correção** (só o achado 1); os temas 12 a 15 não entram em commit antes.
+
+## Veredito — 2026-10-18 — correção 1 (lote B) — 🔴 Reprovado (1 achado, resto da mesma correção)
+
+**O que fechou:** os 13 valores fora do contrato (`cyber-retro-wave`, `minimalist-airy`, `blueprint-protocol`) foram para a grade e a
+faixa do token (passos de 0,05, 0,06 e 0,30 s; raios de pílula 999 → 120), com os valores antigos e novos e o R31 nos anexos.
+**Medido por mim:** `panel-contract:check` e `tokenContractParity` verdes; `verify --tier=quick` **verde** (Anel 1 inteiro, `tsc`,
+baseline, Anel 0 com 2.637 linhas e 0 achados); no `themes` fecham catálogo, completude, fecho do boot, diversidade, peso, baseline e
+kits.
+
+**Achado 1 — o teste de caracterização do `minimalist-airy` ainda afirma o tema antigo.** `src/core/Provider/utils/__tests__/
+shippedThemesConsoleClean.test.ts`, bloco "Caracterização — minimalist-airy antes/depois da reconciliação (Spec 40.4 L4)": três
+asserções vermelhas porque o tema foi reescrito (`motionEaseOut` `cubic-bezier(0, 0, 0.2, 1)`, `navigationStyle` `'topbar'`, que o
+tema não declara mais por ser funcional, e o terceiro `expect` do mesmo bloco). É o único teste do repositório que fixa valores de um
+tema entregue; os lotes A e os outros temas não têm. **Correção:** atualizar as asserções para o que o `minimalist-airy` é agora,
+**sem enfraquecer** o que o teste prova (as chaves descartadas na reconciliação continuam fora do design; cor, tipografia e
+cromo do tema, os valores novos), rodar `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` e o `themes`
+inteiro do `Provider/utils` verdes e entregar a saída. Este arquivo passa a fazer parte do que um lote de tema pode tocar quando o
+próprio tema aparece nele (grep do id do tema em `src/**/__tests__` antes de entregar).
+
+**Status: 🔵 Em correção** (só este achado); os temas 12 a 15 não entram em commit antes.
+
+## Veredito — 2026-10-18 — correção 1, segunda rodada (lote B) — 🔴 Reprovado (1 achado, o último conhecido)
+
+**Fechou:** o bloco de caracterização do `minimalist-airy` em `shippedThemesConsoleClean.test.ts` foi reescrito sem enfraquecer (os sete eixos estéticos declarados e
+aplicados, as chaves funcionais descartadas fora do design, cor, tipografia e cromo atuais); `src/core/Provider/utils/__tests__`
+inteiro verde (17 arquivos, 246 testes).
+
+**Achado 1 — mais um teste que fixa o par de referência: `src/core/Design/utils/__tests__/themeAxes.test.ts:38`** ("o par de referência difere
+em modo, cromo e fonte"). Ele exige `light.navigationStyle` diferente de `dark.navigationStyle`; agora o `minimalist-airy` e o
+`sarak-sovereign` **não declaram** `navigationStyle` (é funcional), então os dois são `undefined` e o teste falha (apareceu na
+rodada do `themes`, que o executor não roda por inteiro). **Correção:** trocar o eixo de "cromo" do teste por um token **estético** de cromo que o
+par realmente declare e que difira (por exemplo `sidebarColor`, `navItemActiveColor` ou `navItemRadius`), mantendo o que o teste
+prova (modo, cromo e fonte diferem entre os dois temas de referência); **antes de entregar, rodar
+`npx vitest run src/core/Design src/core/Provider src/features/DesignEngine`** (não a suíte inteira) e corrigir **todo** teste que
+ainda fixe valor funcional ou antigo de um tema entregue; entregar a saída verde.
+
+**Status: 🔵 Em correção** (só este achado).
+
+## Veredito — 2026-10-18 — correção 1, terceira rodada (lote B: lotes 12 a 15) — 🟢 Aprovado; lote B fechado
+
+**Conferido:** `themeAxes.test.ts` agora compara `sidebarColor` (estético, declarado e diferente nos dois temas de referência) e mantém modo e tipografia;
+`validation.test.ts` deixou de citar o `nebula-space` e segue provando que o invólucro legado `url()` é aceito sem aviso; o snapshot de
+`PreviewCanvas` foi atualizado com os valores atuais dos temas. O vitest que o executor rodou, `src/core/Design`, `src/core/Provider` e
+`src/features/DesignEngine`: **171 arquivos, 1.146 testes verdes**. **Medido por mim:** `verify --tier=quick` e `--tier=themes`
+**verdes** (Anel 1 inteiro, `tsc`, baseline, completude, fecho do boot, diversidade, peso, kits, `panel-contract` e `tokenContractParity`; Anel 0:
+2.839 linhas, 0 achados).
+
+**Lote B fechado:** `kinetic-flow` (3.528 B), `cyber-retro-wave` (3.586 B), `blueprint-protocol` (3.561 B) e `minimalist-airy`
+(3.534 B), todos completos nos dois modos, com contraste mínimo de 4,53 a 4,89 (escuro) e 4,63 a 4,98 (claro) e capturas na galeria
+do dono. Dez de quatorze temas atuais recriados. Falta o lote C (`data-terminal`, `neumorphic-mobile`, `golden-hour`, `aurora-veil`) e,
+depois do registro, o lote D (os cinco novos).
+
+**Status: 🟡 Em execução (lotes 16 a 24).**
