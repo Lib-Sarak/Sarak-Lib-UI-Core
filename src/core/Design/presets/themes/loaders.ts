@@ -23,4 +23,9 @@ export const SARAK_THEME_LOADERS: Record<LazyThemeId, () => Promise<SarakThemePr
     'golden-hour': () => import('./golden-hour').then((m) => m.goldenHourTheme),
     'aurora-veil': () => import('./aurora-veil').then((m) => m.auroraVeilTheme),
     'blueprint-protocol': () => import('./blueprint-protocol').then((m) => m.blueprintProtocolTheme),
+    'editorial-ink': () => import('./editorial-ink').then((m) => m.editorialInkTheme),
+    'organic-clay': () => import('./organic-clay').then((m) => m.organicClayTheme),
+    'high-contrast': () => import('./high-contrast').then((m) => m.highContrastTheme),
+    'corporate-ledger': () => import('./corporate-ledger').then((m) => m.corporateLedgerTheme),
+    'playful-pastel': () => import('./playful-pastel').then((m) => m.playfulPastelTheme),
 };

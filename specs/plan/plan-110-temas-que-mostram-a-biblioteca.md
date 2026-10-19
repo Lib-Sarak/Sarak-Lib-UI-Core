@@ -303,8 +303,18 @@ permite). As regras 7.1 a 7.5 acima valem, **menos** onde esta seção disser o 
   nível `themes` são do revisor, **uma vez por execução** de quatro temas.
 - **Verificação por execução de quatro temas, não por tema:** o revisor regenera o catálogo uma vez, roda `verify --tier=themes` (com o
   Anel 1 inteiro) e abre as capturas que o executor entregou. **Um** `build`, a bateria completa do navegador e a vitrine contra o `dist/`
-  só no fim do último lote de temas e no lote 25. O registro dos temas novos (`index.ts`, `all.ts`, `loaders.ts`, `catalog`) é do
-  revisor, por prompt direto, antes do lote D.
+  só no fim do último lote de temas e no lote 25.
+- **Lote D (20 a 24): o executor também registra cada tema novo, e só quando ele fica pronto** (decisão do revisor, 2026-10-19:
+  o registro antes do lote D exigiria cinco temas provisórios que passassem em contraste, diversidade, console, contrato e troca de
+  canal, só para serem refeitos; sem execução em paralelo, o motivo de deixar os arquivos compartilhados com o revisor não existe
+  mais). Ao fechar cada tema, ele entra pela regra da [[09-temas-e-presets]] §2 obs. 3: o id em `SARAK_THEME_PRESET_IDS`
+  (`index.ts`), o import em `all.ts`, o `import()` em `loaders.ts` e `npm run themes:catalog`. **Nunca** num `import` estático de
+  `index.ts` nem no barril (`theme-boot:check`). Além da lista do lote de tema, o executor do lote D toca esses quatro arquivos
+  (`index.ts`, `all.ts`, `loaders.ts`, `catalog.generated.ts`) e o teste que fixe a lista ou a contagem de temas; o tema novo **não**
+  entra em `themeCompletenessPending.json` (nasce completo). Os cinco ids saem do anexo de direção (D4); a nota de migração dos
+  temas novos é do lote 25.
+- **D7 está superada:** `reducedMotion` é funcional (`schema/engineering.ts`, `kind: 'functional'`) e nenhum tema o declara. O
+  `high-contrast` mostra "sem movimento" pelos tokens **estéticos** de movimento (durações e entradas mínimas) e diz isso no anexo.
 
 **Lote 25 — conjunto, documentação consolidada e roteiro de validação.**
 25.1. Cobertura do **conjunto**: os 19 usam juntos pelo menos 15 texturas de cartão, 10 fontes, as 3 famílias de
@@ -401,6 +411,11 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 | 17 | `neumorphic-mobile` | 🟢 | 3.382 B | 4,60 / 4,58 | aprovado |
 | 18 | `golden-hour` | 🟢 | 3.448 B | 4,60 / 4,51 | aprovado |
 | 19 | `aurora-veil` | 🟢 | 3.466 B | 4,85 / 4,73 | aprovado |
+| 20 | `editorial-ink` | 🟢 | 3.333 B | 7,58 / 5,28 | aprovado |
+| 21 | `organic-clay` | 🟢 | 3.796 B | 5,26 / 4,66 | aprovado |
+| 22 | `high-contrast` | 🟢 | 3.162 B | 8,84 / 7,44 | aprovado |
+| 23 | `corporate-ledger` | 🟢 | 3.320 B | 5,63 / 5,40 | aprovado |
+| 24 | `playful-pastel` | 🟢 | 3.415 B | 5,59 / 4,99 | aprovado |
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
@@ -1315,3 +1330,58 @@ conceito e se distinguem entre si e dos dez anteriores. Copiei as 40 imagens par
 **Lote C fechado:** 14 de 14 temas atuais recriados. Seguem o registro dos cinco temas novos (prompt direto do revisor) e o lote D.
 
 **Status: 🟡 Em execução (lotes 20 a 24).**
+
+## Veredito — 2026-10-19 — lotes 20 a 24 (lote D: `editorial-ink`, `organic-clay`, `high-contrast`, `corporate-ledger`, `playful-pastel`) — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido):** os cinco temas novos, um anexo por tema e o registro pela regra da `09` §2 obs. 3, só com o que o
+bloco do lote D permite: o id em `index.ts`, o import em `all.ts`, o `import()` em `loaders.ts` e o `catalog.generated.ts`. Nenhum
+`import` estático de tema fora de `all.ts`, e `themeCompletenessPending.json` não foi tocado. Os anexos trazem nota de conceito,
+R31 por par nos dois modos (menor razão entre 4,66 e 8,84; o `high-contrast` fica acima de 7:1 nos dois), contraste não textual,
+paleta categórica tal como o motor a emite, peso (3.162 a 3.796 B gzip) e a tabela "o que o tema ensinou". **Medido por mim**,
+depois de regenerar `themes:catalog`, `token-types`, `guide`, `dev-kit` e `plan-index`: `verify --tier=quick` e `--tier=themes`
+**verdes** (completude com os 19 temas, fecho do boot, contraste, diversidade, `boot:measure`, `panel-contract`, `variable-contract`,
+`channel-dispute`, `tokenContractParity`, Anel 0 com 0 achados).
+
+**Achado 1 — as capturas não existem.** O §3 de cada anexo descreve duas imagens (`<id>-light-final` e `<id>-dark-final`, desktop
+1440 × 6000) sem caminho, e nenhum arquivo delas existe no disco (procurei no repositório e nas pastas temporárias). O modelo da §5
+exige as **10 capturas por tema** (claro e escuro × lateral e topo × desktop e celular × telas e modal, como nos lotes A a C),
+salvas em `node_modules/.cache/capturas-dos-temas/<id>/` e descritas uma a uma no anexo contra a nota de conceito. Sem elas o revisor
+não confere os temas (§7 da plan). **Correção:** gerar as 10 capturas de cada um dos cinco temas, com o mesmo harness e o mesmo nome
+de arquivo dos lotes anteriores (`<id>__<modo>__<nav>__<aparelho>__<cena>.png`), as fontes lidas de `dist/fonts`, e reescrever o §3 de
+cada anexo com o caminho e a descrição de cada imagem. Se o ambiente de execução não deixar gravar nessa pasta, pare e diga isso em vez
+de descrever imagem que não ficou salva.
+
+**Achado 2 — snapshot do `PreviewCanvas` desatualizado.** `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` ("deve
+usar propriedades de estilo reais…") falha: o snapshot não tem os cinco cartões de tema novos (`npx vitest run
+src/features/DesignEngine/Canvas`, 1 falha). Só o de `PresetsCatalog` foi atualizado. **Correção:** atualizar o snapshot do
+`PreviewCanvas` restrito a esse arquivo, conferir que só entraram os cinco cartões novos e rodar
+`npx vitest run src/core/Design src/core/Provider src/features/DesignEngine` verde.
+
+**Decisões do revisor sobre os achados dos anexos:**
+- **Critério 8 do modo `--new` de `themes:diversity`** (`gates/scripts/audit/verify_diversity.ts:241-247`, "os 5 cobrem ambos os
+  `navigationStyle`"): ele contradiz a decisão de 2026-10-13 (navegação é funcional e nenhum tema a declara). Não bloqueia: o modo
+  `--new` não roda em gate nenhum, e o nível `themes` passou. Não é preciso declarar navegação; o critério vai ao `00-backlog` (55).
+- `surfaceMaterial: paper` não existe (o tema usa `organic`), a entrelinha de passo 0,1 e a paleta categórica derivada pelo motor
+  são lições do lote 25, já com destino proposto nos anexos.
+- O `boot:measure` que o executor não conseguiu rodar foi rodado por mim, no nível `themes`, e passou.
+
+**Status: 🔵 Em correção** (os dois achados); os temas 20 a 24 não entram em commit antes.
+
+## Veredito — 2026-10-19 — correção 1 (lote D: lotes 20 a 24) — 🟢 Aprovado; lote D fechado
+
+**Achado 1 fechado:** 50 capturas no disco, 10 por tema em `node_modules/.cache/capturas-dos-temas/<id>/`, com o nome do modelo, e o
+§3 de cada anexo cita e descreve os 10 arquivos. **Achado 2 fechado:** o snapshot do `PreviewCanvas` só ganhou os cinco cartões novos
+(1.260 linhas acrescentadas, nenhuma removida); `npx vitest run src/features/DesignEngine/Canvas`: 32 arquivos, 103/103. O resto do
+lote não mudou desde o veredito anterior, em que `quick` e `themes` passaram.
+
+**Capturas — abri:** `editorial-ink` claro com topo (papel, serifa em tudo, coluna de leitura centralizada, botões de contorno reto,
+oxblood no gráfico); `organic-clay` claro (fundo de barro médio com a arte das colinas, cartões de madeira, musgo e terracota);
+`high-contrast` escuro (preto absoluto, amarelo e branco, bordas brancas grossas, sem textura); `corporate-ledger` claro (índigo
+sóbrio, tabela densa, cinza frio); `playful-pastel` claro no celular (rosa, cereja, pílulas, barra de navegação na base). Os cinco
+batem com as fichas e se distinguem entre si e dos 14 atuais. Copiei as 50 imagens para a galeria do dono (19 temas, 191 imagens).
+
+**Os 19 temas estão recriados.** Contraste mínimo (escuro/claro) dos novos: 7,58/5,28, 5,26/4,66, 8,84/7,44, 5,63/5,40 e 5,59/4,99;
+pesos de 3.162 a 3.796 B gzip. Segue o lote 25 (conjunto, consolidação da documentação, roteiro de validação, vitrine final), com o
+`00-backlog` 43, 44, 47, 48, 51, 54 e 55 a absorver.
+
+**Status: 🟡 Em execução (lote 25).**

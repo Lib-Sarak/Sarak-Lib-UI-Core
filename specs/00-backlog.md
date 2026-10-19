@@ -112,6 +112,7 @@ via normal.
 | 52 | O recorte `contraste-cyberpunk-claro` (`browser-tests/fixtures/harness-entry.tsx:287`) não declara `textColorMuted` e herda o padrão do schema (o do `sarak-sovereign`, escuro): o `--text-muted` sai `rgba(242, 246, 251, 0.55)` sobre branco e o botão secundário (1,09:1) não pode ser medido no estilo `cyberpunk` claro | revisão da `plan-117` (lote 7) | 2026-10-19 | baixo |
 | 53 | No estilo `cyberpunk` a borda lê `btnNeonGlowColor` por dois caminhos: `SarakIconButton.tsx` pela variável `--sarak-btn-neon-glow-color`, `SarakButton` pelo valor cru `design?.btnNeonGlowColor` (`useAtomicStyles.ts`), o que pode divergir no escopo embarcado | revisão da `plan-117` (lote 7) | 2026-10-19 | baixo |
 | 54 | `browser-tests/fixtures/showcase-entry.tsx:193` fixa `type="area"` no gráfico da vitrine: o `chartType` do tema (barra, linha, área) nunca aparece nas capturas, e a vitrine dos 19 temas do lote 25 mostraria todos com área | revisão da `plan-110` (lote C) | 2026-10-19 | médio |
+| 55 | `gates/scripts/audit/verify_diversity.ts:241-247`, critério 8 do modo `--new` ("os 5 cobrem ambos os `navigationStyle`"), exige variação de um token funcional que nenhum tema declara: com os temas atuais ele sempre reprova (todos caem no padrão `sidebar`). Retirar o critério ou trocá-lo por um eixo estético | revisão da `plan-110` (lote D) | 2026-10-19 | baixo |
 
 ---
 

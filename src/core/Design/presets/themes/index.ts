@@ -36,6 +36,11 @@ export const SARAK_THEME_PRESET_IDS = [
     'golden-hour',
     'aurora-veil',
     'blueprint-protocol',
+    'editorial-ink',
+    'organic-clay',
+    'high-contrast',
+    'corporate-ledger',
+    'playful-pastel',
 ] as const;
 
 export type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];

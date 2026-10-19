@@ -21,6 +21,11 @@ import { neumorphicMobile } from './neumorphic-mobile';
 import { goldenHourTheme } from './golden-hour';
 import { auroraVeilTheme } from './aurora-veil';
 import { blueprintProtocolTheme } from './blueprint-protocol';
+import { editorialInkTheme } from './editorial-ink';
+import { organicClayTheme } from './organic-clay';
+import { highContrastTheme } from './high-contrast';
+import { corporateLedgerTheme } from './corporate-ledger';
+import { playfulPastelTheme } from './playful-pastel';
 
 export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
@@ -37,4 +42,9 @@ export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     goldenHourTheme,
     auroraVeilTheme,
     blueprintProtocolTheme,
+    editorialInkTheme,
+    organicClayTheme,
+    highContrastTheme,
+    corporateLedgerTheme,
+    playfulPastelTheme,
 ];

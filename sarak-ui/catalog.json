@@ -10872,7 +10872,12 @@
       "neumorphic-mobile",
       "golden-hour",
       "aurora-veil",
-      "blueprint-protocol"
+      "blueprint-protocol",
+      "editorial-ink",
+      "organic-clay",
+      "high-contrast",
+      "corporate-ledger",
+      "playful-pastel"
     ],
     "referenceThemeIds": [
       "minimalist-airy",
@@ -10983,6 +10988,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "7326964e7f23"
+    "kitHash": "ea6971565629"
   }
 }
