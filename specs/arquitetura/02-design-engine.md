@@ -293,6 +293,14 @@ contrato além de "a variável chega à propriedade".
 - **Texturas**: toda textura pinta com a **cor de textura** do tema (`textureColor`, que gera variantes, então
   `--theme-texture-color-rgb` existe). Textura feita de SVG embutido é máscara com `background-color` da cor de
   textura — `var()` dentro de data URI não resolve. O anel de foco (`--theme-primary-focus`) é da primária.
+  `texture` e `cardTextureType` não carregam modo: a mesma textura vale no claro e no escuro.
+- **A atmosfera de página aparece atrás do conteúdo.** No modo App, a raiz do cromo e a região de conteúdo não pintam
+  fundo opaco sobre o corpo: `texture` e `systemTone` ficam visíveis atrás do conteúdo, e o cartão mantém a própria
+  superfície.
+- **Textura de página animada não mexe no documento.** As que se movem (`nebula`, `stars`) animam `background-position`
+  ou opacidade, nunca `transform`: o `scrollWidth` do documento fica constante.
+- **Arte de fundo** (`globalBackgroundImageUrl`): camada própria do Provider (`SarakBackgroundRenderer`), atrás de todo
+  o conteúdo, preenchendo a camada com recorte (`cover`).
 
 ## 10.2 Superfície, moldura e sombra
 
@@ -317,7 +325,8 @@ contrato além de "a variável chega à propriedade".
 
 `colorDepth` e `colorVariation` dão forma às variantes de interação (`computeColorVariants`): `hover` clareia e
 `active` escurece pelo fator `1 ± 0,1 × depth`, e o matiz abre `(variation − 1) × 8°` entre os dois. Em 1/1 a
-saída é a de sempre.
+saída é a de sempre. Nas variantes da primária, o resultado é `--theme-primary-hover`/`--theme-primary-active`, lidos
+pelo hover e pelo pressionado globais de `button` (`_elements.css`).
 
 ## 10.4 Cartão
 
@@ -349,7 +358,9 @@ Uma família só: `motion*` (`motionDurationInstant/Fast/Normal/Slow`, `motionEa
 `motionStaggerDelay`), com unidade no valor emitido (`--duration-*` repassam o valor; multiplicar por `1s`
 invalida a declaração). `motionDurationInstant` é o aperto do botão (`:active`); `motionEaseIn` é a saída de
 sobreposição (modal, scrim, busca); `motionStaggerDelay` é a cascata de entrada das linhas da tabela e das séries
-do gráfico (`useMotionTokens.ts`).
+do gráfico (`useMotionTokens.ts`). O modal e a paleta de busca têm saída de fato (o `AnimatePresence` fica fora da
+condição de abertura): a opacidade sai pela curva de `motionEaseIn`, na duração de `motionDurationFast`, e a moldura
+não recebe ponteiro enquanto sai.
 
 ## 10.6 Componentes que leem tokens próprios
 
@@ -364,6 +375,20 @@ de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmooth
 (`badgeRadius`) e peso e caixa dos títulos e do corpo (`h1Weight`, `h2Weight`, `bodyWeight`, `headingTransform`,
 lidos direto em `_elements.css`). O estilo de botão `neumorphism` tem desenho próprio (relevo em repouso, sombra
 interna sob o ponteiro). O modo eco é a classe `.sarak-eco-mode`, que o consumidor aplica; nenhum token a escreve.
+
+Também leem o próprio token: o espaçamento dos sub-itens da matriz (`matrixGap`, `--sarak-matrix-gap`); a largura da
+barra lateral recolhida (`sidebarCollapsedWidth`, sem o piso da largura aberta); o raio do acordeão (`borderRadius`,
+inclusive `0` e a forma responsiva); o trilho ativo e o polegar da faixa (`rangeActiveColor`,
+`--sarak-range-active-bg`); o raio do item de navegação ativo e em hover, na lateral, no topo e no recolhido
+(`navItemRadius`, `--sarak-nav-item-radius`); a sombra de destaque do botão da categoria selecionada do catálogo
+(`actionGlowShadow*`, só com `btnStyleType` `matte`). `switchLabelPosition` vale só no `SarakSwitch`. Com
+`searchPositionTopbar: center`, a busca ocupa o vão entre a navegação e o grupo final. No estilo `cyberpunk` (fundo
+transparente), o texto do `SarakButton` e o ícone do `SarakIconButton` das variantes sólidas pintam na cor da própria
+variante, de uma tabela só (`CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts`).
+
+**A barra de topo cede espaço numa ordem fixa:** primeiro a busca, depois o rótulo dos widgets indisponíveis, por fim a
+lista de navegação passa a rolar. O item de navegação nunca encolhe abaixo do próprio texto, e o grupo final fica dentro
+da barra.
 
 ## 10.7 Regras de CSS que o build impõe
 
@@ -407,7 +432,8 @@ Componente não fixa branco nem preto onde o tema decide a cor: as tintas `--col
 `border-theme-tint`…). O texto sobre cor sólida é **escolhido pelo motor**, não declarado: `pickOnColor`
 (`src/core/Provider/utils/on-color.ts`) fica, entre `#020617` e `#ffffff`, com o de maior razão WCAG sobre a cor
 (a translúcida é composta sobre o corpo antes), e o motor emite `--theme-on-primary`, `--sarak-on-surface` e uma
-`--sarak-on-*` por cor sólida (secundária, destaque, status, bolha do usuário, véu, apagada). O badge suave pinta
+`--sarak-on-*` por cor sólida (secundária, destaque, status, bolha do usuário, véu, apagada, item ativo da navegação —
+`--sarak-on-nav-active`, o texto do botão selecionado dos seletores do cromo). O badge suave pinta
 o texto como mistura da cor com o texto de maior contraste. A trava é o `fixed-translucent:check` (R43); o
 contraste dos pares desenhados é do `auditor_contraste` (R31).
 
@@ -426,7 +452,8 @@ O motor escreve cada variável **num canal só**: escalar vai inline (`html`/`bo
 vai ao `<style>` do escopo. A exceção declarada (canto de raio diferente do padrão) é a dona da variável dela, no
 canal do formato dela, e o mestre não a escreve; os outros cantos seguem o mestre. O mesmo vale nos modos App e
 Embarcado. Ao trocar de tema, `syncInjectedWrites` (`src/core/Provider/utils/injectedWrites.ts`) remove a variável e
-o atributo que o injetor escreveu antes e o tema novo não escreve — o que o host gravou por fora não é tocado. A
+o atributo que o injetor escreveu antes e o tema novo não escreve (valor vazio conta como não escrever: o tema que
+declara `globalBackgroundImageUrl: ''` apaga a arte do anterior) — o que o host gravou por fora não é tocado. A
 duração e a curva padrão das transições do Tailwind (`--default-transition-duration`,
 `--default-transition-timing-function`) vêm de `motionDurationFast` e `motionEaseMain`. Ao desmontar, o injetor
 limpa tudo o que escreveu (`releaseInjectedWrites`: variáveis, atributos, curvas, rastro do ponteiro, fonte ancorada,
@@ -451,3 +478,16 @@ vinheta) em `zIndexSidebar` + 50 — cobre conteúdo e cromo, fica abaixo de tod
 `zIndexSidebar` + 100/+200; o modal (`zIndexModal`), com o cartão expandido um degrau abaixo e a ajuda, o lightbox e o
 spotlight acima dele; o tooltip (`zIndexTooltip`); a notificação (`zIndexToast`, um passo acima do tooltip). As
 sobreposições usam a sombra do tema (`--dynamic-shadow`), sem token próprio.
+
+## 10.15 Estético × funcional, e o padrão de cada token
+
+Todo token declara no schema se é **estético** (cor, elevação, textura, tipografia, geometria visual, densidade visual,
+movimento: a identidade de um tema) ou **funcional** (camadas, alvo de toque, larguras e posições do cromo, breakpoints,
+comportamento: deve ser igual em todo tema, por segurança, acessibilidade ou consistência). O campo é `kind`, com
+`modeDependent`, `usage` e `interactsWith` ([[04-contrato-de-tokens-e-paridade]] §2.3). O funcional vale o padrão do
+sistema e o tema não o declara; o padrão de cada funcional é decisão de sistema.
+
+**O padrão de todo token estético é o valor do tema padrão (`sarak-sovereign`) no modo principal**, com uma exceção
+declarada: `identityFontFamily`, cujo padrão herda a fonte de títulos do tema. Assim o primeiro quadro, o componente sem
+Provider e o tema parcial do consumidor já desenham o tema padrão, e as reservas `var(--x, F)` acompanham (§10.9).
+**Nenhum gate cobra essa igualdade**: mudar o `sarak-sovereign` sem mudar o padrão, ou o contrário, passa sem aviso.

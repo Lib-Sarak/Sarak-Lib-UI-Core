@@ -18,7 +18,7 @@ O **dicionário** do Design System e o que **"paridade" significa hoje**. É o d
 Uma chave de token atravessa três lugares, e **só é REAL se existir nos três**:
 
 ```
-src/core/Design/schema/*.ts          28 arquivos de schema
+src/core/Design/schema/*.ts          um arquivo por grupo de tokens
         ↓
 MASTER_DESIGN_MAP                    src/core/Design/master-map.ts (version 13.0.0)
         ↓
@@ -31,23 +31,12 @@ catalog/partitions/*.json            13 partições, uma por coluna
 
 **Fora dessas três fontes, a chave é inexistente.** Não é "não suportada" nem "experimental": ela é descartada em runtime, com aviso (§4).
 
-## 2.1 Os números reais, desta execução
+## 2.1 Os números reais
 
-| Fonte | Tokens |
-| --- | --- |
-| Schema (`MASTER_DESIGN_MAP`) | **427** |
-| Banco (`theme_table_mapping`) | **427** |
-| Catálogo (`partitions/`, 13 arquivos) | **427** |
-
-*(Medido em 2026-09-18. A fonte viva é `npm run audit` → `auditor_paridade`; diante de divergência, ele vence.)*
-
-Distribuição por coluna: `cards_engine` 94 · `components_base` 73 · `colors_and_atmosphere` 57 ·
-`layout_and_navigation` 47 · `data_and_charts` 40 · `typography` 34 · `branding_config` 29 ·
-`motion_and_animation` 17 · `structural` 17 · `specialized_engines` 16 · e três colunas de valor único
-(`mode`, `navigation_style`, `body_size`).
-
-A soma da distribuição dá **427**, igual à contagem de ids únicos: nenhum id aparece em duas colunas do
-roteamento *(medido 2026-09-18)*.
+**Quantos tokens existem não se escreve aqui** — total em prosa envelhece a cada token que entra ou sai (esta seção já
+afirmou 409, 416 e 427). A fonte viva é `npm run audit` → `auditor_paridade`, que conta as três fontes e acusa a
+divergência; o carimbo do kit do mantenedor (`sarak-dev/state.json` → `design.tokens`) repete o número de cada geração.
+A regra que vale sem número: **as três contagens são iguais**, e nenhum id aparece em duas colunas do roteamento.
 
 > ⚠️ **HISTÓRICO — não vale mais desde 2026-08-03 (`plan-07`).** Os sete ids duplicados **no schema** foram
 > fundidos, e desde então entradas brutas e ids únicos **coincidem lá** — o que a nota acima confirma por
@@ -134,6 +123,25 @@ Fechado pela mesma execução, mantendo em cada caso a **última** coluna — qu
 > compare **bruto × único** — em vez de só `Set` contra `Set` — teria pego isso anos antes. Ele não existe; está
 > na fila da `plan-12`.
 
+
+## 2.3 O token se documenta no schema
+
+Além de tipo, opções e padrão, todo token carrega no schema os **metadados de documentação** (`src/core/Design/types.ts`):
+
+| Campo | O que diz |
+| --- | --- |
+| `kind` | `aesthetic` (a identidade de um tema) ou `functional` (igual em todo tema: segurança, acessibilidade, comportamento) — [[02-design-engine]] §10.15 |
+| `modeDependent` | se o valor muda entre o claro e o escuro (entra na `contraparte` do tema) |
+| `usage` | uma ou duas frases: o que muda na tela, e onde (sem repetir o rótulo) |
+| `interactsWith` | os ids sem os quais o token não tem efeito (ex.: a sombra de ação só desenha com `btnStyleType` `matte`) |
+
+O schema é o mapa dos tokens: o catálogo (`sarak-ui/catalog.json`), o apêndice do guia do kit e a documentação gerada
+(`src/core/Provider/generated/design-token-docs.json`) **derivam** desses campos pelos geradores; não há documento de
+tokens escrito à mão (R17). O gate `token-docs:check` (`gates/scripts/contrato/check-token-documentation.ts`) exige
+`kind`, `modeDependent` e `usage` em todo token, com a exceção em `gates/allowlists/tokenDocumentationPending.json`
+**vazia**; token novo nasce documentado. A trava de completude do tema embarcado lê `kind` e `modeDependent`
+([[09-temas-e-presets]] §5.3).
+
 ## 3.1 Alavanca de VALOR — vira CSS Variable
 
 O token vira `var(--sarak-<kebab-id>, fallback)` no DOM. A conversão é feita por `toKebabCase` (`useDesignVariables.ts:11-12`), e o nome emitido é `--sarak-${kebabId}` (`:64-65`).
@@ -176,7 +184,8 @@ Três origens, e nada além delas:
 > O domínio também encolhe quando um token oferecido não tem leitor ([[00-regras-e-invariantes]] R40: ou muda a
 > tela, ou sai). Saíram assim `cardContentAlignment`, `tableActionPosition` e `cardImagePosition`: cada um entra em
 > `REMOVED_TOKEN_KEYS` (`removedTokenKeys.ts`), o valor salvo é descartado com aviso nomeando a chave e cai no
-> padrão, e a retirada vai na nota MAJOR de `docs/migracoes.md`.
+> padrão, e a retirada vai na nota MAJOR de `docs/migracoes.md`. Saiu pelo mesmo caminho `contentAlignment`
+> (`maxContentWidth` já limita e centraliza a região de conteúdo). A lista viva é `REMOVED_TOKEN_KEYS`.
 
 ## 4.2 Valor tipado pelo próprio token
 

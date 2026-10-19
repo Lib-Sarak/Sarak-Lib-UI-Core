@@ -436,7 +436,8 @@ do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borde
 `contrastCurve`, `scrollbarWidth`, `scrollbarThumbColor`, `formLayoutDirection`, `layerElevationFactor`,
 `matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha;
 `cardContentAlignment` (redundante com `cardTextAlign`), `tableActionPosition` (a tabela não tem coluna de ações) e
-`cardImagePosition` (a opção padrão não tinha leitor) saíram porque nada os desenhava; e
+`cardImagePosition` (a opção padrão não tinha leitor) e `contentAlignment` (`maxContentWidth` já limita e centraliza a
+região de conteúdo) saíram porque nada os desenhava; e
 `aiPanelBg`, `identityRedirectUrl`, `industrialRegistry` e `inputSuccessColor` saíram sem
 substituto. `layout` saiu do schema (as opções nunca tiveram regra) e segue como chave aceita do payload, que o painel usa. Opções que saíram: `systemTone` `dark`/`light` (fica `none` · `cyber` · `tactical`) e os materiais
 `metallic`/`brushed`/`acrylic`/`matte`. Saíram também `securityShieldGlow`, `securityPulseSpeed`,
@@ -585,10 +586,11 @@ precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se di
 aqui:** é `SARAK_THEME_PRESET_IDS`/`SARAK_ALL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
 cifra em prosa envelhece).
 
-**Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
-`navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
-todo `SARAK_ALL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
-de script.**
+**Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo, família de
+matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de todo `SARAK_ALL_THEMES`, e avalia os
+critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). Só eixo **estético**
+entra na medição: a navegação é token funcional e nenhum tema a declara (§5.3). **Diversidade deixou de ser afirmação e
+virou saída de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
 > buckets estruturais calibrados em intervalos que o dado **nunca alcança** — raio `0..120` quando o real é
@@ -600,10 +602,39 @@ de script.**
 > Elas se leem no código (`SARAK_ALL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
 > documento continuaria dizendo "18" — que é exatamente como uma spec vira mentira.
 
+**A cobertura do conjunto é teste** (`src/core/Design/presets/themes/__tests__/themeSetCoverage.test.ts`, com
+mutação): os temas embarcados usam juntos pelo menos 15 texturas de cartão, 10 fontes de título, as 3 famílias de ícone
+com pelo menos 4 pesos e os 4 modos de gradiente, e nenhum par repete a combinação textura de cartão + estilo de botão
++ fonte de título. Um tema que empobrece o conjunto reprova aqui, mesmo passando na diversidade.
+
 Nem todos os presets são escritos à mão: parte é **derivada** de listas de opções — `TEXTURE_PRESETS` e
 `CARD_TEXTURE_PRESETS` saem de `TEXTURE_OPTIONS`, `BUTTON_STYLE_PRESETS` de `BUTTON_STYLE_OPTIONS`,
 `TYPOGRAPHY_PRESETS` de `THEME_FONTS` (`presets/components/*.ts`, todos por `.map()`). Derivar em vez de
 duplicar é o que mantém preset e enum do schema em sincronia sem gate extra.
+
+## 5.3 O tema embarcado declara todo token estético, e nenhum funcional
+
+O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDependent` de cada token,
+[[04-contrato-de-tokens-e-paridade]] §2.3; o critério em [[02-design-engine]] §10.15). Todo tema embarcado:
+
+- declara **todos os estéticos** no `design` (o modo principal) e, na `contraparte`, **todos os estéticos que carregam
+  modo** — geometria, tipografia e movimento ficam com o modo principal, e é isso que preserva a identidade entre os
+  dois modos;
+- **não declara funcional** nenhum (navegação, alvo de toque, larguras e posições do cromo, camadas, breakpoints,
+  movimento reduzido): eles valem o padrão do sistema, igual em todo tema. Um tema que quer "sem movimento" usa os
+  tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
+- escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
+
+**A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
+faltando, estético com modo faltando na `contraparte` e funcional declarado. A exceção por tema
+(`gates/allowlists/themeCompletenessPending.json`) está **vazia**, e um tema completo que continue nela também reprova.
+**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **4,5 KB**, medido por `npm run boot:measure`
+(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2).
+
+O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
+na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se
+transcreve aqui (§5.2). O roteiro de
+conferência visual de cada tema, nos dois modos, em desktop e celular, é `docs/roteiro-de-validacao-dos-temas.md`.
 
 # 6. Anti-drift — as travas
 
@@ -699,7 +730,9 @@ confere presença, tipo e valores (`gates/scripts/audit/catalog-drift.ts`, passo
 O critério de aceite desta spec, como procedimento:
 
 1. **Parta de uma referência completa** — derive com `deriveThemeFromReference` (§4.1.1), que devolve
-   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5. **Não** comece de
+   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5; ou gere o esqueleto com
+   `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts`, que emite só os estéticos e a `contraparte` com
+   os que carregam modo. **Não** comece de
    `{}`, e **não** espalhe `...ref.design`: a contraparte fica para trás.
 2. **Troque só os valores que você quer mudar.** Mantenha as chaves; um tema completo com 3 cores
    trocadas é um tema válido.
@@ -717,7 +750,9 @@ O critério de aceite desta spec, como procedimento:
    shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
    navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não
    declarado** ([[05-cromo-e-slots]] §2.4), `enabledLanguages` com os **seis** idiomas que a lib oferece,
-   nenhuma mídia de terceiro (§5.1) e as posições de preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
+   nenhuma mídia de terceiro (§5.1), as posições de preferência no padrão de fábrica (§4.7), todo estético declarado
+   e nenhum funcional, dentro do teto de peso, sem empobrecer a cobertura do conjunto (§5.2, §5.3). A skill
+   `ui-criar-tema` conduz esse caminho.
 
 Os passos 3-5 são exatamente o que os três gates da §6 cobram. Seguir o procedimento e passar nos gates
 são a mesma coisa dita de dois jeitos.

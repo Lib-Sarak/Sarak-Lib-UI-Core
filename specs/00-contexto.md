@@ -118,7 +118,7 @@ testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, ma
 
 | Bloco | Responsabilidade | Detalhe em |
 |---|---|---|
-| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → o dicionário de tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
+| `src/core/Design/` | O Design Engine: um schema por grupo → `MASTER_DESIGN_MAP` → o dicionário de tokens (cada token estético ou funcional) | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
 | `src/components/Layout/` | O cromo único (`SarakAppChrome`), os slots e os widgets da barra | [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |

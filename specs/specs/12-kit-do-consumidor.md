@@ -38,6 +38,18 @@ carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão 
 `options.fonts` e quando usar cada uma; `custom` para a fonte da marca e `baseUrl` só para servir **as mesmas** fontes
 de outro lugar; `font-src` e LGPD. O importador de temas também aprende a regra do `value` exato.
 
+O que o kit ensina sobre **criar o tema do cliente** (prosa à mão: `GUIA-FRONTEND.md` §3.9 e a skill espelhada) é o
+diferencial da lib, a granularidade token a token: da identidade visual (marca, tipografia, cantos, densidade, tom,
+movimento) ao arquétipo embarcado mais próximo e aos tokens que a carregam, nessa ordem; os temas embarcados como
+**exemplos de capacidade**, não como produto final; a receita mínima (poucas chaves sobre uma referência) e a completa
+(todo estético e a `contraparte` com o que carrega modo, [[09-temas-e-presets]] §5.3); o JSON completo do tema no
+formato que o painel exporta, e como passá-lo em `customThemes`. O mapa dos tokens não é escrito à mão: é o apêndice
+gerado do schema (`kind`, `modeDependent`, `usage`, [[04-contrato-de-tokens-e-paridade]] §2.3).
+
+**O mapa "o que a lib já faz — não recrie"** (`GUIA-FRONTEND.md` §6) lista, por necessidade comum do importador,
+qual componente, token ou porta da lib a atende, para o importador não reconstruir o que já existe. A árvore de decisão
+do topo do guia aponta para ele.
+
 O gerador é `scripts/generate-consumer-kit.mjs` (`npm run guide`), e o plano de saída dele
 (`scripts/consumer-kit/buildKitOutputs.mjs`) inclui `catalog.json`, `VERSION`, `GUIA-FRONTEND.md`,
 `START-HERE.md`, `docs/migracoes.md` e os arquivos da skill espelhada.

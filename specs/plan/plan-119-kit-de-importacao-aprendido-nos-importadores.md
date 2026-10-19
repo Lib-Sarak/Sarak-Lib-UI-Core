@@ -7,7 +7,7 @@ status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "kit-do-consumidor", "importacao", "temas", "persistencia"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[13-instalacao-e-atualizacao]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
-depende_de: "plan-110"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md"
 ---
@@ -21,9 +21,10 @@ no banco do importador.
 
 # 2. Contexto
 
-**Os temas embarcados são exemplos; o diferencial é o tema do cliente** (decisão do dono, 2026-10-19). A `plan-110` refez os 19 temas e
-consolidou o "do cliente ao tema" no kit. Esta plan faz o mesmo para a **importação**: assim como cada tema deixou um anexo com o que
-ensinou, cada importador auditado deixa achados, e o kit se reescreve a partir deles.
+**Os temas embarcados são exemplos; o diferencial é o tema do cliente** (decisão do dono, 2026-10-19). Os 19 temas foram refeitos e o
+"do cliente ao tema" está consolidado no kit ([[09-temas-e-presets]] §5.3, `sarak-ui/GUIA-FRONTEND.md` §3.9), com as lições de cada
+tema aplicadas na skill `ui-criar-tema`. Esta plan faz o mesmo para a **importação**: cada importador auditado deixa achados, e o kit
+se reescreve a partir deles.
 
 **Importadores** (2026-10-19): o ERP Earendel (`C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`, porta única
 `packages/ui-kit`, consome por `file:`), `Sarak-Lib-Login\login-completo` e, depois, `Sarak-Lib-Login\login-provedores` (em
