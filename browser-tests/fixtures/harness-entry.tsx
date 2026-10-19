@@ -447,7 +447,8 @@ const App: React.FC = () => {
  *
  *   - `contraste-<claro|escuro>`: primária e status que, usados CRUS como texto, reprovam sobre a tinta de 10% (claros no claro, escuros
  *     no escuro); `contraste-cyberpunk-<claro|escuro>`: o mesmo com `btnStyleType` cyberpunk; `modo-claro` / `modo-escuro`: só o `mode`.
- *   - `contraste-botoes`: botões fantasma, contorno, primário, perigo e sucesso e o botão de sair do usuário; `contraste-auth`: a tela de
+ *   - `contraste-botoes`: botões fantasma, contorno, primário, perigo e sucesso, o botão de sair do usuário e o botão de ícone primário, de
+ *     perigo e fantasma (`icone-*`); `contraste-auth`: a tela de
  *     autenticação com erro (`?v=aviso` troca para o aviso) — as cenas em que se mede o texto sobre a tinta e sobre o fundo transparente.
  *   - `valores-fixos`: o alternador pulsante (`?tema=fixos-movimento`: `motionDurationSlow` 0,9 e `matrixRadius` 3), o filtro, o botão
  *     de ajuda e a matriz expansível — a cena em que se mede o que deixou de ser valor fixo.
@@ -890,7 +891,7 @@ const LegibleScene: React.FC = () => (
     </div>
 );
 
-/** Os botões e o botão de sair do usuário, nos estados em que o texto senta sobre uma tinta ou sobre o fundo transparente. */
+/** Os botões, o botão de sair do usuário e os de ícone, nos estados em que o texto senta sobre uma tinta ou sobre o fundo transparente. */
 const ContrastButtonsScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
         <div data-probe="fantasma"><SarakButton variant="ghost">Fantasma</SarakButton></div>
@@ -899,6 +900,9 @@ const ContrastButtonsScene: React.FC = () => (
         <div data-probe="perigo"><SarakButton variant="danger">Perigo</SarakButton></div>
         <div data-probe="sucesso"><SarakButton variant="success">Sucesso</SarakButton></div>
         <div data-probe="sair"><SarakShellUserWidget variant="horizontal" user={{ name: 'Ana' }} logout={NOOP} /></div>
+        <div data-probe="icone-primario"><SarakIconButton variant="primary" aria-label="Ícone primário" icon={<span aria-hidden="true">+</span>} /></div>
+        <div data-probe="icone-perigo"><SarakIconButton variant="danger" aria-label="Ícone perigo" icon={<span aria-hidden="true">+</span>} /></div>
+        <div data-probe="icone-fantasma"><SarakIconButton variant="ghost" aria-label="Ícone fantasma" icon={<span aria-hidden="true">+</span>} /></div>
     </div>
 );
 

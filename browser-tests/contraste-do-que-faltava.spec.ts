@@ -2,7 +2,8 @@
  * Os pares de texto que os componentes desenham e o verificador não media passam de 4,5:1 nos dois modos, em
  * navegador real: o aviso e o erro da tela de autenticação sobre a PRÓPRIA tinta a 10%, o botão de sair do usuário,
  * o hover do botão fantasma e do contorno, e o texto do botão de perigo, de sucesso e primário no estilo `cyberpunk`
- * (fundo transparente — o texto "sobre a cor" caía sobre o cartão). O `jsdom` não resolve `color-mix`, `:hover` nem
+ * (fundo transparente — o texto "sobre a cor" caía sobre o cartão), e o ícone do `SarakIconButton` no mesmo estilo, que
+ * passa de 3:1 (o mínimo de elemento gráfico) no primário, no de perigo e no fantasma. O `jsdom` não resolve `color-mix`, `:hover` nem
  * a cascata (specs/specs/11-testes-e-cobertura.md §7).
  *
  * Mesmo harness e mesmo artefato do `cromo-css-real.spec.ts` (`dist/index.js` + `dist/sarak.css`), cenas
@@ -25,6 +26,8 @@ import { test, expect, chromium, type Browser, type Locator, type Page } from '@
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 const MIN_RATIO = 4.5;
+/** WCAG 1.4.11: o ícone é elemento gráfico, não texto. */
+const MIN_GRAPHIC_RATIO = 3;
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
@@ -167,6 +170,21 @@ for (const theme of ['contraste-cyberpunk-claro', 'contraste-cyberpunk-escuro'] 
 
                     await expect(button).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
                     expect(await textContrast(button), `${theme}: ${name}`).toBeGreaterThanOrEqual(MIN_RATIO);
+                });
+            });
+        }
+    });
+}
+
+for (const theme of ['contraste-cyberpunk-claro', 'contraste-cyberpunk-escuro'] as const) {
+    test.describe(`recorte ${theme} — botão de ícone`, () => {
+        for (const name of ['icone-primario', 'icone-perigo', 'icone-fantasma']) {
+            test(`estilo cyberpunk: o ${name} passa de 3:1 sobre o fundo transparente`, async () => {
+                await withScene('contraste-botoes', { tema: theme }, async (page) => {
+                    const button = probe(page, name).getByRole('button');
+
+                    await expect(button).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+                    expect(await textContrast(button, button.locator('span')), `${theme}: ${name}`).toBeGreaterThanOrEqual(MIN_GRAPHIC_RATIO);
                 });
             });
         }

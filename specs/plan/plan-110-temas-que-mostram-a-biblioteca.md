@@ -397,6 +397,10 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
 | 13 | `cyber-retro-wave` | 🟢 | 3.586 B | 4,53 / 4,67 | aprovado |
 | 14 | `blueprint-protocol` | 🟢 | 3.561 B | 4,70 / 4,67 | aprovado |
 | 15 | `minimalist-airy` | 🟢 | 3.534 B | 4,89 / 4,98 | aprovado |
+| 16 | `data-terminal` | 🟢 | 3.387 B | 4,83 / 4,87 | aprovado |
+| 17 | `neumorphic-mobile` | 🟢 | 3.382 B | 4,60 / 4,58 | aprovado |
+| 18 | `golden-hour` | 🟢 | 3.448 B | 4,60 / 4,51 | aprovado |
+| 19 | `aurora-veil` | 🟢 | 3.466 B | 4,85 / 4,73 | aprovado |
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
@@ -1274,3 +1278,40 @@ do dono. Dez de quatorze temas atuais recriados. Falta o lote C (`data-terminal`
 depois do registro, o lote D (os cinco novos).
 
 **Status: 🟡 Em execução (lotes 16 a 24).**
+
+## Veredito — 2026-10-19 — lotes 16 a 19 (lote C: `data-terminal`, `neumorphic-mobile`, `golden-hour`, `aurora-veil`) — 🟢 Aprovado; lote C fechado
+
+**Diff no escopo do modelo da §5:** os quatro arquivos de tema, os quatro anexos `plan-110-tema-<id>.md`, as quatro linhas
+saídas de `themeCompletenessPending.json` (a lista ficou vazia) e os snapshots de `PresetsCatalog` e `PreviewCanvas`, só no bloco
+das miniaturas de tema. Nada mais do lote C no worktree; o resto é o lote 7 da `plan-117`, que correu em paralelo e disjunto.
+
+**Resumo do executor conferido contra o diff.** A falha que ele relatou (`themeCatalogParity.test.ts:44`) era o catálogo leve
+defasado, que é do revisor: regenerei `themes:catalog`, `token-types`, `guide`, `dev-kit` e `plan-index`, e ela fechou.
+**Medido por mim:**
+- `verify --tier=quick` **verde** (Anel 1 inteiro, `tsc`, baseline, R36, `panel-contract`, `variable-contract`, `channel-dispute`;
+  Anel 0: 2.482 linhas, 0 achados) e `--tier=themes` **verde** (catálogo, completude com 14 de 14, fecho do boot, vitest dos temas e
+  do `Provider/utils`, diversidade, peso, baseline).
+- vitest de `src/features/DesignEngine/Canvas` (com os de `Buttons` e `hooks`): 44 arquivos, 197/197.
+- `npm run build` verde (o `dist/` agora carrega os quatro temas).
+
+**Os temas:** cada um declara os estéticos no modo principal e os que carregam modo na `contraparte`, sem funcional (a trava
+confirma). Contraste textual mínimo (escuro/claro): 4,83/4,87, 4,60/4,58, 4,60/4,51 e 4,85/4,73; paleta categórica ≥ 3,03:1 nos
+dois modos; pesos 3.387, 3.382, 3.448 e 3.466 B gzip. Os ajustes de valor para passar AA (primária do `data-terminal`, terciário do
+`neumorphic-mobile`, erro claro do `golden-hour`, a paleta do `aurora-veil`) e o arredondamento do grão (0,08 → 0,10) estão nos anexos.
+Como no lote B, os arquivos não trazem comentário nos valores não óbvios; o porquê está na nota de conceito e na tabela "o que o
+tema ensinou" de cada anexo, que o lote 25 consolida.
+
+**Capturas — abri:** `data-terminal` claro e escuro (papel verde e tinta verde, compacto, grade nos cartões; terminal verde quase
+preto na contraparte com a mesma densidade); `neumorphic-mobile` claro desktop (cinza frio, relevo macio em pílulas, cartões de raio
+24, gráfico de barras) e escuro no celular (ardósia, uma coluna, tabela em cartões, barra de navegação na base); `golden-hour` claro e
+escuro (creme e mel com honeycomb, títulos Playfair, assinatura em Satisfy; castanho e ouro no escuro); `aurora-veil` claro e escuro
+(malha lavanda, vidro fosco de raio 28, linha violeta suavizada; índigo e marinho no escuro). Os quatro batem com as notas de
+conceito e se distinguem entre si e dos dez anteriores. Copiei as 40 imagens para a galeria do dono (14 temas, 141 imagens).
+
+**Achados dos anexos:** nenhum essencial. As divergências de ficha (navegação e alvo de toque, que são funcionais) estão no backlog
+48; a textura que não carrega modo, no 51. **Novo → `00-backlog` 54:** a vitrine fixa o tipo do gráfico (`showcase-entry.tsx:193`,
+`type="area"`), então o `chartType` do tema não aparece nela; o executor só o viu tirando a prop da cópia temporária.
+
+**Lote C fechado:** 14 de 14 temas atuais recriados. Seguem o registro dos cinco temas novos (prompt direto do revisor) e o lote D.
+
+**Status: 🟡 Em execução (lotes 20 a 24).**

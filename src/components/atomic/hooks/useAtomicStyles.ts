@@ -12,8 +12,11 @@ export const neumorphismButtonShadow = (isHovered: boolean): string => isHovered
     ? `inset 3px 3px 6px ${NEUMORPH_DARK}, inset -3px -3px 6px ${NEUMORPH_LIGHT}`
     : `5px 5px 10px ${NEUMORPH_DARK}, -5px -5px 10px ${NEUMORPH_LIGHT}`;
 
-/** O texto das variantes sólidas no estilo `cyberpunk` (fundo transparente): a cor da própria variante. */
-const CYBERPUNK_TEXT_COLORS: Readonly<Record<string, string>> = {
+/**
+ * O texto das variantes sólidas no estilo `cyberpunk` (fundo transparente): a cor da própria variante.
+ * Fonte única do `SarakButton` e do `SarakIconButton`.
+ */
+export const CYBERPUNK_TEXT_COLORS: Readonly<Record<string, string>> = {
     primary: 'var(--sarak-primary-color, #19e3f0)',
     danger: 'var(--sarak-status-error-color, #ef4444)',
     success: 'var(--sarak-status-success-color, #10b981)',

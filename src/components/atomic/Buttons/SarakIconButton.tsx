@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
-import { neumorphismButtonShadow, resolveNeonPulseClass } from '../hooks/useAtomicStyles';
+import { CYBERPUNK_TEXT_COLORS, neumorphismButtonShadow, resolveNeonPulseClass } from '../hooks/useAtomicStyles';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
@@ -137,6 +137,9 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
         if (styleType === 'cyberpunk') {
             // Wireframe anguloso: contorno na cor do brilho, cantos retos, sem preenchimento.
             dynamicStyle.backgroundColor = 'transparent';
+            // Sem preenchimento, o texto "sobre a cor" sumiria contra o fundo: o ícone da variante sólida lê a própria cor.
+            const ownColor = CYBERPUNK_TEXT_COLORS[variant];
+            if (ownColor) dynamicStyle.color = ownColor;
             dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
             dynamicStyle.borderRadius = 0;
             dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';

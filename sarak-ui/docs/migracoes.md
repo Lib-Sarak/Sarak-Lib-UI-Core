@@ -712,6 +712,17 @@ própria por baixo do cromo passa a ver essa pintura onde antes via a cor do tem
 rótulo do widget "indisponível" cede. Quem quer a deriva da `nebula` ou o piscar da `stars` de antes não tem como
 voltar ao `transform`: ele estourava o documento.
 
+### O botão de ícone passa a aparecer no estilo `cyberpunk`
+
+**Classificação: MAJOR (efeito visível por padrão em quem usa `btnStyleType: 'cyberpunk'`; nenhum token novo, nenhum padrão alterado).**
+No estilo `cyberpunk` o fundo do botão fica transparente (wireframe). O `SarakButton` já pintava o texto das variantes sólidas na cor
+da própria variante, mas o `SarakIconButton` mantinha a cor "sobre a cor" (`--sarak-btn-primary-text`, `--sarak-on-error`) sobre o fundo
+da página: **o ícone primário e o de perigo sumiam** (medido: 1,07:1 e 1,01:1 no recorte escuro). O ícone passa a ler o mesmo mapa do
+`SarakButton`: primário na `--sarak-primary-color`, perigo na `--sarak-status-error-color`. Secundário e fantasma não mudam.
+
+**O que fazer:** nada é obrigatório. Quem fixava a cor do ícone por `className` (`text-*`) continua vendo a dele só se a declarar por
+`style`: a cor do estilo `cyberpunk` é escrita em linha, como no `SarakButton`.
+
 ### O tema padrão `sarak-sovereign` é refeito e o padrão de todo token estético passa a ser o dele
 
 **Classificação: MAJOR (muda o padrão de 94 tokens estéticos e o que o `sarak-sovereign` desenha).** O tema padrão ganhou direção de arte

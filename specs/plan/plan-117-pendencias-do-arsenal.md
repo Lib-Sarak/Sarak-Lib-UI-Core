@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar as pendencias do arsenal do Design Engine antes de os temas serem refeitos"
 objetivo: "Resolver, antes de os temas embarcados serem refeitos, tudo que o arsenal do Design Engine oferece e nao entrega: ligar os tokens que nao desenham, retirar os redundantes e manter aqui o registro vivo das pendencias que a plan-110 for achando"
 dominio: "Design Engine / Arsenal / Tokens"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "tokens", "arsenal", "temas", "pendencias"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[00-regras-e-invariantes]]"]
@@ -146,7 +146,7 @@ nenhum `defaultValue`.
 | P20 | `searchPositionTopbar: center` — `mx-auto` (`ChromeTopbarBody.tsx:112`) não se distingue de `left` quando a navegação tem `flex-1` (o caso com itens) | plan-110 lote 4 | **ligar** o centro de fato ou **retirar** a opção | 5 | fechada |
 | P21 | aviso de console "Function components cannot be given refs" em todas as variantes da cena estrutural (componente não identificado: `SarakSplitPane`, `SarakCatalogGrid`, `SarakCheckbox`, `SarakRadio` ou outro) | plan-110 lote 4 | **identificar e corrigir** (`forwardRef` ou remover a `ref`) | 5 | fechada |
 | P22 | `SarakAccordion.tsx:35` — com `design.borderRadius` na forma responsiva `{ mob, tab, desk }` (o que o schema permite) o raio chega como objeto e o React descarta a declaração: o acordeão fica **sem raio nenhum** (jsdom: `{mob:7,tab:7,desk:7}` sem `border-radius`; escalar 7 → `7px`) | plan-117 lote 5 | **corrigir** (resolver o responsivo como os outros componentes) | 6 | fechada |
-| P23 | `SarakIconButton.tsx:137` — no estilo `cyberpunk` o fundo vira transparente, mas o texto da variante primária fica `btnPrimaryText`: **o ícone some** (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts:16`). Visto na vitrine do `cyberpunk-neon`, nos dois modos | plan-110 lote 7 | **corrigir** (a mesma fonte de cor do `SarakButton`, não uma segunda) | 7 | aberta |
+| P23 | `SarakIconButton.tsx:137` — no estilo `cyberpunk` o fundo vira transparente, mas o texto da variante primária fica `btnPrimaryText`: **o ícone some** (`SarakButton` evita isso com `CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts:16`). Visto na vitrine do `cyberpunk-neon`, nos dois modos | plan-110 lote 7 | **corrigir** (a mesma fonte de cor do `SarakButton`, não uma segunda) | 7 | fechada |
 | P24 | o `main` e o cromo pintam camadas opacas por cima do fundo da página (o contêiner de `SarakAppChrome.tsx:199` pinta `var(--bg-body, …)` por cima do corpo), então a textura de página (`texture`) e o `systemTone` quase não aparecem (vitrine do `sarak-sovereign` e do `cyberpunk-neon`) | plan-110 lotes 6 e 7 | **corrigir** (decisão do dono, 2026-10-18: o essencial se corrige quando achado): em modo app a atmosfera de página aparece atrás do conteúdo, sem quebrar o modo embarcado nem a mídia de fundo global | 8 | fechada |
 | P25 | o item ativo e o hover da navegação (`SarakMenuItem.tsx:69-72`) têm o raio fixo no código (`rounded-xl` na vertical, `rounded-full` na horizontal, `rounded-lg` recolhida) e nenhum token o controla | plan-110 lote 7 | **corrigir** (decisão do dono, 2026-10-18): um token de raio do item de navegação, no schema, com paridade | 8 | fechada |
 | P26 | a troca de tema deixa `--sarak-global-background-image-url` e `--sarak-global-bg-image` do tema anterior no html/body quando o novo declara a imagem vazia (`channel-dispute:check`: `synthwave-retro` → `nebula-space`); o usuário final que troca de tema leva a arte do anterior | plan-110 lotes 10 e 11 | **corrigir** (a variável some quando o tema novo não declara imagem; o motor limpa o que o anterior escreveu) | 9 | fechada |
@@ -1441,3 +1441,100 @@ anotada no lote B/C se houver sobra.
 **Resta no plan-117:** o lote 7 (P23, botão de ícone no estilo `cyberpunk`), sem retorno do executor.
 
 **Status: 🟡 Em execução (lote 7).**
+
+## Resumo da execução (lote 7: P23) — 2026-10-19
+
+**Resultado:** Concluído com pendências (o caso de navegador foi medido contra um build fora do repositório, não contra o `dist/`; `sarak-ui/docs/migracoes.md` defasado, o revisor regenera).
+
+**Estado do worktree ao iniciar**
+```
+ M gates/allowlists/themeCompletenessPending.json
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+ M src/core/Design/presets/themes/aurora-veil.ts
+ M src/core/Design/presets/themes/data-terminal.ts
+ M src/core/Design/presets/themes/golden-hour.ts
+ M src/core/Design/presets/themes/neumorphic-mobile.ts
+ M src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap
+ M src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap
+?? specs/plan/anexos/plan-110-tema-data-terminal.md
+?? specs/plan/anexos/plan-110-tema-golden-hour.md
+?? specs/plan/anexos/plan-110-tema-neumorphic-mobile.md
+```
+Tudo isso é do lote C da `plan-110` (em curso); não li nem toquei nenhum desses arquivos. Durante a execução apareceu `?? specs/plan/anexos/plan-110-tema-aurora-veil.md`, da mesma execução paralela (casa com `plan-110-tema-*.md`); não é meu.
+
+**O que foi feito**
+- `src/components/atomic/hooks/useAtomicStyles.ts:15-23` — `CYBERPUNK_TEXT_COLORS` passa a ser `export` (o mapa já existia e era privado); o JSDoc diz que é a fonte única dos dois botões. Nenhum valor mudou.
+- `src/components/atomic/Buttons/SarakIconButton.tsx:4` importa o mapa; `:140-142`, no ramo `cyberpunk`, o ícone recebe `color` em linha com `CYBERPUNK_TEXT_COLORS[variant]` quando a variante tem cor própria — o mesmo desenho do `SarakButton` (`useAtomicStyles.ts:91-92`), sem segundo mapa. Primário → `--sarak-primary-color`, perigo → `--sarak-status-error-color`; secundário e fantasma não estão no mapa e ficam como estavam.
+- `src/components/atomic/Buttons/__tests__/SarakIconButton.test.tsx` — bloco novo: primário e perigo com fundo transparente e `color` igual à entrada do mapa (`it.each`); contraprova: secundário e fantasma sem cor em linha; e o primário fora do `cyberpunk` (`matte`) sem cor em linha.
+- `browser-tests/fixtures/harness-entry.tsx` — a cena existente `contraste-botoes` ganhou três sondas (`icone-primario`, `icone-perigo`, `icone-fantasma`); JSDoc da cena e da lista de cenas atualizados.
+- `browser-tests/contraste-do-que-faltava.spec.ts` — caso novo: nos recortes existentes `contraste-cyberpunk-claro` e `contraste-cyberpunk-escuro` (os dois modos), cada ícone tem fundo `rgba(0, 0, 0, 0)` e contraste ≥ 3:1 (`MIN_GRAPHIC_RATIO`, WCAG 1.4.11) do glifo contra o fundo composto. 6 casos.
+- `docs/migracoes.md` — subseção MAJOR "O botão de ícone passa a aparecer no estilo `cyberpunk`", dentro de `## 8.0.0`, depois da do lote 9.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/hooks/useAtomicStyles.ts` | alterado | `CYBERPUNK_TEXT_COLORS` exportado; JSDoc |
+| `src/components/atomic/Buttons/SarakIconButton.tsx` | alterado | o ícone das variantes sólidas lê o mapa no estilo `cyberpunk` |
+| `src/components/atomic/Buttons/__tests__/SarakIconButton.test.tsx` | alterado | 5 casos novos (2 + 2 contraprovas + 1 fora do `cyberpunk`) |
+| `browser-tests/fixtures/harness-entry.tsx` | alterado | 3 sondas de ícone na cena `contraste-botoes` |
+| `browser-tests/contraste-do-que-faltava.spec.ts` | alterado | 6 casos (3 variantes × 2 modos) e o cabeçalho |
+| `docs/migracoes.md` | alterado | nota MAJOR do lote |
+
+**Verificações executadas**
+- `npx vitest run src/components/atomic/Buttons src/components/atomic/hooks/__tests__/useAtomicStyles.test.ts` → 5 arquivos, 48/48.
+- **Navegador, numa cópia da árvore fora do repositório** (`git archive HEAD` extraído no scratchpad + os 5 arquivos de código e teste deste lote copiados por cima; junção para `node_modules`; `dist/index.js` da cópia refeito com `esbuild src/index.ts --bundle --format=esm --packages=external`, `dist/sarak.css` com `@tailwindcss/cli -i src/styles/sarak-base.css`; `PLAYWRIGHT_BROWSERS_PATH` absoluto do repositório; `chromium.launch()` sem `executablePath`). O `dist/` do repositório não foi tocado. `contraste-do-que-faltava.spec.ts` inteiro: **24/24** (os 18 de antes e os 6 novos).
+- **Mutação, na mesma cópia** (o `SarakIconButton.tsx` do `HEAD` de volta, `dist/index.js` refeito): caem **3 dos 6** casos novos — claro/perigo `1`, escuro/primário `1,074`, escuro/perigo `1,010`. Seguem verdes: os dois fantasmas (não dependem da correção: o texto já era a primária) e claro/primário, porque nesse recorte `--sarak-btn-primary-text` é `#04121a` (medido no navegador; cor do ícone sob a mutação `rgb(4, 18, 26)`), escuro sobre o corpo branco — passa por acaso, não pela correção. Com a mutação, o teste de componente também cai: 2 de 13 (primary e danger, `expected '' to be 'var(--sarak-primary-color, #19e3f0)'`).
+- Cópia desfeita: junção removida antes de apagar (o `Remove-Item` parou em caminho longo; terminei com `fs.rmSync`); `node_modules/react` do repositório conferido; `git status --short` idêntico antes e depois da cópia.
+- `npm run verify -- --tier=quick` → tudo `[OK]` (`tsc`, `audit:baseline --with-tsc`, o Anel 1, `guide:check`, `dev-kit:check`, Anel 0: 2385 linhas, 0 achados), **exceto `themes:catalog:check`**: `catalog.generated.ts` defasado pelos temas do lote C da `plan-110` (não toquei tema nem o catálogo). Rodei antes de escrever a nota de migração; depois dela, `guide:check` acusa `sarak-ui/docs/migracoes.md` (gerado; o revisor regenera) e `dev-kit:check` segue verde.
+- Não rodei: `npm run build`, a bateria do navegador contra o `dist/`, a suíte completa, `guide`/`dev-kit`.
+
+**Critérios de aceite (lote 7)**
+- [x] O ícone das variantes sólidas usa a mesma fonte de cor do `SarakButton`, sem segundo mapa — evidência: `useAtomicStyles.ts:19` (`export const CYBERPUNK_TEXT_COLORS`) e `SarakIconButton.tsx:4,140-142`.
+- [x] Teste de componente por variante — evidência: bloco "o ícone no estilo cyberpunk lê a mesma cor do SarakButton".
+- [x] Caso de navegador no harness existente, ≥ 3:1 nas três variantes, nos dois modos, com mutação em cópia fora do repositório — evidência: 6/6 com a correção; 3 caem com a mutação (os outros 3 explicados acima).
+- [x] Nenhum `defaultValue` mudou; nota MAJOR — evidência: `docs/migracoes.md`.
+- [ ] Caso contra o `dist/` real — motivo: build proibido nesta execução; é do revisor.
+
+**Decisões e suposições**
+- **"Primária, perigo e sucesso" × as variantes que o `SarakIconButton` tem.** O botão de ícone só tem `primary | secondary | ghost | danger`; não há `success`. Criar a variante seria opção nova de prop (§3.2, fora). Interpretação conservadora: o mapa (que tem `success`) é lido para qualquer variante, e a de sucesso entra sozinha se um dia existir; o caso de navegador mede três variantes do botão de ícone com fundo transparente no `cyberpunk`: primária e perigo (as do P23) e **fantasma** (contraprova de que nada regrediu).
+- **Por que não o secundário no caso de navegador:** medi e ele reprova (1,09:1 no recorte claro) por outra causa (em *Achados*); não é variante sólida e não passa pelo mapa.
+- O limiar de 3:1 é o que a plan pede (elemento gráfico), não o 4,5:1 dos botões de texto do mesmo spec.
+- Usei os recortes `contraste-cyberpunk-*` existentes (os mesmos do caso do `SarakButton`) em vez do tema `cyberpunk-neon`: os temas estão em mudança na execução paralela, e o recorte isola o estilo de botão.
+- A cor vai **em linha**, como no `SarakButton`; consequência registrada na nota: quem pinta o ícone por classe `text-*` no `cyberpunk` perde para a cor em linha.
+
+**Achados fora do escopo (não corrigidos)**
+- **Botão secundário no estilo `cyberpunk`, recorte claro: 1,09:1.** Nos dois recortes `contraste-cyberpunk-*` o `--text-muted` do `body` computa `rgba(242, 246, 251, 0.55)` (a reserva clara) também no **modo claro**, enquanto no recorte `contraste-claro` (mesmo modo, sem `cyberpunk`) ele é `#475569`. O secundário do `SarakIconButton` (`text-[var(--text-muted,…)]`) fica branco translúcido sobre branco. O `SarakButton` secundário usa a mesma classe e deve ter o mesmo resultado (não medi). Não sei se a causa é o recorte ou o motor; não investiguei.
+- No `cyberpunk`, o `SarakIconButton` desenha a borda com `var(--sarak-btn-neon-glow-color, …)` e o `SarakButton` com `design?.btnNeonGlowColor` cru: o mesmo token por dois caminhos. Não mexi (não é a cor do ícone).
+- `npm run themes:catalog:check` vermelho por `catalog.generated.ts` defasado (temas do lote C da `plan-110`).
+
+**Pendências / riscos**
+- Gerado defasado: `sarak-ui/docs/migracoes.md` (`npm run guide`; o revisor regenera). O `dist/` não foi reconstruído: os 6 casos novos só valem contra o `dist/` depois do `build`.
+- A tabela da §5.1 (P23 "aberta") é do revisor; não a editei. Movi o `status` para `🟠 Em revisão`.
+
+## Veredito — 2026-10-19 — lote 7 (P23) — 🟢 Aprovado; registro sem linha aberta
+
+**Diff conferido contra o resumo, sem divergência.** Fora do worktree do lote C da `plan-110` (que corria em paralelo, disjunto),
+o lote tocou só `useAtomicStyles.ts` (o mapa `CYBERPUNK_TEXT_COLORS` passa a `export`, valores iguais), `SarakIconButton.tsx`
+(no ramo `cyberpunk`, `color` em linha a partir do mesmo mapa, sem segundo mapa), o teste do componente, a cena
+`contraste-botoes` e o spec `contraste-do-que-faltava.spec.ts` (6 casos, 3:1 por WCAG 1.4.11) e a nota MAJOR em `docs/migracoes.md`.
+O `useAtomicStyles` não é reexportado por nenhum barril, então o `export` não muda a superfície pública. Nenhum `defaultValue` mudou.
+
+**Medido por mim**, depois de regenerar `themes:catalog`, `token-types`, `guide`, `dev-kit` e `plan-index`:
+- `verify --tier=quick` **verde** (Anel 1 inteiro, `tsc`, baseline, R36; Anel 0: 2.482 linhas, 0 achados) e `--tier=themes` **verde**.
+- `npx vitest run src/components/atomic/Buttons src/components/atomic/hooks src/features/DesignEngine/Canvas`: 44 arquivos, 197/197.
+- `npm run build` verde, e `contraste-do-que-faltava.spec.ts` **contra o `dist/` real: 24/24** (os 18 de antes e os 6 novos).
+- Mutação: a do executor, numa cópia fora do repositório, derruba 3 dos 6 casos de navegador e 2 de 13 de componente; os 3 que
+  ficam verdes têm a causa nomeada (o fantasma não depende da correção; o primário claro tem texto escuro sobre corpo branco). O
+  caso de componente afirma a cor do mapa, que só existe com a correção.
+
+**A variante de sucesso:** o `SarakIconButton` não tem `success`; criá-la seria prop nova, fora do escopo. A leitura pelo mapa a
+cobre se ela vier a existir. Aceito.
+
+**Achados do executor → `00-backlog`:** o recorte `contraste-cyberpunk-claro` (`harness-entry.tsx:287`) não declara `textColorMuted`
+e herda o padrão escuro, então o secundário não é medível nele (item 52); a borda do `cyberpunk` lê o mesmo token por dois
+caminhos (`SarakIconButton` pela variável, `SarakButton` pelo valor cru do `design`) (item 53). Nenhum dos dois é essencial.
+
+**P23 fechada.** Todas as linhas da §5.1 estão fechadas. A plan continua retida pela `plan-110` e sai com ela. A suíte completa e a
+bateria do navegador inteira rodam no fechamento da `plan-110` (lote 25).
+
+**Status: 🟢 Aprovada** (retida por `plan-110`).

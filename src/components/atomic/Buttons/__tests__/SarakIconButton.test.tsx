@@ -4,6 +4,7 @@ import { describe, it, expect } from 'vitest';
 import * as ComponentModule from '../SarakIconButton';
 import { SarakIconButton } from '../SarakIconButton';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
+import { CYBERPUNK_TEXT_COLORS } from '../../hooks/useAtomicStyles';
 
 describe('SarakIconButton', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -68,5 +69,30 @@ describe('SarakIconButton — leitores de btnGhostHoverBg, btnNeonPulseSpeed e b
         const button = montar({ btnStyleType: 'cyberpunk' });
         expect(button.style.backgroundColor).toBe('transparent');
         expect(button.style.borderRadius).toBe('0px');
+    });
+});
+
+describe('SarakIconButton — o ícone no estilo cyberpunk lê a mesma cor do SarakButton', () => {
+    const montar = (variant: 'primary' | 'secondary' | 'ghost' | 'danger', btnStyleType = 'cyberpunk') => {
+        render(
+            <SarakUIProvider config={{ btnStyleType }}>
+                <SarakIconButton variant={variant} icon={<span>x</span>} aria-label="ação" />
+            </SarakUIProvider>,
+        );
+        return screen.getByRole('button', { name: 'ação' });
+    };
+
+    it.each(['primary', 'danger'] as const)('%s: sem preenchimento, o ícone pinta na cor da própria variante', (variant) => {
+        const button = montar(variant);
+        expect(button.style.backgroundColor).toBe('transparent');
+        expect(button.style.color).toBe(CYBERPUNK_TEXT_COLORS[variant]);
+    });
+
+    it.each(['secondary', 'ghost'] as const)('CONTRAPROVA: %s não tem cor sólida e mantém a cor da classe', (variant) => {
+        expect(montar(variant).style.color).toBe('');
+    });
+
+    it('CONTRAPROVA: fora do cyberpunk o ícone primário não ganha cor inline', () => {
+        expect(montar('primary', 'matte').style.color).toBe('');
     });
 });
