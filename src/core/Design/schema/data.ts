@@ -12,7 +12,7 @@ export const DataSchema: ComponentSchema = {
             id: 'chartColorPalette',
             kind: 'aesthetic',
             modeDependent: true,
-            usage: "Define a primeira cor de série; as séries seguintes combinam as demais cores de marca.",
+            usage: "Define a cor âncora da primeira série; o motor deriva as séries seguintes das cores de marca. Confira as cores emitidas e seu contraste no gráfico: elas não são cópias literais das cores de status.",
             label: 'Paleta de Cores (Série)',
             type: 'color', // Futuramente pode ser um array, por enquanto cor base
             description: 'Cor base da primeira série de dados nos gráficos (linhas, barras, setores). É o ponto de partida da paleta usada pelo motor de gráficos para colorir séries — normalmente espelha a cor primária do sistema.',

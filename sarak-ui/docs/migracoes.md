@@ -10,6 +10,10 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+### Os 19 temas embarcados demonstram os eixos visuais da biblioteca
+
+**Classificação: MAJOR.** A coleção foi recomposta para cobrir estilos e capacidades distintos do Design Engine: 14 temas existentes foram refeitos e estes 5 ids foram adicionados — `editorial-ink`, `organic-clay`, `high-contrast`, `corporate-ledger` e `playful-pastel`. O tema visual padrão continua sendo `sarak-sovereign`. A aplicação carrega os temas embarcados sob demanda; depois de carregar um preset, valores de tema já salvos pelo consumidor vencem os valores do preset para as chaves que declaram. A derivação feita com `sarakDeriveThemeFromReference` preserva a contraparte e aplica os ajustes de marca nos dois modos.
+
 Itens de navegação com destino (`SarakMenuItem` e, por ele, `SarakShellNav` e o menu do `SarakAppChrome`)
 agora são âncoras `<a href>` em vez de `<button>`. Testes de ponta a ponta e seletores de consumidor que
 procuravam `role="button"`/`button` em um item de navegação devem procurar `role="link"`/`a`. Sem

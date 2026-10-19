@@ -267,7 +267,7 @@ export const CardSchema: ComponentSchema = {
             type: 'select',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: 'Desenha uma textura sobre a superfície de todo cartão e `.card`. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria.',
+            usage: 'Desenha uma textura sobre a superfície de todo cartão e `.card`; o tipo não muda com `mode` nem com a contraparte. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. `carbon` é preto fixo: prefira o escuro ou reduza `cardTextureOpacity` no claro.',
             interactsWith: ['cardTextureOpacity', 'textureColor'],
             description: 'Padrão visual sobreposto à superfície do card (mesmo catálogo de texturas de `atmosphere.ts` — grid, ruído, grão etc.). "Nenhuma" mantém a superfície lisa; qualquer outra opção adiciona caráter/textura ao card.',
             axis: 'texture',

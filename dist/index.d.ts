@@ -549,7 +549,7 @@ interface SarakPreferencesOptions {
  * Este módulo NÃO importa tema nenhum: ele está no fecho estático do barril, e
  * só o tema padrão pode estar lá (`boot.ts`).
  */
-declare const SARAK_THEME_PRESET_IDS: readonly ["sarak-sovereign", "cyberpunk-neon", "industrial-terminal", "neo-brutalism", "synthwave-retro", "nebula-space", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "golden-hour", "aurora-veil", "blueprint-protocol"];
+declare const SARAK_THEME_PRESET_IDS: readonly ["sarak-sovereign", "cyberpunk-neon", "industrial-terminal", "neo-brutalism", "synthwave-retro", "nebula-space", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "golden-hour", "aurora-veil", "blueprint-protocol", "editorial-ink", "organic-clay", "high-contrast", "corporate-ledger", "playful-pastel"];
 type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];
 interface SarakThemePreset {
     id: SarakThemePresetId;
@@ -949,8 +949,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "9756d5f";
-    readonly builtAt: "2026-10-19T04:56:20.941Z";
+    readonly baseCommitShort: "7393c4a";
+    readonly builtAt: "2026-10-19T15:41:07.334Z";
 };
 
 interface SarakDesignScopeProps {

@@ -217,7 +217,7 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'texture',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); é o principal traço de caráter da atmosfera. `none` não desenha camada e leva consigo a vinheta.",
+            usage: "Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); não muda com `mode` nem com a contraparte, então escolha um padrão legível nos dois modos. `carbon` desenha preto fixo: prefira o escuro ou use opacidade baixa no claro. `none` não desenha camada e leva consigo a vinheta.",
             interactsWith: ['textureOpacity', 'textureColor'],
             label: 'Textura Industrial (BG)',
             type: 'select',

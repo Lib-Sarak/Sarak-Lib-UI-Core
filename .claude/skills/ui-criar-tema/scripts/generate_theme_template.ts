@@ -1,117 +1,108 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { getScaffold, sarakGetAllDesignTokens } from '../../../../src/core/Design/master-map.ts';
+import type { SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
-// Define the schema dir using process.cwd() since we run from project root
-const schemaDir = path.join(process.cwd(), 'src/core/Design/schema');
-// `SARAK_THEME_OUT_DIR` troca a pasta de saída (o teste grava fora do repositório, numa pasta temporária).
-const targetDir = process.env.SARAK_THEME_OUT_DIR || path.join(process.cwd(), 'src/core/Design/presets/themes');
+export type ThemeMode = 'dark' | 'light';
 
-/**
- * Achado 39: tokens responsivos (`defaultValue: { mob, tab, desk }`) não são um valor
- * escalar — interpolá-los crus produz `[object Object]` e o gabarito não faz parse.
- * Achata para o eixo `desk`, a convenção que os temas embarcados já usam
- * (ex.: `sarak-sovereign.ts` grava `sidebarWidth: 240`, não o objeto responsivo).
- */
-function flattenResponsiveValue(value: unknown): unknown {
-    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-        const responsive = value as Record<string, unknown>;
-        return 'desk' in responsive ? responsive.desk : Object.values(responsive)[0];
-    }
-    return value;
-}
-
-async function generateTemplate() {
-    if (!fs.existsSync(schemaDir)) {
-        console.error(`❌ Erro: Diretório de Schema não encontrado em ${schemaDir}`);
-        process.exit(1);
-    }
-
-    // Extract the theme ID from arguments
-    const themeId = process.argv[2] || 'novo-tema-gerado';
-    const camelCaseName = themeId.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-    const targetFile = path.join(targetDir, `${themeId}.ts`);
-
-    if (fs.existsSync(targetFile)) {
-        console.error(`❌ Erro: O arquivo ${targetFile} já existe. Escolha outro ID ou exclua-o manualmente.`);
-        process.exit(1);
-    }
-
-    try {
-        const files = fs.readdirSync(schemaDir).filter(f => f.endsWith('.ts'));
-        
-        // We will build a complete object string
-        const properties: Record<string, any> = {};
-        
-        for (const file of files) {
-            const filePath = path.join(schemaDir, file);
-            
-            // Import the module dynamically
-            // Note: tsx will handle the .ts extension on the fly
-            const module = await import(`file://${filePath}`);
-            
-            // Find the exported ComponentSchema object
-            for (const key of Object.keys(module)) {
-                const schemaObj = module[key];
-                if (schemaObj && schemaObj.id && Array.isArray(schemaObj.tokens)) {
-                    // Extract all tokens
-                    for (const token of schemaObj.tokens) {
-                        if (token.id && token.defaultValue !== undefined) {
-                            properties[token.id] = flattenResponsiveValue(token.defaultValue);
-                        }
-                    }
-                }
-            }
-        }
-        
-        let designProps = '';
-        
-        if (Object.keys(properties).length > 0) {
-            for (const [key, value] of Object.entries(properties)) {
-                // If it's a string, wrap in quotes. Otherwise just stringify.
-                if (typeof value === 'string') {
-                    designProps += `        ${key}: '${value.replace(/'/g, "\\'")}',\n`;
-                } else {
-                    designProps += `        ${key}: ${value},\n`;
-                }
-            }
-        } else {
-            // Fallback warning if extraction fails
-            designProps = `        // ⚠️ O script não conseguiu extrair as propriedades do schema automaticamente.
-        mode: 'dark',
-        navigationStyle: 'sidebar',
-        primaryColor: '#00f2ff',\n`;
-        }
-
-        const templateContent = `import { ThemePreset } from './index';
-
-/**
- * Tema Gerado Automaticamente pela Skill Sarak-UI-criar-tema
- * 
- * Siga as instruções do workflow para preencher as variáveis abaixo.
- * NUNCA adicione propriedades que não estejam mapeadas no schema oficial.
- */
-export const ${camelCaseName}Theme: ThemePreset = {
-    id: '${themeId}',
-    name: 'Nome do Seu Tema',
-    description: 'Descrição detalhada do propósito e vibração visual deste tema.',
-    design: {
-${designProps.replace(/,\n$/, '\n')}    }
-};
-`;
-
-        if (!fs.existsSync(targetDir)) {
-            fs.mkdirSync(targetDir, { recursive: true });
-        }
-
-        fs.writeFileSync(targetFile, templateContent);
-        console.log(`✅ Sucesso! Template gerado em: ${targetFile}`);
-        console.log(`Foram extraídos ${Object.keys(properties).length} tokens com sucesso.`);
-        console.log(`Abra o arquivo e substitua os valores padrão para corresponder à sua nova identidade.`);
-        
-    } catch (error) {
-        console.error(`❌ Erro fatal durante a geração do template:`, error);
-        process.exit(1);
+function assertThemeId(themeId: string): void {
+    if (!/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(themeId)) {
+        throw new Error('O id deve usar kebab-case e começar com uma letra.');
     }
 }
 
-generateTemplate();
+function formatThemeName(themeId: string): string {
+    return themeId
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function serializeDesignEntries(entries: Record<string, unknown>): string {
+    return Object.entries(entries)
+        .map(([tokenId, value]) => '        ' + JSON.stringify(tokenId) + ': ' + JSON.stringify(value) + ',')
+        .join('\n');
+}
+
+export function buildThemeTemplateContent(themeId: string, nativeMode: ThemeMode = 'dark'): string {
+    assertThemeId(themeId);
+
+    const scaffold = getScaffold();
+    const aestheticTokens = sarakGetAllDesignTokens().filter((token) => token.kind === 'aesthetic' && token.id !== 'mode');
+    const designEntries: Record<string, unknown> = { mode: nativeMode };
+    const counterpartEntries: Record<string, unknown> = {};
+
+    for (const token of aestheticTokens) {
+        const defaultValue = scaffold[token.id];
+        if (defaultValue === undefined) continue;
+
+        designEntries[token.id] = defaultValue;
+        if (token.modeDependent) counterpartEntries[token.id] = defaultValue;
+    }
+
+    const componentName = themeId
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('');
+    const counterpart = serializeDesignEntries(counterpartEntries);
+
+    return [
+        "import type { SarakThemePreset } from './index';",
+        '',
+        'export const ' + componentName + 'Theme: SarakThemePreset = {',
+        '    id: ' + JSON.stringify(themeId) + " as SarakThemePreset['id'],",
+        '    name: ' + JSON.stringify(formatThemeName(themeId)) + ',',
+        "    description: 'Complete os eixos estéticos para a identidade visual desejada.',",
+        '    design: {',
+        serializeDesignEntries(designEntries),
+        '    },',
+        '    contraparte: {',
+        counterpart,
+        '    },',
+        '};',
+        '',
+    ].join('\n');
+}
+
+export function writeThemeTemplate(
+    themeId: string,
+    nativeMode: ThemeMode = 'dark',
+    targetDirectory = path.join(process.cwd(), 'src/core/Design/presets/themes'),
+): string {
+    assertThemeId(themeId);
+    const outputDirectory = path.resolve(targetDirectory);
+    const outputFile = path.join(outputDirectory, themeId + '.ts');
+
+    if (fs.existsSync(outputFile)) {
+        throw new Error('O arquivo ' + outputFile + ' já existe.');
+    }
+
+    fs.mkdirSync(outputDirectory, { recursive: true });
+    fs.writeFileSync(outputFile, buildThemeTemplateContent(themeId, nativeMode), 'utf8');
+    return outputFile;
+}
+
+async function main(): Promise<void> {
+    const themeId = process.argv[2];
+    const nativeMode = process.argv[3] ?? 'dark';
+
+    if (!themeId || (nativeMode !== 'dark' && nativeMode !== 'light')) {
+        throw new Error('Uso: npx tsx generate_theme_template.ts <id-do-tema> [dark|light]');
+    }
+
+    console.log('Template estético gerado em: ' + writeThemeTemplate(themeId, nativeMode));
+}
+
+function isDirectExecution(): boolean {
+    const scriptPath = process.argv[1];
+    return Boolean(scriptPath) && import.meta.url === pathToFileURL(path.resolve(scriptPath!)).href;
+}
+
+if (isDirectExecution()) {
+    main().catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Falha ao gerar o tema: ' + message);
+        process.exitCode = 1;
+    });
+}

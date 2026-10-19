@@ -12,7 +12,7 @@ export const MediaSchema: ComponentSchema = {
             id: 'globalBackgroundImageUrl',
             kind: 'aesthetic',
             modeDependent: true,
-            usage: "Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
+            usage: "Imagem desenhada atrás de todo o conteúdo numa camada própria do Provider; ela preenche a camada com recorte (`cover`), então confira a composição em telas e alturas diferentes. Vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
             interactsWith: ['globalBackgroundOpacity', 'globalBackgroundBlur'],
             label: 'URL da Imagem de Fundo',
             type: 'image',

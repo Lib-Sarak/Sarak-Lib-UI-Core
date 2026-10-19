@@ -469,7 +469,11 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 | estado vazio, esqueleto, fluxo, matriz | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria e desfoque têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
 | navegação, cromo, slots e marca | `SarakAppChrome` (com `SarakShellNav` e os widgets) | lateral ou topo, barra do celular, recolher, cores, sombra, marca e posição de cada widget vêm de `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` |
 | escolhas do usuário (modo, fonte, orientação, idioma) | widgets do cromo e `useSarakPreferences` | o tema decide se cada uma fica fixa, no menu ⚙ ou não é oferecida (`preference*Position`); a preferência vence o tema |
-| i18n da lib · persistência do tema · modo embarcado · painel · tema derivado da marca | ⏳ preenchido no lote final da análise de tokens | procure em `catalog.json` antes de construir |
+| idioma da lib | `language` no Provider e nos widgets de preferências | os textos internos acompanham a língua configurada; não replique mensagens |
+| persistência local e no servidor | `localStorage` no Provider · `options.persistence.onSave`/`onLoad` | a aplicação controla a gravação remota e conserva o payload recebido |
+| modo embarcado | `options={{ mode: 'embedded' }}` | o estilo da lib fica escopado à raiz do Provider |
+| painel e exportação | `SarakCustomizationPanel` · Exportar → Exportar JSON | a central edita ao vivo; a aplicação salva ou envia o JSON exportado |
+| derivar tema para identidade do cliente | `sarakDeriveThemeFromReference` | parte de um preset completo, sobrescreve tokens de marca e mantém a contraparte |
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
 a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção

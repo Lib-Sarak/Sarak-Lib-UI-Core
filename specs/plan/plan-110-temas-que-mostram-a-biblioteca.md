@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Elevar o conjunto de temas embarcados ao padrao que a biblioteca entrega, e ensinar o importador a extrair isso"
 objetivo: "Fazer os temas embarcados da lib, os 14 atuais refeitos e 5 novos, mostrarem do comeco ao fim o que o Design Engine sabe fazer, cada um com todo token estetico projetado nos dois modos, com direcao de arte de conjunto, valores padrao dos tokens redefinidos a partir do tema padrao, legiveis nos dois modos, provados por medicao e por vitrine aprovada pelo dono, e a documentacao de criar tema enriquecida"
 dominio: "Design Engine / Temas embarcados / Design e UX"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "temas", "design", "ux", "design-engine", "direcao-de-arte"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]", "[[12-kit-do-consumidor]]", "[[022-tema-sob-demanda]]"]
@@ -320,10 +320,33 @@ permite). As regras 7.1 a 7.5 acima valem, **menos** onde esta seção disser o 
 25.1. Cobertura do **conjunto**: os 19 usam juntos pelo menos 15 texturas de cartão, 10 fontes, as 3 famílias de
 ícone com pelo menos 4 pesos, e nenhum par repete a mesma combinação de textura + estilo de botão + fonte de título
 (teste, com mutação); `themes:diversity` verde. (O critério "4 modos de gradiente" volta, porque o gradiente agora
-desenha — D6 do lote 0 está superada.)
-25.1b. **Consolidação das lições dos temas:** ler os 18 anexos `plan-110-tema-<id>.md` e aplicar **uma vez**, e sem repetir, na skill
-`ui-criar-tema`, no GUIA do importador, no mapa "o que a lib já faz" e na nota de `docs/migracoes.md`; reescrever ou aposentar
-o `generate_theme_template.ts` (backlog) e fechar o anexo de direção com as notas de conceito.
+desenha — D6 do lote 0 está superada.) O teste mora em `src/core/Design/presets/themes/__tests__/` e itera `SARAK_ALL_THEMES`.
+*Medido pelo revisor em 2026-10-19:* os 19 já cumprem (15 texturas de cartão, 15 fontes de título, 3 famílias com 6 pesos, os 4
+modos de gradiente, nenhuma combinação repetida), então o lote 25 **não toca tema**: o teste trava o que existe.
+25.1b. **Consolidação das lições dos temas:** ler os 17 anexos `plan-110-tema-<id>.md` (lotes 8 a 24) e as lições dos lotes 6 e 7
+já registradas na skill, e aplicar **uma vez**, e sem repetir, na skill `ui-criar-tema`, no GUIA do importador (autoria de
+`sarak-ui/GUIA-FRONTEND.md` e a fonte do kit em `.agents/skills/ui-integra-consumidor/`), no mapa "o que a lib já faz", no `usage`
+do token quando a lição é sobre um token, e numa nota MAJOR única dos temas em `docs/migracoes.md` (`## 8.0.0`: os 14 refeitos,
+os 5 novos com os ids, o padrão estético = `sarak-sovereign`, e que valor salvo vence o embarcado). A coluna "destino proposto" de
+cada anexo é o ponto de partida; item que já está na skill não se repete (R17). **O anexo de direção não se reescreve:** ele e os
+anexos de tema saem com a plan na síntese, e o mapa do conjunto (id → conceito → modo nativo) vai para a `09` pelo revisor; a nota de
+conceito curta de cada tema entra na seção "os 19 temas como arquétipos" do guia (25.2).
+25.1c. **O que o lote 25 absorve do `00-backlog`** (decisão do revisor, 2026-10-19; os itens saíram de lá):
+- `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` escreve todo token (funcional inclusive), não traz `contraparte`
+  e importa `ThemePreset`, que não existe (`SarakThemePreset`): **aposentar** o gerador (o ponto de partida real é copiar um tema
+  embarcado sobre `getScaffold`) e tirar da skill toda instrução que o usa; ou reescrevê-lo para gerar só estéticos + `contraparte`
+  com os que carregam modo, com teste. Escolha justificada no resumo.
+- A textura `carbon` (`src/styles/_atmosphere.css:240-262`) desenha em preto fixo e não acompanha o modo; o CSS do motor está fora
+  (§3.2): **documentar** no `usage` de `texture` e na skill (serve ao escuro, ou ao claro com `textureOpacity` baixa).
+- `texture` não carrega modo (`schema/atmosphere.ts`): **fica assim**; a skill e o guia ensinam a escolher uma textura que sirva aos
+  dois modos (as fichas que pediam outra no claro se resolveram assim nos lotes B a D).
+- `browser-tests/generate-showcase.mts` não passa `baseUrl` para `dist/fonts` (a vitrine contra o `dist/` mostra os títulos na
+  reserva) e `browser-tests/fixtures/showcase-entry.tsx:193` fixa `type="area"` no gráfico (o `chartType` do tema nunca aparece):
+  **corrigir os dois**, para que a vitrine do 25.4 mostre a fonte e o gráfico de cada tema.
+- `gates/scripts/audit/verify_diversity.ts:241-247`, critério 8 do modo `--new`, exige variar `navigationStyle`, que é funcional e
+  nenhum tema declara: **retirar** o critério (ou trocá-lo por um eixo estético), com o teste `verify_diversity.test.ts` acompanhando.
+- **Fontes:** o "Google Fonts offline" da lista de armadilhas do 25.2 está superado; as fontes vêm embarcadas em `dist/fonts`
+  (`09` §4.4.4, ADR 023). O guia ensina o que a `09` diz, não o que esta plan dizia antes.
 25.2. **Guia do importador consolidado** (kit e skills), com exemplos tirados dos temas reais:
 - **Do cliente ao tema:** da identidade visual (marca, tipografia, cantos, densidade, tom, movimento) aos pilares e
   tokens que a carregam, com a ordem de decisão recomendada;
@@ -334,8 +357,19 @@ o `generate_theme_template.ts` (backlog) e fechar o anexo de direção com as no
 - **O que a lib já faz** (o mapa, consolidado);
 - o JSON completo de um tema como modelo, e **como exportar do painel** e colar.
 25.3. **Roteiro de validação para o importador** (documento entregue ao dono): o que testar em cada tema e em cada
-token-chave, em desktop e celular, nos dois modos, e como reportar — para que o teste na rc gere correção mapeada.
-25.4. Vitrine dos 19 temas × 2 modos × desktop e celular, gerada; **conferência final do revisor**.
+token-chave, em desktop e celular, nos dois modos, e como reportar — para que o teste na rc gere correção mapeada. Mora em
+`docs/roteiro-de-validacao-dos-temas.md` (fica depois da síntese: serve a esta rc e às próximas).
+25.4. Vitrine dos 19 temas × 2 modos × desktop e celular, gerada; **conferência final do revisor**. Como nenhuma outra execução
+corre junto, o executor do lote 25 roda **uma vez, no fim**, depois de todas as edições: `npm run build` e `npm run themes:showcase`
+(regravam `dist/`, os dois `buildInfo.ts` e `browser-tests/showcase-output/`: normal), e confere que a vitrine mostra as fontes e o
+tipo de gráfico de cada tema. Suíte completa, bateria inteira do navegador e `verify --tier=full` são do revisor.
+
+**Lote 25 — o que o executor toca:** a skill `ui-criar-tema` (inclusive `scripts/`), `sarak-ui/GUIA-FRONTEND.md` (autoria),
+`.agents/skills/ui-integra-consumidor/`, o `usage` de tokens em `src/core/Design/schema/` (só metadado; nenhum token, opção,
+`defaultValue` ou leitor novo), `docs/migracoes.md`, `docs/roteiro-de-validacao-dos-temas.md` (novo), o teste de cobertura do
+conjunto, `browser-tests/generate-showcase.mts` e `browser-tests/fixtures/showcase-entry.tsx`, `gates/scripts/audit/verify_diversity.ts`
+e o teste dele, e os gerados (`npm run guide`, `npm run dev-kit`, `npm run token-types`, nesta ordem, por último). **Não toca:** tema,
+componente, CSS do motor, anexo de direção, as specs fixas (a síntese é do revisor).
 
 # 6. Critérios de aceite
 
@@ -372,6 +406,8 @@ token-chave, em desktop e celular, nos dois modos, e como reportar — para que 
   o que foi ensinado ao schema e ao kit.
 - Lote 25: o guia lido de ponta a ponta como se fosse um importador (alguém consegue ir do cliente ao tema e evitar
   recriar o que a lib tem?); o roteiro de validação.
+- **Gate:** teste — a cobertura do conjunto dos 19 temas (25.1) é invariante só do conjunto de temas embarcados: teste em
+  `src/core/Design/presets/themes/__tests__/`, com mutação; nenhuma regra de gate nova.
 - `git diff --stat` → só a §3.1 e os gerados.
 - `npm run build` + `npm run cromo-css-real:check` + `npm run themes:showcase` · `npm run boot:measure` ·
   `npm run audit` · `npm run themes:diversity` · `npx vitest run` · `npx tsc --noEmit` ·
@@ -1384,4 +1420,180 @@ batem com as fichas e se distinguem entre si e dos 14 atuais. Copiei as 50 image
 pesos de 3.162 a 3.796 B gzip. Segue o lote 25 (conjunto, consolidação da documentação, roteiro de validação, vitrine final), com o
 `00-backlog` 43, 44, 47, 48, 51, 54 e 55 a absorver.
 
-**Status: 🟡 Em execução (lote 25).**
+## Relato do executor — lote 25 — 2026-10-19
+
+**25.1 — cobertura e diversidade:** adicionado teste do conjunto `SARAK_ALL_THEMES` para os limiares estéticos, unicidade da combinação textura/tipo de botão/fonte de título e detecção por mutação. Removido `navigationStyle` da medição e dos critérios de diversidade; os cinco temas novos passam nos 8 critérios.
+
+**25.1b/c — consolidação:** atualizadas as skills de criação de tema e integração do consumidor, o mapa “o que a lib já faz”, o registro MAJOR da 8.0.0 e os usos dos tokens relacionados a cor, textura, gráficos, navegação e arte de fundo. O gerador agora lê o scaffold vivo, serializa valores responsivos, omite tokens funcionais e emite uma contraparte apenas com tokens estéticos dependentes do modo; teste cobre saída, validação de id, colisão e limpeza do diretório temporário.
+
+**25.2 — guia do importador:** adicionados ordem identidade → arquétipo → tokens, os 19 temas como referências de capacidades, receitas mínima e completa, envelope JSON e fluxo de exportação/uso de `customThemes`. O mapa de funcionalidades foi preenchido com idioma, persistência, modo embarcado, painel e derivação de tema.
+
+**25.3 — roteiro de RC:** criado `docs/roteiro-de-validacao-dos-temas.md`, com matriz de tema × modo × desktop/celular, tokens e superfícies a observar e modelo de registro de achados.
+
+**25.4 — vitrine:** `showcase-entry.tsx` agora deixa `SarakChartEngine` receber `chartType` do tema e o harness passa `dist/fonts` como `baseUrl`. A captura confirma fonte de título exata carregada e valida `chartType` contra o schema para cada preset. `npm run themes:showcase` gerou 190 capturas, 0 falhas.
+
+**Verificações:** 35/35 testes direcionados; 15/15 testes de `SarakChartEngine`; completude 19/19, sem exceções; diversidade 8/8; `guide:check`, `dev-kit:check` e `token-types:check` verdes. `npm run build` completo passou e gerou o pacote, fontes e CSS. A primeira execução sem acesso ampliado foi bloqueada pelo sandbox ao ler diretórios pais; a repetição autorizada concluiu. O diff de código e documentação passa `git diff --check` fora de `dist/`; a saída minificada gerada em `dist/index.cjs` contém espaço final.
+
+**Estado prévio preservado:** `specs/00-backlog.md` já estava modificado, este plano já continha o registro dos lotes anteriores e `.claude/settings.local.json` já era não rastreado antes da primeira edição. Nenhum tema embarcado, componente ou CSS foi alterado neste lote.
+
+## Veredito — 2026-10-19 — lote 25 — 🔴 Reprovado (1 achado, mecânico)
+
+**O que está certo (conferido):** o diff fica no bloco "Lote 25 — o que o executor toca": a skill `ui-criar-tema` (o gerador
+reescrito para emitir só estéticos e a `contraparte` com os que carregam modo, com teste), a skill `ui-integra-consumidor`, o GUIA
+(do cliente ao tema, os 19 arquétipos, receitas, envelope JSON, exportar e `customThemes`, o mapa "o que a lib já faz"), o `usage` de
+sete tokens (só metadado: `texture` e `cardTextureType` sem modo, `carbon`, primária como texto, paleta derivada, arte de fundo com
+`cover`, item ativo), a nota MAJOR dos temas em `docs/migracoes.md`, `docs/roteiro-de-validacao-dos-temas.md`, o teste
+`themeSetCoverage.test.ts`, a vitrine (fonte por `baseUrl` e `chartType` do tema) e o critério 8 retirado de `verify_diversity.ts` com
+o teste acompanhando. Nenhum tema, componente ou CSS do motor tocado.
+**Medido por mim:** `npm run verify -- --tier=full`: `tsc`, **suíte completa (`npx vitest run`, 1.544 s) verde**, `audit:baseline
+--with-tsc`, Anel 1 e Anel 0 (0 achados) verdes, **exceto o R36**; bateria inteira do navegador contra o `dist/` do executor:
+**409 passaram, 0 falharam** (15,5 min).
+
+**Achado 1 — R36:** `node gates/scripts/contrato/check-trail-citation.mjs` falha com duas linhas reescritas que citam o rastro:
+`gates/scripts/audit/verify_diversity.ts:4` ("o que a `plan-25` pede") e `:156` ("da §3.3 do plan-25"). O pre-commit barra o commit.
+**Correção:** reescrever os dois comentários sem citar plan, explicando a decisão no próprio texto ou citando a spec fixa dona do fato
+(`specs/specs/09-temas-e-presets.md` §5.2); no mesmo comentário da linha 4, o número de tokens ("422") está vencido: troque pelo
+que é verdade sem número fixo (R17). Rodar `node gates/scripts/contrato/check-trail-citation.mjs` e
+`npx vitest run gates/scripts/audit/__tests__/verify_diversity.test.ts` verdes.
+
+**Também na correção:** o relato termina com "Status: 🔵 Em revisão"; o status de entrega do executor é 🟠 no frontmatter, e o corpo
+não carrega status.
+
+**Status: 🔵 Em correção** (só o achado 1).
+
+
+## Resumo da execução — 2026-10-19
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+ M .agents/skills/ui-criar-tema/SKILL.md
+ M .agents/skills/ui-criar-tema/references/examples.md
+ M .agents/skills/ui-criar-tema/references/liberdade-e-restricao.md
+ M .agents/skills/ui-criar-tema/scripts/__tests__/generate_theme_template.test.ts
+ M .agents/skills/ui-criar-tema/scripts/generate_theme_template.ts
+ M .agents/skills/ui-integra-consumidor/SKILL.md
+ M .claude/skills/ui-criar-tema/SKILL.md
+ M .claude/skills/ui-criar-tema/references/examples.md
+ M .claude/skills/ui-criar-tema/references/liberdade-e-restricao.md
+ M .claude/skills/ui-criar-tema/scripts/__tests__/generate_theme_template.test.ts
+ M .claude/skills/ui-criar-tema/scripts/generate_theme_template.ts
+ M .claude/skills/ui-integra-consumidor/SKILL.md
+ M browser-tests/fixtures/showcase-entry.tsx
+ M browser-tests/generate-showcase.mts
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-AVBP4P3O.js
+ D dist/SarakChartEngine-245IQTHM.js
+ D dist/SarakChatEngine-IKRCFKTW.js
+ D dist/SarakDataTableImpl-N6AROXAD.js
+ D dist/SarakFlowEngine-SU7QSVZ4.js
+ D dist/SarakKanbanImpl-XCIDVKDX.js
+ D dist/SarakMarkdownRendererImpl-A3TN7RTH.js
+ D dist/SarakPDFViewerImpl-STYSUINU.js
+ D dist/chunk-3XIWWYBE.js
+ D dist/chunk-BKN2ZGZ7.js
+ D dist/chunk-C3QVTN32.js
+ D dist/chunk-C5GXMXWA.js
+ D dist/chunk-GYLC2U2Y.js
+ D dist/chunk-JJ3VPVAY.js
+ D dist/chunk-NMAKJBKI.js
+ D dist/chunk-PT3O4R4D.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M docs/migracoes.md
+ M gates/scripts/audit/__tests__/verify_diversity.test.ts
+ M gates/scripts/audit/verify_diversity.ts
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M sarak-ui/skill/SKILL.md
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/plan/plan-110-temas-que-mostram-a-biblioteca.md
+ M src/buildInfo.ts
+ M src/core/Design/schema/atmosphere.ts
+ M src/core/Design/schema/cards.ts
+ M src/core/Design/schema/colors.ts
+ M src/core/Design/schema/data.ts
+ M src/core/Design/schema/media.ts
+ M src/core/Design/schema/navigation.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/Provider/generated/design-token-docs.json
+?? .claude/settings.local.json
+?? dist/CustomizationPanelImpl-L2LLAF3P.js
+?? dist/SarakChartEngine-7NOU5D3T.js
+?? dist/SarakChatEngine-L4H2RKVO.js
+?? dist/SarakDataTableImpl-BANHNS33.js
+?? dist/SarakFlowEngine-EKCZDIFD.js
+?? dist/SarakKanbanImpl-LRM7GXDO.js
+?? dist/SarakMarkdownRendererImpl-3V4UOD2X.js
+?? dist/SarakPDFViewerImpl-UAHGPRJU.js
+?? dist/chunk-4RQYJEMK.js
+?? dist/chunk-7RSMZBB3.js
+?? dist/chunk-H4Z7EBHO.js
+?? dist/chunk-I7BCBQYB.js
+?? dist/chunk-KU5544DT.js
+?? dist/chunk-KZWJQFAJ.js
+?? dist/chunk-VSJYWMDF.js
+?? dist/chunk-X4ROZKWO.js
+?? dist/corporate-ledger-N4IBTDHN.js
+?? dist/editorial-ink-S7VLA6IL.js
+?? dist/high-contrast-LCAD4WVN.js
+?? dist/organic-clay-P7AUF57R.js
+?? dist/playful-pastel-VYVPN3WX.js
+?? docs/roteiro-de-validacao-dos-temas.md
+?? specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? src/core/Design/presets/themes/__tests__/themeSetCoverage.test.ts
+```
+
+**O que foi feito**
+- `gates/scripts/audit/verify_diversity.ts` — os dois comentários acusados deixaram de citar a plan; removida a contagem fixa de tokens.
+- `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` — status de entrega movido para 🟠 no frontmatter e linha de status do relato removida.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/verify_diversity.ts` | alterado | Comentários explicam o recorte da métrica sem citar plan ou fixar a contagem de tokens. |
+| `specs/plan/plan-110-temas-que-mostram-a-biblioteca.md` | alterado | Status de entrega atualizado; resumo desta correção anexado. |
+
+**Verificações executadas**
+- `node gates/scripts/contrato/check-trail-citation.mjs` → passou; nenhuma linha adicionada cita plan, veredito ou achado de veredito.
+- `npx.cmd vitest run gates/scripts/audit/__tests__/verify_diversity.test.ts` → 1 arquivo e 30 testes passaram.
+
+**Critérios de aceite**
+- [x] Os dois comentários não citam a plan e a contagem fixa foi removida — gate R36 passou.
+- [x] O teste de diversidade passou — 30/30.
+- [x] O status do executor está em 🟠 no frontmatter; o relato não carrega status de entrega.
+
+**Decisões e suposições**
+- Corrigi somente o achado 1 do veredito de 2026-10-19.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Nenhum identificado nesta correção.
+
+## Veredito — 2026-10-19 — correção 1 (lote 25) — 🟢 Aprovado; plan concluída
+
+**Achado 1 fechado:** os dois comentários de `gates/scripts/audit/verify_diversity.ts` (o bloco de limites e o dos critérios) não
+citam plan e não fixam número de tokens; `node gates/scripts/contrato/check-trail-citation.mjs` verde e
+`verify_diversity.test.ts` 30/30 (medido por mim). O status de entrega está no frontmatter e o relato não carrega status. O resto do
+lote 25 já tinha passado em `verify --tier=full` (suíte completa, `tsc`, baseline com `tsc`, Anel 1, Anel 0) e na bateria inteira
+do navegador (409/409); a correção só mexeu em comentário.
+
+**A plan-110 está concluída:** os 19 temas recriados e conferidos nas capturas (galeria do dono: 19 temas, 191 imagens), a trava de
+completude e a de cobertura do conjunto, os padrões estéticos = `sarak-sovereign`, todo token documentado no schema (`token-docs:check` verde), o kit do
+importador consolidado e o roteiro de validação. A síntese (com a `plan-117`, retida por esta) espera a autorização do dono.
+
+**Status: 🟢 Aprovada.**

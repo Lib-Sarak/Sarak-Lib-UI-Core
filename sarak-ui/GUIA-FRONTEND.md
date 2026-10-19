@@ -455,10 +455,84 @@ const TEMAS = [
   }),
   sarakDeriveThemeFromReference('sarak-sovereign', {
     id: 'marca-escuro', name: 'Marca (escuro)',
-    design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
+  design: { primaryColor: '#38bdf8', accentColor: '#38bdf8' },
   }),
 ];
 ```
+
+### Importe por identidade visual
+
+Escolha a base pela marca e pelo contexto do produto; depois ajuste os tokens, nesta ordem:
+
+1. **Identidade do cliente:** nome, logotipo e modo nativo ficam na configuração do consumidor e sobrevivem à troca de tema.
+2. **Direção visual:** escolha o arquétipo abaixo que mais se aproxima da marca. Os 19 temas embarcados são exemplos de capacidades; `SARAK_THEME_CATALOG` continua sendo a fonte viva para consultar os ids disponíveis.
+3. **Tokens de marca:** derive do preset completo e sobrescreva `primaryColor`, `accentColor` e os tokens de marca que a identidade pedir. Confira contraste nas duas aparências.
+4. **Ajustes de superfície:** só então refine tipografia, cartões, botões, fundo e gráficos. Preserve a `contraparte` gerada pela derivação.
+
+| Arquétipo embarcado | Demonstra |
+| --- | --- |
+| `sarak-sovereign` | referência completa; vidro, atmosfera, identidade e contraparte (`surfaceMaterial`, `texture`, `contraparte`) |
+| `cyberpunk-neon` | cor neon com contraste controlado, quinas e botão wireframe (`primaryColor`, `cardGeometricCut`, `btnStyleType`) |
+| `industrial-terminal` | material industrial, alto contraste e movimento mecânico (`cardTextureType`, `btnStyleType`, `motion*`) |
+| `neo-brutalism` | papel claro, contorno grosso e sombra dura (`cardBorderWidth`, `cardShadow*`, `borderRadius`) |
+| `synthwave-retro` | arte vetorial, grade e acentos luminosos (`globalBackgroundImageUrl`, `bgGradient*`, `texture`) |
+| `nebula-space` | vidro profundo, raios grandes e transição longa (`cardBackdropBlur`, `cardBorderRadius`, `pageTransitionType`) |
+| `kinetic-flow` | movimento elástico e foco luminoso (`motionEase*`, `cardHoverGlow`, `cardInnerGlow*`) |
+| `cyber-retro-wave` | acabamento prismático e cromo de inspiração Y2K (`texture`, `btnStyleType`, `iconFamily`) |
+| `minimalist-airy` | referência clara com espaço e leitura de conteúdo (`layoutDensity`, `layoutPadding`, `headingFont`) |
+| `data-terminal` | caderno técnico compacto e monoespaçado (`layoutDensity`, `monoFont`, `chartType`) |
+| `neumorphic-mobile` | superfície tátil e controles amplos (`surfaceMaterial`, `cardShadow*`, `btnStyleType`) |
+| `golden-hour` | papel quente, tipografia editorial e grão (`headingFont`, `texture`, `textureOpacity`) |
+| `aurora-veil` | vidro claro e aurora difusa (`cardBackdropBlur`, `bgGradient*`, `surfaceMaterial`) |
+| `blueprint-protocol` | grade técnica, cotas e marcação de revisão (`texture`, `monoFont`, `borderStyle`) |
+| `editorial-ink` | coluna editorial, serifada e espaçosa (`headingFont`, `bodySize`, `maxContentWidth`) |
+| `organic-clay` | material terroso, contorno orgânico e calma tátil (`cardTextureType`, `surfaceMaterial`, `borderRadius`) |
+| `high-contrast` | extremos tonais, leitura ampliada e contornos definidos (`bodySize`, `cardBorderWidth`, pares de contraste) |
+| `corporate-ledger` | tabela densa e relatório de negócios (`layoutDensity`, `table*`, `chartColorPalette`) |
+| `playful-pastel` | cor pastel, formas macias e pequenos gestos de movimento (`primaryColor`, `cardBorderRadius`, `motion*`) |
+
+Os nomes ajudam a escolher um ponto de partida; confirme os ids, amostras e modos do catálogo no runtime. A vitrine gerada mede cada preset nas duas aparências e nos tamanhos desktop e celular.
+
+### Receita mínima e receita completa
+
+**Mínima:** derive de um preset completo e troque só os dois tokens de marca. A derivação preserva tipografia, geometria e a contraparte:
+
+```tsx
+const temaCliente = sarakDeriveThemeFromReference('sarak-sovereign', {
+  id: 'marca-acme',
+  name: 'Acme',
+  design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
+});
+
+<SarakUIProvider customThemes={[temaCliente]} initialTheme="marca-acme">
+  <App />
+</SarakUIProvider>
+```
+
+**Completa:** exporte um tema no `SarakCustomizationPanel` e use o objeto inteiro como ponto de partida. O formato do arquivo é:
+
+```json
+{
+  "id": "marca-acme",
+  "name": "Acme",
+  "description": "Tema da instalação Acme",
+  "design": {
+    "mode": "dark",
+    "primaryColor": "#2563eb",
+    "accentColor": "#2563eb",
+    "headingFont": "'Inter', sans-serif",
+    "cardBorderRadius": 12,
+    "btnStyleType": "matte"
+  },
+  "contraparte": {
+    "colorBgBody": "#f7f8fa",
+    "textColorMaster": "#17202c",
+    "colorBgModal": "#ffffff"
+  }
+}
+```
+
+Esse é o envelope completo; os campos de `design` são tokens estéticos declarados e os omitidos usam os padrões vivos do schema. A contraparte também é parcial: declare nela apenas os valores que precisam mudar no modo oposto. Para exportar, abra **Exportar → Exportar JSON** no painel, salve o arquivo no repositório, importe-o na coleção `customThemes` e selecione seu `id` em `initialTheme`. O painel não grava no backend; persista o payload exportado pela aplicação se precisar compartilhá-lo entre usuários.
 
 - **Nunca monte um tema do zero** com um punhado de chaves de cor: eixos omitidos (fonte, cromo,
   raio, espaçamento) simplesmente não mudam, e o sintoma vira "troquei o tema e a fonte continuou
@@ -592,9 +666,9 @@ de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor gr
 - **Registrar não muda o que o tema aceita.** A família registrada entra no seletor do painel e vale em qualquer token
   de fonte; uma pilha segura como `'Georgia, serif'` vale sem registro. Registrar é o que faz a lib carregar o arquivo
   e listá-la.
-- **Privacidade e política de segurança de conteúdo:** no padrão, o IP do usuário não vai a um terceiro para desenhar
-  texto (LGPD) e a tipografia funciona offline. A diretiva é `font-src 'self'` (mais a origem do `baseUrl`, se for
-  outra); os domínios do Google só com `'google'`.
+- **Privacidade e política de segurança de conteúdo:** com `'bundled'` (o padrão), o IP do usuário não vai a um
+  terceiro para desenhar texto (LGPD) e a tipografia funciona offline quando os arquivos locais estão disponíveis. A
+  diretiva é `font-src 'self'` (mais a origem do `baseUrl`, se for outra); os domínios do Google só com `'google'`.
 - **Fonte que não carregou avisa:** `[Sarak:UI] A fonte "<família>" não carregou (origem tentada: …)` no console,
   uma vez por família, e a página segue com a genérica da pilha.
 
@@ -649,8 +723,8 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 > acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. O lote 3
 > acrescenta fundo, vidro, sombra, rolagem, movimento, camadas e os componentes especializados, **medidos em
 > navegador** (o que cada valor mudou na tela, não só quem o lê). O lote 4 acrescenta o cromo, a estrutura, a marca e as
-> preferências do usuário (§6.8). As
-> necessidades que ainda estão **⏳** não foram abertas token a token; procure no catálogo antes de construir.
+> preferências do usuário (§6.8). Neste mapa, calendário, Gantt e Kanban continuam pendentes; para outras necessidades,
+> consulte o catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
 | --- | --- | --- |
@@ -665,7 +739,7 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | tipografia e cores da interface | `SarakTypography` · tokens `text*` e `color*` | família, escala, peso, espaçamento, halo e cores vêm do tema; as cores têm valores para os dois modos |
 | ação principal ou botão de ícone | `SarakButton` · `SarakIconButton` | variantes, ícones, largura, raio, brilho e vidro seguem os tokens de botão |
 | campo, seleção ou alternância | `SarakInput` · `SarakSelect` · `SarakSwitch` | foco, fundo, borda, ícone, espaçamento e estilos do alternador acompanham o tema |
-| gráfico de dados | `SarakChartEngine` | paleta, grade, dicas, espessura e suavização são configuráveis; a prop `type` pode escolher a forma adequada aos dados |
+| gráfico de dados | `SarakChartEngine` | paleta, grade, dicas, espessura e suavização são configuráveis; sem a prop `type`, o `chartType` do tema escolhe a forma |
 | conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e limites de largura já têm tokens |
 | estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
 | fundo da página com gradiente, textura, grão, vinheta ou imagem | o Provider, pelos tokens `bgGradient*`, `texture*`, `bgNoise*`, `vignette*` e `globalBackground*` | as camadas ficam atrás do conteúdo e seguem o modo; um `div` fixo seu com imagem disputa camada e fica fora da contraparte |
@@ -677,10 +751,11 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | navegação, cromo e slots | `SarakAppChrome` (§2 e A.3), com `SarakShellNav` e os widgets de busca, usuário, notificações e preferências | lateral ou topo, barra do celular, recolher, marca, cores, sombra, grão e posição de cada widget vêm dos tokens `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` e `preference*Position` (§6.8); um cromo escrito à mão perde tudo isso e a barra do celular |
 | calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
 | escolha de modo, tamanho da fonte, orientação da navegação e idioma pelo usuário | os widgets do cromo e `useSarakPreferences` (preferências sobrepostas ao tema, nunca gravadas nele) | o administrador decide por token se cada escolha fica fixa na barra, no menu ⚙ ou não é oferecida (`preference*Position`, §6.8); um alternador seu não aplica a contraparte do tema |
-| idioma (textos da lib), persistência do tema | ⏳ | ⏳ lote seguinte |
-| modo embarcado (ilha sobre um front existente) | ⏳ (§2 e skill) | ⏳ lote seguinte |
-| painel de customização | ⏳ `SarakCustomizationPanel` | ⏳ lote seguinte |
-| tema derivado da marca do cliente | ⏳ (§3.9) | ⏳ lote seguinte |
+| idioma (textos da lib) | `language` no Provider e nos widgets de preferências | os textos internos acompanham a língua configurada; não replique mensagens da biblioteca |
+| persistência do tema | `localStorage` no Provider; `options.persistence.onSave`/`onLoad` para servidor | a seleção local já persiste; o host controla o armazenamento compartilhado e guarda o payload sem reconstruí-lo |
+| modo embarcado (ilha sobre um front existente) | `options={{ mode: 'embedded' }}` | o escopo visual fica na raiz do Provider e convive com o front hospedeiro; configure a origem das fontes do pacote no host |
+| painel de customização | `SarakCustomizationPanel` | edita a aparência ao vivo e exporta o tema completo em JSON; a aplicação salva o arquivo ou o envia ao próprio backend |
+| tema derivado da marca do cliente | `sarakDeriveThemeFromReference` (§3.9) | parte de um tema completo, troca tokens da marca e preserva a contraparte para o modo oposto |
 
 ## 6.1 Cartões — o que o tema controla e o que o surpreende
 
@@ -1051,7 +1126,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `navActiveMarkerColor` | estético | sim | Cor do marcador luminoso ao lado do item ativo e do brilho dele. | `navActiveMarkerGlow` |
 | `navActiveMarkerGlow` | estético | não | Raio do brilho do marcador do item ativo; 0 deixa só a barrinha. | `navActiveMarkerColor` |
 | `navbarLayout` | funcional | não | Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
-| `navItemActiveColor` | estético | sim | Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo. | — |
+| `navItemActiveColor` | estético | sim | Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos. | — |
 | `navItemRadius` | estético | não | Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula. | `sidebarActiveColor` · `topbarActiveColor` · `sidebarHoverColor` · `topbarHoverColor` |
 | `searchDropdownGap` | funcional | não | Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo. | `searchDropdownWidth` |
 | `searchDropdownWidth` | funcional | não | Largura máxima da paleta de busca. | `searchDropdownGap` |
@@ -1122,7 +1197,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `cardSurfaceOpacity` | estético | sim | Multiplica a opacidade do fundo do cartão: zero deixa o cartão sem fundo e valores altos o tornam sólido. Vale só para o fundo, o conteúdo do cartão fica opaco. | — |
 | `cardTextAlign` | estético | não | Alinha o texto e distribui o conteúdo dos cartões de título, de ação e de busca; o `SarakCard` composto não lê este token. | — |
 | `cardTextureOpacity` | estético | sim | Intensidade da textura do cartão, de invisível a cobrindo a superfície; sem um tipo de textura escolhido não há o que mostrar. | `cardTextureType` |
-| `cardTextureType` | estético | não | Desenha uma textura sobre a superfície de todo cartão e `.card`. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. | `cardTextureOpacity` · `textureColor` |
+| `cardTextureType` | estético | não | Desenha uma textura sobre a superfície de todo cartão e `.card`; o tipo não muda com `mode` nem com a contraparte. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. `carbon` é preto fixo: prefira o escuro ou reduza `cardTextureOpacity` no claro. | `cardTextureOpacity` · `textureColor` |
 | `cardVariant` | funcional | não | Escolhe qual cartão a `SarakCardGrid` desenha para cada registro quando a prop `variant` não é passada; é escolha de componente, não de estilo, e o tema não a declara. | `cardTitleFontSize` · `cardActionBtnPrimaryBg` · `cardSearchBgFocus` |
 | `catalogFilterMinWidth` | funcional | não | Largura mínima de cada filtro de seleção da `SarakCardGrid`; mantém o filtro utilizável em contêiner estreito. | — |
 | `catalogItemRadius` | estético | não | Arredonda cada item do `SarakCatalogGrid`, em `rem`; costuma ser menor que o da seção, para manter a hierarquia. | — |
@@ -1336,18 +1411,18 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `colorBgModal` | estético | sim | Pinta o painel de conteúdo de modais e diálogos. | — |
 | `colorDepth` | estético | não | Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões. | — |
 | `colorVariation` | estético | não | Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões. | — |
-| `primaryColor` | estético | sim | Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas. | — |
+| `primaryColor` | estético | sim | Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas; confirme o contraste onde ela aparece como texto nos dois modos. O fundo do botão primário é `btnPrimaryBg`. | — |
 | `secondaryColor` | estético | sim | Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos. | — |
 | `surfaceColor` | estético | sim | Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos. | — |
 | `tertiaryColor` | estético | sim | Define uma terceira cor de marca disponível para composições e séries dos gráficos. | — |
-| `textureColor` | estético | sim | Dá cor às texturas de fundo e de cartão que aceitam cor do tema. | `texture` · `cardTextureType` |
+| `textureColor` | estético | sim | Dá cor às texturas de fundo e de cartão que aceitam cor do tema; alguns padrões usam a borda, a primária ou uma cor própria, então confira o desenho escolhido em vez de presumir que ele lê este token. | `texture` · `cardTextureType` |
 | `titleColor` | estético | sim | Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos. | — |
 
 #### Gráficos & Dados (`data`)
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
-| `chartColorPalette` | estético | sim | Define a primeira cor de série; as séries seguintes combinam as demais cores de marca. | — |
+| `chartColorPalette` | estético | sim | Define a cor âncora da primeira série; o motor deriva as séries seguintes das cores de marca. Confira as cores emitidas e seu contraste no gráfico: elas não são cópias literais das cores de status. | — |
 | `chartGridOpacity` | estético | sim | Controla a opacidade das linhas de grade dos gráficos quando a grade está ligada. | `chartShowGrid` |
 | `chartShowGrid` | estético | não | Exibe ou oculta as linhas de referência dos eixos dos gráficos. | — |
 | `chartSmoothing` | estético | não | Curva as linhas de dados em vez de ligar os pontos por segmentos retos. | `chartType` |
@@ -1395,7 +1470,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `surfaceIntensity` | estético | sim | Escala a força do material da superfície: realce interno branco, gradiente e, no vidro, o desfoque. 0 apaga o realce; 1 o torna o traço dominante dos cartões. | `surfaceMaterial` |
 | `surfaceMaterial` | estético | não | Troca o tratamento das superfícies de cartão: Vidro Fosco (desfoque 24 px com saturação), Polido (desfoque 12 px), Industrial (listras e sombra interna) ou Orgânico (sem desfoque, sombra interna suave). | `surfaceIntensity` |
 | `systemTone` | estético | não | Acrescenta ao fundo uma grade de HUD com brilho de horizonte: Cibernético na cor de textura (grade de 20 px), Tático em monocromo (grade de 24 px). Neutro não desenha nada. | — |
-| `texture` | estético | não | Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); é o principal traço de caráter da atmosfera. `none` não desenha camada e leva consigo a vinheta. | `textureOpacity` · `textureColor` |
+| `texture` | estético | não | Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); não muda com `mode` nem com a contraparte, então escolha um padrão legível nos dois modos. `carbon` desenha preto fixo: prefira o escuro ou use opacidade baixa no claro. `none` não desenha camada e leva consigo a vinheta. | `textureOpacity` · `textureColor` |
 | `textureOpacity` | estético | sim | Opacidade da textura de fundo: 0 a apaga, valores altos a tornam um elemento gráfico. Sem textura escolhida não há camada para regular. | `texture` |
 | `vignetteOpacity` | estético | sim | Opacidade do escurecimento das bordas da tela. Só existe quando há textura de fundo escolhida; com `texture: none` não há camada de vinheta. | `texture` · `vignetteSoftness` |
 | `vignetteSoftness` | estético | não | Onde o escurecimento das bordas começa: 0 deixa só um aro fino na borda; 60 o espalha quase até o centro. Só vale com textura de fundo escolhida. | `texture` · `vignetteOpacity` |
@@ -1513,7 +1588,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
 | `globalBackgroundBlur` | estético | não | Desfoque da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. | `globalBackgroundImageUrl` |
-| `globalBackgroundImageUrl` | estético | sim | Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive. | `globalBackgroundOpacity` · `globalBackgroundBlur` |
+| `globalBackgroundImageUrl` | estético | sim | Imagem desenhada atrás de todo o conteúdo numa camada própria do Provider; ela preenche a camada com recorte (`cover`), então confira a composição em telas e alturas diferentes. Vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive. | `globalBackgroundOpacity` · `globalBackgroundBlur` |
 | `globalBackgroundOpacity` | estético | sim | Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`. | `globalBackgroundImageUrl` |
 
 #### Estrutura e Macro-Layout (`structural`)
@@ -1558,6 +1633,7 @@ Aprofundamento por tema, em `node_modules/@sarak/lib-ui-core/`:
 - `docs/identidade-do-host.md` — Identidade da página — o consumidor é o dono
 - `docs/migracoes.md` — Migrações (breaking changes do contrato público)
 - `docs/persistencia-de-tema.md` — Persistência de tema no seu backend — o contrato do dado (opcional)
+- `docs/roteiro-de-validacao-dos-temas.md` — Roteiro de validação visual dos temas
 - `docs/temas-cromo-e-multidispositivo.md` — Temas completos, Cromo e Multi-dispositivo — guia do consumidor
 
 <!-- SARAK-KIT:APENDICE-GERADO:FIM -->

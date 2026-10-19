@@ -63,6 +63,7 @@ const temaId = params.get('tema') ?? undefined;
 const modo = params.get('modo') === 'light' ? 'light' : 'dark';
 const nav = params.get('nav') === 'topbar' ? 'topbar' : 'sidebar';
 const cena = params.get('cena') === 'modal' ? 'modal' : 'telas';
+const fontBaseUrl = params.get('fontBaseUrl') ?? undefined;
 
 const NAV_ITEMS = [
     { id: 'inicio', label: 'Início', href: '/inicio', active: true },
@@ -190,7 +191,6 @@ const ShowcaseContent: React.FC = () => (
 
         <section data-showcase="grafico" style={{ height: 280 }}>
             <SarakChartEngine
-                type="area"
                 data={CHART_ITEMS}
                 config={{ xAxisKey: 'mes', dataKey: 'receita', title: 'Receita e custo', showAnimation: false }}
             />
@@ -221,7 +221,11 @@ const ShowcaseModal: React.FC = () => (
 );
 
 const App: React.FC = () => (
-    <SarakUIProvider initialTheme={temaId} config={{ navigationStyle: nav }}>
+    <SarakUIProvider
+        initialTheme={temaId}
+        config={{ navigationStyle: nav }}
+        options={fontBaseUrl ? { fonts: { baseUrl: fontBaseUrl } } : undefined}
+    >
         <PreferencesDriver colorMode={modo} />
         <SarakAppChrome navItems={NAV_ITEMS} brand={{ name: 'Vitrine' }} className="sarak-chrome-root">
             <ShowcaseContent />

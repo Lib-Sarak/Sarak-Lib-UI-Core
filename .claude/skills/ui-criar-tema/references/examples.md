@@ -4,27 +4,29 @@
 
 ```typescript
 // Paridade mantida: todas as chaves existem no dicionário vivo.
-import { ThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
-export const techOceanTheme: ThemePreset = {
+export const techOceanTheme: SarakThemePreset = {
     id: 'tech-ocean',
     name: 'Tech Ocean',
     description: 'Tema limpo com variações de azul marítimo e estilo glass.',
     design: {
         mode: 'dark',
-        navigationStyle: 'sidebar',
-        // ... demais chaves vindas do gabarito gerado ...
+        // ... demais eixos estéticos adaptados de uma referência completa ...
         cardBorderRadius: 16,
         cardBackdropBlur: 20,
-        btnStyleType: 'glass',
-        animEnabled: true
+        btnStyleType: 'frosted',
         // Nenhum token inventado aqui.
-    }
+    },
+    contraparte: {
+        colorBgBody: '#f7f8fa',
+        textColorMaster: '#17202c',
+    },
 };
 ```
 
 **Por que é bom:**
-1. Partiu do gabarito gerado (`generate_theme_template.ts`), não do zero.
+1. Partiu de uma referência completa e conferiu os valores vivos com `getScaffold()`, não do zero.
 2. Toda chave existe no dicionário — nada é descartado em runtime.
 3. Os tipos batem com o `token.type` de cada chave.
 
@@ -33,14 +35,15 @@ export const techOceanTheme: ThemePreset = {
 ## Exemplo Ruim
 
 ```typescript
-import { ThemePreset } from './index';
+import type { SarakThemePreset } from './index';
 
-export const techOceanTheme: ThemePreset = {
+export const techOceanTheme: SarakThemePreset = {
     id: 'tech-ocean',
     name: 'Tech Ocean',
     description: 'Tema limpo com variações de azul marítimo e estilo glass.',
     design: {
         mode: 'dark',
+        // ⚠️ navigationStyle é funcional e fica na configuração do consumidor.
         navigationStyle: 'sidebar',
 
         // ⚠️ VIOLAÇÃO 1: chave que não existe em nenhum schema

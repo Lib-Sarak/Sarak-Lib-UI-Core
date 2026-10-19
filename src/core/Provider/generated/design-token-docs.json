@@ -923,7 +923,7 @@
    "label": "Textura da Superfície",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Desenha uma textura sobre a superfície de todo cartão e `.card`. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria.",
+   "usage": "Desenha uma textura sobre a superfície de todo cartão e `.card`; o tipo não muda com `mode` nem com a contraparte. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. `carbon` é preto fixo: prefira o escuro ou reduza `cardTextureOpacity` no claro.",
    "interactsWith": [
     "cardTextureOpacity",
     "textureColor"
@@ -1026,7 +1026,7 @@
    "label": "Paleta de Cores (Série)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Define a primeira cor de série; as séries seguintes combinam as demais cores de marca."
+   "usage": "Define a cor âncora da primeira série; o motor deriva as séries seguintes das cores de marca. Confira as cores emitidas e seu contraste no gráfico: elas não são cópias literais das cores de status."
   },
   {
    "id": "chartEngineMinHeight",
@@ -1563,7 +1563,7 @@
    "label": "URL da Imagem de Fundo",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Imagem desenhada atrás de todo o conteúdo (uma camada própria do Provider); vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
+   "usage": "Imagem desenhada atrás de todo o conteúdo numa camada própria do Provider; ela preenche a camada com recorte (`cover`), então confira a composição em telas e alturas diferentes. Vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
    "interactsWith": [
     "globalBackgroundOpacity",
     "globalBackgroundBlur"
@@ -2463,7 +2463,7 @@
    "label": "Cor do Item Ativo",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo."
+   "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos."
   },
   {
    "id": "navItemRadius",
@@ -2665,7 +2665,7 @@
    "label": "Cor Primária (Base)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas."
+   "usage": "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas; confirme o contraste onde ela aparece como texto nos dois modos. O fundo do botão primário é `btnPrimaryBg`."
   },
   {
    "id": "progressBarHeight",
@@ -3323,7 +3323,7 @@
    "label": "Textura Industrial (BG)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); é o principal traço de caráter da atmosfera. `none` não desenha camada e leva consigo a vinheta.",
+   "usage": "Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); não muda com `mode` nem com a contraparte, então escolha um padrão legível nos dois modos. `carbon` desenha preto fixo: prefira o escuro ou use opacidade baixa no claro. `none` não desenha camada e leva consigo a vinheta.",
    "interactsWith": [
     "textureOpacity",
     "textureColor"
@@ -3335,7 +3335,7 @@
    "label": "Cor da Textura",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Dá cor às texturas de fundo e de cartão que aceitam cor do tema.",
+   "usage": "Dá cor às texturas de fundo e de cartão que aceitam cor do tema; alguns padrões usam a borda, a primária ou uma cor própria, então confira o desenho escolhido em vez de presumir que ele lê este token.",
    "interactsWith": [
     "texture",
     "cardTextureType"

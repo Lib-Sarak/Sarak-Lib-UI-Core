@@ -31,11 +31,14 @@
 import { chromium, type Browser, type BrowserContextOptions, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all.ts';
+import { DataSchema } from '../src/core/Design/schema/data.ts';
+import { THEME_FONTS } from '../src/core/Design/schema/typography.ts';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
+const FONT_BASE_URL = pathToFileURL(`${path.join(HERE, '..', 'dist', 'fonts')}${path.sep}`).href;
 const SHOWCASE_ENTRY = path.join(HERE, 'fixtures', 'showcase-entry.tsx');
 const OUT_DIR = path.join(HERE, 'showcase-output');
 const SCREENS_DIR = path.join(OUT_DIR, 'screens');
@@ -64,6 +67,10 @@ const DEVICES: readonly Device[] = [
 const SHOWCASE_SCREENS = ['cartoes', 'tabela', 'formulario', 'status', 'grafico', 'calendario', 'estado-vazio', 'chat'] as const;
 /** Onde o gráfico (motor lazy) termina de desenhar: canvas do ECharts ou svg do Recharts. */
 const CHART_DRAWN = '[data-showcase="grafico"] canvas, [data-showcase="grafico"] svg.recharts-surface';
+const CHART_TYPE_VALUES = new Set(DataSchema.tokens
+    .find((token) => token.id === 'chartType')
+    ?.options?.map((option) => option.value) ?? []);
+const THEME_FONT_VALUES = new Set(THEME_FONTS.map((font) => font.value));
 
 interface CaptureResult {
     temaId: string;
@@ -77,6 +84,8 @@ interface CaptureResult {
 
 interface CaptureRequest {
     temaId: string;
+    headingFont: string;
+    chartType: string;
     modo: Mode;
     nav: Orientation;
     device: Device;
@@ -90,7 +99,8 @@ function readListFlag(name: string): string[] | undefined {
 
 /** Os pedidos que o catálogo, os eixos e os filtros da linha de comando produzem — a cena `modal` só na navegação padrão. */
 function buildRequests(): CaptureRequest[] {
-    const known = SARAK_ALL_THEMES.map((theme) => theme.id);
+    const themesById = new Map(SARAK_ALL_THEMES.map((theme) => [theme.id, theme]));
+    const known = [...themesById.keys()];
     const onlyThemes = readListFlag('tema');
     const unknown = (onlyThemes ?? []).filter((id) => !known.includes(id as (typeof known)[number]));
     if (unknown.length > 0) throw new Error(`themes:showcase: tema(s) fora do catálogo: ${unknown.join(', ')}. Ids: ${known.join(', ')}`);
@@ -100,12 +110,22 @@ function buildRequests(): CaptureRequest[] {
 
     const requests: CaptureRequest[] = [];
     for (const temaId of known.filter((id) => !onlyThemes || onlyThemes.includes(id))) {
+        const theme = themesById.get(temaId);
+        if (!theme) throw new Error(`themes:showcase: tema ausente do mapa: ${temaId}`);
+        const headingFont = theme.design.headingFont;
+        const chartType = theme.design.chartType;
+        if (typeof headingFont !== 'string' || !THEME_FONT_VALUES.has(headingFont)) {
+            throw new Error(`themes:showcase: headingFont inválido em ${temaId}: ${String(headingFont)}`);
+        }
+        if (typeof chartType !== 'string' || !CHART_TYPE_VALUES.has(chartType)) {
+            throw new Error(`themes:showcase: chartType inválido em ${temaId}: ${String(chartType)}`);
+        }
         for (const modo of MODES) {
             for (const device of devices) {
                 for (const nav of device.orientations) {
                     for (const cena of SCENES) {
                         if (cena === 'modal' && nav !== 'sidebar') continue;
-                        requests.push({ temaId, modo, nav, device, cena });
+                        requests.push({ temaId, headingFont, chartType, modo, nav, device, cena });
                     }
                 }
             }
@@ -154,6 +174,35 @@ async function growViewportToContent(page: Page): Promise<void> {
     await page.waitForTimeout(600);
 }
 
+function getPrimaryFontFamily(fontStack: string): string {
+    const family = fontStack.split(',')[0]?.trim().replace(/^['"]|['"]$/g, '');
+    if (!family || family.startsWith('var(')) {
+        throw new Error(`Fonte do tema não tem família verificável: ${fontStack}`);
+    }
+    return family;
+}
+
+async function verifyThemeFontLoaded(page: Page, request: CaptureRequest): Promise<void> {
+    const expectedFontFamily = getPrimaryFontFamily(request.headingFont);
+    const fontReport = await page.evaluate(async () => {
+        await document.fonts.ready;
+        const heading = document.querySelector('h1');
+        return {
+            computedFamily: heading ? getComputedStyle(heading).fontFamily : '',
+            loadedFamilies: Array.from(document.fonts)
+                .filter((fontFace) => fontFace.status === 'loaded')
+                .map((fontFace) => fontFace.family.replace(/^['"]|['"]$/g, '').toLowerCase()),
+        };
+    });
+    const normalizedExpected = expectedFontFamily.toLowerCase();
+    if (!fontReport.loadedFamilies.includes(normalizedExpected)) {
+        throw new Error(`Fonte ${expectedFontFamily} não carregou de dist/fonts.`);
+    }
+    if (!fontReport.computedFamily.toLowerCase().includes(normalizedExpected)) {
+        throw new Error(`O título não usa ${expectedFontFamily}: ${fontReport.computedFamily || 'sem h1'}.`);
+    }
+}
+
 async function captureOne(browser: Browser, harnessUrl: string, request: CaptureRequest): Promise<CaptureResult> {
     const { temaId, modo, nav, device, cena } = request;
     const fileName = `${temaId}__${modo}__${nav}__${device.name}__${cena}.png`;
@@ -161,8 +210,15 @@ async function captureOne(browser: Browser, harnessUrl: string, request: Capture
     const context = await browser.newContext(device.context);
     const page = await context.newPage();
     try {
-        await page.goto(`${harnessUrl}?tema=${encodeURIComponent(temaId)}&modo=${modo}&nav=${nav}&cena=${cena}`);
+        const captureUrl = new URL(harnessUrl);
+        captureUrl.searchParams.set('tema', temaId);
+        captureUrl.searchParams.set('modo', modo);
+        captureUrl.searchParams.set('nav', nav);
+        captureUrl.searchParams.set('cena', cena);
+        captureUrl.searchParams.set('fontBaseUrl', FONT_BASE_URL);
+        await page.goto(captureUrl.toString());
         await waitForScene(page, request);
+        if (cena === 'telas') await verifyThemeFontLoaded(page, request);
         if (device.name === 'desktop' && cena === 'telas') await page.getByRole('link', { name: 'Relatórios' }).hover();
         // Deixa a entrada animada dos componentes (framer-motion) assentar antes da foto.
         await page.waitForTimeout(400);

@@ -370,7 +370,7 @@ export const NavigationSchema: ComponentSchema = {
             id: 'navItemActiveColor',
             kind: 'aesthetic',
             modeDependent: true,
-            usage: "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo.",
+            usage: "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos.",
             label: 'Cor do Item Ativo',
             type: 'color',
             description: 'Cor de texto/ícone do item de menu atualmente selecionado — normalmente espelha a cor primária do sistema para reforçar onde o usuário está.',

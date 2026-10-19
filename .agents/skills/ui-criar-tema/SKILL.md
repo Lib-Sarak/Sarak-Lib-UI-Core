@@ -1,11 +1,11 @@
 ---
 name: ui-criar-tema
-description: Orquestra a geração autônoma e paramétrica de temas completos (ThemePresets) para a Sarak UI Core. Use ao configurar esquemas globais de cores e atmosferas. NÃO acione proativamente.
+description: Orienta a criação e revisão de temas completos (SarakThemePreset) para a Sarak UI Core. Use ao configurar esquemas globais de cores e atmosferas. NÃO acione proativamente.
 ---
 
 # Skill: Criar Tema Master
 
-Orquestra a geração orientada a dados de temas completos (`ThemePreset`) para o ecossistema Sarak UI.
+Orquestra a autoria orientada a dados de temas completos (`SarakThemePreset`) para o ecossistema Sarak UI.
 
 > **Esta skill ORQUESTRA; ela não define regra.** A spec dona é
 > `specs/specs/09-temas-e-presets.md`; o fluxo passo a passo está em
@@ -22,21 +22,14 @@ Orquestra a geração orientada a dados de temas completos (`ThemePreset`) para 
 ## Workflow
 
 ### 1. Coleta de Parâmetros (HITL)
-Pergunte as definições base: nome/id do tema, paleta primária, modo (light/dark), estilo de
-navegação e a atmosfera pretendida.
+Pergunte as definições base: nome/id do tema, identidade visual, modo nativo e atmosfera pretendida.
+`navigationStyle` é funcional: deixe a decisão para a configuração do consumidor ou para a preferência do usuário.
 
-### 2. Parta de um gabarito, nunca do zero
-```bash
-npx tsx .agents/skills/ui-criar-tema/scripts/generate_theme_template.ts <id-do-tema>
-```
-O script escreve `src/core/Design/presets/themes/<id-do-tema>.ts` já pré-populado a partir do
-`MASTER_DESIGN_MAP` vivo. ⚠️ **Ele cria o arquivo no `src/`** — não o rode para "experimentar";
-se rodar por engano, apague o arquivo gerado.
-
-⚠️ **O gabarito escreve TODO token, funcional inclusive, sem `contraparte`, e importa o tipo `ThemePreset`, que não
-existe (o tipo é `SarakThemePreset`).** Tema embarcado declara só os tokens `kind: aesthetic` (a trava
-`theme-completeness:check` acusa `declares-functional` no resto) e traz a `contraparte`. Na prática, o ponto de partida é
-copiar o `sarak-sovereign.ts` — tema completo nos dois modos — e trocar valores; os padrões do sistema **são** os dele.
+### 2. Parta de uma referência completa, nunca do zero
+Consulte `getScaffold()` em `src/core/Design/master-map.ts` para ver os valores padrão vivos e compare os eixos com um tema
+embarcado completo. Copie a estrutura de uma referência, como `sarak-sovereign.ts`, e adapte a direção visual. Não copie
+para o novo tema chaves funcionais: declare os eixos estéticos e autorize uma `contraparte` parcial para o modo oposto.
+O tipo do tema é `SarakThemePreset`; a fronteira de temas carregados sob demanda continua em `index.ts`, `all.ts` e `loaders.ts`.
 
 **A regra que mais economiza tempo:** parta de um **tema de referência completo** e customize
 poucos valores. Um consumidor real montou um tema só com COR e concluiu que "fonte e cromo não
@@ -47,7 +40,7 @@ Preencha o `design` **só com ids que existem no dicionário**. Chave inventada 
 `validateDesign` com `console.warn` e nunca chega ao CSS: o tema *parece* completo e não é.
 
 ### 4. Registro
-O gerador **não** registra o tema — ele só escreve o arquivo. Exporte e registre o tema em
+Copiar uma referência **não** registra o tema. Exporte e registre o tema em
 `src/core/Design/presets/themes/` — o id em `index.ts` (`SARAK_THEME_PRESET_IDS`), a linha em `all.ts`
 (a lista inteira, só para ferramenta) e o `import()` em `loaders.ts` (como o tema chega sob demanda), depois
 `npm run themes:catalog` (o catálogo leve é gerado). **Nunca importe o tema no `index.ts`/barril:** ele
@@ -104,13 +97,13 @@ Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline
 O modo é **preferência do usuário** (`specs/specs/09-temas-e-presets.md` §4.7): o tema é escrito para um modo,
 e quem pede o oposto recebe a `contraparte`. Sem ela, recebe o fallback sintetizado — que satura e **não
 volta ao original** numa ida e volta (`specs/specs/09-temas-e-presets.md` §2.1). Escreva
-`contraparte: { ... }` no `ThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
+`contraparte: { ... }` no `SarakThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
 o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** a contraparte de
 **todo** tema shippado — a lista de isenção terminou vazia. **Sobreponha o fundo do modal
 (`colorBgModal`) e o de toda superfície** que o modo oposto inverte: o que a contraparte não declara fica
 com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o defeito mais comum.
 
-### 5.6. O que o gerador preenche e você precisa conferir
+### 5.6. Eixos do tema que você precisa conferir
 
 - **Realce do item de navegação.** O fundo do item ativo (`sidebarActiveColor`/`topbarActiveColor`) e o do
   item sob o ponteiro (`sidebarHoverColor`/`topbarHoverColor`) **nascem `transparent`**; o texto do item
@@ -135,9 +128,8 @@ com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o de
   Mono, 400 e 700).
 - **Mídia de fundo.** Tema shippado **nunca** aponta `globalBackgroundImageUrl` para servidor de terceiro:
   use as atmosferas geradas pela lib ou deixe vazio (`specs/specs/09-temas-e-presets.md` §5.1).
-- **Posição das preferências do usuário** (`preference*Position`). O gerador as escreve com o **padrão de
-  fábrica** — mantenha. Quem decide o que a barra oferece é o administrador de cada instalação, no painel;
-  mudar isso num tema shippado muda a barra dos usuários de todo consumidor.
+- **Posição das preferências do usuário** (`preference*Position`). São funcionais e pertencem à configuração da
+  instalação, não ao tema embarcado. Quem decide o que a barra oferece é o administrador de cada instalação.
 
 ### 5.7. Ordem de trabalho e lições medidas (temas refeitos, plan-110)
 
@@ -173,6 +165,22 @@ celular; (5) só então comentários e nota de conceito. Tirar o tema de `gates/
   com a marca; o selo tem forma, mas a cor ainda comunica primeiro.
 - **Contraste não textual** (apoio, 3:1): calcule borda de campo e de cartão **compostas sobre o corpo**; borda
   translúcida não passa por `resolveChain`.
+- **Cor de marca também pode virar texto.** `primaryColor` e `navItemActiveColor` aparecem como tinta em partes do
+  cromo; confirme legibilidade nos dois modos. O preenchimento do botão primário é `btnPrimaryBg`, não `primaryColor`.
+- **Textura fixa exige uma escolha para os dois modos.** `texture` e `cardTextureType` não mudam com a contraparte;
+  `carbon` é preto fixo, então use no escuro ou com `textureOpacity` baixa no claro. Texturas animadas podem aumentar
+  a área rolável; mantenha animação em elementos locais, não no fundo da página.
+- **Arte de fundo precisa sobreviver ao recorte.** `globalBackgroundImageUrl` cobre a camada e pode recortar a arte em
+  proporções diferentes; desenhe SVG com composição central e valide a tela inteira, inclusive conteúdo que rola.
+- **O gráfico deriva as séries.** `chartColorPalette` ancora a primeira cor e o motor deriva as seguintes das cores de
+  marca; não espere uma cópia das cores de status. Confira o resultado renderizado e a legibilidade das séries.
+- **O tipo do gráfico vem do tema quando a prop é omitida.** Na vitrine e em exemplos de catálogo, não fixe `type` em
+  `SarakChartEngine`; deixe `chartType` demonstrar a escolha do tema.
+- **Seleções e faixas vêm do schema vivo.** Leia `options`, limites e `step`; nomes plausíveis como `paper` ou `solid`
+  podem não pertencer a um token. Para um tema de alto contraste, confira todos os pares do `PAIRS` atual no alvo 7:1.
+- **Fonte de tema é valor exato e local.** Use o `value` de `THEME_FONTS` e os pesos existentes no manifesto; no
+  padrão `bundled`, a lib carrega as famílias necessárias de `dist/fonts`. `'google'` é uma origem opcional, não uma
+  exigência para a tipografia funcionar.
 
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do
@@ -187,7 +195,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
   `findMissingThemeAxes` antes de declarar pronto.
 
 ## Checklist
-- [ ] O tema foi gerado a partir do gabarito vivo (não escrito do zero)?
+- [ ] O tema partiu de uma referência completa, e os eixos vivos foram conferidos com `getScaffold()`?
 - [ ] Todas as chaves do `design` existem no dicionário (zero chave inventada)?
 - [ ] Os tipos batem com o `token.type` (number × string, enum válido)?
 - [ ] Toda fonte é o `value` exato de `THEME_FONTS`, e os pesos escolhidos existem na família (manifesto)?
@@ -203,13 +211,11 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] `npm run theme-completeness:check` verde e o tema fora da lista de exceção?
 - [ ] A vitrine (`npm run build && npm run themes:showcase`) foi gerada e o tema foi olhado nos dois modos e
       nas duas orientações, badge `muted` inclusive?
-- [ ] Tema NOVO: `npm run themes:diversity -- --new <id,...>` passa nos nove critérios contra o catálogo?
+- [ ] Tema NOVO: `npm run themes:diversity -- --new <id,...>` passa nos critérios estéticos contra o catálogo?
 
 ## Referências (Camada 3)
 
-**Gerador — esta skill invoca:**
-- `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` — gera o arquivo do tema
-  pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
+**Ferramenta — esta skill invoca:**
 - `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador. Mede
   contraste com o gate da R31 e corrige **só a luminosidade** do texto que reprovar, preservando matiz e
   saturação. Devolve tema + relatório; **não escreve arquivo sozinho** — você aplica o valor corrigido.
@@ -218,7 +224,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 
 **Validador — o GATE invoca, não você:**
 - `gates/scripts/audit/verify_contrast.ts` (`auditor_contraste.mjs`) — **tem gate**, dentro de
-  `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado (nativo E o
+  `npm run audit` (R31). Mede os pares reais texto/fundo a 4,5:1 em cada tema embarcado (nativo E o
   modo oposto, via `resolveThemeForMode`); é o que o solucionador (acima) consulta para saber o que
   corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`).
 - `src/core/Design/presets/themes/color-engine.ts` (`resolveThemeForMode`) — a função que decide o que
@@ -226,7 +232,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
   sem `contraparte` → `syncThemeWithMode` (fallback dos legados). Todo caminho de aplicar tema passa por ela.
 - `gates/scripts/audit/verify_theme_parity.ts` — valida UM tema. **Reprova**
   chave que não existe no dicionário; **avisa** (sem reprovar) quando o tema é parcial. A
-  assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já
+  assimetria é deliberada: **tema novo nasce com os eixos estéticos completos**, mas tema que já
   existe é parcial de propósito e continua funcionando — as chaves ausentes caem no default do
   schema. Reprovar por ausência quebraria todo tema antigo a cada token novo.
 

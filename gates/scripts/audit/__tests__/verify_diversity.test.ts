@@ -71,7 +71,6 @@ describe('measureTheme', () => {
             description: 'x',
             design: {
                 mode: 'light',
-                navigationStyle: 'topbar',
                 primaryColor: '#ff0000',
                 colorBgBody: '#808080',
                 cardBorderRadius: 16,
@@ -83,7 +82,7 @@ describe('measureTheme', () => {
 
         const row = measureTheme(tema);
         expect(row.mode).toBe('light');
-        expect(row.navigationStyle).toBe('topbar');
+        expect(row).not.toHaveProperty('navigationStyle');
         expect(row.hue).toBe(0);
         expect(row.saturation).toBe(100);
         expect(row.familia).toBe('vermelho');
@@ -112,7 +111,6 @@ function linha(parcial: Partial<ThemeDiversityRow>): ThemeDiversityRow {
     return {
         id: 'x',
         mode: 'dark',
-        navigationStyle: 'sidebar',
         hue: 180,
         saturation: 50,
         familia: 'ciano',
@@ -215,36 +213,29 @@ describe('evaluateDistanceCriteria', () => {
         expect(r?.ok).toBe(false);
     });
 
-    it('critério 8 exige sidebar E topbar entre os novos', () => {
-        const soSidebar = [linha({ id: 'a', navigationStyle: 'sidebar' }), linha({ id: 'b', navigationStyle: 'sidebar' })];
-        const ambos = [linha({ id: 'a', navigationStyle: 'sidebar' }), linha({ id: 'b', navigationStyle: 'topbar' })];
-        expect(evaluateDistanceCriteria(existentesSinteticos, soSidebar).find((c) => c.criterio === 8)?.ok).toBe(false);
-        expect(evaluateDistanceCriteria(existentesSinteticos, ambos).find((c) => c.criterio === 8)?.ok).toBe(true);
-    });
-
-    it('critério 9 reprova quando raio, borda, blur E densidade ficam todos na mesma faixa', () => {
+    it('critério 8 reprova quando raio, borda, blur E densidade ficam todos na mesma faixa', () => {
         const novos = [
             linha({ id: 'a', cardBorderRadius: 8, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
             linha({ id: 'b', cardBorderRadius: 8, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
         ];
-        const r = evaluateDistanceCriteria(existentesSinteticos, novos).find((c) => c.criterio === 9);
+        const r = evaluateDistanceCriteria(existentesSinteticos, novos).find((c) => c.criterio === 8);
         expect(r?.ok).toBe(false);
     });
 
-    it('critério 9 passa quando ao menos uma das 4 propriedades varia de faixa', () => {
+    it('critério 8 passa quando ao menos uma das 4 propriedades varia de faixa', () => {
         const novos = [
             linha({ id: 'a', cardBorderRadius: 0, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
             linha({ id: 'b', cardBorderRadius: 100, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
         ];
-        const r = evaluateDistanceCriteria(existentesSinteticos, novos).find((c) => c.criterio === 9);
+        const r = evaluateDistanceCriteria(existentesSinteticos, novos).find((c) => c.criterio === 8);
         expect(r?.ok).toBe(true);
     });
 
-    it('critério 9 reprova 5 novos estruturalmente idênticos entre si (raio, borda, blur E densidade iguais)', () => {
+    it('critério 8 reprova 5 novos estruturalmente idênticos entre si (raio, borda, blur E densidade iguais)', () => {
         const cincoIdenticos = Array.from({ length: 5 }, (_, i) =>
             linha({ id: `identico-${i}`, cardBorderRadius: 8, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
         );
-        const r = evaluateDistanceCriteria(existentesSinteticos, cincoIdenticos).find((c) => c.criterio === 9);
+        const r = evaluateDistanceCriteria(existentesSinteticos, cincoIdenticos).find((c) => c.criterio === 8);
         expect(r?.ok).toBe(false);
     });
 
@@ -255,7 +246,7 @@ describe('evaluateDistanceCriteria', () => {
     // `cardBorderRadius` cobre uma faixa bem maior que a do catálogo shippado
     // é genuinamente diverso — mas com os limites antigos, colapsava inteiro em
     // "baixo" (0 faixas distintas detectadas) e, com borda/blur/densidade
-    // mantidos constantes, o critério 9 REPROVARIA essa dispersão real por
+    // mantidos constantes, o critério 8 REPROVARIA essa dispersão real por
     // engano. Com os limites novos — derivados dos `existentes` (o catálogo
     // shippado de verdade, nunca dos `novos`) — a mesma dispersão é
     // corretamente detectada.
@@ -271,14 +262,14 @@ describe('evaluateDistanceCriteria', () => {
         expect(faixasComLimiteAntigo.size).toBe(1);
 
         // Com a recalibragem (limites derivados do catálogo shippado real), o
-        // critério 9 passa a enxergar essa mesma dispersão corretamente.
-        const r = evaluateDistanceCriteria(existentesReais, novos).find((c) => c.criterio === 9);
+        // critério 8 passa a enxergar essa mesma dispersão corretamente.
+        const r = evaluateDistanceCriteria(existentesReais, novos).find((c) => c.criterio === 8);
         expect(r?.ok).toBe(true);
     });
 
-    it('devolve os 9 critérios, sempre', () => {
+    it('devolve os 8 critérios estéticos, sempre', () => {
         const r = evaluateDistanceCriteria(existentesSinteticos, [linha({ id: 'a' })]);
-        expect(r.length).toBe(9);
-        expect(r.map((c) => c.criterio)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        expect(r.length).toBe(8);
+        expect(r.map((c) => c.criterio)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     });
 });
