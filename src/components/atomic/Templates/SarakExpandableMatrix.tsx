@@ -136,7 +136,7 @@ export const SarakExpandableMatrix = <TData extends SarakMatrixParentData>({
                 />
             </div>
 
-            <div className={containerLayout.className} style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
+            <div className={containerLayout.className} style={{ gap: 'var(--sarak-matrix-gap, 12px)' }}>
                 {data.map((item) => (
                     <div 
                         key={item.id}

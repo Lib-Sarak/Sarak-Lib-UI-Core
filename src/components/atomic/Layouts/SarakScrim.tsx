@@ -74,7 +74,7 @@ export const SarakScrim: React.FC<SarakScrimProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: visible ? 1 : 0 }}
             exit={{ opacity: 0, transition: { duration: durationMs / 1000, ease: easeIn } }}
-            transition={{ duration: durationMs / 1000 }}
+            transition={{ duration: durationMs / 1000, ease: easeIn }}
         />
     );
 };

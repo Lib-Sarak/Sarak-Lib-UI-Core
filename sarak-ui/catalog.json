@@ -2656,24 +2656,6 @@
           "type": "() => void | Promise<void>",
           "optional": true,
           "doc": "Chamado após um envio bem-sucedido."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
         }
       ]
     },
@@ -3990,7 +3972,7 @@
           "name": "orientation",
           "type": "'vertical' | 'horizontal' | 'auto'",
           "optional": true,
-          "doc": "Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical)."
+          "doc": "Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. Qualquer valor desconhecido é tratado como vertical."
         },
         {
           "name": "collapsed",
@@ -4382,24 +4364,6 @@
           "type": "Partial<Record<keyof TData & string, SarakStatsMetricConfig>>",
           "optional": true,
           "doc": "Configuração visual e de formato por chave de métrica."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
         }
       ]
     },
@@ -5301,34 +5265,6 @@
         ]
       },
       {
-        "component": "SarakForm",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakForm",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakForm",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
         "component": "SarakIconButton",
         "prop": "variant",
         "values": [
@@ -5434,34 +5370,6 @@
           "sm",
           "md",
           "lg"
-        ]
-      },
-      {
-        "component": "SarakStats",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakStats",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakStats",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
         ]
       },
       {
@@ -10994,6 +10902,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "7c13ac170980"
+    "kitHash": "1703a1a6551e"
   }
 }

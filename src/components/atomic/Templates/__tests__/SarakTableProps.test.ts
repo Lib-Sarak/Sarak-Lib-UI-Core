@@ -23,4 +23,11 @@ describe('SarakTableProps', () => {
         expect(props.columns[0].render?.(props.data[0])).toBe('Ada');
         expect(props.onRowClick).toBeDefined();
     });
+
+    it('não aceita importance, que não tinha efeito na tabela', () => {
+        // @ts-expect-error `importance` não tinha leitor e saiu da assinatura pública.
+        const props: SarakTableProps<{ id: string }> = { importance: 'hero' };
+
+        expect(props).toEqual({ importance: 'hero' });
+    });
 });

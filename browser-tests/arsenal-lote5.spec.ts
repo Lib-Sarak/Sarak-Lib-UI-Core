@@ -185,6 +185,30 @@ test('P15: matrixGap é o espaço entre os sub-itens da matriz (par padrão × e
     expect(await withScene({ scene: 'valores-fixos', theme: 'matriz-gap-largo' }, stackGap)).toBe('28px');
 });
 
+test('P37: o véu da gaveta sai pela motionEaseIn e motionDurationFast', async () => {
+    const timing = await withScene(
+        { scene: 'saida-sobreposicao', target: 'gaveta', theme: 'saida-curva-rapida' },
+        async (page) => {
+            const scrim = page.locator('[data-testid="sarak-drawer-overlay"]');
+            await scrim.evaluate(async (element) => {
+                await Promise.all(element.getAnimations().map((animation) => animation.finished.catch(() => undefined)));
+            });
+            await scrim.evaluate((element) => (element as HTMLButtonElement).click());
+            await page.waitForFunction(() => {
+                const element = document.querySelector('[data-testid="sarak-drawer-overlay"]');
+                return element?.getAnimations().some((animation) => animation.playState === 'running');
+            });
+            return scrim.evaluate((element) => {
+                const animation = element.getAnimations().find((candidate) => candidate.playState === 'running');
+                return animation?.effect?.getTiming();
+            });
+        },
+    );
+
+    expect(timing?.duration).toBe(500);
+    expect(timing?.easing).toContain('0, 1, 0, 1');
+});
+
 test('P21: a tabela não faz o React acusar função sem ref (a linha recebe a ref do popLayout)', async () => {
     const page = await browser.newPage({ viewport: DESKTOP });
     const refWarnings: string[] = [];

@@ -43,7 +43,7 @@ export interface SarakShellNavProps {
     /**
      * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
      * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
-     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
+     * Qualquer valor desconhecido é tratado como vertical.
      */
     orientation?: 'vertical' | 'horizontal' | 'auto';
     /** Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. */
@@ -118,7 +118,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
 }) => {
     const navigationStyle = useNavigationStyle();
     const t = useLibraryText();
-    // `auto` segue o Design Engine: só `topbar` vira horizontal (dock/glass = vertical).
+    // `auto` segue o Design Engine: só `topbar` vira horizontal.
     const resolved = orientation === 'auto'
         ? (navigationStyle === 'topbar' ? 'horizontal' : 'vertical')
         : orientation;

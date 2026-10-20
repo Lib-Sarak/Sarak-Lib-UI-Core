@@ -54,9 +54,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
 | `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
 | `SarakForm` | `mode` | `create` · `edit` |
-| `SarakForm` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakForm` | `density` | `compact` · `standard` · `spacious` |
-| `SarakForm` | `importance` | `hero` · `base` · `subtle` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
 | `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
@@ -69,9 +66,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakShellUserWidget` | `variant` | `horizontal` · `vertical` · `mini` |
 | `SarakSocialButton` | `variant` | `glass` · `solid` |
 | `SarakSpinner` | `size` | `sm` · `md` · `lg` |
-| `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakStats` | `density` | `compact` · `standard` · `spacious` |
-| `SarakStats` | `importance` | `hero` · `base` · `subtle` |
 | `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
 | `SarakValue` | `size` | `sm` · `md` · `lg` |
@@ -744,9 +738,6 @@ Props (`SarakFormProps` — `src/components/atomic/Templates/SarakForm.tsx`):
 | `initialData` | `TData` | não | Valor inicial usado no modo create ou até load concluir. |
 | `onSubmit` | `(data: TData) => void \| Promise<void>` | não | Envia os valores ao host; sem callback, o botão de envio não é exibido. |
 | `onSuccess` | `() => void \| Promise<void>` | não | Chamado após um envio bem-sucedido. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakFormGroup
 
@@ -1170,7 +1161,7 @@ Props (`SarakShellNavProps` — `src/components/atomic/Navigation/SarakShellNav.
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no topo do menu. |
 | `onNavigate` | `(route: string) => void` | não | Callback de navegação — o host decide como navegar (router, pushState, assign). |
 | `onChange` | `(route: string) => void` | não | Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. |
-| `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical). |
+| `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. Qualquer valor desconhecido é tratado como vertical. |
 | `collapsed` | `boolean` | não | Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. |
 | `className` | `string` | não |  |
 
@@ -1304,9 +1295,6 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 | `label` | `string` | não | Título opcional fornecido pelo host. |
 | `mapping` | `Record<string, string>` | não | Define os rótulos exibidos; omitido, usa as chaves do dado recebido. |
 | `metrics` | `Partial<Record<keyof TData & string, SarakStatsMetricConfig>>` | não | Configuração visual e de formato por chave de métrica. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakStepper
 

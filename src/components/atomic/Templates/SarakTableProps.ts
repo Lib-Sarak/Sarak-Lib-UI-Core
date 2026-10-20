@@ -33,7 +33,6 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
     onRowClick?: (row: TData) => void;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
     /**
      * No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo
      * default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes

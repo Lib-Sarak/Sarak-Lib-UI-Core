@@ -5,6 +5,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useFocusTrap } from './hooks/useFocusTrap';
 import { SarakScrim } from '../Layouts/SarakScrim';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakDrawerProps {
     /**
@@ -53,12 +54,14 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
+    const { durations } = useMotionTokens();
     const [shouldRender, setShouldRender] = useState(isOpen);
     // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
     const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
 
     const motionSlow = design?.motionDurationSlow;
     const animDurationMs = typeof motionSlow === 'number' ? Math.round(motionSlow * 1000) : 400;
+    const scrimDurationMs = Math.round(durations.fast * 1000);
     const animDuration = `${animDurationMs}ms`;
     const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
     const zIndex = (design?.zIndexModal as number) || 1000;
@@ -135,7 +138,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             <SarakScrim
                 animate
                 visible={isOpen}
-                durationMs={animDurationMs}
+                durationMs={scrimDurationMs}
                 onClose={onClose}
                 ariaLabel={t('drawerCloseAriaLabel')}
                 testId="sarak-drawer-overlay"

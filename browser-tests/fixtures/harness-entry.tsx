@@ -58,6 +58,8 @@ import {
     SarakTimePicker,
     SarakTitleCard,
 } from '@sarak/lib-ui-core';
+import { SarakDrawer as SarakDrawerSource } from '../../src/components/atomic/Modals/SarakDrawer';
+import { SarakUIProvider as SarakUIProviderSource } from '../../src/core/Provider/SarakUIProvider';
 
 const NAV_ITEMS = [
     { id: 'inicio', label: 'Início', href: '/inicio' },
@@ -716,16 +718,25 @@ const SearchScene: React.FC = () => (
 
 /** O modal e a paleta de busca abertos e fechados por botão: a saída (`motionEaseIn`) só é mensurável se o painel ainda existe depois do clique. */
 const OverlayExitScene: React.FC = () => {
-    // `?alvo=modal|busca`: só um dos dois abre — dois desfoques de fundo juntos derrubam a taxa de quadros que a amostra precisa.
+    // `?alvo=modal|busca|gaveta`: só um overlay abre — desfoques simultâneos derrubam a taxa de quadros da amostra.
     const target = searchParams.get('alvo');
-    const [modalOpen, setModalOpen] = React.useState(target !== 'busca');
-    const [searchOpen, setSearchOpen] = React.useState(target !== 'modal');
+    const [modalOpen, setModalOpen] = React.useState(target !== 'busca' && target !== 'gaveta');
+    const [searchOpen, setSearchOpen] = React.useState(target !== 'modal' && target !== 'gaveta');
+    const [drawerOpen, setDrawerOpen] = React.useState(target === 'gaveta');
     return (
         <div>
             <button type="button" data-probe="fechar-modal" onClick={() => setModalOpen(false)}>Fechar o modal</button>
             <button type="button" data-probe="fechar-busca" onClick={() => setSearchOpen(false)}>Fechar a busca</button>
+            <button type="button" data-probe="fechar-gaveta" onClick={() => setDrawerOpen(false)}>Fechar a gaveta</button>
             <SarakModal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Diálogo de saída">Conteúdo</SarakModal>
             <SarakSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} items={[{ id: 'inicio', label: 'Início' }]} />
+            {target === 'gaveta' && (
+                <SarakUIProviderSource config={resolveHarnessConfig()}>
+                    <SarakDrawerSource isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}>
+                        Conteúdo da gaveta
+                    </SarakDrawerSource>
+                </SarakUIProviderSource>
+            )}
         </div>
     );
 };

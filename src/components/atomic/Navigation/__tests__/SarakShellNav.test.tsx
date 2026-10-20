@@ -69,9 +69,9 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
             expect(screen.getByRole('navigation').style.flexDirection).toBe('row');
         });
 
-        it('auto + navigationStyle desconhecido (dock) → vertical (fora do escopo)', () => {
+        it('auto + navigationStyle desconhecido → vertical', () => {
             render(
-                <DesignOverrideContext.Provider value={{ navigationStyle: 'dock' }}>
+                <DesignOverrideContext.Provider value={{ navigationStyle: 'unknown' }}>
                     <SarakShellNav items={ITEMS} orientation="auto" />
                 </DesignOverrideContext.Provider>,
             );

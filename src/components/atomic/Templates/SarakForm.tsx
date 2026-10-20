@@ -26,9 +26,6 @@ export interface SarakFormProps<TData extends Record<string, unknown>> {
     onSubmit?: (data: TData) => void | Promise<void>;
     /** Chamado após um envio bem-sucedido. */
     onSuccess?: () => void | Promise<void>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 
 export const SarakForm = <TData extends Record<string, unknown> = Record<string, unknown>>({

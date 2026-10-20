@@ -81,3 +81,16 @@ describe('SarakStats — configuração por métrica', () => {
         expect(loadData).toHaveBeenCalledOnce();
     });
 });
+
+describe('SarakStats — props removidas', () => {
+    it('não aceita props visuais que não tinham efeito', () => {
+        // @ts-expect-error `role` não tinha leitor e saiu da assinatura pública.
+        const roleProp = <SarakStats role="primary" />;
+        // @ts-expect-error `density` não tinha leitor e saiu da assinatura pública.
+        const densityProp = <SarakStats density="compact" />;
+        // @ts-expect-error `importance` não tinha leitor e saiu da assinatura pública.
+        const importanceProp = <SarakStats importance="hero" />;
+
+        expect([roleProp, densityProp, importanceProp]).toHaveLength(3);
+    });
+});

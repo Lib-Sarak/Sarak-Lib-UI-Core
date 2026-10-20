@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Corrigir antes da 8.0.0 tudo o que o backlog sabe que afeta o importador e o usuario final"
 objetivo: "Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho"
 dominio: "Componentes / Instalação / Tema do cliente / Painel"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "importador", "8.0.0", "componentes", "tokens", "painel", "backlog"]
 relacionados: ["[[03-superficie-publica]]", "[[13-instalacao-e-atualizacao]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -202,8 +202,165 @@ testes que varrem o repositório usam.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Rodada 1 — Lote 1 (2026-10-20)
+
+**Escopo executado:** itens 14, 17, 25, 31, 37, 38 e 53; passos 1.1 a 1.3. Os lotes 2, 3 e 4 permanecem pendentes.
+
+**Resultado:** concluído para revisão.
+
+### Alterações
+
+- **14:** `SarakAutocomplete` encaminha `disabled` ao `SarakInput`; testes cobrem edição, abertura da lista e foco por clique.
+- **25:** removidas as props sem consumidor (`role`, `density`, `importance` de `SarakStats` e `SarakForm`; `importance` de `SarakTableProps`); testes de tipo e nota MAJOR com de/para em `docs/migracoes.md`.
+- **17:** corrigidos os sufixos de borda inválidos no cabeçalho e no estado vazio do `SarakCatalogGrid`, com teste.
+- **31:** JSDoc do `SarakShellNav` não cita mais `dock`/`glass`; o catálogo foi regenerado e o teste de valor desconhecido usa `unknown`.
+- **37:** o scrim do `SarakDrawer` usa `motionDurationFast` e `motionEaseIn`; caso de navegador mede duração e curva.
+- **38:** os espaços entre linhas e filhos de `SarakExpandableMatrix`/`RecursiveMatrixNode` consomem `matrixGap`; testes cobrem os layouts alterados.
+- **53:** o brilho cyberpunk do botão usa `--sarak-btn-neon-glow-color`, em paridade com o `SarakIconButton`; testes cobrem a variável.
+- Acrescentada a migração 8.0.0. Regenerados catálogo, tipos de tokens, guia e kit de desenvolvimento.
+
+**Arquivos de implementação:** `src/components/atomic/Inputs/SarakAutocomplete.tsx`; `src/components/atomic/Templates/SarakStats.tsx`, `SarakForm.tsx`, `SarakTableProps.ts`, `SarakCatalogGrid.tsx`, `SarakExpandableMatrix.tsx` e `components/RecursiveMatrixNode.tsx`; `src/components/atomic/Navigation/SarakShellNav.tsx`; `src/components/atomic/Modals/SarakDrawer.tsx`; `src/components/atomic/Layouts/SarakScrim.tsx`; `src/components/atomic/hooks/useAtomicStyles.ts`.
+
+**Testes e artefatos:** testes unitários nos arquivos `__tests__` correspondentes dos componentes acima; caso P37 em `browser-tests/arsenal-lote5.spec.ts` e `browser-tests/fixtures/harness-entry.tsx`; nota em `docs/migracoes.md`; catálogo em `docs/component-catalog.{json,md}`; saída do guia em `sarak-ui/`.
+
+### Verificações
+
+- `npx.cmd vitest run` nos 10 arquivos unitários do lote — **10 arquivos, 78 testes passaram**.
+- Caso P37 no Playwright — **1 passou** usando o Chrome instalado localmente, pois o Chromium empacotado do Playwright não está instalado. O caminho do Chrome foi configurado temporariamente para a execução e revertido; o clique programático no scrim só aciona o fechamento para observar a animação de saída.
+- `npm.cmd run verify -- --tier=quick` — **verde**, incluindo TypeScript, baseline, catálogos, tipos, guia, kit e anel 0. A primeira execução encontrou a importação ausente de `describe` no teste novo; a importação foi corrigida e a execução final passou.
+- `npm.cmd run catalog`, `npm.cmd run token-types`, `npm.cmd run guide` e `npm.cmd run dev-kit` — **passaram**.
+- `git diff --check` nos arquivos do lote — **sem erros**.
+
+### Preservação e observação
+
+- Snapshot de status capturado antes da primeira edição: ` M specs/00-indice.md`; ` M specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md`; `?? .claude/settings.local.json`.
+- Nenhuma operação de stage, reset ou commit foi feita. Os arquivos da outra tarefa indicados no pedido não foram editados nem formatados.
+- Achado fora dos itens deste lote: `SarakCatalogGrid.tsx:54` ainda tem um sufixo inválido na borda do indicador de carregamento. O item 17 da plan aponta a classe do cabeçalho; o spinner não foi alterado.
+- Artefatos temporários gerados pelo Playwright foram removidos.
+- Após a mudança do status para 🟠, `npm run -s plan-index:check` aponta divergência porque `specs/00-indice.md` ainda informa 🟡. O quick verify verde foi executado antes dessa transição; o índice permanece intocado conforme o pedido e precisa ser sincronizado pela tarefa responsável por ele.
+
+## Resumo da execução — 2026-10-20 — correção do achado 1
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar**
+```text
+ M browser-tests/arsenal-lote5.spec.ts
+ M browser-tests/fixtures/harness-entry.tsx
+ M docs/component-catalog.json
+ M docs/component-catalog.md
+ M docs/migracoes.md
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M specs/00-indice.md
+ M specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md
+ M src/components/atomic/Buttons/__tests__/SarakButton.test.tsx
+ M src/components/atomic/Inputs/SarakAutocomplete.tsx
+ M src/components/atomic/Inputs/__tests__/SarakAutocomplete.test.tsx
+ M src/components/atomic/Layouts/SarakScrim.tsx
+ M src/components/atomic/Modals/SarakDrawer.tsx
+ M src/components/atomic/Navigation/SarakShellNav.tsx
+ M src/components/atomic/Navigation/__tests__/SarakShellNav.test.tsx
+ M src/components/atomic/Templates/SarakCatalogGrid.tsx
+ M src/components/atomic/Templates/SarakExpandableMatrix.tsx
+ M src/components/atomic/Templates/SarakForm.tsx
+ M src/components/atomic/Templates/SarakStats.tsx
+ M src/components/atomic/Templates/SarakTableProps.ts
+ M src/components/atomic/Templates/__tests__/SarakCatalogGrid.test.tsx
+ M src/components/atomic/Templates/__tests__/SarakExpandableMatrix.test.tsx
+ M src/components/atomic/Templates/__tests__/SarakForm.test.tsx
+ M src/components/atomic/Templates/__tests__/SarakStats.test.tsx
+ M src/components/atomic/Templates/__tests__/SarakTableProps.test.ts
+ M src/components/atomic/Templates/components/RecursiveMatrixNode.tsx
+ M src/components/atomic/Templates/components/__tests__/RecursiveMatrixNode.test.tsx
+ M src/components/atomic/hooks/__tests__/useAtomicStyles.test.ts
+ M src/components/atomic/hooks/useAtomicStyles.ts
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- `SarakCatalogGrid.tsx:54` — substituí o sufixo arbitrário inválido por `border-theme-primary/10`, mantendo a borda superior `border-t-theme-primary`.
+- `SarakExpandableCard.tsx:121` e `AuthHero.tsx:37` — removi `-border` após a variável arbitrária de cor; a classe `border` existente define a largura e a variável define a cor.
+- Acrescentei uma asserção de classe renderizada para cada um dos três casos nos testes correspondentes.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Templates/SarakCatalogGrid.tsx` | alterado | Classe de cor válida para o anel do spinner. |
+| `src/components/atomic/Cards/SarakExpandableCard.tsx` | alterado | Classe de cor da borda do botão de fechar válida. |
+| `src/components/atomic/Templates/components/AuthHero.tsx` | alterado | Classe de cor da borda do quadro da marca válida. |
+| `src/components/atomic/Templates/__tests__/SarakCatalogGrid.test.tsx` | alterado | Asserção da cor translúcida do spinner. |
+| `src/components/atomic/Cards/__tests__/SarakExpandableCard.test.tsx` | alterado | Asserção da variável de borda no botão de fechar expandido. |
+| `src/components/atomic/Templates/components/__tests__/AuthHero.test.tsx` | alterado | Asserção da variável de borda no quadro da marca. |
+| `specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md` | alterado | Este resumo append-only e status Em revisão. |
+
+**Verificações executadas**
+- `npx.cmd vitest run src/components/atomic/Templates/__tests__/SarakCatalogGrid.test.tsx src/components/atomic/Cards/__tests__/SarakExpandableCard.test.tsx src/components/atomic/Templates/components/__tests__/AuthHero.test.tsx --reporter=dot` → 3 arquivos, 9 testes passaram.
+- `rg -n --pcre2 '(?:border|bg|text|ring|shadow)-\[[^\]]*\]-[A-Za-z]' src` → nenhuma ocorrência (código 1 do `rg`, esperado para zero resultados).
+- `npm.cmd run verify -- --tier=quick` → verde: `tsc`, baseline, catálogos, tipos, guia, kit, plan-index e anel 0. Rodado antes da transição deste frontmatter para 🟠.
+- `npm.cmd run -s plan-index:check` após a transição para 🟠 → falhou apenas pela divergência com `00-indice`, que continua em 🔵; o índice permanece intocado.
+- `git diff --check` nos sete arquivos desta correção → sem erros.
+
+**Critérios de aceite**
+- [x] As três ocorrências nomeadas no veredito foram corrigidas e têm teste de classe renderizada.
+- [x] A busca do padrão prescrito em `src/` não encontra ocorrências.
+
+**Decisões e suposições**
+- `border-theme-primary/10` preserva a intenção indicada por `-primary/10` e acompanha o `border-t-theme-primary` do mesmo spinner.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum achado adicional foi tratado nesta correção.
+
+**Pendências / riscos**
+- O veredito foi preservado. O status da plan passou a 🟠; `specs/00-indice.md` foi mantido intocado conforme a instrução anterior, portanto `plan-index:check` seguirá divergente até a tarefa responsável sincronizá-lo.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-10-20 — lote 1 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** 14 — o `SarakAutocomplete` repassa `disabled` ao campo (`AutocompleteDisplay` recebe
+`{ ...inputProps, disabled }`), com teste de edição, lista e foco; 25 — `role`, `density` e `importance` saíram de `SarakStats`,
+`SarakForm` e `SarakTableProps`, com nota MAJOR e "de/para"; 31 — o JSDoc do `SarakShellNav` sem `dock`, catálogo regenerado; 37 —
+o véu da gaveta sai pela curva `motionEaseIn` na duração de `motionDurationFast` (`SarakDrawer.tsx`, `SarakScrim.tsx`), com caso
+de navegador; 38 — os espaçamentos da matriz pelo `matrixGap`; 53 — a borda `cyberpunk` do `SarakButton` pela variável
+`--sarak-btn-neon-glow-color`, o mesmo caminho do `SarakIconButton`. **Medido por mim:** `npm run verify -- --tier=quick` verde
+(`tsc`, baseline, Anel 1, R36, Anel 0, kits) salvo o `plan-index:check`, que é do revisor (sincronizado agora); `npx vitest run
+src/components/atomic` — **212 arquivos, 1.199/1.199**.
+
+**Achado 1 — o item 17 ficou pela metade: o mesmo defeito segue em três lugares.** A classe com sufixo solto depois do valor
+arbitrário (o Tailwind não a gera, e a borda fica por conta do acaso) foi corrigida no cabeçalho e no estado vazio do
+`SarakCatalogGrid`, mas continua em:
+- `src/components/atomic/Templates/SarakCatalogGrid.tsx:54` — `border-[var(--border-color,…)]-primary/10` (o anel do indicador de
+  carregamento; o próprio relato o apontou);
+- `src/components/atomic/Cards/SarakExpandableCard.tsx:121` — `border-[var(--border-color,…)]-b…`;
+- `src/components/atomic/Templates/components/AuthHero.tsx:37` — `border-[var(--border-color,…)]-b…`.
+O item 17 é esse defeito, não uma linha: os três entram no escopo desta correção (decisão do revisor). **Correção:** a classe
+que o desenho pretende em cada um (por exemplo, o lado da borda como classe própria e a cor pela variável), com teste que fixa a
+classe gerada; e a busca do padrão `(border|bg|text|ring|shadow)-[var(…)]-<letra>` em `src/` sem nenhuma ocorrência no fim
+(cole a saída).
+
+**Status: 🔵 Em correção** (só o achado 1). O caso de navegador do item 37 roda pelo revisor contra o `dist/` na aprovação.
+
+## Veredito — 2026-10-20 — correção 1 (lote 1) — 🟢 Aprovado; lote 1 fechado
+
+**Achado fechado:** as três classes com sufixo solto foram para a forma válida — `SarakCatalogGrid.tsx:54`
+(`border-theme-primary/10`, o anel do indicador de carregamento), `SarakExpandableCard.tsx:121` e `AuthHero.tsx:37` (a largura pela
+classe `border`, a cor pela variável) —, cada uma com asserção da classe renderizada. **Medido por mim:** a busca do padrão
+`(border|bg|text|ring|shadow)-[…]-<letra>` em `src/` não acha nenhuma ocorrência; `npm run verify -- --tier=quick` verde; `npx vitest
+run src/components/atomic/Templates src/components/atomic/Cards` — **66 arquivos, 241/241** (o resto do lote já tinha passado: 212
+arquivos, 1.199 testes em `src/components/atomic`).
+
+**O caso de navegador do item 37** (véu da gaveta pela curva do token) não rodou contra um `dist/` novo nesta máquina: o `build`
+precisa do binário `tailwindcss`, que entrou como dependência na correção da CI e ainda não está instalado aqui (o dono roda `npm ci`
+antes do lote 2). Ele roda na bateria completa do fechamento desta plan (§7), com os demais.
+
+**Lote 1 fechado (itens 14, 17, 25, 31, 37, 38, 53).** Segue o lote 2.
+
+**Status: 🟡 Em execução (lote 2).**

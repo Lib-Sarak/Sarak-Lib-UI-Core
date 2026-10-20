@@ -1023,11 +1023,11 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakChat** | `onSend` · `loadModels` · `label` · `role` · `density` · `importance` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
-| Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` · `role` · `density` · `importance` |
+| Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
-| Templates | **SarakStats** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `metrics` · `role` · `density` · `importance` |
+| Templates | **SarakStats** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `metrics` |
 | Templates | **SarakTable** | `onRetry` · `updatedAt` · `emptyMessage` · `loading` · `error` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `variant` · `fullWidth` · `className` · `listClassName` |

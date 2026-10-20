@@ -21,9 +21,23 @@ describe('SarakExpandableMatrix', () => {
             </SarakUIProvider>,
         );
         fireEvent.click(screen.getByText('Papel'));
-        const stack = Array.from(container.querySelectorAll<HTMLElement>('[style*="gap"]'))
+        const parentRow = container.querySelector('.sarak-card') as HTMLElement;
+        const stack = Array.from(parentRow.querySelectorAll<HTMLElement>('[style*="gap"]'))
             .find((el) => el.getAttribute('style')?.includes('gap: var(--sarak-matrix-gap, 12px)'));
         expect(stack).toBeDefined();
-        expect(stack?.getAttribute('style')).toContain('flex-direction: column');
+    });
+
+    it('o espaçamento da lista de linhas também usa matrixGap', () => {
+        const { container } = render(
+            <SarakExpandableMatrix
+                data={[{ id: 'papel', name: 'Papel' }]}
+                subItems={[]}
+                activeMapping={() => false}
+                onToggle={() => undefined}
+            />,
+        );
+        const rows = (container.firstElementChild as HTMLElement).children[1] as HTMLElement;
+
+        expect(rows.style.gap).toBe('var(--sarak-matrix-gap, 12px)');
     });
 });

@@ -34,7 +34,7 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                     initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                     animate={{ opacity: 1, scale: 1, rotate: 0 }}
                     transition={{ duration: durations.slow, type: "spring" }}
-                    className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-lg-primary/20 border border-[var(--border-color,rgba(255,255,255,0.09))]-border"
+                    className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-lg-primary/20 border border-[var(--border-color,rgba(255,255,255,0.09))]"
                     style={{ borderRadius: 'var(--radius-btn, 12px)' }}
                 >
                     {branding?.logo ? (

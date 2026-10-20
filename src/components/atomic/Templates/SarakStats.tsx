@@ -35,9 +35,6 @@ export interface SarakStatsProps<TData extends Record<string, unknown>> {
     mapping?: Record<string, string>;
     /** Configuração visual e de formato por chave de métrica. */
     metrics?: Partial<Record<keyof TData & string, SarakStatsMetricConfig>>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 
 interface SarakStatsGridProps<TData extends Record<string, unknown>> {

@@ -50,7 +50,7 @@ export const useAtomicStyles = () => {
         isHovered: boolean
     ): React.CSSProperties => {
         const styleType = design?.btnStyleType || 'matte';
-        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(25,227,240,0.18))';
+        const glowColor = 'var(--sarak-btn-neon-glow-color, rgba(25,227,240,0.4))';
         const blurAmount = design?.btnBackdropBlur || 0;
 
         const dynamicStyle: React.CSSProperties = {};

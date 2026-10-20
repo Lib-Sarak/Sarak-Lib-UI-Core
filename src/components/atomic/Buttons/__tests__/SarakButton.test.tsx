@@ -103,7 +103,8 @@ describe('SarakButton — leitores de btnGhostHoverBg, btnNeonPulseSpeed e btnSt
     it('cyberpunk é wireframe: sem preenchimento, contorno na cor do brilho e cantos retos', () => {
         const button = montar({ btnStyleType: 'cyberpunk', btnNeonGlowColor: 'rgb(1, 2, 3)' });
         expect(button.style.backgroundColor).toBe('transparent');
-        expect(button.style.border).toContain('rgb(1, 2, 3)');
+        expect(button.style.border).toContain('var(--sarak-btn-neon-glow-color');
+        expect(button.style.border).not.toContain('rgb(1, 2, 3)');
         expect(button.style.borderRadius).toBe('0px');
     });
 });

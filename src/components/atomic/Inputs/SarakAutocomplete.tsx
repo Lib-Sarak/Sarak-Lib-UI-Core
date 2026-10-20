@@ -132,5 +132,5 @@ export const SarakAutocomplete = (props: SarakAutocompleteProps): React.ReactEle
         options, searchOptions, debounceMs, value, defaultValue, onChange,
         onOptionSelect, onFocus, onBlur, onKeyDown, disabled,
     });
-    return <AutocompleteDisplay inputProps={inputProps} state={state} />;
+    return <AutocompleteDisplay inputProps={{ ...inputProps, disabled }} state={state} />;
 };

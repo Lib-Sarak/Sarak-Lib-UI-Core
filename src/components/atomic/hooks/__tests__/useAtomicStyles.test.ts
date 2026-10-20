@@ -78,6 +78,16 @@ describe('useAtomicStyles', () => {
         it('CONTRAPROVA: fora do cyberpunk nenhuma variante ganha cor inline', () => {
             expect(getButtonStyles({ btnStyleType: 'matte' } as never, 'danger', false).color).toBeUndefined();
         });
+
+        it('a borda lê btnNeonGlowColor pela variável compartilhada com SarakIconButton', () => {
+            const style = getButtonStyles({
+                btnStyleType: 'cyberpunk',
+                btnNeonGlowColor: 'rgb(1, 2, 3)',
+            } as never, 'primary', false);
+
+            expect(style.border).toContain('var(--sarak-btn-neon-glow-color, rgba(25,227,240,0.4))');
+            expect(style.border).not.toContain('rgb(1, 2, 3)');
+        });
     });
 
     describe('sombra do campo (`inputShadow`, token de texto com duas palavras-chave)', () => {

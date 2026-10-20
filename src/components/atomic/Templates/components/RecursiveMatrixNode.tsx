@@ -167,7 +167,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 {canExpandContent && (
                     <div 
                         className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,#101622)]/50 rounded-[var(--sarak-matrix-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.09))]" : `${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.09))]`}
-                        style={areChildrenCompact ? { gap: 'var(--sarak-layout-gap-sm,8px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-md,16px)' } : { gap: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-md,16px)' }}
+                        style={areChildrenCompact ? { gap: 'var(--sarak-matrix-gap, 12px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-md,16px)' } : { gap: 'var(--sarak-matrix-gap, 12px)', marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-md,16px)' }}
                     >
                         {expandedContent}
                     </div>
@@ -210,7 +210,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 {canExpandContent && (
                     <div 
                         className={areChildrenCompact ? "flex flex-wrap bg-[var(--color-theme-card,#101622)]/50 rounded-[var(--sarak-matrix-radius,12px)] border border-[var(--border-color,rgba(255,255,255,0.09))]" : `${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.09))]`}
-                        style={areChildrenCompact ? { gap: 'var(--sarak-layout-gap-sm,8px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)' } : { gap: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-sm,8px)' }}
+                        style={areChildrenCompact ? { gap: 'var(--sarak-matrix-gap, 12px)', padding: 'var(--sarak-layout-gap-md,16px)', marginTop: 'var(--sarak-layout-gap-sm,8px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)' } : { gap: 'var(--sarak-matrix-gap, 12px)', marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*2)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)', marginTop: 'var(--sarak-layout-gap-sm,8px)' }}
                     >
                         {expandedContent}
                     </div>
@@ -231,7 +231,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
                 )}
             </div>
             {canExpandContent && (
-                <div className={`${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.09))]`} style={{ marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)' }}>
+                <div className={`${getContainerStyles().className} border-l border-[var(--border-color,rgba(255,255,255,0.09))]`} style={{ gap: 'var(--sarak-matrix-gap, 12px)', marginLeft: 'var(--sarak-layout-gap-md,16px)', paddingLeft: 'var(--sarak-layout-gap-sm,8px)' }}>
                     {expandedContent}
                 </div>
             )}

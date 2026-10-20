@@ -1,7 +1,8 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { RenderResult } from '@testing-library/react';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import {
     SarakAutocomplete,
@@ -159,4 +160,38 @@ it('o campo é type="search" com a tecla "Buscar", e o consumidor ainda pode tro
     const custom = screen.getByRole('combobox', { name: 'Setor' });
     expect(custom).toHaveAttribute('type', 'text');
     expect(custom).toHaveAttribute('enterkeyhint', 'go');
+});
+
+describe('disabled', () => {
+    it('impede a edição do texto', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.type(input, 'Fin');
+
+        expect(input).toBeDisabled();
+        expect(input).toHaveValue('');
+    });
+
+    it('não abre a lista de opções', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.click(input);
+        await user.keyboard('{ArrowDown}');
+
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
+
+    it('não recebe foco ao clicar', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.click(input);
+
+        expect(input).not.toHaveFocus();
+    });
 });

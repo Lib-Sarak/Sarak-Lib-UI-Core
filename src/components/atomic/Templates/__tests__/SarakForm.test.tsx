@@ -70,4 +70,15 @@ describe('SarakForm', () => {
 
         expect(await screen.findByText('Unavailable')).toBeInTheDocument();
     });
+
+    it('não aceita as props visuais que não tinham efeito', () => {
+        // @ts-expect-error `role` não tinha leitor e saiu da assinatura pública.
+        const roleProp = <SarakForm role="primary" />;
+        // @ts-expect-error `density` não tinha leitor e saiu da assinatura pública.
+        const densityProp = <SarakForm density="compact" />;
+        // @ts-expect-error `importance` não tinha leitor e saiu da assinatura pública.
+        const importanceProp = <SarakForm importance="hero" />;
+
+        expect([roleProp, densityProp, importanceProp]).toHaveLength(3);
+    });
 });

@@ -1148,6 +1148,18 @@ a classificação, a dependência de modo e as interações, conferidos em naveg
 dizer o que o valor faz (declara o modo nativo; a paleta inverte pela preferência do usuário). Valores padrão, opções e
 leitores não mudaram; temas existentes mantêm o comportamento.
 
+### `SarakAutocomplete` respeita `disabled`; props sem efeito saem da API e os componentes passam a ler os tokens de movimento e espaçamento
+
+**Classificação: MAJOR (três props públicas são removidas).** `SarakStats` deixa de aceitar `role`, `density` e `importance`; `SarakForm` deixa de aceitar as mesmas props; `SarakTableProps` deixa de aceitar `importance`. Elas eram aceitas pelo TypeScript e não alteravam a tela.
+
+| Componente/prop | Antes | Depois |
+|---|---|---|
+| `SarakStats` / `SarakForm`: `role`, `density`, `importance` | Props tipadas sem efeito visual ou semântico. | Removidas dos tipos públicos; apague-as do JSX e dos objetos de props. |
+| `SarakTableProps.importance` | Prop tipada sem efeito na tabela. | Removida do tipo público; apague-a dos objetos de props. |
+| `SarakAutocomplete disabled` | O controlador bloqueava sugestões, mas o campo seguia editável e recebia foco. | O atributo chega ao `SarakInput`; o campo não aceita edição, não abre a lista e não recebe foco ao clicar. |
+
+O restante é correção visual sem configuração adicional: o contorno do `SarakCatalogGrid` usa a classe de borda válida; o véu do `SarakDrawer` sai pela curva `motionEaseIn` na duração `motionDurationFast`; os espaços entre linhas e filhos da `SarakExpandableMatrix` seguem `matrixGap`; e a borda cyberpunk de `SarakButton` lê `btnNeonGlowColor` pela mesma variável CSS de `SarakIconButton`. O JSDoc de `SarakShellNav.orientation` deixa de citar opções inexistentes; o comportamento do menu não muda.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.
