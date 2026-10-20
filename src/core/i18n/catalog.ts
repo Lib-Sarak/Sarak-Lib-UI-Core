@@ -17,8 +17,8 @@ type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
  * Catálogo dos textos que a PRÓPRIA lib mostra ao usuário final — cromo, widgets,
  * palette de busca e rótulos padrão de átomo. Texto que o consumidor passa
  * por prop não entra aqui: o dele vence sempre (specs/10 §3.6). O painel de Design
- * (`src/features/DesignEngine/**`) também não — segue em português, é ferramenta do
- * administrador.
+ * (`src/features/DesignEngine/**`) é ferramenta do administrador; os rótulos novos
+ * da gestão de temas usam este catálogo, e o restante permanece em português.
  *
  * Chaves com `{nome}` aceitam interpolação via `useLibraryText()`. O conteúdo mora
  * em companions `catalogEntries.part*.ts` por causa do teto de 250

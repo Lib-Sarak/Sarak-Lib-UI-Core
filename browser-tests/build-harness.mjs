@@ -13,6 +13,7 @@
  */
 import { build } from 'esbuild';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -23,6 +24,77 @@ const DIST_INDEX = path.join(ROOT, 'dist', 'index.js');
 const DIST_CSS = path.join(ROOT, 'dist', 'sarak.css');
 const DIST_SCOPED_CSS = path.join(ROOT, 'dist', 'sarak-scoped.css');
 const ENTRY = path.join(HERE, 'fixtures', 'harness-entry.tsx');
+const require = createRequire(path.join(ROOT, 'package.json'));
+
+function resolveLocalFile(specifier, resolveDir) {
+    const basePath = path.resolve(resolveDir, specifier);
+    const candidates = [
+        basePath,
+        ...['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.json', '.css'].map((extension) => `${basePath}${extension}`),
+        ...['index.js', 'index.jsx', 'index.mjs', 'index.cjs', 'index.ts', 'index.tsx', 'index.css'].map((fileName) => path.join(basePath, fileName)),
+    ];
+
+    return candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
+}
+
+const workspaceResolver = {
+    name: 'workspace-file-resolution',
+    setup(buildApi) {
+        buildApi.onResolve({ filter: /.*/ }, (args) => {
+            let resolvedPath;
+
+            if (args.path.endsWith('.css')) {
+                return { path: args.path, namespace: 'empty-css' };
+            }
+
+            if (['node:path', 'path', 'node:process', 'process', 'node:url', 'url'].includes(args.path)) {
+                return { path: args.path, namespace: 'browser-node-builtin' };
+            }
+
+            if (args.path === '@emotion/is-prop-valid') {
+                return { path: args.path, namespace: 'empty-optional-dependency' };
+            }
+
+            if (args.path === '@sarak/lib-ui-core') {
+                resolvedPath = DIST_INDEX;
+            } else if (args.path.startsWith('.')) {
+                resolvedPath = resolveLocalFile(args.path, args.resolveDir || ROOT);
+            } else {
+                try {
+                    const importerRequire = args.importer ? createRequire(args.importer) : require;
+                    resolvedPath = importerRequire.resolve(args.path, { paths: [args.resolveDir || ROOT, ROOT] });
+                } catch {
+                    return undefined;
+                }
+            }
+
+            return resolvedPath ? { path: resolvedPath, namespace: 'workspace-file' } : undefined;
+        });
+
+        buildApi.onLoad({ filter: /.*/, namespace: 'workspace-file' }, (args) => {
+            const extension = path.extname(args.path).toLowerCase();
+            const loader = extension === '.tsx' ? 'tsx' : extension === '.ts' ? 'ts' : extension === '.json' ? 'json' : extension === '.css' ? 'css' : 'js';
+
+            return {
+                contents: fs.readFileSync(args.path, 'utf8'),
+                loader,
+                resolveDir: path.dirname(args.path),
+            };
+        });
+
+        buildApi.onLoad({ filter: /.*/, namespace: 'empty-css' }, () => ({ contents: '', loader: 'css' }));
+
+        buildApi.onLoad({ filter: /.*/, namespace: 'browser-node-builtin' }, (args) => {
+            if (args.path === 'node:url' || args.path === 'url') {
+                return { contents: 'export const fileURLToPath = (value) => value?.href ?? String(value); export default { fileURLToPath };', loader: 'js' };
+            }
+
+            return { contents: 'export default {};', loader: 'js' };
+        });
+
+        buildApi.onLoad({ filter: /.*/, namespace: 'empty-optional-dependency' }, () => ({ contents: 'export default undefined;', loader: 'js' }));
+    },
+};
 
 const HTML_TEMPLATE = `<!doctype html>
 <html lang="pt-BR">
@@ -55,23 +127,32 @@ export async function buildHarness(entryPath = ENTRY) {
     const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-cromo-harness-'));
     const bundlePath = path.join(outDir, 'bundle.js');
 
-    await build({
-        entryPoints: [entryPath],
-        outfile: bundlePath,
-        bundle: true,
-        format: 'iife',
-        platform: 'browser',
-        jsx: 'automatic',
-        loader: { '.tsx': 'tsx' },
-        alias: { '@sarak/lib-ui-core': DIST_INDEX },
-        logLevel: 'silent',
-    });
+    try {
+        await build({
+            stdin: {
+                contents: fs.readFileSync(entryPath, 'utf8'),
+                resolveDir: path.dirname(entryPath),
+                sourcefile: entryPath,
+                loader: 'tsx',
+            },
+            outfile: bundlePath,
+            bundle: true,
+            format: 'iife',
+            platform: 'browser',
+            jsx: 'automatic',
+            plugins: [workspaceResolver],
+            logLevel: 'silent',
+        });
 
-    fs.copyFileSync(DIST_CSS, path.join(outDir, 'sarak.css'));
-    // A folha do Modo Embarcado (`?css=escopado` no harness): a medição do escopo precisa dela, não da global.
-    if (fs.existsSync(DIST_SCOPED_CSS)) fs.copyFileSync(DIST_SCOPED_CSS, path.join(outDir, 'sarak-scoped.css'));
-    const htmlPath = path.join(outDir, 'index.html');
-    fs.writeFileSync(htmlPath, HTML_TEMPLATE, 'utf8');
+        fs.copyFileSync(DIST_CSS, path.join(outDir, 'sarak.css'));
+        // A folha do Modo Embarcado (`?css=escopado` no harness): a medição do escopo precisa dela, não da global.
+        if (fs.existsSync(DIST_SCOPED_CSS)) fs.copyFileSync(DIST_SCOPED_CSS, path.join(outDir, 'sarak-scoped.css'));
+        const htmlPath = path.join(outDir, 'index.html');
+        fs.writeFileSync(htmlPath, HTML_TEMPLATE, 'utf8');
 
-    return { outDir, htmlPath };
+        return { outDir, htmlPath };
+    } catch (error) {
+        fs.rmSync(outDir, { recursive: true, force: true });
+        throw error;
+    }
 }

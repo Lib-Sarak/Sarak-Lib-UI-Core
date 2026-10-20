@@ -2,6 +2,9 @@ import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-
 import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
 import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
 import type { SarakFontsOption } from './providerProps';
+import type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
+
+export type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -31,16 +34,6 @@ interface SarakRuntimeExtras {
 
 /** Estado de design REAL em runtime: o payload público + os extras de runtime. */
 export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
-
-/** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
-export interface SarakThemeEntry {
-    id: string;
-    /** Rótulo exibido nas listas de tema. Os embarcados já o têm via `ThemePreset`;
-     *  um tema salvo em runtime (ADR-011) precisa dele para não cair no fallback. */
-    name?: string;
-    design?: Record<string, unknown>;
-    contraparte?: Partial<SarakDesignState>; // Bloco p/ o modo OPOSTO ao nativo (plan-26) — opcional no tipo (R33)
-}
 
 /** Assinatura do setter do design-state (valor ou updater functional). */
 export type SetDesign = (updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => void;
@@ -173,12 +166,14 @@ export interface SarakUIOptions {
          * Porta ÚNICA de escrita para "salvar tema em runtime" (ADR-011, substitui as
          * três portas do ADR-010): chamada por `sarak.saveTheme` DEPOIS de o tema já
          * validado (`validateDesign`) entrar na sessão (`allThemes`). Recebe o
-         * `ThemeEntry` completo (`{ id, name, design }`); GUARDAR — arquivo, tabela,
+         * `ThemeEntry` completo (`{ id, name, design, contraparte? }`); GUARDAR — arquivo, tabela,
          * `localStorage`, o que for — e DEVOLVER no próximo boot via `customThemes` é
-         * inteiramente do consumidor. A leitura já é a prop `customThemes`; a porta
+        * inteiramente do consumidor. O segundo argumento opcional informa `'create'`
+        * ou `'replace'`; callbacks antigos que recebem só o tema continuam válidos.
+        * A leitura já é a prop `customThemes`; a porta
          * opcional `onDelete` permite remover da fonte persistente.
          */
-        onSave?: (theme: SarakThemeEntry) => Promise<void> | void;
+        onSave?: (theme: SarakThemeEntry, operation?: SarakThemeSaveOperation) => Promise<void> | void;
         /** Remove o tema salvo pelo consumidor, quando configurada. */ onDelete?: (id: string) => Promise<void> | void;
     };
     preferences?: SarakPreferencesOptions; // Porta opcional de preferências do usuário
@@ -225,10 +220,10 @@ export interface SarakUIContextType {
     themeCatalog: SarakThemeCatalogEntry[]; // Catálogo leve: todo tema escolhível (nome, modo, amostra de cor)
     loadTheme: (id: string) => Promise<SarakThemeEntry | undefined>; // Carrega o `design` de um tema pelo id
     getHostConfig?: () => SarakThemePayload; // O `config` do host (prop do Provider) — a prévia do painel compõe com ele
-    /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
-     *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
+    /** Salva um tema em runtime: valida, funde no estado de SESSÃO e entrega
+     *  a operação `create`/`replace` a `options.theme.onSave`,
      *  se configurado — sem a porta, não sobrevive a um reload. */
-    saveTheme: (theme: SarakThemeEntry) => Promise<void>;
+    saveTheme: (theme: SarakThemeEntry, operation?: SarakThemeSaveOperation) => Promise<void>;
     deleteTheme: (id: string) => Promise<void>;
     activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
     resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru

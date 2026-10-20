@@ -16,6 +16,7 @@ export type {
     SarakThemePayload,
     SarakDesignState,
     SarakThemeEntry,
+    SarakThemeSaveOperation,
     SarakUIOptions,
     SarakUIContextType,
     SarakBrandingState,

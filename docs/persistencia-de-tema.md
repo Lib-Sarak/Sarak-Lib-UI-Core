@@ -163,14 +163,21 @@ function App({ temasSalvos, estadoAplicado }: {
           },
         },
         theme: {
-          onSave: async (theme) => {
-            await fetch('/api/tema/definicoes', {
-              method: 'PUT',
-              body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
-            });
+          onSave: async (theme, operation) => {
+            const response = await fetch(
+              operation === 'replace'
+                ? `/api/tema/definicoes/${encodeURIComponent(theme.id)}`
+                : '/api/tema/definicoes',
+              {
+                method: operation === 'replace' ? 'PUT' : 'POST',
+                body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
+              },
+            );
+            if (!response.ok) throw new Error(`Falha ao salvar tema: HTTP ${response.status}`);
           },
           onDelete: async (id) => {
-            await fetch(`/api/tema/definicoes/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            const response = await fetch(`/api/tema/definicoes/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error(`Falha ao apagar tema: HTTP ${response.status}`);
           },
         },
       }}

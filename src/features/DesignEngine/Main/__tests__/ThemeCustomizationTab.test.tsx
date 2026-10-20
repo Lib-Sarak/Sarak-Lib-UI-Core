@@ -35,12 +35,14 @@ vi.mock('../../Canvas/PreviewCanvas', () => ({
         onApplyFullTheme,
         isDualView,
         onCloseGallery,
+        customThemes,
     }: {
         onApplyFullTheme?: (d: Record<string, unknown>) => void;
         isDualView?: boolean;
         onCloseGallery?: () => void;
+        customThemes?: unknown;
     }) => (
-        <div data-testid="preview-canvas" data-gallery-open={String(Boolean(isDualView))}>
+        <div data-testid="preview-canvas" data-gallery-open={String(Boolean(isDualView))} data-has-custom-themes-prop={String(customThemes !== undefined)}>
             <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
                 Apply Full
             </button>
@@ -80,9 +82,11 @@ vi.mock('../components/SaveThemeModal', () => ({
 }));
 
 vi.mock('../../../../core/Design/master-map', () => ({
+    sarakGetAllDesignTokens: vi.fn(() => []),
+    sarakGetDefaultDesignState: vi.fn(() => ({})),
     MASTER_DESIGN_MAP: {
         components: [
-            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" /> }
+            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" />, tokens: [] }
         ]
     }
 }));
@@ -165,6 +169,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'false');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-has-custom-themes-prop', 'false');
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 

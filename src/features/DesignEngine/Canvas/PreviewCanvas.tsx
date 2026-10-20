@@ -28,7 +28,6 @@ interface PreviewCanvasProps {
     onUpdateDraft: (key: string, value: SarakTokenValue) => void;
     isDualView?: boolean;
     isPreviewStacked?: boolean;
-    customThemes?: Record<string, Partial<SarakDesignState>>[];
     sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
@@ -49,7 +48,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     onUpdateDraft,
     isDualView,
     isPreviewStacked,
-    customThemes,
     sarak,
     onInspectComponent,
     onApplyFullTheme,

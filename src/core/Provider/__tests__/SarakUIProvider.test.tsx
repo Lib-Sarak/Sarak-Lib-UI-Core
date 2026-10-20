@@ -301,7 +301,7 @@ describe('SarakUIProvider', () => {
                 id: 'meu-tema',
                 name: 'Meu Tema',
                 design: expect.objectContaining({ primaryColor: '#123456' })
-            }));
+            }), 'create');
         });
 
         it('onSave que rejeita NÃO remove o tema da sessão nem derruba o Provider — o erro propaga para quem chamou', async () => {
@@ -422,6 +422,42 @@ describe('SarakUIProvider', () => {
 
             expect(onDelete).toHaveBeenCalledWith(theme.id);
             expect(screen.getByTestId('tema-presente')).toHaveTextContent('false');
+        });
+
+        it('apagar o tema ativo restaura o tema padrão no modo atual e persiste o id de fallback', async () => {
+            const customTheme = { id: 'tema-ativo-do-consumidor', name: 'Tema ativo', design: { mode: 'light' } };
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfig = vi.fn();
+            const persistDesign = vi.fn().mockResolvedValue(undefined);
+            const onDelete = vi.fn().mockResolvedValue(undefined);
+            vi.mocked(useDesignManager).mockReturnValue({
+                design: { mode: 'light', primaryColor: '#abcdef' },
+                setDesign: vi.fn(),
+                applyConfig: vi.fn(),
+                applyFullConfig,
+                persistDesign,
+                isBackendLoaded: true,
+                resolvedThemeId: customTheme.id,
+                setResolvedThemeId,
+            } as any);
+
+            const ActiveThemeConsumer = () => {
+                const ui = useSarakUI();
+                return <button data-testid="delete-active-theme" onClick={() => { void ui.deleteTheme(customTheme.id); }}>Apagar</button>;
+            };
+
+            render(
+                <SarakUIProvider customThemes={[customTheme]} options={{ theme: { onDelete } }}>
+                    <ActiveThemeConsumer />
+                </SarakUIProvider>,
+            );
+
+            await act(async () => fireEvent.click(screen.getByTestId('delete-active-theme')));
+
+            expect(onDelete).toHaveBeenCalledWith(customTheme.id);
+            expect(setResolvedThemeId).toHaveBeenCalledWith('sarak-sovereign');
+            expect(applyFullConfig).toHaveBeenCalledWith(expect.objectContaining({ mode: 'light' }));
+            expect(persistDesign).toHaveBeenCalledWith(expect.objectContaining({ mode: 'light' }));
         });
     });
 

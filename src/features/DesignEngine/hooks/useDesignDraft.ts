@@ -239,6 +239,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         resetToken,
         discardDraft,
         handleThemePreview,
+        setDraftThemeId: setPendingThemeId,
         handleApplyToSystem,
         canUndoLastApply,
         undoLastApply,

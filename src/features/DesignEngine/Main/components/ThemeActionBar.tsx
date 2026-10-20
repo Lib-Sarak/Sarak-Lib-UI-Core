@@ -1,11 +1,11 @@
 import React from 'react';
 import { Check, RotateCcw } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 const ACTION_LABELS = {
     apply: 'Aplicar',
     discard: 'Descartar',
-    export: 'Exportar',
     undo: 'Desfazer última aplicação'
 } as const;
 
@@ -14,7 +14,12 @@ interface ThemeActionBarProps {
     dirtyTokenCount: number;
     onApply: () => void;
     onDiscard: () => void;
+    canSaveToRuntime: boolean;
+    canDeleteTheme: boolean;
+    onSave: () => void;
     onExport: () => void;
+    onCreateTheme: () => void;
+    onDeleteTheme: () => void;
     canUndoLastApply: boolean;
     onUndoLastApply: () => void;
 }
@@ -24,10 +29,16 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     dirtyTokenCount,
     onApply,
     onDiscard,
+    canSaveToRuntime,
+    canDeleteTheme,
+    onSave,
     onExport,
+    onCreateTheme,
+    onDeleteTheme,
     canUndoLastApply,
     onUndoLastApply
 }) => {
+    const text = useLibraryText();
     const applyLabel = dirtyTokenCount > 0
         ? ACTION_LABELS.apply + ' (' + dirtyTokenCount + ')'
         : ACTION_LABELS.apply;
@@ -49,10 +60,31 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
                     <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="sm">
                         {ACTION_LABELS.discard}
                     </SarakButton>
-                    <SarakButton onClick={onExport} variant="ghost" size="sm">
-                        {ACTION_LABELS.export}
-                    </SarakButton>
+                    {canSaveToRuntime ? (
+                        <SarakButton onClick={onSave} variant="primary" size="sm">
+                            {text('themeSaveDialogTitle')}
+                        </SarakButton>
+                    ) : (
+                        <SarakButton onClick={onExport} variant="ghost" size="sm">
+                            {text('themeExportJsonAction')}
+                        </SarakButton>
+                    )}
                 </div>
+                {canSaveToRuntime && (
+                    <div className="grid grid-cols-2 gap-2">
+                        <SarakButton onClick={onExport} variant="ghost" size="sm">
+                            {text('themeExportJsonAction')}
+                        </SarakButton>
+                        <SarakButton onClick={onCreateTheme} variant="secondary" size="sm">
+                            {text('themeCreateAction')}
+                        </SarakButton>
+                    </div>
+                )}
+                {canDeleteTheme && (
+                    <SarakButton onClick={onDeleteTheme} variant="ghost" size="sm">
+                        {text('themeDeleteAction')}
+                    </SarakButton>
+                )}
                 {canUndoLastApply && (
                     <SarakButton
                         onClick={onUndoLastApply}

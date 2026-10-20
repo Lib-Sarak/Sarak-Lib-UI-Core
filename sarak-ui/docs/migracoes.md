@@ -2230,9 +2230,10 @@ nenhuma mudança de comportamento — o painel continua exatamente como era, só
 
 **O que ganhou.** Até aqui, "salvar um tema" só existia como **exportar um arquivo JSON** — um fluxo de
 desenvolvedor, que exige colar o arquivo em `customThemes` e fazer deploy. Agora o painel também oferece
-**"Salvar"**, para o usuário final: o tema vai para `sarak.saveTheme`, entra na sessão (aparece em
-`allThemes`, então em `TemplatesTab`/`PresetsCatalog`, sem reload) e é entregue a `options.theme.onSave`,
-se você configurar essa porta.
+**gestão runtime**, para o usuário final: **Salvar** substitui o tema do importador em edição; **Salvar
+como novo** e **Duplicar** criam entradas com id livre. A entrada vai para `sarak.saveTheme`, aparece em
+`allThemes`, então em `TemplatesTab`/`PresetsCatalog`, sem reload, e é entregue a `options.theme.onSave`,
+se você configurar essa porta. **Exportar JSON** continua disponível como ação separada.
 
 **Como ligar a porta.**
 
@@ -2240,9 +2241,12 @@ se você configurar essa porta.
 <SarakUIProvider
   options={{
     theme: {
-      onSave: async (theme) => {
+      onSave: async (theme, operation) => {
         // grave onde quiser: arquivo, tabela, localStorage — a lib não pergunta e não sabe.
-        await minhaApi.salvarTema(theme); // { id, name, design }
+        await minhaApi.salvarTema(theme, operation); // { id, name, design, contraparte? }
+      },
+      onDelete: async (id) => {
+        await minhaApi.apagarTema(id);
       }
     }
   }}
@@ -2251,13 +2255,30 @@ se você configurar essa porta.
 ```
 
 **O que NÃO existe, de propósito** ([[011-tema-salvo-por-uma-porta-de-escrita]]): não há `onLoadThemes` — a
-leitura já é a prop `customThemes`, que você passa na montagem seguinte com o que guardou. Não há
-`onDeleteTheme` — a lista de temas salvos é sua, apagar é decisão de quem guarda. Não há editar/renomear um
-tema já salvo — apague e salve de novo.
+leitura já é a prop `customThemes`, que você passa na montagem seguinte com o que guardou. A porta opcional
+`onDelete` informa o importador quando um tema é apagado. Temas embarcados continuam imutáveis; para
+alterar um deles, crie uma cópia.
 
-**Sem a porta configurada, o botão "Salvar" não aparece** — nunca um "Salvar" que evapora no reload.
-`design` passa por `validateDesign` antes de entrar em `allThemes`, a mesma fronteira de qualquer tema de
-origem externa ([[10-seguranca-e-acessibilidade]] §2.1).
+**Sem `options.theme.onSave`, os gestos de salvar, duplicar e criar não aparecem** — nunca um tema que
+evapora no reload. Exportar JSON permanece como ação separada. `design` passa por `validateDesign` antes de
+entrar em `allThemes`, a mesma fronteira de qualquer tema de origem externa
+([[10-seguranca-e-acessibilidade]] §2.1).
+
+### Gestão de temas no painel
+
+Com `options.theme.onSave`, o painel oferece **Salvar**, **Salvar como novo** e **Duplicar**. O primeiro
+substitui o tema do importador em edição, preservando o id; os outros criam um id livre, com sufixo
+quando o slug já existe. A assinatura continua compatível com callbacks antigos: o tema permanece no
+primeiro argumento e um segundo argumento opcional, `'create' | 'replace'`, identifica a operação. Temas
+embarcados não podem ser substituídos; editar um deles cria uma cópia. **Exportar JSON** é uma ação
+separada e leva `contraparte` quando o rascunho pertence a um tema pareado.
+
+O tema salvo passa a ser o ativo e a persistência do design recebe o id resolvido. **Apagar** só aparece
+para tema do importador e pede confirmação; ao apagar o ativo, o painel volta ao tema padrão no modo
+atual. Configure `options.theme.onDelete` para remover também da fonte persistente. Se a porta rejeitar,
+o tema é restaurado na coleção e o painel avisa; sem a porta, a remoção vale apenas durante a sessão.
+Os callbacks devem rejeitar em falhas HTTP — `fetch` não rejeita sozinho para respostas 4xx/5xx — para
+que a lib consiga manter a coleção coerente e informar o usuário.
 
 ---
 

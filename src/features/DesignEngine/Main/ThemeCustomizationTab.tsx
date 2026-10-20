@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import { PreviewToolbar } from '../Canvas/components/PreviewToolbar';
-import type { SarakDesignState, SarakUIOptions } from '../../../core/Provider/types';
+import type { SarakUIOptions } from '../../../core/Provider/types';
 import type { SarakDesignToken } from '../../../core/Design/types';
 import { useDesignDraft } from '../hooks/useDesignDraft';
 import { useResizable } from '../hooks/useResizable';
@@ -11,7 +11,7 @@ import { ThemeSidebarContent } from './components/ThemeSidebarContent';
 import { ThemeFeedbackToast } from './components/ThemeFeedbackToast';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
 import { useThemeEngineState } from './hooks/useThemeEngineState';
-import { useThemePersistenceHandlers } from './hooks/useThemePersistenceHandlers';
+import { useThemeCustomizationActions } from './hooks/useThemeCustomizationActions';
 import { SaveThemeModal } from './components/SaveThemeModal';
 
 export const ThemeCustomizationTab: React.FC = () => {
@@ -33,16 +33,12 @@ export const ThemeCustomizationTab: React.FC = () => {
     const {
         draft, updateDraft, handleApplyToSystem, isComponentDirty, resetComponent, resetToken,
         isDirty, dirtyTokenCount, discardDraft, toast, showToast, handleThemePreview,
+        setDraftThemeId,
         canUndoLastApply, undoLastApply
     } = useDesignDraft(sarak);
-    const { handleExportTheme, handleSaveTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
-        draft,
-        setCurrentThemeName,
-        setIsSaveModalOpen,
-        setIsSaving,
-        showToast,
-        handleApplyToSystem,
-        saveTheme: sarak.saveTheme
+    const themeActions = useThemeCustomizationActions({
+        sarak, draft, handleApplyToSystem, handleThemePreview, discardDraft, setDraftThemeId,
+        showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving,
     });
     const { size: sidebarWidth, startResizing: startSidebarResize, isResizing } = useResizable({
         initialSize: 320,
@@ -63,17 +59,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         if (matchingPillar) setActivePillarId(matchingPillar);
         setTimeout(() => setActiveSectionId(schemaId), 100);
     }, [groupedStructure, setActivePillarId, setActiveSectionId]);
-
-    const handleApplyFullTheme = useCallback((design: Partial<SarakDesignState> & { systemName?: string }, themeId?: string) => {
-        setCurrentThemeName(design.systemName || 'Novo Tema');
-        handleThemePreview(design, undefined, themeId);
-    }, [handleThemePreview, setCurrentThemeName]);
-
-    const handleDiscardChanges = useCallback(() => {
-        discardDraft();
-        const activeTheme = sarak.allThemes?.find((theme) => theme.id === sarak.resolvedThemeId);
-        setCurrentThemeName(activeTheme?.name || '');
-    }, [discardDraft, sarak.allThemes, sarak.resolvedThemeId, setCurrentThemeName]);
 
     return (
         <div className="flex h-full min-h-0 flex-1 overflow-hidden bg-[var(--theme-bg)]">
@@ -117,14 +102,19 @@ export const ThemeCustomizationTab: React.FC = () => {
                     selectPillar={selectPillar}
                     isGalleryOpen={isGalleryOpen}
                     setIsGalleryOpen={setIsGalleryOpen}
-                    onApplyFullTheme={handleApplyFullTheme}
+                    onApplyFullTheme={themeActions.handleApplyFullTheme}
                 />
                 <ThemeActionBar
                     isDirty={isDirty}
                     dirtyTokenCount={dirtyTokenCount}
-                    onApply={handleApplyGlobalChanges}
-                    onDiscard={handleDiscardChanges}
-                    onExport={() => setIsSaveModalOpen(true)}
+                    onApply={themeActions.handleApplyGlobalChanges}
+                    onDiscard={themeActions.handleDiscardChanges}
+                    canSaveToRuntime={themeActions.canSaveToRuntime}
+                    canDeleteTheme={themeActions.isImporterTheme}
+                    onSave={themeActions.handleOpenRuntimeSave}
+                    onExport={themeActions.handleOpenExport}
+                    onCreateTheme={themeActions.handleCreateTheme}
+                    onDeleteTheme={themeActions.handleDeleteTheme}
                     canUndoLastApply={canUndoLastApply}
                     onUndoLastApply={undoLastApply}
                 />
@@ -153,9 +143,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview' && isGalleryOpen}
                     isPreviewStacked={isPreviewStacked}
-                    customThemes={[]}
                     onInspectComponent={handleInspectComponent}
-                    onApplyFullTheme={handleApplyFullTheme}
+                    onApplyFullTheme={themeActions.handleApplyFullTheme}
                     onCloseGallery={() => setIsGalleryOpen(false)}
                 />
                 </div>
@@ -163,10 +152,13 @@ export const ThemeCustomizationTab: React.FC = () => {
             </div>
             <SaveThemeModal
                 isOpen={isSaveModalOpen}
+                purpose={themeActions.modalPurpose}
                 themeName={currentThemeName}
+                canReplace={themeActions.isImporterTheme}
+                initialAction={themeActions.initialSaveAction}
                 onClose={() => setIsSaveModalOpen(false)}
-                onExport={handleExportTheme}
-                onSave={handleSaveTheme}
+                onExport={themeActions.handleExportTheme}
+                onSave={themeActions.handleSaveTheme}
                 isSaving={isSaving}
             />
         </div>

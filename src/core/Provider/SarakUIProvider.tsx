@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState, useEffect, useContext, createContext, useRef, useCallback } from 'react';
+import React, { ReactNode, useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { injectSarakStyles } from './injectStyles';
@@ -12,7 +12,7 @@ import { SARAK_CSS } from './__sarakCss';
 injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIProviderProps, SarakThemePayload, SarakThemeEntry } from './types';
+import type { SarakUIProviderProps, SarakThemeEntry } from './types';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
@@ -21,7 +21,7 @@ import { useSarakDrafting } from './hooks/useSarakDrafting';
 import { useSarakStylesheetGuard } from './hooks/useSarakStylesheetGuard';
 import { usePreferencesManager } from './hooks/usePreferencesManager';
 import { overlayPreferences } from './utils/overlayPreferences';
-import { mergeUIContextValue } from './mergeUIContextValue';
+import { UIContext, DesignOverrideContext } from './context';
 import { DesignInjector } from './components/DesignInjector';
 import { SarakScopeRoot } from './components/SarakScopeRoot';
 import { resolveSarakUIMode } from './scope';
@@ -32,48 +32,20 @@ import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRen
 import { SarakDeviceProvider, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SarakDeviceBreakpoints } from './DeviceProvider';
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
+import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
 export { computeColorVariants } from './utils/color-engine';
 export { SARAK_DESIGN_MANIFEST } from './manifest';
 
-export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
-export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | null>(null);
+export { UIContext, DesignOverrideContext } from './context';
+export { useSarakUI, useSarakUIOptional } from './hooks/useSarakUI';
 
 // Referência estável para o default de `customThemes` (Spec 44): um `= []` inline seria
 // uma referência NOVA a cada render — metade do loop de render infinito da Spec 43 §5.1
 // (a correção definitiva é o guard em `useDesignSync`; isto é só o default seguro).
 const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
-
-// Porta PÚBLICA — código de aplicação. Lança fora do Provider de propósito: esquecer
-// o Provider é erro do consumidor. Peça interna da lib? Use `useSarakUIOptional`.
-export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
-    const context = useContext(UIContext);
-    const overrideDesign = useContext(DesignOverrideContext);
-
-    if (!context) {
-        throw new Error('useSarakUI must be used within a SarakUIProvider');
-    }
-
-    return mergeUIContextValue(context, overrideDesign);
-};
-
-// Porta INTERNA — átomos e Hooks Controladores que toleram `design` ausente e não devem
-// impor Provider a quem os compõe. Nunca lança; `null` fora do Provider, com aviso
-// (duas vezes sob StrictMode em dev). NÃO é para código de aplicação: use `useSarakUI`.
-export const useSarakUIOptional = (): (SarakUIContextType & SarakThemePayload) | null => {
-    const context = useContext(UIContext);
-    const overrideDesign = useContext(DesignOverrideContext);
-
-    useMemo(() => {
-        if (!context) {
-            console.warn('[Sarak:UI] useSarakUIOptional() sem SarakUIProvider; átomo usa o próprio default.');
-        }
-    }, [context]);
-
-    return context ? mergeUIContextValue(context, overrideDesign) : null;
-};
 
 // Orquestra o design, a hidratação e a injeção de estilos; só monta depois da porta de espera do tema.
 const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
@@ -96,7 +68,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     useEffect(() => setIsHydrated(true), []);
 
     // 1.5. Temas: embarcados carregados + customThemes + salvos em runtime; porta única de escrita (ADR-011).
-    const { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme } = useThemeCollection(customThemes, options);
+    const { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme: deleteThemeFromCollection } = useThemeCollection(customThemes, options);
     const hostConfigRef = useRef(initialPropsConfig);
     hostConfigRef.current = initialPropsConfig;
     const getHostConfig = useCallback(() => hostConfigRef.current, []);
@@ -110,6 +82,10 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
         activeThemeId,
         initialTheme,
         onThemeChange
+    });
+
+    const deleteTheme = useThemeDeletionHandler({
+        deleteThemeFromCollection, resolvedThemeId, loadTheme, design, getHostConfig, setResolvedThemeId, applyFullConfig, persistDesign,
     });
 
     // 2.5 Gerenciamento do Estado da Marca (Branding)

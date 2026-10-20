@@ -24,6 +24,14 @@ describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumido
         expect(result.current.themeCatalog[SARAK_THEME_CATALOG.length].mode).toBe('light');
     });
 
+    it('não permite customThemes com id embarcado sombrear a fonte da lib', () => {
+        const customTheme = { id: 'sarak-sovereign', name: 'Tema hostil', design: { primaryColor: '#ff0000' } };
+        const { result } = renderHook(() => useThemeCollection([customTheme], {} as SarakUIOptions));
+
+        expect(result.current.allThemes.find((theme) => theme.id === 'sarak-sovereign')?.name).toBe('Sarak Sovereign');
+        expect(result.current.themeCatalog.filter((theme) => theme.id === 'sarak-sovereign')).toHaveLength(1);
+    });
+
     it('loadTheme carrega o embarcado sob demanda, e allThemes ganha o tema com referência estável por versão', async () => {
         const noCustomThemes: never[] = [];
         const options = {} as SarakUIOptions;
@@ -91,7 +99,7 @@ describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumido
             id: 'meu-tema',
             name: 'Meu Tema',
             design: expect.objectContaining({ primaryColor: '#123456' })
-        }));
+        }), 'create');
     });
 
     it('sem options.theme.onSave configurado, saveTheme não lança e ainda funde o tema', async () => {
@@ -118,6 +126,26 @@ describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumido
         expect(result.current.allThemes.some((t) => t.id === 'meu-tema')).toBe(true);
     });
 
+    it('não permite salvar por cima do id de tema embarcado', async () => {
+        const { result } = renderHook(() => useThemeCollection([], {} as SarakUIOptions));
+
+        await act(async () => {
+            await expect(result.current.saveTheme({ id: 'sarak-sovereign', name: 'Falso', design: {} }, 'replace'))
+                .rejects.toThrow(/imutável/);
+        });
+        expect(result.current.allThemes.find((theme) => theme.id === 'sarak-sovereign')?.name).toBe('Sarak Sovereign');
+    });
+
+    it('recusa criar com um id já pertencente ao importador', async () => {
+        const { result } = renderHook(() => useThemeCollection([{ id: 'meu-tema', name: 'Importado', design: {} }], {} as SarakUIOptions));
+
+        await act(async () => {
+            await expect(result.current.saveTheme({ id: 'meu-tema', name: 'Cópia', design: {} }, 'create'))
+                .rejects.toThrow(/já pertence/);
+        });
+        expect(result.current.allThemes.find((theme) => theme.id === 'meu-tema')?.name).toBe('Importado');
+    });
+
     it('deleteTheme chama onDelete e remove da coleção da sessão', async () => {
         const onDelete = vi.fn().mockResolvedValue(undefined);
         const options: SarakUIOptions = { theme: { onDelete } };
@@ -130,6 +158,28 @@ describe('useThemeCollection (ADR-011 — temas de sessão e portas do consumido
 
         expect(onDelete).toHaveBeenCalledWith('meu-tema');
         expect(result.current.allThemes.some((theme) => theme.id === 'meu-tema')).toBe(false);
+    });
+
+    it('restaura o tema da coleção se onDelete rejeitar', async () => {
+        const onDelete = vi.fn().mockRejectedValue(new Error('backend offline'));
+        const options: SarakUIOptions = { theme: { onDelete } };
+        const customTheme = { id: 'meu-tema', name: 'Meu Tema', design: {} };
+        const { result } = renderHook(() => useThemeCollection([customTheme], options));
+
+        await act(async () => {
+            await expect(result.current.deleteTheme('meu-tema')).rejects.toThrow('backend offline');
+        });
+
+        expect(result.current.allThemes.some((theme) => theme.id === 'meu-tema')).toBe(true);
+    });
+
+    it('recusa apagar id embarcado', async () => {
+        const { result } = renderHook(() => useThemeCollection([], {} as SarakUIOptions));
+
+        await act(async () => {
+            await expect(result.current.deleteTheme('sarak-sovereign')).rejects.toThrow(/não pode ser apagado/);
+        });
+        expect(result.current.allThemes.some((theme) => theme.id === 'sarak-sovereign')).toBe(true);
     });
 
     it('descarta chave fora do contrato do design com warn (validateDesign na fronteira — 10-seguranca §2.1)', async () => {

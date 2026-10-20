@@ -59,7 +59,7 @@ claro → escuro` devolve faixa de faixa, não o original. Com contraparte são 
 > permissivo, gate estrito, exceção visível e contável.
 
 **Os dois temas de referência têm contraparte autorada** — `minimalist-airy` e `sarak-sovereign`, o par
-de `SARAK_REFERENCE_THEMES`. Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
+que `sarakLoadReferenceThemes()` devolve (§4.1). Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
 clona não tivesse contraparte, todo tema derivado dela herdaria o fallback que degrada, e a lib estaria
 recomendando exatamente o caminho que falha.
 
@@ -118,21 +118,18 @@ não existe "modo tema" e "modo preset". Existe um `Record` maior e um menor.
 
 ## 4.1 Criar — derivando de uma referência, nunca do zero
 
-A lib fornece um **par de temas COMPLETOS** para servir de ponto de partida:
+A lib fornece um **par de temas COMPLETOS** para servir de ponto de partida — `minimalist-airy` (claro) e
+`sarak-sovereign` (escuro) —, em duas formas (`src/core/Design/presets/themes/reference.ts`):
 
-```ts
-export const SARAK_REFERENCE_THEMES: ThemePreset[] = [
-    getThemePreset('minimalist-airy'),   // claro,  topbar,  Inter
-    getThemePreset('sarak-sovereign'),   // escuro, sidebar, Outfit
-].filter((theme): theme is ThemePreset => Boolean(theme));
-```
+- **`sarakLoadReferenceThemes()`** (assíncrona) devolve **o par**, carregando o claro sob demanda (§4.3.2). É a
+  forma de quem precisa dos dois modos.
+- **`SARAK_REFERENCE_THEMES`** (síncrona) traz **só o que está no boot: o escuro** (`sarak-sovereign`). ⚠️ Desde o tema
+  sob demanda ela não contém o claro: `SARAK_REFERENCE_THEMES.find((t) => t.mode === 'light')` devolve `undefined`, sem
+  erro de tipo.
 
-Fonte: `src/core/Design/presets/themes/reference.ts:25-28`. `getThemePreset(id)` (`:17-18`) busca
-qualquer tema do catálogo pelo id.
-
-**O par difere em modo (claro/escuro), navegação (topbar/sidebar) E fonte DE PROPÓSITO**
-(`reference.ts:10-12`): alternar entre os dois tem de mudar visivelmente cor **e** fonte **e** cromo **e**
-raio. Um par que diferisse só na cor não provaria nada.
+**O par difere em modo (claro/escuro), fonte, cor e raio DE PROPÓSITO:** alternar entre os dois tem de mudar
+visivelmente a tela inteira. Um par que diferisse só na cor não provaria nada. (A navegação não entra: é token funcional,
+igual em todo tema, §5.3.)
 
 > **A regra derivada, que é o item mais importante desta seção:**
 > **parta de um tema de referência completo e customize poucos valores. NÃO monte um tema do zero.**
@@ -575,8 +572,8 @@ do próprio consumidor.
 
 ## 5.2 A diversidade do catálogo é MEDIDA, não afirmada
 
-**A referência não muda com o catálogo.** `SARAK_REFERENCE_THEMES` segue sendo `minimalist-airy` +
-`sarak-sovereign` *(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
+**A referência não muda com o catálogo.** O par de referência segue sendo `minimalist-airy` + `sarak-sovereign`
+*(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
 quem já integrou. O catálogo ao redor dela pode crescer, encolher ou ser reautorado — e já foi as três
 coisas.
 

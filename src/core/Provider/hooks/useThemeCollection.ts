@@ -4,7 +4,7 @@ import { getLoadedThemePresets, getThemeCacheVersion, sarakLoadThemePreset, subs
 import { SARAK_THEME_CATALOG } from '../../Design/presets/themes/catalog.generated';
 import { toThemeCatalogEntry } from '../../Design/presets/themes/catalog';
 import type { SarakThemeCatalogEntry } from '../../Design/presets/themes';
-import { SarakUIOptions, SarakThemeEntry } from '../types';
+import { SarakUIOptions, SarakThemeEntry, SarakThemeSaveOperation } from '../types';
 
 /**
  * Lista unificada de temas + a porta de escrita de temas salvos em runtime
@@ -27,24 +27,42 @@ export const useThemeCollection = (customThemes: SarakThemeEntry[], options: Sar
     // DEPOIS de customThemes para que um tema salvo agora apareça sem reload.
     // A lista de tudo que é escolhível (inclusive o não carregado) é `themeCatalog`.
     const allThemes = useMemo<SarakThemeEntry[]>(() => {
-        return [...getLoadedThemePresets(), ...customThemes, ...savedThemes]
-            .filter((theme) => !deletedThemeIds.includes(theme.id));
+        const byId = new Map<string, SarakThemeEntry>();
+        getLoadedThemePresets().forEach((theme) => byId.set(theme.id, theme));
+        customThemes.forEach((theme) => {
+            if (!byId.has(theme.id) && !SARAK_THEME_CATALOG.some((entry) => entry.id === theme.id)) {
+                byId.set(theme.id, theme);
+            }
+        });
+        savedThemes.forEach((theme) => {
+            if (!SARAK_THEME_CATALOG.some((entry) => entry.id === theme.id)) byId.set(theme.id, theme);
+        });
+        return [...byId.values()].filter((theme) => !deletedThemeIds.includes(theme.id));
         // eslint-disable-next-line react-hooks/exhaustive-deps -- `themeCacheVersion` é o sinal de que o cache mudou
     }, [customThemes, deletedThemeIds, savedThemes, themeCacheVersion]);
 
     const themeCatalog = useMemo<SarakThemeCatalogEntry[]>(() => {
-        const own = [...customThemes, ...savedThemes].map((theme) => toThemeCatalogEntry(theme));
-        return [...SARAK_THEME_CATALOG, ...own].filter((entry) => !deletedThemeIds.includes(entry.id));
+        const byId = new Map<string, SarakThemeCatalogEntry>(SARAK_THEME_CATALOG.map((entry) => [entry.id, entry] as const));
+        customThemes.forEach((theme) => {
+            if (!byId.has(theme.id)) byId.set(theme.id, toThemeCatalogEntry(theme));
+        });
+        savedThemes.forEach((theme) => {
+            if (!SARAK_THEME_CATALOG.some((entry) => entry.id === theme.id)) {
+                byId.set(theme.id, toThemeCatalogEntry(theme));
+            }
+        });
+        return [...byId.values()].filter((entry) => !deletedThemeIds.includes(entry.id));
     }, [customThemes, deletedThemeIds, savedThemes]);
 
     // Carrega um tema embarcado sob demanda e o devolve (ou o que já está em
     // memória: custom/salvo). `undefined` quando o id não existe em lugar nenhum.
     const loadTheme = useCallback(async (id: string): Promise<SarakThemeEntry | undefined> => {
-        const inMemory = [...customThemes, ...savedThemes].find((theme) => theme.id === id);
+        if (deletedThemeIds.includes(id)) return undefined;
+        if (SARAK_THEME_CATALOG.some((entry) => entry.id === id)) return sarakLoadThemePreset(id);
+        const inMemory = [...savedThemes, ...customThemes].find((theme) => theme.id === id);
         if (inMemory) return inMemory;
-        if (!SARAK_THEME_CATALOG.some((entry) => entry.id === id)) return undefined;
-        return sarakLoadThemePreset(id);
-    }, [customThemes, savedThemes]);
+        return undefined;
+    }, [customThemes, savedThemes, deletedThemeIds]);
 
     // `saveTheme` é a ÚNICA porta de escrita (ADR-011): valida o `design` na
     // fronteira (mesma regra de qualquer tema de origem externa —
@@ -54,22 +72,37 @@ export const useThemeCollection = (customThemes: SarakThemeEntry[], options: Sar
     // propaga o erro para quem chamou (o painel mostra o toast), mas o tema
     // já está em `allThemes` e permanece lá. Salvar o mesmo `id` duas vezes
     // SUBSTITUI, nunca duplica.
-    const saveTheme = useCallback(async (theme: SarakThemeEntry): Promise<void> => {
+    const saveTheme = useCallback(async (theme: SarakThemeEntry, requestedOperation?: SarakThemeSaveOperation): Promise<void> => {
+        if (SARAK_THEME_CATALOG.some((entry) => entry.id === theme.id)) {
+            throw new Error(`O tema embarcado "${theme.id}" é imutável. Salve uma cópia com outro id.`);
+        }
         const validatedTheme: SarakThemeEntry = {
             ...theme,
             design: validateDesign(theme.design) as unknown as Record<string, unknown>
         };
+        const exists = [...customThemes, ...savedThemes].some((entry) => entry.id === validatedTheme.id);
+        const operation = requestedOperation ?? (exists ? 'replace' : 'create');
+        if (operation === 'create' && exists) {
+            throw new Error(`O id "${validatedTheme.id}" já pertence a um tema do importador.`);
+        }
         setDeletedThemeIds((prev) => prev.filter((id) => id !== validatedTheme.id));
         setSavedThemes((prev) => [...prev.filter((t) => t.id !== validatedTheme.id), validatedTheme]);
-        await options?.theme?.onSave?.(validatedTheme);
-    }, [options?.theme?.onSave]);
+        await options?.theme?.onSave?.(validatedTheme, operation);
+    }, [customThemes, savedThemes, options?.theme?.onSave]);
 
     const deleteTheme = useCallback(async (id: string): Promise<void> => {
+        if (SARAK_THEME_CATALOG.some((entry) => entry.id === id)) {
+            throw new Error(`O tema embarcado "${id}" não pode ser apagado.`);
+        }
         if (!allThemes.some((theme) => theme.id === id)) return;
 
         setDeletedThemeIds((prev) => [...new Set([...prev, id])]);
-        setSavedThemes((prev) => prev.filter((theme) => theme.id !== id));
-        await options?.theme?.onDelete?.(id);
+        try {
+            await options?.theme?.onDelete?.(id);
+        } catch (error) {
+            setDeletedThemeIds((prev) => prev.filter((deletedId) => deletedId !== id));
+            throw error;
+        }
     }, [allThemes, options?.theme?.onDelete]);
 
     return { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme };

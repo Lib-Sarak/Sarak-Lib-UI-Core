@@ -326,6 +326,7 @@
     "SarakThemePreset",
     "SarakThemePresetId",
     "SarakThemeReferenceOverrides",
+    "SarakThemeSaveOperation",
     "SarakThemeSwatch",
     "SarakTimePicker",
     "SarakTimePickerProps",
@@ -10992,6 +10993,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "78cba4a31140"
+    "kitHash": "5787b5d27a75"
   }
 }
