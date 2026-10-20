@@ -18,7 +18,7 @@
         "sarak-ui"
     ],
     "scripts": {
-        "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
+        "build:css": "tailwindcss -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "node scripts/generate-build-info.mjs --prepare && tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
         "build:css:scoped": "node scripts/build-scoped-css.mjs",
         "build": "npm run token-types:check && npm run token-docs:check && npm run themes:catalog:check && npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run deep-import:check && npm run fonts:manifest:check && npm run build:js && npm run fonts:embed && npm run fonts:check && npm run theme-boot:check && npm run public-types:check && npm run prefix:check && npm run icon-port:check && npm run kit-names:check && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
@@ -215,6 +215,7 @@
         "@fontsource/space-mono": "^5.3.0",
         "@fontsource/vt323": "^5.3.0",
         "@playwright/test": "^1.63.0",
+        "@tailwindcss/cli": "4.2.2",
         "@tailwindcss/vite": "^4.3.0",
         "@tanstack/react-virtual": "^3.14.3",
         "@testing-library/dom": "^10.4.1",
@@ -246,6 +247,7 @@
         "tailwind-merge": "^2.2.1",
         "tailwindcss": "^4.0.0",
         "tsup": "^8.0.0",
+        "tsx": "4.23.15",
         "typescript": "^5.0.0",
         "vitest": "^4.1.8"
     }
