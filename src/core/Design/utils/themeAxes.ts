@@ -41,7 +41,7 @@ export const sarakWarnOnIncompleteTheme = (design: SarakDesignState | Record<str
     if (missing.length > 0) {
         console.warn(
             `[Sarak:Design] O ${label} omite o(s) eixo(s): ${missing.join(', ')}. ` +
-                `Ao trocar de tema, esse(s) eixo(s) NÃO mudarão. Parta de SARAK_REFERENCE_THEMES ` +
+                `Ao trocar de tema, esse(s) eixo(s) NÃO mudarão. Parta de SARAK_BOOT_THEMES ` +
                 `(ou exporte um tema completo pelo CustomizationPanel) para manter todos os eixos.`,
         );
     }

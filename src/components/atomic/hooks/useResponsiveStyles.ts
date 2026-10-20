@@ -1,4 +1,5 @@
 import React from 'react';
+import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
@@ -14,7 +15,7 @@ export const useResponsiveStyles = () => {
 
     const getResponsiveStackStyles = (
         breakpoint: 'md' | 'lg' = 'md',
-        gapOverride?: string
+        gapOverride?: SarakLayoutGap
     ) => {
         const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakStack');
         const stackBreakpointClasses: Record<'md' | 'lg', string> = {

@@ -36,7 +36,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     const headerLayout = getHeaderStyles();
     const gridLayout = getGridStyles(undefined, undefined, undefined, 'catalogStandard');
     const loadingStack = getFlexStyles('column', 'center', 'center', 'var(--sarak-layout-gap-lg, 24px)');
-    const innerStack = getFlexStyles('column', undefined, undefined, headerLayout.style.gap as string);
+    const innerStack = getFlexStyles('column', undefined, undefined, headerLayout.style.gap);
     const searchRow = getResponsiveStackStyles('lg', 'calc(var(--sarak-layout-gap-md,16px) * 1.5)');
 
     const filteredItems = useMemo(() => {

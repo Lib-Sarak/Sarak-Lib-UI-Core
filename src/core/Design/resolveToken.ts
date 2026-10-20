@@ -17,13 +17,20 @@
  * Mapa oficial dos tokens de espaçamento → CSS Variable (com fallback).
  * FONTE ÚNICA. Manter os valores atrelados às vars `--sarak-layout-gap-*`.
  */
-export const SPACING_TOKENS: Readonly<Record<string, string>> = {
+export const SPACING_TOKENS = {
     'spacing-xs': 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
     'spacing-sm': 'var(--sarak-layout-gap-sm, 8px)',
     'spacing-md': 'var(--sarak-layout-gap-md, 16px)',
     'spacing-lg': 'var(--sarak-layout-gap-lg, 24px)',
     'spacing-xl': 'calc(var(--sarak-layout-gap-lg, 24px) * 1.5)',
-};
+} as const;
+
+/** Valores aceitos pelas props `gap` das primitivas de layout. */
+export type SarakLayoutGap = keyof typeof SPACING_TOKENS
+    | number
+    | '0'
+    | `${number}${'px' | 'rem' | 'em' | '%' | 'vh' | 'vw' | 'ch' | 'vmin' | 'vmax'}`
+    | `${'var' | 'calc' | 'clamp' | 'min' | 'max'}(${string})`;
 
 /** Nomes dos tokens de espaçamento válidos (ordem de declaração). */
 export const SPACING_TOKEN_NAMES: readonly string[] = Object.keys(SPACING_TOKENS);
@@ -117,7 +124,7 @@ export const resolveToken = (
     if (typeof value === 'number') return Number.isFinite(value) ? `${value}px` : options.fallback;
     const raw = value.trim();
     if (raw === '') return options.fallback;
-    if (raw in SPACING_TOKENS) return SPACING_TOKENS[raw];
+    if (raw in SPACING_TOKENS) return SPACING_TOKENS[raw as keyof typeof SPACING_TOKENS];
     if (isPassthroughCss(raw)) return raw;
     warnUnknownToken(raw, options);
     return options.fallback;

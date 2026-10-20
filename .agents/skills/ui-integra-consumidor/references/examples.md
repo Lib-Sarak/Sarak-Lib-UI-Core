@@ -19,9 +19,9 @@ npm install                      # o init só grava package.json; quem baixa é 
 // src/main.tsx
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel, SARAK_BOOT_THEMES } from '@sarak/lib-ui-core';
 
-const TEMAS = SARAK_REFERENCE_THEMES;   // tema COMPLETO (sarak-sovereign) — parta daqui, nunca de um tema do zero;
+const TEMAS = SARAK_BOOT_THEMES;   // tema COMPLETO (sarak-sovereign) — parta daqui, nunca de um tema do zero;
                                         // o par claro vem de `await sarakLoadReferenceThemes()`
 
 function App() {

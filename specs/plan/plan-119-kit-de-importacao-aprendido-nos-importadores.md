@@ -9,7 +9,7 @@ tags: ["plan", "kit-do-consumidor", "importacao", "temas", "persistencia"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[13-instalacao-e-atualizacao]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
 depende_de: "—"
 retida_por: ""
-destino_sintese: "specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md"
+destino_sintese: "specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md"
 ---
 
 # 1. Objetivo
@@ -152,16 +152,16 @@ com a classe ocupa o span; sem ela, o padrão por breakpoint) e o texto no guia 
 | I6 | sem `activeThemeId` do `onLoad`, o modal cai em "Meu Novo Tema" (`SaveThemeModal.tsx:45`) e editar vira tema novo | ERP | corrigir (fallback `resolvedThemeId`) | 1 | fechada |
 | I7 | não medido: o salvo vira ativo? o "Aplicar" seguinte grava com o id certo? apagar o ativo? | ERP | medir e fixar em teste | 1 | fechada |
 | I8 | prop vestigial `customThemes={[]}` em `Main/ThemeCustomizationTab.tsx:156` | ERP | retirar | 1 | fechada |
-| I9 | `SARAK_REFERENCE_THEMES` (`reference.ts:31`) virou só o escuro sob o mesmo nome; o `find(light)` do importador devolve `undefined` sem erro de tipo | ERP | renomear o export síncrono (quebra em compilação), nota MAJOR | 2 | aberta |
-| I10 | `role="alert"` no campo com erro (7.0.0) sem nota em `docs/migracoes.md` | ERP | nota retroativa na `## 7.0.0` | 2 | aberta |
-| I11 | `SarakFlex.gap?: string` (`Layouts/SarakFlex.tsx:15`): `gap="md"` compila e é ignorado | ERP | tipo da união dos valores aceitos | 2 | aberta |
-| I12 | "23 temas" em `docs/persistencia-de-tema.md:109` e `GUIA-FRONTEND.md:558`; "modelo host" em `GUIA-FRONTEND.md:551` (ADR 018) | ERP · lote 0 (21) | corrigir o texto | 2 | aberta |
-| I13 | o exemplo copiável das portas (`docs/persistencia-de-tema.md` §5) não rejeita em falha; o ERP engoliu o erro por semanas | ERP | ensinar "porta que falha rejeita" | 2 | aberta |
+| I9 | `SARAK_REFERENCE_THEMES` (`reference.ts:31`) virou só o escuro sob o mesmo nome; o `find(light)` do importador devolve `undefined` sem erro de tipo | ERP | renomear o export síncrono (quebra em compilação), nota MAJOR | 2 | fechada |
+| I10 | `role="alert"` no campo com erro (7.0.0) sem nota em `docs/migracoes.md` | ERP | nota retroativa na `## 7.0.0` | 2 | fechada |
+| I11 | `SarakFlex.gap?: string` (`Layouts/SarakFlex.tsx:15`): `gap="md"` compila e é ignorado | ERP | tipo da união dos valores aceitos | 2 | fechada |
+| I12 | "23 temas" em `docs/persistencia-de-tema.md:109` e `GUIA-FRONTEND.md:558`; "modelo host" em `GUIA-FRONTEND.md:551` (ADR 018) | ERP · lote 0 (21) | corrigir o texto | 2 | fechada |
+| I13 | o exemplo copiável das portas (`docs/persistencia-de-tema.md` §5) não rejeita em falha; o ERP engoliu o erro por semanas | ERP | ensinar "porta que falha rejeita" | 2 | fechada |
 | C1 | helper oficial para ler o tema persistido e injetá-lo no HTML antes do primeiro paint (o ERP escreveu ~220 linhas; `persistencia-de-tema.md` §6 descreve três saídas) | ERP | **dono, 2026-10-19: depois da 8.0.0** (função aditiva; vai ao `00-backlog` no lote final) | final | aberta |
-| C2 | `sarak-ui migrate <major>`: aplicar a tabela de renomes de um MAJOR nos imports do consumidor | ERP | **dono, 2026-10-19: não fazer**; no lugar, tabela "de/para" completa dos renomes na nota da 8.0.0 | 2 | aberta |
+| C2 | `sarak-ui migrate <major>`: aplicar a tabela de renomes de um MAJOR nos imports do consumidor | ERP | **dono, 2026-10-19: não fazer**; no lugar, tabela "de/para" completa dos renomes na nota da 8.0.0 | 2 | fechada |
 | C3 | `sarak-ui check` em modo `file:` avisar quando o major instalado muda (hoje cala por desenho, `13` §5.1) e comparar a cópia `sarak-ui/` do consumidor com a instalada | ERP | **dono, 2026-10-19: não fazer**; o guia ensina que `file:` é só para iterar localmente e produção instala pela tag | final | aberta |
 | C4 | verificação por máquina para o consumidor (as três regras de gate que o ERP escreveu: `ui-kit`, `ui-ponto-unico`, `ui-token`) | ERP | **dono, 2026-10-19: fazer, opcional para o importador** — plugin de ESLint no pacote, regras ligadas uma a uma, numa plan própria (com ADR) **depois da 8.0.0 e da atualização dos importadores**; o lote final desta plan entrega a lista de regras candidatas que as auditorias provaram comuns, e a linha vai ao `00-backlog` | final | aberta |
-| C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | aberta |
+| C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
 
 **Lote final — o kit de importação consolidado.**
 F.1. Aplicar **uma vez**, sem repetir o que já está lá (R17), as lições do anexo e do registro: na skill `ui-integra-consumidor`, no
@@ -462,4 +462,43 @@ correção 1, em que `verify --tier=full` (suíte completa, `tsc`, baseline com 
 `contraparte`; embarcado não se sobrescreve nem se apaga; id sem colisão; `onSave(entry, operation)` com `'create' | 'replace'`;
 `onDelete` que rejeita devolve o tema; apagar o ativo cai no tema padrão do modo. Segue o lote 2 (I9 a I13, C2 e C5).
 
-**Status: 🟡 Em execução (lote 2).**
+### Rodada 3 — lote 2 (2026-10-20)
+
+- **Resultado:** executados somente os passos 2.1 a 2.7 (I9 a I13, C2 e C5), encaminhados para revisão. A tabela de decisões da §5.1 permaneceu intacta.
+- **I9 e consumidor:** `SARAK_REFERENCE_THEMES` foi renomeado para `SARAK_BOOT_THEMES`; loaders, catálogo leve e referências ativas do guia, exemplos e templates usam o contrato correto. A migração registra a quebra MAJOR.
+- **I10:** a nota retroativa 7.0.0 explica `role="alert"`, `aria-describedby`, consulta por papel e anúncio da mensagem de erro.
+- **I11:** `SarakLayoutGap` restringe as props públicas de `gap` a tokens, números e comprimentos/funções CSS suportados; hooks e catálogo derivam o mesmo contrato. O coletor AST lê `as const`; teste de gerador compara o catálogo ao mapa oficial.
+- **I12/I13:** docs de persistência e guia do consumidor cobrem carregamento de temas, rejeição explícita de falhas de portas, `options.theme.onSave`, separação entre salvar e exportar e spans `col-span-*` de `col-12`.
+- **C2:** tabela da migração compara as declarações públicas v7.0.0 e v8; inclui 26 remoções e uma renomeação (27 linhas de símbolo), além da nota MAJOR de `SarakLayoutGap`.
+- **C5 e dívida conhecida:** o contrato de span está descrito no guia, provado por teste do componente e por 1 cenário Chromium/Chrome nos breakpoints de 900, 1100 e 1400px. O achado 42 registra o contrato e deixa `SarakGridItem` como ergonomia futura.
+- **Build e kits:** `npm run build` aprovado; `dist/` e os selos `src/buildInfo.ts`/`src/core/Provider/buildInfo.ts` foram regenerados. `guide` e `dev-kit` foram regenerados ao final desta rodada.
+- **Verificação:** Vitest focado — 8 arquivos, 62/62 testes; teste do gerador do kit — 17/17; Playwright do span — 1/1; `npm run verify -- --tier=quick` verde (TypeScript, baseline, Anel 1 e simulação do Anel 0 sem achados); `git diff --check` sem erros.
+- **Worktree:** o arquivo preexistente `.claude/settings.local.json` foi mantido intacto; artefatos temporários do primeiro teste browser foram removidos.
+
+**Status: 🟠 Em revisão (lote 2).**
+
+## Veredito — 2026-10-20 — lote 2 — 🟢 Aprovado; lote 2 fechado
+
+**Conferido no diff:**
+- **I9** — o export síncrono passou a `SARAK_BOOT_THEMES` (`reference.ts`, barril `src/index.ts`); `SARAK_REFERENCE_THEMES` saiu;
+  os exemplos do kit (`sarak-ui/templates/ui-kit/themes.ts`, `references/examples.md` da skill) acompanham.
+- **I11** — `SarakLayoutGap` (`src/core/Design/resolveToken.ts`, tipo público) nas props `gap` de `SarakFlex`, `SarakGrid` e
+  `SarakFormGroup`, com o mapa de espaçamento como fonte única; nota MAJOR. O ajuste em `scripts/catalogAst.mjs` (ler objeto sob
+  `as`/`satisfies`) é o que o catálogo precisou para ler o mapa, com o teste do gerador.
+- **C2** — a tabela "de/para" no topo da `## 8.0.0`. **Medi por conta própria:** comparando os nomes exportados por
+  `dist/index.d.ts` da tag `v7.0.0` com o `dist/` atual, saíram **27** nomes, e **os 27 estão na tabela**.
+- **C5** — `col-span-*` declarado no guia e travado por teste de componente e por `browser-tests/grid-span-contract.spec.ts`.
+- **I10, I12, I13** — a nota retroativa da 7.0.0, os textos sem "23 temas" nem "modelo host", e "porta que falha rejeita".
+
+**Medido por mim:** `npm run verify -- --tier=full` **verde** (`tsc`, **suíte completa**, baseline com `tsc`, Anel 1, R36, Anel 0)
+e a **bateria inteira do navegador** contra o `dist/` reconstruído pelo executor: **418 passaram, 0 falharam** (21,6 min).
+
+**Fora do escopo declarado, aceito com destino:** o executor reescreveu o achado 42 em `specs/specs/15-divida-conhecida.md`. A
+instrução 2.6 desta plan foi ambígua sobre quem escreve; o texto diz a verdade, mas um achado fechado não fica na lista de abertos
+(a `15` o move para a §6, com o motivo). A `15` entrou no `destino_sintese` desta plan, e a síntese faz a mudança. O
+`SarakGridItem` foi ao `00-backlog` (decisão do dono no C5).
+
+**Lotes 0, 1 e 2 fechados.** Abertas no registro: C1 e C3 (lote final), C4 (plan própria depois da 8.0.0). A lib está pronta para a
+`v8.0.0-rc.1`; achados novos dos importadores entram como linhas novas da §5.1.
+
+**Status: 🟡 Em execução** (o registro segue vivo; o lote final espera as auditorias).

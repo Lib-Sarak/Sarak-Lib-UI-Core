@@ -83,7 +83,7 @@ const collectStringConst = (file, name) => {
 /**
  * O par recomendado (claro + escuro): o claro é `LIGHT_REFERENCE_ID` (fora do boot,
  * carregado por `sarakLoadReferenceThemes`) e o escuro é o tema padrão
- * (`SARAK_DEFAULT_THEME_ID`, que `SARAK_REFERENCE_THEMES` expõe síncrono).
+ * (`SARAK_DEFAULT_THEME_ID`, que `SARAK_BOOT_THEMES` expõe síncrono).
  */
 export const collectReferenceThemeIds = () => [
     collectStringConst('core/Design/presets/themes/reference.ts', 'LIGHT_REFERENCE_ID'),

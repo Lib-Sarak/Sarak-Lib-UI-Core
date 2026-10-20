@@ -81,8 +81,9 @@ export type { SarakThemePreset, SarakThemePresetId, SarakThemeCatalogEntry, Sara
 // catálogo leve e o `design` de cada tema chega por `sarakLoadThemePreset`/`sarakPreloadThemes`.
 export { SARAK_THEME_CATALOG } from './core/Design/presets/themes/catalog.generated';
 export { sarakLoadThemePreset, sarakPreloadThemes, sarakLoadAllThemePresets } from './core/Design/presets/themes/registry';
-export { SARAK_REFERENCE_THEMES, sarakLoadReferenceThemes, sarakDeriveThemeFromReference } from './core/Design/presets/themes/reference';
+export { SARAK_BOOT_THEMES, sarakLoadReferenceThemes, sarakDeriveThemeFromReference } from './core/Design/presets/themes/reference';
 export type { SarakThemeReferenceOverrides, SarakDerivedThemePreset, SarakReferenceThemeId } from './core/Design/presets/themes/reference';
+export type { SarakLayoutGap } from './core/Design/resolveToken';
 export { sarakGetDefaultDesignState, sarakGetAllDesignTokens } from './core/Design/master-map';
 export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o

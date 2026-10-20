@@ -18,7 +18,7 @@ import { MEDIA_PRESETS, TEXTURE_PRESETS } from '../../../Design/presets/componen
  * (ou uma mudança de enum) reintroduza o drift em silêncio (o console só mostra o
  * que o boot toca; esta suíte é exaustiva).
  *
- * `SARAK_REFERENCE_THEMES` (`presets/themes/reference.ts`) não entra à parte: é
+ * `SARAK_BOOT_THEMES` (`presets/themes/reference.ts`) não entra à parte: é
  * um subconjunto de `GLOBAL_THEMES` (`minimalist-airy` + `sarak-sovereign`), já
  * coberto abaixo.
  *

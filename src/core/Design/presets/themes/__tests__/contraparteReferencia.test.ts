@@ -16,7 +16,7 @@ const asResolvable = (theme: SarakThemePreset | SarakDerivedThemePreset): ModeRe
 });
 
 /**
- * Os dois temas de referência (`SARAK_REFERENCE_THEMES`) ganham contraparte
+ * Os dois temas de referência (`sarakLoadReferenceThemes()`) ganham contraparte
  * autorada. Sem ela, `resolveThemeForMode` caía no fallback
  * `syncThemeWithMode`, que a spec 09 §2.1 mede como NÃO reversível — a ida e
  * volta devolve faixa de faixa, não o original. Com contraparte, os dois

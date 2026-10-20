@@ -12,7 +12,7 @@
  * ampla do R5. Só o escuro (`sarak-sovereign`, o tema padrão) está no boot; o claro
  * (`minimalist-airy`) chega por `sarakLoadReferenceThemes()`.
  */
-import { SARAK_BOOT_THEMES } from './boot';
+import { SARAK_BOOT_THEMES as BOOT_THEMES } from './boot';
 import { sarakLoadThemePreset } from './registry';
 import type { SarakDesignState } from '../../../Provider/types';
 import type { SarakThemePreset, SarakThemePresetId } from './index';
@@ -28,12 +28,12 @@ const LIGHT_REFERENCE_ID: SarakThemePresetId = 'minimalist-airy';
  * ponto de partida para o consumidor. Use direto em `customThemes` do
  * `SarakUIProvider`, ou clone e ajuste. O par claro vem de `sarakLoadReferenceThemes()`.
  */
-export const SARAK_REFERENCE_THEMES: SarakThemePreset[] = [...SARAK_BOOT_THEMES];
+export const SARAK_BOOT_THEMES: SarakThemePreset[] = [...BOOT_THEMES];
 
 /** O par COMPLETO de referência — claro e escuro —, carregando o que ainda não está em memória. */
 export const sarakLoadReferenceThemes = async (): Promise<SarakThemePreset[]> => {
     const light = await sarakLoadThemePreset(LIGHT_REFERENCE_ID);
-    return [light, ...SARAK_REFERENCE_THEMES];
+    return [light, ...SARAK_BOOT_THEMES];
 };
 
 /** O que `deriveThemeFromReference` recebe: identidade do tema derivado + as
@@ -77,7 +77,7 @@ export function sarakDeriveThemeFromReference(
     overrides: SarakThemeReferenceOverrides,
 ): SarakDerivedThemePreset {
     const reference = typeof referenceOrId === 'string'
-        ? SARAK_REFERENCE_THEMES.find((theme) => theme.id === referenceOrId)
+        ? SARAK_BOOT_THEMES.find((theme) => theme.id === referenceOrId)
         : referenceOrId;
     if (!reference) {
         throw new Error(

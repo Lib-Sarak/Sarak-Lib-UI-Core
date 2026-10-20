@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { beforeAll, describe, it, expect } from 'vitest';
 import { buildKitOutputs } from '../buildKitOutputs.mjs';
+import { SPACING_TOKENS } from '../../../src/core/Design/resolveToken';
 import { collectEmittedSarakCssVars } from '../collectEmittedSarakCssVars.mjs';
 import { injectBlock, kitHashOf, MIGRATIONS, MIGRATIONS_SOURCE, renderVersionFile } from '../kitFiles.mjs';
 import { buildKitCatalog } from '../buildKitCatalog.mjs';
@@ -78,6 +79,10 @@ describe('buildKitCatalog — as fontes vivas realmente chegam ao kit', () => {
         expect(catalog.responsive.autoAdapting).toContain('SarakAppChrome');
         // O wrapper preguiçoso, não só o `…Impl` interno — é o nome que o consumidor escreve.
         expect(catalog.responsive.autoAdapting).toContain('SarakDataTable');
+    });
+
+    it('leva ao catálogo o mapa de espaçamentos tipado do resolutor', () => {
+        expect(catalog.tokens.spacing).toEqual(SPACING_TOKENS);
     });
 
     it('deriva os slots do cromo das props `ReactNode` opcionais do SarakAppChrome', () => {

@@ -714,7 +714,7 @@ Props (`SarakFlexProps` — `src/components/atomic/Layouts/SarakFlex.tsx`):
 | `direction` | `SarakFlexDirection \| SarakResponsiveValue<SarakFlexDirection>` | não | Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional). |
 | `justify` | `'flex-start' \| 'flex-end' \| 'center' \| 'space-between' \| 'space-around' \| 'space-evenly' \| string` | não |  |
 | `align` | `'stretch' \| 'flex-start' \| 'flex-end' \| 'center' \| 'baseline' \| string` | não |  |
-| `gap` | `string` | não |  |
+| `gap` | `SarakLayoutGap` | não |  |
 | `wrap` | `boolean` | não | Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar linha única (nowrap) quando o layout exigir. |
 | `as` | `React.ElementType` | não |  |
 
@@ -755,7 +755,7 @@ Props (`SarakFormGroupProps` — `src/components/atomic/Layouts/SarakFormGroup.t
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
-| `gap` | `string` | não | Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. |
+| `gap` | `SarakLayoutGap` | não | Espaçamento entre label e campo — token semântico, número ou comprimento CSS. |
 
 Estende: `React.HTMLAttributes<HTMLDivElement>`
 
@@ -782,7 +782,7 @@ Props (`SarakGridProps` — `src/components/atomic/Layouts/SarakGrid.tsx`):
 | `children` | `React.ReactNode` | sim |  |
 | `templateColumns` | `string \| SarakResponsiveValue<string>` | não | Colunas do grid. Aceita: - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular). |
 | `templateAreas` | `string` | não |  |
-| `gap` | `string` | não |  |
+| `gap` | `SarakLayoutGap` | não |  |
 | `as` | `React.ElementType` | não |  |
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`

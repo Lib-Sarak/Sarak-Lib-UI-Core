@@ -107,6 +107,7 @@ via normal.
 | 52 | O recorte `contraste-cyberpunk-claro` (`browser-tests/fixtures/harness-entry.tsx:287`) não declara `textColorMuted` e herda o padrão do schema (o do `sarak-sovereign`, escuro): o `--text-muted` sai `rgba(242, 246, 251, 0.55)` sobre branco e o botão secundário (1,09:1) não pode ser medido no estilo `cyberpunk` claro | revisão da `plan-117` (lote 7) | 2026-10-19 | baixo |
 | 53 | No estilo `cyberpunk` a borda lê `btnNeonGlowColor` por dois caminhos: `SarakIconButton.tsx` pela variável `--sarak-btn-neon-glow-color`, `SarakButton` pelo valor cru `design?.btnNeonGlowColor` (`useAtomicStyles.ts`), o que pode divergir no escopo embarcado | revisão da `plan-117` (lote 7) | 2026-10-19 | baixo |
 | 56 | `.agents/skills/ui-criar-tema/SKILL.md:134` (cabeçalho da §5.7) cita a `plan-110`, removida na síntese de 2026-10-19: trocar por um título sem a plan (a procedência vive no Git) | síntese da `plan-110` | 2026-10-19 | baixo |
+| 57 | `SarakGridItem` (ou prop `span` no filho do `SarakGrid`) como ergonomia para o grid de 12 colunas; hoje o contrato é a classe `col-span-*` do consumidor, travada por teste. Aditivo (`minor`) | decisão do dono (C5 da `plan-119`) | 2026-10-20 | baixo |
 
 ---
 

@@ -106,12 +106,13 @@ o conteúdo. O seu banco só precisa guardar e devolver os bytes que recebeu.
 
 ## 3. Os temas da lib são imutáveis
 
-Os temas embarcados (hoje 23 — o número exato é derivado, veja `npm run audit` → `auditor_presets`)
-são **código**: vêm dentro do pacote, iguais para todo consumidor, e nunca mudam por ação de um
-usuário final. **A sua tabela nunca guarda os originais.**
+Os temas embarcados são **código**: vêm dentro do pacote, iguais para todo consumidor, e nunca mudam
+por ação de um usuário final. `SARAK_THEME_CATALOG` identifica o catálogo; use
+`sarakLoadAllThemePresets()` quando precisar carregar os presets completos. **A sua tabela nunca
+guarda os originais.**
 
 "Alterar" um tema da lib, na prática, significa **criar um tema novo, derivado**, com um `id` livre
-diferente — o painel parte de `SARAK_REFERENCE_THEMES` (ou de qualquer tema embarcado) e o usuário
+diferente — o painel parte de `SARAK_BOOT_THEMES` ou de qualquer tema embarcado e o usuário
 ajusta valores; ao salvar, o que chega em `theme.onSave` já é essa cópia derivada, com identidade
 própria. Não existe operação "editar tema embarcado" — o resultado sempre nasce como um `SarakThemeEntry`
 novo, do seu lado.
@@ -187,6 +188,11 @@ function App({ temasSalvos, estadoAplicado }: {
   );
 }
 ```
+
+**Contrato de falha das portas.** Uma porta de gravação precisa rejeitar sua Promise quando a
+operação falha. `fetch` não rejeita por respostas HTTP 4xx/5xx: confira `response.ok` e lance um
+erro, como no exemplo. Resolver a Promise depois de uma resposta de falha comunica sucesso à
+biblioteca; não capture nem engula esse erro.
 
 ## 6. O primeiro paint
 

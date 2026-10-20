@@ -42,7 +42,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md |
+| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na

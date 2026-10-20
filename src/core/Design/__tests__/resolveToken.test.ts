@@ -15,7 +15,7 @@ describe('resolveToken (Spec 16)', () => {
     describe('tokens semânticos conhecidos', () => {
         it('traduz cada token de espaçamento para a CSS Variable do mapa oficial', () => {
             for (const name of SPACING_TOKEN_NAMES) {
-                expect(resolveToken(name)).toBe(SPACING_TOKENS[name]);
+                expect(resolveToken(name)).toBe(SPACING_TOKENS[name as keyof typeof SPACING_TOKENS]);
             }
         });
 

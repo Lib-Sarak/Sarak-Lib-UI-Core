@@ -2116,7 +2116,7 @@
         },
         {
           "name": "gap",
-          "type": "string",
+          "type": "SarakLayoutGap",
           "optional": true,
           "doc": ""
         },
@@ -2243,9 +2243,9 @@
         },
         {
           "name": "gap",
-          "type": "string",
+          "type": "SarakLayoutGap",
           "optional": true,
-          "doc": "Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido."
+          "doc": "Espaçamento entre label e campo — token semântico, número ou comprimento CSS."
         }
       ]
     },
@@ -2322,7 +2322,7 @@
         },
         {
           "name": "gap",
-          "type": "string",
+          "type": "SarakLayoutGap",
           "optional": true,
           "doc": ""
         },

@@ -25,6 +25,14 @@ const read = (relative) => fs.readFileSync(path.join(SRC, relative), 'utf-8');
 export const parse = (relative) =>
     ts.createSourceFile(relative, read(relative), ts.ScriptTarget.Latest, true);
 
+const unwrapTypeAssertions = (expression) => {
+    let unwrapped = expression;
+    while (ts.isAsExpression(unwrapped) || ts.isSatisfiesExpression(unwrapped)) {
+        unwrapped = unwrapped.expression;
+    }
+    return unwrapped;
+};
+
 /** Todos os arquivos .ts/.tsx do src (sem testes) — índice para achar `<Nome>Props`. */
 export const walkSourceFiles = (dir = SRC, out = []) => {
     for (const entry of fs.readdirSync(dir)) {
@@ -119,10 +127,11 @@ export const collectSpacingTokens = () => {
         if (
             ts.isVariableDeclaration(node) &&
             node.name.getText() === 'SPACING_TOKENS' &&
-            node.initializer &&
-            ts.isObjectLiteralExpression(node.initializer)
+            node.initializer
         ) {
-            for (const prop of node.initializer.properties) {
+            const object = unwrapTypeAssertions(node.initializer);
+            if (!ts.isObjectLiteralExpression(object)) return;
+            for (const prop of object.properties) {
                 if (ts.isPropertyAssignment(prop) && ts.isStringLiteral(prop.initializer)) {
                     const name = ts.isStringLiteral(prop.name) ? prop.name.text : prop.name.getText();
                     tokens[name] = prop.initializer.text;
@@ -145,7 +154,7 @@ export const collectStringArrayConst = (relative, constName) => {
     const visit = (node) => {
         if (ts.isVariableDeclaration(node) && node.name.getText() === constName && node.initializer) {
             // `[...] as const` — o array fica dentro da asserção de tipo.
-            const array = ts.isAsExpression(node.initializer) ? node.initializer.expression : node.initializer;
+            const array = unwrapTypeAssertions(node.initializer);
             if (ts.isArrayLiteralExpression(array)) {
                 for (const element of array.elements) {
                     if (ts.isStringLiteral(element)) values.push(element.text);

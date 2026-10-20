@@ -1,10 +1,11 @@
 import React from 'react';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
 
 export interface SarakFormGroupProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
-    /** Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. */
-    gap?: string;
+    /** Espaçamento entre label e campo — token semântico, número ou comprimento CSS. */
+    gap?: SarakLayoutGap;
 }
 
 /**

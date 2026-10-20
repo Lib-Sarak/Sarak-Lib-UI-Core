@@ -10,6 +10,44 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+### De/para completo dos nomes do barril entre v7.0.0 e v8.0.0
+
+**Classificação: MAJOR (sai na 8.0.0).** A comparação das declarações públicas de v7.0.0 com a superfície v8 identificou 26 exports removidos e uma renomeação. Esta tabela reúne todos os 27 nomes alterados ou removidos; quando não há substituto direto, a responsabilidade passa para a aplicação.
+
+| Nome em v7.0.0 | Use na v8.0.0 |
+|---|---|
+| `SARAK_GLOBAL_THEMES` | `SARAK_THEME_CATALOG` para listar; `sarakLoadAllThemePresets()` para carregar os temas completos. |
+| `SARAK_REFERENCE_THEMES` (par claro + escuro) | `SARAK_BOOT_THEMES` contém o tema escuro síncrono; `sarakLoadReferenceThemes()` carrega o par completo |
+| `SarakComponent` | Importe e monte as telas diretamente na aplicação. |
+| `SarakComponentProps` | Declare os tipos das telas e componentes React do consumidor. |
+| `SarakDataGridImpl` | Use `SarakDataGrid` dentro de `<Suspense fallback={...}>`. |
+| `SarakDataTableImpl` | Use `SarakDataTable` dentro de `<Suspense fallback={...}>`. |
+| `SarakDiscoveredModule` | Use `SarakNavItem` para descrever a navegação; a tela fica sob controle da aplicação. |
+| `SarakDynamicRenderer` | Monte a tela da rota diretamente como conteúdo de `SarakAppChrome`. |
+| `SarakDynamicRendererProps` | Declare as props da tela no componente React do consumidor. |
+| `SarakFilterDescriptor` | Implemente a configuração e o estado dos filtros na tela consumidora. |
+| `SarakModule` | Mantenha as telas como componentes React da aplicação; não há manifesto de módulo substituto. |
+| `SarakModuleManifest` | Defina título, URL e ícone em `navItems` e nas rotas do consumidor. |
+| `SarakRouterState` | Use o estado do roteador escolhido pela aplicação. |
+| `SarakShell` | Monte `SarakAppChrome` ao redor do conteúdo da rota. |
+| `SarakShellProps` | Use `SarakAppChromeProps` e `SarakNavItem[]` para a navegação. |
+| `SarakVisualContract` | Componha a tela com componentes React do consumidor. |
+| `SarakVisualContractType` | Declare o tipo de props no componente React; não há contrato visual declarativo substituto. |
+| `getSarakModule` | Consulte a configuração local de rotas e componentes da aplicação. |
+| `registerSarakModule` | Registre telas no roteador e na navegação da aplicação. |
+| `sarakGetLocalComponent` | Importe e use o componente diretamente na tela consumidora. |
+| `sarakGetLocalComponentIds` | Use a configuração de rotas da aplicação para enumerar telas. |
+| `sarakGetRegisteredModules` | Mantenha a lista de telas em `navItems` e nas rotas do consumidor. |
+| `sarakGetThemePreset(id)` | Use `await sarakLoadThemePreset(id)`; rejeita para id desconhecido. |
+| `sarakRegisterLocalComponent` | Importe e monte o componente diretamente. |
+| `sarakSubscribeToRegistry` | Observe mudanças pelo estado do roteador da aplicação. |
+| `useModuleDiscovery` | Controle descoberta e navegação na aplicação e forneça `navItems` ao cromo. |
+| `useSarakRouter` | Use o roteador escolhido pela aplicação para ler e alterar a rota ativa. |
+
+### Tipo público das props `gap`
+
+**Classificação: MAJOR (sai na 8.0.0).** `gap` deixa de aceitar qualquer `string` em `SarakFlex`, `SarakGrid` e `SarakFormGroup`. `SarakLayoutGap` aceita tokens `spacing-*` publicados, zero CSS, números em pixels, comprimentos CSS com unidade e as funções `var()`, `calc()`, `clamp()`, `min()` e `max()`. Valores desconhecidos como `"md"` deixam de compilar; a validação de runtime continua avisando e usando o padrão quando JavaScript ou um cast contorna o tipo.
+
 ### Os 19 temas embarcados demonstram os eixos visuais da biblioteca
 
 **Classificação: MAJOR.** A coleção foi recomposta para cobrir estilos e capacidades distintos do Design Engine: 14 temas existentes foram refeitos e estes 5 ids foram adicionados — `editorial-ink`, `organic-clay`, `high-contrast`, `corporate-ledger` e `playful-pastel`. O tema visual padrão continua sendo `sarak-sovereign`. A aplicação carrega os temas embarcados sob demanda; depois de carregar um preset, valores de tema já salvos pelo consumidor vencem os valores do preset para as chaves que declaram. A derivação feita com `sarakDeriveThemeFromReference` preserva a contraparte e aplica os ajustes de marca nos dois modos.
@@ -51,7 +89,7 @@ const tema = await sarakLoadThemePreset('cyberpunk-neon');
 |---|---|
 | `SARAK_GLOBAL_THEMES` | `SARAK_THEME_CATALOG` para listar (nome, modo, amostra de cor `swatch`/`swatchOpposite`, sem carregar) · `sarakLoadAllThemePresets()` para os temas com `design` |
 | `sarakGetThemePreset(id)` | `sarakLoadThemePreset(id)` — assíncrono; rejeita com id desconhecido, nunca devolve `undefined` mudo |
-| `SARAK_REFERENCE_THEMES` (par claro + escuro) | só o escuro (`sarak-sovereign`) está no boot; o par completo vem de `sarakLoadReferenceThemes()` |
+| `SARAK_REFERENCE_THEMES` (par claro + escuro) | `SARAK_BOOT_THEMES` contém o tema escuro síncrono; `sarakLoadReferenceThemes()` carrega o par completo |
 | `sarakDeriveThemeFromReference('minimalist-airy', …)` | passe o preset carregado como 1º argumento: `sarakDeriveThemeFromReference(await sarakLoadThemePreset('minimalist-airy'), …)`; `'sarak-sovereign'` segue síncrono |
 | `useSarakUI().allThemes` listando todos os embarcados | `allThemes` traz só os temas com `design` em memória; para listar tudo, `useSarakUI().themeCatalog` (e `loadTheme(id)` para carregar um) |
 
@@ -1232,6 +1270,10 @@ leitores não mudaram; temas existentes mantêm o comportamento.
 | `subscribeToRegistry` | `sarakSubscribeToRegistry` |
 | `warnOnIncompleteTheme` | `sarakWarnOnIncompleteTheme` |
 | `widthOf` | `sarakWidthOf` |
+
+### Mensagens de erro de campos são anunciadas
+
+**Nota retroativa da 7.0.0.** `SarakInput` e os outros campos que usam `SarakFieldError` renderizam a mensagem com `role="alert"`, associada ao controle por `aria-describedby`. Testes que localizavam o erro apenas pelo texto devem consultá-lo pelo papel `alert`; leitores de tela anunciam a mensagem quando ela aparece.
 
 **Por quê.** O prefixo permite distinguir os identificadores da biblioteca dos nomes locais do consumidor.
 

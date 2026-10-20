@@ -38,7 +38,7 @@ APIs relacionadas:
 - `sarakLoadThemePreset(id)` / `sarakPreloadThemes(ids)` / `sarakLoadAllThemePresets()` — carregam o tema embarcado sob demanda.
 - `sarakDeriveThemeFromReference(idOuPreset, { id, name, design })` — deriva um tema completo, com `contraparte`: `'sarak-sovereign'`
   é síncrono; qualquer outro entra como preset já carregado. Espalhar `.design` perde a contraparte.
-- `SARAK_REFERENCE_THEMES` — a referência escura síncrona (`sarak-sovereign`); `sarakLoadReferenceThemes()` devolve o par completo
+- `SARAK_BOOT_THEMES` — a referência escura síncrona (`sarak-sovereign`); `sarakLoadReferenceThemes()` devolve o par completo
   (`minimalist-airy` claro + `sarak-sovereign` escuro), que difere em modo, cromo e fonte de propósito.
 - `sarakGetDefaultDesignState()` / `sarakGetAllDesignTokens()` — o **schema vivo** de tokens (fonte da verdade; cada `token.id` é uma chave válida de `design`).
 - `sarakFindMissingThemeAxes(design)` / `sarakWarnOnIncompleteTheme(design)` — avisam se um tema custom omite um eixo inteiro (para não ficar incompleto em silêncio).

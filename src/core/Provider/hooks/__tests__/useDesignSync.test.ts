@@ -97,7 +97,7 @@ describe('useDesignSync', () => {
 
         const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
         // O usuário estava no modo ESCURO — a referência aplicada tem de ser a
-        // do mesmo modo, não a que calhar de vir primeiro em `SARAK_REFERENCE_THEMES`.
+        // do mesmo modo, não a que calhar de vir primeiro em `SARAK_BOOT_THEMES`.
         const result = updater({ mode: 'dark' });
         expect(result.mode).toBe('dark');
 

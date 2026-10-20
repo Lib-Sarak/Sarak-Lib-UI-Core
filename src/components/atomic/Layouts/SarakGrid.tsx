@@ -3,6 +3,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
 import type { SarakResponsiveValue } from '../../../core/Design/types';
+import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
 
 export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;
@@ -15,7 +16,7 @@ export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement
      */
     templateColumns?: string | SarakResponsiveValue<string>;
     templateAreas?: string;
-    gap?: string;
+    gap?: SarakLayoutGap;
     as?: React.ElementType;
 }
 

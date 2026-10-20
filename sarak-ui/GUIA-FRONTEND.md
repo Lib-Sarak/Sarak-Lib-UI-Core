@@ -108,9 +108,9 @@ este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
 Todo consumo, em qualquer topologia, tem a mesma raiz: **um `SarakUIProvider` envolvendo a árvore**.
 
 ```tsx
-import { SarakUIProvider, SARAK_REFERENCE_THEMES } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SARAK_BOOT_THEMES } from '@sarak/lib-ui-core';
 
-const TEMAS = SARAK_REFERENCE_THEMES;   // ponto de partida completo (escuro, síncrono) — veja §3.9
+const TEMAS = SARAK_BOOT_THEMES;   // tema completo do boot (escuro, síncrono) — veja §3.9
 
 export function App() {
   return (
@@ -465,7 +465,7 @@ const TEMAS = [
 Escolha a base pela marca e pelo contexto do produto; depois ajuste os tokens, nesta ordem:
 
 1. **Identidade do cliente:** nome, logotipo e modo nativo ficam na configuração do consumidor e sobrevivem à troca de tema.
-2. **Direção visual:** escolha o arquétipo abaixo que mais se aproxima da marca. Os 19 temas embarcados são exemplos de capacidades; `SARAK_THEME_CATALOG` continua sendo a fonte viva para consultar os ids disponíveis.
+2. **Direção visual:** escolha o arquétipo abaixo que mais se aproxima da marca. Os temas embarcados são exemplos de capacidades; `SARAK_THEME_CATALOG` continua sendo a fonte viva para consultar os ids disponíveis.
 3. **Tokens de marca:** derive do preset completo e sobrescreva `primaryColor`, `accentColor` e os tokens de marca que a identidade pedir. Confira contraste nas duas aparências.
 4. **Ajustes de superfície:** só então refine tipografia, cartões, botões, fundo e gráficos. Preserve a `contraparte` gerada pela derivação.
 
@@ -536,7 +536,7 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
 
 - **Nunca monte um tema do zero** com um punhado de chaves de cor: eixos omitidos (fonte, cromo,
   raio, espaçamento) simplesmente não mudam, e o sintoma vira "troquei o tema e a fonte continuou
-  igual". Derive de `SARAK_REFERENCE_THEMES` / `sarakLoadReferenceThemes()` (o par completo) ou de um tema de `themes.presetIds`
+  igual". Derive de `SARAK_BOOT_THEMES` (tema escuro síncrono) ou de `await sarakLoadReferenceThemes()` (o par completo), ou de um tema de `themes.presetIds`
   carregado por `sarakLoadThemePreset(id)`.
 - **Derivar é uma chamada, não uma cópia de campo.** `sarakDeriveThemeFromReference` devolve o tema completo —
   `design` **e** `contraparte` — e aplica a customização nos dois modos. Espalhar `{ ...ref.design, … }`
@@ -547,15 +547,16 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
   | `activeThemeId` | **controlado**: sempre vence e reaplica a cada mudança. Use quando o app decide (por cliente/config). |
   | `initialTheme` | **semente**: só semeia o primeiro carregamento; o usuário troca depois e não é forçado de volta. É a opção segura. |
   | nenhum dos dois | cai no default de `options.theme.defaultTheme` ou no primeiro tema global. |
-- **A central** é o `SarakCustomizationPanel`: monte-o numa rota sua (`/design`, por exemplo) ou, no modelo
-  host, use o módulo nativo que a base já registra. Ele ajusta tokens ao vivo e **exporta o JSON**
-  completo — "salvar tema" **é** exportar e colar num arquivo do seu repositório.
+- **A central** é o `SarakCustomizationPanel`: monte-o numa rota da aplicação (`/design`, por exemplo).
+  Ele ajusta tokens ao vivo e **exporta o JSON** completo em **Exportar → Exportar JSON**. Exportar
+  produz um arquivo; salvar um tema novo é outra operação, que chama `options.theme.onSave` para a
+  persistência escolhida pelo app. Sem essa porta, a ação de salvar não aparece no painel.
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
   seu backend? Use `options.persistence.onSave`/`onLoad` ou `onThemeChange` — a lib entrega o payload,
   quem faz a chamada é você. **O formato do dado, o schema de referência (Postgres e SQLite) e um
   exemplo de ligação completo estão em `docs/persistencia-de-tema.md`** — leia antes de desenhar a
   sua tabela: ele explica por que o estado aplicado e os temas criados são duas entidades diferentes,
-  por que o JSON é opaco (guarde byte a byte) e por que os 23 temas embarcados nunca entram na sua
+  por que o JSON é opaco (guarde byte a byte) e por que os temas embarcados nunca entram na sua
   tabela. **O tema padrão pinta antes do persistido, num navegador sem cache?** É o mesmo documento,
   seção "O primeiro paint" — as três saídas (injetar `config` no HTML servido, `strictBackendSync`,
   ou aceitar) e a precedência real entre `config`/`localStorage`/semente.
@@ -567,6 +568,15 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
 
 **É zero-config.** Você **não escreve CSS nem media query** para as telas funcionarem em
 celular/tablet/desktop: o cromo e as primitivas de layout leem o dispositivo sozinhos.
+
+### Grade de 12 colunas e spans dos filhos
+
+Quando o tema escolhe `layoutGridTemplate: 'col-12'`, cada filho de `SarakGrid` pode declarar
+`className="col-span-N"`; esse é um contrato suportado e a classe do filho vence o span padrão do
+grid. Sem uma classe própria, o padrão acompanha o contêiner: 6 colunas a partir de 768px, 4 a partir
+de 1024px e 3 a partir de 1280px. Por exemplo, use `<SarakGrid><section className="col-span-6">…</section></SarakGrid>`
+para ocupar seis trilhas. Esses defaults não são aplicados quando `templateColumns` ou `templateAreas`
+definem uma malha própria.
 
 - Os breakpoints e a lista do que adapta automaticamente estão em `catalog.json` → `responsive`
   (e no Apêndice A, seção A.2). Em resumo: o cromo colapsa em drawer no celular, as primitivas de
@@ -909,7 +919,7 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v7.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **381** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **382** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (105)
 
