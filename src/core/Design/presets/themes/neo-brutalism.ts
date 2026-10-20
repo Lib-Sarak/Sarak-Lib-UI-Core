@@ -347,6 +347,7 @@ export const neobrutalismTheme: SarakThemePreset = {
         matrixBorderColor: 'rgba(17, 17, 17, 0.2)',
         matrixBlur: 0,
         // --- Mídia e Background ---
+        globalBackgroundPosition: 'absolute',
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,

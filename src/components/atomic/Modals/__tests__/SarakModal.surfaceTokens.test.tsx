@@ -16,8 +16,10 @@ describe('SarakModal — véu e superfície governados por token', () => {
 
     it('o painel lê --sarak-bg-modal (colorBgModal) e cai na superfície do tema', () => {
         render(<SarakModal isOpen onClose={() => undefined} title="Aviso">Corpo</SarakModal>);
-        expect(screen.getByRole('dialog', { name: 'Aviso' }).className)
-            .toContain('bg-[var(--sarak-bg-modal,var(--theme-surface))]');
+        const panelClassName = screen.getByRole('dialog', { name: 'Aviso' }).className;
+        expect(panelClassName).toContain('bg-[var(--sarak-bg-modal,var(--theme-surface))]');
+        expect(panelClassName).toContain('sarak-modal-panel');
+        expect(panelClassName).not.toContain('shadow-[var(--dynamic-shadow)]');
     });
 
     it('o véu lê a cor do token modalOverlayColor (--sarak-modal-overlay-color), não um preto fixo', () => {

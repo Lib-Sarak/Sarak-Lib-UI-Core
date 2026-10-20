@@ -367,6 +367,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         matrixBorderColor: 'rgba(0, 255, 106, 0.2)',
         matrixBlur: 0,
         // --- Mídia e Background ---
+        globalBackgroundPosition: 'absolute',
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,

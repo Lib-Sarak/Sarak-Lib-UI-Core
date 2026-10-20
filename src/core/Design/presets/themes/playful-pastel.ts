@@ -432,6 +432,7 @@ export const playfulPastelTheme: SarakThemePreset = {
     "matrixItemBg": "rgba(45, 27, 46, 0.035)",
     "matrixBorderColor": "rgba(234, 214, 228, 0.8)",
     "matrixBlur": 10,
+    "globalBackgroundPosition": "absolute",
     "globalBackgroundImageUrl": "",
     "globalBackgroundBlur": 0,
     "globalBackgroundOpacity": 1,

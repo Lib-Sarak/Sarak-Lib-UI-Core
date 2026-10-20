@@ -94,11 +94,37 @@
     --sarak-spot-y: 50%;
 }
 
+/* O modal usa só a borda e a sombra do cartão; não herda fundo, textura ou preenchimento. */
+.sarak-modal-panel {
+    border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));
+    border-style: var(--border-style, solid);
+    border-top-width: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px));
+    border-bottom-width: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px));
+    border-left-width: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px));
+    border-right-width: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px));
+    --sarak-card-shadow-base:
+        calc(var(--sarak-card-shadow-offset-x, 0px) + var(--sarak-shadow-dir-x, 0) * 0.5 * var(--sarak-card-shadow-offset-y, 20px))
+        calc(var(--sarak-card-shadow-offset-y, 20px) * var(--sarak-shadow-dir-y, 1))
+        var(--sarak-card-shadow-blur, 50px)
+        var(--sarak-card-shadow-expansion, -12px)
+        color-mix(in srgb, var(--sarak-card-shadow-color, #000) min(100%, calc(var(--sarak-card-shadow-spread, 20) * 1%)), transparent);
+    --sarak-card-shadow-full:
+        var(--sarak-card-shadow-base),
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
+    box-shadow: var(--sarak-card-shadow-full);
+}
+
 /* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do
    cartão — em repouso (a de baixo do ponteiro é de `_card-materials.css`) — no lugar da composta pelos
    tokens `cardShadow*`; `none` (o padrão) deixa a composta valer. O brilho interno (`cardInnerGlow*`)
    continua somado. */
 [data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card {
+    --sarak-card-shadow-full:
+        var(--sarak-card-shadow),
+        inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
+}
+
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-modal-panel {
     --sarak-card-shadow-full:
         var(--sarak-card-shadow),
         inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);

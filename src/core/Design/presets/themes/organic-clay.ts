@@ -432,6 +432,7 @@ export const organicClayTheme: SarakThemePreset = {
     "matrixItemBg": "rgba(36, 28, 18, 0.035)",
     "matrixBorderColor": "rgba(155, 133, 100, 0.8)",
     "matrixBlur": 10,
+    "globalBackgroundPosition": "absolute",
     "globalBackgroundImageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiM4MDYzM2QiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2Utb3BhY2l0eT0iLjIyIj48cGF0aCBkPSJNLTMwIDIzYzI0LTIwIDU2LTIwIDgwIDBzNTYgMjAgODAgMCA1Ni0yMCA4MCAwTS0zMCA0OWMyNC0yMCA1Ni0yMCA4MCAwczU2IDIwIDgwIDAgNTYtMjAgODAgME0tMzAgNzVjMjQtMjAgNTYtMjAgODAgMHM1NiAyMCA4MCAwIDU2LTIwIDgwIDBNLTMwIDEwMWMyNC0yMCA1Ni0yMCA4MCAwczU2IDIwIDgwIDAgNTYtMjAgODAgME0tMzAgMTI3YzI0LTIwIDU2LTIwIDgwIDBzNTYgMjAgODAgMCA1Ni0yMCA4MCAwIi8+PC9nPjxwYXRoIGZpbGw9IiNkNmM1YTYiIGZpbGwtb3BhY2l0eT0iLjA4IiBkPSJNMCAwaDE2MHYxNjBIMHoiLz48L3N2Zz4=",
     "globalBackgroundBlur": 0,
     "globalBackgroundOpacity": 0.3,

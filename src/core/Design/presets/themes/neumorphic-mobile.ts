@@ -304,6 +304,7 @@ export const neumorphicMobile: SarakThemePreset = {
         "matrixItemBg": "rgba(255,255,255,1)",
         "matrixBorderColor": "rgba(0,0,0,0.1)",
         "matrixBlur": 0,
+        "globalBackgroundPosition": "absolute",
         "globalBackgroundImageUrl": "",
         "globalBackgroundBlur": 0,
         "globalBackgroundOpacity": 1,

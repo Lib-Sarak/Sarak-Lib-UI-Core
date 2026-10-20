@@ -351,6 +351,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         matrixBorderColor: 'rgba(255, 154, 31, 0.2)',
         matrixBlur: 0,
         // --- Mídia e Background ---
+        globalBackgroundPosition: 'absolute',
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,

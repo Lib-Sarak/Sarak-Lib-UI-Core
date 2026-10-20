@@ -33,6 +33,7 @@ import { SarakDeviceProvider, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SarakDeviceBreak
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
+import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -64,6 +65,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     const mode = resolveSarakUIMode(options);
     const [scopeElement, setScopeElement] = useState<HTMLElement | null>(null);
     const isEmbedded = mode === 'embedded';
+    useBodyThemeTransition(isEmbedded);
     const [isHydrated, setIsHydrated] = useState(false);
     useEffect(() => setIsHydrated(true), []);
 
@@ -189,7 +191,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
                             imageUrl={effectiveDesign?.globalBackgroundImageUrl}
                             opacity={effectiveDesign?.globalBackgroundOpacity}
                             blur={effectiveDesign?.globalBackgroundBlur}
-                            isFixed={true}
+                            backgroundPosition={effectiveDesign?.globalBackgroundPosition as 'absolute' | 'fixed' | undefined}
                             mode={effectiveDesign?.mode as 'light' | 'dark' | undefined}
                         />
                     )}

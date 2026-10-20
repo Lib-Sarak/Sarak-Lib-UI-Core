@@ -432,6 +432,7 @@ export const corporateLedgerTheme: SarakThemePreset = {
     "matrixItemBg": "rgba(18, 26, 38, 0.035)",
     "matrixBorderColor": "rgba(213, 219, 228, 0.8)",
     "matrixBlur": 10,
+    "globalBackgroundPosition": "absolute",
     "globalBackgroundImageUrl": "",
     "globalBackgroundBlur": 0,
     "globalBackgroundOpacity": 1,

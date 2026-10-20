@@ -6,6 +6,7 @@ import { isSafeCssString, isSafeMediaString } from './cssSafety';
 import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
 import { clampToTokenBounds, isOffTokenGrid, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
 import type { SarakDesignToken } from '../../Design/types';
+import { warnForFunctionalRangeClamp } from './validationFunctionalRangeWarnings';
 
 /**
  * Sarak Design Validation (v12.0 — Spec 44 §2.3)
@@ -19,9 +20,8 @@ import type { SarakDesignToken } from '../../Design/types';
  */
 let tokenIndexCache: Map<string, SarakDesignToken> | null = null;
 const getTokenIndex = (): Map<string, SarakDesignToken> => {
-    if (!tokenIndexCache) {
-        tokenIndexCache = new Map(sarakGetAllDesignTokens().map((token) => [token.id, token]));
-    }
+    if (tokenIndexCache) return tokenIndexCache;
+    tokenIndexCache = new Map(sarakGetAllDesignTokens().map((token) => [token.id, token]));
     return tokenIndexCache;
 };
 
@@ -200,6 +200,7 @@ export const validateDesign = (design: unknown): SarakDesignState => {
                 console.warn(`[Sarak:Design] Token "${key}" com valor fora do contrato — descartado.`, value);
                 return;
             }
+            warnForFunctionalRangeClamp(key, value, token, coerced);
             s[key] = coerced;
             return;
         }

@@ -50,6 +50,19 @@ export const MediaSchema: ComponentSchema = {
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 1,
             cssVars: ['--sarak-global-bg-opacity']
+        },
+        {
+            id: 'globalBackgroundPosition',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: 'Define se a arte de fundo global rola junto com o conteúdo ou fica fixa na janela; use fixed apenas quando a composição da arte pedir um horizonte imóvel.',
+            interactsWith: ['globalBackgroundImageUrl'],
+            label: 'Posição da Imagem Global',
+            type: 'select',
+            description: 'Posição da arte de fundo global: absolute acompanha o conteúdo; fixed permanece presa à janela. Sem imagem de fundo, não há efeito visual.',
+            axis: 'texture',
+            constraints: { options: [{ value: 'absolute', label: 'Rola com o conteúdo' }, { value: 'fixed', label: 'Fixa na janela' }] },
+            defaultValue: 'absolute'
         }
     ]
 };

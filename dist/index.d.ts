@@ -248,6 +248,7 @@ interface SarakDesignTokens {
     globalBackgroundBlur: number;
     globalBackgroundImageUrl: string;
     globalBackgroundOpacity: number;
+    globalBackgroundPosition: string;
     globalContrast: number;
     globalFlowAlign: string;
     globalFlowDirection: string;
@@ -955,8 +956,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "7.0.0";
-    readonly baseCommitShort: "d4def12";
-    readonly builtAt: "2026-10-20T03:09:26.728Z";
+    readonly baseCommitShort: "04c4659";
+    readonly builtAt: "2026-10-20T19:43:19.438Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1157,7 +1158,7 @@ interface SarakShellNavProps {
     /**
      * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
      * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
-     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
+     * Qualquer valor desconhecido é tratado como vertical.
      */
     orientation?: 'vertical' | 'horizontal' | 'auto';
     /** Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. */
@@ -2754,7 +2755,6 @@ interface SarakTableProps$1<TData extends Record<string, unknown> = Record<strin
     onRowClick?: (row: TData) => void;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
     /**
      * No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo
      * default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes
@@ -2867,9 +2867,6 @@ interface SarakStatsProps<TData extends Record<string, unknown>> {
     mapping?: Record<string, string>;
     /** Configuração visual e de formato por chave de métrica. */
     metrics?: Partial<Record<keyof TData & string, SarakStatsMetricConfig>>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakStats: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, updatedAt, onRetry, label, mapping, metrics, }: SarakStatsProps<TData>) => ReactElement;
 
@@ -2912,9 +2909,6 @@ interface SarakFormProps<TData extends Record<string, unknown>> {
     onSubmit?: (data: TData) => void | Promise<void>;
     /** Chamado após um envio bem-sucedido. */
     onSuccess?: () => void | Promise<void>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakForm: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, label, mapping, mode, initialData, onSubmit, onSuccess, }: SarakFormProps<TData>) => react_jsx_runtime.JSX.Element;
 
@@ -4022,8 +4016,8 @@ type SarakPdfSource = string | Uint8Array | ArrayBuffer;
  *
  * Desenha as páginas do PDF em `<canvas>` via `pdfjs-dist` (peer), sem depender do
  * visualizador nativo bloqueado do navegador. O parse roda num Web Worker (fora da main
- * thread) — `GlobalWorkerOptions.workerSrc` é configurável pela prop `workerSrc`. A barra
- * de controles (zoom/página/download) é 100% estilizada por tokens (`[--sarak-*]`).
+ * thread) — o consumidor fornece `workerSrc` da própria instalação de `pdfjs-dist`. A
+ * barra de controles (zoom/página/download) é estilizada por tokens (`[--sarak-*]`).
  *
  * A dependência pesada (`pdfjs-dist`) vive AQUI; o `index.ts` exporta isto via
  * `React.lazy`, mantendo-a fora do entry de quem não a usa.
@@ -4036,8 +4030,12 @@ interface SarakPDFViewerProps {
     initialPage?: number;
     /** Escala inicial de zoom (default: 1.2). */
     zoom?: number;
-    /** URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. */
-    workerSrc?: string;
+    /**
+     * URL do worker da versão de `pdfjs-dist` instalada pelo consumidor.
+     * Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';`
+     * Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`.
+     */
+    workerSrc: string;
     /** Disparado ao clicar em Download (recebe a `src` quando string). */
     onDownload?: (src: SarakPdfSource) => void;
     className?: string;

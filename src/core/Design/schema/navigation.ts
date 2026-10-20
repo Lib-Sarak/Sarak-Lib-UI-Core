@@ -234,7 +234,7 @@ export const NavigationSchema: ComponentSchema = {
             description: 'Altura, em pixels, da topbar quando está no modo recolhido (hover-to-expand) — independente de `topbarHeight`, que só vale no modo expandido.',
             axis: 'geometry',
             unit: 'px',
-            constraints: { min: 24, max: 56 },
+            constraints: { min: 44, max: 56 },
             defaultValue: 48,
             cssVars: ['--sarak-topbar-collapsed-height']
         },

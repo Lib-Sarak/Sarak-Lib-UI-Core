@@ -5705,6 +5705,7 @@
       "--sarak-global-background-blur",
       "--sarak-global-background-image-url",
       "--sarak-global-background-opacity",
+      "--sarak-global-background-position",
       "--sarak-global-bg-blur",
       "--sarak-global-bg-image",
       "--sarak-global-bg-opacity",
@@ -6241,7 +6242,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 399,
+    "count": 400,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -8053,7 +8054,7 @@
         "label": "Largura do Anel de Foco",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Espessura do contorno de foco de teclado em botões e links; abaixo de 2 px compromete a acessibilidade, por isso o sistema o mantém igual em todo tema."
+        "usage": "Espessura do contorno de foco de teclado em botões e links; o piso de 1 px mantém o indicador visível em todo tema."
       },
       {
         "id": "formFieldDensity",
@@ -8187,6 +8188,19 @@
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`.",
+        "interactsWith": [
+          "globalBackgroundImageUrl"
+        ]
+      },
+      {
+        "id": "globalBackgroundPosition",
+        "type": "string",
+        "responsive": false,
+        "group": "media",
+        "label": "Posição da Imagem Global",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Define se a arte de fundo global rola junto com o conteúdo ou fica fixa na janela; use fixed apenas quando a composição da arte pedir um horizonte imóvel.",
         "interactsWith": [
           "globalBackgroundImageUrl"
         ]
@@ -10743,7 +10757,7 @@
         "label": "Sidebar Z-Index",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Camada da barra de navegação; menus e busca derivam dela por deslocamentos fixos (a camada do grão de filme fica 50 acima). Deve ficar sobre o conteúdo e sob modais."
+        "usage": "Camada da barra de navegação; menus e busca derivam dela por deslocamentos fixos de até 200 níveis. O limite superior mantém a busca derivada abaixo da camada mínima de modal."
       },
       {
         "id": "zIndexToast",
@@ -10902,6 +10916,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "6bb1ce7bed54"
+    "kitHash": "c0a5168d0c46"
   }
 }

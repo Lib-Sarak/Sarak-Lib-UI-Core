@@ -336,6 +336,7 @@ export const dataTerminal: SarakThemePreset = {
         "matrixItemBg": "#ffffff",
         "matrixBorderColor": "#c8e6d0",
         "matrixBlur": 0,
+        "globalBackgroundPosition": "absolute",
         "globalBackgroundImageUrl": "",
         "globalBackgroundBlur": 0,
         "globalBackgroundOpacity": 1,

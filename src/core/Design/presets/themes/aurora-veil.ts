@@ -336,6 +336,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         "matrixItemBg": "rgba(255, 255, 255, 0.6)",
         "matrixBorderColor": "rgba(155, 127, 196, 0.15)",
         "matrixBlur": 12,
+        "globalBackgroundPosition": "absolute",
         "globalBackgroundImageUrl": "",
         "globalBackgroundBlur": 0,
         "globalBackgroundOpacity": 1,

@@ -372,6 +372,7 @@ export const sarakSovereignTheme: SarakThemePreset = {
         matrixBlur: 10,
 
         // --- Mídia e Background ---
+        globalBackgroundPosition: 'absolute',
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,

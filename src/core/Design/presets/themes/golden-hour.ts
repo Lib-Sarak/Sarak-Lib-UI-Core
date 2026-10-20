@@ -336,6 +336,7 @@ export const goldenHourTheme: SarakThemePreset = {
         "matrixItemBg": "#ffffff",
         "matrixBorderColor": "#eadfc4",
         "matrixBlur": 0,
+        "globalBackgroundPosition": "absolute",
         "globalBackgroundImageUrl": "",
         "globalBackgroundBlur": 0,
         "globalBackgroundOpacity": 1,

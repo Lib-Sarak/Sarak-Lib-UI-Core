@@ -90,7 +90,6 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                             imageUrl={preset.design.globalBackgroundImageUrl}
                             opacity={preset.design.globalBackgroundOpacity}
                             blur={preset.design.globalBackgroundBlur}
-                            isFixed={false}
                             mode={(preset.design.mode || currentMode) as 'light' | 'dark'}
                             disableOverlay={true}
                             zIndex={0}

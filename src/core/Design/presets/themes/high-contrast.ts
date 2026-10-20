@@ -432,6 +432,7 @@ export const highContrastTheme: SarakThemePreset = {
     "matrixItemBg": "rgba(255, 255, 255, 0.035)",
     "matrixBorderColor": "rgba(255, 255, 255, 0.8)",
     "matrixBlur": 10,
+    "globalBackgroundPosition": "absolute",
     "globalBackgroundImageUrl": "",
     "globalBackgroundBlur": 0,
     "globalBackgroundOpacity": 1,

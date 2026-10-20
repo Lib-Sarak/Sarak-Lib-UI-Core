@@ -433,6 +433,7 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "matrixItemBg": "rgba(11, 18, 32, 0.02)",
             "matrixBorderColor": "rgba(11, 18, 32, 0.08)",
             "matrixBlur": 10,
+            "globalBackgroundPosition": "absolute",
             "globalBackgroundImageUrl": "",
             "globalBackgroundBlur": 0,
             "globalBackgroundOpacity": 1,

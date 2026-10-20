@@ -142,7 +142,7 @@ const ModalPanel = ({
             aria-labelledby={title ? titleId : undefined}
             aria-label={!title ? text('dialogDefaultAriaLabel') : undefined}
             data-size={size}
-            className={mergeSarakClasses('relative w-full bg-[var(--sarak-bg-modal,var(--theme-surface))] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-[var(--dynamic-shadow)] overflow-hidden flex', MODAL_WIDTH_FALLBACK_CLASSES[size], className)}
+            className={mergeSarakClasses('sarak-modal-panel relative w-full bg-[var(--sarak-bg-modal,var(--theme-surface))] rounded-[var(--radius-modal)] overflow-hidden flex', MODAL_WIDTH_FALLBACK_CLASSES[size], className)}
             style={{ flexDirection: 'column', maxWidth }}
         >
             {header}

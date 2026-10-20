@@ -347,6 +347,7 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         matrixBorderColor: 'rgba(167, 123, 255, 0.2)',
         matrixBlur: 0,
         // --- Mídia e Background ---
+        globalBackgroundPosition: 'absolute',
         globalBackgroundImageUrl: '',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,

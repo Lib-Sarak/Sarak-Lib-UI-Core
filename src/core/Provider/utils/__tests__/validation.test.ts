@@ -47,6 +47,24 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(result.cardShadowExpansion).toBe(-40);
     });
 
+    it.each([
+        ['topbarCollapsedHeight', 24, 44],
+        ['focusRingWidth', 0, 1],
+        ['zIndexSidebar', 1000, 790],
+        ['zIndexModal', 900, 1000],
+    ])('clampa e avisa valor salvo de %s fora da nova faixa', (token, savedValue, expectedValue) => {
+        warnSpy.mockClear();
+
+        const result = validateDesign({ [token]: savedValue }) as Record<string, unknown>;
+
+        expect(result[token]).toBe(expectedValue);
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining(`Token funcional "${token}" fora da faixa`),
+            savedValue,
+            expectedValue,
+        );
+    });
+
     it('um `navigationStyle: "dock"` salvo é descartado com aviso de valor fora do contrato (o cromo lê sidebar)', () => {
         const result = validateDesign({ mode: 'dark', navigationStyle: 'dock' });
         expect((result as Record<string, unknown>).navigationStyle).toBeUndefined();

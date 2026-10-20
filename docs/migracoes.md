@@ -1164,6 +1164,14 @@ O restante é correção visual sem configuração adicional: o contorno do `Sar
 
 **Classificação: MAJOR.** A prop `workerSrc`, antes opcional, agora é obrigatória. Gere a URL do worker a partir da mesma versão de `pdfjs-dist` usada pelo consumidor e passe-a ao componente; a configuração para Vite e Webpack 5 está no `sarak-ui/GUIA-FRONTEND.md` §3.1. Sem a prop, o visualizador mostra uma orientação traduzida e registra um aviso único no console.
 
+### Tokens funcionais, modal e posição da arte global
+
+**Classificação: MAJOR.** As faixas funcionais mudam: `topbarCollapsedHeight` de 24–56 para 44–56 px; `focusRingWidth` de 0–6 para 1–6 px; `zIndexSidebar` de 10–1000 para 10–790 (passo 10). `zIndexModal` permanece em 1000–5000 (passo 100). Valores salvos fora das novas faixas são ajustados ao limite durante a validação e geram aviso no console. Com os deslocamentos derivados de até 200 níveis, o teto da navegação fica em 990 e a busca segue abaixo do modal. Atualize temas e controles que escreviam valores fora dessas faixas.
+
+O painel do `SarakModal` passa a usar a borda e a sombra do cartão: `cardBorderWidth` (incluindo larguras por lado), `borderStyle`, `cardBorderColor`/`cardBorderOpacity` e `cardShadow`/`cardShadow*`. Remova as classes ou estilos próprios que substituíam essas propriedades se quiser que o modal siga o tema.
+
+O novo token estético `globalBackgroundPosition` aceita `absolute` (rola com o conteúdo) e `fixed` (preso à janela), com default `absolute`, igual ao `sarak-sovereign`. Os 19 temas declaram o token; `synthwave-retro` usa `fixed` porque o horizonte e a grade da arte devem permanecer ancorados na janela. Temas salvos que não conhecem o token passam a rolar com o conteúdo.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.

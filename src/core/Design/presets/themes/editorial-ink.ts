@@ -432,6 +432,7 @@ export const editorialInkTheme: SarakThemePreset = {
     "matrixItemBg": "rgba(28, 24, 19, 0.035)",
     "matrixBorderColor": "rgba(228, 220, 203, 0.8)",
     "matrixBlur": 10,
+    "globalBackgroundPosition": "absolute",
     "globalBackgroundImageUrl": "",
     "globalBackgroundBlur": 0,
     "globalBackgroundOpacity": 1,

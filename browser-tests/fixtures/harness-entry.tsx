@@ -165,6 +165,31 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'respiro-responsivo': { layoutPadding: { mob: 16, tab: 24, desk: 32 } },
     'respiro-compacto': { layoutPadding: { mob: 5, tab: 10, desk: 15 } },
     'cromo-cor': { topbarColor: '#16566f' },
+    'focus-ring-largo': { focusRingWidth: 4 },
+    'fundo-rola': { globalBackgroundPosition: 'absolute' },
+    'fundo-fixo': { globalBackgroundPosition: 'fixed' },
+    'modal-cartao-vermelho': {
+        cardBorderWidth: 3,
+        cardBorderTop: 3,
+        cardBorderBottom: 3,
+        cardBorderLeft: 3,
+        cardBorderRight: 3,
+        borderStyle: 'dashed',
+        cardBorderColor: 'rgb(255, 0, 0)',
+        cardBorderOpacity: 1,
+        cardShadow: '4px 5px 6px rgb(255, 0, 0)',
+    },
+    'modal-cartao-azul': {
+        cardBorderWidth: 6,
+        cardBorderTop: 6,
+        cardBorderBottom: 6,
+        cardBorderLeft: 6,
+        cardBorderRight: 6,
+        borderStyle: 'dotted',
+        cardBorderColor: 'rgb(0, 0, 255)',
+        cardBorderOpacity: 1,
+        cardShadow: '8px 9px 10px rgb(0, 0, 255)',
+    },
     'cromo-gap': { tabGap: 23 },
     'cromo-margem': { tabSectionMargin: 23 },
     'cromo-estrutura': { isNavHidden: true },
@@ -819,6 +844,8 @@ const SchemaModalScene: React.FC = () => (
     <SarakModal isOpen onClose={() => undefined} title="Diálogo">Conteúdo do diálogo</SarakModal>
 );
 
+const FocusRingScene: React.FC = () => <button type="button" data-probe="focus-ring">Foco</button>;
+
 const CASCADE_CATALOG_ITEMS = [{ id: 'item-a', display_name: 'Item A', organization: 'Organização', category: 'a' }];
 const CASCADE_KANBAN_COLUMNS = [{ id: 'fazer', title: 'A fazer', cards: [{ id: 'c1', title: 'Cartão do quadro' }] }];
 
@@ -1045,6 +1072,7 @@ const SCENES: Record<string, React.FC> = {
     lightbox: LightboxScene,
     transicao: TransitionScene,
     'schema-modal': SchemaModalScene,
+    'focus-ring': FocusRingScene,
     'cartao-movimento': CardMotionScene,
     'cartao-beam-grade': CardBeamGridScene,
     'saida-sobreposicao': OverlayExitScene,
@@ -1119,7 +1147,8 @@ const ThemeSwitchScene: React.FC = () => {
  * aplicação já está na página (`appPresent`), a cor da primária que ela mostra (`color`) e se o fallback está na tela.
  */
 interface ThemeFrame { appPresent: boolean; color: string; fallback: boolean }
-declare global { interface Window { __frames?: ThemeFrame[] } }
+interface BodyFrame { appPresent: boolean; backgroundColor: string; transitionProperty: string; ready: boolean }
+declare global { interface Window { __frames?: ThemeFrame[]; __bodyFrames?: BodyFrame[] } }
 
 function startFrameRecorder(): void {
     window.__frames = [];
@@ -1134,6 +1163,37 @@ function startFrameRecorder(): void {
     };
     requestAnimationFrame(tick);
 }
+
+function startBodyFrameRecorder(): void {
+    window.__bodyFrames = [];
+    const tick = (): void => {
+        const appPresent = document.querySelector('[data-probe="body-theme-app"]') !== null;
+        const bodyStyle = getComputedStyle(document.body);
+        window.__bodyFrames?.push({
+            appPresent,
+            backgroundColor: bodyStyle.backgroundColor,
+            transitionProperty: bodyStyle.transitionProperty,
+            ready: document.body.getAttribute('data-sarak-theme-ready') === 'true',
+        });
+        requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+}
+
+const BODY_TRANSITION_THEMES = [
+    { id: 'fundo-a', name: 'Fundo A', design: { mode: 'dark' as const, colorBgBody: '#123456' } },
+    { id: 'fundo-b', name: 'Fundo B', design: { mode: 'dark' as const, colorBgBody: '#fedcba' } },
+];
+
+const BodyThemeTransitionScene: React.FC = () => {
+    const [activeThemeId, setActiveThemeId] = React.useState('fundo-a');
+    return (
+        <SarakUIProvider config={{ mode: 'dark' }} customThemes={BODY_TRANSITION_THEMES} activeThemeId={activeThemeId}>
+            <div data-probe="body-theme-app">Aplicação pronta</div>
+            <button type="button" data-probe="trocar-fundo" onClick={() => setActiveThemeId('fundo-b')}>Trocar fundo</button>
+        </SarakUIProvider>
+    );
+};
 
 const OnDemandThemeScene: React.FC = () => {
     const requested = searchParams.get('pedido') ?? undefined;
@@ -1197,7 +1257,10 @@ async function swapToScopedStylesheet(): Promise<void> {
 }
 
 void swapToScopedStylesheet().then(() => {
-    if (searchParams.get('cena') === 'tema-sob-demanda') {
+    if (searchParams.get('cena') === 'body-theme-transition') {
+        startBodyFrameRecorder();
+        createRoot(container).render(<BodyThemeTransitionScene />);
+    } else if (searchParams.get('cena') === 'tema-sob-demanda') {
         startFrameRecorder();
         createRoot(container).render(<OnDemandThemeScene />);
     } else if (searchParams.get('cena') === 'troca-de-tema') {

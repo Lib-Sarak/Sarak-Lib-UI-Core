@@ -1,11 +1,13 @@
 import React from 'react';
 import { useMediaLuminance } from '../hooks/useMediaLuminance';
 
+// @sarak-token-reader globalBackgroundPosition direto
+
 interface SarakBackgroundRendererProps {
     imageUrl?: string;
     opacity?: number;
     blur?: number;
-    isFixed?: boolean;
+    backgroundPosition?: 'absolute' | 'fixed';
     mode?: 'light' | 'dark';
     disableOverlay?: boolean;
     zIndex?: number;
@@ -15,7 +17,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     imageUrl,
     opacity = 1,
     blur = 0,
-    isFixed = false,
+    backgroundPosition = 'absolute',
     mode,
     disableOverlay = false,
     zIndex = -1
@@ -38,7 +40,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     const safeBlendMode = 'normal';
 
     const containerStyle: React.CSSProperties = {
-        position: isFixed ? 'fixed' : 'absolute',
+        position: backgroundPosition,
         top: 0,
         left: 0,
         width: '100%',
@@ -84,7 +86,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
 
     if (isVideo) {
         return (
-            <div style={containerStyle}>
+            <div className="sarak-global-background-renderer" style={containerStyle}>
                 <video src={rawUrl} autoPlay loop muted playsInline style={mediaStyle} />
                 <div style={overlayStyle} />
             </div>
@@ -92,7 +94,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     }
 
     return (
-        <div style={containerStyle}>
+        <div className="sarak-global-background-renderer" style={containerStyle}>
             <div style={{
                 ...mediaStyle,
                 backgroundImage: `url("${rawUrl}")`,

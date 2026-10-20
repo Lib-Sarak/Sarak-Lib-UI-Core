@@ -155,7 +155,7 @@
       "--sarak-focus-width"
     ],
     "allowedValues": {
-      "min": 0,
+      "min": 1,
       "max": 6
     },
     "relatedTokens": [

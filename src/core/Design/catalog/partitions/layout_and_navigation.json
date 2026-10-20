@@ -466,7 +466,7 @@
       "--sarak-topbar-collapsed-height"
     ],
     "allowedValues": {
-      "min": 24,
+      "min": 44,
       "max": 56
     },
     "relatedTokens": [
@@ -1452,7 +1452,7 @@
     ],
     "allowedValues": {
       "min": 10,
-      "max": 1000,
+      "max": 790,
       "step": 10
     },
     "relatedTokens": [

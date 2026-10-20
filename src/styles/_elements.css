@@ -122,7 +122,7 @@ button:focus-visible {
    camada final, em `_base.css`. */
 body {
     color: var(--text-main);
-    transition: background-color var(--duration-normal) var(--ease-sarak), color var(--duration-normal) var(--ease-sarak);
+    transition: color var(--duration-normal) var(--ease-sarak);
     min-height: 100vh;
     margin: 0;
     padding: 0;
@@ -131,6 +131,11 @@ body {
     font-size: var(--sarak-body-size, 14px);
     font-weight: var(--sarak-body-weight, 400);
     line-height: var(--sarak-body-lh, 1.6);
+}
+
+/* O fundo já nasce no valor do tema; a transição só entra depois de um quadro pintado. */
+body[data-sarak-theme-ready="true"] {
+    transition: background-color var(--duration-normal) var(--ease-sarak), color var(--duration-normal) var(--ease-sarak);
 }
 
 /* Suavização da fonte — leitor de `textSmoothing` (`data-sx-text-smoothing`). A propriedade

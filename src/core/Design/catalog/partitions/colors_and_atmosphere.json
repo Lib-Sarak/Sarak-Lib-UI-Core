@@ -1806,5 +1806,37 @@
     "relatedTokens": [
       "globalBackgroundImageUrl"
     ]
+  },
+  {
+    "tokenId": "globalBackgroundPosition",
+    "name": "Posição da Imagem Global",
+    "description": "Define se a arte de fundo global rola com o conteúdo ou fica fixa na janela.",
+    "type": "select",
+    "importance": 55,
+    "categories": [
+      "media",
+      "background",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "background",
+      "position",
+      "art-direction"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "SarakBackgroundRenderer"
+    ],
+    "cssVariables": [
+      "--sarak-global-background-position"
+    ],
+    "allowedValues": [
+      "absolute",
+      "fixed"
+    ],
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
   }
 ]

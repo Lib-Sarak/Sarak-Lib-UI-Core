@@ -403,6 +403,45 @@ testes que varrem o repositório usam.
 - A verificação `install-sha` da CI, já registrada no resumo anterior, permanece pendente após push; ela não faz parte dos dois achados deste veredito. `specs/00-indice.md` e as demais alterações preexistentes foram preservados.
 
 ---
+## Resumo da execução — 2026-10-20 — lote 3
+
+**Resultado:** passos 3.1–3.4 executados; pronto para revisão.
+
+### Alterações
+- **39 — faixas funcionais:** `topbarCollapsedHeight` passou de 24–56 para 44–56; `focusRingWidth`, de 0–6 para 1–6; `zIndexSidebar`, de 10–1000 para 10–790 (passo 10). `zIndexModal` permanece em 1000–5000 (passo 100); mesmo com até 200 níveis derivados, a navegação termina em 990. Valores salvos fora das novas faixas são ajustados e geram aviso com o valor recebido e o valor final.
+- **40 — pintura do body:** em modo App, o Provider habilita a transição de fundo após dois quadros; a primeira pintura continua imediata e a limpeza restaura o atributo anterior. O modo embarcado não altera o `body`.
+- **45 — modal:** a superfície de `SarakModal` usa largura de borda por lado, `borderStyle`, cor/opacidade e sombra dos tokens do cartão, sem puxar fundo, textura ou padding do cartão.
+- **46 — arte global:** entrou `globalBackgroundPosition` (`absolute`/`fixed`, default `absolute`) no schema, partição, mapeamento, tipos e leitor. Os 19 temas declaram o token; `synthwave-retro` usa `fixed`, os demais usam `absolute`. `DesignScope` e Provider passam a respeitar o token no renderer.
+- A nota MAJOR em `docs/migracoes.md` registra as faixas antiga e nova, o clamp, a superfície do modal e a posição da arte. Foram regenerados o catálogo, os tipos, o guia e o kit de desenvolvimento.
+
+### Verificações
+- `npm.cmd run build` → concluído.
+- `npx.cmd vitest run src/core/Provider/hooks/__tests__/useBodyThemeTransition.test.ts src/core/Provider/utils/__tests__/validation.test.ts src/core/Provider/__tests__/SarakUIProvider.test.tsx src/core/Provider/utils/__tests__/tokenContractParity.test.ts src/core/Design/components/__tests__/SarakBackgroundRenderer.test.tsx src/components/atomic/Modals/__tests__/SarakModal.surfaceTokens.test.tsx` → 6 arquivos, 85 testes passaram.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts lote3-tema-cliente.spec.ts` → 4 casos passaram: anel de foco, modal em dois temas, primeira pintura/troca de tema e posição rolável/fixa da arte.
+- `npm.cmd run verify -- --tier=themes` → verde; completude dos 19 temas, testes de tema, boot, baseline, guia/dev-kit e Anel 0 sem achados.
+- `npm.cmd run verify -- --tier=quick` → verde; `tsc`, baseline, paridade, leitores, contratos, `plan-index`, guia/dev-kit e Anel 0 sem achados. Ambos foram executados antes da mudança de status para revisão.
+- `npm.cmd run catalog`, `token-types`, `guide` e `dev-kit` → concluídos; `git diff --check` → sem erros de whitespace.
+
+### Preservação
+- `specs/00-indice.md` e as alterações dos lotes anteriores foram preservados. Os artefatos temporários de Playwright foram removidos; os arquivos compilados de `dist/` e os timestamps de build foram restaurados após a verificação. `.claude/settings.local.json`, já presente antes desta execução, foi mantido.
+
+## Resumo da execução — 2026-10-20 — correção do achado 1 (lote 3)
+
+**Resultado:** os dois snapshots passaram a refletir o atributo e a variável CSS emitidos por `globalBackgroundPosition`; achado corrigido e pronto para revisão.
+
+### Arquivos alterados
+- `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap`
+- `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap`
+- Esta plan, com o registro da correção e a transição de status.
+
+### Verificações
+- Comparação dos snapshots com `HEAD`, removendo do snapshot atualizado as linhas de `data-sx-global-background-position` (`absolute`/`fixed`) e `--sarak-global-background-position` → ambos ficaram idênticos ao original; as mudanças se limitam a esse token.
+- `npx.cmd vitest run src/features/DesignEngine --reporter=dot` → **89 arquivos e 449 testes passaram** (código de saída 0).
+- `git diff --check` nos dois snapshots e nesta plan → sem erros de whitespace.
+
+**Preservação:** nenhum arquivo de implementação foi alterado nesta correção; `specs/00-indice.md` e as demais alterações preexistentes foram preservados.
+
+---
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -482,4 +521,40 @@ Anel 1, R36, Anel 0, kits); `npx vitest run src/components/atomic/Media` — 4 a
 
 **Lote 2 fechado (itens 9 e 18).** Segue o lote 3.
 
-**Status: 🟡 Em execução (lote 3).**
+**Status: 🟠 Em revisão (lote 3).**
+
+## Veredito — 2026-10-20 — lote 3 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** 39 — `topbarCollapsedHeight` 44–56, `focusRingWidth` 1–6, `zIndexSidebar` 10–790 abaixo de
+`zIndexModal` (1000–5000), valor salvo fora da faixa ajustado com aviso (`validationFunctionalRangeWarnings.ts`); 40 — a transição
+do fundo do `body` só passa a valer depois da primeira pintura (`useBodyThemeTransition.ts`), e o modo embarcado não toca o `body`;
+45 — o `SarakModal` usa a borda (por lado, estilo, cor) e a sombra do cartão do tema; 46 — `globalBackgroundPosition`
+(`absolute` | `fixed`, estético, sem modo, com `usage`) no schema, partição, mapeamento, tipos e leitor (`SarakBackgroundRenderer`,
+`DesignScope`), declarado nos **19** temas (só o `synthwave-retro` em `fixed`); a nota MAJOR com faixas antigas e novas.
+**Medido por mim:** `verify --tier=quick` e `--tier=themes` **verdes**; `npm run build` verde; navegador contra o `dist/` novo:
+os 4 casos do lote (`lote3-tema-cliente.spec.ts`), `cromo-css-real`, `arsenal-lote5` (inclui o véu da gaveta do lote 1) — **51 de
+52**; vitest de `src/core`, `src/features/DesignEngine` e `Modals` — **187 de 189 arquivos**.
+
+**Achado 1 — dois snapshots não acompanham o token novo.** `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` e
+`src/features/DesignEngine/Canvas/components/__tests__/PresetCard.test.tsx` falham: o rascunho passou a emitir
+`data-sx-global-background-position` e a variável correspondente, e os snapshots são de antes. **Correção:** atualizar só esses
+dois snapshots (`-u` restrito a eles), conferindo que as únicas linhas novas são as do token `globalBackgroundPosition`; rodar
+`npx vitest run src/features/DesignEngine` verde e colar.
+
+**Não é achado deste lote:** a falha de `browser-tests/tema-sob-demanda.spec.ts:86` ("houve um quadro só com o fallback") é a
+intermitência do `00-backlog` 36 — falhou 3 de 4 vezes isolado contra o `dist/` novo e passou na quarta; o caso exige ao menos um
+quadro com o fallback sozinho, que não existe quando o tema chega rápido, e não mede cor nem fundo (o que o item 40 mudou).
+
+**Status: 🟠 Em revisão** (só o achado 1).
+
+## Veredito — 2026-10-20 — correção 1 (lote 3) — 🟢 Aprovado; lote 3 fechado
+
+**Achado fechado:** os snapshots de `PreviewCanvas` e `PresetCard` foram atualizados só neles. **Medido por mim:** removendo das
+linhas alteradas o atributo `data-sx-global-background-position` e a variável `--sarak-global-background-position`, **não sobra
+nenhuma diferença** (`PreviewCanvas`: 21 linhas trocadas e 2 novas, todas do token; `PresetCard`: 1); `npx vitest run
+src/features/DesignEngine` — **89 arquivos, 449/449**. O resto do lote já tinha passado em `quick`, `themes`, `build` e no navegador.
+O relato desta correção deixou o `status` em 🟡 em vez de 🟠 ao entregar; sem efeito, e a plan segue para o lote 4.
+
+**Lote 3 fechado (itens 39, 40, 45, 46).** Segue o lote 4.
+
+**Status: 🟡 Em execução (lote 4).**

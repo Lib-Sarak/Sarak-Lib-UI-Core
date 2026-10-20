@@ -1,34 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { SarakBackgroundRenderer } from '../SarakBackgroundRenderer';
-import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 
-// Mock do Canvas API para os testes não falharem em ambiente Node
-beforeAll(() => {
-    HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
-        drawImage: vi.fn(),
-        getImageData: vi.fn(() => ({
-            data: new Uint8ClampedArray(4).fill(255) // Mock de pixel branco (luminância 'light')
-        })),
-        fillRect: vi.fn()
-    })) as any;
-});
+vi.mock('../../hooks/useMediaLuminance', () => ({ useMediaLuminance: () => 'light' }));
 
 describe('SarakBackgroundRenderer - Data Driven CSS', () => {
     it('deve utilizar color-mix para overlayColor dinamico', () => {
         // Criamos um contexto mock onde o isLightMode é true e a mídia está presente
-        const mockContextValue = {
-            design: {
-                globalBackgroundImageUrl: 'https://example.com/test.jpg'
-            },
-            isLightMode: true
-        };
-
         const { container } = render(
-            <UIContext.Provider value={mockContextValue as any}>
-                <SarakBackgroundRenderer />
-            </UIContext.Provider>
+            <SarakBackgroundRenderer imageUrl="https://example.com/test.jpg" mode="dark" />
         );
 
         // Aguarda a renderização (o canvas roda num RAF, mas no primeiro render o estado é computado)
@@ -41,5 +22,16 @@ describe('SarakBackgroundRenderer - Data Driven CSS', () => {
             expect(style).not.toContain('rgba(');
             expect(style).toContain('color-mix');
         }
+    });
+
+    it.each([
+        ['absolute', 'absolute'],
+        ['fixed', 'fixed'],
+    ] as const)('globalBackgroundPosition="%s" desenha a arte com position: %s', (globalBackgroundPosition, expectedPosition) => {
+        const { container } = render(
+            <SarakBackgroundRenderer imageUrl="https://example.com/background.jpg" backgroundPosition={globalBackgroundPosition} />
+        );
+
+        expect((container.firstElementChild as HTMLElement).style.position).toBe(expectedPosition);
     });
 });

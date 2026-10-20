@@ -346,6 +346,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         matrixBlur: 0,
         // --- Mídia e Background ---
         // arte própria offline (data URI, sem terceiro): sol listrado e grade; as cores valem sobre o roxo e sobre o rosa-claro, por isso é a mesma nos dois modos
+        globalBackgroundPosition: 'fixed',
         globalBackgroundImageUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNjAwIDkwMCcgcHJlc2VydmVBc3BlY3RSYXRpbz0neE1pZFlNYXggc2xpY2UnPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0nZycgeDI9JzAnIHkyPScxJz48c3RvcCBvZmZzZXQ9JzAnIHN0b3AtY29sb3I9JyNmZjllMmMnLz48c3RvcCBvZmZzZXQ9JzEnIHN0b3AtY29sb3I9JyNmZjJlOTcnLz48L2xpbmVhckdyYWRpZW50PjxtYXNrIGlkPSdtJz48cmVjdCB3aWR0aD0nMTYwMCcgaGVpZ2h0PSc5MDAnIGZpbGw9JyNmZmYnLz48cmVjdCB5PSc2NDAnIHdpZHRoPScxNjAwJyBoZWlnaHQ9JzgnLz48cmVjdCB5PSc2ODAnIHdpZHRoPScxNjAwJyBoZWlnaHQ9JzEyJy8+PHJlY3QgeT0nNzI0JyB3aWR0aD0nMTYwMCcgaGVpZ2h0PScxNicvPjwvbWFzaz48L2RlZnM+PGNpcmNsZSBjeD0nODAwJyBjeT0nNTkwJyByPScyMzAnIGZpbGw9J3VybCgjZyknIG1hc2s9J3VybCgjbSknIG9wYWNpdHk9Jy4zJy8+PGcgc3Ryb2tlPScjZmYyZTk3JyBvcGFjaXR5PScuMycgc3Ryb2tlLXdpZHRoPScyJz48cGF0aCBkPSdNMCA3NjBIMTYwME0wIDgwMEgxNjAwTTAgODUwSDE2MDAnLz48cGF0aCBkPSdNODAwIDc2MEwtNDAwIDkwME04MDAgNzYwTDEwMCA5MDBNODAwIDc2MEw0NTAgOTAwTTgwMCA3NjBWOTAwTTgwMCA3NjBMMTE1MCA5MDBNODAwIDc2MEwxNTAwIDkwME04MDAgNzYwTDIwMDAgOTAwJy8+PC9nPjwvc3ZnPg==',
         globalBackgroundBlur: 0,
         globalBackgroundOpacity: 1,
