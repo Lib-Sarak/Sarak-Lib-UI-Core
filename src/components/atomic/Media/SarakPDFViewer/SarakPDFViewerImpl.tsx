@@ -4,8 +4,8 @@ import { SarakIcon } from "../../Icon/SarakIcon";
  *
  * Desenha as páginas do PDF em `<canvas>` via `pdfjs-dist` (peer), sem depender do
  * visualizador nativo bloqueado do navegador. O parse roda num Web Worker (fora da main
- * thread) — `GlobalWorkerOptions.workerSrc` é configurável pela prop `workerSrc`. A barra
- * de controles (zoom/página/download) é 100% estilizada por tokens (`[--sarak-*]`).
+ * thread) — o consumidor fornece `workerSrc` da própria instalação de `pdfjs-dist`. A
+ * barra de controles (zoom/página/download) é estilizada por tokens (`[--sarak-*]`).
  *
  * A dependência pesada (`pdfjs-dist`) vive AQUI; o `index.ts` exporta isto via
  * `React.lazy`, mantendo-a fora do entry de quem não a usa.
@@ -23,8 +23,12 @@ export interface SarakPDFViewerProps {
     initialPage?: number;
     /** Escala inicial de zoom (default: 1.2). */
     zoom?: number;
-    /** URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. */
-    workerSrc?: string;
+    /**
+     * URL do worker da versão de `pdfjs-dist` instalada pelo consumidor.
+     * Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';`
+     * Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`.
+     */
+    workerSrc: string;
     /** Disparado ao clicar em Download (recebe a `src` quando string). */
     onDownload?: (src: SarakPdfSource) => void;
     className?: string;

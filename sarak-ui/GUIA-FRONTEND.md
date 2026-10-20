@@ -314,6 +314,28 @@ Confira nome e props em `catalog.json` → `components` (ou no Apêndice A). **V
 de composição** — se a tabela não serve para a sua tela, troque por cards; se o card não serve,
 componha dois componentes. Não existe uso "errado" desde que o resultado use tokens.
 
+O `SarakPDFViewer` exige que o host passe `workerSrc` da mesma instalação de `pdfjs-dist` usada pelo
+visualizador. Instale essa peer opcional quando usar o componente e gere a URL no bundler:
+
+**Vite:**
+
+```tsx
+import { SarakPDFViewer } from '@sarak/lib-ui-core';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+<SarakPDFViewer src="/documento.pdf" workerSrc={pdfWorkerUrl} />
+```
+
+**Webpack 5:**
+
+```tsx
+import { SarakPDFViewer } from '@sarak/lib-ui-core';
+
+const pdfWorkerUrl = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+
+<SarakPDFViewer src="/documento.pdf" workerSrc={pdfWorkerUrl} />
+```
+
 ## 3.2 Falta um componente → React próprio com tokens, ou demanda
 
 Duas saídas legítimas, nesta ordem de preferência:

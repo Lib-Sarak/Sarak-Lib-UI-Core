@@ -1003,7 +1003,7 @@ Props (`SarakPDFViewerProps` — `src/components/atomic/Media/SarakPDFViewer/Sar
 | `src` | `SarakPdfSource` | sim | Origem do documento: URL, bytes ou ArrayBuffer. |
 | `initialPage` | `number` | não | Página inicial (1-based, default: 1). |
 | `zoom` | `number` | não | Escala inicial de zoom (default: 1.2). |
-| `workerSrc` | `string` | não | URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. |
+| `workerSrc` | `string` | sim | URL do worker da versão de `pdfjs-dist` instalada pelo consumidor. Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';` Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`. |
 | `onDownload` | `(src: SarakPdfSource) => void` | não | Disparado ao clicar em Download (recebe a `src` quando string). |
 | `className` | `string` | não |  |
 

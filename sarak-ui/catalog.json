@@ -3488,8 +3488,8 @@
         {
           "name": "workerSrc",
           "type": "string",
-          "optional": true,
-          "doc": "URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`."
+          "optional": false,
+          "doc": "URL do worker da versão de `pdfjs-dist` instalada pelo consumidor. Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';` Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`."
         },
         {
           "name": "onDownload",
@@ -10902,6 +10902,6 @@
   "kitStamp": {
     "libVersion": "7.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "1703a1a6551e"
+    "kitHash": "6bb1ce7bed54"
   }
 }

@@ -319,6 +319,90 @@ testes que varrem o repositório usam.
 
 ---
 
+## Resumo da execução — 2026-10-20 — lote 2
+
+**Resultado:** Concluído com pendências.
+
+**Estado do worktree ao iniciar**
+```text
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- **2.1:** marquei `@tanstack/react-virtual` como peer opcional em `package.json:136` e regenerei o lock no Linux com npm 11.10.1. A comparação encontrou zero versões ou caminhos de pacote alterados.
+- **2.2:** tornei `workerSrc` obrigatório em `SarakPDFViewerProps` (`SarakPDFViewerImpl.tsx:31`); sem URL, o hook publica erro traduzido e não inicia o carregamento (`usePdfDocument.ts:30`), e o componente emite um aviso único nomeando a prop (`SarakPDFViewerImpl.tsx:59`).
+- Documentei o MAJOR em `docs/migracoes.md:1163`, acrescentei exemplos Vite/Webpack 5 ao guia e regenerei os catálogos e os kits consumidores.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `package.json` | alterado | `@tanstack/react-virtual` marcado como peer opcional. |
+| `package-lock.json` | alterado | Lock Linux/npm 11.10.1 regenerado; versões e caminhos de pacotes preservados. |
+| `src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx` | alterado | `workerSrc` obrigatório, JSDoc de bundlers e aviso único. |
+| `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts` | alterado | Validação do worker e erro localizado antes de carregar o PDF. |
+| `src/components/atomic/Media/SarakPDFViewer/__tests__/SarakPDFViewerImpl.test.tsx` | alterado | Prop incluída nos casos existentes e teste de mensagem/aviso único. |
+| `src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts` | alterado | Teste para worker ausente e casos existentes atualizados. |
+| `src/core/i18n/catalogEntries.part5.ts` | alterado | Mensagem de `workerSrc` em seis idiomas. |
+| `docs/migracoes.md` | alterado | Nota MAJOR da mudança pública no PDF viewer. |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | Exemplos de configuração Vite e Webpack 5. |
+| `docs/component-catalog.json` | alterado | Catálogo reflete `workerSrc` obrigatório e seu JSDoc. |
+| `docs/component-catalog.md` | alterado | Tabela pública reflete `workerSrc` obrigatório. |
+| `sarak-ui/catalog.json` | alterado | Catálogo do kit reflete o novo contrato e hash. |
+| `sarak-ui/docs/migracoes.md` | alterado | Cópia gerada da nota MAJOR. |
+| `sarak-ui/START-HERE.md` | alterado | Carimbo do kit atualizado. |
+| `sarak-ui/VERSION` | alterado | Hash do kit atualizado. |
+| `specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md` | alterado | Este resumo append-only e status 🟠. |
+
+**Verificações executadas**
+- Comparação do lock regenerado com o lock de `HEAD` → zero versões alteradas; zero caminhos adicionados ou removidos; `peerDependenciesMeta.@tanstack/react-virtual.optional` = `true`. O diff também remove metadados `libc` de dependências opcionais.
+- `npx.cmd vitest run src/components/atomic/Media/SarakPDFViewer/__tests__/SarakPDFViewerImpl.test.tsx src/components/atomic/Media/SarakPDFViewer/__tests__/usePdfDocument.test.ts --pool=forks --maxWorkers=1 --reporter=verbose` → 2 arquivos, 7 testes passaram.
+- `npm.cmd --cache .tmp-npm-cache run package:check` → passou; 184 arquivos no tarball. O cache temporário foi removido.
+- `npm.cmd run catalog`, `npm.cmd run token-types`, `npm.cmd run guide` e `npm.cmd run dev-kit` → passaram; catálogos e kits regenerados.
+- `git diff --check` → sem erros de whitespace.
+
+**Critérios de aceite**
+- [x] Peer opcional e lock regenerado em Linux sem mudança de versões/caminhos; `package:check` passou.
+- [x] `workerSrc` obrigatório, exemplos para Vite e Webpack 5, erro localizado e aviso único; nota MAJOR adicionada.
+- [ ] `install-sha` da CI verde — não verificado nesta execução porque o diff segue sem commit/push; requer execução na CI.
+
+**Decisões e suposições**
+- WSL não tinha Node/npm disponíveis; usei o container Linux efêmero `node:22-bookworm-slim` com npm 11.10.1 para cumprir o requisito de geração. Nenhuma instalação persistente foi feita.
+- A tentativa com o pool `threads` é incompatível com o `execArgv` de memória configurado no Vitest; a execução final passou com o pool `forks` em um worker.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum achado adicional foi tratado neste lote.
+
+**Pendências / riscos**
+- O `install-sha` e os gates completos do Linux/CI continuam pendentes para a revisão após o push. O diff do lock merece conferência do revisor: além da entrada opcional, npm 11.10.1 removeu metadados `libc`, sem alterar versões nem caminhos de pacotes.
+
+---
+## Resumo da execução (correção 2) — 2026-10-20 — lote 2
+
+**Resultado:** os dois achados foram corrigidos; pronto para revisão.
+
+**Achados corrigidos**
+- **Achado 1 — lock:** restaurei `package-lock.json` de `HEAD` e regenerei em Linux com Node 22/npm 11.21.1. A comparação reportou `changedPackagePaths: [""]`, zero caminhos adicionados/removidos, zero versões alteradas e `libc` preservado em 10 de 10 entradas; apenas a entrada raiz passou a declarar `@tanstack/react-virtual` opcional.
+- **Achado 2 — clean code:** removi o aviso/efeito do `SarakPDFViewerImpl` e o emiti no ramo de `workerSrc` ausente do efeito já existente em `usePdfDocument`. O componente deixou de ter os quatro hooks `useState`/`useEffect` apontados pelo auditor; nenhum limiar foi alterado.
+
+**Arquivos desta correção**
+| Arquivo | Mudança |
+|---|---|
+| `package-lock.json` | Regenerado a partir de `HEAD` com npm 11.21.1; o diff contém somente a entrada raiz. |
+| `src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx` | Removido o efeito dedicado ao aviso de `workerSrc`. |
+| `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts` | Aviso único movido para o hook que já valida o worker e inicia o carregamento. |
+| `specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md` | Este registro append-only e status 🟠. |
+
+**Verificações executadas**
+- `npm.cmd run audit:baseline -- --with-tsc` → igual ao baseline de 2026-10-12; nenhuma regressão.
+- `npm.cmd run verify -- --tier=quick` → verde; TypeScript, `audit:baseline`, `plan-index` e demais gates quick passaram; Anel 0 simulou 191 linhas e encontrou 0 achados. Executado antes da transição do status para 🟠.
+- `npx.cmd vitest run src/components/atomic/Media src/core/i18n --pool=forks --maxWorkers=1 --reporter=dot` → 7 arquivos, 25 testes passaram.
+- Comparação de `package-lock.json` com `HEAD` → uma entrada alterada (raiz), 0 caminhos adicionados/removidos, 0 versões alteradas, `libc`: 10 → 10.
+- `git diff --check` → sem erros de whitespace.
+
+**Pendências / preservação**
+- A verificação `install-sha` da CI, já registrada no resumo anterior, permanece pendente após push; ela não faz parte dos dois achados deste veredito. `specs/00-indice.md` e as demais alterações preexistentes foram preservados.
+
+---
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -364,3 +448,38 @@ antes do lote 2). Ele roda na bateria completa do fechamento desta plan (§7), c
 **Lote 1 fechado (itens 14, 17, 25, 31, 37, 38, 53).** Segue o lote 2.
 
 **Status: 🟡 Em execução (lote 2).**
+
+## Veredito — 2026-10-20 — lote 2 — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido no diff):** 18 — `workerSrc` obrigatório no tipo do `SarakPDFViewer`
+(`SarakPDFViewerImpl.tsx`), sem ele o hook publica o erro traduzido e não tenta carregar (`usePdfDocument.ts`), aviso nomeando a
+prop, JSDoc com a linha do Vite e do Webpack 5, a mensagem nos seis idiomas e a nota MAJOR; 9 — `@tanstack/react-virtual` opcional em
+`peerDependenciesMeta`. **Medido por mim:** `npx vitest run src/components/atomic/Media src/core/i18n` — 7 arquivos, 25/25.
+
+**Achado 1 — o lock regenerado apaga metadado que o npm usa no Linux.** O lock foi gerado num container com Node 22 e npm 11.10.1,
+e o diff **remove o campo `libc` de 10 entradas** (as variantes `gnu`/`musl` dos binários opcionais): o `npm ci` do Linux deixa de
+saber qual variante instalar. **Medi:** regenerando com o npm 11.21.1 (o da máquina do dono), a partir do lock do `HEAD` e do
+`package.json` deste lote, o lock difere do `HEAD` em **uma** entrada — a raiz, com `@tanstack/react-virtual` opcional — e
+**preserva os 10 `libc`**; o do executor difere em 11. **Correção:** regenerar o `package-lock.json` com npm ≥ 11.21 (o do
+Windows já serve; ou o WSL com o mesmo npm), partindo do lock do `HEAD`, e provar que o diff é só a entrada raiz (cole a contagem
+de entradas diferentes e a de `libc` antes e depois).
+
+**Achado 2 — clean code: violação nova.** `npm run audit:baseline -- --with-tsc` reprova: `auditor_cleancode` 0 → 1 em
+`src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx:41` (4 `useState`/`useEffect` no componente, depois do aviso de
+`workerSrc` ausente). Extrair o aviso (ou a lógica de estado) para um hook próprio, sem afrouxar o limiar; rodar
+`npm run verify -- --tier=quick` verde, que o relato não rodou.
+
+**Status: 🔵 Em correção** (os dois achados).
+
+## Veredito — 2026-10-20 — correção 2 (lote 2) — 🟢 Aprovado; lote 2 fechado
+
+**Achado 1 fechado:** o `package-lock.json` difere do `HEAD` em **uma** entrada (a raiz, com `@tanstack/react-virtual` opcional) e
+mantém o `libc` nas 10 entradas que o têm — medido por mim, comparando com o lock do `HEAD`. **Achado 2 fechado:** o aviso de
+`workerSrc` ausente saiu do componente e mora no efeito que já valida o worker em `usePdfDocument.ts`; o `SarakPDFViewerImpl`
+voltou ao limite. **Medido por mim:** `npm run verify -- --tier=quick` **verde** (`tsc`, `audit:baseline --with-tsc` sem regressão,
+Anel 1, R36, Anel 0, kits); `npx vitest run src/components/atomic/Media` — 4 arquivos, 16/16 (o executor rodou também
+`src/core/i18n`: 7 arquivos, 25/25). O `install-sha` da CI fica para o push do dono.
+
+**Lote 2 fechado (itens 9 e 18).** Segue o lote 3.
+
+**Status: 🟡 Em execução (lote 3).**

@@ -161,4 +161,12 @@ export const CATALOG_PART_5 = {
         fr: 'Échec du chargement du PDF', de: 'PDF konnte nicht geladen werden',
         it: 'Errore durante il caricamento del PDF',
     },
+    pdfViewerWorkerSrcRequired: {
+        pt: 'Configure a prop workerSrc com a URL do worker de PDF.js.',
+        en: 'Set the workerSrc prop to the PDF.js worker URL.',
+        es: 'Configure la prop workerSrc con la URL del worker de PDF.js.',
+        fr: 'Configurez la prop workerSrc avec l’URL du worker PDF.js.',
+        de: 'Setzen Sie die Prop workerSrc auf die URL des PDF.js-Workers.',
+        it: 'Imposta la prop workerSrc con l’URL del worker PDF.js.',
+    },
 } satisfies Record<string, LibraryTextEntry>;

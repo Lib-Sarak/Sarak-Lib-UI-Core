@@ -19,7 +19,7 @@ vi.setConfig({ testTimeout: COLD_LOAD_TIMEOUT_MS + 15_000 });
 
 describe('Spec 15 (Onda 10) — usePdfDocument', () => {
     it('começa em loading e expõe o documento carregado (worker fora da main thread)', async () => {
-        const { result } = renderHook(() => usePdfDocument('/doc.pdf'));
+        const { result } = renderHook(() => usePdfDocument('/doc.pdf', '/pdf.worker.min.mjs'));
 
         expect(result.current.loading).toBe(true);
         expect(result.current.doc).toBeNull();
@@ -37,8 +37,17 @@ describe('Spec 15 (Onda 10) — usePdfDocument', () => {
         } as never);
         const wrapper = ({ children }: { children: React.ReactNode }): React.ReactElement =>
             React.createElement(SarakUIProvider, { config: { language: 'en' }, children });
-        const { result } = renderHook(() => usePdfDocument('/invalid.pdf'), { wrapper });
+        const { result } = renderHook(() => usePdfDocument('/invalid.pdf', '/pdf.worker.min.mjs'), { wrapper });
 
         await waitFor(() => expect(result.current.error).toBe('Failed to load PDF'));
+    });
+
+    it('does not start loading without workerSrc and exposes the localized requirement', async () => {
+        vi.mocked(getDocument).mockClear();
+        const { result } = renderHook(() => usePdfDocument('/doc.pdf', undefined as unknown as string));
+
+        await waitFor(() => expect(result.current.error).toBe('Configure a prop workerSrc com a URL do worker de PDF.js.'));
+        expect(result.current.doc).toBeNull();
+        expect(getDocument).not.toHaveBeenCalled();
     });
 });

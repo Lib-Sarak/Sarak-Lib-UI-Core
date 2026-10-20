@@ -1160,6 +1160,10 @@ leitores não mudaram; temas existentes mantêm o comportamento.
 
 O restante é correção visual sem configuração adicional: o contorno do `SarakCatalogGrid` usa a classe de borda válida; o véu do `SarakDrawer` sai pela curva `motionEaseIn` na duração `motionDurationFast`; os espaços entre linhas e filhos da `SarakExpandableMatrix` seguem `matrixGap`; e a borda cyberpunk de `SarakButton` lê `btnNeonGlowColor` pela mesma variável CSS de `SarakIconButton`. O JSDoc de `SarakShellNav.orientation` deixa de citar opções inexistentes; o comportamento do menu não muda.
 
+### `SarakPDFViewer` exige `workerSrc`
+
+**Classificação: MAJOR.** A prop `workerSrc`, antes opcional, agora é obrigatória. Gere a URL do worker a partir da mesma versão de `pdfjs-dist` usada pelo consumidor e passe-a ao componente; a configuração para Vite e Webpack 5 está no `sarak-ui/GUIA-FRONTEND.md` §3.1. Sem a prop, o visualizador mostra uma orientação traduzida e registra um aviso único no console.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.

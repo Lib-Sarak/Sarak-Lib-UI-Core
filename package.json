@@ -133,6 +133,9 @@
         "@dnd-kit/sortable": {
             "optional": true
         },
+        "@tanstack/react-virtual": {
+            "optional": true
+        },
         "echarts": {
             "optional": true
         },

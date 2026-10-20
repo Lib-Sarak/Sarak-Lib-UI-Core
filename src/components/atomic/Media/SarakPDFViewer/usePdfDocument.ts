@@ -19,19 +19,28 @@ export interface PdfDocumentState {
     loading: boolean;
 }
 
-/** Resolve o worker default a partir do próprio pacote (bundlers modernos). */
-const defaultWorkerSrc = (): string => new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-
-export const usePdfDocument = (src: SarakPdfSource, workerSrc?: string): PdfDocumentState => {
+export const usePdfDocument = (src: SarakPdfSource, workerSrc: string): PdfDocumentState => {
     const t = useLibraryText();
     const translateRef = useRef(t);
     translateRef.current = t;
+    const warnedMissingWorkerSrc = useRef(false);
     const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (typeof workerSrc !== 'string' || workerSrc.trim() === '') {
+            setDoc(null);
+            setError(translateRef.current('pdfViewerWorkerSrcRequired'));
+            if (!warnedMissingWorkerSrc.current) {
+                warnedMissingWorkerSrc.current = true;
+                console.warn('[SarakPDFViewer] The required "workerSrc" prop is missing.');
+            }
+            return undefined;
+        }
+
+        setError(null);
         let cancelled = false;
-        GlobalWorkerOptions.workerSrc = workerSrc ?? defaultWorkerSrc();
+        GlobalWorkerOptions.workerSrc = workerSrc;
         const task = getDocument(typeof src === 'string' ? { url: src } : { data: src });
         task.promise.then(
             (loaded) => { if (!cancelled) { setDoc(loaded); setError(null); } },
