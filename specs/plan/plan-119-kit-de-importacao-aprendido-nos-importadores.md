@@ -63,6 +63,11 @@ nem tag ([[03-versionamento-e-release]]).
   `SarakChartEngine`, `SarakPDFViewer`, `SarakChatEngine`, `SarakMarkdownRenderer`, `SarakFlowEngine` — os arquivos `*Impl` e os
   módulos que eles importam), o i18n das mensagens, o teste do consumidor mínimo, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e
   os gerados.
+- **Lote 5:** `src/core/Provider/hooks/useDesignRemoteLoader.ts`, `src/core/Provider/hooks/useDesignManager.ts`, o caminho de
+  gravação do design aplicado (o hook que chama `persistence.onSave`), `src/core/Provider/utils/resolveStorageKey.ts`,
+  `src/core/Provider/utils/injectedWrites.ts`, `src/core/Provider/components/DesignInjector.tsx` e os outros injetores que limpam
+  o documento ao desmontar; os testes deles; um caso em `browser-tests/`; `docs/persistencia-de-tema.md`, `docs/migracoes.md` e os
+  gerados.
 - **Lote 2:** `src/core/Design/presets/themes/reference.ts` e os pontos do barril que exportam a referência, o teste do
   `col-span-*` junto aos de `src/components/atomic/Layouts/`,
   `src/components/atomic/Layouts/SarakFlex.tsx`, `docs/migracoes.md` (seções `## 8.0.0` e `## 7.0.0`),
@@ -183,6 +188,25 @@ sem a `<meta>` e sem `styleNonce`, nada muda (zero-config); o guia, na seção d
 `styleNonce` do Provider.
 4.6. `npm run guide` e `npm run dev-kit` por último.
 
+**Lote 5 — trocar de organização (tenant)** (linhas **I24 e I25** da §5.1; bloqueia a migração do login; sai na `v8.0.0-rc.2`).
+5.1. **Primeiro os testes que reprovam hoje** (cole a falha antes da correção):
+- **(I24)** um `SarakUIProvider` montado **sem** `tenantId` e sem `onLoad` (a tela pública) recebe nas opções `tenantId` + `onLoad` +
+  `onSave` (o login): o `onLoad` é chamado **uma vez** com o tenant novo, o tema que ele devolve é aplicado, e a mudança seguinte do
+  usuário chega ao `onSave`; trocar de novo de `tenantId` dispara um `onLoad` novo e aplica o tema dele; uma gravação pendente
+  (com atraso) do tenant anterior **não** chega ao `onSave` do novo; `onLoad` que devolve nada aplica o padrão.
+- **(I25)** duas instâncias do Provider em sequência por `key` (a primeira com um tema, a segunda com outro): depois da troca, o
+  `<html>` tem os `data-sx-*` e as variáveis do tema da **segunda**, e o `<body>` a classe de modo e o fundo dela — em teste de
+  componente e num caso de navegador contra o `dist/`.
+5.2. **I24** a carga remota passa a ser por tenant: a troca de `persistence.tenantId` (inclusive de ausente para definido), ou o
+`onLoad` que passa a existir, reabre a carga — chama o `onLoad`, aplica o resultado pela regra da `strategy` (`09` §4.4.1), e só
+então o Provider volta a gravar (sem gravar o estado do tenant anterior no novo); o boot e a hidratação continuam sem gravar (`09`
+§4.4.2). Uma resposta de `onLoad` que chega depois de outra troca de tenant é descartada.
+5.3. **I25** a limpeza ao desmontar é por instância: cada injetor só remove a escrita que ainda é dele (o valor que ele escreveu e
+que ninguém sobrescreveu); com outra instância montada, o documento fica com o tema dela.
+5.4. Documentar em `docs/persistencia-de-tema.md` o caminho de multi-tenant (um Provider só; trocar `tenantId` e as portas; o que
+a troca faz) e a remontagem por `key` como alternativa suportada; nota na `## 8.0.0` de `docs/migracoes.md`.
+5.5. `npm run guide` e `npm run dev-kit` por último.
+
 **§5.1 — Registro vivo dos achados da lib** (mantido pelo revisor; vem do lote 0 e das sessões dos importadores):
 
 | # | Achado (`arquivo:linha` e medição) | Origem | Decisão | Lote | Estado |
@@ -214,6 +238,9 @@ sem a `<meta>` e sem `styleNonce`, nada muda (zero-config); o guia, na seção d
 | I21 | testar em jsdom exige contornos em todo importador: o CSS injetado com `@layer` não parseia e o Design Engine exige `matchMedia` (o ERP e os dois logins repetem o mesmo polyfill) | login | **proposta do revisor, sob veto do dono:** exportar um *setup* de teste opcional (o polyfill e o filtro do aviso de CSS), com teste e uma linha no guia | 3 | fechada |
 | I22 | **peer "opcional" quebra o build de quem não o instala:** todo pedaço sob demanda do `dist/` importa pelo nome o peer opcional que usa (`SarakKanbanImpl` → `@dnd-kit/*`; `SarakDataGridImpl`/`SarakDataTableImpl` → `@tanstack/react-virtual`; `SarakChartEngine` → `echarts`, `echarts-for-react`, `recharts`; `SarakPDFViewerImpl` → `pdfjs-dist`; `SarakChatEngine`/`SarakMarkdownRendererImpl` → `react-markdown`, `react-syntax-highlighter`; `SarakFlowEngine` → `reactflow`), e o Vite 8 (rolldown) troca o peer ausente por um módulo vazio: 36 `[MISSING_EXPORT]` no `vite build` do login-completo, que não usa Kanban | login | **dono, 2026-10-21: opção (b)** — o peer continua opcional; o pedaço sob demanda o importa de forma que o build do importador passe sem ele, e o componente sem o pacote mostra uma mensagem clara na tela (nunca build quebrado nem tela em branco); prova por build real de um consumidor | 4 | fechada |
 | I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | fechada |
+| I24 | **trocar de tenant sem remontar não lê o tema do tenant novo:** o `onLoad` roda uma vez por instância (`src/core/Provider/hooks/useDesignRemoteLoader.ts:63-75`: sem `onLoad` antes do login, a instância já se marca carregada e não chama mais); a troca de `persistence.tenantId` só troca a chave do `localStorage` (`src/core/Provider/utils/resolveStorageKey.ts`). O tema da organização nunca é lido, e a primeira mudança no painel não chega ao `onSave` | login (bloqueia a migração) | corrigir — a troca de `tenantId` (inclusive de ausente para definido) e o `onLoad` que passa a existir disparam o `onLoad` do tenant novo; aplica o que vier (ou o padrão); passa a gravar no `onSave` desse tenant; gravação pendente do anterior nunca vai ao novo | 5 | fechada |
+| I25 | **remontar o Provider por `key` apaga o tema da instância nova:** ao desmontar, a instância que sai limpa o `<html>`/`<body>` (`releaseInjectedWrites`, `src/core/Provider/components/DesignInjector.tsx:185`) **depois** de a nova já ter aplicado o tema — medido pelo importador: `<html>` sem `data-sx-*` nem variáveis, `<body>` sem `dark` nem fundo | login (bloqueia a migração) | corrigir — a limpeza ao desmontar é por instância: só remove o que aquela instância escreveu e que nenhuma outra escreveu depois | 5 | fechada |
+| I26 | peers com versões vulneráveis no piso da faixa: `echarts` (`>=5.5.0`; `npm audit` acusa abaixo de 6.1.0, moderada, e a correção é o major 6) e dependências do `react-syntax-highlighter` (`>=15.5.0`; alta) | login | **a decidir pelo dono:** subir o piso das duas peers para versões sem aviso, com o motor de gráficos e o realce provados nelas (MAJOR) | 6 | aberta |
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
@@ -951,3 +978,157 @@ O lote final (consolidação do kit) vem depois que os importadores migrarem.
 **Para o commit:** tudo, **menos** `.sarak/` (não é desta plan e não está no `.gitignore`).
 
 **Status: 🟡 Em execução** (o registro segue vivo até o lote final).
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- `src/core/Provider/hooks/useDesignRemoteLoader.ts` e `useDesignManager.ts` — detectam `onLoad` que passa a existir depois da montagem, reiniciam a hidratação e ignoram respostas assíncronas obsoletas; a persistência continua associada ao tenant atual.
+- `src/core/Provider/components/DesignInjector.tsx`, `src/core/Provider/utils/injectedWrites.ts`, novo `injectedOwnership.ts` e `useBodyThemeTransition.ts` — cada instância registra a propriedade que escreveu e só restaura/remova escritas ainda sob sua propriedade, preservando o Provider substituto em montagem keyed.
+- Testes de hooks, Provider, utilitários e navegador — cobrem carregamento tardio, troca de tenant, debounce e `onSave`, fallback nulo, respostas obsoletas e substituição keyed com estilos/atributos globais.
+- `docs/persistencia-de-tema.md` e `docs/migracoes.md` — documentam o fluxo de troca de tenant no mesmo Provider e a alternativa de remount com `key`; `npm run guide` atualizou `sarak-ui/docs/migracoes.md`.
+- `npm run build` e `npm run dev-kit` — regeneraram o pacote distribuído, metadados de build e kit de desenvolvimento.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/hooks/useDesignRemoteLoader.ts`, `useDesignManager.ts` | alterado | carregamento remoto tardio e hidratação do tenant ativo |
+| `src/core/Provider/hooks/useBodyThemeTransition.ts`, `src/core/Provider/utils/injectedWrites.ts`, novo `src/core/Provider/utils/injectedOwnership.ts`, `src/core/Provider/components/DesignInjector.tsx` | alterado/criado | propriedade por instância para escritas globais e limpeza segura |
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx`, testes de hooks, utilitários e `DesignInjector` | alterado/criado | regressões de troca de tenant e substituição keyed |
+| `browser-tests/fixtures/tenant-provider-replacement-entry.tsx`, `browser-tests/tenant-provider-replacement.spec.ts` | criado | cenário Playwright de substituição keyed do Provider |
+| `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | documentação manual e cópia gerada |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | build final do pacote |
+| esta plan | alterado | registro da execução do lote 5; tabela da §5.1 preservada |
+
+**Verificações executadas**
+- `npx.cmd vitest run` nos seis arquivos focados de Provider/hooks/utilitários/componentes → 6 arquivos, 56 testes passaram.
+- Playwright `browser-tests/tenant-provider-replacement.spec.ts` contra o `dist` final → 1 teste passou usando Chrome local (`SARAK_CHROMIUM_EXECUTABLE_PATH`).
+- `npx.cmd tsc --noEmit` → passou.
+- `npm.cmd run audit:baseline -- --with-tsc` → passou; sem regressões contra o baseline de 2026-10-12.
+- `npm.cmd run verify -- --tier=quick` → passou, incluindo TypeScript, gates de contrato, documentação gerada e Anel 0 (855 linhas simuladas, 0 achados).
+- `npm run build` → ESM, CJS, DTS, CSS e optional peers passaram; a execução precisou de acesso ampliado após o sandbox bloquear a resolução de diretórios acima do workspace.
+- `npm run guide` e, por último entre os geradores, `npm run dev-kit` → passaram; dev-kit: 102 componentes públicos, 400 tokens, 42 gates.
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace nos arquivos autorados.
+
+**Critérios de aceite**
+- [x] I24 — callback `onLoad` tardio, identidade e troca de tenant são cobertos; gravações pendentes não atravessam tenants e o `onSave` do tenant ativo recebe a edição seguinte.
+- [x] I25 — substituição keyed não apaga escritas globais do Provider novo; limpeza verifica propriedade e valor atuais.
+- [x] Passos 5.1–5.5 — implementação, regressões, documentação, build, `guide` e `dev-kit` concluídos na ordem prevista; nenhum commit criado.
+
+**Decisões e suposições**
+- A troca de `tenantId` permanece no mesmo Provider e os callbacks são resolvidos pelas opções atuais; `key={tenantId}` segue documentado como opção para resetar todo o estado local.
+- A posse das escritas globais é controlada por instância e por propriedade; uma limpeza antiga não restaura por cima de uma escrita mais nova.
+- O Chromium empacotado pelo Playwright não estava instalado; a mesma especificação foi executada com o Chrome local configurado por variável de ambiente.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx` e `SarakUploader.tsx` — a auditoria completa apontou violações R10 preexistentes; não pertencem ao lote 5 e não foram alteradas.
+- `.claude/settings.local.json` — já estava não rastreado na fotografia inicial e foi preservado.
+
+**Pendências / riscos**
+- O lote final de consolidação do kit continua pendente, aguardando a migração dos importadores conforme a plan.
+- Nenhum commit foi criado; alterações estão no worktree para revisão.
+
+**Status: 🟠 Em revisão (lote 5).**
+
+## Veredito — 2026-10-21 — lote 5 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** I24 — `useDesignRemoteLoader.ts` e `useDesignManager.ts` reabrem a carga quando o `onLoad`
+passa a existir ou o tenant muda, descartam resposta atrasada e o debounce do tenant anterior; I25 — a posse de cada escrita no
+documento é por instância (`injectedOwnership.ts`, `injectedWrites.ts`, `DesignInjector.tsx`, `useBodyThemeTransition.ts`), e a limpeza
+antiga não apaga o que a instância nova escreveu; a documentação em `docs/persistencia-de-tema.md` e na `## 8.0.0`. **Medido por
+mim:** `npm run verify -- --tier=full` **verde** (`tsc`, suíte completa, baseline com `tsc`, Anel 1, R36, Anel 0); `npm run build`
+verde; **bateria inteira do navegador 426/426** (com `tenant-provider-replacement.spec.ts`).
+
+**Mutação (feita por mim, numa cópia do `HEAD` fora do repositório, com os testes novos):** caem **3** — os dois de limpeza por
+instância (I25: `injectedWrites.test.ts`, `DesignInjector.test.tsx`) e "carrega ao receber onLoad depois do mount, mesmo quando a
+chave do tenant não muda" (I24, `useDesignManager.test.ts`). Esses provam a correção.
+
+**Achado 1 — o cenário do importador não está provado.** O teste de integração `src/core/Provider/__tests__/TenantPersistence.test.tsx`
+("entra no tenant depois do mount…") **passa no código de antes da correção**, e o mesmo vale para o caso "descarta o debounce
+anterior" de `useDesignManager.test.ts`: eles não reproduzem o defeito que o login mediu (o `onLoad` do tenant nunca chamado, a
+gravação nunca saindo). O passo 5.1 pedia os testes que reprovam hoje, **com a falha colada** antes da correção — o relato não a traz.
+O teste usa `strategy: 'remote'` e `storageKey` próprio; o importador monta o Provider com a configuração dele (a tela pública sem
+`tenantId`, sem `onLoad`/`onSave`; depois do login, os três; `strategy` padrão). **Correção:** um teste com a **configuração exata
+do importador** (a do relatório em `specs/plan/anexos/plan-119-relatorio-login.md` e a do pedido do login: um Provider na raiz,
+sem tenant e sem portas → tenant + `onLoad` + `onSave` → edição → troca de tenant), que **falhe no código do `HEAD`** (provado numa
+cópia fora do repositório, com a saída colada) e passe agora; o mesmo para a gravação pendente do tenant anterior (editar em A,
+trocar para B antes do debounce: o `onSave` de B não recebe o estado de A). Se a correção atual não cobrir a configuração exata,
+ajustá-la. Rodar a suíte da área e `verify --tier=quick`.
+
+**Status: 🔵 Em correção** (só o achado 1). O relato deixou o `status` do frontmatter em 🟡 ao entregar; o certo é 🟠.
+
+## Resumo da execução (correção 1 do lote 5) — 2026-10-21
+
+**Resultado:** Concluído com divergência técnica registrada para decisão do revisor.
+
+**Achado 1 — prova do fluxo do importador**
+- Acrescentei a `TenantPersistence.test.tsx` dois casos de integração com um Provider raiz estável: começa sem `persistence`; após o login recebe `tenantId`, `onLoad` e `onSave`, sem fixar `strategy` nem `storageKey` (defaults públicos); valida o tema carregado e o salvamento da edição. O segundo caso troca A por B antes do debounce, exige que B não receba o design de A e que a edição posterior de B chegue ao `onSave` de B.
+- Rodei esses mesmos dois casos numa cópia temporária arquivada de `HEAD`, fora do repositório, com o arquivo de teste atual sobreposto. **Ambos passaram em `HEAD`**; logo, o fluxo simultâneo “sem tenant/portas → tenant + portas” não reproduz o achado no baseline e não pode satisfazer o requisito do veredito de falhar em `HEAD`.
+- Para isolar o ramo que a implementação do lote 5 alterou, rodei na mesma cópia o teste de callback tardio com a chave estável. Esse caso falhou em `HEAD` com `onLoad` chamado zero vezes. A falha comprova o ramo “`onLoad` aparece sem mudança de tenant”, diferente da troca simultânea de tenant e callback do importador.
+- Não alterei a implementação: a evidência não autoriza fabricar uma falha nem mudar o contrato para fazer o fluxo exato falhar. Mantive os dois testes como cobertura explícita do ciclo do importador e registro a divergência para o revisor decidir.
+
+**Saídas relevantes**
+
+Fluxo exato, cópia de `HEAD`:
+```text
+✓ a configuração padrão do Provider carrega o tenant ao receber as portas após o mount 2587ms
+✓ a configuração padrão cancela a gravação pendente de A ao trocar para B 4070ms
+Test Files  1 passed (1)
+     Tests  2 passed | 1 skipped (3)
+Duration  20.31s
+BASELINE_TEST_EXIT=0
+```
+
+Callback tardio com a mesma chave, cópia de `HEAD`:
+```text
+× carrega ao receber onLoad depois do mount, mesmo quando a chave do tenant não muda 1046ms
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+  at src/core/Provider/hooks/__tests__/useDesignManager.test.ts:278:44
+Test Files  1 failed (1)
+     Tests  1 failed | 19 skipped (20)
+LATE_ONLOAD_HEAD_TEST_EXIT=1
+```
+
+**Verificações executadas**
+- `npx.cmd vitest run src/core/Provider/__tests__/TenantPersistence.test.tsx --maxWorkers=1 -t 'a configuração padrão'` → 2 testes passaram no worktree; os mesmos 2 passaram em `HEAD`.
+- `npx.cmd vitest run src/core/Provider --maxWorkers=1` → 65 arquivos, 564 testes passaram.
+- `npm.cmd run verify -- --tier=quick` → passou; TypeScript, baseline, gates rápidos, `guide:check`, `dev-kit:check` e Anel 0 (1.023 linhas, 0 achados).
+
+**Arquivos desta correção**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx` | alterado | cenários integrados do importador com defaults e debounce entre tenants |
+| esta plan | alterado | evidências do achado 1 e divergência técnica; status encaminhado à revisão |
+
+**Limite da conclusão**
+- A exigência “o fluxo exato do importador falha em `HEAD`” não se confirmou. A cobertura do ramo tardio sem mudança de chave falha em `HEAD`, mas usa uma condição diferente. O revisor decide se aceita separar esses dois contratos ou se o importador tem alguma configuração adicional ausente no anexo disponível nesta plan.
+- O worktree já continha alterações de lotes anteriores, `specs/00-indice.md` modificado e `.claude/settings.local.json` não rastreado; foram preservados. A cópia temporária de `HEAD` foi removida. Nenhum commit foi criado.
+
+**Status: 🟠 Em revisão (correção do achado 1 do lote 5).**
+
+## Veredito — 2026-10-21 — correção 1 (lote 5) — 🟢 Aprovado; lote 5 fechado
+
+**O que a correção mediu (e eu conferi):** dois casos novos em `TenantPersistence.test.tsx` com a configuração padrão do importador
+(Provider raiz sem `persistence`; depois, `tenantId` + `onLoad` + `onSave` juntos, sem `strategy` nem `storageKey`; e a gravação
+pendente de A ao trocar para B) **passam também no código do `HEAD`**: quando o tenant e as portas chegam no mesmo render, o tenant
+muda a chave e a lib antiga já recarregava. O que **falha no `HEAD`** e esta plan corrige é o `onLoad` que chega **sem a chave mudar**
+(colado no relato: `onLoad` chamado 0 vezes) e a limpeza que apaga a instância nova na remontagem por `key` (mutação minha, no
+veredito anterior: 3 casos caem). **Medido por mim:** `TenantPersistence.test.tsx` e `useDesignManager.test.ts` — 2 arquivos,
+23/23; o resto do lote já tinha passado em `verify --tier=full` e na bateria inteira (426/426), e a correção só mexeu no teste.
+
+**Decisão do revisor sobre a divergência:** aceita. A causa provável no importador é a **ordem** em que as opções chegam (as portas
+num render e o tenant noutro, ou uma `storageKey` fixa) — exatamente o ramo que falhava e foi corrigido —, e a remontagem por `key`
+também passou a funcionar. **A prova final é do importador, na `v8.0.0-rc.2`:** o login mede os dois caminhos (troca de tenant no
+mesmo Provider e remontagem por `key`); se algum ainda falhar, devolve **a sequência exata de opções** que o Provider recebe, e a
+correção volta ao registro da §5.1.
+
+**Lote 5 fechado (I24, I25).** Aberto: I26 (peers vulneráveis), à decisão do dono.
+
+**Status: 🟡 Em execução.**

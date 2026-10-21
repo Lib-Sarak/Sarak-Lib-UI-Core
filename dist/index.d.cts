@@ -957,8 +957,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.1";
-    readonly baseCommitShort: "b5b4d6e";
-    readonly builtAt: "2026-10-21T18:46:40.689Z";
+    readonly baseCommitShort: "f1765b3";
+    readonly builtAt: "2026-10-21T19:56:02.064Z";
 };
 
 interface SarakDesignScopeProps {

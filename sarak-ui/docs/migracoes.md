@@ -1003,13 +1003,38 @@ O Provider também aceita `null` ou `undefined` de `onLoad` para indicar que ain
 |---|---|---|
 | Leitura do estado aplicado | `onLoad` devolvia só o design | Pode devolver `{ design, activeThemeId }`; o id salvo é restaurado junto |
 | Gravação no boot | A hidratação podia disparar uma gravação sem mudança | Boot e hidratação não gravam; alterações reais e aplicações explícitas continuam gravando |
-| Troca de tenant | O consumidor precisava remontar o Provider | Alterar `tenantId` chama `onLoad` novamente sem remontagem |
+| Troca de tenant | O consumidor precisava remontar o Provider | Alterar `tenantId` troca a partição local e chama `onLoad` para o tenant novo sem remontagem; `strategy` define a precedência |
 | Remover tema customizado | O consumidor removia a entrada apenas na própria lista | `useSarakUI().deleteTheme(id)` remove da coleção da sessão e chama opcionalmente `options.theme.onDelete(id)` |
 | Tipos de `customThemes` e `allThemes` | `unknown[]` | `SarakThemeEntry[]`; cada entrada tem `id` e pode declarar `name`, `design` e `contraparte` |
 | `SarakUIContextType` | Não expunha `deleteTheme` | Exige `deleteTheme(id)` no valor do contexto; contextos montados manualmente devem fornecer a operação |
 
 O id carregado não vence `activeThemeId` quando essa prop é controlada. O consumidor continua dono
 do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria fonte persistente.
+
+Para trocar de tenant, mantenha um único Provider e atualize `tenantId`; os callbacks fecham sobre
+o valor atual e a leitura remota anterior não pode aplicar seu resultado depois da troca:
+
+```tsx
+function App({ tenantId }: { tenantId: string }) {
+  return (
+    <SarakUIProvider
+      options={{
+        persistence: {
+          tenantId,
+          onLoad: () => carregarTema(tenantId),
+          onSave: (design, activeThemeId) => salvarTema(tenantId, design, activeThemeId),
+        },
+      }}
+    >
+      <Aplicacao />
+    </SarakUIProvider>
+  );
+}
+```
+
+Se a troca também tiver de descartar o estado React dos filhos, adicione `key={tenantId}` ao
+Provider para desmontar e montar a árvore inteira. A chave não substitui `tenantId`: mantenha os
+dois para reiniciar a árvore e separar a chave de persistência por tenant.
 
 
 ### As implementações de SarakDataTable e SarakDataGrid deixam de ser públicas

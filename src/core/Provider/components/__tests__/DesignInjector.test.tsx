@@ -224,6 +224,32 @@ describe('DesignInjector', () => {
             expect(island.style.getPropertyValue('--sarak-card-radius-tl')).toBe('');
             island.remove();
         });
+
+        it('um Provider keyed novo mantém no documento os valores que escreveu após a limpeza passiva do anterior', () => {
+            (useDesignVariablesHook.useDesignVariables as any).mockImplementation((design: Record<string, string>) => ({
+                variables: { '--tenant-color': design.primaryColor },
+                attributes: { 'data-sx-tenant': design.systemName },
+                responsiveCSS: `.tenant { color: ${design.primaryColor}; }`,
+            }));
+
+            const mountInjector = (key: string, systemName: string, primaryColor: string) => (
+                <DesignInjector
+                    key={key}
+                    design={{ mode: 'dark', systemName, primaryColor, globalBackgroundImageUrl: `${systemName}.png` }}
+                    isDrafting={false}
+                />
+            );
+            const view = render(mountInjector('tenant-a', 'tenant-a', '#111111'));
+            expect(document.documentElement.style.getPropertyValue('--tenant-color')).toBe('#111111');
+
+            view.rerender(mountInjector('tenant-b', 'tenant-b', '#222222'));
+
+            expect(document.documentElement.style.getPropertyValue('--tenant-color')).toBe('#222222');
+            expect(document.documentElement.getAttribute('data-sx-tenant')).toBe('tenant-b');
+            expect(document.body.classList.contains('dark')).toBe(true);
+            expect(document.body.getAttribute('data-sarak-has-media')).toBe('true');
+            expect(document.getElementById('sarak-responsive-vars')?.textContent).toContain('#222222');
+        });
     });
 
     it('não injeta nada se design não for fornecido', () => {

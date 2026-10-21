@@ -260,6 +260,131 @@ describe('useDesignManager — ciclo de carga do tema ativo', () => {
         await waitFor(() => expect(result.current.resolvedThemeId).toBe('tema-b'));
         expect(result.current.design.primaryColor).toBe('#222222');
     });
+
+    it('carrega ao receber onLoad depois do mount, mesmo quando a chave do tenant não muda', async () => {
+        const onLoad = vi.fn().mockResolvedValue({ primaryColor: '#abcdef' });
+        const { result, rerender } = renderHook(
+            ({ onLoadAtual }: { onLoadAtual?: () => Promise<{ primaryColor: string }> }) => useDesignManager({
+                ...baseProps({ persistence: { strategy: 'remote', storageKey: 'late-onload-key', onLoad: onLoadAtual } }),
+            }),
+            { initialProps: { onLoadAtual: undefined as (() => Promise<{ primaryColor: string }>) | undefined } },
+        );
+
+        await waitFor(() => expect(result.current.isBackendLoaded).toBe(true));
+        expect(onLoad).not.toHaveBeenCalled();
+
+        rerender({ onLoadAtual: onLoad });
+
+        await waitFor(() => expect(onLoad).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(result.current.design.primaryColor).toBe('#abcdef'));
+    });
+
+    it("ao trocar tenant em 'hybrid', funde o remoto sobre o cache local do tenant novo", async () => {
+        localStorage.setItem('hybrid-tenant-cache::tenant:tenant-b', JSON.stringify({
+            primaryColor: '#112233',
+            secondaryColor: '#445566',
+        }));
+        const onLoadTenantA = vi.fn().mockResolvedValue(null);
+        const onLoadTenantB = vi.fn().mockResolvedValue({ primaryColor: '#abcdef' });
+        const { result, rerender } = renderHook(
+            ({ tenantId }: { tenantId: string }) => useDesignManager({
+                ...baseProps({ persistence: {
+                    strategy: 'hybrid',
+                    storageKey: 'hybrid-tenant-cache',
+                    tenantId,
+                    onLoad: tenantId === 'tenant-a' ? onLoadTenantA : onLoadTenantB,
+                } }),
+            }),
+            { initialProps: { tenantId: 'tenant-a' } },
+        );
+
+        await waitFor(() => expect(onLoadTenantA).toHaveBeenCalledTimes(1));
+        rerender({ tenantId: 'tenant-b' });
+        await waitFor(() => expect(onLoadTenantB).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(result.current.design.primaryColor).toBe('#abcdef'));
+
+        expect(result.current.design.secondaryColor).toBe('#445566');
+    });
+
+    it('começa sem tenant, carrega o tenant novo, descarta o debounce anterior e grava a próxima edição no novo callback', async () => {
+        const onLoadTenantA = vi.fn().mockResolvedValue({ primaryColor: '#111111' });
+        const onLoadTenantB = vi.fn().mockResolvedValue({ primaryColor: '#222222' });
+        const onLoadTenantC = vi.fn().mockResolvedValue(null);
+        const onSaveTenantA = vi.fn();
+        const onSaveTenantB = vi.fn();
+        type TenantProps = {
+            tenantId?: string;
+            onLoad?: () => Promise<{ primaryColor: string } | null>;
+            onSave?: (design: SarakThemePayload, activeThemeId?: string) => void;
+        };
+        const initialProps: TenantProps = { tenantId: undefined, onLoad: undefined, onSave: undefined };
+        const { result, rerender } = renderHook(
+            ({ tenantId, onLoad, onSave }: TenantProps) => useDesignManager({
+                ...baseProps({ persistence: { strategy: 'remote', storageKey: 'late-tenant-key', tenantId, onLoad, onSave } }),
+                initialConfig: { primaryColor: '#123456' } as SarakThemePayload,
+            }),
+            { initialProps },
+        );
+
+        await waitFor(() => expect(result.current.isBackendLoaded).toBe(true));
+        rerender({ tenantId: 'tenant-a', onLoad: onLoadTenantA, onSave: onSaveTenantA });
+        await waitFor(() => expect(result.current.design.primaryColor).toBe('#111111'));
+        expect(onLoadTenantA).toHaveBeenCalledTimes(1);
+
+        vi.useFakeTimers();
+        act(() => result.current.setDesign({ ...result.current.design, primaryColor: '#aa22bb' } as never));
+        rerender({ tenantId: 'tenant-b', onLoad: onLoadTenantB, onSave: onSaveTenantB });
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(1601);
+            await Promise.resolve();
+        });
+
+        expect(onLoadTenantB).toHaveBeenCalledTimes(1);
+        expect(result.current.design.primaryColor).toBe('#222222');
+        expect(onSaveTenantB).not.toHaveBeenCalled();
+
+        act(() => result.current.setDesign({ ...result.current.design, primaryColor: '#45ab67' } as never));
+        await act(async () => vi.advanceTimersByTimeAsync(1601));
+
+        expect(onSaveTenantA).not.toHaveBeenCalled();
+        expect(onSaveTenantB).toHaveBeenCalledTimes(1);
+        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
+
+        rerender({ tenantId: 'tenant-c', onLoad: onLoadTenantC, onSave: vi.fn() });
+        await act(async () => Promise.resolve());
+
+        expect(onLoadTenantC).toHaveBeenCalledTimes(1);
+        expect(result.current.design.primaryColor).toBe('#123456');
+    });
+
+    it('ignora a resposta tardia de onLoad do tenant que já saiu', async () => {
+        let resolveTenantA: ((value: { primaryColor: string }) => void) | undefined;
+        const onLoadTenantA = vi.fn(() => new Promise<{ primaryColor: string }>((resolve) => { resolveTenantA = resolve; }));
+        const onLoadTenantB = vi.fn().mockResolvedValue({ primaryColor: '#222222' });
+        const { result, rerender } = renderHook(
+            ({ tenantId }: { tenantId: string }) => useDesignManager({
+                ...baseProps({ persistence: {
+                    strategy: 'remote',
+                    storageKey: 'stale-load-key',
+                    tenantId,
+                    onLoad: tenantId === 'tenant-a' ? onLoadTenantA : onLoadTenantB,
+                } }),
+            }),
+            { initialProps: { tenantId: 'tenant-a' } },
+        );
+
+        await waitFor(() => expect(onLoadTenantA).toHaveBeenCalledTimes(1));
+        rerender({ tenantId: 'tenant-b' });
+        await waitFor(() => expect(result.current.design.primaryColor).toBe('#222222'));
+
+        await act(async () => {
+            resolveTenantA?.({ primaryColor: '#111111' });
+            await Promise.resolve();
+        });
+
+        expect(result.current.design.primaryColor).toBe('#222222');
+    });
 });
 
 describe('useDesignManager — id de tema removido/inexistente semeia com a referência do modo pedido (R33)', () => {

@@ -18,6 +18,7 @@ interface RemoteLoaderProps {
     activeThemeId?: string;
     setResolvedThemeId: (id: string | undefined) => void;
     storageKey: string;
+    onLoadBecameAvailable?: () => void;
 }
 
 const isLoadedTheme = (
@@ -50,6 +51,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         activeThemeId,
         setResolvedThemeId,
         storageKey,
+        onLoadBecameAvailable,
     } = props;
 
     // `getSeedConfig` depende da coleção de temas e pode mudar a cada render.
@@ -57,10 +59,19 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
     // `onLoad` repetidamente enquanto a primeira leitura ainda está pendente.
     const getSeedConfigRef = useRef(getSeedConfig);
     const activeThemeIdRef = useRef(activeThemeId);
+    const isRemoteLoadAvailable = Boolean(optionsRef.current.persistence?.onLoad)
+        && optionsRef.current.persistence?.strategy !== 'local';
+    const previousRemoteLoadAvailableRef = useRef(isRemoteLoadAvailable);
     getSeedConfigRef.current = getSeedConfig;
     activeThemeIdRef.current = activeThemeId;
 
     useEffect(() => {
+        const becameAvailable = !previousRemoteLoadAvailableRef.current && isRemoteLoadAvailable;
+        previousRemoteLoadAvailableRef.current = isRemoteLoadAvailable;
+        if (becameAvailable) {
+            onLoadBecameAvailable?.();
+            return;
+        }
         if (!isHydrated || isBackendLoaded) return;
 
         const options = optionsRef.current;
@@ -94,5 +105,15 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
 
         void loadRemote();
         return () => { cancelled = true; };
-    }, [isHydrated, isBackendLoaded, optionsRef, setDesign, setIsBackendLoaded, setResolvedThemeId, storageKey]);
+    }, [
+        isHydrated,
+        isBackendLoaded,
+        isRemoteLoadAvailable,
+        onLoadBecameAvailable,
+        optionsRef,
+        setDesign,
+        setIsBackendLoaded,
+        setResolvedThemeId,
+        storageKey,
+    ]);
 };
