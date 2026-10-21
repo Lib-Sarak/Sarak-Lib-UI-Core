@@ -103,6 +103,22 @@ este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
 **Modo Embarcado** (uma ilha da lib dentro de um frontend que já existe), importe a variante escopada
 `@sarak/lib-ui-core/sarak-scoped.css` e **nunca** o CSS global.
 
+### Peers opcionais por componente
+
+Os peers abaixo são opcionais. Instale somente os pacotes usados pelos componentes do produto. Se
+um componente for renderizado sem os pacotes necessários, ele mostra uma mensagem indicando o que
+instalar e registra um aviso no console.
+
+| Pacote opcional | Componente |
+| --- | --- |
+| `@dnd-kit/core` e `@dnd-kit/sortable` | `SarakKanban` |
+| `@tanstack/react-virtual` | `SarakDataGrid` e `SarakDataTable` (incluindo o modo de cartões) |
+| `echarts` e `echarts-for-react` | `SarakChartEngine` com motor `echarts` (padrão) |
+| `recharts` | `SarakChartEngine` com motor `recharts` |
+| `pdfjs-dist` | `SarakPDFViewer` |
+| `react-markdown` e `react-syntax-highlighter` | `SarakChatEngine` e `SarakMarkdownRenderer` |
+| `reactflow` | `SarakFlowEngine` |
+
 ## 1.2 O acoplamento mínimo
 
 Todo consumo, em qualquer topologia, tem a mesma raiz: **um `SarakUIProvider` envolvendo a árvore**.
@@ -140,9 +156,16 @@ em `options.styleNonce`:
 </SarakUIProvider>
 ```
 
-A diretiva pode ser `style-src 'self' 'nonce-<valor-da-resposta>'`; o nonce é aplicado às tags
-`<style>` criadas pela biblioteca. Sem `styleNonce`, o CSS global entra no import do pacote; com
-nonce, o Provider aplica o valor antes de inserir a folha global na montagem. Não inclua
+A diretiva pode ser `style-src 'self' 'nonce-<valor-da-resposta>'`. Inclua no HTML, antes do script
+que importa a biblioteca, a meta com o mesmo nonce:
+
+```html
+<meta property="csp-nonce" nonce="VALOR_GERADO_PARA_ESTA_RESPOSTA" />
+```
+
+Passe esse valor também em `options.styleNonce`, para que o Provider aplique nonce às tags `<style>`
+criadas depois da montagem. A meta permite que a folha global já seja autorizada durante o import.
+Sem a meta e sem `styleNonce`, o CSS global mantém o comportamento de zero configuração. Não inclua
 `'unsafe-inline'` em `style-src`.
 
 ### Testes com Vitest e jsdom

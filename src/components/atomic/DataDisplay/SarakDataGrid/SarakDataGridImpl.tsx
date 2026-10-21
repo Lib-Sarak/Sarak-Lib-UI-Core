@@ -12,7 +12,12 @@
  */
 
 import React, { useRef } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import * as TanstackReactVirtual from '@tanstack/react-virtual';
+import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
+
+const OPTIONAL_PEER = '@tanstack/react-virtual';
+
+const hasDataGridVirtualizer = (): boolean => typeof TanstackReactVirtual.useVirtualizer === 'function';
 
 export interface SarakDataGridProps {
     /** Quantidade total de linhas (a fonte real vive fora; aqui só virtualizamos). */
@@ -33,7 +38,7 @@ export interface SarakDataGridProps {
  * Lista virtualizada vertical. Só as linhas dentro da viewport (+ overscan) são
  * montadas no DOM, mantendo a contagem de nós baixa independentemente de `count`.
  */
-const SarakDataGridImpl: React.FC<SarakDataGridProps> = ({
+const SarakDataGridContent: React.FC<SarakDataGridProps> = ({
     count,
     renderRow,
     estimateSize = 44,
@@ -43,7 +48,7 @@ const SarakDataGridImpl: React.FC<SarakDataGridProps> = ({
 }) => {
     const parentRef = useRef<HTMLDivElement>(null);
 
-    const virtualizer = useVirtualizer({
+    const virtualizer = TanstackReactVirtual.useVirtualizer({
         count,
         getScrollElement: () => parentRef.current,
         estimateSize: () => estimateSize,
@@ -79,6 +84,13 @@ const SarakDataGridImpl: React.FC<SarakDataGridProps> = ({
             </div>
         </div>
     );
+};
+
+const SarakDataGridImpl: React.FC<SarakDataGridProps> = (props) => {
+    if (!hasDataGridVirtualizer()) {
+        return <SarakOptionalPeerFallback component="SarakDataGrid" packages={[OPTIONAL_PEER]} />;
+    }
+    return <SarakDataGridContent {...props} />;
 };
 
 export default SarakDataGridImpl;

@@ -10,9 +10,12 @@ import { KanbanAddForm } from './KanbanAddForm';
 import { KanbanCardShell } from './KanbanCard';
 import { KanbanColumn } from './KanbanColumn';
 import { KANBAN_BOARD_CLASS, KANBAN_COLUMN_CLASS } from './kanbanLayout';
-import { useKanbanDrag } from './useKanbanDrag';
+import { hasKanbanDragPeers, useKanbanDrag } from './useKanbanDrag';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
 import type { SarakCardMove, SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
+
+const OPTIONAL_PEERS = ['@dnd-kit/core', '@dnd-kit/sortable'] as const;
 
 export interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     /** Colunas e seus cards (a ordem do array é a ordem visual). */
@@ -34,7 +37,7 @@ export interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     className?: string;
 }
 
-function SarakKanbanImpl<C extends SarakKanbanCard>({
+function SarakKanbanContent<C extends SarakKanbanCard>({
     columns,
     onCardMove,
     renderCard,
@@ -72,6 +75,13 @@ function SarakKanbanImpl<C extends SarakKanbanCard>({
             )}
         </div>
     );
+}
+
+function SarakKanbanImpl<C extends SarakKanbanCard>(props: SarakKanbanProps<C>): React.ReactElement {
+    if (!hasKanbanDragPeers()) {
+        return <SarakOptionalPeerFallback component="SarakKanban" packages={OPTIONAL_PEERS} />;
+    }
+    return <SarakKanbanContent {...props} />;
 }
 
 export default SarakKanbanImpl;

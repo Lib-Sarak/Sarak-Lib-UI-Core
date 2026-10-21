@@ -219,10 +219,12 @@ describe('texto dos fontes: o que o jsdom não renderiza (sobreposição, modal,
         expect(readSource('atomic/Inputs/SarakSwitch.tsx')).toContain('duration-[var(--duration-normal,0.3s)]');
     });
 
-    it('SarakFlowEngine: o grid lê flowGridStyle com as duas opções por nome', () => {
+    it('SarakFlowEngine: flowGridStyle mapeia cada opção para sua variante de fundo', () => {
         const source = readSource('engines/flows/SarakFlowEngine.tsx');
+        const gridVariants = source.match(/const GRID_VARIANTS:[^{]*\{([^}]*)\}/)?.[1] ?? '';
 
-        expect(source).toMatch(/dots:\s*BackgroundVariant\.Dots/);
-        expect(source).toMatch(/lines:\s*BackgroundVariant\.Lines/);
+        expect(source).toMatch(/GRID_VARIANTS\[String\(flowGridStyle\)\]/);
+        expect(gridVariants).toMatch(/\bdots:\s*['"]dots['"]\s+as FlowBackgroundVariant/);
+        expect(gridVariants).toMatch(/\blines:\s*['"]lines['"]\s+as FlowBackgroundVariant/);
     });
 });

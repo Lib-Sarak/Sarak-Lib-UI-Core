@@ -9,7 +9,14 @@
 
 import { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import {
+import * as DndKitCore from '@dnd-kit/core';
+import * as DndKitSortable from '@dnd-kit/sortable';
+import type { Announcements, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { sarakApplyDrop, sarakDescribeMove, sarakLocateCard, sarakPreviewOver } from './kanbanModel';
+import type { SarakCardMove, SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
+
+const {
     DndContext,
     DragOverlay,
     KeyboardSensor,
@@ -19,12 +26,15 @@ import {
     useDroppable,
     useSensor,
     useSensors,
-} from '@dnd-kit/core';
-import type { Announcements, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useLibraryText } from '../../../../core/i18n/useLibraryText';
-import { sarakApplyDrop, sarakDescribeMove, sarakLocateCard, sarakPreviewOver } from './kanbanModel';
-import type { SarakCardMove, SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
+} = DndKitCore;
+const { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } = DndKitSortable;
+
+export const hasKanbanDragPeers = (): boolean =>
+    Boolean(DndContext)
+    && Boolean(DragOverlay)
+    && typeof useDroppable === 'function'
+    && typeof useSortable === 'function'
+    && Boolean(SortableContext);
 
 /** Mouse: o arrasto só começa após esta distância, para não brigar com o clique. */
 const MOUSE_ACTIVATION_DISTANCE = 4;

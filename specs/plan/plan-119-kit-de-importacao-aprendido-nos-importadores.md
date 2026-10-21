@@ -212,8 +212,8 @@ sem a `<meta>` e sem `styleNonce`, nada muda (zero-config); o guia, na seção d
 | I19 | a tabela "de/para" (`docs/migracoes.md:15`) diz "uma renomeação" sem dizer qual | login | nomear o renomeado no texto | 3 | fechada |
 | I20 | uma nota antiga de `docs/migracoes.md` (`:1559`) ensina override por `getLocalComponent(...)`, que saiu na 8.0.0 | login | apontar o caminho atual (a `05` §2.2.2) | 3 | fechada |
 | I21 | testar em jsdom exige contornos em todo importador: o CSS injetado com `@layer` não parseia e o Design Engine exige `matchMedia` (o ERP e os dois logins repetem o mesmo polyfill) | login | **proposta do revisor, sob veto do dono:** exportar um *setup* de teste opcional (o polyfill e o filtro do aviso de CSS), com teste e uma linha no guia | 3 | fechada |
-| I22 | **peer "opcional" quebra o build de quem não o instala:** todo pedaço sob demanda do `dist/` importa pelo nome o peer opcional que usa (`SarakKanbanImpl` → `@dnd-kit/*`; `SarakDataGridImpl`/`SarakDataTableImpl` → `@tanstack/react-virtual`; `SarakChartEngine` → `echarts`, `echarts-for-react`, `recharts`; `SarakPDFViewerImpl` → `pdfjs-dist`; `SarakChatEngine`/`SarakMarkdownRendererImpl` → `react-markdown`, `react-syntax-highlighter`; `SarakFlowEngine` → `reactflow`), e o Vite 8 (rolldown) troca o peer ausente por um módulo vazio: 36 `[MISSING_EXPORT]` no `vite build` do login-completo, que não usa Kanban | login | **dono, 2026-10-21: opção (b)** — o peer continua opcional; o pedaço sob demanda o importa de forma que o build do importador passe sem ele, e o componente sem o pacote mostra uma mensagem clara na tela (nunca build quebrado nem tela em branco); prova por build real de um consumidor | 4 | aberta |
-| I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | aberta |
+| I22 | **peer "opcional" quebra o build de quem não o instala:** todo pedaço sob demanda do `dist/` importa pelo nome o peer opcional que usa (`SarakKanbanImpl` → `@dnd-kit/*`; `SarakDataGridImpl`/`SarakDataTableImpl` → `@tanstack/react-virtual`; `SarakChartEngine` → `echarts`, `echarts-for-react`, `recharts`; `SarakPDFViewerImpl` → `pdfjs-dist`; `SarakChatEngine`/`SarakMarkdownRendererImpl` → `react-markdown`, `react-syntax-highlighter`; `SarakFlowEngine` → `reactflow`), e o Vite 8 (rolldown) troca o peer ausente por um módulo vazio: 36 `[MISSING_EXPORT]` no `vite build` do login-completo, que não usa Kanban | login | **dono, 2026-10-21: opção (b)** — o peer continua opcional; o pedaço sob demanda o importa de forma que o build do importador passe sem ele, e o componente sem o pacote mostra uma mensagem clara na tela (nunca build quebrado nem tela em branco); prova por build real de um consumidor | 4 | fechada |
+| I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | fechada |
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
@@ -696,4 +696,258 @@ import a lib não sabe do nonce), não da execução; o caso do nonce não escut
 
 **Lote 3 fechado (I14 a I21).** Segue o lote 4 (I22 e I23).
 
-**Status: 🟡 Em execução (lote 4).**
+**Status: 🟠 Em revisão (lote 4).**
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências fora do lote.
+
+**Estado do worktree ao iniciar**
+```text
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- I22: os importadores opcionais dos componentes lazy agora usam verificações de disponibilidade e mostram um fallback acessível, localizado e com instrução para instalar o peer ausente; o aviso de console ocorre uma vez por montagem.
+- I22: adicionei um consumidor Vite 8 automatizado que empacota o `dist/` via `npm pack`, compila sem peers e com todos eles e prova por mutação que um import nomeado ausente gera `MISSING_EXPORT`.
+- I23: o injetor do CSS lê `meta[property="csp-nonce"]` durante o import e aplica o nonce desde a primeira tag; o teste de navegador exige zero eventos `securitypolicyviolation`.
+- Registrei o mapa de peers por componente no guia e a orientação de migração 8.0.0; mantive intactas as linhas I22 e I23 da tabela §5.1, que é mantida pelo revisor.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Feedback/SarakOptionalPeerFallback.tsx`, `src/components/atomic/Feedback/__tests__/SarakOptionalPeerFallback.test.tsx`, `src/core/i18n/catalogEntries.part6.ts` | criado/alterado | fallback de peer ausente, teste dos componentes e textos nos seis idiomas |
+| `src/components/atomic/DataDisplay/SarakKanban/SarakKanbanImpl.tsx`, `src/components/atomic/DataDisplay/SarakKanban/useKanbanDrag.ts`, `src/components/atomic/DataDisplay/SarakDataGrid/SarakDataGridImpl.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/SarakDataCards.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts` | alterado | disponibilidade de `@dnd-kit/*` e `@tanstack/react-virtual` antes do uso |
+| `src/components/engines/charts/SarakChartEngine.tsx`, `src/components/engines/charts/SubEngines/RechartsChart.tsx`, `src/components/engines/charts/SubEngines/chartPeerAvailability.ts`, `src/components/engines/chat/SarakChatEngine.tsx`, `src/components/engines/flows/SarakFlowEngine.tsx`, `src/components/engines/flows/__tests__/SarakFlowEngine.test.tsx` | criado/alterado | verificações dos peers ECharts/Recharts, Markdown e Flow; teste do Flow com peer instalado |
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx`, `src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx`, `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts` | alterado | fallback para `react-markdown`, `react-syntax-highlighter` e `pdfjs-dist` |
+| `scripts/test-optional-peer-consumer.mjs`, `package.json` | criado/alterado | três cenários de build Vite 8 ligados ao build do pacote |
+| `src/core/Provider/injectStylesOnImport.ts`, `src/core/Provider/__tests__/injectStyles.test.ts`, `browser-tests/nonce-csp.spec.ts`, `src/types/external.d.ts` | alterado | leitura do nonce da meta, cobertura unitária, CSP sem violações e declaração do CSS do Flow |
+| `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/docs/migracoes.md`, `scripts/inject-css.mjs` | alterado/gerado | mapa dos peers e instruções CSP; comentário do processo de injeção atualizado |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | artefatos ESM/CJS, declarações, chunks e selos atualizados pelo build |
+| esta plan | alterado | resumo append-only e status para revisão |
+
+**Verificações executadas**
+- `npm.cmd run build` → passou após as alterações; inclui o gate automatizado do consumidor. Os três cenários passaram: pacote real sem peers opcionais, mutação com diagnóstico `MISSING_EXPORT` e pacote com todos os peers.
+- `npx.cmd vitest run --maxWorkers=2` para fallback, Kanban, Chart, Flow e formatos de Chart → 5 arquivos, 58 testes passaram. Os testes direcionados de DataGrid, DataTable, PDF, Markdown, Chat e injetor também passaram no recorte executado.
+- `npm.cmd run verify -- --tier=quick` → passou: TypeScript, baseline, gates rápidos e simulação do Anel 0 (653 linhas, 0 achados).
+- `node gates/scripts/audit/auditor_cleancode.mjs` → passou, nenhum achado de Clean Code.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts browser-tests/nonce-csp.spec.ts` → 1/1 passou com o Chrome instalado; a asserção observou nonce nas tags e zero violações CSP.
+- Bateria Playwright → a rodada ampla cobriu 425 casos: 413 passaram; 9 falharam ao iniciar o navegador e 3 não iniciaram pelo caminho do executável. Reexecução dos 12 casos afetados com Chrome local e preloader temporário passou 12/12; todos os 425 casos foram cobertos entre as rodadas.
+- `npm.cmd run guide` → passou; gerou 105 componentes, 400 tokens e 117 ícones (kitHash `58c72c387116`).
+- `npm.cmd run dev-kit` → passou por último entre os geradores; gerou 102 componentes públicos, 400 tokens e 42 gates (devKitHash `9a590f7cfc1f`).
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace nos arquivos de fonte e documentação.
+
+**Critérios de aceite**
+- [x] 4.1 — consumidor empacotado compilou sem peers; a mutação reproduziu `MISSING_EXPORT`.
+- [x] 4.2 — componentes afetados mostram mensagem localizada e aviso único sem o peer; teste com dependências instaladas preserva renderização normal.
+- [x] 4.3 — builds sem peers e com todos os peers passaram; testes de componentes e bateria do navegador foram executados, com os 12 casos de inicialização repetidos passando.
+- [x] 4.4 — migração 8.0.0 e guia listam o benefício, a mensagem e o peer exigido por componente.
+- [x] 4.5 — meta de nonce é lida antes da injeção do CSS; o caso CSP com nonce verifica zero violações e o Provider continua aceitando `styleNonce`.
+- [x] 4.6 — `guide` e `dev-kit` foram os geradores finais, com `dev-kit` executado por último.
+
+**Decisões e suposições**
+- Coloquei a prova do consumidor em `scripts/test-optional-peer-consumer.mjs` e a anexei ao `build`, para testar o pacote que o importador consome.
+- Uma instalação temporária via registry retornou `EACCES`; o teste usa o tarball produzido por `npm pack`, extraído no consumidor isolado, e dependências do workspace ligadas localmente, sem baixar peers opcionais.
+- Extraí a verificação dos peers de Chart para `chartPeerAvailability.ts` para manter o motor abaixo dos limites do gate de Clean Code.
+- O Chromium empacotado pelo Playwright não está instalado neste ambiente. A bateria foi executada com o Chrome local; um preloader Node temporário corrigiu a precedência de `executablePath` nos 12 casos afetados e foi removido ao final.
+
+**Achados fora do escopo (não corrigidos)**
+- `specs/specs/13-instalacao-e-atualizacao.md` ainda descreve `@tanstack/react-virtual` como obrigatório; a plan direciona essa correção para a síntese da plan-120.
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` — auditoria apontou composição com `<input>` nativo; não pertencem ao lote 4.
+
+**Pendências / riscos**
+- Não restou pendência de implementação do lote 4. A rodada inicial do navegador teve falhas de inicialização do executável; os 12 casos afetados passaram na repetição e o motivo operacional está registrado acima.
+
+## Veredito — 2026-10-21 — lote 4 — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido no diff):** I22 — os pedaços sob demanda importam o peer opcional por namespace (`import * as`) e
+checam a presença antes de usar (`useKanbanDrag.ts`, `chartPeerAvailability.ts`, `SarakFlowEngine.tsx`, `usePdfDocument.ts` e os
+demais da tabela), com `SarakOptionalPeerFallback` (mensagem nos seis idiomas, aviso único) quando falta; o consumidor Vite 8 em
+`scripts/test-optional-peer-consumer.mjs`, ligado ao `build`, com os três cenários (sem peers, mutação com `MISSING_EXPORT`, com todos);
+I23 — o nonce lido de `<meta property="csp-nonce">` no import (`injectStylesOnImport.ts`) e `nonce-csp.spec.ts` exigindo zero
+`securitypolicyviolation`; o mapa de peers por componente no guia e a nota da `## 8.0.0`. **Medido por mim:** bateria inteira do
+navegador **425/425**.
+
+**Achado 1 — a suíte completa quebra.** `npm run verify -- --tier=full` reprova em `npx vitest run`:
+`src/components/atomic/__tests__/componenteQueLeOToken.test.tsx:225` espera no código-fonte do `SarakFlowEngine` o mapa
+`dots: BackgroundVariant.Dots`, que mudou de forma com o import por namespace. O relato rodou só arquivos selecionados.
+**Correção:** o teste continua provando a mesma coisa (cada valor de `flowGridStyle` vai à variante certa do fundo do fluxo) na forma
+nova do código — sem afrouxar —, e a suíte completa (`npx vitest run`, sem filtro) verde, com a saída colada.
+
+**Achado 2 — o `build` passou a depender de qual `tar` está no PATH.** `scripts/test-optional-peer-consumer.mjs:96` roda
+`tar -xzf C:\…\pacote.tgz -C C:\…`: no GNU tar (o do Git Bash), `C:` é lido como máquina remota e a extração falha (`failed (2)`,
+medido por mim com `npm run build`); no `tar` do Windows passa. Como o consumidor roda dentro do `build`, e o `build` dentro do
+`npm version`, o lançamento ficaria dependente do terminal. **Correção:** extrair sem depender da sintaxe de caminho de um `tar`
+específico (por exemplo, rodando o `tar` com `cwd` no diretório de destino e caminhos relativos, ou extraindo pelo Node), e provar o
+`npm run build` verde **no Git Bash e no PowerShell**, colando as duas saídas.
+
+**Para o commit (registro):** a pasta `.sarak/` (`core-c51533b.json`) apareceu no worktree, não é deste lote e não está no
+`.gitignore`; não entra no commit.
+
+## Correção dos achados — 2026-10-21 — lote 4
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar**
+```text
+ M browser-tests/nonce-csp.spec.ts
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-2RGDW4RQ.js
+ D dist/SarakChartEngine-24CZFUCF.js
+ D dist/SarakChatEngine-LI73BXRX.js
+ D dist/SarakDataGridImpl-ZVWL5VJ6.js
+ D dist/SarakDataTableImpl-RHO4YN6A.js
+ D dist/SarakFlowEngine-CRJYSHOW.js
+ D dist/SarakKanbanImpl-HBOV73YA.js
+ D dist/SarakMarkdownRendererImpl-S7CLEQDQ.js
+ D dist/SarakPDFViewerImpl-Z4FQTQGU.js
+ D dist/chunk-2TQT525X.js
+ D dist/chunk-34N2AYKZ.js
+ D dist/chunk-4DTLLH2D.js
+ D dist/chunk-5I7DJ3SX.js
+ D dist/chunk-BA2LKZDB.js
+ D dist/chunk-HJV3E2RJ.js
+ D dist/chunk-KYYBCXI5.js
+ D dist/chunk-X26DGG5D.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M docs/migracoes.md
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/docs/migracoes.md
+ M scripts/inject-css.mjs
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/SarakDataGrid/SarakDataGridImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataCards.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts
+ M src/components/atomic/DataDisplay/SarakKanban/SarakKanbanImpl.tsx
+ M src/components/atomic/DataDisplay/SarakKanban/useKanbanDrag.ts
+ M src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx
+ M src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx
+ M src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts
+ M src/components/engines/charts/SarakChartEngine.tsx
+ M src/components/engines/charts/SubEngines/RechartsChart.tsx
+ M src/components/engines/chat/SarakChatEngine.tsx
+ M src/components/engines/flows/SarakFlowEngine.tsx
+ M src/components/engines/flows/__tests__/SarakFlowEngine.test.tsx
+ M src/core/Provider/__tests__/injectStyles.test.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/Provider/injectStylesOnImport.ts
+ M src/core/i18n/catalogEntries.part6.ts
+ M src/types/external.d.ts
+?? .claude/settings.local.json
+?? dist/CustomizationPanelImpl-LDS54GC5.js
+?? dist/SarakChartEngine-M75BEFNX.js
+?? dist/SarakChatEngine-YV2QLO7X.js
+?? dist/SarakDataGridImpl-X5MZWUDH.js
+?? dist/SarakDataTableImpl-JOXVXYJG.js
+?? dist/SarakFlowEngine-72FVABYQ.js
+?? dist/SarakKanbanImpl-O4GTQ63A.js
+?? dist/SarakMarkdownRendererImpl-WAEJPTQR.js
+?? dist/SarakPDFViewerImpl-UQZOZUF7.js
+?? dist/chunk-3YOUL7X3.js
+?? dist/chunk-DFOKY5YP.js
+?? dist/chunk-DWGO2NAI.js
+?? dist/chunk-G5MNH5CF.js
+?? dist/chunk-Q4YHZ44T.js
+?? dist/chunk-RB4D3P4L.js
+?? dist/chunk-RNUNWQ63.js
+?? dist/chunk-SECQZSLB.js
+?? dist/chunk-ZKP6SZZ3.js
+?? scripts/test-optional-peer-consumer.mjs
+?? src/components/atomic/Feedback/SarakOptionalPeerFallback.tsx
+?? src/components/atomic/Feedback/__tests__/SarakOptionalPeerFallback.test.tsx
+?? src/components/engines/charts/SubEngines/chartPeerAvailability.ts
+```
+
+**O que foi corrigido**
+- Achado 1: atualizei o teste de contrato do `SarakFlowEngine` para verificar que `flowGridStyle` seleciona o mapa `GRID_VARIANTS` e que `dots` e `lines` apontam às variantes homônimas usadas pelo componente. A asserção não depende mais da forma do enum em `reactflow`.
+- Achado 2: a extração do tarball agora roda com `cwd` no diretório do pacote e recebe um caminho relativo com separadores `/`; o argumento não começa com letra de unidade do Windows, então GNU tar e tar do Windows aceitam a mesma chamada.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/__tests__/componenteQueLeOToken.test.tsx` | alterado | teste continua cobrindo as duas opções e o lookup de `flowGridStyle` na implementação atual |
+| `scripts/test-optional-peer-consumer.mjs` | alterado | extração usa cwd de destino e caminho relativo compatível com GNU tar e tar do Windows |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | artefatos renovados pelos dois builds completos |
+| esta plan | alterado | registro desta correção e status encaminhado à revisão |
+
+**Verificações executadas**
+- `npx.cmd vitest run src/components/atomic/__tests__/componenteQueLeOToken.test.tsx --maxWorkers=1` → 1 arquivo, 19 testes passaram.
+- `npx.cmd vitest run` → suíte completa sem filtro: 516 arquivos, 3.750 testes passaram.
+- PowerShell, `npm.cmd run build` (execução repetida com acesso ampliado após o sandbox bloquear a leitura de `C:\Users\Igor`) → passou; incluindo consumidor sem peers, mutação com `MISSING_EXPORT` e consumidor com todos os peers.
+- Git Bash, `bash.exe -lc 'npm run build'` → passou; os mesmos três cenários do consumidor passaram.
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace; Git reportou apenas o aviso de normalização CRLF de `src/types/external.d.ts` já existente no worktree.
+- O teste do consumidor removeu seus diretórios temporários no `finally`; `test-results/.last-run.json` já existia antes desta correção e foi preservado.
+
+**Critérios de aceite**
+- [x] Achado 1 — o teste mantém a verificação do mapeamento para as variantes corretas; a suíte completa passou sem filtro (516/516 arquivos, 3.750/3.750 testes).
+- [x] Achado 2 — extração sem argumento absoluto com letra de unidade; `npm run build` passou com GNU tar no Git Bash e com o tar do Windows no PowerShell, incluindo os três cenários do consumidor.
+
+**Decisões e suposições**
+- Normalizei o caminho relativo com `path.posix.sep` depois de calculá-lo com `path.relative`; `cwd` é o diretório de destino da extração. Isso mantém a sintaxe POSIX para GNU tar mesmo no Windows.
+- O sandbox bloqueou a enumeração de `C:\Users\Igor` durante esbuild nas primeiras tentativas. Os builds solicitados passaram com acesso ampliado; não alterei configuração de build para contornar o limite do ambiente.
+- O comando Git Bash foi executado por `C:\Program Files\Git\bin\bash.exe -lc` a partir do PowerShell, pois o launcher de shell direto do executor retornou `E_ACCESSDENIED`.
+
+**Achados fora do escopo (não corrigidos)**
+- O reviewer registrou `.sarak/core-c51533b.json` como arquivo de outra tarefa; não o alterei.
+- `specs/00-indice.md` já estava modificado na fotografia inicial e foi preservado.
+
+**Pendências / riscos**
+- Nenhuma pendência dos dois achados. Nenhum commit foi criado.
+
+**Saídas capturadas dos gates exigidos pelo veredito**
+
+Vitest completo (`npx.cmd vitest run`, sem filtro):
+```text
+Test Files  516 passed (516)
+     Tests  3750 passed (3750)
+  Start at  15:16:37
+ Duration  1174.79s (transform 27.32s, setup 130.58s, import 2827.51s, tests 550.27s, environment 1005.78s)
+```
+
+PowerShell (`npm.cmd run build`):
+```text
+ESM ⚡️ Build success in 897ms
+CJS ⚡️ Build success in 898ms
+DTS ⚡️ Build success in 14017ms
+[optional-peer-consumer] pass: Vite 8 build without optional peers.
+[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.
+[optional-peer-consumer] pass: Vite 8 build with all optional peers.
+exit code: 0
+```
+
+Git Bash (`npm run build`):
+```text
+CJS ⚡️ Build success in 316ms
+ESM ⚡️ Build success in 322ms
+DTS ⚡️ Build success in 14887ms
+[optional-peer-consumer] pass: Vite 8 build without optional peers.
+[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.
+[optional-peer-consumer] pass: Vite 8 build with all optional peers.
+exit code: 0
+```
+
+**Status: 🟠 Em revisão (correção do lote 4).**
+
+## Veredito — 2026-10-21 — correção 1 (lote 4) — 🟢 Aprovado; lote 4 fechado
+
+**Achado 1 fechado:** `componenteQueLeOToken.test.tsx` passou a provar o mapeamento de `flowGridStyle` pelo mapa `GRID_VARIANTS` na
+forma nova do `SarakFlowEngine` (as duas opções, cada uma na variante homônima), sem afrouxar; o relato colou a suíte completa sem
+filtro: **516 arquivos, 3.750 testes**. **Achado 2 fechado:** `scripts/test-optional-peer-consumer.mjs:97` roda o `tar` com `cwd` no
+destino e caminho relativo com `/`, sem letra de unidade no argumento. **Medido por mim:** `npm run build` **no Git Bash** (onde
+falhava) verde, com os três cenários do consumidor (sem peers, mutação com `MISSING_EXPORT`, com todos); o teste corrigido 19/19;
+`npm run verify -- --tier=quick` verde. O executor provou o `build` também no PowerShell. A bateria inteira do navegador já tinha
+dado 425/425 neste lote.
+
+**Lote 4 fechado (I22, I23).** Com os lotes 0 a 4, a lib tem tudo o que o ERP e os dois logins mostraram; segue a `v8.0.0-rc.2`.
+O lote final (consolidação do kit) vem depois que os importadores migrarem.
+
+**Para o commit:** tudo, **menos** `.sarak/` (não é desta plan e não está no `.gitignore`).
+
+**Status: 🟡 Em execução** (o registro segue vivo até o lote final).

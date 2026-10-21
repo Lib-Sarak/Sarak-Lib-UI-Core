@@ -12,10 +12,19 @@
  */
 
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import * as ReactMarkdownModule from 'react-markdown';
+import * as SyntaxHighlighterModule from 'react-syntax-highlighter';
+import * as SyntaxHighlighterStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
+
+const ReactMarkdown = ReactMarkdownModule.default;
+const SyntaxHighlighter = SyntaxHighlighterModule.Prism;
+const oneDark = SyntaxHighlighterStyles.oneDark;
+const oneLight = SyntaxHighlighterStyles.oneLight;
+const OPTIONAL_PEERS = ['react-markdown', 'react-syntax-highlighter'] as const;
+
+const hasMarkdownPeers = (): boolean => Boolean(ReactMarkdown && SyntaxHighlighter && oneDark && oneLight);
 
 export interface SarakMarkdownRendererProps {
     /** String de Markdown cru a renderizar. */
@@ -32,7 +41,7 @@ type MdProps<T extends React.ElementType> = React.ComponentPropsWithoutRef<T> & 
 
 type MarkdownComponents = React.ComponentProps<typeof ReactMarkdown>['components'];
 
-const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ content, className = '' }) => {
+const SarakMarkdownRendererContent: React.FC<SarakMarkdownRendererProps> = ({ content, className = '' }) => {
     const { design } = useSarakUI();
     const isDark = (design?.mode ?? 'dark') !== 'light';
     const codeStyle = isDark ? oneDark : oneLight;
@@ -91,6 +100,13 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
             </ReactMarkdown>
         </div>
     );
+};
+
+const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = (props) => {
+    if (!hasMarkdownPeers()) {
+        return <SarakOptionalPeerFallback component="SarakMarkdownRenderer" packages={OPTIONAL_PEERS} />;
+    }
+    return <SarakMarkdownRendererContent {...props} />;
 };
 
 export default SarakMarkdownRendererImpl;

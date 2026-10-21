@@ -1,8 +1,9 @@
 // Postbuild: substitui o placeholder `__SARAK_CSS_PLACEHOLDER__` (definido em
 // src/core/Provider/__sarakCss.ts) pelo CSS real já compilado (dist/sarak.css) em
-// TODO arquivo `.js`/`.cjs` de `dist/`. Sem nonce, o barril injeta o stylesheet
-// completo no import; com nonce, o Provider o substitui na montagem com o nonce
-// aplicado antes de anexar a tag, sem exigir CSS manual do consumidor (Spec 08 §2).
+// TODO arquivo `.js`/`.cjs` de `dist/`. No import, `injectStylesOnImport` lê o nonce
+// da meta `csp-nonce` e aplica-o à folha global quando ela existe; sem a meta, mantém
+// o comportamento zero-config. O `styleNonce` do Provider continua aplicando nonce
+// às folhas criadas depois da montagem (Spec 08 §2).
 // Varre o diretório inteiro (em vez de só
 // dist/index.js|cjs) porque o build ESM faz code-splitting: o código do Provider pode
 // cair num chunk com nome hash-based (ex.: dist/chunk-XXXX.js), não no entry file.

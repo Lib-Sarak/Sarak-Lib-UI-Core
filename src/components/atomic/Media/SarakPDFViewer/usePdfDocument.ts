@@ -7,7 +7,8 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
+import * as PdfJs from 'pdfjs-dist';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 /** Fonte do documento: URL, bytes ou ArrayBuffer. */
@@ -40,8 +41,8 @@ export const usePdfDocument = (src: SarakPdfSource, workerSrc: string): PdfDocum
 
         setError(null);
         let cancelled = false;
-        GlobalWorkerOptions.workerSrc = workerSrc;
-        const task = getDocument(typeof src === 'string' ? { url: src } : { data: src });
+        PdfJs.GlobalWorkerOptions.workerSrc = workerSrc;
+        const task = PdfJs.getDocument(typeof src === 'string' ? { url: src } : { data: src });
         task.promise.then(
             (loaded) => { if (!cancelled) { setDoc(loaded); setError(null); } },
             (err: unknown) => { if (!cancelled) setError(err instanceof Error ? err.message : translateRef.current('pdfViewerLoadError')); },

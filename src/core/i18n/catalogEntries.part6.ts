@@ -145,4 +145,12 @@ export const CATALOG_PART_6 = {
         pt: 'Desatualizado', en: 'Out of date', es: 'Desactualizado',
         fr: 'Obsolète', de: 'Veraltet', it: 'Non aggiornato',
     },
+    optionalPeerMissing: {
+        pt: 'O componente {component} precisa dos pacotes opcionais {packages}. Instale-os para usá-lo.',
+        en: 'The {component} component needs the optional peer packages {packages}. Install them to use this component.',
+        es: 'El componente {component} necesita los paquetes opcionales {packages}. Instálelos para usarlo.',
+        fr: 'Le composant {component} nécessite les paquets facultatifs {packages}. Installez-les pour utiliser ce composant.',
+        de: 'Die Komponente {component} benötigt die optionalen Pakete {packages}. Installieren Sie sie, um diese Komponente zu verwenden.',
+        it: 'Il componente {component} richiede i pacchetti opzionali {packages}. Installali per usarlo.',
+    },
 } satisfies Record<string, LibraryTextEntry>;

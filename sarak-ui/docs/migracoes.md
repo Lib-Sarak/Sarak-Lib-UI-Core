@@ -10,6 +10,11 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+Os peers opcionais continuam opcionais: instale somente os que os componentes usados pelo seu
+produto precisam. Se um componente for renderizado sem o pacote correspondente, ele mostra uma
+mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
+componente que o utiliza.
+
 ### De/para completo dos nomes do barril entre v7.0.0 e v8.0.0
 
 **Classificação: MAJOR (sai na 8.0.0).** A comparação das declarações públicas de v7.0.0 com a superfície v8 identificou 26 exports removidos e uma renomeação: `SARAK_REFERENCE_THEMES` passou a `SARAK_BOOT_THEMES` (o par completo é carregado por `sarakLoadReferenceThemes()`). Esta tabela reúne todos os 27 nomes alterados ou removidos; quando não há substituto direto, a responsabilidade passa para a aplicação.
@@ -1183,9 +1188,11 @@ ações de criação e gravação não aparecem; sem `onDelete`, apagar remove o
 Para uma Content Security Policy que restringe elementos `<style>`, passe o nonce da resposta em
 `options.styleNonce`. A biblioteca o aplica às folhas de estilo que cria, inclusive o CSS global,
 tema, escopos e fontes. Um exemplo de diretiva é `style-src 'self' 'nonce-<valor-da-resposta>'`;
-não é necessário incluir `'unsafe-inline'` em `style-src`. Sem `styleNonce`, o CSS global é inserido
-no import do pacote. Com nonce, o Provider o aplica antes de inserir a folha global na montagem;
-no modo embarcado, importe `@sarak/lib-ui-core/sarak-scoped.css`.
+não é necessário incluir `'unsafe-inline'` em `style-src`. Para que a folha global já receba nonce
+durante o import, declare também `<meta property="csp-nonce" nonce="<valor-da-resposta>">` no HTML,
+antes do script que importa o pacote. O `styleNonce` do Provider continua valendo para as folhas
+criadas depois da montagem. Sem a meta e sem `styleNonce`, o CSS global mantém o comportamento de
+zero configuração; no modo embarcado, importe `@sarak/lib-ui-core/sarak-scoped.css`.
 
 ### De/para das props inertes removidas
 

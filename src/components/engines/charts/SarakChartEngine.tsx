@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import ReactECharts from 'echarts-for-react';
-import { use as useEChartsExtensions } from 'echarts/core';
-import { AriaComponent, LegendComponent } from 'echarts/components';
 import { SarakDataEmpty } from '../../atomic/Feedback/SarakDataEmpty';
+import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import type { EChartsTheme } from './SubEngines/useEChartsTheme';
 import { buildChartOption, buildPointClickEvents, hasRenderableSeriesData, isSeriesChartType } from './SubEngines/seriesModel';
+import { hasEChartsPeers, hasRechartsPeer, ReactECharts } from './SubEngines/chartPeerAvailability';
 import RechartsChart from './SubEngines/RechartsChart';
 import { hasCalendarData, hasSankeyData, hasWaterfallData } from './SubEngines/optionBuilders';
 import type { ChartOptionFragment, SarakChartDataItem, SarakChartType } from './SubEngines/builders/types';
 
-useEChartsExtensions([AriaComponent, LegendComponent]);
+const OPTIONAL_ECHARTS_PEERS = ['echarts', 'echarts-for-react'] as const;
+const OPTIONAL_RECHARTS_PEER = ['recharts'] as const;
 
 const CHART_TYPES: readonly SarakChartType[] = [
     'line', 'area', 'bar', 'pie', 'radar', 'gauge', 'scatter', 'heatmap',
@@ -175,7 +175,7 @@ function usePointClickEvents(
     }), [props.data, props.onPointClick, props.series, type, dataKey]);
 }
 
-function SarakChartEngine(props: SarakChartEngineProps): React.ReactElement {
+function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     const theme = useEChartsTheme();
     const text = useLibraryText();
     const type = resolveChartType(props.type, theme.chartType);
@@ -211,6 +211,17 @@ function SarakChartEngine(props: SarakChartEngineProps): React.ReactElement {
             />
         </div>
     );
+}
+
+function SarakChartEngine(props: SarakChartEngineProps): React.ReactElement {
+    const engine = props.config?.engine ?? 'echarts';
+    if (engine === 'recharts' && !hasRechartsPeer()) {
+        return <SarakOptionalPeerFallback component="SarakChartEngine" packages={OPTIONAL_RECHARTS_PEER} />;
+    }
+    if (engine === 'echarts' && !hasEChartsPeers()) {
+        return <SarakOptionalPeerFallback component="SarakChartEngine" packages={OPTIONAL_ECHARTS_PEERS} />;
+    }
+    return <SarakChartContent {...props} />;
 }
 
 export default SarakChartEngine;

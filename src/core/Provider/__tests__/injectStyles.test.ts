@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { injectSarakStyles } from '../injectStyles';
+import { readCspNonceFromMeta } from '../injectStylesOnImport';
 
 const STYLE_TAG_ID = 'sarak-ui-core-styles';
 
@@ -24,6 +25,18 @@ describe('injectSarakStyles (Spec 08 §2 — Instalação Zero-Config)', () => {
         injectSarakStyles('body{color:red}', 'csp-nonce');
 
         expect(document.getElementById(STYLE_TAG_ID)).toHaveAttribute('nonce', 'csp-nonce');
+    });
+
+    it('lê o nonce da meta csp-nonce sem depender do atributo exposto pelo browser', () => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'csp-nonce');
+        meta.nonce = 'meta-csp-nonce';
+        document.head.append(meta);
+
+        expect(readCspNonceFromMeta()).toBe('meta-csp-nonce');
+
+        meta.remove();
+        expect(readCspNonceFromMeta()).toBeUndefined();
     });
 
     it('substitui a folha sem nonce por outra já identificada quando o Provider fornece nonce', () => {

@@ -1,7 +1,6 @@
 import * as React$1 from 'react';
 import React__default, { ReactNode, ButtonHTMLAttributes, ReactElement, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes, Key, LazyExoticComponent } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import ReactFlow from 'reactflow';
 
 /**
  * Sarak Industrial Design Schema (v11.0)
@@ -958,8 +957,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.1";
-    readonly baseCommitShort: "1883435";
-    readonly builtAt: "2026-10-21T04:51:03.576Z";
+    readonly baseCommitShort: "b5b4d6e";
+    readonly builtAt: "2026-10-21T18:46:40.689Z";
 };
 
 interface SarakDesignScopeProps {
@@ -3739,6 +3738,13 @@ interface SarakCardMove {
     afterCardId: string | null;
 }
 
+/**
+ * SarakKanban — quadro de colunas que arrasta entre e DENTRO das colunas, por mouse, toque e
+ * teclado. A biblioteca de arrastar vive atrás de `useKanbanDrag`; aqui só se monta o
+ * quadro. O modelo local move o cartão no ato da soltura (sem esperar o consumidor) e o
+ * `onCardMove` leva índices e vizinhos finais. Medidas, superfícies e bordas saem de tokens.
+ */
+
 interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     /** Colunas e seus cards (a ordem do array é a ordem visual). */
     columns: Array<SarakKanbanColumn<C>>;
@@ -4121,6 +4127,7 @@ interface SarakChatEngineProps {
 
 declare const SarakChatEngine: React__default.FC<SarakChatEngineProps>;
 
+declare const ReactFlow: any;
 type ReactFlowProps = React__default.ComponentProps<typeof ReactFlow>;
 interface SarakFlowEngineProps {
     /** Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. */

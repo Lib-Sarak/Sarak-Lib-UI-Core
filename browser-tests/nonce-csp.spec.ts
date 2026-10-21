@@ -31,7 +31,10 @@ test.beforeAll(async () => {
     if (!html.includes(stylesheet)) throw new Error('nonce-csp: link do stylesheet ausente no harness.');
     fs.writeFileSync(
         harness.htmlPath,
-        html.replace(stylesheet, `<meta http-equiv="Content-Security-Policy" content="${CSP}" />\n${stylesheet}`),
+        html.replace(
+            stylesheet,
+            `<meta http-equiv="Content-Security-Policy" content="${CSP}" />\n<meta property="csp-nonce" nonce="${NONCE}" />\n${stylesheet}`,
+        ),
         'utf8',
     );
     harnessUrl = pathToFileURL(harness.htmlPath).href;
@@ -45,7 +48,14 @@ test.afterAll(async () => {
 test('renderiza a tela sob CSP com nonce em toda tag style criada pela biblioteca', async () => {
     const page = await browser.newPage();
     const pageErrors: string[] = [];
+    const policyViolations: string[] = [];
     page.on('pageerror', (error) => pageErrors.push(error.message));
+    await page.addInitScript(() => {
+        window.__sarakCspViolations = [];
+        document.addEventListener('securitypolicyviolation', (event) => {
+            window.__sarakCspViolations.push(`${event.violatedDirective}: ${event.blockedURI}`);
+        });
+    });
 
     await page.goto(harnessUrl);
     await expect(page.getByRole('heading', { name: 'Entrar' })).toBeVisible();
@@ -55,13 +65,23 @@ test('renderiza a tela sob CSP com nonce em toda tag style criada pela bibliotec
         display: getComputedStyle(document.querySelector('.sarak-page-surface') as HTMLElement).display,
         styleNonces: Array.from(document.querySelectorAll('style')).map((style) => style.nonce),
         csp: document.querySelector<HTMLMetaElement>('meta[http-equiv="Content-Security-Policy"]')?.content ?? '',
+        cspNonce: document.querySelector<HTMLMetaElement>('meta[property="csp-nonce"]')?.nonce ?? '',
+        policyViolations: window.__sarakCspViolations,
     }));
     expect(result.display).toBe('flex');
     expect(result.styleNonces.length).toBeGreaterThan(0);
     expect(result.styleNonces.every((nonce) => nonce === NONCE)).toBe(true);
     expect(result.csp).toMatch(new RegExp(`style-src 'self' 'nonce-${NONCE}'`));
     expect(result.csp).not.toMatch(/style-src\s+[^;]*'unsafe-inline'/);
+    expect(result.cspNonce).toBe(NONCE);
+    expect(result.policyViolations).toEqual([]);
     expect(pageErrors).toEqual([]);
 
     await page.close();
 });
+
+declare global {
+    interface Window {
+        __sarakCspViolations: string[];
+    }
+}
