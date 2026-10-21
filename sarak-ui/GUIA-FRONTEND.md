@@ -99,7 +99,7 @@ npm install @sarak/lib-ui-core   # ou o spec git/registry que a sua organizaçã
 O caminho assistido é `npx sarak-ui init`, que grava as `peerDependencies`, gera o starter e copia
 este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
 
-**CSS:** no Modo App o estilo é injetado automaticamente pelo import do pacote — nada a fazer. No
+**CSS:** no Modo App o estilo é injetado automaticamente quando o Provider monta — nada a fazer. No
 **Modo Embarcado** (uma ilha da lib dentro de um frontend que já existe), importe a variante escopada
 `@sarak/lib-ui-core/sarak-scoped.css` e **nunca** o CSS global.
 
@@ -108,13 +108,11 @@ este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
 Todo consumo, em qualquer topologia, tem a mesma raiz: **um `SarakUIProvider` envolvendo a árvore**.
 
 ```tsx
-import { SarakUIProvider, SARAK_BOOT_THEMES } from '@sarak/lib-ui-core';
-
-const TEMAS = SARAK_BOOT_THEMES;   // tema completo do boot (escuro, síncrono) — veja §3.9
+import { SarakUIProvider } from '@sarak/lib-ui-core';
 
 export function App() {
   return (
-    <SarakUIProvider customThemes={TEMAS} initialTheme={TEMAS[0].id}>
+    <SarakUIProvider initialTheme="sarak-sovereign">
       {/* suas telas */}
     </SarakUIProvider>
   );
@@ -130,6 +128,46 @@ A partir daí, três peças **opcionais** e independentes:
 
 O consumidor mantém o próprio roteador e a própria estrutura em todas as quatro topologias. O cromo
 recebe os itens de navegação em `navItems` e entrega a rota selecionada por `onNavigate`.
+
+### CSP com nonce
+
+Se a Content Security Policy restringir elementos `<style>`, passe o nonce gerado para a resposta
+em `options.styleNonce`:
+
+```tsx
+<SarakUIProvider options={{ styleNonce }}>
+  <AppRoutes />
+</SarakUIProvider>
+```
+
+A diretiva pode ser `style-src 'self' 'nonce-<valor-da-resposta>'`; o nonce é aplicado às tags
+`<style>` criadas pela biblioteca. Sem `styleNonce`, o CSS global entra no import do pacote; com
+nonce, o Provider aplica o valor antes de inserir a folha global na montagem. Não inclua
+`'unsafe-inline'` em `style-src`.
+
+### Testes com Vitest e jsdom
+
+O subpath `@sarak/lib-ui-core/testing` oferece os contornos opcionais usados pelo kit:
+
+```ts
+// vitest.setup.ts
+import { installSarakTestEnvironment } from '@sarak/lib-ui-core/testing';
+
+installSarakTestEnvironment();
+```
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import { filterSarakTestConsoleLog } from '@sarak/lib-ui-core/testing';
+
+export default defineConfig({
+  test: { onConsoleLog: filterSarakTestConsoleLog },
+});
+```
+
+O setup instala `matchMedia` somente quando o ambiente ainda não o fornece; o filtro suprime apenas
+o aviso do jsdom ao analisar CSS com sintaxe que ele não implementa.
 
 ---
 
@@ -1038,16 +1076,16 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Outros | **SarakHelpButton** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
-| Templates | **SarakAuthScreen** | `branding` · `allowRegistration` · `allowMfa` · `labels` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `errorVariant` · `onChange` · `role` · `density` · `importance` |
-| Templates | **SarakCardGrid** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `filters` · `role` · `density` · `importance` · `variant` |
-| Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` · `role` · `density` · `importance` |
-| Templates | **SarakChart** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakChat** | `onSend` · `loadModels` · `label` · `role` · `density` · `importance` |
+| Templates | **SarakAuthScreen** | `branding` · `allowRegistration` · `allowMfa` · `labels` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `errorVariant` · `onChange` · `showCredentials` |
+| Templates | **SarakCardGrid** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `filters` · `variant` |
+| Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` |
+| Templates | **SarakChart** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` |
+| Templates | **SarakChat** | `onSend` · `loadModels` · `label` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
 | Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
-| Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` · `role` · `density` · `importance` |
+| Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
 | Templates | **SarakStats** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `metrics` |
 | Templates | **SarakTable** | `onRetry` · `updatedAt` · `emptyMessage` · `loading` · `error` |

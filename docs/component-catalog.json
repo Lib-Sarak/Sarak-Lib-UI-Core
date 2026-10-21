@@ -679,22 +679,10 @@
           "doc": "Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio."
         },
         {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
+          "name": "showCredentials",
+          "type": "boolean",
           "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
+          "doc": "Renderiza apenas os provedores sociais configurados, sem os campos de credenciais. Default `true`."
         }
       ]
     },
@@ -1073,24 +1061,6 @@
           "doc": ""
         },
         {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
-        },
-        {
           "name": "variant",
           "type": "'classic' | 'title' | 'action' | 'search'",
           "optional": true,
@@ -1167,24 +1137,6 @@
           "type": "string",
           "optional": true,
           "doc": "Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -1227,24 +1179,6 @@
           "type": "{ value?: string; date?: string }",
           "optional": true,
           "doc": "Chaves dos campos de valor e rótulo; os defaults são value e date."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
         }
       ]
     },
@@ -1329,24 +1263,6 @@
           "type": "string",
           "optional": true,
           "doc": "Nome exibido no cabeçalho; omitido, usa `AI Chat`."
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": "Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual."
         }
       ]
     },
@@ -2697,24 +2613,6 @@
         {
           "name": "onCreate",
           "type": "(data: Record<string, unknown>, group?: string) => void | Promise<void>",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
           "doc": ""
         }
@@ -4450,34 +4348,6 @@
         ]
       },
       {
-        "component": "SarakAuthScreen",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakAuthScreen",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakAuthScreen",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
         "component": "SarakButton",
         "prop": "variant",
         "values": [
@@ -4501,96 +4371,12 @@
       },
       {
         "component": "SarakCardGrid",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakCardGrid",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakCardGrid",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
-        "component": "SarakCardGrid",
         "prop": "variant",
         "values": [
           "classic",
           "title",
           "action",
           "search"
-        ]
-      },
-      {
-        "component": "SarakCatalogGrid",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakCatalogGrid",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakCatalogGrid",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
-        "component": "SarakChart",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakChart",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakChart",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
         ]
       },
       {
@@ -4657,34 +4443,6 @@
         "values": [
           "top",
           "bottom"
-        ]
-      },
-      {
-        "component": "SarakChat",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakChat",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakChat",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
         ]
       },
       {
@@ -4763,34 +4521,6 @@
           "sm",
           "md",
           "lg"
-        ]
-      },
-      {
-        "component": "SarakManagementGrid",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakManagementGrid",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakManagementGrid",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
         ]
       },
       {

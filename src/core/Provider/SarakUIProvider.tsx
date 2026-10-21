@@ -1,15 +1,7 @@
 import React, { ReactNode, useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
-import { injectSarakStyles } from './injectStyles';
-import { SARAK_CSS } from './__sarakCss';
-
-// Injeção automática de CSS (Spec 08 §2 — Instalação Zero-Config): roda uma vez, no
-// carregamento do módulo, ANTES de qualquer instância do Provider montar — evita
-// flash de conteúdo sem estilo mesmo no primeiro render. `SARAK_CSS` é o placeholder
-// em dev/teste (rodando de `src/`) e o CSS compilado real no bundle publicado
-// (substituído por scripts/inject-css.mjs no postbuild).
-injectSarakStyles(SARAK_CSS);
+import { SarakStyleNonceContext } from './components/SarakStyle';
 
 // Novos Módulos Refatorados
 import type { SarakUIProviderProps, SarakThemeEntry } from './types';
@@ -221,7 +213,11 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = (props) => {
         persistence: props.options?.persistence,
     });
     if (!isReady) return <>{props.loadingFallback ?? null}</>;
-    return <SarakUIProviderCore {...props} />;
+    return (
+        <SarakStyleNonceContext.Provider value={props.options?.styleNonce}>
+            <SarakUIProviderCore {...props} />
+        </SarakStyleNonceContext.Provider>
+    );
 };
 
 export default SarakUIProvider;

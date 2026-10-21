@@ -9,7 +9,7 @@ const FAMILY_SEPARATOR = '|';
 const HOST_HINT = 'Confira a `url` registrada em `options.fonts.custom` (o arquivo é servido pelo host).';
 
 /** `options.fonts: 'google'` — o caminho anterior, intocado: `preconnect` + `@import` de toda família de `THEME_FONTS`. */
-const useGoogleFonts = (enabled: boolean) => {
+const useGoogleFonts = (enabled: boolean, styleNonce?: string) => {
     useEffect(() => {
         if (typeof document === 'undefined' || !enabled) return;
         const domains = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
@@ -24,9 +24,10 @@ const useGoogleFonts = (enabled: boolean) => {
         if (document.getElementById(ID)) return;
         const style = document.createElement('style');
         style.id = ID;
+        if (styleNonce) style.setAttribute('nonce', styleNonce);
         style.textContent = `@import url('${buildGoogleFontsUrl()}');`;
         document.head.prepend(style);
-    }, [enabled]);
+    }, [enabled, styleNonce]);
 };
 
 /**
@@ -41,14 +42,14 @@ const useGoogleFonts = (enabled: boolean) => {
 export const useSarakFonts = (design: SarakThemePayload, mode: SarakUIMode, options?: SarakUIOptions) => {
     const { source, baseUrl } = resolveFontsOption(options?.fonts);
     const enabled = mode !== 'embedded' || options?.embedded?.injectGlobalFonts === true;
-    useGoogleFonts(enabled && source === 'google');
+    useGoogleFonts(enabled && source === 'google', options?.styleNonce);
 
     const hostFonts = getHostFontRegistry(options?.fonts);
     const familiesKey = useMemo(() => resolveUsedFontFamilies(design, hostFonts).join(FAMILY_SEPARATOR), [design, hostFonts]);
     useEffect(() => {
         if (!enabled || source === 'none' || !familiesKey) return;
         const families = familiesKey.split(FAMILY_SEPARATOR);
-        if (source === 'bundled') loadBundledFonts({ families, baseUrl });
-        if (hostFonts) loadBundledFonts({ families, manifest: hostFonts.manifest, hint: HOST_HINT });
-    }, [enabled, source, baseUrl, familiesKey, hostFonts]);
+        if (source === 'bundled') loadBundledFonts({ families, baseUrl, styleNonce: options?.styleNonce });
+        if (hostFonts) loadBundledFonts({ families, manifest: hostFonts.manifest, hint: HOST_HINT, styleNonce: options?.styleNonce });
+    }, [enabled, source, baseUrl, familiesKey, hostFonts, options?.styleNonce]);
 };

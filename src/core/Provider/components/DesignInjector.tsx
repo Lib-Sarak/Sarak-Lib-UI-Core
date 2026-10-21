@@ -4,6 +4,8 @@ import { useDesignVariables } from '../../Design/hooks/useDesignVariables';
 import { SARAK_SCOPE_CLASS } from '../scope';
 import { SarakDesignState, SarakUIMode } from '../types';
 import { releaseInjectedWrites, syncInjectedWrites } from '../utils/injectedWrites';
+import { applyStyleNonce } from '../utils/applyStyleNonce';
+import { SarakStyle, useSarakStyleNonce } from './SarakStyle';
 
 /** A família que a injeção ancora no `body` (ou na ilha): a limpeza só a tira se ainda for esta. */
 const INJECTED_FONT_MAIN = 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))';
@@ -57,6 +59,7 @@ interface DesignInjectorProps {
  * única no `useSarakUIEffects`.
  */
 export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode = 'app', scopeElement = null }) => {
+    const styleNonce = useSarakStyleNonce();
     const isEmbedded = mode === 'embedded';
 
     // No Modo Embarcado o CSS responsivo é gerado mirando a ilha, não o `:root`.
@@ -161,8 +164,10 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
             if (!styleTag) {
                 styleTag = document.createElement('style');
                 styleTag.id = 'sarak-responsive-vars';
+                applyStyleNonce(styleTag, styleNonce);
                 document.head.appendChild(styleTag);
             }
+            applyStyleNonce(styleTag, styleNonce);
             if (styleTag.innerHTML !== responsiveCSS) {
                 styleTag.innerHTML = responsiveCSS;
             }
@@ -170,7 +175,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
 
         injectedRef.current = { targets, fontScope, classTarget, modeClass };
         prevDesignRef.current = currentDesignKey;
-    }, [s, variables, attributes, responsiveCSS, isEmbedded, scopeElement]);
+    }, [s, variables, attributes, responsiveCSS, isEmbedded, scopeElement, styleNonce]);
 
     // Ao desmontar, devolve ao host o que a injeção escreveu: variáveis e atributos (o registro do injetor), as curvas, o
     // rastro do ponteiro, a fonte ancorada, a classe de modo, o atributo de mídia e a tag do CSS responsivo.
@@ -194,7 +199,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
     // `.sarak-scope`, então não alcançam nenhum elemento do host.
     if (isEmbedded) {
         const scopeCss = `${buildScopeVariablesCss(variables, SARAK_SCOPE_CLASS)}${responsiveCSS || ''}`;
-        return scopeCss ? <style dangerouslySetInnerHTML={{ __html: scopeCss }} /> : null;
+        return scopeCss ? <SarakStyle dangerouslySetInnerHTML={{ __html: scopeCss }} /> : null;
     }
 
     return null;

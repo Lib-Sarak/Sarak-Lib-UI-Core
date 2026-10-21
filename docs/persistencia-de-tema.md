@@ -65,8 +65,12 @@ continuam sendo gravadas pelo debounce; uma aplicação explícita também grava
 Quando o usuário clica **"Salvar"** no painel para nomear e guardar um tema novo (ADR-011):
 
 ```ts
-onSave?: (theme: SarakThemeEntry) => Promise<void> | void
+onSave?: (theme: SarakThemeEntry, operation?: 'create' | 'replace') => Promise<void> | void
 ```
+
+O segundo argumento identifica a operação: `'create'` para **Salvar como novo** e **Duplicar**;
+`'replace'` para **Salvar** sobre o tema do importador em edição. O argumento é opcional para
+manter compatibilidade com callbacks antigos que recebem somente o tema.
 
 ```ts
 interface SarakThemeEntry {

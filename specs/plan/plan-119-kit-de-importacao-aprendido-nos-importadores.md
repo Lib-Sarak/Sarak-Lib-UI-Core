@@ -54,6 +54,15 @@ nem tag ([[03-versionamento-e-release]]).
   `src/features/DesignEngine/Main/utils/exportTheme.ts` (a `contraparte` no payload), `Main/components/ThemeActionBar.tsx`,
   `Panels/AdvancedTab.tsx` só se o gesto "novo tema" morar ali, `docs/persistencia-de-tema.md` (o exemplo copiável das
   portas de tema).
+- **Lote 3:** `src/components/atomic/Templates/SarakAuthScreen.tsx` e `components/AuthForm.tsx`; os pontos que criam `<style>`
+  (`src/core/Provider/SarakUIProvider.tsx`, `src/core/Provider/hooks/useSarakBuildSeal.ts` e os injetores de
+  `src/core/Design/components/` e `src/core/Provider/`), o tipo das opções do Provider; o *setup* de teste (I21) num caminho de
+  export próprio; `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` (autoria), um caso em
+  `browser-tests/` e os gerados.
+- **Lote 4:** os componentes sob demanda que importam peer opcional (`SarakKanban`, `SarakDataGrid`, `SarakDataTable`,
+  `SarakChartEngine`, `SarakPDFViewer`, `SarakChatEngine`, `SarakMarkdownRenderer`, `SarakFlowEngine` — os arquivos `*Impl` e os
+  módulos que eles importam), o i18n das mensagens, o teste do consumidor mínimo, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e
+  os gerados.
 - **Lote 2:** `src/core/Design/presets/themes/reference.ts` e os pontos do barril que exportam a referência, o teste do
   `col-span-*` junto aos de `src/components/atomic/Layouts/`,
   `src/components/atomic/Layouts/SarakFlex.tsx`, `docs/migracoes.md` (seções `## 8.0.0` e `## 7.0.0`),
@@ -80,7 +89,7 @@ nem tag ([[03-versionamento-e-release]]).
 | **Skill** | `ui-integra-consumidor` · `ui-criar-tema` · `padrao-escrita` + `padrao-typescript` · `test-unitario` | kit, tema, escrita, testes |
 | Código | `src/features/DesignEngine/Main/` · `src/core/Provider/providerProps.ts` · `bin/` · `scripts/consumer-kit/` | o painel, as portas, a CLI e o gerador do kit |
 | Doc | `docs/migracoes.md` · `docs/roteiro-de-validacao-dos-temas.md` · `docs/persistencia-de-tema.md` · `sarak-ui/GUIA-FRONTEND.md` | o que o importador lê hoje |
-| Anexo | `specs/plan/anexos/plan-119-licoes-das-importacoes.md` · `specs/plan/anexos/plan-119-relatorio-erp.md` | as lições (lote 0) e o relatório do ERP, com `arquivo:linha` de cada achado |
+| Anexo | `specs/plan/anexos/plan-119-licoes-das-importacoes.md` · `specs/plan/anexos/plan-119-relatorio-erp.md` · `specs/plan/anexos/plan-119-relatorio-login.md` | as lições (lote 0) e o relatório do ERP, com `arquivo:linha` de cada achado |
 
 # 5. Instruções de execução
 
@@ -140,6 +149,40 @@ com a classe ocupa o span; sem ela, o padrão por breakpoint) e o texto no guia 
 [[15-divida-conhecida]] o achado 42 passa a ter destino (a síntese fecha).
 2.7. `npm run guide` e `npm run dev-kit` por último.
 
+**Lote 3 — o que o login mostrou** (linhas **I14 a I21** da §5.1; sai na `v8.0.0-rc.2`).
+3.1. **I14** o `SarakAuthScreen` aceita mostrar só os provedores (sem o formulário de credenciais), para o login que só redireciona
+ao provedor; o padrão continua o de hoje; teste de componente dos dois modos.
+3.2. **I15** uma opção de nonce que a lib aplica em **todo** `<style>` que ela cria em tempo de execução (o do CSS da lib, o do
+tema, os do escopo e da ilha embarcada, o do selo de build), documentada com a diretiva de CSP que o importador escreve; teste que
+prova o atributo em cada `<style>` e caso de navegador com uma CSP sem `'unsafe-inline'` em `style-src`, a tela desenhada.
+3.3. **I16** `docs/persistencia-de-tema.md` §1.2 com a assinatura `onSave(theme, operation)`; os gestos do painel numa entrada da
+`## 8.0.0` de `docs/migracoes.md`.
+3.4. **I17** retirar `role`, `density` e `importance` do `SarakAuthScreen` e de onde mais o trio for inerte (medir antes: o
+`SarakTable` os lê), com a linha no "de/para".
+3.5. **I18, I19, I20** o exemplo do guia, o renomeado nomeado na tabela, o caminho de override atual.
+3.6. **I21** (se o dono não vetar) o *setup* de teste exportado, com teste e a linha no guia.
+3.7. `npm run guide` e `npm run dev-kit` por último.
+
+**Lote 4 — o peer opcional que quebra o build** (linha **I22** da §5.1; sai na `v8.0.0-rc.2`). Decisão do dono (2026-10-21): os peers
+continuam opcionais (`package.json`, `peerDependenciesMeta`), e o build de quem não os instala tem de passar.
+4.1. **A prova primeiro:** um consumidor mínimo de verdade (React + Vite 8, o mesmo bundler do login-completo) num diretório fora do
+repositório, que instala a lib pelo pacote (`npm pack` do `dist/` atual) **sem nenhum peer opcional** e importa o barril; rodar
+`vite build` e colar a falha de hoje (os `[MISSING_EXPORT]`). Esse consumidor vira um teste automatizado (em `browser-tests/` ou
+`scripts/`, à escolha justificada) que roda depois do `build`, com o caso que falha provado por mutação.
+4.2. Em cada pedaço sob demanda da tabela da I22, o peer opcional é importado de um jeito que o bundler do importador aceite quando
+ele falta (por exemplo, por namespace, sem import nomeado que o bundler precise resolver), e o componente checa a presença do
+pacote antes de usá-lo: sem ele, mostra o estado de erro do próprio componente (texto do i18n, nos seis idiomas) dizendo qual
+pacote instalar, e um aviso único no console. Com o pacote instalado, nada muda.
+4.3. O consumidor do 4.1 compila verde **sem** os peers opcionais e **com** todos eles; teste de componente de cada um dos
+componentes afetados sem o pacote (a mensagem) e com ele (o render normal); a bateria do navegador continua verde.
+4.4. Nota em `docs/migracoes.md` (`## 8.0.0`): o que o importador ganha (não precisa instalar o que não usa) e a mensagem que vê se
+usar o componente sem o pacote; a lista dos peers opcionais e de qual componente cada um destrava no guia (`sarak-ui/GUIA-FRONTEND.md`).
+4.5. **I23** no import, o injetor lê o nonce de `<meta property="csp-nonce" nonce="…">` quando existe e injeta a folha já com ele;
+sem a `<meta>` e sem `styleNonce`, nada muda (zero-config); o guia, na seção do nonce, mostra a `<meta>` e a diretiva de CSP;
+`browser-tests/nonce-csp.spec.ts` passa a escutar `securitypolicyviolation` e exigir **zero** violações, com a `<meta>` e com o
+`styleNonce` do Provider.
+4.6. `npm run guide` e `npm run dev-kit` por último.
+
 **§5.1 — Registro vivo dos achados da lib** (mantido pelo revisor; vem do lote 0 e das sessões dos importadores):
 
 | # | Achado (`arquivo:linha` e medição) | Origem | Decisão | Lote | Estado |
@@ -161,6 +204,18 @@ com a classe ocupa o span; sem ela, o padrão por breakpoint) e o texto no guia 
 | C2 | `sarak-ui migrate <major>`: aplicar a tabela de renomes de um MAJOR nos imports do consumidor | ERP | **dono, 2026-10-19: não fazer**; no lugar, tabela "de/para" completa dos renomes na nota da 8.0.0 | 2 | fechada |
 | C3 | `sarak-ui check` em modo `file:` avisar quando o major instalado muda (hoje cala por desenho, `13` §5.1) e comparar a cópia `sarak-ui/` do consumidor com a instalada | ERP | **dono, 2026-10-19: não fazer**; o guia ensina que `file:` é só para iterar localmente e produção instala pela tag | final | aberta |
 | C4 | verificação por máquina para o consumidor (as três regras de gate que o ERP escreveu: `ui-kit`, `ui-ponto-unico`, `ui-token`) | ERP | **dono, 2026-10-19: fazer, opcional para o importador** — plugin de ESLint no pacote, regras ligadas uma a uma, numa plan própria (com ADR) **depois da 8.0.0 e da atualização dos importadores**; o lote final desta plan entrega a lista de regras candidatas que as auditorias provaram comuns, e a linha vai ao `00-backlog` | final | aberta |
+| I14 | `SarakAuthScreen` sempre desenha o formulário de e-mail e senha (`src/components/atomic/Templates/SarakAuthScreen.tsx`, `components/AuthForm.tsx`): não há login só por provedor externo | login | corrigir — opção para a tela mostrar só os provedores (sem o formulário de credenciais), com teste | 3 | fechada |
+| I15 | a lib injeta `<style>` em tempo de execução sem *nonce* (`SarakUIProvider.tsx`, `hooks/useSarakBuildSeal.ts`, os injetores de `src/core/Design/components/` e `src/core/Provider/`): o importador é obrigado a `style-src 'unsafe-inline'` | login | corrigir — opção de nonce aplicada a **todo** `<style>` que a lib cria, com teste que prova o atributo em cada um | 3 | fechada |
+| I16 | a porta `theme.onSave` está documentada de três jeitos: `docs/persistencia-de-tema.md:68` (um argumento) × o exemplo da §5 (`(theme, operation)`); as ações do painel (salvar, salvar como novo, duplicar, novo tema, apagar) só aparecem numa entrada antiga de `docs/migracoes.md`, fora da `## 8.0.0` | login | corrigir — assinatura `onSave(theme, operation)` na §1.2, os gestos numa entrada da `## 8.0.0` (a `09` §4.6 é da síntese) | 3 | fechada |
+| I17 | props inertes que sobraram: `role`, `density`, `importance` em `SarakAuthScreen.tsx:73-75` (e onde mais o mesmo trio não for lido, medido) | login | remover onde inerte (MAJOR), nota no "de/para" | 3 | fechada |
+| I18 | o guia (`sarak-ui/GUIA-FRONTEND.md` §1.2, `:111-113`) passa `SARAK_BOOT_THEMES` em `customThemes`, e a coleção ignora id de tema embarcado ali | login | corrigir o exemplo (tema do importador em `customThemes`; o embarcado já está no catálogo) | 3 | fechada |
+| I19 | a tabela "de/para" (`docs/migracoes.md:15`) diz "uma renomeação" sem dizer qual | login | nomear o renomeado no texto | 3 | fechada |
+| I20 | uma nota antiga de `docs/migracoes.md` (`:1559`) ensina override por `getLocalComponent(...)`, que saiu na 8.0.0 | login | apontar o caminho atual (a `05` §2.2.2) | 3 | fechada |
+| I21 | testar em jsdom exige contornos em todo importador: o CSS injetado com `@layer` não parseia e o Design Engine exige `matchMedia` (o ERP e os dois logins repetem o mesmo polyfill) | login | **proposta do revisor, sob veto do dono:** exportar um *setup* de teste opcional (o polyfill e o filtro do aviso de CSS), com teste e uma linha no guia | 3 | fechada |
+| I22 | **peer "opcional" quebra o build de quem não o instala:** todo pedaço sob demanda do `dist/` importa pelo nome o peer opcional que usa (`SarakKanbanImpl` → `@dnd-kit/*`; `SarakDataGridImpl`/`SarakDataTableImpl` → `@tanstack/react-virtual`; `SarakChartEngine` → `echarts`, `echarts-for-react`, `recharts`; `SarakPDFViewerImpl` → `pdfjs-dist`; `SarakChatEngine`/`SarakMarkdownRendererImpl` → `react-markdown`, `react-syntax-highlighter`; `SarakFlowEngine` → `reactflow`), e o Vite 8 (rolldown) troca o peer ausente por um módulo vazio: 36 `[MISSING_EXPORT]` no `vite build` do login-completo, que não usa Kanban | login | **dono, 2026-10-21: opção (b)** — o peer continua opcional; o pedaço sob demanda o importa de forma que o build do importador passe sem ele, e o componente sem o pacote mostra uma mensagem clara na tela (nunca build quebrado nem tela em branco); prova por build real de um consumidor | 4 | aberta |
+| I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | aberta |
+| C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
+| C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
 
 **Lote final — o kit de importação consolidado.**
@@ -502,3 +557,143 @@ instrução 2.6 desta plan foi ambígua sobre quem escreve; o texto diz a verdad
 `v8.0.0-rc.1`; achados novos dos importadores entram como linhas novas da §5.1.
 
 **Status: 🟡 Em execução** (o registro segue vivo; o lote final espera as auditorias).
+
+## Nota do revisor — 2026-10-20 — relatório dos logins integrado
+
+O relatório dos repositórios do login (login-completo e login-provedores) está em `specs/plan/anexos/plan-119-relatorio-login.md`.
+Conferi no código o que virou linha: nenhuma ocorrência de `nonce` em `src/` (I15); `SarakAuthScreen` e `AuthForm` sem modo só de
+provedores (I14); `docs/persistencia-de-tema.md:68` com `onSave(theme)` de um argumento (I16); `role`/`density`/`importance` em
+`SarakAuthScreen.tsx:73-75` (I17 — no `SarakTable` o par `role`/`density` **é** lido pelo cabeçalho, não é inerte); o exemplo do
+guia (`:111-113`, I18). Viraram **I14 a I21** (lote 3, `rc.2`) e **C6, C7** (propostas do revisor). **Divergências corrigidas na
+mesma ação:** a `09` §4.7 dizia que fonte, navegação e idioma nascem "não oferecida", e o schema
+(`src/core/Design/schema/preferences.ts`) dá `pinned` a todas — a `09` passou a dizer o que o código faz. A spec 13, que ainda
+lista `@tanstack/react-virtual` como obrigatório, é corrigida na síntese da `plan-120` (destino dela). As lições sem achado da lib
+(o lock alternando `ssh`/`https`, testar componente da lib por papel e texto, o kit que nunca foi consultado) vão ao lote final.
+
+**Status: 🟡 Em execução** (lote 3 a despachar).
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências fora do lote.
+
+**Estado do worktree ao iniciar**
+```text
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M specs/specs/09-temas-e-presets.md
+?? .claude/settings.local.json
+?? specs/plan/anexos/plan-119-relatorio-login.md
+```
+
+**O que foi feito**
+- I14: `SarakAuthScreen.showCredentials` permite tela só com provedores; o default mantém o formulário e o teste cobre os dois modos (`SarakAuthScreen.tsx:74`, `SarakAuthScreen.test.tsx`).
+- I15: `options.styleNonce` chega às tags `<style>` do Provider, tema, escopos, fontes e componentes do Design Engine; a folha global é inserida no ciclo de montagem antes do primeiro paint. O teste Playwright verifica todas as tags presentes sob `style-src` com nonce (`types.ts:127`, `useSarakBuildSeal.ts`, `nonce-csp.spec.ts`).
+- I16: a assinatura e os gestos de persistência estão documentados (`docs/persistencia-de-tema.md:68`, `docs/migracoes.md:1175`).
+- I17: removi as props inertes `role`, `density` e `importance` de `SarakAuthScreen`, `SarakChat`, `SarakChart`, `SarakManagementGrid`, `SarakCardGrid` e `SarakCatalogGrid`; `SarakTable` mantém `role` e `density`, lidos pelo cabeçalho e pelas células. O de/para registra a remoção.
+- I18–I20: o exemplo do guia usa um tema embarcado pelo catálogo; o texto nomeia `SARAK_REFERENCE_THEMES` → `SARAK_BOOT_THEMES`; a nota antiga aponta para `window.__SARAK_OVERRIDES__['shell-language-selector']`.
+- I21: publiquei `@sarak/lib-ui-core/testing` com os helpers opcionais de `matchMedia` e filtro do aviso CSS, testes e instruções no guia. O gate R27 permite somente esse subpath adicional.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Templates/SarakAuthScreen.tsx`, `components/AuthForm.tsx`, `components/AuthSocialLogin.tsx` e testes correspondentes | alterado | modo só de provedores, ocultação de campos, divisor e texto de credenciais |
+| `src/components/atomic/Templates/SarakChat.tsx`, `SarakChart.tsx`, `SarakManagementGrid.tsx`, `SarakCardGrid.tsx`, `SarakCatalogGridProps.ts` | alterado | remoção do trio de props inertes medido |
+| `src/core/Provider/types.ts`, `SarakUIProvider.tsx`, `injectStyles.ts`, `hooks/useSarakBuildSeal.ts`, `hooks/useSarakStylesheetGuard.ts`, `hooks/useSarakFonts.ts`, `fontLoader.ts` | alterado | nonce do Provider nos injetores globais e de fontes; injeção global no mount |
+| `src/core/Provider/components/SarakStyle.tsx`, `utils/applyStyleNonce.ts`, `components/DesignInjector.tsx`, `components/SovereignThemeInjector.tsx`, `src/core/Design/components/DesignScope.tsx`, `src/features/DesignEngine/Main/MasterControlPanel.tsx`, `Canvas/PreviewCanvas.tsx`, `src/components/engines/flows/SarakFlowEngine.tsx` | criado/alterado | wrapper compartilhado e aplicação do nonce nos demais estilos runtime |
+| `src/testing.ts`, `src/__tests__/testing.test.ts`, `src/core/Provider/components/__tests__/SarakStyle.test.tsx` e testes dos injetores | criado/alterado | helpers e cobertura do setup e dos estilos |
+| `package.json`, `gates/scripts/contrato/check-no-deep-import.mjs`, teste do gate | alterado | build e export `./testing`; allowlist exata do subpath público |
+| `browser-tests/fixtures/nonce-csp-entry.tsx`, `browser-tests/nonce-csp.spec.ts` | criado | harness Chromium com CSP e verificação dos nonces |
+| `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md`, `scripts/inject-css.mjs` | alterado | contratos, migração, exemplos do consumidor e comentário do postbuild |
+| `docs/component-catalog.json`, `docs/component-catalog.md`, `sarak-ui/catalog.json`, `sarak-ui/START-HERE.md`, `sarak-ui/VERSION`, `sarak-ui/docs/migracoes.md` | gerado | sincronização dos kits e catálogos públicos |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | build ESM/CJS, tipos, CSS, fontes, subpath `testing` e selos |
+| esta plan | alterado | resumo append-only e status para revisão |
+
+**Verificações executadas**
+- `npx.cmd vitest run --maxWorkers=1 ...` — 10 arquivos, 88 testes passaram; reexecução de `SarakAuthScreen.test.tsx` — 9/9; `SarakStyle.test.tsx` — 2/2; teste do gate R27 — 4/4.
+- `npm.cmd run build` — passou: catálogos, gate R27, tipos, ESM/CJS, CSS, fontes e gates de pacote.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts browser-tests/nonce-csp.spec.ts` — 1/1 passou contra o `dist/` final.
+- `npm.cmd run catalog`, `npm.cmd run guide` e `npm.cmd run dev-kit` — gerados; o `dev-kit` foi o último gerador.
+- `npm.cmd run verify -- --tier=quick` — passou: TypeScript, baseline, gates rápidos e Anel 0 simulado (602 linhas, 0 achados).
+- `git diff --check -- . ':(exclude)dist/**'` — sem erros nos arquivos de fonte e documentação.
+
+**Critérios de aceite**
+- [x] I14 — modo só de provedores, formulário padrão preservado e teste.
+- [x] I15 — nonce nos `<style>` runtime e tela renderizada sob CSP sem `'unsafe-inline'` em `style-src`.
+- [x] I16 — assinatura `onSave(theme, operation)` e gestos documentados em `## 8.0.0`.
+- [x] I17 — props removidas onde inertes, tabela preservada onde lida e de/para atualizado.
+- [x] I18–I20 — exemplo, renomeação e override corrigidos.
+- [x] I21 — setup opcional publicado no subpath, testado e documentado.
+
+**Decisões e suposições**
+- Usei `styleNonce` como nome da opção; o lote exige o nonce mas não fixa o identificador.
+- A condição “se o dono não vetar” do I21 não foi vetada pelo despacho desta execução.
+- Permiti `./testing` como exceção exata do gate R27 porque o próprio lote exige esse caminho público; caminhos internos abaixo dele continuam bloqueados.
+
+**Achados fora do escopo (não corrigidos)**
+- `specs/specs/13-instalacao-e-atualizacao.md` ainda descreve a injeção global como efeito do import; a edição da spec fixa está fora do lote, então os guias do consumidor documentam a montagem do Provider.
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` — a auditoria de composição atômica apontou `<input>` nativo; não pertencem ao lote 3.
+
+**Pendências / riscos**
+- A plan segue em revisão. O build gerou artefatos minificados em `dist/`; por isso a checagem de whitespace foi aplicada fora desse diretório gerado.
+
+**Status: 🟠 Em revisão (lote 3).**
+
+## Veredito — 2026-10-21 — lote 3 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** I14 — `SarakAuthScreen.showCredentials` (padrão: o formulário de hoje) permite a tela só
+com provedores, com teste dos dois modos; I15 — `options.styleNonce` chega a todo `<style>` que a lib cria em tempo de execução
+(o CSS da lib, tema, escopo, ilha, fontes, selo de build e os do painel), por um componente comum (`SarakStyle.tsx`,
+`applyStyleNonce.ts`), com caso de navegador sob CSP sem `'unsafe-inline'` (`nonce-csp.spec.ts`); I16 — a assinatura
+`onSave(theme, operation)` e os gestos na `## 8.0.0`; I17 — o trio inerte saiu de `SarakAuthScreen`, `SarakChat`, `SarakChart`,
+`SarakManagementGrid`, `SarakCardGrid` e `SarakCatalogGrid` e ficou no `SarakTable`, que o lê; I18–I20; I21 —
+`@sarak/lib-ui-core/testing` (o polyfill de `matchMedia` e o filtro do aviso de CSS), com a exceção exata no gate R27.
+**Medido por mim:** `npm run verify -- --tier=full` **verde** (`tsc`, suíte completa, baseline com `tsc`, Anel 1, R36, Anel 0);
+`npm run build` verde; **bateria inteira do navegador 424/424**.
+
+**Achado 1 — o lote mudou QUANDO o CSS da lib entra, e isso muda o contrato de instalação.** Para aplicar o nonce,
+`scripts/inject-css.mjs` e `src/core/Provider/injectStyles.ts` deixaram de injetar o stylesheet **no import do pacote** e passaram a
+injetá-lo **na montagem do Provider**. O lote pedia nonce em todo `<style>` (3.2), não essa mudança. Consequência: componente da lib
+usado sem Provider (ou antes de ele montar) fica sem as classes da lib, e a instalação zero-config que o guia e a spec 13 descrevem
+("importou, funciona") deixa de valer para todo importador — inclusive para quem não usa CSP estrita. A bateria não pega porque as
+cenas montam um Provider. **Decisão do revisor (2026-10-21; o dono pediu a escolha mais alinhada à lib): o padrão volta a ser o de
+antes, e o nonce é opcional.** **Correção:**
+- **sem `styleNonce`:** o stylesheet entra no import do pacote, exatamente como antes deste lote (o comentário do postbuild e o de
+  `injectStyles.ts` voltam a dizer isso);
+- **com `styleNonce`:** a injeção acontece na montagem do Provider, já com o nonce (o que o lote fez), e o guia diz isso na seção do
+  nonce, com a diretiva de CSP;
+- **prova dos dois caminhos:** teste de unidade da injeção com e sem nonce, e um caso de navegador em que um componente da lib é
+  renderizado **sem nenhum Provider na página** e recebe o CSS da lib (classe utilitária da lib com estilo computado), além do caso
+  do nonce que já existe;
+- rodar `npm run build`, o caso novo e `nonce-csp.spec.ts` contra o `dist/` reconstruído, e `npm run verify -- --tier=quick`.
+
+**Status: 🔵 Em correção** (só o achado 1). O lote 4 (I22, peer opcional) é despachado depois deste fechar.
+
+## Correção do achado 1 — 2026-10-21
+
+**Resultado:** correção implementada; o bloco de veredito do revisor acima foi mantido intacto.
+
+- Sem `styleNonce`, o entry público `src/index.ts` carrega `injectStylesOnImport.ts`, que insere o CSS global no import do pacote. A dica de modo embarcado continua impedindo a folha global quando o host a declara antes do import.
+- Com `styleNonce`, a montagem do Provider substitui a folha inicial por uma nova tag `<style>` com o nonce aplicado antes de anexá-la ao documento.
+- Atualizei os comentários do injetor e do postbuild e expliquei os dois caminhos na documentação do consumidor e na migração 8.0.0.
+- O teste unitário cobre a folha sem nonce e a substituição por uma tag com nonce. O novo caso de navegador renderiza `SarakButton` sem Provider e sem `<link>` de CSS, e verifica o estilo computado de `py-4`; o caso CSP existente continua verificando as tags com nonce.
+
+**Verificações:** `npm run build` passou; Vitest direcionado passou (2 arquivos, 26 testes); os dois casos Playwright passaram (2/2) usando o Chrome instalado, pois o Chromium empacotado do Playwright não está presente; `npm run verify -- --tier=quick` passou.
+
+**Status: 🟠 Em revisão (correção do achado 1).** O veredito original permanece para a nova revisão.
+
+## Veredito — 2026-10-21 — correção 1 (lote 3) — 🟢 Aprovado; lote 3 fechado
+
+**Achado fechado:** sem `styleNonce`, o stylesheet volta a entrar no import do pacote, como antes; com `styleNonce`, o Provider troca
+a folha por uma tag que já leva o nonce (`src/core/Provider/injectStyles.ts`). **Medido por mim:** `npm run verify -- --tier=quick`
+verde; `npm run build` verde; contra o `dist/` reconstruído, `browser-tests/no-provider-css.spec.ts` (novo: um componente da lib sem
+Provider e sem CSS externo recebe o CSS da lib, com estilo computado) 1/1 e `nonce-csp.spec.ts` 1/1. O resto do lote já tinha
+passado em `verify --tier=full` e na bateria inteira (424/424).
+
+**Registrado como I23 (lote 4), não como achado desta correção:** com `styleNonce`, a folha do import ainda é inserida sem nonce
+e a CSP estrita a bloqueia com uma violação por carregamento, antes de o Provider trocá-la. É lacuna da decisão do revisor (no
+import a lib não sabe do nonce), não da execução; o caso do nonce não escuta `securitypolicyviolation` e por isso não a via.
+
+**Lote 3 fechado (I14 a I21).** Segue o lote 4 (I22 e I23).
+
+**Status: 🟡 Em execução (lote 4).**

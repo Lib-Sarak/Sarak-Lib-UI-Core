@@ -34,12 +34,4 @@ export interface SarakCatalogGridProps {
     /** Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. */
     emptyMessage?: string;
 
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    density?: 'compact' | 'standard' | 'spacious';
-
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    importance?: 'hero' | 'base' | 'subtle';
 }

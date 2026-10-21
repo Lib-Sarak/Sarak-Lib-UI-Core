@@ -3,6 +3,7 @@ import { useDesignVariables } from '../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
 import type { SarakDesignState } from '../../Provider/types';
+import { SarakStyle } from '../../Provider/components/SarakStyle';
 
 export interface SarakDesignScopeProps {
     design: SarakDesignState;
@@ -51,7 +52,7 @@ export const SarakDesignScope: React.FC<SarakDesignScopeProps & Record<string, u
             >
                 {/* CSS Responsivo Dinâmico com Escopo Isolado */}
                 {responsiveCSS && (
-                    <style dangerouslySetInnerHTML={{ __html: responsiveCSS }} />
+                    <SarakStyle dangerouslySetInnerHTML={{ __html: responsiveCSS }} />
                 )}
 
                 <SarakBackgroundRenderer

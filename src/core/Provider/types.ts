@@ -123,6 +123,8 @@ export type SarakUIMode = 'app' | 'embedded';
 
 export interface SarakUIOptions {
     token?: string;
+    /** Nonce CSP aplicado a todas as tags `<style>` criadas pela biblioteca. */
+    styleNonce?: string;
     /** Ajustes do sequestro de tema legado executado pelo `SovereignThemeInjector`. */
     manifest?: Record<string, unknown>;
     /** Modo de consumo (Spec 24). Default `'app'` — zero breaking change. */

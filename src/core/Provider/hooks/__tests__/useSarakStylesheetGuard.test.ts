@@ -1,10 +1,8 @@
 /**
  * useSarakStylesheetGuard (Spec 08 §2 + Spec 24).
  *
- * A injeção automática de CSS roda na IMPORTAÇÃO do módulo, antes de o Provider saber
- * o modo. No Modo Embarcado o stylesheet global re-estilizaria o host, então esta
- * guarda o remove antes do primeiro paint da ilha — e orienta o consumidor a marcar o
- * documento para que a injeção sequer aconteça.
+ * O Provider injeta CSS global durante a montagem no Modo App. No Modo Embarcado a
+ * folha global não é criada; esta guarda remove uma folha preexistente antes do paint.
  */
 
 import { renderHook } from '@testing-library/react';
@@ -16,7 +14,7 @@ import { SARAK_MODE_ATTRIBUTE } from '../../scope';
 const STYLE_TAG_ID = 'sarak-ui-core-styles';
 const tagGlobal = (): HTMLElement | null => document.getElementById(STYLE_TAG_ID);
 
-/** Simula o CSS global já injetado no `<head>` pela importação do módulo. */
+/** Instala uma folha global para exercitar a guarda do modo embarcado. */
 const injetarCssGlobal = (): void => {
     document.documentElement.removeAttribute(SARAK_MODE_ATTRIBUTE);
     injectSarakStyles(':root{--sarak-ui-core-css-loaded:1}');

@@ -1,9 +1,13 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { injectSarakStyles } from '../injectStyles';
 
 const STYLE_TAG_ID = 'sarak-ui-core-styles';
 
 describe('injectSarakStyles (Spec 08 §2 — Instalação Zero-Config)', () => {
+    beforeEach(() => {
+        document.getElementById(STYLE_TAG_ID)?.remove();
+    });
+
     afterEach(() => {
         document.getElementById(STYLE_TAG_ID)?.remove();
     });
@@ -14,6 +18,24 @@ describe('injectSarakStyles (Spec 08 §2 — Instalação Zero-Config)', () => {
         expect(tag).not.toBeNull();
         expect(tag?.tagName).toBe('STYLE');
         expect(tag?.textContent).toBe('body{color:red}');
+    });
+
+    it('aplica o nonce antes de anexar a tag ao head', () => {
+        injectSarakStyles('body{color:red}', 'csp-nonce');
+
+        expect(document.getElementById(STYLE_TAG_ID)).toHaveAttribute('nonce', 'csp-nonce');
+    });
+
+    it('substitui a folha sem nonce por outra já identificada quando o Provider fornece nonce', () => {
+        injectSarakStyles('body{color:red}');
+        const initialStyle = document.getElementById(STYLE_TAG_ID);
+
+        injectSarakStyles('body{color:red}', 'csp-nonce');
+
+        const nonceStyle = document.getElementById(STYLE_TAG_ID);
+        expect(nonceStyle).not.toBe(initialStyle);
+        expect(initialStyle).not.toBeInTheDocument();
+        expect(nonceStyle).toHaveAttribute('nonce', 'csp-nonce');
     });
 
     it('é idempotente — não duplica o <style> em chamadas repetidas', () => {

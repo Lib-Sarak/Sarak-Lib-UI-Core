@@ -5,6 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakDesignScope } from '../DesignScope';
 import { useDesignVariables } from '../../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../../Provider/SarakUIProvider';
+import { SarakStyleNonceContext } from '../../../Provider/components/SarakStyle';
 import type { SarakDesignState } from '../../../Provider/types';
 
 // Mock dos hooks e componentes
@@ -66,14 +67,17 @@ describe('DesignScope', () => {
 
     it('injeta o bloco de estilo responsivo', () => {
         const { container } = render(
-            <SarakDesignScope design={{ mode: 'dark' }}>
-                <div />
-            </SarakDesignScope>
+            <SarakStyleNonceContext.Provider value="scope-nonce">
+                <SarakDesignScope design={{ mode: 'dark' }}>
+                    <div />
+                </SarakDesignScope>
+            </SarakStyleNonceContext.Provider>,
         );
 
         const styleElement = container.querySelector('style');
         expect(styleElement).toBeInTheDocument();
         expect(styleElement?.innerHTML).toBe('.mock-class { color: red; }');
+        expect(styleElement).toHaveAttribute('nonce', 'scope-nonce');
     });
 
     it('passa as propriedades de background corretamente para SarakBackgroundRenderer', () => {

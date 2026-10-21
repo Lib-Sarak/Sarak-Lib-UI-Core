@@ -44,9 +44,6 @@ export interface SarakManagementGridProps<TItem extends Record<string, unknown>>
     onToggle?: (item: TItem) => void | Promise<void>;
     onDelete?: (item: TItem) => void | Promise<void>;
     onCreate?: (data: Record<string, unknown>, group?: string) => void | Promise<void>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 
 function getValueAtPath<T extends Record<string, unknown>>(item: T, path: string): unknown {

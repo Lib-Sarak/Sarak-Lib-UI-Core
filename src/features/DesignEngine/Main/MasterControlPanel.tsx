@@ -11,6 +11,7 @@ import { SarakInput } from '../../../components/atomic/Inputs';
 
 import { SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue, SarakDesignToken } from '../../../core/Design/types';
+import { SarakStyle } from '../../../core/Provider/components/SarakStyle';
 
 export interface MasterControlPanelProps {
     draft: SarakDesignState;
@@ -210,7 +211,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                 </div>
             </div>
 
-            <style dangerouslySetInnerHTML={{ __html: `
+            <SarakStyle dangerouslySetInnerHTML={{ __html: `
                 .scrollbar-hide::-webkit-scrollbar {
                     display: none;
                 }

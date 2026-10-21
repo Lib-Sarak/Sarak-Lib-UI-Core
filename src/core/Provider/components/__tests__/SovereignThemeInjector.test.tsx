@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SovereignThemeInjector } from '../SovereignThemeInjector';
+import { SarakStyleNonceContext } from '../SarakStyle';
 
 describe('SovereignThemeInjector', () => {
     it('returns null if manifest sovereignHijack is false', () => {
@@ -13,12 +14,15 @@ describe('SovereignThemeInjector', () => {
 
     it('injects light mode hijack styles when mode is light', () => {
         const { container } = render(
-            <SovereignThemeInjector design={{ mode: 'light' }} manifest={{ sovereignHijack: true }} />
+            <SarakStyleNonceContext.Provider value="bridge-nonce">
+                <SovereignThemeInjector design={{ mode: 'light' }} manifest={{ sovereignHijack: true }} />
+            </SarakStyleNonceContext.Provider>,
         );
         const styleEl = container.querySelector('#sarak-sovereign-bridge');
         expect(styleEl).not.toBeNull();
         expect(styleEl?.innerHTML).toContain('Sarak Sovereign Bridge - Light Mode Hijack');
         expect(styleEl?.innerHTML).toContain('body.light .text-white');
+        expect(styleEl).toHaveAttribute('nonce', 'bridge-nonce');
     });
 
     it('injects dark mode hue hijack styles when mode is dark', () => {

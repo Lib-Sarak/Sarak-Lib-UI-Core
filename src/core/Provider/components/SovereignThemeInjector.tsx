@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { SarakThemePayload, SarakUIMode } from '../types';
 import { SARAK_OWN_PALETTE_ATTRIBUTE, SARAK_SCOPE_CLASS } from '../scope';
+import { SarakStyle } from './SarakStyle';
 
 interface SovereignThemeInjectorProps {
     design: SarakThemePayload;
@@ -97,6 +98,6 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
     if (!hijackStyle) return null;
 
     return (
-        <style id="sarak-sovereign-bridge" dangerouslySetInnerHTML={{ __html: hijackStyle }} />
+        <SarakStyle id="sarak-sovereign-bridge" dangerouslySetInnerHTML={{ __html: hijackStyle }} />
     );
 };

@@ -5,6 +5,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakStyle } from '../../../core/Provider/components/SarakStyle';
 
 // Deriva os contratos diretamente do componente ReactFlow (fonte única).
 type ReactFlowProps = React.ComponentProps<typeof ReactFlow>;
@@ -61,7 +62,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 </Panel>
             </ReactFlow>
 
-            <style>{`
+            <SarakStyle>{`
                 .react-flow__node {
                     border-radius: var(--sarak-flow-node-radius, ${flowNodeRadius || 12}px);
                     background: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, #101622)) 80%, transparent);
@@ -81,7 +82,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     stroke: color-mix(in srgb, var(--text-main, #f2f6fb) 20%, transparent);
                     stroke-width: 2;
                 }
-            `}</style>
+            `}</SarakStyle>
         </div>
     );
 };

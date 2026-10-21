@@ -70,9 +70,8 @@ export interface SarakAuthScreenProps {
     errorVariant?: 'error' | 'warning';
     /** Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. */
     onChange?: (event: SarakAuthScreenEvent) => void;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
+    /** Renderiza apenas os provedores sociais configurados, sem os campos de credenciais. Default `true`. */
+    showCredentials?: boolean;
 }
 
 /**
@@ -185,6 +184,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
                 onSocialLogin={handleSocialLogin}
                 socialConfig={props.socialConfig}
                 onForgot={handleForgot}
+                showCredentials={props.showCredentials !== false}
             />
         </div>
     );

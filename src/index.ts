@@ -5,6 +5,9 @@
  * 100% Restored for original visual and functional parity.
  */
 
+// Instalação Zero-Config: sem nonce, a folha global está disponível já no import.
+import './core/Provider/injectStylesOnImport';
+
 // Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
 // Modo de consumo (Spec 24): `app` (default) vs `embedded` (ilha sobre front existente).

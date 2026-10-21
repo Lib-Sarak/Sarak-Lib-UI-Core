@@ -1,8 +1,9 @@
 // Postbuild: substitui o placeholder `__SARAK_CSS_PLACEHOLDER__` (definido em
 // src/core/Provider/__sarakCss.ts) pelo CSS real já compilado (dist/sarak.css) em
-// TODO arquivo `.js`/`.cjs` de `dist/`. Assim `import { SarakUIProvider } from
-// '@sarak/lib-ui-core'` já injeta o stylesheet completo em runtime, sem exigir CSS
-// manual do consumidor (Spec 08 §2). Varre o diretório inteiro (em vez de só
+// TODO arquivo `.js`/`.cjs` de `dist/`. Sem nonce, o barril injeta o stylesheet
+// completo no import; com nonce, o Provider o substitui na montagem com o nonce
+// aplicado antes de anexar a tag, sem exigir CSS manual do consumidor (Spec 08 §2).
+// Varre o diretório inteiro (em vez de só
 // dist/index.js|cjs) porque o build ESM faz code-splitting: o código do Provider pode
 // cair num chunk com nome hash-based (ex.: dist/chunk-XXXX.js), não no entry file.
 // Substituição por string literal (não por nome de identificador) porque sobrevive à

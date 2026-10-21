@@ -25,29 +25,14 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | --- | --- | --- |
 | `SarakAppChrome` | `navigationStyle` | `sidebar` · `topbar` · `auto` |
 | `SarakAuthScreen` | `errorVariant` | `error` · `warning` |
-| `SarakAuthScreen` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakAuthScreen` | `density` | `compact` · `standard` · `spacious` |
-| `SarakAuthScreen` | `importance` | `hero` · `base` · `subtle` |
 | `SarakButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` · `success` · `outline` |
 | `SarakButton` | `size` | `xs` · `sm` · `md` · `lg` |
-| `SarakCardGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakCardGrid` | `density` | `compact` · `standard` · `spacious` |
-| `SarakCardGrid` | `importance` | `hero` · `base` · `subtle` |
 | `SarakCardGrid` | `variant` | `classic` · `title` · `action` · `search` |
-| `SarakCatalogGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakCatalogGrid` | `density` | `compact` · `standard` · `spacious` |
-| `SarakCatalogGrid` | `importance` | `hero` · `base` · `subtle` |
-| `SarakChart` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakChart` | `density` | `compact` · `standard` · `spacious` |
-| `SarakChart` | `importance` | `hero` · `base` · `subtle` |
 | `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` · `waterfall` · `sankey` · `calendar` |
 | `SarakChartEngine` | `config` | `recharts` · `echarts` |
 | `SarakChartEngine` | `series` | `bar` · `line` · `area` · `left` · `right` · `chartColorPalette` · `secondaryColor` · `accentColor` · `statusSuccessColor` · `statusWarningColor` · `statusErrorColor` · `statusInfoColor` · `tertiaryColor` |
 | `SarakChartEngine` | `orientation` | `vertical` · `horizontal` |
 | `SarakChartEngine` | `legend` | `top` · `bottom` |
-| `SarakChat` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakChat` | `density` | `compact` · `standard` · `spacious` |
-| `SarakChat` | `importance` | `hero` · `base` · `subtle` |
 | `SarakDatePicker` | `mode` | `single` · `range` |
 | `SarakDrawer` | `direction` | `left` · `right` · `top` · `bottom` |
 | `SarakEmptyState` | `type` | `minimal` · `abstract` · `geometric` |
@@ -56,9 +41,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakForm` | `mode` | `create` · `edit` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
-| `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
-| `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
 | `SarakShellLanguageSelector` | `variant` | `horizontal` · `vertical` |
 | `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
 | `SarakShellSearchWidget` | `variant` | `bar` · `icon` |
@@ -258,9 +240,7 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `onForgot` | `() => void` | não |  |
 | `errorVariant` | `'error' \| 'warning'` | não |  |
 | `onChange` | `(event: SarakAuthScreenEvent) => void` | não | Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `showCredentials` | `boolean` | não | Renderiza apenas os provedores sociais configurados, sem os campos de credenciais. Default `true`. |
 
 ### SarakAutocomplete
 
@@ -391,9 +371,6 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 | `label` | `string` | não |  |
 | `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `SarakFilterConfig[]` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 | `variant` | `'classic' \| 'title' \| 'action' \| 'search'` | não |  |
 
 ### SarakCardHeader
@@ -419,9 +396,6 @@ Props (`SarakCatalogGridProps` — `src/components/atomic/Templates/SarakCatalog
 | `onSync` | `() => void` | não | Habilita o botão que chama a rotina de sincronização; omitida, o botão não aparece. Ele fica fixo no canto inferior direito. |
 | `renderCard` | `(item: SarakCatalogItem) => React.ReactNode` | não | Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`. |
 | `emptyMessage` | `string` | não | Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakChart
 
@@ -435,9 +409,6 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 | `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
 | `label` | `string` | não | Rótulo opcional fornecido pelo host. |
 | `mapping` | `{ value?: string; date?: string }` | não | Chaves dos campos de valor e rótulo; os defaults são value e date. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakChartEngine
 
@@ -464,9 +435,6 @@ Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
 | `onSend` | `SarakChatOnSend` | sim | O host envia a mensagem e encaminha cada token recebido ao callback. |
 | `loadModels` | `SarakChatModelLoader` | não | Carrega modelos do host; omitido, a lista permanece vazia. |
 | `label` | `string` | não | Nome exibido no cabeçalho; omitido, usa `AI Chat`. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 
 ### SarakChatEngine
 
@@ -904,9 +872,6 @@ Props (`SarakManagementGridProps` — `src/components/atomic/Templates/SarakMana
 | `onToggle` | `(item: TItem) => void \| Promise<void>` | não |  |
 | `onDelete` | `(item: TItem) => void \| Promise<void>` | não |  |
 | `onCreate` | `(data: Record<string, unknown>, group?: string) => void \| Promise<void>` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakMarkdownRenderer
 

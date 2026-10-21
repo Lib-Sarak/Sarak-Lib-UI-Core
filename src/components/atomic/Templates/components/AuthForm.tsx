@@ -38,6 +38,7 @@ interface AuthFormProps {
     onSocialLogin?: (provider: string) => void;
     socialConfig?: SarakSocialConfig;
     onForgot?: () => void;
+    showCredentials?: boolean;
 }
 
 export const AuthForm: React.FC<AuthFormProps> = ({
@@ -63,6 +64,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     onSocialLogin,
     socialConfig,
     onForgot,
+    showCredentials = true,
 }) => {
     const { durations } = useMotionTokens();
     const { getFlexStyles } = useStructuralStyles();
@@ -96,9 +98,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                     <h3 className="text-3xl font-black text-theme-text tracking-tight" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>
                         {authText(mfaStep ? 'authTitleMfa' : isRegistering ? 'authTitleRegister' : 'authTitleLogin')}
                     </h3>
-                    <p className="text-theme-muted font-medium">
-                        {authText(mfaStep ? 'authDescriptionMfa' : isRegistering ? 'authDescriptionRegister' : 'authDescriptionLogin')}
-                    </p>
+                    {showCredentials && (
+                        <p className="text-theme-muted font-medium">
+                            {authText(mfaStep ? 'authDescriptionMfa' : isRegistering ? 'authDescriptionRegister' : 'authDescriptionLogin')}
+                        </p>
+                    )}
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -120,29 +124,31 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                     )}
                 </AnimatePresence>
 
-                <form onSubmit={onSubmit} className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').style}>
-                    <AuthFormFields
-                        mfaStep={mfaStep}
-                        isRegistering={isRegistering}
-                        labels={labels}
-                        username={username}
-                        setUsername={setUsername}
-                        password={password}
-                        setPassword={setPassword}
-                        mfaCode={mfaCode}
-                        setMfaCode={setMfaCode}
-                        showPassword={showPassword}
-                        setShowPassword={setShowPassword}
-                        isPending={isPending}
-                        setMfaStep={setMfaStep}
-                        onForgot={onForgot}
-                    />
-                </form>
+                {showCredentials && (
+                    <form onSubmit={onSubmit} className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').style}>
+                        <AuthFormFields
+                            mfaStep={mfaStep}
+                            isRegistering={isRegistering}
+                            labels={labels}
+                            username={username}
+                            setUsername={setUsername}
+                            password={password}
+                            setPassword={setPassword}
+                            mfaCode={mfaCode}
+                            setMfaCode={setMfaCode}
+                            showPassword={showPassword}
+                            setShowPassword={setShowPassword}
+                            isPending={isPending}
+                            setMfaStep={setMfaStep}
+                            onForgot={onForgot}
+                        />
+                    </form>
+                )}
 
                 {/* Social Login Section */}
-                <AuthSocialLogin socialConfig={socialConfig} onSocialLogin={onSocialLogin} />
+                <AuthSocialLogin socialConfig={socialConfig} onSocialLogin={onSocialLogin} showDivider={showCredentials} />
 
-                {allowRegistration && <div className="border-t border-[var(--border-color,rgba(255,255,255,0.09))] text-center" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2.5)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
+                {showCredentials && allowRegistration && <div className="border-t border-[var(--border-color,rgba(255,255,255,0.09))] text-center" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2.5)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
                     <p className="text-theme-muted text-sm font-medium">
                         {authText(isRegistering ? 'authHasAccount' : 'authNoAccount')}
                         <SarakButton 

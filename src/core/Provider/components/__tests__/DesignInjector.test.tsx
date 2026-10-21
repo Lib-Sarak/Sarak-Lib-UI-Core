@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DesignInjector } from '../DesignInjector';
+import { SarakStyleNonceContext } from '../SarakStyle';
 import * as useDesignVariablesHook from '../../../Design/hooks/useDesignVariables';
 
 // Mock do hook
@@ -71,6 +72,22 @@ describe('DesignInjector', () => {
         const styleTag = document.getElementById('sarak-responsive-vars');
         expect(styleTag).not.toBeNull();
         expect(styleTag?.innerHTML).toBe(mockResponsive);
+    });
+
+    it('aplica o nonce CSP à folha de variáveis responsivas', () => {
+        (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+            variables: {},
+            attributes: {},
+            responsiveCSS: '@media (max-width: 768px) { :root { --test-var: 5px; } }',
+        });
+
+        render(
+            <SarakStyleNonceContext.Provider value="responsive-nonce">
+                <DesignInjector design={{ mode: 'dark' }} isDrafting={false} />
+            </SarakStyleNonceContext.Provider>,
+        );
+
+        expect(document.getElementById('sarak-responsive-vars')).toHaveAttribute('nonce', 'responsive-nonce');
     });
 
     it('remove data-sarak-has-media se não houver background image e aplica modo fallback', () => {
